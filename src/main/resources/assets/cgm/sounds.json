@@ -1,0 +1,3 @@
+{
+   "shotgun_fire": { "category": "player", "sounds": [{ "name": "cgm:shotgun_fire", "stream": false }]}
+}

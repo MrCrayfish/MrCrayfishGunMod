@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
+  "modid": "cgm",
+  "name": "MrCrayfish's Gun Mod",
+  "description": "Adds Guns in Minecraft. Created as a part of MrCrayfish's Mod Week",
+  "version": "1.0",
+  "mcversion": "1.11.2",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["MrCrayfish"],
+  "credits": "Fans for suggestions during development",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
