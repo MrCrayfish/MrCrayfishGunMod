@@ -1,43 +1,46 @@
 package com.mrcrayfish.guns.init;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.mrcrayfish.guns.init.ModGuns.Gun;
+import com.mrcrayfish.guns.item.ItemGun;
+
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModSounds 
 {
-	private static final List<SoundEvent> SOUNDS = new ArrayList<SoundEvent>();
-	
-	public static SoundEvent shotgun_fire;
-	
+	private static final Map<String, SoundEvent> SOUNDS = new HashMap<String, SoundEvent>();
+
 	public static void register()
 	{
-		shotgun_fire = registerSound("cgm:shotgun_fire");
+		for(ItemGun gunItem : ModGuns.GUNS)
+		{
+			Gun gun = gunItem.getGun();
+			if(!SOUNDS.containsKey(gun.sounds.fire))
+			{
+				registerSound("cgm:" + gun.sounds.fire);
+			}
+		}
 	}
 	
 	@Nullable
 	public static SoundEvent getSound(String name)
 	{
-		for(SoundEvent sound : SOUNDS)
-		{
-			if(sound.getSoundName().getResourcePath().equals(name))
-			{
-				return sound;
-			}
-		}
-		return null;
+		return SOUNDS.get(name);
 	}
 	
-	private static SoundEvent registerSound(String soundNameIn)
+	private static void registerSound(String soundNameIn)
     {
 		ResourceLocation sound = new ResourceLocation(soundNameIn);
 		SoundEvent event = GameRegistry.register(new SoundEvent(sound).setRegistryName(soundNameIn));
-		SOUNDS.add(event);
-        return event;
+		SOUNDS.put(sound.getResourcePath(), event);
     }
 }

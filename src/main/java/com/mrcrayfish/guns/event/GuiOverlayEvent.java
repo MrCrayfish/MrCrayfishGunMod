@@ -21,14 +21,19 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public class GuiOverlayEvent 
 {
+	private static final double ZOOM_TICKS = 30;
+	
 	private boolean canZoom = false;
 	private int zoomProgress;
 	private int lastZoomProgress;
+	
+	private float originalFov;
 	
 	@SubscribeEvent
 	public void renderOverlay(KeyInputEvent event)
 	{
 		this.canZoom = GuiScreen.isAltKeyDown();
+		if(this.canZoom) originalFov = Minecraft.getMinecraft().gameSettings.fovSetting;
 	}
 	
 	@SubscribeEvent
@@ -41,7 +46,7 @@ public class GuiOverlayEvent
 				Minecraft.getMinecraft().player.prevCameraYaw = 0F;
 				Minecraft.getMinecraft().player.cameraYaw = 0F;
 				
-				if(zoomProgress < 20)
+				if(zoomProgress < ZOOM_TICKS)
 				{
 					zoomProgress++;
 					Minecraft.getMinecraft().gameSettings.fovSetting -= 1.5F;
@@ -62,19 +67,22 @@ public class GuiOverlayEvent
 	public void renderOverlay(RenderSpecificHandEvent event)
 	{
 		this.lastZoomProgress = this.zoomProgress;
-		double progress = (this.lastZoomProgress + ((this.zoomProgress - this.lastZoomProgress) * event.getPartialTicks())) / 20.0;
-		if(event.getHand() == EnumHand.MAIN_HAND && zoomProgress != 0)
+		double progress = (this.zoomProgress + (zoomProgress == 0 || zoomProgress == ZOOM_TICKS ?  0 : event.getPartialTicks())) / ZOOM_TICKS;
+		if(progress > 0)
 		{
-			ItemStack stack = event.getItemStack();
-			if(stack.getItem() instanceof ItemGun)
+			if(event.getHand() == EnumHand.MAIN_HAND)
 			{
-				ItemGun gun = (ItemGun) stack.getItem();
-				GlStateManager.translate(-0.685 * progress, gun.getGun().display.zoomYOffset * progress, -0.5);
+				ItemStack stack = event.getItemStack();
+				if(stack.getItem() instanceof ItemGun)
+				{
+					ItemGun gun = (ItemGun) stack.getItem();
+					GlStateManager.translate(-0.685 * progress, gun.getGun().display.zoomYOffset * progress, -0.5 * progress);
+				}
 			}
-		}
-		else if(zoomProgress != 0)
-		{	
-			GlStateManager.translate(0.0, -2 * progress, 0.0);
+			else
+			{	
+				GlStateManager.translate(0.0, -2 * progress, 0.0);
+			}
 		}
 	}
 }

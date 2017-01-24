@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModGuns 
 {
-	public static List<Item> gunItems = new ArrayList<Item>();
+	public static final List<ItemGun> GUNS = new ArrayList<ItemGun>();
 	public static Item shotgun_ammo;
 	
 	public static void init()
@@ -30,14 +30,14 @@ public class ModGuns
 		ArrayList<Gun> guns = gson.fromJson(reader, new TypeToken<ArrayList<Gun>>(){}.getType());
 		for(Gun gun : guns)
 		{
-			gunItems.add(new ItemGun(gun));
+			GUNS.add(new ItemGun(gun));
 		}
 		shotgun_ammo = new Item().setUnlocalizedName("shotgun_ammo").setRegistryName("shotgun_ammo").setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 	}
 	
 	public static void register()
 	{
-		for(Item item : gunItems) 
+		for(Item item : GUNS) 
 		{
 			GameRegistry.register(item);
 		}
@@ -46,7 +46,7 @@ public class ModGuns
 	
 	public static void registerRenders()
 	{
-		for(Item item : gunItems) 
+		for(Item item : GUNS) 
 		{
 			registerRender(item);
 		}

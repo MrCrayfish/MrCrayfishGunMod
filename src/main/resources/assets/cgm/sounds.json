@@ -1,3 +1,4 @@
 {
-   "shotgun_fire": { "category": "player", "sounds": [{ "name": "cgm:shotgun_fire", "stream": false }]}
+   "shotgun_fire": { "category": "player", "sounds": [{ "name": "cgm:shotgun_fire", "stream": false }]},
+   "sniper_fire": { "category": "player", "sounds": [{ "name": "cgm:sniper_fire", "stream": false }]}
 }

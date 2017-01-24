@@ -51,7 +51,7 @@ public class ItemGun extends Item
 		ItemStack stack = this.findAmmo(playerIn);
 		if(stack != ItemStack.EMPTY || playerIn.capabilities.isCreativeMode)
 		{
-			worldIn.playSound(playerIn, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.5F + itemRand.nextFloat() * 0.5F);
+			worldIn.playSound(playerIn, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
 			if(!worldIn.isRemote)
 			{
 				EntityBullet bullet = new EntityBullet(worldIn, playerIn, gun);
