@@ -9,6 +9,10 @@ import com.google.common.base.Predicates;
 import com.mrcrayfish.guns.init.ModGuns.Gun;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBreakable;
+import net.minecraft.block.BlockPane;
+import net.minecraft.block.BlockStainedGlassPane;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -152,6 +156,10 @@ public class EntityBullet extends Entity
 		{
 			IBlockState state = world.getBlockState(raytraceResultIn.getBlockPos());
 			Block block = state.getBlock();
+			if((block instanceof BlockBreakable || block instanceof BlockPane) && state.getMaterial() == Material.GLASS)
+			{
+				world.destroyBlock(raytraceResultIn.getBlockPos(), false);
+			}
 			if(!block.isReplaceable(world, raytraceResultIn.getBlockPos()))
 			{
 				this.setDead();
