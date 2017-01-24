@@ -6,7 +6,8 @@
 			"spread": 1.0,
 			"speed": 10.0,
 			"life": 3,
-			"damageReduceOverLife": true
+			"damageReduceOverLife": true,
+			"damageReduceIfNotZoomed": false
 		},
         "sounds": {
 			"fire": "shotgun_fire",
@@ -26,7 +27,8 @@
 			"spread": 0.2,
 			"speed": 20.0,
 			"life": 5,
-			"damageReduceOverLife": false
+			"damageReduceOverLife": false,
+			"damageReduceIfNotZoomed": true
 		},
         "sounds": {
 			"fire": "sniper_fire",

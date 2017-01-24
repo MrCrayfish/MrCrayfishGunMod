@@ -72,6 +72,7 @@ public class ModGuns
 			public double speed;
 			public int life;
 			public boolean damageReduceOverLife;
+			public boolean damageReduceIfNotZoomed;
 		}
 		
 		public static class Sounds
