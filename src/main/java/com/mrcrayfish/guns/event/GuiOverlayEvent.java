@@ -1,19 +1,15 @@
 package com.mrcrayfish.guns.event;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
 import com.mrcrayfish.guns.item.ItemGun;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -26,30 +22,54 @@ public class GuiOverlayEvent
 	private boolean canZoom = false;
 	private int zoomProgress;
 	private int lastZoomProgress;
-	
+	private double realProgress;
 	private float originalFov;
-	
+
 	@SubscribeEvent
-	public void renderOverlay(KeyInputEvent event)
+	public void onFovUpdate(FOVUpdateEvent event)
 	{
-		this.canZoom = GuiScreen.isAltKeyDown();
-		if(this.canZoom) originalFov = Minecraft.getMinecraft().gameSettings.fovSetting;
+		Item item = Minecraft.getMinecraft().player.getHeldItemMainhand().getItem();
+		if(item instanceof ItemGun)
+		{
+			ItemGun gun = (ItemGun) item;
+			if(canZoom)
+			{
+				Minecraft.getMinecraft().gameSettings.smoothCamera = gun.getGun().display.zoomSmooth;
+				event.setNewfov(gun.getGun().display.zoomFovModifier);
+			}
+			else
+			{
+				Minecraft.getMinecraft().gameSettings.smoothCamera = false;
+				event.setNewfov(1.0F);
+			}
+		}
 	}
 	
 	@SubscribeEvent
-	public void renderOverlay(TickEvent event)
+	public void onKeyInput(KeyInputEvent event)
+	{
+		ItemStack stack = Minecraft.getMinecraft().player.getHeldItemMainhand();
+		canZoom = GuiScreen.isAltKeyDown() && stack.getItem() instanceof ItemGun;
+	}
+	
+	@SubscribeEvent
+	public void onTick(TickEvent event)
 	{
 		if(event.phase == Phase.START)
 		{
+			if(Minecraft.getMinecraft().player != null && !(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ItemGun))
+			{
+				canZoom = false;
+			}
+			
 			if(canZoom)
 			{
-				Minecraft.getMinecraft().player.prevCameraYaw = 0F;
-				Minecraft.getMinecraft().player.cameraYaw = 0F;
+				Minecraft.getMinecraft().player.prevCameraYaw = 0.02F;
+				Minecraft.getMinecraft().player.cameraYaw = 0.02F;
 				
 				if(zoomProgress < ZOOM_TICKS)
 				{
 					zoomProgress++;
-					Minecraft.getMinecraft().gameSettings.fovSetting -= 1.5F;
 				}
 			}
 			else
@@ -57,31 +77,32 @@ public class GuiOverlayEvent
 				if(zoomProgress > 0)
 				{
 					zoomProgress--;
-					Minecraft.getMinecraft().gameSettings.fovSetting += 1.5F;
 				}
 			}
 		}
 	}
 	
 	@SubscribeEvent
-	public void renderOverlay(RenderSpecificHandEvent event)
+	public void onRenderOverlay(RenderSpecificHandEvent event)
 	{
-		this.lastZoomProgress = this.zoomProgress;
-		double progress = (this.zoomProgress + (zoomProgress == 0 || zoomProgress == ZOOM_TICKS ?  0 : event.getPartialTicks())) / ZOOM_TICKS;
-		if(progress > 0)
+		lastZoomProgress = zoomProgress;
+		
+		realProgress = (zoomProgress + (zoomProgress == 0 || zoomProgress == ZOOM_TICKS ?  0 : event.getPartialTicks())) / ZOOM_TICKS;
+
+		if(realProgress > 0)
 		{
-			if(event.getHand() == EnumHand.MAIN_HAND)
+			if(event.getItemStack().getItem() instanceof ItemGun)
 			{
-				ItemStack stack = event.getItemStack();
-				if(stack.getItem() instanceof ItemGun)
+				ItemGun gun = (ItemGun) event.getItemStack().getItem();
+
+				if(event.getHand() == EnumHand.MAIN_HAND)
 				{
-					ItemGun gun = (ItemGun) stack.getItem();
-					GlStateManager.translate(-0.685 * progress, gun.getGun().display.zoomYOffset * progress, -0.5 * progress);
+					GlStateManager.translate(-0.685 * realProgress, gun.getGun().display.zoomYOffset * realProgress, -0.5 * realProgress);
 				}
 			}
-			else
+			if(event.getHand() == EnumHand.OFF_HAND)
 			{	
-				GlStateManager.translate(0.0, -2 * progress, 0.0);
+				GlStateManager.translate(0.0, -2 * realProgress, 0.0);
 			}
 		}
 	}
