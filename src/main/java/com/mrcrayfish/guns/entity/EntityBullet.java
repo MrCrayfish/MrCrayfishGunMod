@@ -36,8 +36,7 @@ public class EntityBullet extends Entity
     }});
 	
 	private EntityLivingBase shooter;
-	private int ticksAlive;
-	private float damage;
+	private Gun gun;
 	
 	public EntityBullet(World worldIn) 
 	{
@@ -48,8 +47,7 @@ public class EntityBullet extends Entity
     {
         super(worldIn);
         this.shooter = shooter;
-        this.ticksAlive = gun.properties.life;
-        this.damage = gun.properties.damage;
+        this.gun = gun;
         this.setSize(gun.properties.spread, gun.properties.spread);
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D, shooter.posZ);
 
@@ -63,47 +61,50 @@ public class EntityBullet extends Entity
 	public void onUpdate() 
 	{
 		super.onUpdate();
-
-		Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
-		Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-		RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
-		vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
-		vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-
-		if (raytraceresult != null) 
+		
+		if(!world.isRemote)
 		{
-			vec3d = new Vec3d(raytraceresult.hitVec.xCoord, raytraceresult.hitVec.yCoord, raytraceresult.hitVec.zCoord);
-		}
-
-		Entity entity = this.findEntityOnPath(vec3d1, vec3d);
-
-		if (entity != null) 
-		{
-			raytraceresult = new RayTraceResult(entity);
-		}
-
-		if (raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer) 
-		{
-			EntityPlayer entityplayer = (EntityPlayer) raytraceresult.entityHit;
-
-			if (this.shooter instanceof EntityPlayer && !((EntityPlayer) this.shooter).canAttackPlayer(entityplayer)) 
+			Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
+			Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+			RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
+			vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
+			vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+	
+			if (raytraceresult != null) 
 			{
-				raytraceresult = null;
+				vec3d = new Vec3d(raytraceresult.hitVec.xCoord, raytraceresult.hitVec.yCoord, raytraceresult.hitVec.zCoord);
 			}
+	
+			Entity entity = this.findEntityOnPath(vec3d1, vec3d);
+	
+			if (entity != null) 
+			{
+				raytraceresult = new RayTraceResult(entity);
+			}
+	
+			if (raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer) 
+			{
+				EntityPlayer entityplayer = (EntityPlayer) raytraceresult.entityHit;
+	
+				if (this.shooter instanceof EntityPlayer && !((EntityPlayer) this.shooter).canAttackPlayer(entityplayer)) 
+				{
+					raytraceresult = null;
+				}
+			}
+	
+			if (raytraceresult != null) 
+			{
+				this.onHit(raytraceresult);
+			}
+			
+			this.posX += this.motionX;
+			this.posY += this.motionY;
+			this.posZ += this.motionZ;
+			
+			this.setPosition(this.posX, this.posY, this.posZ);
+			
+			if(this.ticksExisted >= this.gun.properties.life) this.setDead();
 		}
-
-		if (raytraceresult != null) 
-		{
-			this.onHit(raytraceresult);
-		}
-		
-		this.posX += this.motionX;
-		this.posY += this.motionY;
-		this.posZ += this.motionZ;
-		
-		this.setPosition(this.posX, this.posY, this.posZ);
-		
-		if(this.ticksExisted >= this.ticksAlive) this.setDead();
 	}
 	
 	@Nullable
@@ -145,8 +146,12 @@ public class EntityBullet extends Entity
 		if(entity != null)
 		{
 			if(entity == shooter) return;
-			float percent = ((float) this.ticksAlive - (float) this.ticksExisted) / (float) this.ticksAlive;
-			float damage = this.damage * percent + this.damage / this.ticksAlive;
+			float damage = this.gun.properties.damage;
+			if(this.gun.properties.damageReduceOverLife)
+			{
+				float percent = ((float) this.gun.properties.life - (float) this.ticksExisted) / (float) this.gun.properties.life;
+				damage = this.gun.properties.damage * percent + this.gun.properties.damage / this.gun.properties.life;
+			}
 			entity.attackEntityFrom(DamageSource.ANVIL, damage);
 			this.setDead();
 			return;

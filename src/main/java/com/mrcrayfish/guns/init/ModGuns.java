@@ -71,6 +71,7 @@ public class ModGuns
 			public float spread;
 			public double speed;
 			public int life;
+			public boolean damageReduceOverLife;
 		}
 		
 		public static class Sounds
