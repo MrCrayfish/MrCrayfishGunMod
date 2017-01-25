@@ -4,7 +4,7 @@
         "0": "blocks/anvil_base",
         "1": "blocks/iron_bars",
         "2": "blocks/quartz_block_top",
-        "3": "blocks/glass"
+        "3": "cgm:blocks/clear_glass"
     },
     "display": {
 		"thirdperson_righthand": {
