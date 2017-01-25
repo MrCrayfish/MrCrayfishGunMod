@@ -175,7 +175,7 @@ public class EntityBullet extends Entity
 	@Override
 	public boolean shouldRenderInPass(int pass) 
 	{
-		return true;
+		return false;
 	}
 
 	@Override

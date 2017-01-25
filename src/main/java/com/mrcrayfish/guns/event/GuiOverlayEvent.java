@@ -64,8 +64,8 @@ public class GuiOverlayEvent
 			
 			if(canZoom)
 			{
-				Minecraft.getMinecraft().player.prevCameraYaw = 0.02F;
-				Minecraft.getMinecraft().player.cameraYaw = 0.02F;
+				Minecraft.getMinecraft().player.prevCameraYaw = 0.0F;
+				Minecraft.getMinecraft().player.cameraYaw = 0.0F;
 				
 				if(zoomProgress < ZOOM_TICKS)
 				{
@@ -91,13 +91,14 @@ public class GuiOverlayEvent
 
 		if(realProgress > 0)
 		{
+			System.out.println(realProgress + " " + event.getPartialTicks());
 			if(event.getItemStack().getItem() instanceof ItemGun)
 			{
 				ItemGun gun = (ItemGun) event.getItemStack().getItem();
 
 				if(event.getHand() == EnumHand.MAIN_HAND)
 				{
-					GlStateManager.translate(-0.685 * realProgress, gun.getGun().display.zoomYOffset * realProgress, -0.5 * realProgress);
+					GlStateManager.translate(-0.6861 * realProgress, gun.getGun().display.zoomYOffset * realProgress, gun.getGun().display.zoomZOffset * realProgress);
 				}
 			}
 			if(event.getHand() == EnumHand.OFF_HAND)

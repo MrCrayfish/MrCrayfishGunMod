@@ -17,6 +17,7 @@
 		"display": {
 			"zoomFovModifier": 0.7,
 			"zoomYOffset": 0.2,
+			"zoomZOffset": -0.2,
 			"zoomSmooth": false
 		}
     },
@@ -37,7 +38,8 @@
 		},
 		"display": {
 			"zoomFovModifier": 0.1,
-			"zoomYOffset": 0.2,
+			"zoomYOffset": 0.11,
+			"zoomZOffset": 0.6,
 			"zoomSmooth": true
 		}
     }

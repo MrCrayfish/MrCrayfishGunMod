@@ -86,6 +86,7 @@ public class ModGuns
 		{
 			public float zoomFovModifier;
 			public double zoomYOffset;
+			public double zoomZOffset;
 			public boolean zoomSmooth;
 		}
 	}
