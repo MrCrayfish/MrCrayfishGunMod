@@ -39,7 +39,7 @@
 		"display": {
 			"zoomFovModifier": 0.1,
 			"zoomYOffset": 0.11,
-			"zoomZOffset": 0.6,
+			"zoomZOffset": 0.7,
 			"zoomSmooth": true
 		}
     }
