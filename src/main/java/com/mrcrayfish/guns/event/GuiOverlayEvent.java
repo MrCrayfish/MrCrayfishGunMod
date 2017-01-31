@@ -3,12 +3,15 @@ package com.mrcrayfish.guns.event;
 import com.mrcrayfish.guns.item.ItemGun;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -91,7 +94,6 @@ public class GuiOverlayEvent
 
 		if(realProgress > 0)
 		{
-			System.out.println(realProgress + " " + event.getPartialTicks());
 			if(event.getItemStack().getItem() instanceof ItemGun)
 			{
 				ItemGun gun = (ItemGun) event.getItemStack().getItem();
@@ -106,5 +108,13 @@ public class GuiOverlayEvent
 				GlStateManager.translate(0.0, -2 * realProgress, 0.0);
 			}
 		}
+	}
+	
+	@SubscribeEvent
+	public void onRenderPlayer(RenderPlayerEvent.Pre event)
+	{
+		System.out.println("Called?");
+		GlStateManager.translate(0, 0.5, 0);
+		event.getRenderer().renderRightArm((AbstractClientPlayer) event.getEntityPlayer());
 	}
 }
