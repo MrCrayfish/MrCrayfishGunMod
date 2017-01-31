@@ -1,4 +1,26 @@
 [
+	{
+        "id": "handgun",
+		"properties": {
+			"damage": 5.0,
+			"spread": 0.2,
+			"speed": 10.0,
+			"life": 5,
+			"damageReduceOverLife": true,
+			"damageReduceIfNotZoomed": false
+		},
+        "sounds": {
+			"fire": "sniper_fire",
+			"reload": "shotgun_fire",
+			"cock": "shotgun_fire"
+		},
+		"display": {
+			"zoomFovModifier": 0.7,
+			"zoomYOffset": 0.2,
+			"zoomZOffset": -0.4,
+			"zoomSmooth": false
+		}
+    },
     {
         "id": "shotgun",
 		"properties": {
