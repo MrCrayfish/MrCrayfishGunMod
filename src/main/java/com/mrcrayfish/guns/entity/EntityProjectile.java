@@ -6,12 +6,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.mrcrayfish.guns.init.ModGuns.Gun;
+import com.mrcrayfish.guns.object.Gun.Projectile;
+import com.mrcrayfish.guns.object.Gun.Projectile.Type;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockPane;
-import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -21,11 +22,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityBullet extends Entity
+public class EntityProjectile extends Entity implements IEntityAdditionalSpawnData
 {
 	private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(new Predicate[] {EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, new Predicate<Entity>()
     {
@@ -35,26 +39,29 @@ public class EntityBullet extends Entity
         }
     }});
 	
+	private int shooterId;
 	private EntityLivingBase shooter;
-	private Gun gun;
+	private Projectile projectile;
 	
-	public EntityBullet(World worldIn) 
+	public EntityProjectile(World worldIn) 
 	{
 		super(worldIn);
+		this.setSize(0.25F, 0.25F);
 	}
 	
-	public EntityBullet(World worldIn, EntityLivingBase shooter, Gun gun)
+	public EntityProjectile(World worldIn, EntityLivingBase shooter, Projectile projectile)
     {
-        super(worldIn);
+        this(worldIn);
+        this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
-        this.gun = gun;
-        this.setSize(gun.properties.spread, gun.properties.spread);
+        this.projectile = projectile;
+        this.setSize(projectile.spread, projectile.spread);
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D, shooter.posZ);
 
         Vec3d dir = shooter.getLookVec();
-        this.motionX = dir.xCoord * gun.properties.speed + shooter.motionX;
-        this.motionY = dir.yCoord * gun.properties.speed;
-        this.motionZ = dir.zCoord * gun.properties.speed + shooter.motionZ;
+        this.motionX = dir.xCoord * projectile.speed + shooter.motionX;
+        this.motionY = dir.yCoord * projectile.speed;
+        this.motionZ = dir.zCoord * projectile.speed + shooter.motionZ;
     }
 	
 	@Override
@@ -62,7 +69,7 @@ public class EntityBullet extends Entity
 	{
 		super.onUpdate();
 		
-		if(!world.isRemote)
+		//if(!worldObj.isRemote)
 		{
 			Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
 			Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
@@ -92,7 +99,7 @@ public class EntityBullet extends Entity
 				}
 			}
 	
-			if (raytraceresult != null) 
+			if (raytraceresult != null && !world.isRemote) 
 			{
 				this.onHit(raytraceresult);
 			}
@@ -103,7 +110,12 @@ public class EntityBullet extends Entity
 			
 			this.setPosition(this.posX, this.posY, this.posZ);
 			
-			if(this.ticksExisted >= this.gun.properties.life) this.setDead();
+			if(this.projectile.gravity)
+			{
+				this.motionY -= 0.05;
+			}
+			
+			if(this.ticksExisted >= this.projectile.life) this.setDead();
 		}
 	}
 	
@@ -145,20 +157,31 @@ public class EntityBullet extends Entity
 
 		if(entity != null)
 		{
-			if(entity == shooter) return;
-			float damage = this.gun.properties.damage;
-			if(this.gun.properties.damageReduceOverLife)
+			if(entity.getEntityId() == this.shooterId) return;
+			float damage = this.projectile.damage;
+			if(this.projectile.damageReduceOverLife)
 			{
-				float percent = ((float) this.gun.properties.life - (float) this.ticksExisted) / (float) this.gun.properties.life;
-				damage = this.gun.properties.damage * percent + this.gun.properties.damage / this.gun.properties.life;
+				float percent = ((float) this.projectile.life - (float) this.ticksExisted) / (float) this.projectile.life;
+				damage = this.projectile.damage * percent + this.projectile.damage / this.projectile.life;
 			}
-			entity.attackEntityFrom(DamageSource.ANVIL, damage);
+			
+			switch(projectile.type)
+			{
+			case BULLET:
+				entity.attackEntityFrom(DamageSource.ANVIL, damage);
+				break;
+			case GRENADE:
+				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 5F, true);
+				break;
+			}
+			
 			this.setDead();
 			return;
 		}
 		
 		if(raytraceResultIn.getBlockPos() != null)
 		{
+			BlockPos pos = raytraceResultIn.getBlockPos();
 			IBlockState state = world.getBlockState(raytraceResultIn.getBlockPos());
 			Block block = state.getBlock();
 			if((block instanceof BlockBreakable || block instanceof BlockPane) && state.getMaterial() == Material.GLASS)
@@ -169,21 +192,51 @@ public class EntityBullet extends Entity
 			{
 				this.setDead();
 			}
+			
+			if(projectile.type == Type.GRENADE)
+			{
+				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 5F, true);
+			}
 		}
     }
 	
 	@Override
 	public boolean shouldRenderInPass(int pass) 
 	{
-		return false;
+		return this.projectile.visible;
 	}
 
 	@Override
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound compound) {}
+	protected void readEntityFromNBT(NBTTagCompound compound) 
+	{
+		this.projectile = new Projectile();
+		this.projectile.deserializeNBT(compound.getCompoundTag("projectile"));
+	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound compound) {}
+	protected void writeEntityToNBT(NBTTagCompound compound) 
+	{
+		compound.setTag("projectile", this.projectile.serializeNBT());
+	}
+
+	@Override
+	public void writeSpawnData(ByteBuf buffer) 
+	{
+		ByteBufUtils.writeTag(buffer, this.projectile.serializeNBT());
+		buffer.writeInt(this.shooterId);
+	}
+
+	@Override
+	public void readSpawnData(ByteBuf additionalData) 
+	{
+		if(this.projectile == null) 
+		{
+			this.projectile = new Projectile();
+		}
+		this.projectile.deserializeNBT(ByteBufUtils.readTag(additionalData));
+		this.shooterId = additionalData.readInt();
+	}
 }

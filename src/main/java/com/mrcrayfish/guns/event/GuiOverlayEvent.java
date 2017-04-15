@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,14 +14,16 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class GuiOverlayEvent 
 {
-	private static final double ZOOM_TICKS = 30;
+	private static final double ZOOM_TICKS = 8;
 	
 	private boolean canZoom = false;
 	private int zoomProgress;
@@ -31,19 +34,23 @@ public class GuiOverlayEvent
 	@SubscribeEvent
 	public void onFovUpdate(FOVUpdateEvent event)
 	{
-		Item item = Minecraft.getMinecraft().player.getHeldItemMainhand().getItem();
-		if(item instanceof ItemGun)
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.player.getHeldItemMainhand() != null)
 		{
-			ItemGun gun = (ItemGun) item;
-			if(canZoom)
+			Item item = mc.player.getHeldItemMainhand().getItem();
+			if(item instanceof ItemGun)
 			{
-				Minecraft.getMinecraft().gameSettings.smoothCamera = gun.getGun().display.zoomSmooth;
-				event.setNewfov(gun.getGun().display.zoomFovModifier);
-			}
-			else
-			{
-				Minecraft.getMinecraft().gameSettings.smoothCamera = false;
-				event.setNewfov(1.0F);
+				ItemGun gun = (ItemGun) item;
+				if(canZoom)
+				{
+					mc.gameSettings.smoothCamera = gun.getGun().display.zoomSmooth;
+					event.setNewfov(gun.getGun().display.zoomFovModifier);
+				}
+				else
+				{
+					mc.gameSettings.smoothCamera = false;
+					event.setNewfov(1.0F);
+				}
 			}
 		}
 	}
@@ -51,36 +58,39 @@ public class GuiOverlayEvent
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event)
 	{
-		ItemStack stack = Minecraft.getMinecraft().player.getHeldItemMainhand();
-		canZoom = GuiScreen.isAltKeyDown() && stack.getItem() instanceof ItemGun;
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.player.getHeldItemMainhand() != null)
+		{
+			ItemStack stack = mc.player.getHeldItemMainhand();
+			canZoom = GuiScreen.isAltKeyDown() && stack.getItem() instanceof ItemGun;
+		}
 	}
 	
 	@SubscribeEvent
-	public void onTick(TickEvent event)
+	public void onTick(TickEvent.ClientTickEvent event)
 	{
-		if(event.phase == Phase.START)
+		lastZoomProgress = zoomProgress;
+		
+		if(Minecraft.getMinecraft().player != null && !(Minecraft.getMinecraft().player.getHeldItemMainhand() != null && Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ItemGun))
 		{
-			if(Minecraft.getMinecraft().player != null && !(Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ItemGun))
-			{
-				canZoom = false;
-			}
+			canZoom = false;
+		}
+		
+		if(canZoom)
+		{
+			Minecraft.getMinecraft().player.prevCameraYaw = 0.02F;
+			Minecraft.getMinecraft().player.cameraYaw = 0.02F;
 			
-			if(canZoom)
+			if(zoomProgress < ZOOM_TICKS)
 			{
-				Minecraft.getMinecraft().player.prevCameraYaw = 0.0F;
-				Minecraft.getMinecraft().player.cameraYaw = 0.0F;
-				
-				if(zoomProgress < ZOOM_TICKS)
-				{
-					zoomProgress++;
-				}
+				zoomProgress++;
 			}
-			else
+		}
+		else
+		{
+			if(zoomProgress > 0)
 			{
-				if(zoomProgress > 0)
-				{
-					zoomProgress--;
-				}
+				zoomProgress--;
 			}
 		}
 	}
@@ -88,19 +98,17 @@ public class GuiOverlayEvent
 	@SubscribeEvent
 	public void onRenderOverlay(RenderSpecificHandEvent event)
 	{
-		lastZoomProgress = zoomProgress;
-		
-		realProgress = (zoomProgress + (zoomProgress == 0 || zoomProgress == ZOOM_TICKS ?  0 : event.getPartialTicks())) / ZOOM_TICKS;
+		realProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
 
 		if(realProgress > 0)
 		{
-			if(event.getItemStack().getItem() instanceof ItemGun)
+			if(event.getItemStack() != null && event.getItemStack().getItem() instanceof ItemGun)
 			{
 				ItemGun gun = (ItemGun) event.getItemStack().getItem();
 
 				if(event.getHand() == EnumHand.MAIN_HAND)
 				{
-					GlStateManager.translate(-0.6861 * realProgress, gun.getGun().display.zoomYOffset * realProgress, gun.getGun().display.zoomZOffset * realProgress);
+					GlStateManager.translate(-0.3415 * realProgress, gun.getGun().display.zoomYOffset * realProgress, gun.getGun().display.zoomZOffset * realProgress);
 				}
 			}
 			if(event.getHand() == EnumHand.OFF_HAND)
@@ -111,10 +119,24 @@ public class GuiOverlayEvent
 	}
 	
 	@SubscribeEvent
-	public void onRenderPlayer(RenderPlayerEvent.Pre event)
+	public void onPlayerInteract(PlayerInteractEvent.RightClickItem event)
 	{
-		System.out.println("Called?");
-		GlStateManager.translate(0, 0.5, 0);
-		event.getRenderer().renderRightArm((AbstractClientPlayer) event.getEntityPlayer());
+		if(event.getItemStack().getItem() instanceof ItemGun)
+		{
+			switch(event.getHand())
+			{
+			case MAIN_HAND:
+				ReflectionHelper.setPrivateValue(ItemRenderer.class, Minecraft.getMinecraft().getItemRenderer(), 1F, "equippedProgressMainHand");
+				ReflectionHelper.setPrivateValue(ItemRenderer.class, Minecraft.getMinecraft().getItemRenderer(), 1F, "prevEquippedProgressMainHand");
+				break;
+			case OFF_HAND:
+				ReflectionHelper.setPrivateValue(ItemRenderer.class, Minecraft.getMinecraft().getItemRenderer(), 1F, "equippedProgressOffHand");
+				ReflectionHelper.setPrivateValue(ItemRenderer.class, Minecraft.getMinecraft().getItemRenderer(), 1F, "prevEquippedProgressOffHand");
+				break;
+			default:
+				break;
+			
+			}
+		}
 	}
 }

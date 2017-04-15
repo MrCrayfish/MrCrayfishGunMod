@@ -1,33 +1,39 @@
 [
 	{
         "id": "handgun",
-		"properties": {
+		"projectile": {
+			"type": "bullet",
+			"visible": false,
 			"damage": 5.0,
 			"spread": 0.2,
 			"speed": 10.0,
 			"life": 5,
+			"gravity": false,
 			"damageReduceOverLife": true,
 			"damageReduceIfNotZoomed": false
 		},
         "sounds": {
-			"fire": "sniper_fire",
+			"fire": "pistol_fire",
 			"reload": "shotgun_fire",
 			"cock": "shotgun_fire"
 		},
 		"display": {
 			"zoomFovModifier": 0.7,
-			"zoomYOffset": 0.2,
-			"zoomZOffset": -0.4,
+			"zoomYOffset": 0.14,
+			"zoomZOffset": 0,
 			"zoomSmooth": false
 		}
     },
     {
         "id": "shotgun",
-		"properties": {
+		"projectile": {
+			"type": "bullet",
+			"visible": false,
 			"damage": 15.0,
 			"spread": 1.0,
 			"speed": 10.0,
 			"life": 3,
+			"gravity": false,
 			"damageReduceOverLife": true,
 			"damageReduceIfNotZoomed": false
 		},
@@ -38,18 +44,21 @@
 		},
 		"display": {
 			"zoomFovModifier": 0.7,
-			"zoomYOffset": 0.2,
-			"zoomZOffset": -0.2,
+			"zoomYOffset": 0.14,
+			"zoomZOffset": 0,
 			"zoomSmooth": false
 		}
     },
 	{
         "id": "sniper_rifle",
-		"properties": {
+		"projectile": {
+			"type": "bullet",
+			"visible": false,
 			"damage": 20.0,
 			"spread": 0.2,
 			"speed": 20.0,
 			"life": 5,
+			"gravity": false,
 			"damageReduceOverLife": false,
 			"damageReduceIfNotZoomed": true
 		},
@@ -63,6 +72,31 @@
 			"zoomYOffset": 0.11,
 			"zoomZOffset": 0.7,
 			"zoomSmooth": true
+		}
+    },
+	{
+        "id": "grenade_launcher",
+		"projectile": {
+			"type": "grenade",
+			"visible": true,
+			"damage": 30.0,
+			"spread": 0.2,
+			"speed": 1,
+			"life": 50,
+			"gravity": true,
+			"damageReduceOverLife": true,
+			"damageReduceIfNotZoomed": false
+		},
+        "sounds": {
+			"fire": "grenade_fire",
+			"reload": "shotgun_fire",
+			"cock": "shotgun_fire"
+		},
+		"display": {
+			"zoomFovModifier": 0.7,
+			"zoomYOffset": 0.14,
+			"zoomZOffset": 0,
+			"zoomSmooth": false
 		}
     }
 ]

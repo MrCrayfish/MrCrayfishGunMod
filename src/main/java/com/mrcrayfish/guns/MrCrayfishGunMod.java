@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns;
 
-import com.mrcrayfish.guns.entity.EntityBullet;
+import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.event.GuiOverlayEvent;
 import com.mrcrayfish.guns.init.ModCrafting;
 import com.mrcrayfish.guns.init.ModGuns;
@@ -33,15 +33,15 @@ public class MrCrayfishGunMod
 		ModGuns.register();
 		ModSounds.register();
 		ModCrafting.init();
+		
+		proxy.preInit();
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
+		EntityRegistry.registerModEntity(new ResourceLocation("cgm:projectile"), EntityProjectile.class, "cgmProjectile", 0, this, 64, 80, true);
+		
 		proxy.init();
-		
-		EntityRegistry.registerModEntity(new ResourceLocation("cgm:bullet"), EntityBullet.class, "cfmBullet", 0, this, 64, 80, true);
-		
-		MinecraftForge.EVENT_BUS.register(new GuiOverlayEvent());
 	}
 }

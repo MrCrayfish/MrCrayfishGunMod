@@ -1,5 +1,119 @@
 Changelog:
-Build 2203:
+Build 2228:
+	diesieben07:
+		Fix some cases where world time is not passed through the WorldProvider.
+		(#3685)
+
+Build 1.11.2-13.20.0.2227:
+	lukas.tenbrink:
+		Replace listSubtypes with listSupertypes to match the intended behavior.
+		(#3564)
+	lukas.tenbrink: Fix addTypes not adding in the base types. (#3681)
+
+Build 1.11.2-13.20.0.2226:
+	goto.minecraft: this finaly fixes #2866 (#3656)
+
+Build 1.11.2-13.20.0.2225:
+	williewillus: Fix MC-111753 (#3655)
+
+Build 1.11.2-13.20.0.2224:
+	fry: Small bugfix in lighting logic.
+	fry:
+		Fix default missing model zoom text not being set to false on all
+		places.
+
+Build 1.11.2-13.20.0.2223:
+	fry: Added the variant name to the missing model. (#3328)
+
+Build 1.11.2-13.20.0.2222:
+	tehgeek: Fix #3635 MC-103403 fix ingredient count for ingot block recipes (#3640)
+
+Build 1.10.2-12.18.3.2221:
+	LexManos:
+		Cache entity constructors for a small performance optimization
+		(cherry picked from commit 50bf03b82b72866bd54e796a37707d45bcbf3d80)
+	LexManos:
+		New client config option to force all chunk rendering off the main
+		thread. This may help FPS issues, but may also result in world
+		holes/rendering issues. Also fix Forge configs not saving properly.
+		(cherry picked from commit 7da6c2d0e1b0056e520990d78f63a9be8d0db5ed)
+
+Build 1.11.2-13.20.0.2220:
+	LexManos:
+		New client config option to force all chunk rendering off the main
+		thread. This may help FPS issues, but may also result in world
+		holes/rendering issues. Also fix Forge configs not saving properly.
+
+Build 1.10.2-12.18.3.2219:
+	tehgeek: Skip first baking in ModelLoader (#3621) (#3638)
+
+Build 1.11.2-13.20.0.2218:
+	LexManos: Cache entity constructors for a small performance optimization
+
+Build 1.10.2-12.18.3.2217:
+	tehgeek:
+		Fix some resources that are never closed, close in a finally block
+		(#3637)
+
+Build 1.11.2-13.20.0.2216:
+	cpw:
+		Bypass forge chunk cache if it's configuratively disabled
+		(cherry picked from commit 9fe6385)
+
+Build 1.10.2-12.18.3.2215:
+	cpw: Bypass forge chunk cache if it's configuratively disabled
+
+Build 1.11.2-13.20.0.2214:
+	Choonster.2010:
+		Fix Biome#getSpawnableList returning an empty list for non-vanilla
+		EnumCreatureTypes (#3611)
+
+Build 1.11.2-13.20.0.2213:
+	williewillus: Skip first baking in ModelLoader (#3621)
+
+Build 1.11.2-13.20.0.2211:
+	diesieben07: Allow block to specify their type for AI pathfinding (#3546)
+
+Build 1.11.2-13.20.0.2210:
+	ichttt: Fix #3576 Unnecessary warning about totem being renamed (#3614)
+	liach: Removed an unsafe usage of `EntityMinecart.getType()` (#3592)
+	bs2609: Fix DungeonHooks method to use correct type (#3587)
+	bs2609: Fix ContainerRepair patch to prevent NPE (#3553)
+	modmuss50: Add Iron Nugget to OreDictionary (#3571)
+	JDLogic: Add missing patch to ItemStack isItemStackEqual (#3577)
+	tehgeek: Improve performance of inserting into inventory wrappers (#3622)
+	bs2609: Fix vanilla bug MC-98707 (#3565)
+
+Build 1.10.2-12.18.3.2209:
+	JDLogic:
+		[1.10.x] Fix ItemHandlerHelper canStack methods not checking
+		capabilities (#3105)
+
+Build 1.11.2-13.20.0.2208:
+	molecularphylo: Fix null check in BrewingRecipeRegistry (#3584)
+	williewillus: Fix IItemHandler's IStorage using nulls (#3580)
+	bs2609: Fix and clean up ItemBow.onPlayerStoppedUsing() patch (#3555)
+	bs2609: Small cleanup for PlayerInteractEvent (#3563)
+	tehgeek: Clean up null issues, add more annotations (#3590)
+	tehgeek: Fix #3596 Close jar sources safely in Java 6 (#3597)
+	williewillus: Fix milk not working on anything at all (#3574)
+
+Build 1.11.2-13.20.0.2207:
+	tehgeek: Use travis_wait to extend the timeout on gradlew build (#3610)
+	bs2609: Fix a couple more ItemStack null checks (#3586)
+
+Build 1.11.2-13.20.0.2206:
+	fry:
+		Fix super call to ItemOverrideList constructor inside
+		AnimationItemOverrideList, fixes #3264.
+
+Build 1.11.2-13.20.0.2205:
+	fry: Added caching for baked vanilla models, fixes #3594.
+
+Build 1.11.2-13.20.0.2204:
+	williewillus: Fix horse cap patch being reapplied in the wrong place (#3609)
+
+Build 1.11.2-13.20.0.2203:
 	tehgeek:
 		Add .travis.yml (#3598)
 		* Add .travis.yml

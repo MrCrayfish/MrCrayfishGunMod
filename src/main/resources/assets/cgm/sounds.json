@@ -1,4 +1,6 @@
 {
    "shotgun_fire": { "category": "player", "sounds": [{ "name": "cgm:shotgun_fire", "stream": false }]},
-   "sniper_fire": { "category": "player", "sounds": [{ "name": "cgm:sniper_fire", "stream": false }]}
+   "sniper_fire": { "category": "player", "sounds": [{ "name": "cgm:sniper_fire", "stream": false }]},
+   "pistol_fire": { "category": "player", "sounds": [{ "name": "cgm:pistol_fire", "stream": false }]},
+   "grenade_fire": { "category": "player", "sounds": [{ "name": "cgm:grenade_fire", "stream": false }]}
 }

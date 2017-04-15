@@ -1,16 +1,13 @@
 package com.mrcrayfish.guns.init;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import com.mrcrayfish.guns.init.ModGuns.Gun;
 import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.object.Gun;
 
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;

@@ -1,24 +1,20 @@
 package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.MrCrayfishGunMod;
-import com.mrcrayfish.guns.entity.EntityBullet;
+import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.init.ModGuns.Gun;
 import com.mrcrayfish.guns.init.ModSounds;
+import com.mrcrayfish.guns.object.Gun;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityEgg;
-import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class ItemGun extends Item 
@@ -47,14 +43,14 @@ public class ItemGun extends Item
 	
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) 
-	{
+	{	
 		ItemStack stack = this.findAmmo(playerIn);
-		if(stack != ItemStack.EMPTY || playerIn.capabilities.isCreativeMode)
+		if(stack != null || playerIn.capabilities.isCreativeMode)
 		{
 			worldIn.playSound(playerIn, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
 			if(!worldIn.isRemote)
 			{
-				EntityBullet bullet = new EntityBullet(worldIn, playerIn, gun);
+				EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
 				worldIn.spawnEntity(bullet);
 			}
 			else
@@ -66,7 +62,7 @@ public class ItemGun extends Item
 			{
 				stack.shrink(1);
 				
-				if (stack.isEmpty())
+				if (stack.getCount() == 0)
 	            {
 					playerIn.inventory.deleteStack(stack);
 	            }	
@@ -76,7 +72,7 @@ public class ItemGun extends Item
 		{
 			worldIn.playSound((EntityPlayer)null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
 		}
-		return super.onItemRightClick(worldIn, playerIn, handIn);
+		return new ActionResult<ItemStack>(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
 	}
 	
 	private ItemStack findAmmo(EntityPlayer player)
@@ -101,12 +97,13 @@ public class ItemGun extends Item
                 }
             }
 
-            return ItemStack.EMPTY;
+            return null;
         }
     }
 	
 	protected boolean isAmmo(ItemStack stack)
     {
-        return stack.getItem() == ModGuns.shotgun_ammo;
+        return stack != null && stack.getItem() == ModGuns.shotgun_ammo;
     }
+	
 }
