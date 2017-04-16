@@ -29,7 +29,7 @@
 		},
 		"fixed": {
 			"rotation": [ 0, 180, 0 ],
-			"translation": [ 0, 0, 0 ],
+			"translation": [ 0, 0, -0.25 ],
 			"scale": [ 2, 2, 2 ]
 		},
 		"firstperson_righthand": {

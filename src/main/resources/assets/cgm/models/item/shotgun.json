@@ -14,13 +14,13 @@
         "ground": {
             "rotation": [ 0, 0, 0 ],
             "translation": [ 0, 3, 0 ],
-            "scale": [ 0.25, 0.25, 0.25 ]
+            "scale": [ 1, 1, 1 ]
         },
         "fixed": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.5, 0.5, 0.5 ]
-        },
+			"rotation": [ 0, 90, 0 ],
+			"translation": [ -0.5, 10, 0 ],
+			"scale": [ 2, 2, 2 ]
+		},
         "thirdperson_righthand": {
             "rotation": [ 25, 0, 0 ],
             "translation": [ 0, 7, -1 ],
