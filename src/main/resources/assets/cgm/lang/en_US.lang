@@ -1,6 +1,7 @@
+item.handgun.name=Pistol
 item.shotgun.name=Shotgun
 item.sniper_rifle.name=Sniper Rifle
-item.grenade_launcher.name=Sniper Rifle
-item.shotgun_ammo.name=Shotgun Ammo
+item.grenade_launcher.name=Grenade Launcher
+item.shotgun_ammo.name=Shotgun Shell
 
 itemGroup.tabCGM=MrCrayfish's Gun Mod
