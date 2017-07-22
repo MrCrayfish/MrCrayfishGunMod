@@ -55,13 +55,14 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
         this.projectile = projectile;
-        this.setSize(projectile.spread, projectile.spread);
-        this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D, shooter.posZ);
 
-        Vec3d dir = shooter.getLookVec();
+		Vec3d dir = shooter.getLookVec();
         this.motionX = dir.xCoord * projectile.speed + shooter.motionX;
         this.motionY = dir.yCoord * projectile.speed;
         this.motionZ = dir.zCoord * projectile.speed + shooter.motionZ;
+
+		this.setSize(projectile.spread, projectile.spread);
+		this.setPosition(shooter.posX + dir.xCoord, shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D + dir.yCoord, shooter.posZ + dir.zCoord);
     }
 	
 	@Override
