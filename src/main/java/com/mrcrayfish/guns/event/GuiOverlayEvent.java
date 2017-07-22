@@ -95,6 +95,15 @@ public class GuiOverlayEvent
 			}
 		}
 	}
+
+	@SubscribeEvent
+	public void onRenderOverlay(RenderGameOverlayEvent event)
+	{
+		if(realProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+		{
+			event.setCanceled(true);
+		}
+	}
 	
 	@SubscribeEvent
 	public void onRenderOverlay(RenderSpecificHandEvent event)
