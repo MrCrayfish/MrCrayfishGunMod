@@ -102,6 +102,31 @@
 			"zoomZOffset": 0,
 			"zoomSmooth": false
 		}
-    }
+    },
+	{
+		"id": "bazooka",
+		"projectile": {
+			"type": "grenade",
+			"visible": true,
+			"damage": 30.0,
+			"spread": 0.2,
+			"speed": 1,
+			"life": 50,
+			"gravity": true,
+			"damageReduceOverLife": true,
+			"damageReduceIfNotZoomed": false
+		},
+		"sounds": {
+			"fire": "grenade_fire",
+			"reload": "shotgun_fire",
+			"cock": "shotgun_fire"
+		},
+		"display": {
+			"zoomFovModifier": 0.7,
+			"zoomXOffset": 0.181,
+			"zoomYOffset": 0.18,
+			"zoomZOffset": 0.8,
+			"zoomSmooth": true
+		}
 	}
 ]
