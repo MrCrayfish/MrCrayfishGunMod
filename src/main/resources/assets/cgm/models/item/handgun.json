@@ -8,8 +8,8 @@
     "display": {
         "gui": {
             "rotation": [ 30, 225, 0 ],
-            "translation": [ 0, 1, 0 ],
-            "scale": [ 0.8, 0.8, 0.8 ]
+            "translation": [ 5, 3, 0 ],
+            "scale": [ 1.5, 1.5, 1.5 ]
         },
         "ground": {
             "rotation": [ 0, 0, 0 ],
@@ -76,7 +76,7 @@
             "name": "Cube",
             "from": [ 7.40, 0.30, 14.00 ], 
             "to": [ 8.60, 4.30, 15.50 ], 
-            "rotation": { "origin": [ 8.0, 4.500000007450581, 15.0 ], "axis": "x", "angle": -22.5 },
+            "rotation": { "origin": [ 8.0, 4.5, 15.0 ], "axis": "x", "angle": -22.5 },
             "faces": {
                 "north": { "texture": "#1", "uv": [ 0.00, 0.00, 1.20, 2.20 ] },
                 "east": { "texture": "#1", "uv": [ 0.00, 0.00, 1.50, 4.00 ] },

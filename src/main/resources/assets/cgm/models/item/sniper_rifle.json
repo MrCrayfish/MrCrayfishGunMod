@@ -37,11 +37,11 @@
 			"translation": [ 2.75, 2, 0 ],
 			"scale": [ 1.5, 1.5, 1.5 ]
 		},
-		"gui": {
-			"rotation": [ 20, 35, 30 ],
-			"translation": [ -0.75, -0.75, 0 ],
-			"scale": [ 0.75, 0.75, 0.75 ]
-		}
+        "gui": {
+            "rotation": [ 30, 315, 0 ],
+            "translation": [ -1, 0, 0 ],
+            "scale": [ 0.6, 0.6, 0.6 ]
+        }
 	},
     "elements": [
         {
