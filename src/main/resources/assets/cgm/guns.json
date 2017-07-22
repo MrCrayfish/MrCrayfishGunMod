@@ -19,6 +19,7 @@
 		},
 		"display": {
 			"zoomFovModifier": 0.7,
+			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
 			"zoomZOffset": 0,
 			"zoomSmooth": false
@@ -44,6 +45,7 @@
 		},
 		"display": {
 			"zoomFovModifier": 0.7,
+			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
 			"zoomZOffset": 0,
 			"zoomSmooth": false
@@ -69,6 +71,7 @@
 		},
 		"display": {
 			"zoomFovModifier": 0.1,
+			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.11,
 			"zoomZOffset": 0.7,
 			"zoomSmooth": true
@@ -94,9 +97,11 @@
 		},
 		"display": {
 			"zoomFovModifier": 0.7,
+			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
 			"zoomZOffset": 0,
 			"zoomSmooth": false
 		}
     }
+	}
 ]

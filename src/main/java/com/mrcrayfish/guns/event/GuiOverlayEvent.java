@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -79,8 +80,8 @@ public class GuiOverlayEvent
 		
 		if(canZoom)
 		{
-			Minecraft.getMinecraft().player.prevCameraYaw = 0.02F;
-			Minecraft.getMinecraft().player.cameraYaw = 0.02F;
+			Minecraft.getMinecraft().player.prevCameraYaw = 0.0075F;
+			Minecraft.getMinecraft().player.cameraYaw = 0.0075F;
 			
 			if(zoomProgress < ZOOM_TICKS)
 			{
@@ -118,7 +119,7 @@ public class GuiOverlayEvent
 
 				if(event.getHand() == EnumHand.MAIN_HAND)
 				{
-					GlStateManager.translate(-0.3415 * realProgress, gun.getGun().display.zoomYOffset * realProgress, gun.getGun().display.zoomZOffset * realProgress);
+					GlStateManager.translate((-0.3415 + gun.getGun().display.zoomXOffset) * realProgress, gun.getGun().display.zoomYOffset * realProgress, gun.getGun().display.zoomZOffset * realProgress);
 				}
 			}
 			if(event.getHand() == EnumHand.OFF_HAND)

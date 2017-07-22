@@ -73,6 +73,7 @@ public class Gun
 	public static class Display
 	{
 		public float zoomFovModifier;
+		public double zoomXOffset;
 		public double zoomYOffset;
 		public double zoomZOffset;
 		public boolean zoomSmooth;
