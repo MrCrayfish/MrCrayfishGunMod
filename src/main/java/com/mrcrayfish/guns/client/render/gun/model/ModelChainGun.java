@@ -34,10 +34,14 @@ public class ModelChainGun implements IGunModel
     @Override
     public void tick()
     {
+        lastRotation = rotation;
         if(Mouse.isButtonDown(1))
         {
-            lastRotation = rotation;
             rotation += 20;
+        }
+        else
+        {
+            rotation += 1;
         }
     }
 
@@ -48,14 +52,7 @@ public class ModelChainGun implements IGunModel
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.22, 0.1675, 0);
-        if(Mouse.isButtonDown(1))
-        {
-            GlStateManager.rotate(lastRotation + (rotation - lastRotation) * partialTicks, 0, 0, -1);
-        }
-        else
-        {
-            GlStateManager.rotate(rotation, 0, 0, -1);
-        }
+        GlStateManager.rotate(lastRotation + (rotation - lastRotation) * partialTicks, 0, 0, -1);
         GlStateManager.translate(0.22, -0.1675, 0);
         RenderUtil.renderModel(barrel);
         GlStateManager.popMatrix();
