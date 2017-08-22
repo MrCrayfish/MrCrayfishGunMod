@@ -4,11 +4,13 @@ import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -27,8 +29,7 @@ import org.lwjgl.input.Mouse;
 public class GuiOverlayEvent 
 {
 	private static final double ZOOM_TICKS = 8;
-	
-	private boolean canZoom = false;
+
 	private int zoomProgress;
 	private int lastZoomProgress;
 	private double realProgress;
@@ -44,7 +45,7 @@ public class GuiOverlayEvent
 			if(item instanceof ItemGun)
 			{
 				ItemGun gun = (ItemGun) item;
-				if(canZoom)
+				if(isZooming(Minecraft.getMinecraft().player))
 				{
 					mc.gameSettings.smoothCamera = gun.getGun().display.zoomSmooth;
 					event.setNewfov(gun.getGun().display.zoomFovModifier);
@@ -52,7 +53,6 @@ public class GuiOverlayEvent
 				else
 				{
 					mc.gameSettings.smoothCamera = false;
-					event.setNewfov(1.0F);
 				}
 			}
 		}
@@ -62,24 +62,15 @@ public class GuiOverlayEvent
 	public void onKeyInput(KeyInputEvent event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.player.getHeldItemMainhand() != null)
-		{
-			ItemStack stack = mc.player.getHeldItemMainhand();
-			canZoom = GuiScreen.isAltKeyDown() && stack.getItem() instanceof ItemGun;
-		}
+
 	}
 	
 	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent event)
 	{
 		lastZoomProgress = zoomProgress;
-		
-		if(Minecraft.getMinecraft().player != null && !(Minecraft.getMinecraft().player.getHeldItemMainhand() != null && Minecraft.getMinecraft().player.getHeldItemMainhand().getItem() instanceof ItemGun))
-		{
-			canZoom = false;
-		}
-		
-		if(canZoom)
+
+		if(isZooming(Minecraft.getMinecraft().player))
 		{
 			Minecraft.getMinecraft().player.prevCameraYaw = 0.0075F;
 			Minecraft.getMinecraft().player.cameraYaw = 0.0075F;
@@ -97,17 +88,14 @@ public class GuiOverlayEvent
 			}
 		}
 
-		if(Minecraft.getMinecraft().player != null && Mouse.isButtonDown(1))
+		if(Minecraft.getMinecraft().player != null)
 		{
 			ItemStack heldItem = Minecraft.getMinecraft().player.getHeldItemMainhand();
 			if(heldItem != null && heldItem.getItem() instanceof ItemGun)
 			{
 				ResourceLocation resource = Item.REGISTRY.getNameForObject(heldItem.getItem());
 				IGunModel model = ModelOverrides.getModel(resource);
-				if(model != null)
-				{
-					model.tick();
-				}
+				if(model != null) model.tick();
 			}
 		}
 	}
@@ -187,5 +175,19 @@ public class GuiOverlayEvent
 			
 			}
 		}
+	}
+
+	public boolean isZooming(EntityPlayer player)
+	{
+		if(player.getHeldItemMainhand() != ItemStack.EMPTY)
+		{
+			ItemStack stack = player.getHeldItemMainhand();
+			if(stack.getItem() instanceof ItemGun)
+			{
+				ItemGun item = (ItemGun) stack.getItem();
+				return item.getGun().display.canZoom && GuiScreen.isAltKeyDown();
+			}
+		}
+		return false;
 	}
 }

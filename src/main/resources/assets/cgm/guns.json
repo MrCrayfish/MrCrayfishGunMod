@@ -19,6 +19,7 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
+			"canZoom": true,
 			"zoomFovModifier": 0.7,
 			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
@@ -46,6 +47,7 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
+			"canZoom": true,
 			"zoomFovModifier": 0.7,
 			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
@@ -73,6 +75,7 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
+			"canZoom": true,
 			"zoomFovModifier": 0.1,
 			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.11,
@@ -100,11 +103,7 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"zoomFovModifier": 0.7,
-			"zoomXOffset": 0.0,
-			"zoomYOffset": 0.14,
-			"zoomZOffset": 0,
-			"zoomSmooth": false
+			"canZoom": false
 		}
     },
 	{
@@ -127,6 +126,7 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
+			"canZoom": true,
 			"zoomFovModifier": 0.4,
 			"zoomXOffset": 0.181,
 			"zoomYOffset": 0.18,
@@ -140,8 +140,8 @@
 			"type": "bullet",
 			"visible": false,
 			"auto": true,
-			"rate": 4,
-			"damage": 5.0,
+			"rate": 2,
+			"damage": 8.0,
 			"size": 0.2,
 			"speed": 10.0,
 			"life": 10,
@@ -155,11 +155,7 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"zoomFovModifier": 0.4,
-			"zoomXOffset": 0.181,
-			"zoomYOffset": 0.18,
-			"zoomZOffset": 0.8,
-			"zoomSmooth": true
+			"canZoom": false
 		}
 	}
 ]
