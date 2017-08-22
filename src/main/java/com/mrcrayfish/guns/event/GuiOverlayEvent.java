@@ -33,7 +33,7 @@ public class GuiOverlayEvent
 	private int zoomProgress;
 	private int lastZoomProgress;
 	private double realProgress;
-	private float originalFov;
+	private float lastEqiupProgress = 0F;
 
 	@SubscribeEvent
 	public void onFovUpdate(FOVUpdateEvent event)
@@ -140,6 +140,12 @@ public class GuiOverlayEvent
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.56F, -0.52F, -0.72F);
 
+			if(Math.abs(lastEqiupProgress - event.getEquipProgress()) < 0.2F)
+			{
+				GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
+				lastEqiupProgress = event.getEquipProgress();
+			}
+
 			ResourceLocation resource = Item.REGISTRY.getNameForObject(event.getItemStack().getItem());
 			IGunModel model = ModelOverrides.getModel(resource);
 			if(model != null)
@@ -177,9 +183,9 @@ public class GuiOverlayEvent
 		}
 	}
 
-	public boolean isZooming(EntityPlayer player)
+	private boolean isZooming(EntityPlayer player)
 	{
-		if(player.getHeldItemMainhand() != ItemStack.EMPTY)
+		if(player != null && player.getHeldItemMainhand() != ItemStack.EMPTY)
 		{
 			ItemStack stack = player.getHeldItemMainhand();
 			if(stack.getItem() instanceof ItemGun)
