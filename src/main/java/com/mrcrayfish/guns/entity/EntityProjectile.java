@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.object.Gun.Projectile;
 import com.mrcrayfish.guns.object.Gun.Projectile.Type;
 
@@ -18,14 +19,14 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -42,11 +43,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 	private int shooterId;
 	private EntityLivingBase shooter;
 	private Projectile projectile;
+	private ItemStack item = ItemStack.EMPTY;
 	
 	public EntityProjectile(World worldIn) 
 	{
 		super(worldIn);
-		this.setSize(0.25F, 0.25F);
 	}
 	
 	public EntityProjectile(World worldIn, EntityLivingBase shooter, Projectile projectile)
@@ -56,15 +57,31 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.shooter = shooter;
         this.projectile = projectile;
 
-		Vec3d dir = shooter.getLookVec();
+		Vec3d dir = shooter.getLook(0.0F);
         this.motionX = dir.xCoord * projectile.speed + shooter.motionX;
         this.motionY = dir.yCoord * projectile.speed;
         this.motionZ = dir.zCoord * projectile.speed + shooter.motionZ;
+		updateHeading();
 
-		this.setSize(projectile.spread, projectile.spread);
+		this.setSize(projectile.size, projectile.size);
 		this.setPosition(shooter.posX + dir.xCoord, shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D + dir.yCoord, shooter.posZ + dir.zCoord);
+
+		switch(projectile.type)
+		{
+			case GRENADE:
+				this.item = new ItemStack(ModGuns.grenade);
+				break;
+			case MISSILE:
+				this.item = new ItemStack(ModGuns.missile);
+				break;
+		}
     }
-	
+
+	public ItemStack getItem()
+	{
+		return item;
+	}
+
 	@Override
 	public void onUpdate() 
 	{
@@ -72,6 +89,21 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 		
 		//if(!worldObj.isRemote)
 		{
+			updateHeading();
+
+			if(projectile.type == Type.MISSILE)
+			{
+				for(int i = 5; i > 0; i--)
+				{
+					world.spawnParticle(EnumParticleTypes.CLOUD, true, this.posX - (this.motionX / i), this.posY - (this.motionY / i), this.posZ - (this.motionZ / i), 0, 0, 0);
+				}
+				if(world.rand.nextInt(2) == 0)
+				{
+					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, this.posX, this.posY, this.posZ, 0, 0, 0);
+					world.spawnParticle(EnumParticleTypes.FLAME, true, this.posX, this.posY, this.posZ, 0, 0, 0);
+				}
+			}
+
 			Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
 			Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 			RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
@@ -183,7 +215,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 		if(raytraceResultIn.getBlockPos() != null)
 		{
 			BlockPos pos = raytraceResultIn.getBlockPos();
-			IBlockState state = world.getBlockState(raytraceResultIn.getBlockPos());
+			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 			if((block instanceof BlockBreakable || block instanceof BlockPane) && state.getMaterial() == Material.GLASS)
 			{
@@ -197,6 +229,13 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			if(projectile.type == Type.GRENADE)
 			{
 				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 5F, true);
+			}
+
+			if(projectile.type == Type.MISSILE)
+			{
+				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 10F, true);
+				WorldServer worldServer = (WorldServer) world;
+				worldServer.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 0, 0.0, 0.0, 0.0, 0);
 			}
 		}
     }
@@ -228,6 +267,9 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 	{
 		ByteBufUtils.writeTag(buffer, this.projectile.serializeNBT());
 		buffer.writeInt(this.shooterId);
+		buffer.writeFloat(this.rotationYaw);
+		buffer.writeFloat(this.rotationPitch);
+		ByteBufUtils.writeItemStack(buffer, item);
 	}
 
 	@Override
@@ -239,5 +281,25 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 		}
 		this.projectile.deserializeNBT(ByteBufUtils.readTag(additionalData));
 		this.shooterId = additionalData.readInt();
+		this.rotationYaw = additionalData.readFloat();
+		this.prevRotationYaw = this.rotationYaw;
+		this.rotationPitch = additionalData.readFloat();
+		this.prevRotationPitch = this.rotationPitch;
+		this.item = ByteBufUtils.readItemStack(additionalData);
+	}
+
+	public void updateHeading()
+	{
+		float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
+		this.rotationYaw = (float)(MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
+		this.rotationPitch = (float)(MathHelper.atan2(this.motionY, (double)f) * (180D / Math.PI));
+		this.prevRotationYaw = this.rotationYaw;
+		this.prevRotationPitch = this.rotationPitch;
+	}
+
+
+	public Projectile getProjectile()
+	{
+		return projectile;
 	}
 }

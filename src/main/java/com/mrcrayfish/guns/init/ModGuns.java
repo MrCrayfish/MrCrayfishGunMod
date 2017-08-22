@@ -22,6 +22,7 @@ public class ModGuns
 	public static final List<ItemGun> GUNS = new ArrayList<ItemGun>();
 	public static Item shotgun_ammo;
 	public static Item grenade;
+	public static Item missile;
 	
 	public static void init()
 	{
@@ -34,6 +35,7 @@ public class ModGuns
 		}
 		shotgun_ammo = new Item().setUnlocalizedName("shotgun_ammo").setRegistryName("shotgun_ammo").setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 		grenade = new Item().setUnlocalizedName("grenade").setRegistryName("grenade").setCreativeTab(MrCrayfishGunMod.GUN_TAB);
+		missile = new Item().setUnlocalizedName("missile").setRegistryName("missile").setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 	}
 	
 	public static void register()
@@ -44,6 +46,7 @@ public class ModGuns
 		}
 		GameRegistry.register(shotgun_ammo);
 		GameRegistry.register(grenade);
+		GameRegistry.register(missile);
 	}
 	
 	public static void registerRenders()
