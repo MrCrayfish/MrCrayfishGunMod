@@ -47,23 +47,20 @@ public class ItemGun extends Item
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
+	public void onUsingTick(ItemStack stack, EntityLivingBase entity, int count)
 	{
 		if(!gun.projectile.auto)
 			return;
 
-		World world = ((EntityPlayer) player).world;
-		if(count % gun.projectile.rate == 0)
+		EntityPlayer player = (EntityPlayer) entity;
+		World world = player.world;
+
+		ItemStack ammo = this.findAmmo(player);
+		if(ammo != null || player.capabilities.isCreativeMode)
 		{
-			world.playSound((EntityPlayer) player, player.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
-			if(!world.isRemote)
+			if(count % gun.projectile.rate == 0)
 			{
-				EntityProjectile bullet = new EntityProjectile(world, player, gun.projectile);
-				world.spawnEntity(bullet);
-			}
-			else
-			{
-				player.rotationPitch -= 0.4f;
+				fire(world, player, ammo);
 			}
 		}
 	}
@@ -75,22 +72,9 @@ public class ItemGun extends Item
 		if(stack != null || playerIn.capabilities.isCreativeMode)
 		{
 			playerIn.setActiveHand(handIn);
-
-			worldIn.playSound(playerIn, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
-			if(!worldIn.isRemote)
+			if(!gun.projectile.auto)
 			{
-				EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
-				worldIn.spawnEntity(bullet);
-			}
-			
-			if(!playerIn.capabilities.isCreativeMode)
-			{
-				stack.shrink(1);
-				
-				if (stack.getCount() == 0)
-	            {
-					playerIn.inventory.deleteStack(stack);
-	            }	
+				fire(worldIn, playerIn, stack);
 			}
 		}
 		else
@@ -98,6 +82,33 @@ public class ItemGun extends Item
 			worldIn.playSound((EntityPlayer)null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+	}
+
+	private void fire(World worldIn, EntityPlayer playerIn, ItemStack ammo)
+	{
+		if(ammo != null || playerIn.capabilities.isCreativeMode)
+		{
+			worldIn.playSound(playerIn, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+			if(!worldIn.isRemote)
+			{
+				EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
+				worldIn.spawnEntity(bullet);
+			}
+			else
+			{
+				playerIn.rotationPitch -= 0.4f;
+			}
+
+			if(!playerIn.capabilities.isCreativeMode)
+			{
+				ammo.shrink(1);
+
+				if(ammo.getCount() == 0)
+				{
+					playerIn.inventory.deleteStack(ammo);
+				}
+			}
+		}
 	}
 	
 	private ItemStack findAmmo(EntityPlayer player)
