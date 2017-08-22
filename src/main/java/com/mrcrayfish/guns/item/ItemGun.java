@@ -88,7 +88,7 @@ public class ItemGun extends Item
 	{
 		if(ammo != null || playerIn.capabilities.isCreativeMode)
 		{
-			worldIn.playSound(playerIn, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+			worldIn.playSound((EntityPlayer)null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
 			if(!worldIn.isRemote)
 			{
 				EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
