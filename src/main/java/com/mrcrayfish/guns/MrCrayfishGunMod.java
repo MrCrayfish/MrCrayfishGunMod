@@ -1,22 +1,22 @@
 package com.mrcrayfish.guns;
 
+import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
+import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
-import com.mrcrayfish.guns.event.GuiOverlayEvent;
 import com.mrcrayfish.guns.init.ModCrafting;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.proxy.IProxy;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = Reference.MC_VERSION)
 public class MrCrayfishGunMod 
@@ -43,5 +43,14 @@ public class MrCrayfishGunMod
 		EntityRegistry.registerModEntity(new ResourceLocation("cgm:projectile"), EntityProjectile.class, "cgmProjectile", 0, this, 64, 80, true);
 		
 		proxy.init();
+	}
+
+	@EventHandler
+	public void init(FMLLoadCompleteEvent event)
+	{
+		if(event.getSide() == Side.CLIENT)
+		{
+			ModelOverrides.register(new ResourceLocation("cgm:chain_gun"), new ModelChainGun());
+		}
 	}
 }

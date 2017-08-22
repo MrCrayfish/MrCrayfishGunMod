@@ -14,10 +14,12 @@ public class Gun
 	
 	public static class Projectile implements INBTSerializable<NBTTagCompound>
 	{
-		public Type type; 
+		public Type type;
 		public boolean visible;
+		public boolean auto;
+		public int rate;
 		public float damage;
-		public float spread;
+		public float size;
 		public double speed;
 		public int life;
 		public boolean gravity;
@@ -31,7 +33,7 @@ public class Gun
 			tag.setInteger("type", this.type.ordinal());
 			tag.setBoolean("visible", this.visible);
 			tag.setFloat("damage", this.damage);
-			tag.setFloat("spread", this.spread);
+			tag.setFloat("size", this.size);
 			tag.setDouble("speed", this.speed);
 			tag.setInteger("life", this.life);
 			tag.setBoolean("gravity", this.gravity);
@@ -46,7 +48,7 @@ public class Gun
 			this.type = Type.values()[tag.getInteger("type")];
 			this.visible = tag.getBoolean("visible");
 			this.damage = tag.getFloat("damage");
-			this.spread = tag.getFloat("spread");
+			this.size = tag.getFloat("size");
 			this.speed = tag.getDouble("speed");
 			this.life = tag.getInteger("life");
 			this.gravity = tag.getBoolean("gravity");
@@ -54,12 +56,14 @@ public class Gun
 			this.damageReduceIfNotZoomed = tag.getBoolean("damageReduceIfNotZoomed");
 		}
 		
-		public static enum Type 
+		public enum Type
 		{
 			@SerializedName("bullet")
-			BULLET, 
+			BULLET(),
 			@SerializedName("grenade")
-			GRENADE;
+			GRENADE(),
+			@SerializedName("missile")
+			MISSILE();
 		}
 	}
 	

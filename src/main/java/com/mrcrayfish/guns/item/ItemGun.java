@@ -34,28 +34,53 @@ public class ItemGun extends Item
 	{
 		return gun;
 	}
+
+	public int getMaxItemUseDuration(ItemStack stack)
+	{
+		return 72000;
+	}
 	
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) 
 	{
 		return true;
 	}
-	
+
+	@Override
+	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
+	{
+		if(!gun.projectile.auto)
+			return;
+
+		World world = ((EntityPlayer) player).world;
+		if(count % gun.projectile.rate == 0)
+		{
+			world.playSound((EntityPlayer) player, player.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+			if(!world.isRemote)
+			{
+				EntityProjectile bullet = new EntityProjectile(world, player, gun.projectile);
+				world.spawnEntity(bullet);
+			}
+			else
+			{
+				player.rotationPitch -= 0.4f;
+			}
+		}
+	}
+
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) 
 	{	
 		ItemStack stack = this.findAmmo(playerIn);
 		if(stack != null || playerIn.capabilities.isCreativeMode)
 		{
+			playerIn.setActiveHand(handIn);
+
 			worldIn.playSound(playerIn, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.PLAYERS, 1.0F, 0.8F + itemRand.nextFloat() * 0.2F);
 			if(!worldIn.isRemote)
 			{
 				EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
 				worldIn.spawnEntity(bullet);
-			}
-			else
-			{
-				playerIn.rotationPitch -= 2f;
 			}
 			
 			if(!playerIn.capabilities.isCreativeMode)
@@ -72,7 +97,7 @@ public class ItemGun extends Item
 		{
 			worldIn.playSound((EntityPlayer)null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
 		}
-		return new ActionResult<ItemStack>(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
 	}
 	
 	private ItemStack findAmmo(EntityPlayer player)

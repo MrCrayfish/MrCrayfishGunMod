@@ -10,11 +10,17 @@ import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.item.ItemPart;
 import com.mrcrayfish.guns.object.Gun;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModGuns 
@@ -23,6 +29,7 @@ public class ModGuns
 	public static Item shotgun_ammo;
 	public static Item grenade;
 	public static Item missile;
+	public static Item parts;
 	
 	public static void init()
 	{
@@ -36,6 +43,8 @@ public class ModGuns
 		shotgun_ammo = new Item().setUnlocalizedName("shotgun_ammo").setRegistryName("shotgun_ammo").setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 		grenade = new Item().setUnlocalizedName("grenade").setRegistryName("grenade").setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 		missile = new Item().setUnlocalizedName("missile").setRegistryName("missile").setCreativeTab(MrCrayfishGunMod.GUN_TAB);
+
+		parts = new ItemPart().setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 	}
 	
 	public static void register()
@@ -47,6 +56,7 @@ public class ModGuns
 		GameRegistry.register(shotgun_ammo);
 		GameRegistry.register(grenade);
 		GameRegistry.register(missile);
+		GameRegistry.register(parts);
 	}
 	
 	public static void registerRenders()
@@ -57,12 +67,22 @@ public class ModGuns
 		}
 		registerRender(shotgun_ammo);
 		registerRender(grenade);
+		registerRender(missile);
+		registerParts();
 	}
 	
 	private static void registerRender(Item item)
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
 	}
-	
-	
+
+	private static void registerParts()
+	{
+		NonNullList<ItemStack> subItems = NonNullList.create();
+		ModGuns.parts.getSubItems(ModGuns.parts, null, subItems);
+		for(int i = 0; i < subItems.size(); i++)
+		{
+			ModelLoader.setCustomModelResourceLocation(ModGuns.parts, i, new ModelResourceLocation(Reference.MOD_ID + ":" + "gun_part_" + ItemPart.PARTS[i], "inventory"));
+		}
+	}
 }

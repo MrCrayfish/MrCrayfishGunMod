@@ -4,8 +4,9 @@
 		"projectile": {
 			"type": "bullet",
 			"visible": false,
+			"auto": false,
 			"damage": 5.0,
-			"spread": 0.2,
+			"size": 0.2,
 			"speed": 10.0,
 			"life": 5,
 			"gravity": false,
@@ -30,8 +31,9 @@
 		"projectile": {
 			"type": "bullet",
 			"visible": false,
+			"auto": false,
 			"damage": 15.0,
-			"spread": 1.0,
+			"size": 1.0,
 			"speed": 10.0,
 			"life": 3,
 			"gravity": false,
@@ -56,8 +58,9 @@
 		"projectile": {
 			"type": "bullet",
 			"visible": false,
+			"auto": false,
 			"damage": 20.0,
-			"spread": 0.2,
+			"size": 0.2,
 			"speed": 20.0,
 			"life": 5,
 			"gravity": false,
@@ -82,12 +85,13 @@
 		"projectile": {
 			"type": "grenade",
 			"visible": true,
+			"auto": false,
 			"damage": 30.0,
-			"spread": 0.2,
+			"size": 0.2,
 			"speed": 1,
 			"life": 50,
 			"gravity": true,
-			"damageReduceOverLife": true,
+			"damageReduceOverLife": false,
 			"damageReduceIfNotZoomed": false
 		},
         "sounds": {
@@ -106,23 +110,52 @@
 	{
 		"id": "bazooka",
 		"projectile": {
-			"type": "grenade",
+			"type": "missile",
 			"visible": true,
-			"damage": 30.0,
-			"spread": 0.2,
-			"speed": 1,
-			"life": 50,
+			"auto": false,
+			"damage": 50.0,
+			"size": 0.2,
+			"speed": 4,
+			"life": 500,
 			"gravity": true,
-			"damageReduceOverLife": true,
+			"damageReduceOverLife": false,
 			"damageReduceIfNotZoomed": false
 		},
 		"sounds": {
-			"fire": "grenade_fire",
+			"fire": "bazooka_fire",
 			"reload": "shotgun_fire",
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"zoomFovModifier": 0.7,
+			"zoomFovModifier": 0.4,
+			"zoomXOffset": 0.181,
+			"zoomYOffset": 0.18,
+			"zoomZOffset": 0.8,
+			"zoomSmooth": true
+		}
+	},
+	{
+		"id": "chain_gun",
+		"projectile": {
+			"type": "bullet",
+			"visible": false,
+			"auto": true,
+			"rate": 4,
+			"damage": 5.0,
+			"size": 0.2,
+			"speed": 10.0,
+			"life": 10,
+			"gravity": false,
+			"damageReduceOverLife": false,
+			"damageReduceIfNotZoomed": false
+		},
+		"sounds": {
+			"fire": "chain_gun_fire",
+			"reload": "shotgun_fire",
+			"cock": "shotgun_fire"
+		},
+		"display": {
+			"zoomFovModifier": 0.4,
 			"zoomXOffset": 0.181,
 			"zoomYOffset": 0.18,
 			"zoomZOffset": 0.8,

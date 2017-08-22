@@ -1,27 +1,28 @@
 package com.mrcrayfish.guns.event;
 
+import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
+import com.mrcrayfish.guns.client.render.gun.IGunModel;
+import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.item.ItemGun;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.lwjgl.input.Mouse;
 
 public class GuiOverlayEvent 
 {
@@ -95,6 +96,20 @@ public class GuiOverlayEvent
 				zoomProgress--;
 			}
 		}
+
+		if(Minecraft.getMinecraft().player != null && Mouse.isButtonDown(1))
+		{
+			ItemStack heldItem = Minecraft.getMinecraft().player.getHeldItemMainhand();
+			if(heldItem != null && heldItem.getItem() instanceof ItemGun)
+			{
+				ResourceLocation resource = Item.REGISTRY.getNameForObject(heldItem.getItem());
+				IGunModel model = ModelOverrides.getModel(resource);
+				if(model != null)
+				{
+					model.tick();
+				}
+			}
+		}
 	}
 
 	@SubscribeEvent
@@ -111,9 +126,12 @@ public class GuiOverlayEvent
 	{
 		realProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
 
+		ItemStack heldItem = event.getItemStack();
+		boolean hasGun = heldItem != null && heldItem.getItem() instanceof ItemGun;
+
 		if(realProgress > 0)
 		{
-			if(event.getItemStack() != null && event.getItemStack().getItem() instanceof ItemGun)
+			if(hasGun)
 			{
 				ItemGun gun = (ItemGun) event.getItemStack().getItem();
 
@@ -124,8 +142,28 @@ public class GuiOverlayEvent
 			}
 			if(event.getHand() == EnumHand.OFF_HAND)
 			{	
-				GlStateManager.translate(0.0, -2 * realProgress, 0.0);
+				GlStateManager.translate(0.0, -0.5 * realProgress, 0.0);
 			}
+		}
+
+		if(hasGun && event.getHand() == EnumHand.MAIN_HAND)
+		{
+			event.setCanceled(true);
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(0.56F, -0.52F, -0.72F);
+
+			ResourceLocation resource = Item.REGISTRY.getNameForObject(event.getItemStack().getItem());
+			IGunModel model = ModelOverrides.getModel(resource);
+			if(model != null)
+			{
+				model.registerPieces();
+				model.render(event.getPartialTicks());
+			}
+			else
+			{
+				Minecraft.getMinecraft().getRenderItem().renderItem(event.getItemStack(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+			}
+			GlStateManager.popMatrix();
 		}
 	}
 	
