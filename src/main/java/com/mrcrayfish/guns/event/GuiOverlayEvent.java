@@ -3,22 +3,27 @@ package com.mrcrayfish.guns.event;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
+import com.mrcrayfish.guns.client.util.RenderUtil;
+import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -29,11 +34,14 @@ import org.lwjgl.input.Mouse;
 public class GuiOverlayEvent 
 {
 	private static final double ZOOM_TICKS = 8;
+	public static boolean drawFlash = false;
 
 	private int zoomProgress;
 	private int lastZoomProgress;
 	private double realProgress;
 	private float lastEqiupProgress = 0F;
+
+	private ItemStack flash = null;
 
 	@SubscribeEvent
 	public void onFovUpdate(FOVUpdateEvent event)
