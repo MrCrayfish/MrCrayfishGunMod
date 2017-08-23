@@ -1,15 +1,10 @@
 package com.mrcrayfish.guns.entity;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.object.Gun.Projectile;
 import com.mrcrayfish.guns.object.Gun.Projectile.Type;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBreakable;
@@ -30,15 +25,12 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 public class EntityProjectile extends Entity implements IEntityAdditionalSpawnData
 {
-	private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(new Predicate[] {EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, new Predicate<Entity>()
-    {
-        public boolean apply(@Nullable Entity p_apply_1_)
-        {
-            return p_apply_1_.canBeCollidedWith();
-        }
-    }});
+	private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, entity -> entity.canBeCollidedWith());
 	
 	private int shooterId;
 	private EntityLivingBase shooter;
@@ -161,7 +153,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
         for (int i = 0; i < list.size(); ++i)
         {
-            Entity hitEntity = (Entity) list.get(i);
+            Entity hitEntity = list.get(i);
 
             if (hitEntity != this.shooter)
             {
@@ -202,6 +194,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			{
 			case BULLET:
 				entity.attackEntityFrom(DamageSource.ANVIL, damage);
+				entity.hurtResistantTime = 0;
 				break;
 			case GRENADE:
 				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 5F, true);
