@@ -24,7 +24,9 @@
 			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
 			"zoomZOffset": 0,
-			"zoomSmooth": false
+			"zoomSmooth": false,
+			"flashYOffset": -0.2,
+			"flashZOffset": 0.35
 		}
     },
     {
@@ -52,7 +54,9 @@
 			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
 			"zoomZOffset": 0,
-			"zoomSmooth": false
+			"zoomSmooth": false,
+			"flashYOffset": -0.2,
+			"flashZOffset": -0.1
 		}
     },
 	{
@@ -80,7 +84,9 @@
 			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.11,
 			"zoomZOffset": 0.7,
-			"zoomSmooth": true
+			"zoomSmooth": true,
+			"flashXOffset": 0.0,
+			"flashYOffset": 0.0
 		}
     },
 	{
@@ -103,7 +109,8 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"canZoom": false
+			"canZoom": false,
+			"flashYOffset": -0.2
 		}
     },
 	{
@@ -131,7 +138,8 @@
 			"zoomXOffset": 0.181,
 			"zoomYOffset": 0.18,
 			"zoomZOffset": 0.8,
-			"zoomSmooth": true
+			"zoomSmooth": true,
+			"flashYOffset": -0.2
 		}
 	},
 	{
@@ -155,7 +163,9 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"canZoom": false
+			"canZoom": false,
+			"flashYOffset": -0.35,
+			"flashZOffset": -0.2
 		}
 	}
 ]

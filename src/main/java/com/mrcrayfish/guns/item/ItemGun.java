@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.event.GuiOverlayEvent;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.object.Gun;
@@ -96,6 +97,7 @@ public class ItemGun extends Item
 			}
 			else
 			{
+				GuiOverlayEvent.drawFlash = true;
 				playerIn.rotationPitch -= 0.4f;
 			}
 

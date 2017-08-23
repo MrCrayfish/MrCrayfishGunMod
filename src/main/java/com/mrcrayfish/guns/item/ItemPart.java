@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemPart extends Item
 {
-    public static final String[] PARTS = { "chain_gun_base", "chain_gun_barrels" };
+    public static final String[] PARTS = { "chain_gun_base", "chain_gun_barrels", "flash" };
 
     public ItemPart()
     {

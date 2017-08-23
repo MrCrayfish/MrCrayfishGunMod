@@ -137,25 +137,44 @@ public class GuiOverlayEvent
 		if(hasGun && event.getHand() == EnumHand.MAIN_HAND)
 		{
 			event.setCanceled(true);
+
+			Gun gun = ((ItemGun) event.getItemStack().getItem()).getGun();
+			if(drawFlash)
+			{
+				if(flash == null) flash = new ItemStack(ModGuns.parts, 1, 2);
+				IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(flash);
+				GlStateManager.pushMatrix();
+				{
+					GlStateManager.disableLighting();
+					GlStateManager.translate(0.56F, -0.52F, -0.72F);
+					GlStateManager.translate(gun.display.flashXOffset, gun.display.flashYOffset, gun.display.flashZOffset);
+					RenderUtil.renderModel(model);
+					GlStateManager.enableLighting();
+				}
+				GlStateManager.popMatrix();
+				drawFlash = false;
+			}
+
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0.56F, -0.52F, -0.72F);
+			{
+				GlStateManager.translate(0.56F, -0.52F, -0.72F);
 
-			if(Math.abs(lastEqiupProgress - event.getEquipProgress()) < 0.2F)
-			{
-				GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
-				lastEqiupProgress = event.getEquipProgress();
-			}
+				if(Math.abs(event.getEquipProgress() - lastEqiupProgress) < 0.2F)
+				{
+					GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
+					lastEqiupProgress = event.getEquipProgress();
+				}
 
-			ResourceLocation resource = Item.REGISTRY.getNameForObject(event.getItemStack().getItem());
-			IGunModel model = ModelOverrides.getModel(resource);
-			if(model != null)
-			{
-				model.registerPieces();
-				model.render(event.getPartialTicks());
-			}
-			else
-			{
-				Minecraft.getMinecraft().getRenderItem().renderItem(event.getItemStack(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+				ResourceLocation resource = Item.REGISTRY.getNameForObject(event.getItemStack().getItem());
+				IGunModel model = ModelOverrides.getModel(resource);
+				if(model != null)
+				{
+					model.registerPieces();
+					model.render(event.getPartialTicks());
+				} else
+				{
+					Minecraft.getMinecraft().getRenderItem().renderItem(event.getItemStack(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+				}
 			}
 			GlStateManager.popMatrix();
 		}
@@ -195,5 +214,40 @@ public class GuiOverlayEvent
 			}
 		}
 		return false;
+	}
+
+	private static void drawRectWithTexture(double x, double y, double z, float u, float v, int width, int height, float textureWidth, float textureHeight)
+	{
+		float scale = 0.00390625F;
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer worldrenderer = tessellator.getBuffer();
+		worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+		worldrenderer.pos((double)x, (double)(y + height), z).tex((double)(u * scale), (double)(v + textureHeight) * scale).endVertex();
+		worldrenderer.pos((double)(x + width), (double)(y + height), z).tex((double)(u + textureWidth) * scale, (double)(v + textureHeight) * scale).endVertex();
+		worldrenderer.pos((double)(x + width), (double)y, z).tex((double)(u + textureWidth) * scale, (double)(v * scale)).endVertex();
+		worldrenderer.pos((double)x, (double)y, z).tex((double)(u * scale), (double)(v * scale)).endVertex();
+		tessellator.draw();
+	}
+
+	private void drawFlash()
+	{
+		GlStateManager.pushMatrix();
+		GlStateManager.enableTexture2D();
+		GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+		GlStateManager.scale(-0.025F, -0.025F, 0.025F);
+		GlStateManager.disableLighting();
+		GlStateManager.depthMask(false);
+
+		GlStateManager.enableBlend();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.enableTexture2D();
+
+		drawRectWithTexture(0,0, 0, 0, 0, 256, 256, 256, 256);
+
+		GlStateManager.depthMask(true);
+		GlStateManager.enableLighting();
+		GlStateManager.disableBlend();
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.popMatrix();
 	}
 }

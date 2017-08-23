@@ -82,5 +82,8 @@ public class Gun
 		public double zoomYOffset;
 		public double zoomZOffset;
 		public boolean zoomSmooth;
+		public double flashXOffset;
+		public double flashYOffset;
+		public double flashZOffset;
 	}
 }
