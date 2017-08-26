@@ -21,12 +21,12 @@
 		"display": {
 			"canZoom": true,
 			"zoomFovModifier": 0.7,
-			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
-			"zoomZOffset": 0,
 			"zoomSmooth": false,
 			"flashYOffset": -0.2,
-			"flashZOffset": 0.35
+			"flashZOffset": 0.35,
+			"scopeYOffset": 0.22,
+			"scopeZOffset": 0.25
 		}
     },
     {
@@ -51,12 +51,12 @@
 		"display": {
 			"canZoom": true,
 			"zoomFovModifier": 0.7,
-			"zoomXOffset": 0.0,
 			"zoomYOffset": 0.14,
-			"zoomZOffset": 0,
 			"zoomSmooth": false,
 			"flashYOffset": -0.2,
-			"flashZOffset": -0.1
+			"flashZOffset": -0.1,
+			"scopeYOffset": 0.22,
+			"scopeZOffset": 0.15
 		}
     },
 	{

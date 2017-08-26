@@ -67,7 +67,7 @@ public class ModGuns
 	{
 		for(int i = 0; i < ItemPart.PARTS.length; i++)
 		{
-			ModelLoader.setCustomModelResourceLocation(ModGuns.parts, i, new ModelResourceLocation(Reference.MOD_ID + ":" + "gun_part_" + ItemPart.PARTS[i], "inventory"));
+			ModelLoader.setCustomModelResourceLocation(ModGuns.parts, i, new ModelResourceLocation(Reference.MOD_ID + ":" + "part_" + ItemPart.PARTS[i], "inventory"));
 		}
 
 		for(int i = 0; i < ItemAmmo.Type.values().length; i++)

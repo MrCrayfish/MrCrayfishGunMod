@@ -21,9 +21,11 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -123,7 +125,20 @@ public class GuiOverlayEvent
 		realProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
 
 		ItemStack heldItem = event.getItemStack();
-		boolean hasGun = heldItem != null && heldItem.getItem() instanceof ItemGun;
+		boolean hasGun = heldItem.getItem() instanceof ItemGun;
+
+		boolean hasScope = true;
+		if(heldItem.hasTagCompound())
+		{
+			if(heldItem.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
+			{
+				NBTTagCompound attachment = heldItem.getTagCompound().getCompoundTag("attachments");
+				if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
+				{
+					hasScope = true;
+				}
+			}
+		}
 
 		if(realProgress > 0)
 		{
@@ -133,7 +148,14 @@ public class GuiOverlayEvent
 
 				if(event.getHand() == EnumHand.MAIN_HAND)
 				{
-					GlStateManager.translate((-0.3415 + gun.getGun().display.zoomXOffset) * realProgress, gun.getGun().display.zoomYOffset * realProgress, gun.getGun().display.zoomZOffset * realProgress);
+					double yOffset = gun.getGun().display.zoomYOffset;
+					double zOffset = gun.getGun().display.zoomZOffset;
+					if(hasScope)
+					{
+						yOffset -= 0.1;
+						zOffset += gun.getGun().display.scopeZOffset - 0.05;
+					}
+					GlStateManager.translate((-0.3415 + gun.getGun().display.zoomXOffset) * realProgress, yOffset * realProgress, zOffset * realProgress);
 				}
 			}
 			if(event.getHand() == EnumHand.OFF_HAND)
@@ -146,7 +168,22 @@ public class GuiOverlayEvent
 		{
 			event.setCanceled(true);
 
+			//GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
+
 			Gun gun = ((ItemGun) event.getItemStack().getItem()).getGun();
+
+			if(hasScope)
+			{
+				IBakedModel scope = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(ModGuns.parts, 1, 3));
+				GlStateManager.pushMatrix();
+				{
+					GlStateManager.translate(0.56F, -0.52F, -0.72F);
+					GlStateManager.translate(0, gun.display.scopeYOffset, gun.display.scopeZOffset);
+					RenderUtil.renderModel(scope);
+				}
+				GlStateManager.popMatrix();
+			}
+
 			if(drawFlash)
 			{
 				if(flash == null) flash = new ItemStack(ModGuns.parts, 1, 2);
@@ -167,46 +204,19 @@ public class GuiOverlayEvent
 			{
 				GlStateManager.translate(0.56F, -0.52F, -0.72F);
 
-				if(Math.abs(event.getEquipProgress() - lastEqiupProgress) < 0.2F)
-				{
-					GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
-					lastEqiupProgress = event.getEquipProgress();
-				}
-
 				ResourceLocation resource = Item.REGISTRY.getNameForObject(event.getItemStack().getItem());
 				IGunModel model = ModelOverrides.getModel(resource);
 				if(model != null)
 				{
 					model.registerPieces();
 					model.render(event.getPartialTicks());
-				} else
+				}
+				else
 				{
 					Minecraft.getMinecraft().getRenderItem().renderItem(event.getItemStack(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
 				}
 			}
 			GlStateManager.popMatrix();
-		}
-	}
-	
-	@SubscribeEvent
-	public void onPlayerInteract(PlayerInteractEvent.RightClickItem event)
-	{
-		if(event.getItemStack().getItem() instanceof ItemGun)
-		{
-			switch(event.getHand())
-			{
-			case MAIN_HAND:
-				ObfuscationReflectionHelper.setPrivateValue(ItemRenderer.class, Minecraft.getMinecraft().getItemRenderer(), 1F, "equippedProgressMainHand", "field_187469_f");
-				ObfuscationReflectionHelper.setPrivateValue(ItemRenderer.class, Minecraft.getMinecraft().getItemRenderer(), 1F, "prevEquippedProgressMainHand", "field_187470_g");
-				break;
-			case OFF_HAND:
-				ObfuscationReflectionHelper.setPrivateValue(ItemRenderer.class, Minecraft.getMinecraft().getItemRenderer(), 1F, "equippedProgressOffHand", "field_187471_h");
-				ObfuscationReflectionHelper.setPrivateValue(ItemRenderer.class, Minecraft.getMinecraft().getItemRenderer(), 1F, "prevEquippedProgressOffHand", "field_187472_i");
-				break;
-			default:
-				break;
-			
-			}
 		}
 	}
 

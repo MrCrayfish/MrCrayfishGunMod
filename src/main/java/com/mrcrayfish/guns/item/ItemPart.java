@@ -12,12 +12,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemPart extends Item
 {
-    public static final String[] PARTS = { "chain_gun_base", "chain_gun_barrels", "flash" };
+    public static final String[] PARTS = { "chain_gun_base", "chain_gun_barrels", "flash", "scope" };
 
     public ItemPart()
     {
-        this.setUnlocalizedName("gun_part");
-        this.setRegistryName("gun_part");
+        this.setUnlocalizedName("part");
+        this.setRegistryName("part");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }

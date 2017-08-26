@@ -26,8 +26,8 @@ public class ModelChainGun implements IGunModel
     public void registerPieces()
     {
         if(init) return;
-        base = RenderUtil.getModel(new ResourceLocation("cgm:gun_part"), 0);
-        barrel = RenderUtil.getModel(new ResourceLocation("cgm:gun_part"), 1);
+        base = RenderUtil.getModel(new ResourceLocation("cgm:part"), 0);
+        barrel = RenderUtil.getModel(new ResourceLocation("cgm:part"), 1);
         init = true;
     }
 

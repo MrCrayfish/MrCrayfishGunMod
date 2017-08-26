@@ -3,9 +3,12 @@ item.shotgun.name=Shotgun
 item.sniper_rifle.name=Sniper Rifle
 item.grenade_launcher.name=Grenade Launcher
 item.bazooka.name=Bazooka
-item.missile.name=Missile
-item.shotgun_ammo.name=Shotgun Shell
-item.grenade.name=Grenade
 item.chain_gun.name=Minigun
+
+item.ammo_basic.name=Basic Ammo
+item.ammo_advanced.name=Advanced Ammo
+item.ammo_shell.name=Shell
+item.ammo_grenade.name=Grenade
+item.ammo_missile.name=Missile
 
 itemGroup.tabCGM=MrCrayfish's Gun Mod
