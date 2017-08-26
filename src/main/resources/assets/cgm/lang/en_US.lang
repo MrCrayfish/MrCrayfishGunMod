@@ -6,5 +6,6 @@ item.bazooka.name=Bazooka
 item.missile.name=Missile
 item.shotgun_ammo.name=Shotgun Shell
 item.grenade.name=Grenade
+item.chain_gun.name=Minigun
 
 itemGroup.tabCGM=MrCrayfish's Gun Mod

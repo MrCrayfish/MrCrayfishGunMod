@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.object;
 
 import com.google.gson.annotations.SerializedName;
 
+import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -14,7 +15,7 @@ public class Gun
 	
 	public static class Projectile implements INBTSerializable<NBTTagCompound>
 	{
-		public Type type;
+		public ItemAmmo.Type type;
 		public boolean visible;
 		public boolean auto;
 		public int rate;
@@ -45,7 +46,7 @@ public class Gun
 		@Override
 		public void deserializeNBT(NBTTagCompound tag) 
 		{
-			this.type = Type.values()[tag.getInteger("type")];
+			this.type = ItemAmmo.Type.values()[tag.getInteger("type")];
 			this.visible = tag.getBoolean("visible");
 			this.damage = tag.getFloat("damage");
 			this.size = tag.getFloat("size");
@@ -54,16 +55,6 @@ public class Gun
 			this.gravity = tag.getBoolean("gravity");
 			this.damageReduceOverLife = tag.getBoolean("damageReduceOverLife");
 			this.damageReduceIfNotZoomed = tag.getBoolean("damageReduceIfNotZoomed");
-		}
-		
-		public enum Type
-		{
-			@SerializedName("bullet")
-			BULLET(),
-			@SerializedName("grenade")
-			GRENADE(),
-			@SerializedName("missile")
-			MISSILE();
 		}
 	}
 	
@@ -85,5 +76,8 @@ public class Gun
 		public double flashXOffset;
 		public double flashYOffset;
 		public double flashZOffset;
+		public double scopeXOffset;
+		public double scopeYOffset;
+		public double scopeZOffset;
 	}
 }

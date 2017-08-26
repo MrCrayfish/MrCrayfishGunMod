@@ -56,7 +56,7 @@ public class ItemGun extends Item
 		EntityPlayer player = (EntityPlayer) entity;
 		World world = player.world;
 
-		ItemStack ammo = this.findAmmo(player);
+		ItemStack ammo = this.findAmmo(player, gun.projectile.type);
 		if(ammo != null || player.capabilities.isCreativeMode)
 		{
 			if(count % gun.projectile.rate == 0)
@@ -69,7 +69,7 @@ public class ItemGun extends Item
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) 
 	{	
-		ItemStack stack = this.findAmmo(playerIn);
+		ItemStack stack = this.findAmmo(playerIn, gun.projectile.type);
 		if(stack != null || playerIn.capabilities.isCreativeMode)
 		{
 			playerIn.setActiveHand(handIn);
@@ -113,13 +113,13 @@ public class ItemGun extends Item
 		}
 	}
 	
-	private ItemStack findAmmo(EntityPlayer player)
+	private ItemStack findAmmo(EntityPlayer player, ItemAmmo.Type type)
     {
-        if (this.isAmmo(player.getHeldItem(EnumHand.OFF_HAND)))
+        if (this.isAmmo(player.getHeldItem(EnumHand.OFF_HAND), type))
         {
             return player.getHeldItem(EnumHand.OFF_HAND);
         }
-        else if (this.isAmmo(player.getHeldItem(EnumHand.MAIN_HAND)))
+        else if (this.isAmmo(player.getHeldItem(EnumHand.MAIN_HAND), type))
         {
             return player.getHeldItem(EnumHand.MAIN_HAND);
         }
@@ -127,21 +127,24 @@ public class ItemGun extends Item
         {
             for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
             {
-                ItemStack itemstack = player.inventory.getStackInSlot(i);
-
-                if (this.isAmmo(itemstack))
+                ItemStack stack = player.inventory.getStackInSlot(i);
+                if (this.isAmmo(stack, type))
                 {
-                    return itemstack;
+                    return stack;
                 }
             }
-
             return null;
         }
     }
 	
-	protected boolean isAmmo(ItemStack stack)
+	protected boolean isAmmo(ItemStack stack, ItemAmmo.Type type)
     {
-        return stack != null && stack.getItem() == ModGuns.shotgun_ammo;
+        return stack != null && stack.getItem() == ModGuns.ammo && stack.getItemDamage() == type.ordinal();
     }
-	
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		return slotChanged;
+	}
 }

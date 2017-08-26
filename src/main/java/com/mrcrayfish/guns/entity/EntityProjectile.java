@@ -2,9 +2,8 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.object.Gun.Projectile;
-import com.mrcrayfish.guns.object.Gun.Projectile.Type;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBreakable;
@@ -61,10 +60,10 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 		switch(projectile.type)
 		{
 			case GRENADE:
-				this.item = new ItemStack(ModGuns.grenade);
+				this.item = ItemAmmo.getAmmo(ItemAmmo.Type.GRENADE, 1);
 				break;
 			case MISSILE:
-				this.item = new ItemStack(ModGuns.missile);
+				this.item = ItemAmmo.getAmmo(ItemAmmo.Type.MISSILE, 1);
 				break;
 		}
     }
@@ -83,7 +82,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 		{
 			updateHeading();
 
-			if(projectile.type == Type.MISSILE)
+			if(projectile.type == ItemAmmo.Type.MISSILE)
 			{
 				for(int i = 5; i > 0; i--)
 				{
@@ -192,7 +191,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			
 			switch(projectile.type)
 			{
-			case BULLET:
+			case BASIC:
+			case ADVANCED:
 				entity.attackEntityFrom(DamageSource.ANVIL, damage);
 				entity.hurtResistantTime = 0;
 				break;
@@ -204,7 +204,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			this.setDead();
 			return;
 		}
-		
+
 		if(raytraceResultIn.getBlockPos() != null)
 		{
 			BlockPos pos = raytraceResultIn.getBlockPos();
@@ -218,13 +218,13 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			{
 				this.setDead();
 			}
-			
-			if(projectile.type == Type.GRENADE)
+
+			if(projectile.type == ItemAmmo.Type.GRENADE)
 			{
 				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 5F, true);
 			}
 
-			if(projectile.type == Type.MISSILE)
+			if(projectile.type == ItemAmmo.Type.MISSILE)
 			{
 				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 10F, true);
 				WorldServer worldServer = (WorldServer) world;

@@ -2,7 +2,7 @@
 	{
         "id": "handgun",
 		"projectile": {
-			"type": "bullet",
+			"type": "basic",
 			"visible": false,
 			"auto": false,
 			"damage": 5.0,
@@ -32,7 +32,7 @@
     {
         "id": "shotgun",
 		"projectile": {
-			"type": "bullet",
+			"type": "shell",
 			"visible": false,
 			"auto": false,
 			"damage": 15.0,
@@ -62,7 +62,7 @@
 	{
         "id": "sniper_rifle",
 		"projectile": {
-			"type": "bullet",
+			"type": "advanced",
 			"visible": false,
 			"auto": false,
 			"damage": 20.0,
@@ -145,7 +145,7 @@
 	{
 		"id": "chain_gun",
 		"projectile": {
-			"type": "bullet",
+			"type": "basic",
 			"visible": false,
 			"auto": true,
 			"rate": 2,
