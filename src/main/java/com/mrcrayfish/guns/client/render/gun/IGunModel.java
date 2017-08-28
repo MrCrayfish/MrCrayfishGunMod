@@ -25,5 +25,5 @@ public interface IGunModel
 
     void tick();
 
-    void render(float partialTicks);
+    void render(float partialTicks, ItemCameraTransforms.TransformType transformType);
 }

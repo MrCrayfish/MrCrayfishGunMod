@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
@@ -46,15 +47,9 @@ public class ModelChainGun implements IGunModel
     }
 
     @Override
-    public void render(float partialTicks)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType)
     {
-        RenderUtil.renderModel(base);
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(-0.22, 0.1675, 0);
-        GlStateManager.rotate(lastRotation + (rotation - lastRotation) * partialTicks, 0, 0, -1);
-        GlStateManager.translate(0.22, -0.1675, 0);
-        RenderUtil.renderModel(barrel);
-        GlStateManager.popMatrix();
+        RenderUtil.renderModel(base, transformType);
+        RenderUtil.renderModel(barrel, transformType, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks));
     }
 }

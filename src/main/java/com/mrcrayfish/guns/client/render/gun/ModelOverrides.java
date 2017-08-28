@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.render.gun;
 
 import com.mrcrayfish.guns.client.render.gun.model.ModelStandard;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -25,9 +26,14 @@ public class ModelOverrides
         MODEL_MAP.put(resource, model);
     }
 
-    @Nullable
-    public static IGunModel getModel(ResourceLocation resource)
+    public static boolean hasModel(Item item)
     {
-        return MODEL_MAP.get(resource);
+        return MODEL_MAP.containsKey(Item.REGISTRY.getNameForObject(item));
+    }
+
+    @Nullable
+    public static IGunModel getModel(Item item)
+    {
+        return MODEL_MAP.get(Item.REGISTRY.getNameForObject(item));
     }
 }

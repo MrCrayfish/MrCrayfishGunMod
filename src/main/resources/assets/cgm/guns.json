@@ -4,14 +4,11 @@
 		"projectile": {
 			"type": "basic",
 			"visible": false,
-			"auto": false,
 			"damage": 5.0,
 			"size": 0.2,
 			"speed": 10.0,
 			"life": 5,
-			"gravity": false,
-			"damageReduceOverLife": true,
-			"damageReduceIfNotZoomed": false
+			"damageReduceOverLife": true
 		},
         "sounds": {
 			"fire": "pistol_fire",
@@ -19,14 +16,22 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"canZoom": true,
-			"zoomFovModifier": 0.7,
-			"zoomYOffset": 0.14,
-			"zoomSmooth": false,
-			"flashYOffset": -0.2,
-			"flashZOffset": 0.35,
-			"scopeYOffset": 0.22,
-			"scopeZOffset": 0.25
+			"flash": {
+				"yOffset": -0.2,
+				"zOffset": 0.35
+			}
+		},
+		"modules": {
+			"zoom": {
+				"fovModifier": 0.7,
+				"yOffset": 0.14
+			},
+			"attachments": {
+				"scope": {
+					"yOffset": 0.22,
+					"zOffset": 0.25
+				}
+			}
 		}
     },
     {
@@ -34,7 +39,6 @@
 		"projectile": {
 			"type": "shell",
 			"visible": false,
-			"auto": false,
 			"damage": 15.0,
 			"size": 1.0,
 			"speed": 10.0,
@@ -49,14 +53,22 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"canZoom": true,
-			"zoomFovModifier": 0.7,
-			"zoomYOffset": 0.14,
-			"zoomSmooth": false,
-			"flashYOffset": -0.2,
-			"flashZOffset": -0.1,
-			"scopeYOffset": 0.22,
-			"scopeZOffset": 0.15
+			"flash": {
+				"yOffset": -0.2,
+				"zOffset": -0.1
+			}
+		},
+		"modules": {
+			"zoom": {
+				"fovModifier": 0.7,
+				"yOffset": 0.14
+			},
+			"attachments": {
+				"scope": {
+					"yOffset": 0.22,
+					"zOffset": 0.15
+				}
+			}
 		}
     },
 	{
@@ -64,13 +76,10 @@
 		"projectile": {
 			"type": "advanced",
 			"visible": false,
-			"auto": false,
 			"damage": 20.0,
 			"size": 0.2,
 			"speed": 20.0,
 			"life": 5,
-			"gravity": false,
-			"damageReduceOverLife": false,
 			"damageReduceIfNotZoomed": true
 		},
         "sounds": {
@@ -79,14 +88,25 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"canZoom": true,
-			"zoomFovModifier": 0.1,
-			"zoomXOffset": 0.0,
-			"zoomYOffset": 0.11,
-			"zoomZOffset": 0.7,
-			"zoomSmooth": true,
-			"flashXOffset": 0.0,
-			"flashYOffset": 0.0
+			"flash": {
+				"yOffset": 0.0,
+				"zOffset": 0.0
+			}
+		},
+		"modules": {
+			"zoom": {
+				"fovModifier": 0.1,
+				"smooth": true,
+				"xOffset": 0.0,
+				"yOffset": 0.11,
+				"zOffset": 0.7
+			},
+			"attachments": {
+				"scope": {
+					"yOffset": 0.22,
+					"zOffset": 0.15
+				}
+			}
 		}
     },
 	{
@@ -109,8 +129,9 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"canZoom": false,
-			"flashYOffset": -0.2
+			"flash": {
+				"yOffset": -0.2
+			}
 		}
     },
 	{
@@ -133,29 +154,33 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"canZoom": true,
-			"zoomFovModifier": 0.4,
-			"zoomXOffset": 0.181,
-			"zoomYOffset": 0.18,
-			"zoomZOffset": 0.8,
-			"zoomSmooth": true,
-			"flashYOffset": -0.2
+			"flash": {
+				"yOffset": -0.2
+			}
+		},
+		"modules": {
+			"zoom": {
+				"fovModifier": 0.4,
+				"smooth": true,
+				"xOffset": 0.181,
+				"yOffset": 0.18,
+				"zOffset": 0.8
+			}
 		}
 	},
 	{
 		"id": "chain_gun",
+		"general": {
+			"auto": true,
+			"rate": 2
+		},
 		"projectile": {
 			"type": "basic",
 			"visible": false,
-			"auto": true,
-			"rate": 2,
 			"damage": 8.0,
 			"size": 0.2,
 			"speed": 10.0,
-			"life": 10,
-			"gravity": false,
-			"damageReduceOverLife": false,
-			"damageReduceIfNotZoomed": false
+			"life": 10
 		},
 		"sounds": {
 			"fire": "chain_gun_fire",
@@ -163,9 +188,10 @@
 			"cock": "shotgun_fire"
 		},
 		"display": {
-			"canZoom": false,
-			"flashYOffset": -0.35,
-			"flashZOffset": -0.2
+			"flash": {
+				"yOffset": -0.35,
+				"zOffset": -0.2
+			}
 		}
 	}
 ]

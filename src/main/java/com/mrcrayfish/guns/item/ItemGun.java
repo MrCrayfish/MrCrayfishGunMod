@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
-import com.mrcrayfish.guns.event.GuiOverlayEvent;
+import com.mrcrayfish.guns.event.GunRenderEvent;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.object.Gun;
@@ -50,7 +50,7 @@ public class ItemGun extends Item
 	@Override
 	public void onUsingTick(ItemStack stack, EntityLivingBase entity, int count)
 	{
-		if(!gun.projectile.auto)
+		if(!gun.general.auto)
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
@@ -59,7 +59,7 @@ public class ItemGun extends Item
 		ItemStack ammo = this.findAmmo(player, gun.projectile.type);
 		if(ammo != null || player.capabilities.isCreativeMode)
 		{
-			if(count % gun.projectile.rate == 0)
+			if(count % gun.general.rate == 0)
 			{
 				fire(world, player, ammo);
 			}
@@ -73,7 +73,7 @@ public class ItemGun extends Item
 		if(stack != null || playerIn.capabilities.isCreativeMode)
 		{
 			playerIn.setActiveHand(handIn);
-			if(!gun.projectile.auto)
+			if(!gun.general.auto)
 			{
 				fire(worldIn, playerIn, stack);
 			}
@@ -97,7 +97,7 @@ public class ItemGun extends Item
 			}
 			else
 			{
-				GuiOverlayEvent.drawFlash = true;
+				GunRenderEvent.drawFlash = true;
 				playerIn.rotationPitch -= 0.4f;
 			}
 

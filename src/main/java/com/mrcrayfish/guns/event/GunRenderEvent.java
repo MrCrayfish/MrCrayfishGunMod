@@ -1,39 +1,44 @@
 package com.mrcrayfish.guns.event;
 
-import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
-import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
+import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.*;
+import net.minecraft.util.EnumHandSide;
+import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Mouse;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GuiOverlayEvent 
+import java.lang.reflect.Field;
+import java.util.List;
+
+public class GunRenderEvent
 {
 	private static final double ZOOM_TICKS = 8;
 	public static boolean drawFlash = false;
@@ -41,7 +46,7 @@ public class GuiOverlayEvent
 	private int zoomProgress;
 	private int lastZoomProgress;
 	private double realProgress;
-	private float lastEqiupProgress = 0F;
+
 
 	private ItemStack flash = null;
 
@@ -57,8 +62,8 @@ public class GuiOverlayEvent
 				ItemGun gun = (ItemGun) item;
 				if(isZooming(Minecraft.getMinecraft().player))
 				{
-					mc.gameSettings.smoothCamera = gun.getGun().display.zoomSmooth;
-					event.setNewfov(gun.getGun().display.zoomFovModifier);
+					mc.gameSettings.smoothCamera = gun.getGun().modules.zoom.smooth;
+					event.setNewfov(gun.getGun().modules.zoom.fovModifier - 0.1F);
 				}
 				else
 				{
@@ -66,13 +71,6 @@ public class GuiOverlayEvent
 				}
 			}
 		}
-	}
-	
-	@SubscribeEvent
-	public void onKeyInput(KeyInputEvent event)
-	{
-		Minecraft mc = Minecraft.getMinecraft();
-
 	}
 	
 	@SubscribeEvent
@@ -103,8 +101,7 @@ public class GuiOverlayEvent
 			ItemStack heldItem = Minecraft.getMinecraft().player.getHeldItemMainhand();
 			if(heldItem != null && heldItem.getItem() instanceof ItemGun)
 			{
-				ResourceLocation resource = Item.REGISTRY.getNameForObject(heldItem.getItem());
-				IGunModel model = ModelOverrides.getModel(resource);
+				IGunModel model = ModelOverrides.getModel(heldItem.getItem());
 				if(model != null) model.tick();
 			}
 		}
@@ -125,9 +122,12 @@ public class GuiOverlayEvent
 		realProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
 
 		ItemStack heldItem = event.getItemStack();
-		boolean hasGun = heldItem.getItem() instanceof ItemGun;
 
-		boolean hasScope = true;
+		if(!(heldItem.getItem() instanceof ItemGun)) return;
+
+		event.setCanceled(true);
+
+		ItemStack scope = null;
 		if(heldItem.hasTagCompound())
 		{
 			if(heldItem.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
@@ -135,51 +135,58 @@ public class GuiOverlayEvent
 				NBTTagCompound attachment = heldItem.getTagCompound().getCompoundTag("attachments");
 				if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
 				{
-					hasScope = true;
+					scope = new ItemStack(attachment.getCompoundTag("scope"));
 				}
 			}
 		}
 
 		if(realProgress > 0)
 		{
-			if(hasGun)
+			ItemGun itemGun = (ItemGun) event.getItemStack().getItem();
+			if(event.getHand() == EnumHand.MAIN_HAND)
 			{
-				ItemGun gun = (ItemGun) event.getItemStack().getItem();
+				double xOffset = 0.0;
+				double yOffset = 0.0;
+				double zOffset = 0.0;
 
-				if(event.getHand() == EnumHand.MAIN_HAND)
+				Gun gun = itemGun.getGun();
+				if(gun.modules.zoom != null)
 				{
-					double yOffset = gun.getGun().display.zoomYOffset;
-					double zOffset = gun.getGun().display.zoomZOffset;
-					if(hasScope)
-					{
-						yOffset -= 0.1;
-						zOffset += gun.getGun().display.scopeZOffset - 0.05;
-					}
-					GlStateManager.translate((-0.3415 + gun.getGun().display.zoomXOffset) * realProgress, yOffset * realProgress, zOffset * realProgress);
+					xOffset += gun.modules.zoom.xOffset;
+					yOffset += gun.modules.zoom.yOffset;
+					zOffset += gun.modules.zoom.zOffset;
 				}
+
+				if(gun.modules.attachments.scope != null && scope != null)
+				{
+					yOffset -= 0.1;
+					zOffset += gun.modules.attachments.scope.zOffset - 0.05;
+				}
+
+				GlStateManager.translate((-0.3415 + xOffset) * realProgress, yOffset * realProgress, zOffset * realProgress);
 			}
+
 			if(event.getHand() == EnumHand.OFF_HAND)
 			{	
 				GlStateManager.translate(0.0, -0.5 * realProgress, 0.0);
 			}
 		}
 
-		if(hasGun && event.getHand() == EnumHand.MAIN_HAND)
+		if(event.getHand() == EnumHand.MAIN_HAND)
 		{
-			event.setCanceled(true);
-
 			//GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
+			GlStateManager.translate(0.56F, -0.52F, -0.72F);
 
 			Gun gun = ((ItemGun) event.getItemStack().getItem()).getGun();
 
-			if(hasScope)
+			if(gun.modules != null && gun.modules.attachments != null && gun.modules.attachments.scope != null && scope != null)
 			{
-				IBakedModel scope = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(ModGuns.parts, 1, 3));
+				IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(ModGuns.parts, 1, 3));
 				GlStateManager.pushMatrix();
 				{
-					GlStateManager.translate(0.56F, -0.52F, -0.72F);
-					GlStateManager.translate(0, gun.display.scopeYOffset, gun.display.scopeZOffset);
-					RenderUtil.renderModel(scope);
+
+					GlStateManager.translate(gun.modules.attachments.scope.xOffset, gun.modules.attachments.scope.yOffset, gun.modules.attachments.scope.zOffset);
+					RenderUtil.renderModel(scopeModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
 				}
 				GlStateManager.popMatrix();
 			}
@@ -191,9 +198,8 @@ public class GuiOverlayEvent
 				GlStateManager.pushMatrix();
 				{
 					GlStateManager.disableLighting();
-					GlStateManager.translate(0.56F, -0.52F, -0.72F);
-					GlStateManager.translate(gun.display.flashXOffset, gun.display.flashYOffset, gun.display.flashZOffset);
-					RenderUtil.renderModel(model);
+					GlStateManager.translate(gun.display.flash.xOffset, gun.display.flash.yOffset, gun.display.flash.zOffset);
+					RenderUtil.renderModel(model, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
 					GlStateManager.enableLighting();
 				}
 				GlStateManager.popMatrix();
@@ -202,14 +208,11 @@ public class GuiOverlayEvent
 
 			GlStateManager.pushMatrix();
 			{
-				GlStateManager.translate(0.56F, -0.52F, -0.72F);
-
-				ResourceLocation resource = Item.REGISTRY.getNameForObject(event.getItemStack().getItem());
-				IGunModel model = ModelOverrides.getModel(resource);
-				if(model != null)
+				if(ModelOverrides.hasModel(event.getItemStack().getItem()))
 				{
+					IGunModel model = ModelOverrides.getModel(event.getItemStack().getItem());
 					model.registerPieces();
-					model.render(event.getPartialTicks());
+					model.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
 				}
 				else
 				{
@@ -227,45 +230,10 @@ public class GuiOverlayEvent
 			ItemStack stack = player.getHeldItemMainhand();
 			if(stack.getItem() instanceof ItemGun)
 			{
-				ItemGun item = (ItemGun) stack.getItem();
-				return item.getGun().display.canZoom && GuiScreen.isAltKeyDown();
+				Gun gun = ((ItemGun) stack.getItem()).getGun();
+				return gun.modules != null && gun.modules.zoom != null && GuiScreen.isAltKeyDown();
 			}
 		}
 		return false;
-	}
-
-	private static void drawRectWithTexture(double x, double y, double z, float u, float v, int width, int height, float textureWidth, float textureHeight)
-	{
-		float scale = 0.00390625F;
-		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
-		worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos((double)x, (double)(y + height), z).tex((double)(u * scale), (double)(v + textureHeight) * scale).endVertex();
-		worldrenderer.pos((double)(x + width), (double)(y + height), z).tex((double)(u + textureWidth) * scale, (double)(v + textureHeight) * scale).endVertex();
-		worldrenderer.pos((double)(x + width), (double)y, z).tex((double)(u + textureWidth) * scale, (double)(v * scale)).endVertex();
-		worldrenderer.pos((double)x, (double)y, z).tex((double)(u * scale), (double)(v * scale)).endVertex();
-		tessellator.draw();
-	}
-
-	private void drawFlash()
-	{
-		GlStateManager.pushMatrix();
-		GlStateManager.enableTexture2D();
-		GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-		GlStateManager.scale(-0.025F, -0.025F, 0.025F);
-		GlStateManager.disableLighting();
-		GlStateManager.depthMask(false);
-
-		GlStateManager.enableBlend();
-		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.enableTexture2D();
-
-		drawRectWithTexture(0,0, 0, 0, 0, 256, 256, 256, 256);
-
-		GlStateManager.depthMask(true);
-		GlStateManager.enableLighting();
-		GlStateManager.disableBlend();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.popMatrix();
 	}
 }

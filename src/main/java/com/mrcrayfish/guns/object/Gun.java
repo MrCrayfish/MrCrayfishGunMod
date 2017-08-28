@@ -1,31 +1,47 @@
 package com.mrcrayfish.guns.object;
 
+import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.lang.annotation.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+
 public class Gun
 {
 	public String id;
+	public General general = new General();
 	public Projectile projectile;
 	public Sounds sounds;
-	public Display display;
+	public Display display = new Display();
+	public Modules modules = new Modules();
+
+	public static class General
+	{
+		@Optional public boolean auto = false;
+		@Optional public int rate = 1;
+	}
 	
 	public static class Projectile implements INBTSerializable<NBTTagCompound>
 	{
 		public ItemAmmo.Type type;
 		public boolean visible;
-		public boolean auto;
-		public int rate;
 		public float damage;
 		public float size;
 		public double speed;
 		public int life;
-		public boolean gravity;
-		public boolean damageReduceOverLife;
-		public boolean damageReduceIfNotZoomed;
+		@Optional public boolean gravity;
+		@Optional public boolean damageReduceOverLife;
+		@Optional public boolean damageReduceIfNotZoomed;
 
 		@Override
 		public NBTTagCompound serializeNBT() 
@@ -64,20 +80,50 @@ public class Gun
 		public String reload;
 		public String cock;
 	}
-	
+
 	public static class Display
 	{
-		public boolean canZoom;
-		public float zoomFovModifier;
-		public double zoomXOffset;
-		public double zoomYOffset;
-		public double zoomZOffset;
-		public boolean zoomSmooth;
-		public double flashXOffset;
-		public double flashYOffset;
-		public double flashZOffset;
-		public double scopeXOffset;
-		public double scopeYOffset;
-		public double scopeZOffset;
+		@Optional public Flash flash;
+
+		public static class Flash
+		{
+			@Optional public double xOffset;
+			@Optional public double yOffset;
+			@Optional public double zOffset;
+		}
+	}
+
+	public static class Modules
+	{
+		@Optional public Zoom zoom;
+		public Attachments attachments = new Attachments();
+
+		public static class Zoom
+		{
+			@Optional public float fovModifier;
+			@Optional public boolean smooth;
+			@Optional public double xOffset;
+			@Optional public double yOffset;
+			@Optional public double zOffset;
+		}
+
+		public static class Attachments
+		{
+			@Optional public Scope scope;
+
+			public static class Scope
+			{
+				@Optional public double xOffset;
+				@Optional public double yOffset;
+				@Optional public double zOffset;
+			}
+		}
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	public @interface Optional
+	{
+
 	}
 }
