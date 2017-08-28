@@ -47,6 +47,7 @@ public class GunRenderEvent
 	private int lastZoomProgress;
 	private double realProgress;
 
+	private boolean setupThirdPerson = false;
 
 	private ItemStack flash = null;
 
@@ -235,5 +236,103 @@ public class GunRenderEvent
 			}
 		}
 		return false;
+	}
+
+	@SubscribeEvent
+	public void onRenderHand(RenderPlayerEvent.Pre event)
+	{
+		if(!setupThirdPerson)
+		{
+			RenderPlayer renderer = event.getRenderer();
+			Field field = ReflectionHelper.findField(RenderLivingBase.class, "layerRenderers");
+			if(field != null) try
+			{
+				List<LayerRenderer<EntityLivingBase>> layers = (List<LayerRenderer<EntityLivingBase>>) field.get(renderer);
+				layers.removeIf(layerRenderer -> layerRenderer instanceof LayerHeldItem);
+				layers.add(new LayerCustomHeldItem(event.getRenderer()));
+			}
+			catch(IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
+			setupThirdPerson = true;
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static class LayerCustomHeldItem implements LayerRenderer<EntityLivingBase>
+	{
+		private final RenderLivingBase<?> livingEntityRenderer;
+
+		private LayerCustomHeldItem(RenderLivingBase<?> livingEntityRendererIn)
+		{
+			this.livingEntityRenderer = livingEntityRendererIn;
+		}
+
+		@Override
+		public void doRenderLayer(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+		{
+			boolean isRightHanded = entity.getPrimaryHand() == EnumHandSide.RIGHT;
+			ItemStack leftStack = isRightHanded ? entity.getHeldItemOffhand() : entity.getHeldItemMainhand();
+			ItemStack rightStack = isRightHanded ? entity.getHeldItemMainhand() : entity.getHeldItemOffhand();
+
+			if (!leftStack.isEmpty() || !rightStack.isEmpty())
+			{
+				GlStateManager.pushMatrix();
+
+				if (this.livingEntityRenderer.getMainModel().isChild)
+				{
+					GlStateManager.translate(0.0F, 0.75F, 0.0F);
+					GlStateManager.scale(0.5F, 0.5F, 0.5F);
+				}
+
+				this.renderHeldItem(entity, rightStack, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, EnumHandSide.RIGHT, partialTicks);
+				this.renderHeldItem(entity, leftStack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, EnumHandSide.LEFT, partialTicks);
+				GlStateManager.popMatrix();
+			}
+		}
+
+		private void renderHeldItem(EntityLivingBase entity, ItemStack stack, ItemCameraTransforms.TransformType transformType, EnumHandSide handSide, float partialTicks)
+		{
+			if (!stack.isEmpty())
+			{
+				GlStateManager.pushMatrix();
+				{
+					if(entity.isSneaking())
+					{
+						GlStateManager.translate(0.0F, 0.2F, 0.0F);
+					}
+					this.translateToHand(handSide);
+
+					GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+					GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+
+					boolean isLeftHanded = handSide == EnumHandSide.LEFT;
+					GlStateManager.translate((float) (isLeftHanded ? -1 : 1) / 16.0F, 0.125F, -0.625F);
+
+					if(stack.getItem() instanceof ItemGun && ModelOverrides.hasModel(stack.getItem()))
+					{
+						IGunModel model = ModelOverrides.getModel(stack.getItem());
+						model.registerPieces();
+						model.render(partialTicks, transformType);
+					}
+					else
+					{
+						Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, stack, transformType, isLeftHanded);
+					}
+				}
+				GlStateManager.popMatrix();
+			}
+		}
+
+		protected void translateToHand(EnumHandSide p_191361_1_)
+		{
+			((ModelBiped)this.livingEntityRenderer.getMainModel()).postRenderArm(0.0625F, p_191361_1_);
+		}
+
+		public boolean shouldCombineTextures()
+		{
+			return false;
+		}
 	}
 }
