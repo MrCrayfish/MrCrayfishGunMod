@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.event;
 
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
+import com.mrcrayfish.guns.client.render.model.OverrideModelPlayer;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemGun;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -37,6 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 public class GunRenderEvent
 {
@@ -48,6 +51,7 @@ public class GunRenderEvent
 	private double realProgress;
 
 	private boolean setupThirdPerson = false;
+	private boolean setupPlayerRender = false;
 
 	private ItemStack flash = null;
 
@@ -256,6 +260,17 @@ public class GunRenderEvent
 				e.printStackTrace();
 			}
 			setupThirdPerson = true;
+		}
+
+		if(!setupPlayerRender)
+		{
+			Map<String, RenderPlayer> skinMap = ReflectionHelper.getPrivateValue(RenderManager.class, Minecraft.getMinecraft().getRenderManager(), "skinMap");
+			if(skinMap != null)
+			{
+				ReflectionHelper.setPrivateValue(RenderLivingBase.class, skinMap.get("default"), new OverrideModelPlayer(0.0F, false), "mainModel");
+				ReflectionHelper.setPrivateValue(RenderLivingBase.class, skinMap.get("slim"), new OverrideModelPlayer(0.0F, true), "mainModel");
+			}
+			setupPlayerRender = true;
 		}
 	}
 

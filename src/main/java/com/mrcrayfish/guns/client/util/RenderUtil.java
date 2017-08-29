@@ -40,48 +40,48 @@ public class RenderUtil
     public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, @Nullable Transform transform)
     {
         GlStateManager.pushMatrix();
-
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
-
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.alphaFunc(516, 0.1F);
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.pushMatrix();
-
-        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, transformType, false);
-
-        GlStateManager.pushMatrix();
         {
-            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
 
-            if(transform != null)
-            {
-                transform.apply();
-            }
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableRescaleNormal();
+            GlStateManager.alphaFunc(516, 0.1F);
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.pushMatrix();
 
-            Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer vertexbuffer = tessellator.getBuffer();
-            vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
-            for(EnumFacing enumfacing : EnumFacing.values())
+            net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, transformType, false);
+
+            GlStateManager.pushMatrix();
             {
-                renderQuads(vertexbuffer, model.getQuads(null, enumfacing, 0L));
+                GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+
+                if(transform != null)
+                {
+                    transform.apply();
+                }
+
+                Tessellator tessellator = Tessellator.getInstance();
+                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
+                for(EnumFacing enumfacing : EnumFacing.values())
+                {
+                    renderQuads(vertexbuffer, model.getQuads(null, enumfacing, 0L));
+                }
+                renderQuads(vertexbuffer, model.getQuads(null, null, 0L));
+                tessellator.draw();
             }
-            renderQuads(vertexbuffer, model.getQuads(null, null, 0L));
-            tessellator.draw();
+            GlStateManager.popMatrix();
+
+            GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+            GlStateManager.popMatrix();
+            GlStateManager.disableRescaleNormal();
+            GlStateManager.disableBlend();
+
+            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
         }
-        GlStateManager.popMatrix();
-
-        GlStateManager.cullFace(GlStateManager.CullFace.BACK);
-        GlStateManager.popMatrix();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.disableBlend();
-
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
-
         GlStateManager.popMatrix();
     }
 
