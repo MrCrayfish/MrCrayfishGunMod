@@ -1,9 +1,9 @@
 package com.mrcrayfish.guns.client.util;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -15,7 +15,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.List;
 
 public class RenderUtil
@@ -63,13 +62,13 @@ public class RenderUtil
                 }
 
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
-                vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
+                BufferBuilder buffer = tessellator.getBuffer();
+                buffer.begin(7, DefaultVertexFormats.ITEM);
                 for(EnumFacing enumfacing : EnumFacing.values())
                 {
-                    renderQuads(vertexbuffer, model.getQuads(null, enumfacing, 0L));
+                    renderQuads(buffer, model.getQuads(null, enumfacing, 0L));
                 }
-                renderQuads(vertexbuffer, model.getQuads(null, null, 0L));
+                renderQuads(buffer, model.getQuads(null, null, 0L));
                 tessellator.draw();
             }
             GlStateManager.popMatrix();
@@ -85,12 +84,12 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
-    private static void renderQuads(VertexBuffer renderer, List<BakedQuad> quads)
+    private static void renderQuads(BufferBuilder buffer, List<BakedQuad> quads)
     {
         int i = 0;
         for (int j = quads.size(); i < j; ++i)
         {
-            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, quads.get(i), -1);
+            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quads.get(i), -1);
         }
     }
 

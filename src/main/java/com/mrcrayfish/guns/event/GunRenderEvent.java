@@ -31,7 +31,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -186,7 +186,7 @@ public class GunRenderEvent
 
 			if(gun.modules != null && gun.modules.attachments != null && gun.modules.attachments.scope != null && scope != null)
 			{
-				IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(ModGuns.parts, 1, 3));
+				IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(ModGuns.PARTS, 1, 3));
 				GlStateManager.pushMatrix();
 				{
 
@@ -198,7 +198,7 @@ public class GunRenderEvent
 
 			if(drawFlash)
 			{
-				if(flash == null) flash = new ItemStack(ModGuns.parts, 1, 2);
+				if(flash == null) flash = new ItemStack(ModGuns.PARTS, 1, 2);
 				IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(flash);
 				GlStateManager.pushMatrix();
 				{
@@ -248,7 +248,7 @@ public class GunRenderEvent
 		if(!setupThirdPerson)
 		{
 			RenderPlayer renderer = event.getRenderer();
-			Field field = ReflectionHelper.findField(RenderLivingBase.class, "layerRenderers");
+			Field field = ReflectionHelper.findField(RenderLivingBase.class, ObfuscationReflectionHelper.remapFieldNames(RenderLivingBase.class.getName(), "field_177097_h"));
 			if(field != null) try
 			{
 				List<LayerRenderer<EntityLivingBase>> layers = (List<LayerRenderer<EntityLivingBase>>) field.get(renderer);
@@ -264,6 +264,7 @@ public class GunRenderEvent
 
 		if(!setupPlayerRender)
 		{
+			//ObfuscationReflectionHelper.getPrivateValue() TODO: what was I doing?
 			Map<String, RenderPlayer> skinMap = ReflectionHelper.getPrivateValue(RenderManager.class, Minecraft.getMinecraft().getRenderManager(), "skinMap");
 			if(skinMap != null)
 			{
@@ -272,6 +273,10 @@ public class GunRenderEvent
 			}
 			setupPlayerRender = true;
 		}
+
+		//EntityPlayer player = (EntityPlayer) event.getEntity(); TODO: What was I doing here too?
+		//player.prevRenderYawOffset = player.rotationYaw;
+		//player.renderYawOffset = player.rotationYaw;
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -139,7 +139,7 @@ public class ItemGun extends Item
 	
 	protected boolean isAmmo(ItemStack stack, ItemAmmo.Type type)
     {
-        return stack != null && stack.getItem() == ModGuns.ammo && stack.getItemDamage() == type.ordinal();
+        return stack != null && stack.getItem() == ModGuns.AMMO && stack.getItemDamage() == type.ordinal();
     }
 
 	@Override

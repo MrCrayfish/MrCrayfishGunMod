@@ -26,10 +26,10 @@ public class ModelChainGun implements IGunModel
     @Override
     public void registerPieces()
     {
-        if(init) return;
+        //if(init) return;
         base = RenderUtil.getModel(new ResourceLocation("cgm:part"), 0);
         barrel = RenderUtil.getModel(new ResourceLocation("cgm:part"), 1);
-        init = true;
+        //init = true;
     }
 
     @Override

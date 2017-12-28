@@ -49,13 +49,13 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.projectile = projectile;
 
 		Vec3d dir = shooter.getLook(0.0F);
-        this.motionX = dir.xCoord * projectile.speed + shooter.motionX;
-        this.motionY = dir.yCoord * projectile.speed;
-        this.motionZ = dir.zCoord * projectile.speed + shooter.motionZ;
+        this.motionX = dir.x * projectile.speed + shooter.motionX;
+        this.motionY = dir.y * projectile.speed;
+        this.motionZ = dir.z * projectile.speed + shooter.motionZ;
 		updateHeading();
 
 		this.setSize(projectile.size, projectile.size);
-		this.setPosition(shooter.posX + dir.xCoord, shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D + dir.yCoord, shooter.posZ + dir.zCoord);
+		this.setPosition(shooter.posX + dir.x, shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D + dir.y, shooter.posZ + dir.z);
 
 		switch(projectile.type)
 		{
@@ -103,7 +103,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 	
 			if (raytraceresult != null) 
 			{
-				vec3d = new Vec3d(raytraceresult.hitVec.xCoord, raytraceresult.hitVec.yCoord, raytraceresult.hitVec.zCoord);
+				vec3d = new Vec3d(raytraceresult.hitVec.x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
 			}
 	
 			Entity entity = this.findEntityOnPath(vec3d1, vec3d);
@@ -147,7 +147,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     protected Entity findEntityOnPath(Vec3d start, Vec3d end)
     {
         Entity entity = null;
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ), ARROW_TARGETS);
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ), ARROW_TARGETS);
         double closestDistance = 0.0D;
 
         for (int i = 0; i < list.size(); ++i)
@@ -156,7 +156,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
             if (hitEntity != this.shooter)
             {
-                AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox().expandXyz(0.30000001192092896D);
+                AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox().grow(0.30000001192092896D);
                 RayTraceResult result = axisalignedbb.calculateIntercept(start, end);
 
                 if (result != null)
@@ -197,7 +197,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 				entity.hurtResistantTime = 0;
 				break;
 			case GRENADE:
-				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 5F, true);
+				world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 5F, true);
 				break;
 			}
 			
@@ -221,14 +221,14 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
 			if(projectile.type == ItemAmmo.Type.GRENADE)
 			{
-				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 5F, true);
+				world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 5F, true);
 			}
 
 			if(projectile.type == ItemAmmo.Type.MISSILE)
 			{
-				world.createExplosion(shooter, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 10F, true);
+				world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 10F, true);
 				WorldServer worldServer = (WorldServer) world;
-				worldServer.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, raytraceResultIn.hitVec.xCoord, raytraceResultIn.hitVec.yCoord, raytraceResultIn.hitVec.zCoord, 0, 0.0, 0.0, 0.0, 0);
+				worldServer.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 0, 0.0, 0.0, 0.0, 0);
 			}
 		}
     }

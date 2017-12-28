@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.proxy;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.event.GunRenderEvent;
-import com.mrcrayfish.guns.init.ModGuns;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.EnumParticleTypes;
@@ -16,16 +15,7 @@ public class ClientProxy implements IProxy
 	@Override
 	public void preInit() 
 	{
-		RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, new IRenderFactory<EntityProjectile>() 
-		{
-			@Override
-			public Render<EntityProjectile> createRenderFor(RenderManager manager) 
-			{
-				return new RenderProjectile(manager);
-			}
-		});
-
-		ModGuns.registerRenders();
+		RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
 	}
 	
 	@Override

@@ -2,11 +2,13 @@ package com.mrcrayfish.guns.item;
 
 import com.google.gson.annotations.SerializedName;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.init.ModGuns;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -15,7 +17,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ItemAmmo extends Item
+public class ItemAmmo extends Item implements ISubItems
 {
     public ItemAmmo()
     {
@@ -44,7 +46,18 @@ public class ItemAmmo extends Item
     public static ItemStack getAmmo(Type type, int amount)
     {
         amount = Math.min(amount, 64);
-        return new ItemStack(ModGuns.ammo, amount, type.ordinal());
+        return new ItemStack(ModGuns.AMMO, amount, type.ordinal());
+    }
+
+    @Override
+    public NonNullList<ResourceLocation> getModels()
+    {
+        NonNullList<ResourceLocation> modelLocations = NonNullList.create();
+        for(Type type : Type.values())
+        {
+            modelLocations.add(new ResourceLocation(Reference.MOD_ID, "ammo_" + type.name));
+        }
+        return modelLocations;
     }
 
     public enum Type

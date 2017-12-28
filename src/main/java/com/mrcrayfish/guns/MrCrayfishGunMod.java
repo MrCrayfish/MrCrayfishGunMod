@@ -29,11 +29,10 @@ public class MrCrayfishGunMod
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		ModGuns.init();
 		ModGuns.register();
 		ModSounds.register();
 		ModCrafting.init();
-		
+
 		proxy.preInit();
 	}
 	

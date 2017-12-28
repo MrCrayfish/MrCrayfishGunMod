@@ -3,9 +3,9 @@ package com.mrcrayfish.guns.client.render.entity;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.Render;
@@ -49,7 +49,7 @@ public class RenderProjectile extends Render<EntityProjectile>
 
             IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(entity.getItem());
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 
             for(EnumFacing enumfacing : EnumFacing.values())
@@ -67,13 +67,13 @@ public class RenderProjectile extends Render<EntityProjectile>
         //Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.CLOUD.getParticleID(), 0, 0, 0, 0, 0, 0);
     }
 
-    private void renderQuads(VertexBuffer renderer, List<BakedQuad> quads)
+    private void renderQuads(BufferBuilder buffer, List<BakedQuad> quads)
     {
         int i = 0;
         for(int j = quads.size(); i < j; ++i)
         {
             BakedQuad quad = quads.get(i);
-            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, quad, -1);
+            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quad, -1);
         }
     }
 }

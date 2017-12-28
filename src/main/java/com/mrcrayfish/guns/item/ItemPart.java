@@ -1,18 +1,21 @@
 package com.mrcrayfish.guns.item;
 
+import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.Reference;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
  */
-public class ItemPart extends Item
+public class ItemPart extends Item implements ISubItems
 {
-    public static final String[] PARTS = { "chain_gun_base", "chain_gun_barrels", "flash", "scope" };
+    private static final String[] PARTS = { "chain_gun_base", "chain_gun_barrels", "flash", "scope" };
 
     public ItemPart()
     {
@@ -20,6 +23,7 @@ public class ItemPart extends Item
         this.setRegistryName("part");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
+        this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
     }
 
     @Override
@@ -35,5 +39,16 @@ public class ItemPart extends Item
         {
             subItems.add(new ItemStack(itemIn, 1, i));
         }
+    }
+
+    @Override
+    public NonNullList<ResourceLocation> getModels()
+    {
+        NonNullList<ResourceLocation> modelLocations = NonNullList.create();
+        for(String part : ItemPart.PARTS)
+        {
+            modelLocations.add(new ResourceLocation(Reference.MOD_ID, "part_" + part));
+        }
+        return modelLocations;
     }
 }
