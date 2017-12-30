@@ -9,8 +9,8 @@
     "display": {
         "gui": {
             "rotation": [ 30, 225, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.625, 0.625, 0.625 ]
+            "translation": [ 0, 7, 0 ],
+            "scale": [ 1.5, 1.5, 1.5 ]
         },
         "ground": {
             "rotation": [ 0, 0, 0 ],
