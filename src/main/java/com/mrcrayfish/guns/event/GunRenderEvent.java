@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.client.render.model.OverrideModelPlayer;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.item.ItemScope;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -164,7 +165,7 @@ public class GunRenderEvent
 
 				if(gun.modules.attachments.scope != null && scope != null)
 				{
-					yOffset -= 0.1;
+					yOffset -= ItemScope.Type.getFromStack(scope).getOffset();
 					zOffset += gun.modules.attachments.scope.zOffset - 0.05;
 				}
 
@@ -186,7 +187,7 @@ public class GunRenderEvent
 
 			if(gun.modules != null && gun.modules.attachments != null && gun.modules.attachments.scope != null && scope != null)
 			{
-				IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(ModGuns.PARTS, 1, 3));
+				IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(scope);
 				GlStateManager.pushMatrix();
 				{
 
@@ -248,28 +249,22 @@ public class GunRenderEvent
 		if(!setupThirdPerson)
 		{
 			RenderPlayer renderer = event.getRenderer();
-			Field field = ReflectionHelper.findField(RenderLivingBase.class, ObfuscationReflectionHelper.remapFieldNames(RenderLivingBase.class.getName(), "field_177097_h"));
-			if(field != null) try
+			List<LayerRenderer<EntityLivingBase>> layers = ObfuscationReflectionHelper.getPrivateValue(RenderLivingBase.class, renderer, "field_177097_h");
+			if(layers != null)
 			{
-				List<LayerRenderer<EntityLivingBase>> layers = (List<LayerRenderer<EntityLivingBase>>) field.get(renderer);
 				layers.removeIf(layerRenderer -> layerRenderer instanceof LayerHeldItem);
 				layers.add(new LayerCustomHeldItem(event.getRenderer()));
-			}
-			catch(IllegalAccessException e)
-			{
-				e.printStackTrace();
 			}
 			setupThirdPerson = true;
 		}
 
 		if(!setupPlayerRender)
 		{
-			//ObfuscationReflectionHelper.getPrivateValue() TODO: what was I doing?
-			Map<String, RenderPlayer> skinMap = ReflectionHelper.getPrivateValue(RenderManager.class, Minecraft.getMinecraft().getRenderManager(), "skinMap");
+			Map<String, RenderPlayer> skinMap = ObfuscationReflectionHelper.getPrivateValue(RenderManager.class, Minecraft.getMinecraft().getRenderManager(), "field_178636_l");
 			if(skinMap != null)
 			{
-				ReflectionHelper.setPrivateValue(RenderLivingBase.class, skinMap.get("default"), new OverrideModelPlayer(0.0F, false), "mainModel");
-				ReflectionHelper.setPrivateValue(RenderLivingBase.class, skinMap.get("slim"), new OverrideModelPlayer(0.0F, true), "mainModel");
+				ObfuscationReflectionHelper.setPrivateValue(RenderLivingBase.class, skinMap.get("default"), new OverrideModelPlayer(0.0F, false), "field_77045_g");
+				ObfuscationReflectionHelper.setPrivateValue(RenderLivingBase.class, skinMap.get("slim"), new OverrideModelPlayer(0.0F, true), "field_77045_g");
 			}
 			setupPlayerRender = true;
 		}

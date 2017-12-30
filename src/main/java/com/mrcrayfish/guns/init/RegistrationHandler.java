@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.ISubItems;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -79,6 +80,23 @@ public class RegistrationHandler
         public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
         {
             SOUNDS.forEach(sound -> event.getRegistry().register(sound));
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+    public static class Recipes
+    {
+        private static final List<IRecipe> RECIPES = new LinkedList<>();
+
+        static void add(IRecipe recipe)
+        {
+            RECIPES.add(recipe);
+        }
+
+        @SubscribeEvent
+        public static void register(final RegistryEvent.Register<IRecipe> event)
+        {
+            RECIPES.forEach(recipe -> event.getRegistry().register(recipe));
         }
     }
 }

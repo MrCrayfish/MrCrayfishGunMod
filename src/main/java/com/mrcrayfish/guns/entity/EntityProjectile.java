@@ -156,7 +156,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
             if (hitEntity != this.shooter)
             {
-                AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox().grow(0.30000001192092896D);
+				AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox().grow(0.30000001192092896D);
                 RayTraceResult result = axisalignedbb.calculateIntercept(start, end);
 
                 if (result != null)
@@ -192,6 +192,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			switch(projectile.type)
 			{
 			case BASIC:
+            case SHELL:
 			case ADVANCED:
 				entity.attackEntityFrom(DamageSource.ANVIL, damage);
 				entity.hurtResistantTime = 0;

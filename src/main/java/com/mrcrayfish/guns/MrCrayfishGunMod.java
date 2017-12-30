@@ -31,7 +31,7 @@ public class MrCrayfishGunMod
 	{
 		ModGuns.register();
 		ModSounds.register();
-		ModCrafting.init();
+		ModCrafting.register();
 
 		proxy.preInit();
 	}
