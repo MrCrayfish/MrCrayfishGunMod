@@ -161,9 +161,11 @@ public class GunRenderEvent
 		if(!(heldItem.getItem() instanceof ItemGun))
 			return;
 
+		//Cancel it because we are doing our own custom render
 		event.setCanceled(true);
 
 		ItemStack scope = null;
+		ItemScope.Type scopeType = null;
 		if(heldItem.hasTagCompound())
 		{
 			if(heldItem.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
@@ -172,6 +174,12 @@ public class GunRenderEvent
 				if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
 				{
 					scope = new ItemStack(attachment.getCompoundTag("scope"));
+					scopeType = ItemScope.Type.getFromStack(scope);
+
+					/* Cancel rendering of gun if all the way zoomed in with a long scope. Used
+					   for rendering reticle overlay */
+					if(scopeType == ItemScope.Type.LONG && realProgress == 1.0)
+						return;
 				}
 			}
 		}
@@ -190,16 +198,15 @@ public class GunRenderEvent
 				{
 					xOffset += gun.modules.zoom.xOffset;
 					yOffset += gun.modules.zoom.yOffset;
-					zOffset += gun.modules.zoom.zOffset;
+
+					if(gun.modules.attachments.scope == null || scope == null)
+					{
+						zOffset += gun.modules.zoom.zOffset;
+					}
 				}
 
-				if(gun.modules.attachments.scope != null && scope != null)
+				if(gun.modules.attachments.scope != null && scope != null && scopeType != null)
 				{
-					ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
-
-					if(scopeType == ItemScope.Type.LONG && realProgress == 1.0)
-						return;
-
 					yOffset -= scopeType.getOffset();
 					zOffset -= gun.modules.attachments.scope.zOffset - 0.45;
 				}
