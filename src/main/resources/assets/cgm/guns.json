@@ -7,7 +7,7 @@
 			"damage": 5.0,
 			"size": 0.2,
 			"speed": 10.0,
-			"life": 5,
+			"life": 10,
 			"damageReduceOverLife": true
 		},
         "sounds": {
@@ -79,7 +79,7 @@
 			"damage": 20.0,
 			"size": 0.2,
 			"speed": 20.0,
-			"life": 5,
+			"life": 10,
 			"damageReduceIfNotZoomed": true
 		},
         "sounds": {

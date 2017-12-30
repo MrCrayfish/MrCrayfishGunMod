@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.event;
 
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.model.OverrideModelPlayer;
@@ -9,9 +10,13 @@ import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -19,31 +24,32 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 public class GunRenderEvent
 {
+	private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Reference.MOD_ID, "textures/scope_long_overlay.png");
+
 	private static final double ZOOM_TICKS = 8;
 	public static boolean drawFlash = false;
 
@@ -62,14 +68,37 @@ public class GunRenderEvent
 		Minecraft mc = Minecraft.getMinecraft();
 		if(mc.player.getHeldItemMainhand() != null)
 		{
-			Item item = mc.player.getHeldItemMainhand().getItem();
-			if(item instanceof ItemGun)
+			ItemStack heldItem = mc.player.getHeldItemMainhand();
+			if(heldItem.getItem() instanceof ItemGun)
 			{
-				ItemGun gun = (ItemGun) item;
+				ItemStack scope = null;
+				if(heldItem.hasTagCompound())
+				{
+					if(heldItem.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
+					{
+						NBTTagCompound attachment = heldItem.getTagCompound().getCompoundTag("attachments");
+						if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
+						{
+							scope = new ItemStack(attachment.getCompoundTag("scope"));
+						}
+					}
+				}
+
+				ItemGun gun = (ItemGun) heldItem.getItem();
 				if(isZooming(Minecraft.getMinecraft().player))
 				{
 					mc.gameSettings.smoothCamera = gun.getGun().modules.zoom.smooth;
-					event.setNewfov(gun.getGun().modules.zoom.fovModifier - 0.1F);
+					float newFov = gun.getGun().modules.zoom.fovModifier - 0.1F;
+					if(scope != null)
+					{
+						ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
+						newFov -= scopeType.getAdditionalZoom();
+						if(scopeType == ItemScope.Type.LONG)
+						{
+							mc.gameSettings.smoothCamera = true;
+						}
+					}
+					event.setNewfov(newFov);
 				}
 				else
 				{
@@ -129,7 +158,8 @@ public class GunRenderEvent
 
 		ItemStack heldItem = event.getItemStack();
 
-		if(!(heldItem.getItem() instanceof ItemGun)) return;
+		if(!(heldItem.getItem() instanceof ItemGun))
+			return;
 
 		event.setCanceled(true);
 
@@ -165,8 +195,13 @@ public class GunRenderEvent
 
 				if(gun.modules.attachments.scope != null && scope != null)
 				{
-					yOffset -= ItemScope.Type.getFromStack(scope).getOffset();
-					zOffset += gun.modules.attachments.scope.zOffset - 0.05;
+					ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
+
+					if(scopeType == ItemScope.Type.LONG && realProgress == 1.0)
+						return;
+
+					yOffset -= scopeType.getOffset();
+					zOffset -= gun.modules.attachments.scope.zOffset - 0.45;
 				}
 
 				GlStateManager.translate((-0.3415 + xOffset) * realProgress, yOffset * realProgress, zOffset * realProgress);
@@ -272,6 +307,63 @@ public class GunRenderEvent
 		//EntityPlayer player = (EntityPlayer) event.getEntity(); TODO: What was I doing here too?
 		//player.prevRenderYawOffset = player.rotationYaw;
 		//player.renderYawOffset = player.rotationYaw;
+	}
+
+	@SubscribeEvent
+	public void onTick(TickEvent.RenderTickEvent event)
+	{
+		if (event.phase.equals(TickEvent.Phase.START))
+			return;
+
+		EntityPlayer player = Minecraft.getMinecraft().player;
+
+		if(player == null)
+			return;
+
+		ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
+
+		if(heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemGun))
+			return;
+
+		ItemStack scope = null;
+		if(heldItem.hasTagCompound())
+		{
+			if(heldItem.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
+			{
+				NBTTagCompound attachment = heldItem.getTagCompound().getCompoundTag("attachments");
+				if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
+				{
+					scope = new ItemStack(attachment.getCompoundTag("scope"));
+				}
+			}
+		}
+
+		if(scope != null)
+		{
+			ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
+			if(scopeType != null && scopeType == ItemScope.Type.LONG && realProgress == 1.0)
+			{
+				Minecraft mc = Minecraft.getMinecraft();
+				mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
+				GlStateManager.color(1.0F, 1.0F, 1.0F);
+				GlStateManager.enableBlend();
+				GlStateManager.enableAlpha();
+
+				ScaledResolution scaledResolution = new ScaledResolution(mc);
+
+				Tessellator tessellator = Tessellator.getInstance();
+				BufferBuilder buffer = tessellator.getBuffer();
+				buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+				buffer.pos(0, scaledResolution.getScaledHeight(), 0).tex(0, 1).endVertex();
+				buffer.pos(scaledResolution.getScaledWidth(), scaledResolution.getScaledHeight(), 0).tex(1, 1).endVertex();
+				buffer.pos(scaledResolution.getScaledWidth(), 0, 0).tex(1, 0).endVertex();
+				buffer.pos(0, 0, 0).tex(0, 0).endVertex();
+				tessellator.draw();
+
+				GlStateManager.disableAlpha();
+				GlStateManager.disableBlend();
+			}
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
