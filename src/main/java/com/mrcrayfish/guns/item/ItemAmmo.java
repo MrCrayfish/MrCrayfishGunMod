@@ -34,12 +34,15 @@ public class ItemAmmo extends Item implements ISubItems
         return super.getUnlocalizedName(stack) + "_" + Type.values()[stack.getItemDamage()].name;
     }
 
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        for (int i = 0; i < Type.values().length; ++i)
+        if(isInCreativeTab(tab))
         {
-            subItems.add(new ItemStack(itemIn, 1, i));
+            for (int i = 0; i < Type.values().length; ++i)
+            {
+                items.add(new ItemStack(this, 1, i));
+            }
         }
     }
 
