@@ -72,7 +72,7 @@
 		}
     },
 	{
-        "id": "sniper_rifle",
+        "id": "rifle",
 		"projectile": {
 			"type": "advanced",
 			"visible": false,
@@ -95,16 +95,15 @@
 		},
 		"modules": {
 			"zoom": {
-				"fovModifier": 0.1,
+				"fovModifier": 0.6,
 				"smooth": true,
-				"xOffset": 0.0,
-				"yOffset": 0.11,
-				"zOffset": 0.7
+				"yOffset": 0.14,
+				"zOffset": 0.2
 			},
 			"attachments": {
 				"scope": {
-					"yOffset": 0.22,
-					"zOffset": 0.15
+					"yOffset": 0.275,
+					"zOffset": 0.2
 				}
 			}
 		}
