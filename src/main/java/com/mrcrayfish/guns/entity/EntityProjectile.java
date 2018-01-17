@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.*;
@@ -194,7 +195,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			case BASIC:
             case SHELL:
 			case ADVANCED:
-				entity.attackEntityFrom(DamageSource.ANVIL, damage);
+				DamageSource source = new EntityDamageSourceIndirect("bullet", this, shooter).setProjectile();
+				entity.attackEntityFrom(source, damage);
 				entity.hurtResistantTime = 0;
 				break;
 			case GRENADE:
