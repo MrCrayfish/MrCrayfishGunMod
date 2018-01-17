@@ -232,8 +232,7 @@ public class GunRenderEvent
 				IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(scope);
 				GlStateManager.pushMatrix();
 				{
-
-					GlStateManager.translate(gun.modules.attachments.scope.xOffset, gun.modules.attachments.scope.yOffset, gun.modules.attachments.scope.zOffset);
+					GlStateManager.translate(gun.modules.attachments.scope.xOffset * 0.8, gun.modules.attachments.scope.yOffset * 0.8, gun.modules.attachments.scope.zOffset * 0.8);
 					RenderUtil.renderModel(scopeModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
 				}
 				GlStateManager.popMatrix();
@@ -424,11 +423,47 @@ public class GunRenderEvent
 					boolean isLeftHanded = handSide == EnumHandSide.LEFT;
 					GlStateManager.translate((float) (isLeftHanded ? -1 : 1) / 16.0F, 0.125F, -0.625F);
 
-					if(stack.getItem() instanceof ItemGun && ModelOverrides.hasModel(stack.getItem()))
+					if(stack.getItem() instanceof ItemGun)
 					{
-						IGunModel model = ModelOverrides.getModel(stack.getItem());
-						model.registerPieces();
-						model.render(partialTicks, transformType);
+						GlStateManager.translate(0, 0.5F, -0.2F);
+						GlStateManager.rotate(25F, 1, 0, 0);
+						if(ModelOverrides.hasModel(stack.getItem()))
+						{
+							IGunModel model = ModelOverrides.getModel(stack.getItem());
+							model.registerPieces();
+							model.render(partialTicks, transformType);
+						}
+						else
+						{
+							Minecraft.getMinecraft().getItemRenderer().renderItemSide(entity, stack, transformType, isLeftHanded);
+						}
+
+						ItemStack scope = null;
+						ItemScope.Type scopeType = null;
+						if(stack.hasTagCompound())
+						{
+							if(stack.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
+							{
+								NBTTagCompound attachment = stack.getTagCompound().getCompoundTag("attachments");
+								if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
+								{
+									scope = new ItemStack(attachment.getCompoundTag("scope"));
+									scopeType = ItemScope.Type.getFromStack(scope);
+								}
+							}
+						}
+
+						Gun gun = ((ItemGun) stack.getItem()).getGun();
+						if(gun.modules != null && gun.modules.attachments != null && gun.modules.attachments.scope != null && scope != null)
+						{
+							IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(scope);
+							GlStateManager.pushMatrix();
+							{
+								GlStateManager.translate(gun.modules.attachments.scope.xOffset, gun.modules.attachments.scope.yOffset, gun.modules.attachments.scope.zOffset);
+								RenderUtil.renderModel(scopeModel, transformType);
+							}
+							GlStateManager.popMatrix();
+						}
 					}
 					else
 					{

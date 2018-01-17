@@ -28,8 +28,8 @@
 			},
 			"attachments": {
 				"scope": {
-					"yOffset": 0.22,
-					"zOffset": 0.25
+					"yOffset": 0.275,
+					"zOffset": 0.3125
 				}
 			}
 		}
@@ -65,7 +65,7 @@
 			},
 			"attachments": {
 				"scope": {
-					"yOffset": 0.22,
+					"yOffset": 0.275,
 					"zOffset": 0.15
 				}
 			}
