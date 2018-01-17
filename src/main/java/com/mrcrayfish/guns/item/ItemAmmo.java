@@ -31,6 +31,7 @@ public class ItemAmmo extends Item implements ISubItems
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
+        if(stack.getItemDamage() >= Type.values().length) return super.getUnlocalizedName(stack);
         return super.getUnlocalizedName(stack) + "_" + Type.values()[stack.getItemDamage()].name;
     }
 
