@@ -93,6 +93,7 @@ public class GunRenderEvent
 					{
 						ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
 						newFov -= scopeType.getAdditionalZoom();
+						mc.gameSettings.smoothCamera = gun.getGun().modules.attachments.scope.smooth;
 						if(scopeType == ItemScope.Type.LONG)
 						{
 							mc.gameSettings.smoothCamera = true;

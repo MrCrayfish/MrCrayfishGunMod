@@ -113,6 +113,7 @@ public class Gun
 
 			public static class Scope
 			{
+				@Optional public boolean smooth;
 				@Optional public double xOffset;
 				@Optional public double yOffset;
 				@Optional public double zOffset;
