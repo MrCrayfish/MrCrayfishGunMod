@@ -208,7 +208,7 @@ public class GunRenderEvent
 				if(gun.modules.attachments.scope != null && scope != null && scopeType != null)
 				{
 					yOffset -= scopeType.getOffset();
-					zOffset -= gun.modules.attachments.scope.zOffset - 0.45;
+					zOffset -= gun.modules.attachments.scope.zOffset * 0.8 - 0.45;
 				}
 
 				GlStateManager.translate((-0.3415 + xOffset) * realProgress, yOffset * realProgress, zOffset * realProgress);
