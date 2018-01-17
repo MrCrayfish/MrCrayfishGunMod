@@ -83,7 +83,7 @@
 			"damageReduceIfNotZoomed": true
 		},
         "sounds": {
-			"fire": "sniper_fire",
+			"fire": "rifle_fire",
 			"reload": "shotgun_fire",
 			"cock": "shotgun_fire"
 		},
