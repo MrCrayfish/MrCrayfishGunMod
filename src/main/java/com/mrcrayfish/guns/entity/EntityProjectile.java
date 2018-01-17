@@ -49,7 +49,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.shooter = shooter;
         this.projectile = projectile;
 
-		Vec3d dir = shooter.getLook(0.0F);
+		Vec3d dir = getVectorFromRotation(shooter.rotationPitch, shooter.getRotationYawHead());
         this.motionX = dir.x * projectile.speed + shooter.motionX;
         this.motionY = dir.y * projectile.speed;
         this.motionZ = dir.z * projectile.speed + shooter.motionZ;
@@ -78,70 +78,66 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 	public void onUpdate() 
 	{
 		super.onUpdate();
-		
-		//if(!worldObj.isRemote)
+		updateHeading();
+
+		if(projectile.type == ItemAmmo.Type.MISSILE)
 		{
-			updateHeading();
-
-			if(projectile.type == ItemAmmo.Type.MISSILE)
+			for(int i = 5; i > 0; i--)
 			{
-				for(int i = 5; i > 0; i--)
-				{
-					world.spawnParticle(EnumParticleTypes.CLOUD, true, this.posX - (this.motionX / i), this.posY - (this.motionY / i), this.posZ - (this.motionZ / i), 0, 0, 0);
-				}
-				if(world.rand.nextInt(2) == 0)
-				{
-					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, this.posX, this.posY, this.posZ, 0, 0, 0);
-					world.spawnParticle(EnumParticleTypes.FLAME, true, this.posX, this.posY, this.posZ, 0, 0, 0);
-				}
+				world.spawnParticle(EnumParticleTypes.CLOUD, true, this.posX - (this.motionX / i), this.posY - (this.motionY / i), this.posZ - (this.motionZ / i), 0, 0, 0);
 			}
-
-			Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
-			Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-			RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
-			vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
-			vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-	
-			if (raytraceresult != null) 
+			if(world.rand.nextInt(2) == 0)
 			{
-				vec3d = new Vec3d(raytraceresult.hitVec.x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, this.posX, this.posY, this.posZ, 0, 0, 0);
+				world.spawnParticle(EnumParticleTypes.FLAME, true, this.posX, this.posY, this.posZ, 0, 0, 0);
 			}
-	
-			Entity entity = this.findEntityOnPath(vec3d1, vec3d);
-	
-			if (entity != null) 
-			{
-				raytraceresult = new RayTraceResult(entity);
-			}
-	
-			if (raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer) 
-			{
-				EntityPlayer entityplayer = (EntityPlayer) raytraceresult.entityHit;
-	
-				if (this.shooter instanceof EntityPlayer && !((EntityPlayer) this.shooter).canAttackPlayer(entityplayer)) 
-				{
-					raytraceresult = null;
-				}
-			}
-	
-			if (raytraceresult != null && !world.isRemote) 
-			{
-				this.onHit(raytraceresult);
-			}
-			
-			this.posX += this.motionX;
-			this.posY += this.motionY;
-			this.posZ += this.motionZ;
-			
-			this.setPosition(this.posX, this.posY, this.posZ);
-			
-			if(this.projectile.gravity)
-			{
-				this.motionY -= 0.05;
-			}
-			
-			if(this.ticksExisted >= this.projectile.life) this.setDead();
 		}
+
+		Vec3d vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
+		Vec3d vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+		RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d1, vec3d, false, true, false);
+		vec3d1 = new Vec3d(this.posX, this.posY, this.posZ);
+		vec3d = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+
+		if (raytraceresult != null)
+		{
+			vec3d = new Vec3d(raytraceresult.hitVec.x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
+		}
+
+		Entity entity = this.findEntityOnPath(vec3d1, vec3d);
+
+		if (entity != null)
+		{
+			raytraceresult = new RayTraceResult(entity);
+		}
+
+		if (raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer)
+		{
+			EntityPlayer entityplayer = (EntityPlayer) raytraceresult.entityHit;
+
+			if (this.shooter instanceof EntityPlayer && !((EntityPlayer) this.shooter).canAttackPlayer(entityplayer))
+			{
+				raytraceresult = null;
+			}
+		}
+
+		if (raytraceresult != null && !world.isRemote)
+		{
+			this.onHit(raytraceresult);
+		}
+
+		this.posX += this.motionX;
+		this.posY += this.motionY;
+		this.posZ += this.motionZ;
+
+		this.setPosition(this.posX, this.posY, this.posZ);
+
+		if(this.projectile.gravity)
+		{
+			this.motionY -= 0.05;
+		}
+
+		if(this.ticksExisted >= this.projectile.life) this.setDead();
 	}
 	
 	@Nullable
@@ -293,9 +289,17 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 		this.prevRotationPitch = this.rotationPitch;
 	}
 
-
 	public Projectile getProjectile()
 	{
 		return projectile;
+	}
+
+	private Vec3d getVectorFromRotation(float pitch, float yaw)
+	{
+		float f = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI);
+		float f1 = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI);
+		float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+		float f3 = MathHelper.sin(-pitch * 0.017453292F);
+		return new Vec3d((double)(f1 * f2), (double)f3, (double)(f * f2));
 	}
 }
