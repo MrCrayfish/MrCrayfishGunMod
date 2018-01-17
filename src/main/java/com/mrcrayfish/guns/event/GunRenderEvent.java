@@ -354,6 +354,7 @@ public class GunRenderEvent
 				GlStateManager.color(1.0F, 1.0F, 1.0F);
 				GlStateManager.enableBlend();
 				GlStateManager.enableAlpha();
+				GlStateManager.disableDepth();
 
 				ScaledResolution scaledResolution = new ScaledResolution(mc);
 
@@ -368,6 +369,7 @@ public class GunRenderEvent
 
 				GlStateManager.disableAlpha();
 				GlStateManager.disableBlend();
+				GlStateManager.enableDepth();
 			}
 		}
 	}
