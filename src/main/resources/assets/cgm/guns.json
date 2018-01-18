@@ -214,8 +214,7 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.25,
-				"zOffset": -0.15
+				"yOffset": -0.2
 			}
 		},
 		"modules": {
@@ -226,7 +225,6 @@
 			},
 			"attachments": {
 				"scope": {
-					"smooth": true,
 					"yOffset": 0.27,
 					"zOffset": 0.25
 				}
