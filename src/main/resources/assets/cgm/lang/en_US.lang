@@ -4,6 +4,8 @@ item.sniper_rifle.name=Sniper Rifle
 item.grenade_launcher.name=Grenade Launcher
 item.bazooka.name=Bazooka
 item.chain_gun.name=Minigun
+item.rifle.name=Rifle
+item.assault_rifle.name=Assault Rifle
 
 item.ammo_basic.name=Basic Ammo
 item.ammo_advanced.name=Advanced Ammo
