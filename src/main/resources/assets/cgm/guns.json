@@ -192,5 +192,45 @@
 				"zOffset": -0.2
 			}
 		}
+	},
+	{
+		"id": "assault_rifle",
+		"general": {
+			"auto": true,
+			"rate": 4
+		},
+		"projectile": {
+			"type": "basic",
+			"visible": false,
+			"damage": 2.0,
+			"size": 0.2,
+			"speed": 10.0,
+			"life": 10
+		},
+		"sounds": {
+			"fire": "rifle_fire",
+			"reload": "shotgun_fire",
+			"cock": "shotgun_fire"
+		},
+		"display": {
+			"flash": {
+				"yOffset": -0.25,
+				"zOffset": -0.15
+			}
+		},
+		"modules": {
+			"zoom": {
+				"fovModifier": 0.6,
+				"yOffset": 0.14,
+				"zOffset": 0.2
+			},
+			"attachments": {
+				"scope": {
+					"smooth": true,
+					"yOffset": 0.27,
+					"zOffset": 0.25
+				}
+			}
+		}
 	}
 ]
