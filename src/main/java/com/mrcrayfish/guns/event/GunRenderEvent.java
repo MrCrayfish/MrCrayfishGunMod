@@ -206,9 +206,14 @@ public class GunRenderEvent
 					}
 				}
 
+				//TODO standardised scope position
+				//gun.modules.zoom.yOffset
+				//gun.modules.attachments.scope.yOffset;
+				//scopeType.getOffset()
+
 				if(gun.modules.attachments.scope != null && scope != null && scopeType != null)
 				{
-					yOffset -= scopeType.getOffset();
+					//yOffset -= scopeType.getOffset();
 					zOffset -= gun.modules.attachments.scope.zOffset * 0.8 - 0.45;
 				}
 

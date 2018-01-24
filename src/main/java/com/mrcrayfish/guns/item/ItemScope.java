@@ -59,7 +59,7 @@ public class ItemScope extends Item implements ISubItems
     public enum Type
     {
         SMALL("small", 0.1F, 0.021, 2F),
-        MEDIUM("medium", 0.25F, 0.105, 6F),
+        MEDIUM("medium", 0.25F, 0.0, 3F),
         LONG("long", 0.5F, 0.051, 10F);
 
         private String name;
