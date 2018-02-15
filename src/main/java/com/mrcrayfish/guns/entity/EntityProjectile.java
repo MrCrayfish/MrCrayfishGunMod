@@ -12,6 +12,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,17 +32,17 @@ import java.util.List;
 public class EntityProjectile extends Entity implements IEntityAdditionalSpawnData
 {
 	private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, entity -> entity.canBeCollidedWith());
-	
+
 	private int shooterId;
 	private EntityLivingBase shooter;
 	private Projectile projectile;
 	private ItemStack item = ItemStack.EMPTY;
-	
-	public EntityProjectile(World worldIn) 
+
+	public EntityProjectile(World worldIn)
 	{
 		super(worldIn);
 	}
-	
+
 	public EntityProjectile(World worldIn, EntityLivingBase shooter, Projectile projectile)
     {
         this(worldIn);
@@ -75,7 +76,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 	}
 
 	@Override
-	public void onUpdate() 
+	public void onUpdate()
 	{
 		super.onUpdate();
 		updateHeading();
@@ -139,7 +140,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
 		if(this.ticksExisted >= this.projectile.life) this.setDead();
 	}
-	
+
 	@Nullable
     protected Entity findEntityOnPath(Vec3d start, Vec3d end)
     {
@@ -171,7 +172,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
         return entity;
     }
-	
+
 	protected void onHit(RayTraceResult raytraceResultIn)
     {
 		Entity entity = raytraceResultIn.entityHit;
@@ -185,22 +186,22 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 				float percent = ((float) this.projectile.life - (float) this.ticksExisted) / (float) this.projectile.life;
 				damage = this.projectile.damage * percent + this.projectile.damage / this.projectile.life;
 			}
-			
-			switch(projectile.type)
-			{
-			case BASIC:
-            case SHELL:
-			case ADVANCED:
-				DamageSource source = new EntityDamageSourceIndirect("bullet", this, shooter).setProjectile();
-				entity.attackEntityFrom(source, damage);
-				entity.hurtResistantTime = 0;
-				break;
-			case GRENADE:
-				world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 5F, true);
-				break;
-			}
-			
-			this.setDead();
+
+            switch(projectile.type)
+            {
+                case BASIC:
+                case SHELL:
+                case ADVANCED:
+                    DamageSource source = new EntityDamageSourceIndirect("bullet", this, shooter).setProjectile();
+                    entity.attackEntityFrom(source, damage);
+                    entity.hurtResistantTime = 0;
+                    break;
+                case GRENADE:
+                    world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 5F, true);
+                    break;
+            }
+
+            this.setDead();
 			return;
 		}
 
@@ -231,9 +232,9 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			}
 		}
     }
-	
+
 	@Override
-	public boolean shouldRenderInPass(int pass) 
+	public boolean shouldRenderInPass(int pass)
 	{
 		return this.projectile.visible;
 	}
@@ -242,20 +243,20 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound compound) 
+	protected void readEntityFromNBT(NBTTagCompound compound)
 	{
 		this.projectile = new Projectile();
 		this.projectile.deserializeNBT(compound.getCompoundTag("projectile"));
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound compound) 
+	protected void writeEntityToNBT(NBTTagCompound compound)
 	{
 		compound.setTag("projectile", this.projectile.serializeNBT());
 	}
 
 	@Override
-	public void writeSpawnData(ByteBuf buffer) 
+	public void writeSpawnData(ByteBuf buffer)
 	{
 		ByteBufUtils.writeTag(buffer, this.projectile.serializeNBT());
 		buffer.writeInt(this.shooterId);
@@ -265,9 +266,9 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 	}
 
 	@Override
-	public void readSpawnData(ByteBuf additionalData) 
+	public void readSpawnData(ByteBuf additionalData)
 	{
-		if(this.projectile == null) 
+		if(this.projectile == null)
 		{
 			this.projectile = new Projectile();
 		}

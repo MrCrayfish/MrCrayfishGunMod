@@ -7,10 +7,13 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.mrcrayfish.guns.item.ItemAmmo;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.annotation.*;
 import java.lang.reflect.Field;
@@ -24,6 +27,28 @@ public class Gun
 	public Sounds sounds;
 	public Display display = new Display();
 	public Modules modules = new Modules();
+
+	public boolean canAttachScope()
+	{
+		return modules.attachments != null && modules.attachments.scope != null;
+	}
+
+	@Nullable
+	public static ItemStack getScope(ItemStack gun)
+	{
+		if(gun.hasTagCompound())
+		{
+			if(gun.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
+			{
+				NBTTagCompound attachment = gun.getTagCompound().getCompoundTag("attachments");
+				if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
+				{
+					return new ItemStack(attachment.getCompoundTag("scope"));
+				}
+			}
+		}
+		return null;
+	}
 
 	public static class General
 	{

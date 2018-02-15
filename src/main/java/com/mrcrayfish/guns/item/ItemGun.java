@@ -97,7 +97,10 @@ public class ItemGun extends Item
 			}
 			else
 			{
-				GunRenderEvent.drawFlash = true;
+				if(gun.display.flash != null)
+				{
+					GunRenderEvent.drawFlash = true;
+				}
 				playerIn.rotationPitch -= 0.4f;
 			}
 

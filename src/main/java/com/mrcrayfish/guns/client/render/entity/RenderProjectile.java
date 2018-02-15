@@ -41,7 +41,10 @@ public class RenderProjectile extends Render<EntityProjectile>
             GlStateManager.rotate(180F, 0, 1, 0);
             GlStateManager.rotate(entityYaw, 0, 1, 0);
             GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
-            GlStateManager.translate(-0.5, 0, -0.5);
+            float distancePercent = (entity.ticksExisted + partialTicks) / (entity.getProjectile().life / 2);
+            double translate = -0.25 - (0.25 * distancePercent);
+            System.out.println(translate);
+            GlStateManager.translate(translate, -0.1, -0.5);
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
@@ -59,12 +62,12 @@ public class RenderProjectile extends Render<EntityProjectile>
 
             this.renderQuads(buffer, model.getQuads((IBlockState) null, (EnumFacing) null, 0L));
             tessellator.draw();
+
+            GlStateManager.enableLighting();
         }
         GlStateManager.popMatrix();
 
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
-
-        //Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(EnumParticleTypes.CLOUD.getParticleID(), 0, 0, 0, 0, 0, 0);
     }
 
     private void renderQuads(BufferBuilder buffer, List<BakedQuad> quads)

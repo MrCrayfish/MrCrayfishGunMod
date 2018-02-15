@@ -59,7 +59,7 @@ public class ItemScope extends Item implements ISubItems
     public enum Type
     {
         SMALL("small", 0.1F, 0.021, 2F),
-        MEDIUM("medium", 0.25F, 0.0, 3F),
+        MEDIUM("medium", 0.25F, 0.082, 3F),
         LONG("long", 0.5F, 0.051, 10F);
 
         private String name;
@@ -93,9 +93,12 @@ public class ItemScope extends Item implements ISubItems
         @Nullable
         public static Type getFromStack(ItemStack stack)
         {
-            if(stack.getItem() instanceof ItemScope)
+            if(stack != null && stack.getItem() instanceof ItemScope)
             {
-                return values()[stack.getMetadata()];
+                if(stack.getMetadata() >= 0 && stack.getMetadata() < values().length)
+                {
+                    return values()[stack.getMetadata()];
+                }
             }
             return null;
         }
