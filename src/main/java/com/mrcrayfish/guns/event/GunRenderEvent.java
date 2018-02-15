@@ -317,7 +317,7 @@ public class GunRenderEvent
 	}
 
 	@SubscribeEvent
-	public void onRenderHeldItem(RenderItemEvent.Held event)
+	public void onRenderHeldItem(RenderItemEvent.Held.Pre event)
 	{
 		ItemStack heldItem = event.getItem();
 		if(heldItem.getItem() instanceof ItemGun)
@@ -353,7 +353,7 @@ public class GunRenderEvent
 	}
 
 	@SubscribeEvent
-	public void onRenderEntityItem(RenderItemEvent.Gui event)
+	public void onRenderEntityItem(RenderItemEvent.Gui.Pre event)
 	{
 		ItemStack stack = event.getItem();
 		if(stack.getItem() instanceof ItemGun)
