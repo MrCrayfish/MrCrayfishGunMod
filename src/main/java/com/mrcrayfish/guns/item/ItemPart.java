@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemPart extends Item implements ISubItems
 {
-    private static final String[] PARTS = { "chain_gun_base", "chain_gun_barrels", "flash", "scope" };
+    private static final String[] PARTS = { "chain_gun_base", "chain_gun_barrels", "flash" };
 
     public ItemPart()
     {
@@ -23,22 +23,12 @@ public class ItemPart extends Item implements ISubItems
         this.setRegistryName("part");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
-        this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
         return super.getUnlocalizedName(stack) + "_" + PARTS[stack.getItemDamage()];
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
-    {
-        for (int i = 0; i < PARTS.length; ++i)
-        {
-            subItems.add(new ItemStack(itemIn, 1, i));
-        }
     }
 
     @Override
