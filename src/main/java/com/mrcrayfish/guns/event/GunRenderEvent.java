@@ -327,20 +327,29 @@ public class GunRenderEvent
 		ItemStack heldItem = event.getItem();
 		if(heldItem.getItem() instanceof ItemGun)
 		{
-			GlStateManager.translate(0, 0.5F, -0.2F);
-			GlStateManager.rotate(25F, 1, 0, 0);
+			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+			if(gun.general.gripType == Gun.GripType.TWO_HANDED)
+			{
+				GlStateManager.translate(0, 0, 0.05);
+				float invertRealProgress = (float) (1.0 - this.realProgress);
+				GlStateManager.rotate(25F * invertRealProgress, 0, 0, 1);
+				GlStateManager.rotate(25F * invertRealProgress + (float) (this.realProgress * -20F), 0, 1, 0);
+				GlStateManager.rotate(25F * invertRealProgress, 1, 0, 0);
+			}
+			RenderUtil.applyTransformType(heldItem, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND);
 			if(ModelOverrides.hasModel(heldItem.getItem()))
 			{
 				IGunModel model = ModelOverrides.getModel(heldItem.getItem());
 				model.registerPieces();
-				model.render(event.getPartialTicks(), event.getTransformType());
+				model.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.NONE);
 			}
 			else
 			{
-				Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), heldItem, event.getTransformType(), event.getHandSide() == EnumHandSide.LEFT);
+				Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), heldItem, ItemCameraTransforms.TransformType.NONE, event.getHandSide() == EnumHandSide.LEFT);
 			}
 			this.renderAttachments(heldItem);
 			event.setCanceled(true);
+
 		}
 	}
 
@@ -364,9 +373,40 @@ public class GunRenderEvent
 		if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
 		{
 			ModelPlayer model = event.getModelPlayer();
-			copyModelAngles(model.bipedHead, model.bipedRightArm);
-			model.bipedRightArm.rotateAngleX += Math.toRadians(-65F);
+			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+			switch(gun.general.gripType)
+			{
+				case ONE_HANDED:
+					copyModelAngles(model.bipedHead, model.bipedRightArm);
+					model.bipedRightArm.rotateAngleX += Math.toRadians(-65F);
+					break;
+				case TWO_HANDED:
+					copyModelAngles(model.bipedHead, model.bipedRightArm);
+					copyModelAngles(model.bipedHead, model.bipedLeftArm);
+					model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F + this.realProgress * -35F);
+					model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-45F + this.realProgress * -20F);
+					model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-50F + this.realProgress * -40F);
+					model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-10F + this.realProgress * 0F);
+					break;
+			}
 			copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
+			copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
+		}
+	}
+
+	@SubscribeEvent
+	public void onRenderPlayer(RenderPlayerEvent.Pre event)
+	{
+		EntityPlayer player = event.getEntityPlayer();
+		ItemStack heldItem = player.getHeldItemMainhand();
+		if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+		{
+			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+			if(gun.general.gripType == Gun.GripType.TWO_HANDED)
+			{
+				player.prevRenderYawOffset = event.getEntity().prevRotationYaw + 25F + (float) this.realProgress * 20F;
+				player.renderYawOffset = event.getEntity().rotationYaw + 25F + (float) this.realProgress * 20F;
+			}
 		}
 	}
 

@@ -1,6 +1,9 @@
 [
 	{
         "id": "handgun",
+		"general": {
+			"gripType": "one_handed"
+		},
 		"projectile": {
 			"type": "basic",
 			"visible": false,
@@ -36,6 +39,9 @@
     },
     {
         "id": "shotgun",
+		"general": {
+			"gripType": "two_handed"
+		},
 		"projectile": {
 			"type": "shell",
 			"visible": false,
@@ -73,6 +79,9 @@
     },
 	{
         "id": "rifle",
+		"general": {
+			"gripType": "two_handed"
+		},
 		"projectile": {
 			"type": "advanced",
 			"visible": false,
@@ -110,6 +119,9 @@
     },
 	{
         "id": "grenade_launcher",
+		"general": {
+			"gripType": "two_handed"
+		},
 		"projectile": {
 			"type": "grenade",
 			"visible": true,
@@ -135,6 +147,9 @@
     },
 	{
 		"id": "bazooka",
+		"general": {
+			"gripType": "two_handed"
+		},
 		"projectile": {
 			"type": "missile",
 			"visible": true,
@@ -171,7 +186,8 @@
 		"id": "chain_gun",
 		"general": {
 			"auto": true,
-			"rate": 2
+			"rate": 2,
+			"gripType": "one_handed"
 		},
 		"projectile": {
 			"type": "basic",
@@ -197,7 +213,8 @@
 		"id": "assault_rifle",
 		"general": {
 			"auto": true,
-			"rate": 4
+			"rate": 4,
+			"gripType": "two_handed"
 		},
 		"projectile": {
 			"type": "basic",
