@@ -61,19 +61,20 @@ public enum GripType
         @Override
         public void applyPlayerModelRotation(ModelPlayer model, float aimProgress)
         {
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-15F);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-45F);
+            model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(0F);
 
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-60F);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(15F);
+            model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(0F);
         }
 
         @Override
         public void applyPlayerPreRender(EntityPlayer player, float aimProgress)
         {
-
-        }
-
-        @Override
-        public void applyHeldItemTransforms(float aimProgress)
-        {
-
+            player.prevRenderYawOffset = player.prevRotationYaw + 45F;
+            player.renderYawOffset = player.rotationYaw + 45F;
         }
     });
 

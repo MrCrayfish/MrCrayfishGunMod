@@ -13,5 +13,4 @@ public class HeldAnimation
     public void applyPlayerPreRender(EntityPlayer player, float aimProgress) {}
 
     public void applyHeldItemTransforms(float aimProgress) {}
-
 }

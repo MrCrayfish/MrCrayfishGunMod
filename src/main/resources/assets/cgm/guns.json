@@ -187,7 +187,7 @@
 		"general": {
 			"auto": true,
 			"rate": 2,
-			"gripType": "one_handed"
+			"gripType": "chain_gun"
 		},
 		"projectile": {
 			"type": "basic",
