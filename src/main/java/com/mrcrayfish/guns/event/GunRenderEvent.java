@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -22,6 +23,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,6 +32,7 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -344,27 +347,13 @@ public class GunRenderEvent
 	@SubscribeEvent
 	public void onRenderEntityItem(RenderItemEvent.Entity.Pre event)
 	{
-		ItemStack stack = event.getItem();
-		if(stack.getItem() instanceof ItemGun)
-		{
-			RenderUtil.applyTransformType(stack, ItemCameraTransforms.TransformType.GROUND);
-			RenderUtil.renderModel(stack);
-			this.renderAttachments(stack);
-			event.setCanceled(true);
-		}
+		event.setCanceled(this.renderGun(event.getItem(), event.getTransformType()));
 	}
 
 	@SubscribeEvent
 	public void onRenderEntityItem(RenderItemEvent.Gui.Pre event)
 	{
-		ItemStack stack = event.getItem();
-		if(stack.getItem() instanceof ItemGun)
-		{
-			RenderUtil.applyTransformType(stack, ItemCameraTransforms.TransformType.GUI);
-			RenderUtil.renderModel(stack);
-			this.renderAttachments(stack);
-			event.setCanceled(true);
-		}
+		event.setCanceled(this.renderGun(event.getItem(), event.getTransformType()));
 	}
 
 	@SubscribeEvent
@@ -386,6 +375,20 @@ public class GunRenderEvent
 		dest.rotateAngleX = source.rotateAngleX;
 		dest.rotateAngleY = source.rotateAngleY;
 		dest.rotateAngleZ = source.rotateAngleZ;
+	}
+
+	private boolean renderGun(ItemStack stack, ItemCameraTransforms.TransformType transformType)
+	{
+		if(stack.getItem() instanceof ItemGun)
+		{
+			GlStateManager.pushMatrix();
+			RenderUtil.applyTransformType(stack, transformType);
+			RenderUtil.renderModel(stack);
+			this.renderAttachments(stack);
+			GlStateManager.popMatrix();
+			return true;
+		}
+		return false;
 	}
 
 	private void renderAttachments(ItemStack stack)
