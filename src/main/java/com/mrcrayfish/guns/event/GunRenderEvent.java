@@ -55,7 +55,7 @@ public class GunRenderEvent
 	public void onFovUpdate(FOVUpdateEvent event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(!mc.player.getHeldItemMainhand().isEmpty())
+		if(!mc.player.getHeldItemMainhand().isEmpty() && mc.gameSettings.thirdPersonView == 0)
 		{
 			ItemStack heldItem = mc.player.getHeldItemMainhand();
 			if(heldItem.getItem() instanceof ItemGun)
