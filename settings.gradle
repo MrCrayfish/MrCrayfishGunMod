@@ -1,0 +1,2 @@
+include ':Obfuscate'
+project(':Obfuscate').projectDir = new File(settingsDir, '../Obfuscate')
