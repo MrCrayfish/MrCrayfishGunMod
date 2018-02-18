@@ -153,12 +153,4 @@ public class Gun
 	{
 
 	}
-
-	public enum GripType
-	{
-		@SerializedName("one_handed")
-		ONE_HANDED,
-		@SerializedName("two_handed")
-		TWO_HANDED;
-	}
 }

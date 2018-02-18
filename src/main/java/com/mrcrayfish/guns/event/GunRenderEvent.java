@@ -13,8 +13,6 @@ import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -23,7 +21,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +44,7 @@ public class GunRenderEvent
 
 	private int zoomProgress;
 	private int lastZoomProgress;
-	private double realProgress;
+	private double normalZoomProgress;
 
 	private boolean setupThirdPerson = false;
 	private boolean setupPlayerRender = false;
@@ -119,7 +116,7 @@ public class GunRenderEvent
 		if(Minecraft.getMinecraft().player != null)
 		{
 			ItemStack heldItem = Minecraft.getMinecraft().player.getHeldItemMainhand();
-			if(heldItem != null && heldItem.getItem() instanceof ItemGun)
+			if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
 			{
 				IGunModel model = ModelOverrides.getModel(heldItem.getItem());
 				if(model != null) model.tick();
@@ -130,8 +127,8 @@ public class GunRenderEvent
 	@SubscribeEvent
 	public void onRenderOverlay(RenderGameOverlayEvent event)
 	{
-		realProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
-		if(realProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+		normalZoomProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
+		if(normalZoomProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
 		{
 			event.setCanceled(true);
 		}
@@ -151,10 +148,10 @@ public class GunRenderEvent
 		ItemStack scope = Gun.getScope(heldItem);
 		ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
 
-		if(scopeType != null && scopeType == ItemScope.Type.LONG && realProgress == 1.0)
+		if(scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
 			return;
 
-		if(realProgress > 0)
+		if(normalZoomProgress > 0)
 		{
 			ItemGun itemGun = (ItemGun) event.getItemStack().getItem();
 			if(event.getHand() == EnumHand.MAIN_HAND)
@@ -186,12 +183,12 @@ public class GunRenderEvent
 					zOffset -= gun.modules.attachments.scope.zOffset * 0.8 - 0.45;
 				}
 
-				GlStateManager.translate((-0.3415 + xOffset) * realProgress, yOffset * realProgress, zOffset * realProgress);
+				GlStateManager.translate((-0.3415 + xOffset) * normalZoomProgress, yOffset * normalZoomProgress, zOffset * normalZoomProgress);
 			}
 
 			if(event.getHand() == EnumHand.OFF_HAND)
 			{	
-				GlStateManager.translate(0.0, -0.5 * realProgress, 0.0);
+				GlStateManager.translate(0.0, -0.5 * normalZoomProgress, 0.0);
 			}
 		}
 
@@ -294,7 +291,7 @@ public class GunRenderEvent
 		if(scope != null)
 		{
 			ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
-			if(scopeType != null && scopeType == ItemScope.Type.LONG && realProgress == 1.0)
+			if(scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
 			{
 				Minecraft mc = Minecraft.getMinecraft();
 				mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
@@ -327,15 +324,11 @@ public class GunRenderEvent
 		ItemStack heldItem = event.getItem();
 		if(heldItem.getItem() instanceof ItemGun)
 		{
+			event.setCanceled(true);
+
 			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			if(gun.general.gripType == Gun.GripType.TWO_HANDED)
-			{
-				GlStateManager.translate(0, 0, 0.05);
-				float invertRealProgress = (float) (1.0 - this.realProgress);
-				GlStateManager.rotate(25F * invertRealProgress, 0, 0, 1);
-				GlStateManager.rotate(25F * invertRealProgress + (float) (this.realProgress * -20F), 0, 1, 0);
-				GlStateManager.rotate(25F * invertRealProgress, 1, 0, 0);
-			}
+			gun.general.gripType.getHeldAnimation().applyHeldItemTransforms((float) this.normalZoomProgress);
+
 			RenderUtil.applyTransformType(heldItem, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND);
 			if(ModelOverrides.hasModel(heldItem.getItem()))
 			{
@@ -348,8 +341,6 @@ public class GunRenderEvent
 				Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), heldItem, ItemCameraTransforms.TransformType.NONE, event.getHandSide() == EnumHandSide.LEFT);
 			}
 			this.renderAttachments(heldItem);
-			event.setCanceled(true);
-
 		}
 	}
 
@@ -374,21 +365,7 @@ public class GunRenderEvent
 		{
 			ModelPlayer model = event.getModelPlayer();
 			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			switch(gun.general.gripType)
-			{
-				case ONE_HANDED:
-					copyModelAngles(model.bipedHead, model.bipedRightArm);
-					model.bipedRightArm.rotateAngleX += Math.toRadians(-65F);
-					break;
-				case TWO_HANDED:
-					copyModelAngles(model.bipedHead, model.bipedRightArm);
-					copyModelAngles(model.bipedHead, model.bipedLeftArm);
-					model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F + this.realProgress * -35F);
-					model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-45F + this.realProgress * -20F);
-					model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-50F + this.realProgress * -40F);
-					model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-10F + this.realProgress * 0F);
-					break;
-			}
+			gun.general.gripType.getHeldAnimation().applyPlayerModelRotation(model, (float) this.normalZoomProgress);
 			copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
 			copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
 		}
@@ -402,11 +379,7 @@ public class GunRenderEvent
 		if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
 		{
 			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			if(gun.general.gripType == Gun.GripType.TWO_HANDED)
-			{
-				player.prevRenderYawOffset = event.getEntity().prevRotationYaw + 25F + (float) this.realProgress * 20F;
-				player.renderYawOffset = event.getEntity().rotationYaw + 25F + (float) this.realProgress * 20F;
-			}
+			gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, (float) this.normalZoomProgress);
 		}
 	}
 
