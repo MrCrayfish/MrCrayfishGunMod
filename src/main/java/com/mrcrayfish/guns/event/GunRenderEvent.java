@@ -127,6 +127,7 @@ public class GunRenderEvent
 	@SubscribeEvent
 	public void onRenderOverlay(RenderGameOverlayEvent event)
 	{
+		realProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
 		if(realProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
 		{
 			event.setCanceled(true);
@@ -136,8 +137,6 @@ public class GunRenderEvent
 	@SubscribeEvent
 	public void onRenderOverlay(RenderSpecificHandEvent event)
 	{
-		realProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
-
 		ItemStack heldItem = event.getItemStack();
 
 		if(!(heldItem.getItem() instanceof ItemGun))
