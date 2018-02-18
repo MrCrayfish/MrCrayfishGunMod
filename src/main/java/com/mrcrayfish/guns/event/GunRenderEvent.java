@@ -267,6 +267,9 @@ public class GunRenderEvent
 		if(player == null)
 			return;
 
+		if(Minecraft.getMinecraft().gameSettings.thirdPersonView != 0)
+			return;
+
 		ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
 
 		if(heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemGun))
