@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.proxy;
 
-import com.mrcrayfish.guns.client.event.GunRenderEvent;
+import com.mrcrayfish.guns.client.event.ClientEvents;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import net.minecraftforge.common.MinecraftForge;
@@ -13,7 +13,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.preInit();
 
-		MinecraftForge.EVENT_BUS.register(new GunRenderEvent());
+		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
 	}
 }
