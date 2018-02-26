@@ -6,7 +6,7 @@ import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModCrafting;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
-import com.mrcrayfish.guns.proxy.IProxy;
+import com.mrcrayfish.guns.proxy.CommonProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class MrCrayfishGunMod 
 {
 	@SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_SERVER)
-	public static IProxy proxy;
+	public static CommonProxy proxy;
 	
 	public static final CreativeTabs GUN_TAB = new TabGun();
 	
