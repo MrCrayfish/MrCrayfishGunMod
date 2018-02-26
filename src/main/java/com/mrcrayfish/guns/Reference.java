@@ -8,5 +8,5 @@ public class Reference
 	public static final String MC_VERSION = "[1.12.2]";
 	public static final String DEPENDENCIES = "required-after:obfuscate@[0.1.0,)";
 	public static final String PROXY_CLIENT = "com.mrcrayfish.guns.proxy.ClientProxy";
-	public static final String PROXY_SERVER = "com.mrcrayfish.guns.proxy.ServerProxy";
+	public static final String PROXY_SERVER = "com.mrcrayfish.guns.proxy.CommonProxy";
 }
