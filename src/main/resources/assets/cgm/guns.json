@@ -85,7 +85,7 @@
 		"projectile": {
 			"type": "advanced",
 			"visible": false,
-			"damage": 20.0,
+			"damage": 10.0,
 			"size": 0.0625,
 			"speed": 20.0,
 			"life": 10,

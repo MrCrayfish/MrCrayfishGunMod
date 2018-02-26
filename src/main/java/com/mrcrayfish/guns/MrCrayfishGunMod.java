@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModCrafting;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
+import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.proxy.CommonProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
@@ -32,6 +33,8 @@ public class MrCrayfishGunMod
 		ModGuns.register();
 		ModSounds.register();
 		ModCrafting.register();
+
+		PacketHandler.init();
 
 		proxy.preInit();
 	}

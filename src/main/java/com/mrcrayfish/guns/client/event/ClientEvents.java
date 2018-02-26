@@ -1,20 +1,19 @@
 package com.mrcrayfish.guns.client.event;
 
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
+import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageAim;
 import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
-import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -25,14 +24,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientEvents
@@ -311,118 +309,6 @@ public class ClientEvents
 				GlStateManager.disableAlpha();
 				GlStateManager.disableBlend();
 				GlStateManager.enableDepth();
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onRenderHeldItem(RenderItemEvent.Held.Pre event)
-	{
-		ItemStack heldItem = event.getItem();
-		if(heldItem.getItem() instanceof ItemGun)
-		{
-			event.setCanceled(true);
-
-			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			gun.general.gripType.getHeldAnimation().applyHeldItemTransforms((float) this.normalZoomProgress);
-
-			RenderUtil.applyTransformType(heldItem, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND);
-			if(ModelOverrides.hasModel(heldItem.getItem()))
-			{
-				IGunModel model = ModelOverrides.getModel(heldItem.getItem());
-				model.registerPieces();
-				model.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.NONE);
-			}
-			else
-			{
-				Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), heldItem, ItemCameraTransforms.TransformType.NONE, event.getHandSide() == EnumHandSide.LEFT);
-			}
-			this.renderAttachments(heldItem);
-		}
-	}
-
-	@SubscribeEvent
-	public void onRenderEntityItem(RenderItemEvent.Entity.Pre event)
-	{
-		event.setCanceled(this.renderGun(event.getItem(), event.getTransformType()));
-	}
-
-	@SubscribeEvent
-	public void onRenderEntityItem(RenderItemEvent.Gui.Pre event)
-	{
-		event.setCanceled(this.renderGun(event.getItem(), event.getTransformType()));
-	}
-
-	@SubscribeEvent
-	public void onSetupAngles(ModelPlayerEvent.SetupAngles.Post event)
-	{
-		EntityPlayer player = event.getEntityPlayer();
-		ItemStack heldItem = player.getHeldItemMainhand();
-		if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
-		{
-			ModelPlayer model = event.getModelPlayer();
-			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			gun.general.gripType.getHeldAnimation().applyPlayerModelRotation(model, (float) this.normalZoomProgress);
-			copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
-			copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
-		}
-	}
-
-	@SubscribeEvent
-	public void onRenderPlayer(RenderPlayerEvent.Pre event)
-	{
-		EntityPlayer player = event.getEntityPlayer();
-		ItemStack heldItem = player.getHeldItemMainhand();
-		if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
-		{
-			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, (float) this.normalZoomProgress);
-		}
-	}
-
-	private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
-	{
-		dest.rotateAngleX = source.rotateAngleX;
-		dest.rotateAngleY = source.rotateAngleY;
-		dest.rotateAngleZ = source.rotateAngleZ;
-	}
-
-	private boolean renderGun(ItemStack stack, ItemCameraTransforms.TransformType transformType)
-	{
-		if(stack.getItem() instanceof ItemGun)
-		{
-			GlStateManager.pushMatrix();
-			RenderUtil.applyTransformType(stack, transformType);
-			RenderUtil.renderModel(stack);
-			this.renderAttachments(stack);
-			GlStateManager.popMatrix();
-			return true;
-		}
-		return false;
-	}
-
-	private void renderAttachments(ItemStack stack)
-	{
-		if(stack.getItem() instanceof ItemGun)
-		{
-			Gun gun = ((ItemGun) stack.getItem()).getGun();
-			NBTTagCompound itemTag = stack.getTagCompound();
-			if(itemTag != null)
-			{
-				if(gun.canAttachScope() && itemTag.hasKey("attachments", Constants.NBT.TAG_COMPOUND))
-				{
-					NBTTagCompound attachment = itemTag.getCompoundTag("attachments");
-					if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
-					{
-						GlStateManager.pushMatrix();
-						{
-							ItemStack scope = new ItemStack(attachment.getCompoundTag("scope"));
-							GlStateManager.translate(gun.modules.attachments.scope.xOffset, gun.modules.attachments.scope.yOffset, gun.modules.attachments.scope.zOffset);
-							RenderUtil.renderModel(scope);
-						}
-						GlStateManager.popMatrix();
-					}
-				}
 			}
 		}
 	}
