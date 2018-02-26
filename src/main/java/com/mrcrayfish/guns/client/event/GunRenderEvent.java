@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.event;
+package com.mrcrayfish.guns.client.event;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
@@ -45,9 +45,6 @@ public class GunRenderEvent
 	private int zoomProgress;
 	private int lastZoomProgress;
 	private double normalZoomProgress;
-
-	private boolean setupThirdPerson = false;
-	private boolean setupPlayerRender = false;
 
 	private ItemStack flash = null;
 
