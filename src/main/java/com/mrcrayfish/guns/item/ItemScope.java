@@ -58,20 +58,20 @@ public class ItemScope extends Item implements ISubItems
 
     public enum Type
     {
-        SMALL("small", 0.1F, 0.021, 2F),
-        MEDIUM("medium", 0.25F, 0.082, 3F),
-        LONG("long", 0.5F, 0.051, 10F);
+        SMALL("small", 0.1F, 1.0F, 2F),
+        MEDIUM("medium", 0.25F, 2.1F, 3F),
+        LONG("long", 0.5F, 1.6F, 10F);
 
         private String name;
         private float additionalZoom;
-        private double offset;
+        private double heightToCenter;
         private float length;
 
-        Type(String name, float additionalZoom, double offset, float length)
+        Type(String name, float additionalZoom, double heightToCenter, float length)
         {
             this.name = name;
             this.additionalZoom = additionalZoom;
-            this.offset = offset;
+            this.heightToCenter = heightToCenter;
             this.length = length;
         }
 
@@ -80,9 +80,9 @@ public class ItemScope extends Item implements ISubItems
             return additionalZoom;
         }
 
-        public double getOffset()
+        public double getHeightToCenter()
         {
-            return offset;
+            return heightToCenter;
         }
 
         public float getLength()

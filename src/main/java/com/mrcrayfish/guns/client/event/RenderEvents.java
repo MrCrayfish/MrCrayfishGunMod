@@ -153,6 +153,9 @@ public class RenderEvents
 			ItemGun itemGun = (ItemGun) event.getItemStack().getItem();
 			if(event.getHand() == EnumHand.MAIN_HAND)
 			{
+				IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(heldItem);
+				float translationY = model.getItemCameraTransforms().firstperson_right.translation.getY();
+
 				double xOffset = 0.0;
 				double yOffset = 0.0;
 				double zOffset = 0.0;
@@ -161,7 +164,7 @@ public class RenderEvents
 				if(gun.modules.zoom != null)
 				{
 					xOffset += gun.modules.zoom.xOffset;
-					yOffset += gun.modules.zoom.yOffset;
+					yOffset -= gun.modules.zoom.yOffset * 0.0625 * 0.8 - (translationY * 0.8); //TODO remove scale (0.8) to use the model's scale
 
 					if(gun.modules.attachments.scope == null || scope == null)
 					{
@@ -169,14 +172,10 @@ public class RenderEvents
 					}
 				}
 
-				//TODO standardised scope position
-				//gun.modules.zoom.yOffset
-				//gun.modules.attachments.scope.yOffset;
-				//scopeType.getOffset()
-
 				if(gun.canAttachScope() && scope != null && scopeType != null)
 				{
-					yOffset -= scopeType.getOffset();
+					yOffset = -(gun.modules.attachments.scope.yOffset * 0.8 - (translationY * 0.8));
+					yOffset -= (scopeType.getHeightToCenter() * 0.8) * 0.0625;
 					zOffset -= gun.modules.attachments.scope.zOffset * 0.8 - 0.45;
 				}
 
@@ -192,7 +191,7 @@ public class RenderEvents
 		if(event.getHand() == EnumHand.MAIN_HAND)
 		{
 			//GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
-			GlStateManager.translate(0.56F, -0.52F, -0.72F);
+			GlStateManager.translate(0.56F, -0.56F, -0.72F);
 
 			Gun gun = ((ItemGun) event.getItemStack().getItem()).getGun();
 

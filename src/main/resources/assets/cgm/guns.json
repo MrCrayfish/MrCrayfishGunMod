@@ -27,7 +27,7 @@
 		"modules": {
 			"zoom": {
 				"fovModifier": 0.7,
-				"yOffset": 0.14
+				"yOffset": 4.9
 			},
 			"attachments": {
 				"scope": {
@@ -67,7 +67,7 @@
 		"modules": {
 			"zoom": {
 				"fovModifier": 0.7,
-				"yOffset": 0.14
+				"yOffset": 4.9
 			},
 			"attachments": {
 				"scope": {
@@ -105,7 +105,7 @@
 		"modules": {
 			"zoom": {
 				"fovModifier": 0.6,
-				"yOffset": 0.14,
+				"yOffset": 5.1,
 				"zOffset": 0.2
 			},
 			"attachments": {
@@ -177,7 +177,7 @@
 				"fovModifier": 0.4,
 				"smooth": true,
 				"xOffset": 0.181,
-				"yOffset": 0.18,
+				"yOffset": 4.2,
 				"zOffset": 0.8
 			}
 		}
@@ -237,7 +237,7 @@
 		"modules": {
 			"zoom": {
 				"fovModifier": 0.6,
-				"yOffset": 0.14,
+				"yOffset": 4.9,
 				"zOffset": 0.2
 			},
 			"attachments": {
