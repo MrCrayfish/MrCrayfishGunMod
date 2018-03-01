@@ -23,7 +23,7 @@ public enum GripType
             copyModelAngles(model.bipedHead, model.bipedRightArm);
             model.bipedRightArm.rotateAngleX += Math.toRadians(-70F);
         }
-    }),
+    }, true),
     @SerializedName("two_handed")
     TWO_HANDED(new HeldAnimation()
     {
@@ -54,7 +54,7 @@ public enum GripType
             GlStateManager.rotate(30F * invertRealProgress + aimProgress * -20F, 0, 1, 0);
             GlStateManager.rotate(25F * invertRealProgress + aimProgress * 5F, 1, 0, 0);
         }
-    }),
+    }, false),
     @SerializedName("chain_gun")
     CHAIN_GUN(new HeldAnimation()
     {
@@ -76,18 +76,25 @@ public enum GripType
             player.prevRenderYawOffset = player.prevRotationYaw + 45F;
             player.renderYawOffset = player.rotationYaw + 45F;
         }
-    });
+    }, false);
 
     private final HeldAnimation heldAnimation;
+    private final boolean renderOffhand;
 
-    GripType(HeldAnimation heldAnimation)
+    GripType(HeldAnimation heldAnimation, boolean renderOffhand)
     {
         this.heldAnimation = heldAnimation;
+        this.renderOffhand = renderOffhand;
     }
 
     public HeldAnimation getHeldAnimation()
     {
         return heldAnimation;
+    }
+
+    public boolean canRenderOffhand()
+    {
+        return renderOffhand;
     }
 
     @SideOnly(Side.CLIENT)

@@ -321,6 +321,20 @@ public class RenderEvents
 	@SubscribeEvent
 	public void onRenderHeldItem(RenderItemEvent.Held.Pre event)
 	{
+		if(event.getEntity().getPrimaryHand() != event.getHandSide())
+		{
+			ItemStack heldItem = event.getEntity().getHeldItemMainhand();
+			if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+			{
+				Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+				if(!gun.general.gripType.canRenderOffhand())
+				{
+					event.setCanceled(true);
+					return;
+				}
+			}
+		}
+
 		ItemStack heldItem = event.getItem();
 		if(heldItem.getItem() instanceof ItemGun)
 		{
