@@ -148,35 +148,34 @@ public class RenderEvents
 		if(scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
 			return;
 
+		IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(heldItem);
+		float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
+		float scaleY = model.getItemCameraTransforms().firstperson_right.scale.getY();
+		float scaleZ = model.getItemCameraTransforms().firstperson_right.scale.getZ();
+		float translateY = model.getItemCameraTransforms().firstperson_right.translation.getY() * scaleY;
+		float translateZ = model.getItemCameraTransforms().firstperson_right.translation.getZ() * scaleZ;
+
 		if(normalZoomProgress > 0)
 		{
 			ItemGun itemGun = (ItemGun) event.getItemStack().getItem();
 			if(event.getHand() == EnumHand.MAIN_HAND)
 			{
-				IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(heldItem);
-				float translationY = model.getItemCameraTransforms().firstperson_right.translation.getY();
-
 				double xOffset = 0.0;
 				double yOffset = 0.0;
 				double zOffset = 0.0;
 
 				Gun gun = itemGun.getGun();
-				if(gun.modules.zoom != null)
-				{
-					xOffset += gun.modules.zoom.xOffset;
-					yOffset -= gun.modules.zoom.yOffset * 0.0625 * 0.8 - (translationY * 0.8); //TODO remove scale (0.8) to use the model's scale
-
-					if(gun.modules.attachments.scope == null || scope == null)
-					{
-						zOffset += gun.modules.zoom.zOffset;
-					}
-				}
-
 				if(gun.canAttachScope() && scope != null && scopeType != null)
 				{
-					yOffset = -(gun.modules.attachments.scope.yOffset * 0.8 - (translationY * 0.8));
-					yOffset -= (scopeType.getHeightToCenter() * 0.8) * 0.0625;
-					zOffset -= gun.modules.attachments.scope.zOffset * 0.8 - 0.45;
+					xOffset -= gun.modules.attachments.scope.xOffset * 0.0625 * scaleX;
+					yOffset -= gun.modules.attachments.scope.yOffset * 0.0625 * scaleY - translateY + scopeType.getHeightToCenter() * scaleY * 0.0625;
+					zOffset -= gun.modules.attachments.scope.zOffset * 0.0625 * scaleZ - translateZ - 0.45;
+				}
+				else if(gun.modules.zoom != null)
+				{
+					xOffset -= gun.modules.zoom.xOffset * 0.0625 * scaleX;
+					yOffset -= gun.modules.zoom.yOffset * 0.0625 * scaleY - translateY;
+					zOffset -= gun.modules.zoom.zOffset * 0.0625 * scaleZ - translateZ;
 				}
 
 				GlStateManager.translate((-0.3415 + xOffset) * normalZoomProgress, yOffset * normalZoomProgress, zOffset * normalZoomProgress);
@@ -190,6 +189,7 @@ public class RenderEvents
 
 		if(event.getHand() == EnumHand.MAIN_HAND)
 		{
+			//Minecraft.getMinecraft().getItemRenderer().resetEquippedProgress(event.getHand());
 			//GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
 			GlStateManager.translate(0.56F, -0.56F, -0.72F);
 
@@ -200,7 +200,10 @@ public class RenderEvents
 				IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(scope);
 				GlStateManager.pushMatrix();
 				{
-					GlStateManager.translate(gun.modules.attachments.scope.xOffset * 0.8, gun.modules.attachments.scope.yOffset * 0.8, gun.modules.attachments.scope.zOffset * 0.8);
+					double displayX = gun.modules.attachments.scope.xOffset * 0.0625 * scaleX;
+					double displayY = gun.modules.attachments.scope.yOffset * 0.0625 * scaleY;
+					double displayZ = gun.modules.attachments.scope.zOffset * 0.0625 * scaleZ;
+					GlStateManager.translate(displayX, displayY, displayZ);
 					RenderUtil.renderModel(scopeModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
 				}
 				GlStateManager.popMatrix();
@@ -209,12 +212,12 @@ public class RenderEvents
 			if(drawFlash)
 			{
 				if(flash == null) flash = new ItemStack(ModGuns.PARTS, 1, 2);
-				IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(flash);
+				IBakedModel flashModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(flash);
 				GlStateManager.pushMatrix();
 				{
 					GlStateManager.disableLighting();
 					GlStateManager.translate(gun.display.flash.xOffset, gun.display.flash.yOffset, gun.display.flash.zOffset);
-					RenderUtil.renderModel(model, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+					RenderUtil.renderModel(flashModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
 					GlStateManager.enableLighting();
 				}
 				GlStateManager.popMatrix();
@@ -223,11 +226,11 @@ public class RenderEvents
 
 			GlStateManager.pushMatrix();
 			{
-				IGunModel model = ModelOverrides.getModel(event.getItemStack().getItem());
-				if(model != null)
+				IGunModel gunModel = ModelOverrides.getModel(event.getItemStack().getItem());
+				if(gunModel != null)
 				{
-					model.registerPieces();
-					model.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+					gunModel.registerPieces();
+					gunModel.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
 				}
 				else
 				{
@@ -410,7 +413,7 @@ public class RenderEvents
 						GlStateManager.pushMatrix();
 						{
 							ItemStack scope = new ItemStack(attachment.getCompoundTag("scope"));
-							GlStateManager.translate(gun.modules.attachments.scope.xOffset, gun.modules.attachments.scope.yOffset, gun.modules.attachments.scope.zOffset);
+							GlStateManager.translate(gun.modules.attachments.scope.xOffset * 0.0625, gun.modules.attachments.scope.yOffset * 0.0625, gun.modules.attachments.scope.zOffset * 0.0625);
 							RenderUtil.renderModel(scope);
 						}
 						GlStateManager.popMatrix();

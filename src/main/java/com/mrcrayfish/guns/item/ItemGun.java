@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.object.Gun;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
