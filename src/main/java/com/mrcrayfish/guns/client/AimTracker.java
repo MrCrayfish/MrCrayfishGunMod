@@ -39,7 +39,6 @@ public class AimTracker
 
     public float getNormalProgress(float partialTicks)
     {
-        System.out.println((previousAim + (currentAim - previousAim) * (previousAim == 0 || previousAim == MAX_AIM ? 0 : partialTicks)) / (float) MAX_AIM);
         return (previousAim + (currentAim - previousAim) * (previousAim == 0 || previousAim == MAX_AIM ? 0 : partialTicks)) / (float) MAX_AIM;
     }
 }

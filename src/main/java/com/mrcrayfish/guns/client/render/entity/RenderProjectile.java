@@ -43,7 +43,6 @@ public class RenderProjectile extends Render<EntityProjectile>
             GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
             float distancePercent = (entity.ticksExisted + partialTicks) / (entity.getProjectile().life / 2);
             double translate = -0.25 - (0.25 * distancePercent);
-            System.out.println(translate);
             GlStateManager.translate(translate, -0.1, -0.5);
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
