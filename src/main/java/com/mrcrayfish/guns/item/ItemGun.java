@@ -83,7 +83,8 @@ public class ItemGun extends Item
 		{
 			worldIn.playSound((EntityPlayer)null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
 		}
-		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+		//Minecraft.getMinecraft().getItemRenderer().resetEquippedProgress(handIn); //TODO stop reequip animation
+		return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
 	}
 
 	private void fire(World worldIn, EntityPlayer playerIn, ItemStack ammo)
