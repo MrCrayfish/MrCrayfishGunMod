@@ -106,7 +106,7 @@
 			"zoom": {
 				"fovModifier": 0.6,
 				"yOffset": 5.1,
-				"zOffset": 3.2
+				"zOffset": -3.2
 			},
 			"attachments": {
 				"scope": {
@@ -176,9 +176,9 @@
 			"zoom": {
 				"fovModifier": 0.4,
 				"smooth": true,
-				"xOffset": 2.896,
+				"xOffset": -3.6,
 				"yOffset": 4.2,
-				"zOffset": 12.8
+				"zOffset": -16
 			}
 		}
 	},
@@ -238,7 +238,7 @@
 			"zoom": {
 				"fovModifier": 0.6,
 				"yOffset": 4.9,
-				"zOffset": 3.2
+				"zOffset": -3.2
 			},
 			"attachments": {
 				"scope": {
