@@ -1,0 +1,24 @@
+{
+    "result": {
+        "item": "cgm:scope",
+        "data": 1
+    },
+    "pattern": [
+        "III",
+        "IGI",
+        "CCC"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 7
+        },
+        "G": {
+            "item": "minecraft:glass_pane"
+        }
+    }
+}

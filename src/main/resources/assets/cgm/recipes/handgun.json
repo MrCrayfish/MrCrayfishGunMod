@@ -1,0 +1,23 @@
+{
+    "result": {
+        "item": "cgm:handgun"
+    },
+    "pattern": [
+        "III",
+        "CCC",
+        "CN "
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 7
+        },
+        "N": {
+            "item": "minecraft:iron_nugget"
+        }
+    }
+}

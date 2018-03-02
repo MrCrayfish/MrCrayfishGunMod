@@ -1,0 +1,21 @@
+{
+    "result": {
+        "item": "cgm:ammo",
+        "data": 4,
+        "count": 2
+    },
+    "pattern": [
+        " I ",
+        "ITI",
+        "ITI"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "I": {
+            "item": "minecraft:iron_block"
+        },
+        "T": {
+            "item": "minecraft:tnt"
+        }
+    }
+}

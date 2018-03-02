@@ -1,0 +1,28 @@
+{
+    "result": {
+        "item": "cgm:ammo",
+        "data": 3,
+        "count": 2
+    },
+    "pattern": [
+        "NBN",
+        "PTP",
+        "PPP"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "N": {
+            "item": "minecraft:iron_nugget"
+        },
+        "B": {
+            "item": "minecraft:iron_block"
+        },
+        "P": {
+            "item": "minecraft:prismarine",
+            "data": 2
+        },
+        "T": {
+            "item": "minecraft:tnt"
+        }
+    }
+}

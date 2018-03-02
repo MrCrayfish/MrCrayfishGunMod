@@ -1,0 +1,26 @@
+{
+    "result": {
+        "item": "cgm:grenade_launcher"
+    },
+    "pattern": [
+        "III",
+        "CCC",
+        "CNB"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 7
+        },
+        "B": {
+            "item": "minecraft:iron_block"
+        },
+        "N": {
+            "item": "minecraft:iron_nugget"
+        }
+    }
+}

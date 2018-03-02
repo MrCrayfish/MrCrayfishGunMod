@@ -1,0 +1,27 @@
+{
+    "result": {
+        "item": "cgm:ammo",
+        "data": 2,
+        "count": 8
+    },
+    "pattern": [
+        " B ",
+        "CGC",
+        "CIC"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "B": {
+            "item": "minecraft:gold_ingot"
+        },
+        "C": {
+            "item": "minecraft:brick"
+        },
+        "G": {
+            "item": "minecraft:gunpowder"
+        },
+        "I": {
+            "item": "minecraft:iron_nugget"
+        }
+    }
+}
