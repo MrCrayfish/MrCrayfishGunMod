@@ -20,7 +20,8 @@
             "item": "minecraft:iron_nugget"
         },
         "S": {
-            "item": "minecraft:stone"
+            "item": "minecraft:stone",
+            "data": 0
         }
     }
 }
