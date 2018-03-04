@@ -81,7 +81,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 		super.onUpdate();
 		updateHeading();
 
-		if(projectile.type == ItemAmmo.Type.MISSILE)
+		if(world.isRemote && projectile.type == ItemAmmo.Type.MISSILE)
 		{
 			for(int i = 5; i > 0; i--)
 			{
