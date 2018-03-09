@@ -60,25 +60,28 @@ public class ItemGun extends Item
 		World world = player.world;
 
 		ItemStack ammo = this.findAmmo(player, gun.projectile.type);
-		if(ammo != null || player.capabilities.isCreativeMode || this.hasIgnoreAmmo(stack))
+		boolean ignoreAmmo = this.hasIgnoreAmmo(stack);
+		if(ammo != null || player.capabilities.isCreativeMode || ignoreAmmo)
 		{
 			if(count % gun.general.rate == 0)
 			{
-				fire(world, player, ammo);
+				fire(world, player, ammo, ignoreAmmo);
 			}
 		}
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) 
-	{	
+	{
+		ItemStack heldItem = playerIn.getHeldItem(handIn);
 		ItemStack stack = this.findAmmo(playerIn, gun.projectile.type);
-		if(stack != null || playerIn.capabilities.isCreativeMode)
+		boolean ignoreAmmo = this.hasIgnoreAmmo(heldItem);
+		if(stack != null || playerIn.capabilities.isCreativeMode || ignoreAmmo)
 		{
 			playerIn.setActiveHand(handIn);
 			if(!gun.general.auto)
 			{
-				fire(worldIn, playerIn, stack);
+				fire(worldIn, playerIn, stack, ignoreAmmo);
 			}
 		}
 		else
@@ -86,12 +89,12 @@ public class ItemGun extends Item
 			worldIn.playSound(null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
 		}
 		//Minecraft.getMinecraft().getItemRenderer().resetEquippedProgress(handIn); //TODO stop reequip animation
-		return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+		return new ActionResult<>(EnumActionResult.SUCCESS, heldItem);
 	}
 
-	private void fire(World worldIn, EntityPlayer playerIn, ItemStack ammo)
+	private void fire(World worldIn, EntityPlayer playerIn, ItemStack ammo, boolean ignoreAmmo)
 	{
-		if(ammo != null || playerIn.capabilities.isCreativeMode)
+		if(ammo != null || playerIn.capabilities.isCreativeMode || ignoreAmmo)
 		{
 			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
 			if(!worldIn.isRemote)
@@ -108,10 +111,9 @@ public class ItemGun extends Item
 				playerIn.rotationPitch -= 0.4f;
 			}
 
-			if(!playerIn.capabilities.isCreativeMode)
+			if(!playerIn.capabilities.isCreativeMode && ammo != null && !ignoreAmmo)
 			{
 				ammo.shrink(1);
-
 				if(ammo.getCount() == 0)
 				{
 					playerIn.inventory.deleteStack(ammo);
