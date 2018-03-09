@@ -18,6 +18,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 public class ItemGun extends Item 
 {
@@ -58,7 +59,7 @@ public class ItemGun extends Item
 		World world = player.world;
 
 		ItemStack ammo = this.findAmmo(player, gun.projectile.type);
-		if(ammo != null || player.capabilities.isCreativeMode)
+		if(ammo != null || player.capabilities.isCreativeMode || this.hasIgnoreAmmo(stack))
 		{
 			if(count % gun.general.rate == 0)
 			{
@@ -151,5 +152,11 @@ public class ItemGun extends Item
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
 		return slotChanged;
+	}
+
+	private boolean hasIgnoreAmmo(ItemStack gun)
+	{
+		NBTTagCompound tag = gun.getTagCompound();
+		return tag != null && tag.getBoolean("IgnoreAmmo");
 	}
 }
