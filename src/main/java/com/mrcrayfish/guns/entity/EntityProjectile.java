@@ -23,6 +23,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -210,10 +211,13 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 			BlockPos pos = raytraceResultIn.getBlockPos();
 			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
-			if((block instanceof BlockBreakable || block instanceof BlockPane) && state.getMaterial() == Material.GLASS)
+
+			boolean canGunGrief = world.getGameRules().getBoolean("gunGriefing");
+			if(canGunGrief && (block instanceof BlockBreakable || block instanceof BlockPane) && state.getMaterial() == Material.GLASS)
 			{
 				world.destroyBlock(raytraceResultIn.getBlockPos(), false);
 			}
+
 			if(!block.isReplaceable(world, raytraceResultIn.getBlockPos()))
 			{
 				this.setDead();

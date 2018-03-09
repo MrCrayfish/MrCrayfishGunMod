@@ -9,13 +9,17 @@ import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.proxy.CommonProxy;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.GameRules;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -54,5 +58,11 @@ public class MrCrayfishGunMod
 		{
 			ModelOverrides.register(new ResourceLocation("cgm:chain_gun"), new ModelChainGun());
 		}
+	}
+
+	@EventHandler
+	public void onServerStart(FMLServerStartedEvent event)
+	{
+		FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getGameRules().addGameRule("gunGriefing", "true", GameRules.ValueType.BOOLEAN_VALUE);
 	}
 }
