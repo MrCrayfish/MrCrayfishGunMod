@@ -216,7 +216,9 @@ public class RenderEvents
                 {
                     GlStateManager.disableLighting();
                     GlStateManager.translate(gun.display.flash.xOffset, gun.display.flash.yOffset, gun.display.flash.zOffset);
+                    Minecraft.getMinecraft().entityRenderer.disableLightmap();
                     RenderUtil.renderModel(flashModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+                    Minecraft.getMinecraft().entityRenderer.enableLightmap();
                     GlStateManager.enableLighting();
                 }
                 GlStateManager.popMatrix();
