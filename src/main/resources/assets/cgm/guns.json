@@ -192,7 +192,7 @@
 		"projectile": {
 			"type": "basic",
 			"visible": false,
-			"damage": 8.0,
+			"damage": 2.0,
 			"size": 0.2,
 			"speed": 10.0,
 			"life": 10
