@@ -104,7 +104,7 @@ public class ItemGun extends Item
 			}
 			else
 			{
-				if(gun.display.flash != null)
+				if(gun.display.flash != null && playerIn.equals(Minecraft.getMinecraft().player))
 				{
 					RenderEvents.drawFlash = true;
 				}
