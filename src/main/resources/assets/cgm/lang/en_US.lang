@@ -18,3 +18,6 @@ item.scope_medium.name=Scope (Medium)
 item.scope_long.name=Scope (Long)
 
 itemGroup.tabCGM=MrCrayfish's Gun Mod
+
+death.attack.bullet=%1$s was gunned down by %2$s
+death.attack.bullet.item=%1$s was gunned down by %2$s using a %3$s
