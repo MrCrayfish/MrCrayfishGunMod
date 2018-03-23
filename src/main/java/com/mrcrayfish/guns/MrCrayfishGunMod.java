@@ -63,6 +63,10 @@ public class MrCrayfishGunMod
 	@EventHandler
 	public void onServerStart(FMLServerStartedEvent event)
 	{
-		FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getGameRules().addGameRule("gunGriefing", "true", GameRules.ValueType.BOOLEAN_VALUE);
+		GameRules rules = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getGameRules();
+		if(!rules.hasRule("gunGriefing"))
+		{
+			rules.addGameRule("gunGriefing", "true", GameRules.ValueType.BOOLEAN_VALUE);
+		}
 	}
 }
