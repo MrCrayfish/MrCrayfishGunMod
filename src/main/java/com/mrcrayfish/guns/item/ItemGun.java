@@ -89,7 +89,8 @@ public class ItemGun extends Item
 			worldIn.playSound(null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
 		}
 		//Minecraft.getMinecraft().getItemRenderer().resetEquippedProgress(handIn); //TODO stop reequip animation
-		return new ActionResult<>(EnumActionResult.SUCCESS, heldItem);
+		return new ActionResult<>(EnumActionResult.FAIL, heldItem);
+
 	}
 
 	private void fire(World worldIn, EntityPlayer playerIn, ItemStack ammo, boolean ignoreAmmo)
@@ -150,12 +151,6 @@ public class ItemGun extends Item
     {
         return stack != null && stack.getItem() == ModGuns.AMMO && stack.getItemDamage() == type.ordinal();
     }
-
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
-	{
-		return slotChanged;
-	}
 
 	private boolean hasIgnoreAmmo(ItemStack gun)
 	{

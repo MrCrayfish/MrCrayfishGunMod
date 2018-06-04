@@ -189,7 +189,7 @@ public class RenderEvents
         if(event.getHand() == EnumHand.MAIN_HAND)
         {
             //Minecraft.getMinecraft().getItemRenderer().resetEquippedProgress(event.getHand());
-            //GlStateManager.translate(0, -(event.getEquipProgress() / 2.0F), 0);
+            GlStateManager.translate(0, -event.getEquipProgress(), 0);
             GlStateManager.translate(0.56F, -0.56F, -0.72F);
 
             Gun gun = ((ItemGun) event.getItemStack().getItem()).getGun();
