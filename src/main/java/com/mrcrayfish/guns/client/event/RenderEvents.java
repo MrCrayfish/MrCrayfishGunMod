@@ -11,6 +11,7 @@ import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelPlayer;
@@ -21,6 +22,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -284,19 +286,20 @@ public class RenderEvents
             }
         }
 
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+
         if(scope != null)
         {
             ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
             if(scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
             {
-                Minecraft mc = Minecraft.getMinecraft();
+
                 mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
                 GlStateManager.color(1.0F, 1.0F, 1.0F);
                 GlStateManager.enableBlend();
                 GlStateManager.enableAlpha();
                 GlStateManager.disableDepth();
-
-                ScaledResolution scaledResolution = new ScaledResolution(mc);
 
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
@@ -310,6 +313,34 @@ public class RenderEvents
                 GlStateManager.disableAlpha();
                 GlStateManager.disableBlend();
                 GlStateManager.enableDepth();
+            }
+        }
+
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+        {
+            Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+            if(!gun.general.auto)
+            {
+                float coolDown = player.getCooldownTracker().getCooldown(heldItem.getItem(), event.renderTickTime);
+                if(coolDown > 0.0F)
+                {
+                    double scale = 3;
+                    int i = (int) ((scaledResolution.getScaledHeight() / 2 - 7 - 60) / scale);
+                    int j = (int) Math.ceil((scaledResolution.getScaledWidth() / 2 - 8 * scale) / scale);
+
+                    //GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                    GlStateManager.enableAlpha();
+                    mc.getTextureManager().bindTexture(Gui.ICONS);
+
+                    GlStateManager.pushMatrix();
+                    {
+                        GlStateManager.scale(scale, scale, scale);
+                        int progress = (int) Math.ceil((coolDown + 0.05) * 17.0F) - 1;
+                        GuiScreen.drawModalRectWithCustomSizedTexture(j, i, 36, 94, 16, 4, 256, 256);
+                        GuiScreen.drawModalRectWithCustomSizedTexture(j, i, 52, 94, progress, 4, 256, 256);
+                    }
+                    GlStateManager.popMatrix();
+                }
             }
         }
     }
@@ -391,6 +422,8 @@ public class RenderEvents
     public void onRenderEntityItem(RenderItemEvent.Gui.Pre event)
     {
         event.setCanceled(this.renderGun(event.getItem(), event.getTransformType()));
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
     }
 
     private boolean renderGun(ItemStack stack, ItemCameraTransforms.TransformType transformType)

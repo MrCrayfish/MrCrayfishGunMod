@@ -2,6 +2,7 @@
 	{
         "id": "handgun",
 		"general": {
+			"rate": 12,
 			"gripType": "one_handed"
 		},
 		"projectile": {
@@ -31,7 +32,7 @@
 			},
 			"attachments": {
 				"scope": {
-					"yOffset": 4.48, //X / 0.0625
+					"yOffset": 4.48,
 					"zOffset": 5
 				}
 			}
@@ -40,12 +41,13 @@
     {
         "id": "shotgun",
 		"general": {
+			"rate": 20,
 			"gripType": "two_handed"
 		},
 		"projectile": {
 			"type": "shell",
 			"visible": false,
-			"damage": 15.0,
+			"damage": 8.0,
 			"size": 1.0,
 			"speed": 10.0,
 			"life": 3,
@@ -80,12 +82,13 @@
 	{
         "id": "rifle",
 		"general": {
+			"rate": 40,
 			"gripType": "two_handed"
 		},
 		"projectile": {
 			"type": "advanced",
 			"visible": false,
-			"damage": 10.0,
+			"damage": 15.0,
 			"size": 0.0625,
 			"speed": 20.0,
 			"life": 10,
@@ -120,6 +123,7 @@
 	{
         "id": "grenade_launcher",
 		"general": {
+			"rate": 20,
 			"gripType": "two_handed"
 		},
 		"projectile": {
@@ -148,13 +152,14 @@
 	{
 		"id": "bazooka",
 		"general": {
+			"rate": 80,
 			"gripType": "two_handed"
 		},
 		"projectile": {
 			"type": "missile",
 			"visible": true,
 			"auto": false,
-			"damage": 50.0,
+			"damage": 20.0,
 			"size": 0.2,
 			"speed": 4,
 			"life": 500,
@@ -219,7 +224,7 @@
 		"projectile": {
 			"type": "basic",
 			"visible": false,
-			"damage": 2.0,
+			"damage": 3.0,
 			"size": 0.2,
 			"speed": 10.0,
 			"life": 10

@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.collect.Multimap;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.client.event.RenderEvents;
@@ -9,8 +10,11 @@ import com.mrcrayfish.guns.object.Gun;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -63,8 +67,9 @@ public class ItemGun extends Item
 		boolean ignoreAmmo = this.hasIgnoreAmmo(stack);
 		if(ammo != null || player.capabilities.isCreativeMode || ignoreAmmo)
 		{
-			if(count % gun.general.rate == 0)
+			if(!player.getCooldownTracker().hasCooldown(stack.getItem()))
 			{
+				player.getCooldownTracker().setCooldown(stack.getItem(), gun.general.rate);
 				fire(world, player, ammo, ignoreAmmo);
 			}
 		}
@@ -74,6 +79,7 @@ public class ItemGun extends Item
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) 
 	{
 		ItemStack heldItem = playerIn.getHeldItem(handIn);
+
 		ItemStack stack = this.findAmmo(playerIn, gun.projectile.type);
 		boolean ignoreAmmo = this.hasIgnoreAmmo(heldItem);
 		if(stack != null || playerIn.capabilities.isCreativeMode || ignoreAmmo)
@@ -81,7 +87,11 @@ public class ItemGun extends Item
 			playerIn.setActiveHand(handIn);
 			if(!gun.general.auto)
 			{
-				fire(worldIn, playerIn, stack, ignoreAmmo);
+				if(!playerIn.getCooldownTracker().hasCooldown(heldItem.getItem()))
+				{
+					playerIn.getCooldownTracker().setCooldown(heldItem.getItem(), gun.general.rate);
+					fire(worldIn, playerIn, stack, ignoreAmmo);
+				}
 			}
 		}
 		else
@@ -112,7 +122,7 @@ public class ItemGun extends Item
 				playerIn.rotationPitch -= 0.4f;
 			}
 
-			if(!playerIn.capabilities.isCreativeMode && ammo != null && !ignoreAmmo)
+			if(!worldIn.isRemote && !playerIn.capabilities.isCreativeMode && ammo != null && !ignoreAmmo)
 			{
 				ammo.shrink(1);
 				if(ammo.getCount() == 0)

@@ -53,7 +53,7 @@ public class Gun
 	public static class General
 	{
 		@Optional public boolean auto = false;
-		@Optional public int rate = 1;
+		public int rate;
 		public GripType gripType;
 	}
 	
