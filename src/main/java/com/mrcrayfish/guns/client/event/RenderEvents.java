@@ -137,15 +137,14 @@ public class RenderEvents
     public void onRenderOverlay(RenderSpecificHandEvent event)
     {
         ItemStack heldItem = event.getItemStack();
-
-        if(!(heldItem.getItem() instanceof ItemGun)) return;
+        if(!(heldItem.getItem() instanceof ItemGun))
+            return;
 
         //Cancel it because we are doing our own custom render
         event.setCanceled(true);
 
         ItemStack scope = Gun.getScope(heldItem);
         ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
-
         if(scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
             return;
 
@@ -261,17 +260,19 @@ public class RenderEvents
     @SubscribeEvent
     public void onTick(TickEvent.RenderTickEvent event)
     {
-        if(event.phase.equals(TickEvent.Phase.START)) return;
+        if(event.phase.equals(TickEvent.Phase.START))
+            return;
 
         EntityPlayer player = Minecraft.getMinecraft().player;
+        if(player == null)
+            return;
 
-        if(player == null) return;
-
-        if(Minecraft.getMinecraft().gameSettings.thirdPersonView != 0) return;
+        if(Minecraft.getMinecraft().gameSettings.thirdPersonView != 0)
+            return;
 
         ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-
-        if(heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemGun)) return;
+        if(heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemGun))
+            return;
 
         ItemStack scope = null;
         if(heldItem.hasTagCompound())

@@ -55,6 +55,7 @@ public class Gun
 		@Optional public boolean auto = false;
 		public int rate;
 		public GripType gripType;
+		public int maxAmmo;
 	}
 	
 	public static class Projectile implements INBTSerializable<NBTTagCompound>
