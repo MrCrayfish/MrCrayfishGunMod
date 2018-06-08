@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
+import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
@@ -46,6 +47,9 @@ public class RenderEvents
     private int zoomProgress;
     private int lastZoomProgress;
     private double normalZoomProgress;
+
+    private int reloadTimer;
+    private int prevReloadTimer;
 
     private ItemStack flash = null;
 
@@ -92,8 +96,10 @@ public class RenderEvents
     public void onTick(TickEvent.ClientTickEvent event)
     {
         lastZoomProgress = zoomProgress;
+        prevReloadTimer = reloadTimer;
 
-        if(isZooming(Minecraft.getMinecraft().player))
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(player != null && isZooming(player) && !player.getDataManager().get(CommonEvents.RELOADING))
         {
             Minecraft.getMinecraft().player.prevCameraYaw = 0.0075F;
             Minecraft.getMinecraft().player.cameraYaw = 0.0075F;
@@ -111,13 +117,29 @@ public class RenderEvents
             }
         }
 
-        if(Minecraft.getMinecraft().player != null)
+        if(player != null)
         {
-            ItemStack heldItem = Minecraft.getMinecraft().player.getHeldItemMainhand();
+            ItemStack heldItem = player.getHeldItemMainhand();
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
             {
                 IGunModel model = ModelOverrides.getModel(heldItem.getItem());
                 if(model != null) model.tick();
+            }
+
+            if(player.getDataManager().get(CommonEvents.RELOADING))
+            {
+                if(reloadTimer < 10)
+                {
+                    reloadTimer++;
+                }
+            }
+            else if(reloadTimer > 0)
+            {
+                reloadTimer -= 2;
+                if(reloadTimer < 0)
+                {
+                    reloadTimer = 0;
+                }
             }
         }
     }
@@ -188,9 +210,13 @@ public class RenderEvents
 
         if(event.getHand() == EnumHand.MAIN_HAND)
         {
-            //Minecraft.getMinecraft().getItemRenderer().resetEquippedProgress(event.getHand());
             GlStateManager.translate(0, -event.getEquipProgress(), 0);
             GlStateManager.translate(0.56F, -0.56F, -0.72F);
+
+            float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * event.getPartialTicks()) / 10F;
+
+            GlStateManager.translate(0, 0.25 * reloadProgress, 0);
+            GlStateManager.rotate(45F * reloadProgress, 1, 0, 0);
 
             Gun gun = ((ItemGun) event.getItemStack().getItem()).getGun();
 

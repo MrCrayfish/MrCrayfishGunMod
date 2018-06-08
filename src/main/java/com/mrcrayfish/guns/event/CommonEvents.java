@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.event;
 
+import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.obfuscate.common.event.EntityLivingInitEvent;
@@ -9,6 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -124,6 +127,12 @@ public class CommonEvents
                     tag.setInteger("AmmoCount", tag.getInteger("AmmoCount") + amount);
                 }
                 ammo.shrink(amount);
+            }
+
+            SoundEvent event = ModSounds.getSound(gun.sounds.reload);
+            if(event != null)
+            {
+                player.world.playSound(null, player.posX, player.posY + 1.0D, player.posZ, event, SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
         }
     }

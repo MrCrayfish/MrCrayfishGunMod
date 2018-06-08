@@ -17,7 +17,7 @@
 		},
         "sounds": {
 			"fire": "pistol_fire",
-			"reload": "shotgun_fire",
+			"reload": "pistol_reload",
 			"cock": "shotgun_fire"
 		},
 		"display": {
@@ -59,7 +59,7 @@
 		},
         "sounds": {
 			"fire": "shotgun_fire",
-			"reload": "shotgun_fire",
+			"reload": "pistol_reload",
 			"cock": "shotgun_fire"
 		},
 		"display": {
@@ -99,7 +99,7 @@
 		},
         "sounds": {
 			"fire": "rifle_fire",
-			"reload": "shotgun_fire",
+			"reload": "pistol_reload",
 			"cock": "shotgun_fire"
 		},
 		"display": {
@@ -144,7 +144,7 @@
 		},
         "sounds": {
 			"fire": "grenade_fire",
-			"reload": "shotgun_fire",
+			"reload": "pistol_reload",
 			"cock": "shotgun_fire"
 		},
 		"display": {
@@ -174,7 +174,7 @@
 		},
 		"sounds": {
 			"fire": "bazooka_fire",
-			"reload": "shotgun_fire",
+			"reload": "pistol_reload",
 			"cock": "shotgun_fire"
 		},
 		"display": {
@@ -210,7 +210,7 @@
 		},
 		"sounds": {
 			"fire": "chain_gun_fire",
-			"reload": "shotgun_fire",
+			"reload": "pistol_reload",
 			"cock": "shotgun_fire"
 		},
 		"display": {
@@ -238,7 +238,7 @@
 		},
 		"sounds": {
 			"fire": "rifle_fire",
-			"reload": "shotgun_fire",
+			"reload": "pistol_reload",
 			"cock": "shotgun_fire"
 		},
 		"display": {

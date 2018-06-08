@@ -28,6 +28,12 @@ public class ModSounds
 				SoundEvent event = new SoundEvent(sound).setRegistryName(gun.sounds.fire);
 				SOUNDS.put(gun.sounds.fire, event);
 			}
+			if(!SOUNDS.containsKey(gun.sounds.reload))
+			{
+				ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, gun.sounds.reload);
+				SoundEvent event = new SoundEvent(sound).setRegistryName(gun.sounds.reload);
+				SOUNDS.put(gun.sounds.reload, event);
+			}
 		}
 	}
 

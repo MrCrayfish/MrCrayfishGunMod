@@ -4,5 +4,6 @@
    "pistol_fire": { "category": "player", "sounds": [{ "name": "cgm:pistol_fire", "stream": false }]},
    "grenade_fire": { "category": "player", "sounds": [{ "name": "cgm:grenade_fire", "stream": false }]},
    "bazooka_fire": { "category": "player", "sounds": [{ "name": "cgm:bazooka_fire", "stream": true }]},
-   "chain_gun_fire": { "category": "player", "sounds": [{ "name": "cgm:chain_gun_fire", "stream": false }]}
+   "chain_gun_fire": { "category": "player", "sounds": [{ "name": "cgm:chain_gun_fire", "stream": false }]},
+   "pistol_reload": { "category": "player", "sounds": [{ "name": "cgm:pistol_reload", "stream": false }]}
 }
