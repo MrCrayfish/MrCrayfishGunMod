@@ -26,6 +26,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Mouse;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -35,11 +36,17 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class AimHandler
+public class GunHandler
 {
     private static final Map<UUID, AimTracker> AIMING_MAP = new HashMap<>();
 
-    private boolean aiming = false;
+    public static boolean aiming = false;
+
+    @SubscribeEvent
+    public void onKeyPressed(InputEvent.MouseInputEvent event)
+    {
+
+    }
 
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
@@ -53,7 +60,7 @@ public class AimHandler
                 aiming = true;
             }
         }
-        else
+        else if(aiming)
         {
             Minecraft.getMinecraft().player.getDataManager().set(CommonEvents.AIMING, false);
             PacketHandler.INSTANCE.sendToServer(new MessageAim(false));

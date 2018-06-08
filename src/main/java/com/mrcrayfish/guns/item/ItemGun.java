@@ -1,21 +1,30 @@
 package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
+import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
+import com.mrcrayfish.guns.network.message.MessageReload;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
+import java.awt.*;
 
 public class ItemGun extends Item 
 {
@@ -28,7 +37,6 @@ public class ItemGun extends Item
 		this.setRegistryName(gun.id);
 		this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 		this.setMaxStackSize(1);
-		this.setMaxDamage(gun.general.maxAmmo);
 	}
 	
 	public Gun getGun() 
@@ -40,13 +48,6 @@ public class ItemGun extends Item
 	public int getMaxItemUseDuration(ItemStack stack)
 	{
 		return 72000;
-	}
-
-	@Override
-	public int getDamage(ItemStack stack)
-	{
-		NBTTagCompound tagCompound = createTagCompound(stack);
-		return gun.general.maxAmmo - tagCompound.getInteger("AmmoCount");
 	}
 
 	@Override
@@ -69,6 +70,7 @@ public class ItemGun extends Item
 			{
 				tracker.setCooldown(stack.getItem(), gun.general.rate);
 				fire(player.world, player, stack);
+				entity.resetActiveHand();
 			}
 		}
 	}
@@ -77,79 +79,75 @@ public class ItemGun extends Item
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) 
 	{
 		ItemStack heldItem = playerIn.getHeldItem(handIn);
-		if(this.hasAmmo(heldItem) || playerIn.capabilities.isCreativeMode)
+		if(!worldIn.isRemote)
 		{
-			playerIn.setActiveHand(handIn);
-			if(!gun.general.auto)
+			if(this.hasAmmo(heldItem) || playerIn.capabilities.isCreativeMode)
 			{
-				CooldownTracker tracker = playerIn.getCooldownTracker();
-				if(!tracker.hasCooldown(heldItem.getItem()))
+				if(playerIn.isHandActive())
 				{
-					tracker.setCooldown(heldItem.getItem(), gun.general.rate);
-					fire(worldIn, playerIn, heldItem);
+					return new ActionResult<>(EnumActionResult.FAIL, heldItem);
+				}
+				playerIn.setActiveHand(handIn);
+
+				if(!gun.general.auto)
+				{
+					CooldownTracker tracker = playerIn.getCooldownTracker();
+					if(!tracker.hasCooldown(heldItem.getItem()))
+					{
+						tracker.setCooldown(heldItem.getItem(), gun.general.rate);
+						fire(worldIn, playerIn, heldItem);
+					}
 				}
 			}
-		}
-		else
-		{
-			worldIn.playSound(null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
+			else
+			{
+				worldIn.playSound(null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
+			}
 		}
 		return new ActionResult<>(EnumActionResult.FAIL, heldItem);
 	}
 
 	private void fire(World worldIn, EntityPlayer playerIn, ItemStack heldItem)
 	{
-		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
-		if(!worldIn.isRemote)
+		if(playerIn.getDataManager().get(CommonEvents.RELOADING))
 		{
-			EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
-			worldIn.spawnEntity(bullet);
-		}
-		else
-		{
-			if(gun.display.flash != null && playerIn.equals(Minecraft.getMinecraft().player))
-			{
-				RenderEvents.drawFlash = true;
-			}
-			playerIn.rotationPitch -= 0.4f;
+			playerIn.getDataManager().set(CommonEvents.RELOADING, false);
 		}
 
-		if(!worldIn.isRemote && !playerIn.capabilities.isCreativeMode)
+		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+
+		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
+		worldIn.spawnEntity(bullet);
+
+		if(gun.display.flash != null)
+		{
+			PacketHandler.INSTANCE.sendTo(new MessageMuzzleFlash(), (EntityPlayerMP) playerIn);
+		}
+
+		if(!playerIn.capabilities.isCreativeMode)
 		{
 			NBTTagCompound tag = createTagCompound(heldItem);
 			if(!tag.getBoolean("IgnoreAmmo"))
 			{
 				tag.setInteger("AmmoCount", Math.max(0, tag.getInteger("AmmoCount") - 1));
 			}
-			heldItem.damageItem(1, playerIn);
 		}
 	}
 	
-	private ItemStack findAmmo(EntityPlayer player, ItemAmmo.Type type)
+	public static ItemStack findAmmo(EntityPlayer player, ItemAmmo.Type type)
     {
-        if (this.isAmmo(player.getHeldItem(EnumHand.OFF_HAND), type))
-        {
-            return player.getHeldItem(EnumHand.OFF_HAND);
-        }
-        else if (this.isAmmo(player.getHeldItem(EnumHand.MAIN_HAND), type))
-        {
-            return player.getHeldItem(EnumHand.MAIN_HAND);
-        }
-        else
-        {
-            for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
-            {
-                ItemStack stack = player.inventory.getStackInSlot(i);
-                if (this.isAmmo(stack, type))
-                {
-                    return stack;
-                }
-            }
-            return null;
-        }
+		for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
+		{
+			ItemStack stack = player.inventory.getStackInSlot(i);
+			if (isAmmo(stack, type))
+			{
+				return stack;
+			}
+		}
+		return null;
     }
 	
-	protected boolean isAmmo(ItemStack stack, ItemAmmo.Type type)
+	private static boolean isAmmo(ItemStack stack, ItemAmmo.Type type)
     {
         return stack != null && stack.getItem() == ModGuns.AMMO && stack.getItemDamage() == type.ordinal();
     }
@@ -178,5 +176,31 @@ public class ItemGun extends Item
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		return stack.getTagCompound();
+	}
+
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		return slotChanged;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		NBTTagCompound tagCompound = createTagCompound(stack);
+		return tagCompound.getInteger("AmmoCount") != gun.general.maxAmmo;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		NBTTagCompound tagCompound = createTagCompound(stack);
+		return 1.0 - (tagCompound.getInteger("AmmoCount") / (double) gun.general.maxAmmo);
+	}
+
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+	{
+		return Color.CYAN.getRGB();
 	}
 }

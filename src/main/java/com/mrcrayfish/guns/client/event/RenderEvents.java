@@ -22,7 +22,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -369,7 +368,7 @@ public class RenderEvents
             event.setCanceled(true);
 
             Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-            gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(AimHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialTicks()));
+            gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialTicks()));
 
             RenderUtil.applyTransformType(heldItem, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND);
             if(ModelOverrides.hasModel(heldItem.getItem()))
@@ -395,7 +394,7 @@ public class RenderEvents
         {
             ModelPlayer model = event.getModelPlayer();
             Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-            gun.general.gripType.getHeldAnimation().applyPlayerModelRotation(model, AimHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialTicks()));
+            gun.general.gripType.getHeldAnimation().applyPlayerModelRotation(model, GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialTicks()));
             copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
             copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
         }
@@ -409,7 +408,7 @@ public class RenderEvents
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
         {
             Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-            gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, AimHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialRenderTick()));
+            gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialRenderTick()));
         }
     }
 
