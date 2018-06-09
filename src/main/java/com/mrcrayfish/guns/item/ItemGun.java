@@ -63,6 +63,10 @@ public class ItemGun extends Item
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
+
+		if(player.world.isRemote)
+			return;
+
 		if(this.hasAmmo(stack) || player.capabilities.isCreativeMode)
 		{
 			CooldownTracker tracker = player.getCooldownTracker();
@@ -109,6 +113,9 @@ public class ItemGun extends Item
 
 	private void fire(World worldIn, EntityPlayer playerIn, ItemStack heldItem)
 	{
+		if(worldIn.isRemote)
+			return;
+
 		if(playerIn.getDataManager().get(CommonEvents.RELOADING))
 		{
 			playerIn.getDataManager().set(CommonEvents.RELOADING, false);
@@ -119,7 +126,7 @@ public class ItemGun extends Item
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
 		worldIn.spawnEntity(bullet);
 
-		if(gun.display.flash != null)
+		if(gun.display.flash != null && !worldIn.isRemote)
 		{
 			PacketHandler.INSTANCE.sendTo(new MessageMuzzleFlash(), (EntityPlayerMP) playerIn);
 		}
