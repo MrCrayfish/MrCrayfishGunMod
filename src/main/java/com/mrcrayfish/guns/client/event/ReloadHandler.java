@@ -58,16 +58,19 @@ public class ReloadHandler
             if(reloading)
             {
                 ItemStack stack = player.getHeldItemMainhand();
-                NBTTagCompound tag = stack.getTagCompound();
-                if(tag != null)
+                if(stack.getItem() instanceof ItemGun)
                 {
-                    Gun gun = ((ItemGun) stack.getItem()).getGun();
-                    if(tag.getInteger("AmmoCount") >= gun.general.maxAmmo)
-                        return;
-                    if(ItemGun.findAmmo(player, gun.projectile.type) == null)
-                        return;
-                    Minecraft.getMinecraft().player.getDataManager().set(CommonEvents.RELOADING, true);
-                    PacketHandler.INSTANCE.sendToServer(new MessageReload(true));
+                    NBTTagCompound tag = stack.getTagCompound();
+                    if(tag != null)
+                    {
+                        Gun gun = ((ItemGun) stack.getItem()).getGun();
+                        if(tag.getInteger("AmmoCount") >= gun.general.maxAmmo)
+                            return;
+                        if(ItemGun.findAmmo(player, gun.projectile.type) == null)
+                            return;
+                        Minecraft.getMinecraft().player.getDataManager().set(CommonEvents.RELOADING, true);
+                        PacketHandler.INSTANCE.sendToServer(new MessageReload(true));
+                    }
                 }
             }
             else
