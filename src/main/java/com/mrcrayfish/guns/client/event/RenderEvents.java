@@ -12,6 +12,7 @@ import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -22,6 +23,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -29,6 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -210,16 +213,25 @@ public class RenderEvents
 
         if(event.getHand() == EnumHand.MAIN_HAND)
         {
+            /*if(Minecraft.getMinecraft().player.getDataManager().get(CommonEvents.RELOADING))
+            {
+                GlStateManager.pushMatrix();
+                {
+                    renderArmFirstPerson(EnumHandSide.LEFT, event.getPartialTicks());
+                }
+                GlStateManager.popMatrix();
+            }*/
+
             GlStateManager.translate(0, -event.getEquipProgress(), 0);
             GlStateManager.translate(0.56F, -0.56F, -0.72F);
 
             float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * event.getPartialTicks()) / 10F;
 
-            GlStateManager.translate(0, 0.25 * reloadProgress, 0);
+            GlStateManager.translate(0, 0.35 * reloadProgress, 0);
+            GlStateManager.translate(0, 0, -0.1 * reloadProgress);
             GlStateManager.rotate(45F * reloadProgress, 1, 0, 0);
 
             Gun gun = ((ItemGun) event.getItemStack().getItem()).getGun();
-
             if(gun.canAttachScope() && scope != null)
             {
                 IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(scope);
@@ -497,5 +509,33 @@ public class RenderEvents
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
+    }
+
+    private static void renderArmFirstPerson(EnumHandSide handSide, float partialTicks)
+    {
+        boolean flag = handSide != EnumHandSide.LEFT;
+        float f = flag ? 1.0F : -1.0F;
+        Minecraft mc = Minecraft.getMinecraft();
+        AbstractClientPlayer player = mc.player;
+        mc.getTextureManager().bindTexture(player.getLocationSkin());
+
+        float progress = (float) Math.sin(Math.toRadians(180F * (player.ticksExisted % 10 + partialTicks) / 10F));
+        GlStateManager.translate(-0.64F + 0.5, -0.6F, -0.7F);
+        GlStateManager.rotate(-35F, 0, 1, 0);
+        GlStateManager.rotate(-10F, 0, 0, 1);
+        GlStateManager.rotate(-45F * progress - 45F, 1, 0, 0);
+        RenderPlayer renderplayer = (RenderPlayer)mc.getRenderManager().<AbstractClientPlayer>getEntityRenderObject(player);
+        GlStateManager.disableCull();
+
+        if (flag)
+        {
+            renderplayer.renderRightArm(player);
+        }
+        else
+        {
+            renderplayer.renderLeftArm(player);
+        }
+
+        GlStateManager.enableCull();
     }
 }

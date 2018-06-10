@@ -1,19 +1,17 @@
 package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.MrCrayfishGunMod;
-import com.mrcrayfish.guns.client.event.ReloadHandler;
-import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
-import com.mrcrayfish.guns.network.message.MessageReload;
+import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 
 public class ItemGun extends Item 
@@ -64,17 +63,16 @@ public class ItemGun extends Item
 
 		EntityPlayer player = (EntityPlayer) entity;
 
-		if(player.world.isRemote)
+		if(!player.world.isRemote)
 			return;
 
-		if(this.hasAmmo(stack) || player.capabilities.isCreativeMode)
+		if(ItemGun.hasAmmo(stack) || player.capabilities.isCreativeMode)
 		{
 			CooldownTracker tracker = player.getCooldownTracker();
 			if(!tracker.hasCooldown(stack.getItem()))
 			{
 				tracker.setCooldown(stack.getItem(), gun.general.rate);
-				fire(player.world, player, stack);
-				entity.resetActiveHand();
+				PacketHandler.INSTANCE.sendToServer(new MessageShoot());
 			}
 		}
 	}
@@ -83,9 +81,9 @@ public class ItemGun extends Item
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) 
 	{
 		ItemStack heldItem = playerIn.getHeldItem(handIn);
-		if(!worldIn.isRemote)
+		if(worldIn.isRemote)
 		{
-			if(this.hasAmmo(heldItem) || playerIn.capabilities.isCreativeMode)
+			if(ItemGun.hasAmmo(heldItem) || playerIn.capabilities.isCreativeMode)
 			{
 				if(playerIn.isHandActive())
 				{
@@ -99,19 +97,19 @@ public class ItemGun extends Item
 					if(!tracker.hasCooldown(heldItem.getItem()))
 					{
 						tracker.setCooldown(heldItem.getItem(), gun.general.rate);
-						fire(worldIn, playerIn, heldItem);
+						PacketHandler.INSTANCE.sendToServer(new MessageShoot());
 					}
 				}
 			}
 			else
 			{
-				worldIn.playSound(null, playerIn.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
+				Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_LEVER_CLICK, 0.8F));
 			}
 		}
 		return new ActionResult<>(EnumActionResult.FAIL, heldItem);
 	}
 
-	private void fire(World worldIn, EntityPlayer playerIn, ItemStack heldItem)
+	public static void fire(World worldIn, EntityPlayer playerIn, ItemStack heldItem)
 	{
 		if(worldIn.isRemote)
 			return;
@@ -121,10 +119,10 @@ public class ItemGun extends Item
 			playerIn.getDataManager().set(CommonEvents.RELOADING, false);
 		}
 
-		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
-
+		Gun gun = getGun(heldItem);
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
 		worldIn.spawnEntity(bullet);
+		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
 
 		if(gun.display.flash != null && !worldIn.isRemote)
 		{
@@ -159,7 +157,7 @@ public class ItemGun extends Item
         return stack != null && stack.getItem() == ModGuns.AMMO && stack.getItemDamage() == type.ordinal();
     }
 
-	private boolean hasAmmo(ItemStack gunStack)
+	public static boolean hasAmmo(ItemStack gunStack)
 	{
 		NBTTagCompound tag = createTagCompound(gunStack);
 		return tag.getBoolean("IgnoreAmmo") || tag.getInteger("AmmoCount") > 0;
@@ -176,7 +174,7 @@ public class ItemGun extends Item
 		}
 	}
 
-	private NBTTagCompound createTagCompound(ItemStack stack)
+	private static NBTTagCompound createTagCompound(ItemStack stack)
 	{
 		if(!stack.hasTagCompound())
 		{
@@ -209,5 +207,15 @@ public class ItemGun extends Item
 	public int getRGBDurabilityForDisplay(ItemStack stack)
 	{
 		return Color.CYAN.getRGB();
+	}
+
+	@Nullable
+	public static Gun getGun(ItemStack stack)
+	{
+		if(stack.getItem() instanceof ItemGun)
+		{
+			return ((ItemGun) stack.getItem()).gun;
+		}
+		return null;
 	}
 }

@@ -1,9 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.client.event.RenderEvents;
+import com.mrcrayfish.guns.MrCrayfishGunMod;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -22,9 +20,7 @@ public class MessageMuzzleFlash implements IMessage, IMessageHandler<MessageMuzz
     @Override
     public IMessage onMessage(MessageMuzzleFlash message, MessageContext ctx)
     {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        player.rotationPitch -= 0.4f;
-        RenderEvents.drawFlash = true;
+        MrCrayfishGunMod.proxy.showMuzzleFlash();
         return null;
     }
 }
