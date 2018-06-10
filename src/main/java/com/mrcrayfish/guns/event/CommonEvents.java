@@ -92,10 +92,11 @@ public class CommonEvents
 
         public boolean isWeaponFull()
         {
+            if(!stack.hasTagCompound())
+            {
+                stack.setTagCompound(new NBTTagCompound());
+            }
             NBTTagCompound tag = stack.getTagCompound();
-            if(tag == null)
-                return true;
-
             Gun gun = ((ItemGun) stack.getItem()).getGun();
             return tag.getInteger("AmmoCount") == gun.general.maxAmmo;
         }
