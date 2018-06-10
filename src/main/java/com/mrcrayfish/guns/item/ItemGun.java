@@ -103,7 +103,7 @@ public class ItemGun extends Item
 			}
 			else
 			{
-				Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_LEVER_CLICK, 0.8F));
+				MrCrayfishGunMod.proxy.playClientSound(SoundEvents.BLOCK_LEVER_CLICK);
 			}
 		}
 		return new ActionResult<>(EnumActionResult.FAIL, heldItem);
@@ -124,7 +124,7 @@ public class ItemGun extends Item
 		worldIn.spawnEntity(bullet);
 		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
 
-		if(gun.display.flash != null && !worldIn.isRemote)
+		if(gun.display.flash != null)
 		{
 			PacketHandler.INSTANCE.sendTo(new MessageMuzzleFlash(), (EntityPlayerMP) playerIn);
 		}

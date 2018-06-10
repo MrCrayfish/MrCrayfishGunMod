@@ -7,7 +7,10 @@ import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
@@ -31,5 +34,11 @@ public class ClientProxy extends CommonProxy
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		player.rotationPitch -= 0.4f;
 		RenderEvents.drawFlash = true;
+	}
+
+	@Override
+	public void playClientSound(SoundEvent sound)
+	{
+		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, 1.0F));
 	}
 }

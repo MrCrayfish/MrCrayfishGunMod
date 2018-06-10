@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.proxy;
 
 import com.mrcrayfish.guns.event.CommonEvents;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 public class CommonProxy
@@ -16,4 +17,6 @@ public class CommonProxy
 	public void spawnParticle(EnumParticleTypes type, boolean ignoreRange, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {}
 
 	public void showMuzzleFlash() {}
+
+	public void playClientSound(SoundEvent sound) {}
 }
