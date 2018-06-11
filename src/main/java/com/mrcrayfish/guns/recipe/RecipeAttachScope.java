@@ -76,12 +76,16 @@ public class RecipeAttachScope extends net.minecraftforge.registries.IForgeRegis
         }
 
         NBTTagCompound itemTag = new NBTTagCompound();
-
         NBTTagCompound attachments = new NBTTagCompound();
         attachments.setTag("scope", scope.writeToNBT(new NBTTagCompound()));
         itemTag.setTag("attachments", attachments);
 
-        gun.setTagCompound(itemTag);
+        if(!gun.hasTagCompound())
+        {
+            gun.setTagCompound(new NBTTagCompound());
+        }
+        NBTTagCompound gunTag = gun.getTagCompound();
+        gunTag.merge(itemTag);
 
         return gun;
     }
