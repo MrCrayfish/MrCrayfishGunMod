@@ -241,7 +241,7 @@ public class RenderEvents
                     double displayY = gun.modules.attachments.scope.yOffset * 0.0625 * scaleY;
                     double displayZ = gun.modules.attachments.scope.zOffset * 0.0625 * scaleZ;
                     GlStateManager.translate(displayX, displayY, displayZ);
-                    RenderUtil.renderModel(scopeModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+                    RenderUtil.renderModel(scopeModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getItemStack());
                 }
                 GlStateManager.popMatrix();
             }
@@ -255,7 +255,7 @@ public class RenderEvents
                     GlStateManager.disableLighting();
                     GlStateManager.translate(gun.display.flash.xOffset, gun.display.flash.yOffset, gun.display.flash.zOffset);
                     Minecraft.getMinecraft().entityRenderer.disableLightmap();
-                    RenderUtil.renderModel(flashModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+                    RenderUtil.renderModel(flashModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getItemStack());
                     Minecraft.getMinecraft().entityRenderer.enableLightmap();
                     GlStateManager.enableLighting();
                 }
@@ -269,7 +269,7 @@ public class RenderEvents
                 if(gunModel != null)
                 {
                     gunModel.registerPieces();
-                    gunModel.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
+                    gunModel.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getItemStack());
                 }
                 else
                 {
@@ -413,7 +413,7 @@ public class RenderEvents
             {
                 IGunModel model = ModelOverrides.getModel(heldItem.getItem());
                 model.registerPieces();
-                model.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.NONE);
+                model.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.NONE, heldItem);
             }
             else
             {
@@ -495,7 +495,7 @@ public class RenderEvents
                         {
                             ItemStack scope = new ItemStack(attachment.getCompoundTag("scope"));
                             GlStateManager.translate(gun.modules.attachments.scope.xOffset * 0.0625, gun.modules.attachments.scope.yOffset * 0.0625, gun.modules.attachments.scope.zOffset * 0.0625);
-                            RenderUtil.renderModel(scope);
+                            RenderUtil.renderModel(scope, stack);
                         }
                         GlStateManager.popMatrix();
                     }

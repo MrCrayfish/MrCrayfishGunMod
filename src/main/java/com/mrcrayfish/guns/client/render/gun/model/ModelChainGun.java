@@ -47,9 +47,9 @@ public class ModelChainGun implements IGunModel
     }
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack)
     {
-        RenderUtil.renderModel(base, transformType);
-        RenderUtil.renderModel(barrel, transformType, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks));
+        RenderUtil.renderModel(base, transformType, stack);
+        RenderUtil.renderModel(barrel, transformType, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks), stack);
     }
 }
