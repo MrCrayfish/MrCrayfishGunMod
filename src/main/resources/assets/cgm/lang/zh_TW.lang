@@ -19,5 +19,5 @@ item.scope_long.name=範圍（長）
 
 itemGroup.tabCGM=MrCrayfish槍械模組
 
-death.attack.bullet=%1$s被%2$s
+death.attack.bullet=%1$s被%2$s槍殺了
 death.attack.bullet.item=%1$s被%2$s使用%3$s槍殺了
