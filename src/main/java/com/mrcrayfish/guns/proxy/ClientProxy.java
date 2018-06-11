@@ -16,6 +16,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 import java.awt.*;
@@ -40,12 +41,11 @@ public class ClientProxy extends CommonProxy
 		super.init();
 		IItemColor color = (stack, index) ->
 		{
-			if(index == 0 && stack.hasTagCompound())
+			if(index == 0 && stack.hasTagCompound() && stack.getTagCompound().hasKey("color", Constants.NBT.TAG_INT))
 			{
-				return Color.decode("#66FFFF55").getRGB();
-				//return stack.getTagCompound().getInteger("color");
+				return stack.getTagCompound().getInteger("color");
 			}
-			return -Color.decode("0x55555555").getRGB();
+			return Color.decode("#66FFFFFF").getRGB();
 		};
 		RegistrationHandler.Items.getItems().forEach(item ->
 		{

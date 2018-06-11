@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -217,5 +218,23 @@ public class ItemGun extends Item
 			return ((ItemGun) stack.getItem()).gun;
 		}
 		return null;
+	}
+
+	public boolean hasColor(ItemStack stack)
+	{
+		NBTTagCompound tagCompound = createTagCompound(stack);
+		return tagCompound.hasKey("color", Constants.NBT.TAG_INT);
+	}
+
+	public int getColor(ItemStack stack)
+	{
+		NBTTagCompound tagCompound = createTagCompound(stack);
+		return tagCompound.getInteger("color");
+	}
+
+	public void setColor(ItemStack stack, int color)
+	{
+		NBTTagCompound tagCompound = createTagCompound(stack);
+		tagCompound.setInteger("color", color);
 	}
 }
