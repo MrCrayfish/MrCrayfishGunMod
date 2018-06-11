@@ -198,7 +198,8 @@
 			"auto": true,
 			"rate": 2,
 			"gripType": "chain_gun",
-			"maxAmmo": 100
+			"maxAmmo": 100,
+			"reloadSpeed": 4
 		},
 		"projectile": {
 			"type": "basic",
@@ -226,7 +227,8 @@
 			"auto": true,
 			"rate": 4,
 			"gripType": "two_handed",
-			"maxAmmo": 30
+			"maxAmmo": 30,
+			"reloadSpeed": 2
 		},
 		"projectile": {
 			"type": "basic",

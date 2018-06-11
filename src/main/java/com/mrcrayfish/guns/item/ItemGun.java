@@ -141,6 +141,10 @@ public class ItemGun extends Item
 	
 	public static ItemStack findAmmo(EntityPlayer player, ItemAmmo.Type type)
     {
+    	if(player.capabilities.isCreativeMode)
+		{
+			return new ItemStack(ModGuns.AMMO, 64, type.ordinal());
+		}
 		for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);

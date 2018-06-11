@@ -61,7 +61,7 @@ public class CommonEvents
                 }
                 if(tracker.canReload(player))
                 {
-                    tracker.increaseAmmo(player, 1);
+                    tracker.increaseAmmo(player);
                     if(tracker.isWeaponFull() || !tracker.hasAmmo(player))
                     {
                         reloadTrackerMap.remove(player.getUniqueID());
@@ -98,7 +98,7 @@ public class CommonEvents
             }
             NBTTagCompound tag = stack.getTagCompound();
             Gun gun = ((ItemGun) stack.getItem()).getGun();
-            return tag.getInteger("AmmoCount") == gun.general.maxAmmo;
+            return tag.getInteger("AmmoCount") >= gun.general.maxAmmo;
         }
 
         public boolean hasAmmo(EntityPlayer player)
@@ -115,16 +115,17 @@ public class CommonEvents
             return deltaTicks > 0 && deltaTicks % 10 == 0;
         }
 
-        public void increaseAmmo(EntityPlayer player, int amount)
+        public void increaseAmmo(EntityPlayer player)
         {
             Gun gun = ((ItemGun) stack.getItem()).getGun();
             ItemStack ammo = ItemGun.findAmmo(player, gun.projectile.type);
             if(ammo != null)
             {
-                amount = Math.min(ammo.getCount(), amount);
+                int amount = Math.min(ammo.getCount(), gun.general.reloadSpeed);
                 NBTTagCompound tag = stack.getTagCompound();
                 if(tag != null)
                 {
+                    amount = Math.min(amount, gun.general.maxAmmo - tag.getInteger("AmmoCount"));
                     tag.setInteger("AmmoCount", tag.getInteger("AmmoCount") + amount);
                 }
                 ammo.shrink(amount);
