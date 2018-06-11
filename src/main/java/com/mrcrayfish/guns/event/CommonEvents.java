@@ -103,8 +103,6 @@ public class CommonEvents
 
         public boolean hasAmmo(EntityPlayer player)
         {
-            if(player.capabilities.isCreativeMode)
-                return true;
             Gun gun = ((ItemGun) stack.getItem()).getGun();
             return ItemGun.findAmmo(player, gun.projectile.type) != null;
         }

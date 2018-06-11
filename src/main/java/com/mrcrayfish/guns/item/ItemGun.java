@@ -197,7 +197,7 @@ public class ItemGun extends Item
 	public boolean showDurabilityBar(ItemStack stack)
 	{
 		NBTTagCompound tagCompound = createTagCompound(stack);
-		return tagCompound.getInteger("AmmoCount") != gun.general.maxAmmo;
+		return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInteger("AmmoCount") != gun.general.maxAmmo;
 	}
 
 	@Override
