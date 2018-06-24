@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.recipe;
 
+import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
@@ -80,11 +81,7 @@ public class RecipeAttachScope extends net.minecraftforge.registries.IForgeRegis
         attachments.setTag("scope", scope.writeToNBT(new NBTTagCompound()));
         itemTag.setTag("attachments", attachments);
 
-        if(!gun.hasTagCompound())
-        {
-            gun.setTagCompound(new NBTTagCompound());
-        }
-        NBTTagCompound gunTag = gun.getTagCompound();
+        NBTTagCompound gunTag = ItemStackUtil.createTagCompound(gun);
         gunTag.merge(itemTag);
 
         return gun;

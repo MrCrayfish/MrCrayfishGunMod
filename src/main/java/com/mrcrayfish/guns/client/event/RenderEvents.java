@@ -241,7 +241,7 @@ public class RenderEvents
                     double displayY = gun.modules.attachments.scope.yOffset * 0.0625 * scaleY;
                     double displayZ = gun.modules.attachments.scope.zOffset * 0.0625 * scaleZ;
                     GlStateManager.translate(displayX, displayY, displayZ);
-                    RenderUtil.renderModel(scopeModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getItemStack());
+                    RenderUtil.renderModel(scopeModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, scope);
                 }
                 GlStateManager.popMatrix();
             }
@@ -495,7 +495,7 @@ public class RenderEvents
                         {
                             ItemStack scope = new ItemStack(attachment.getCompoundTag("scope"));
                             GlStateManager.translate(gun.modules.attachments.scope.xOffset * 0.0625, gun.modules.attachments.scope.yOffset * 0.0625, gun.modules.attachments.scope.zOffset * 0.0625);
-                            RenderUtil.renderModel(scope, stack);
+                            RenderUtil.renderModel(scope);
                         }
                         GlStateManager.popMatrix();
                     }

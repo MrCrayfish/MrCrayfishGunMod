@@ -7,13 +7,11 @@ import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.RegistrationHandler;
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.item.ItemColored;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
@@ -49,7 +47,7 @@ public class ClientProxy extends CommonProxy
 		};
 		RegistrationHandler.Items.getItems().forEach(item ->
 		{
-			if(item instanceof ItemGun)
+			if(item instanceof ItemColored)
 			{
 				Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
 			}

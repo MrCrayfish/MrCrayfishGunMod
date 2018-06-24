@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.item;
 
+import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.event.CommonEvents;
@@ -26,7 +27,7 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.awt.*;
 
-public class ItemGun extends Item 
+public class ItemGun extends ItemColored
 {
 	private final Gun gun;
 	
@@ -132,7 +133,7 @@ public class ItemGun extends Item
 
 		if(!playerIn.capabilities.isCreativeMode)
 		{
-			NBTTagCompound tag = createTagCompound(heldItem);
+			NBTTagCompound tag = ItemStackUtil.createTagCompound(heldItem);
 			if(!tag.getBoolean("IgnoreAmmo"))
 			{
 				tag.setInteger("AmmoCount", Math.max(0, tag.getInteger("AmmoCount") - 1));
@@ -164,7 +165,7 @@ public class ItemGun extends Item
 
 	public static boolean hasAmmo(ItemStack gunStack)
 	{
-		NBTTagCompound tag = createTagCompound(gunStack);
+		NBTTagCompound tag = ItemStackUtil.createTagCompound(gunStack);
 		return tag.getBoolean("IgnoreAmmo") || tag.getInteger("AmmoCount") > 0;
 	}
 
@@ -174,18 +175,9 @@ public class ItemGun extends Item
 		if(isInCreativeTab(tab))
 		{
 			ItemStack stack = new ItemStack(this);
-			createTagCompound(stack).setInteger("AmmoCount", gun.general.maxAmmo);
+			ItemStackUtil.createTagCompound(stack).setInteger("AmmoCount", gun.general.maxAmmo);
 			items.add(stack);
 		}
-	}
-
-	private static NBTTagCompound createTagCompound(ItemStack stack)
-	{
-		if(!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		return stack.getTagCompound();
 	}
 
 	@Override
@@ -197,14 +189,14 @@ public class ItemGun extends Item
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		NBTTagCompound tagCompound = createTagCompound(stack);
+		NBTTagCompound tagCompound = ItemStackUtil.createTagCompound(stack);
 		return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInteger("AmmoCount") != gun.general.maxAmmo;
 	}
 
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		NBTTagCompound tagCompound = createTagCompound(stack);
+		NBTTagCompound tagCompound = ItemStackUtil.createTagCompound(stack);
 		return 1.0 - (tagCompound.getInteger("AmmoCount") / (double) gun.general.maxAmmo);
 	}
 
@@ -222,23 +214,5 @@ public class ItemGun extends Item
 			return ((ItemGun) stack.getItem()).gun;
 		}
 		return null;
-	}
-
-	public boolean hasColor(ItemStack stack)
-	{
-		NBTTagCompound tagCompound = createTagCompound(stack);
-		return tagCompound.hasKey("color", Constants.NBT.TAG_INT);
-	}
-
-	public int getColor(ItemStack stack)
-	{
-		NBTTagCompound tagCompound = createTagCompound(stack);
-		return tagCompound.getInteger("color");
-	}
-
-	public void setColor(ItemStack stack, int color)
-	{
-		NBTTagCompound tagCompound = createTagCompound(stack);
-		tagCompound.setInteger("color", color);
 	}
 }

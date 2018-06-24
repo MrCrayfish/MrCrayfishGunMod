@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.recipe;
 
 import com.google.common.collect.Lists;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.item.ItemColored;
 import com.mrcrayfish.guns.item.ItemGun;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemArmor;
@@ -16,9 +17,9 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class RecipeColorWeapon extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeColorItem extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
-    public RecipeColorWeapon()
+    public RecipeColorItem()
     {
         this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "color_weapon"));
     }
@@ -26,7 +27,7 @@ public class RecipeColorWeapon extends net.minecraftforge.registries.IForgeRegis
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        ItemStack weapon = ItemStack.EMPTY;
+        ItemStack item = ItemStack.EMPTY;
         List<ItemStack> dyes = Lists.<ItemStack>newArrayList();
 
         for (int i = 0; i < inv.getSizeInventory(); ++i)
@@ -34,13 +35,13 @@ public class RecipeColorWeapon extends net.minecraftforge.registries.IForgeRegis
             ItemStack stack = inv.getStackInSlot(i);
             if (!stack.isEmpty())
             {
-                if (stack.getItem() instanceof ItemGun)
+                if (stack.getItem() instanceof ItemColored)
                 {
-                    if (!weapon.isEmpty())
+                    if (!item.isEmpty())
                     {
                         return false;
                     }
-                    weapon = stack;
+                    item = stack;
                 }
                 else
                 {
@@ -53,37 +54,37 @@ public class RecipeColorWeapon extends net.minecraftforge.registries.IForgeRegis
             }
         }
 
-        return !weapon.isEmpty() && !dyes.isEmpty();
+        return !item.isEmpty() && !dyes.isEmpty();
     }
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        ItemStack weapon = ItemStack.EMPTY;
-        ItemGun gun = null;
+        ItemStack item = ItemStack.EMPTY;
+        ItemColored colored = null;
+
         int[] combinedValues = new int[3];
         int combinedColor = 0;
         int colorCount = 0;
-
 
         for (int k = 0; k < inv.getSizeInventory(); ++k)
         {
             ItemStack stack = inv.getStackInSlot(k);
             if (!stack.isEmpty())
             {
-                if (stack.getItem() instanceof ItemGun)
+                if (stack.getItem() instanceof ItemColored)
                 {
-                    gun = (ItemGun) stack.getItem();
-                    if (!weapon.isEmpty())
+                    colored = (ItemColored) stack.getItem();
+                    if (!item.isEmpty())
                     {
                         return ItemStack.EMPTY;
                     }
-                    weapon = stack.copy();
-                    weapon.setCount(1);
+                    item = stack.copy();
+                    item.setCount(1);
 
-                    if (gun.hasColor(stack))
+                    if (colored.hasColor(stack))
                     {
-                        int color = gun.getColor(weapon);
+                        int color = colored.getColor(item);
                         float red = (float)(color >> 16 & 255) / 255.0F;
                         float green = (float)(color >> 8 & 255) / 255.0F;
                         float blue = (float)(color & 255) / 255.0F;
@@ -114,7 +115,7 @@ public class RecipeColorWeapon extends net.minecraftforge.registries.IForgeRegis
             }
         }
 
-        if (gun == null)
+        if (colored == null)
         {
             return ItemStack.EMPTY;
         }
@@ -130,8 +131,8 @@ public class RecipeColorWeapon extends net.minecraftforge.registries.IForgeRegis
             blue = (int)((float)blue * averageColor / maxValue);
             int finalColor = (red << 8) + green;
             finalColor = (finalColor << 8) + blue;
-            gun.setColor(weapon, finalColor);
-            return weapon;
+            colored.setColor(item, finalColor);
+            return item;
         }
     }
 

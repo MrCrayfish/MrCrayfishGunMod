@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ItemScope extends Item implements ISubItems
+public class ItemScope extends ItemColored implements ISubItems
 {
     public ItemScope()
     {
