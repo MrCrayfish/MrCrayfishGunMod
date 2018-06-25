@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.object;
 
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,15 +19,15 @@ public class Gun
 	public Display display = new Display();
 	public Modules modules = new Modules();
 
-	public boolean canAttachType(String type)
+	public boolean canAttachType(IAttachment.Type type)
 	{
 		if(modules.attachments != null)
 		{
 			switch(type)
 			{
-				case "scope":
+				case SCOPE:
 					return modules.attachments.scope != null;
-				case "barrel":
+				case BARREL:
 					return modules.attachments.barrel != null;
 			}
 		}
@@ -34,15 +35,15 @@ public class Gun
 	}
 
 	@Nullable
-	public Modules.Attachments.Positioned getAttachmentPosition(String type)
+	public Modules.Attachments.Positioned getAttachmentPosition(IAttachment.Type type)
 	{
 		if(modules.attachments != null)
 		{
 			switch(type)
 			{
-				case "scope":
+				case SCOPE:
 					return modules.attachments.scope;
-				case "barrel":
+				case BARREL:
 					return modules.attachments.barrel;
 			}
 		}

@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
 import com.mrcrayfish.guns.object.Gun;
@@ -188,7 +189,7 @@ public class RenderEvents
                 double zOffset = 0.0;
 
                 Gun gun = itemGun.getGun();
-                if(gun.canAttachType("scope") && scope != null && scopeType != null)
+                if(gun.canAttachType(IAttachment.Type.SCOPE) && scope != null && scopeType != null)
                 {
                     xOffset -= gun.modules.attachments.scope.xOffset * 0.0625 * scaleX;
                     yOffset -= gun.modules.attachments.scope.yOffset * 0.0625 * scaleY - translateY + scopeType.getHeightToCenter() * scaleY * 0.0625;
@@ -433,14 +434,15 @@ public class RenderEvents
             NBTTagCompound attachments = gunTag.getCompoundTag("attachments");
             for(String attachmentKey : attachments.getKeySet())
             {
-                if(gun.canAttachType(attachmentKey))
+                IAttachment.Type type = IAttachment.Type.getType(attachmentKey);
+                if(gun.canAttachType(type))
                 {
                     ItemStack attachmentStack = Gun.getAttachment(attachmentKey, stack);
                     if(!attachmentStack.isEmpty())
                     {
                         GlStateManager.pushMatrix();
                         {
-                            Gun.Modules.Attachments.Positioned positioned = gun.getAttachmentPosition(attachmentKey);
+                            Gun.Modules.Attachments.Positioned positioned = gun.getAttachmentPosition(type);
                             if(positioned != null)
                             {
                                 double displayX = positioned.xOffset * 0.0625;
@@ -472,7 +474,7 @@ public class RenderEvents
 
                 if(!Gun.getAttachment("barrel", weapon).isEmpty())
                 {
-                    Gun.Modules.Attachments.Positioned positioned = gun.getAttachmentPosition("barrel");
+                    Gun.Modules.Attachments.Positioned positioned = gun.getAttachmentPosition(IAttachment.Type.BARREL);
                     if(positioned != null)
                     {
                         GlStateManager.translate(0, 0, (gun.display.flash.zOffset - positioned.zOffset) * 0.0625 - positioned.scale);

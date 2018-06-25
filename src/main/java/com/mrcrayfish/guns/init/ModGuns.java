@@ -60,7 +60,7 @@ public class ModGuns
 		PARTS = new ItemPart();
 		AMMO = new ItemAmmo();
 		SCOPES = new ItemScope();
-		SILENCER = new ItemAttachment("silencer", "barrel");
+		SILENCER = new ItemAttachment("silencer", IAttachment.Type.BARREL);
 	}
 
 	public static void register()

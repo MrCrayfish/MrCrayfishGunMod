@@ -1,9 +1,7 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -15,15 +13,13 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ItemScope extends ItemColored implements ISubItems, IAttachment
+public class ItemScope extends ItemAttachment implements ISubItems
 {
     public ItemScope()
     {
-        this.setUnlocalizedName("scope");
-        this.setRegistryName("scope");
+        super("scope", IAttachment.Type.SCOPE);
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
-        this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
     }
 
     @Override
@@ -54,12 +50,6 @@ public class ItemScope extends ItemColored implements ISubItems, IAttachment
             modelLocations.add(new ResourceLocation(Reference.MOD_ID, "scope_" + type.name));
         }
         return modelLocations;
-    }
-
-    @Override
-    public String getType()
-    {
-        return "scope";
     }
 
     public enum Type

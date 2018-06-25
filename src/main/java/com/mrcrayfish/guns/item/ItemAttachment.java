@@ -6,11 +6,11 @@ import net.minecraft.item.Item;
 /**
  * Author: MrCrayfish
  */
-public class ItemAttachment extends Item implements IAttachment
+public class ItemAttachment extends ItemColored implements IAttachment
 {
-    private final String type;
+    private final IAttachment.Type type;
 
-    public ItemAttachment(String id, String type)
+    public ItemAttachment(String id, IAttachment.Type type)
     {
         this.setUnlocalizedName(id);
         this.setRegistryName(id);
@@ -19,7 +19,7 @@ public class ItemAttachment extends Item implements IAttachment
     }
 
     @Override
-    public String getType()
+    public IAttachment.Type getType()
     {
         return type;
     }

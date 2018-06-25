@@ -78,7 +78,7 @@ public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegist
 
         NBTTagCompound itemTag = new NBTTagCompound();
         NBTTagCompound attachments = new NBTTagCompound();
-        attachments.setTag(((IAttachment)attachment.getItem()).getType(), attachment.writeToNBT(new NBTTagCompound()));
+        attachments.setTag(((IAttachment)attachment.getItem()).getType().getName(), attachment.writeToNBT(new NBTTagCompound()));
         itemTag.setTag("attachments", attachments);
 
         NBTTagCompound gunTag = ItemStackUtil.createTagCompound(gun);
