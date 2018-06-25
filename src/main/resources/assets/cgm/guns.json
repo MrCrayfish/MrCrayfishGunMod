@@ -82,6 +82,11 @@
 				"scope": {
 					"yOffset": 4.4,
 					"zOffset": 2.4
+				},
+				"barrel": {
+					"yOffset": -4.2,
+					"zOffset": -9.0,
+					"scale": 0.5
 				}
 			}
 		}
