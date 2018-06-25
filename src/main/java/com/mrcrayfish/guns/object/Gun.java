@@ -1,23 +1,13 @@
 package com.mrcrayfish.guns.object;
 
-import com.google.gson.*;
-import com.google.gson.annotations.SerializedName;
-
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.lang.annotation.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 public class Gun
 {
@@ -28,9 +18,35 @@ public class Gun
 	public Display display = new Display();
 	public Modules modules = new Modules();
 
-	public boolean canAttachScope()
+	public boolean canAttachType(String type)
 	{
-		return modules.attachments != null && modules.attachments.scope != null;
+		if(modules.attachments != null)
+		{
+			switch(type)
+			{
+				case "scope":
+					return modules.attachments.scope != null;
+				case "barrel":
+					return modules.attachments.barrel != null;
+			}
+		}
+		return false;
+	}
+
+	@Nullable
+	public Modules.Attachments.Positioned getAttachmentPosition(String type)
+	{
+		if(modules.attachments != null)
+		{
+			switch(type)
+			{
+				case "scope":
+					return modules.attachments.scope;
+				case "barrel":
+					return modules.attachments.barrel;
+			}
+		}
+		return null;
 	}
 
 	@Nullable
@@ -48,6 +64,22 @@ public class Gun
 			}
 		}
 		return null;
+	}
+
+	public static ItemStack getAttachment(String type, ItemStack gun)
+	{
+		if(gun.hasTagCompound())
+		{
+			if(gun.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
+			{
+				NBTTagCompound attachment = gun.getTagCompound().getCompoundTag("attachments");
+				if(attachment.hasKey(type, Constants.NBT.TAG_COMPOUND))
+				{
+					return new ItemStack(attachment.getCompoundTag(type));
+				}
+			}
+		}
+		return ItemStack.EMPTY;
 	}
 
 	public static class General
@@ -138,13 +170,21 @@ public class Gun
 		public static class Attachments
 		{
 			@Optional public Scope scope;
+			@Optional public Barrel barrel;
 
-			public static class Scope
+			public static class Scope extends Positioned
 			{
 				@Optional public boolean smooth;
+			}
+
+			public static class Barrel extends Positioned {}
+
+			public static class Positioned
+			{
 				@Optional public double xOffset;
 				@Optional public double yOffset;
 				@Optional public double zOffset;
+				@Optional public double scale = 1.0;
 			}
 		}
 	}

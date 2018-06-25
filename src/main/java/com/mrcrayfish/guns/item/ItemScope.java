@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ItemScope extends ItemColored implements ISubItems
+public class ItemScope extends ItemColored implements ISubItems, IAttachment
 {
     public ItemScope()
     {
@@ -54,6 +54,12 @@ public class ItemScope extends ItemColored implements ISubItems
             modelLocations.add(new ResourceLocation(Reference.MOD_ID, "scope_" + type.name));
         }
         return modelLocations;
+    }
+
+    @Override
+    public String getType()
+    {
+        return "scope";
     }
 
     public enum Type

@@ -2,8 +2,8 @@ package com.mrcrayfish.guns.recipe;
 
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.item.ItemScope;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -14,18 +14,18 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class RecipeAttachScope extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
-    public RecipeAttachScope()
+    public RecipeAttachment()
     {
-        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "attach_scope"));
+        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "attachment"));
     }
 
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
         ItemStack gun = ItemStack.EMPTY;
-        ItemStack scope = ItemStack.EMPTY;
+        ItemStack attachment = ItemStack.EMPTY;
 
         for(int i = 0; i < inv.getSizeInventory(); i++)
         {
@@ -38,22 +38,22 @@ public class RecipeAttachScope extends net.minecraftforge.registries.IForgeRegis
                     gun = stack;
                 }
 
-                if(stack.getItem() instanceof ItemScope)
+                if(stack.getItem() instanceof IAttachment)
                 {
-                    if(!scope.isEmpty()) return false;
-                    scope = stack;
+                    if(!attachment.isEmpty()) return false;
+                    attachment = stack;
                 }
             }
         }
 
-        return !gun.isEmpty() && !scope.isEmpty();
+        return !gun.isEmpty() && !attachment.isEmpty();
     }
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
         ItemStack gun = ItemStack.EMPTY;
-        ItemStack scope = ItemStack.EMPTY;
+        ItemStack attachment = ItemStack.EMPTY;
 
         for(int i = 0; i < inv.getSizeInventory(); i++)
         {
@@ -67,18 +67,18 @@ public class RecipeAttachScope extends net.minecraftforge.registries.IForgeRegis
                     gun = stack.copy();
                 }
 
-                if(stack.getItem() instanceof ItemScope)
+                if(stack.getItem() instanceof IAttachment)
                 {
-                    if(!scope.isEmpty())
+                    if(!attachment.isEmpty())
                         return null;
-                    scope = stack.copy();
+                    attachment = stack.copy();
                 }
             }
         }
 
         NBTTagCompound itemTag = new NBTTagCompound();
         NBTTagCompound attachments = new NBTTagCompound();
-        attachments.setTag("scope", scope.writeToNBT(new NBTTagCompound()));
+        attachments.setTag(((IAttachment)attachment.getItem()).getType(), attachment.writeToNBT(new NBTTagCompound()));
         itemTag.setTag("attachments", attachments);
 
         NBTTagCompound gunTag = ItemStackUtil.createTagCompound(gun);

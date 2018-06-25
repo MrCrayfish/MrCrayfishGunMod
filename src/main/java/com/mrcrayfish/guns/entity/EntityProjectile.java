@@ -153,7 +153,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
             if (hitEntity != this.shooter)
             {
-				AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox().grow(0.30000001192092896D);
+				AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox();
                 RayTraceResult result = axisalignedbb.calculateIntercept(start, end);
 
                 if (result != null)
