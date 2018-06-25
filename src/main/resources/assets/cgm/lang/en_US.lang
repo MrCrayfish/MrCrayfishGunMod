@@ -16,6 +16,7 @@ item.ammo_missile.name=Missile
 item.scope_small.name=Scope (Short)
 item.scope_medium.name=Scope (Medium)
 item.scope_long.name=Scope (Long)
+item.silencer.name=Silencer
 
 itemGroup.tabCGM=MrCrayfish's Gun Mod
 
