@@ -6,5 +6,7 @@
    "bazooka_fire": { "category": "player", "sounds": [{ "name": "cgm:bazooka_fire", "stream": true }]},
    "chain_gun_fire": { "category": "player", "sounds": [{ "name": "cgm:chain_gun_fire", "stream": false }]},
    "pistol_reload": { "category": "player", "sounds": [{ "name": "cgm:pistol_reload", "stream": false }]},
-   "silenced_fire": { "category": "player", "sounds": [{ "name": "cgm:silenced_fire", "stream": false }]}
+   "pistol_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:pistol_fire_silenced", "stream": false }]},
+   "shotgun_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:shotgun_fire_silenced", "stream": false }]},
+   "rifle_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:rifle_fire_silenced", "stream": false }]}
 }
