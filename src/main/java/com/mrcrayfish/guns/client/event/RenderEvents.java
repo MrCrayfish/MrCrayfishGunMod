@@ -271,7 +271,7 @@ public class RenderEvents
 
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
         {
-            ItemScope.Type scopeType = ItemScope.Type.getFromStack(Gun.getAttachment("scope", heldItem));
+            ItemScope.Type scopeType = ItemScope.Type.getFromStack(Gun.getAttachment(IAttachment.Type.SCOPE, heldItem));
             if(scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
             {
                 mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
@@ -437,7 +437,7 @@ public class RenderEvents
                 IAttachment.Type type = IAttachment.Type.getType(attachmentKey);
                 if(gun.canAttachType(type))
                 {
-                    ItemStack attachmentStack = Gun.getAttachment(attachmentKey, stack);
+                    ItemStack attachmentStack = Gun.getAttachment(type, stack);
                     if(!attachmentStack.isEmpty())
                     {
                         GlStateManager.pushMatrix();
@@ -472,7 +472,7 @@ public class RenderEvents
                 GlStateManager.disableLighting();
                 GlStateManager.translate(gun.display.flash.xOffset * 0.0625, gun.display.flash.yOffset * 0.0625, gun.display.flash.zOffset * 0.0625);
 
-                if(!Gun.getAttachment("barrel", weapon).isEmpty())
+                if(!Gun.getAttachment(IAttachment.Type.BARREL, weapon).isEmpty())
                 {
                     Gun.Modules.Attachments.Positioned positioned = gun.getAttachmentPosition(IAttachment.Type.BARREL);
                     if(positioned != null)

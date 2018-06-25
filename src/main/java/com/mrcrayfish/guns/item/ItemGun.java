@@ -121,10 +121,21 @@ public class ItemGun extends ItemColored
 			playerIn.getDataManager().set(CommonEvents.RELOADING, false);
 		}
 
+		boolean silenced = false;
+		ItemStack barrel = Gun.getAttachment(IAttachment.Type.BARREL, heldItem);
+		if(!barrel.isEmpty())
+		{
+			silenced = barrel.getItem() == ModGuns.SILENCER;
+		}
+
 		Gun gun = getGun(heldItem);
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
+		if(silenced)
+		{
+			bullet.setDamageModifier(0.75F);
+		}
 		worldIn.spawnEntity(bullet);
-		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, !silenced ? 5.0F : 0.25F, 0.8F + itemRand.nextFloat() * 0.2F);
 
 		if(gun.display.flash != null)
 		{

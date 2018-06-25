@@ -67,16 +67,16 @@ public class Gun
 		return null;
 	}
 
-	public static ItemStack getAttachment(String type, ItemStack gun)
+	public static ItemStack getAttachment(IAttachment.Type type, ItemStack gun)
 	{
 		if(gun.hasTagCompound())
 		{
 			if(gun.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
 			{
 				NBTTagCompound attachment = gun.getTagCompound().getCompoundTag("attachments");
-				if(attachment.hasKey(type, Constants.NBT.TAG_COMPOUND))
+				if(attachment.hasKey(type.getName(), Constants.NBT.TAG_COMPOUND))
 				{
-					return new ItemStack(attachment.getCompoundTag(type));
+					return new ItemStack(attachment.getCompoundTag(type.getName()));
 				}
 			}
 		}
