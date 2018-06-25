@@ -22,8 +22,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2,
-				"zOffset": 0.35
+				"yOffset": -4.2,
+				"zOffset": 0.5
 			}
 		},
 		"modules": {
@@ -69,8 +69,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2,
-				"zOffset": -0.1
+				"yOffset": -4.2,
+				"zOffset": -9.0
 			}
 		},
 		"modules": {
@@ -109,8 +109,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.15,
-				"zOffset": -0.3
+				"yOffset": -3.8,
+				"zOffset": -13
 			}
 		},
 		"modules": {
@@ -159,7 +159,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2
+				"yOffset": -4.6,
+				"zOffset": -6.8
 			}
 		}
     },
@@ -189,7 +190,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2
+				"yOffset": -3.8,
+				"zOffset": -8.0
 			}
 		},
 		"modules": {
@@ -226,8 +228,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.35,
-				"zOffset": -0.2
+				"yOffset": -6,
+				"zOffset": -15
 			}
 		}
 	},
