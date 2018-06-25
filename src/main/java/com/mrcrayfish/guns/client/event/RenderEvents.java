@@ -442,7 +442,7 @@ public class RenderEvents
                     {
                         GlStateManager.pushMatrix();
                         {
-                            Gun.Modules.Attachments.Positioned positioned = gun.getAttachmentPosition(type);
+                            Gun.ScaledPositioned positioned = gun.getAttachmentPosition(type);
                             if(positioned != null)
                             {
                                 double displayX = positioned.xOffset * 0.0625;
@@ -474,7 +474,7 @@ public class RenderEvents
 
                 if(!Gun.getAttachment(IAttachment.Type.BARREL, weapon).isEmpty())
                 {
-                    Gun.Modules.Attachments.Positioned positioned = gun.getAttachmentPosition(IAttachment.Type.BARREL);
+                    Gun.ScaledPositioned positioned = gun.getAttachmentPosition(IAttachment.Type.BARREL);
                     if(positioned != null)
                     {
                         GlStateManager.translate(0, 0, (gun.display.flash.zOffset - positioned.zOffset) * 0.0625 - positioned.scale);

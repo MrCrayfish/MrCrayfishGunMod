@@ -35,7 +35,7 @@ public class Gun
 	}
 
 	@Nullable
-	public Modules.Attachments.Positioned getAttachmentPosition(IAttachment.Type type)
+	public ScaledPositioned getAttachmentPosition(IAttachment.Type type)
 	{
 		if(modules.attachments != null)
 		{
@@ -147,12 +147,7 @@ public class Gun
 	{
 		@Optional public Flash flash;
 
-		public static class Flash
-		{
-			@Optional public double xOffset;
-			@Optional public double yOffset;
-			@Optional public double zOffset;
-		}
+		public static class Flash extends ScaledPositioned {}
 	}
 
 	public static class Modules
@@ -160,13 +155,10 @@ public class Gun
 		@Optional public Zoom zoom;
 		public Attachments attachments = new Attachments();
 
-		public static class Zoom
+		public static class Zoom extends Positioned
 		{
 			@Optional public float fovModifier;
 			@Optional public boolean smooth;
-			@Optional public double xOffset;
-			@Optional public double yOffset;
-			@Optional public double zOffset;
 		}
 
 		public static class Attachments
@@ -174,21 +166,25 @@ public class Gun
 			@Optional public Scope scope;
 			@Optional public Barrel barrel;
 
-			public static class Scope extends Positioned
+			public static class Scope extends ScaledPositioned
 			{
 				@Optional public boolean smooth;
 			}
 
-			public static class Barrel extends Positioned {}
-
-			public static class Positioned
-			{
-				@Optional public double xOffset;
-				@Optional public double yOffset;
-				@Optional public double zOffset;
-				@Optional public double scale = 1.0;
-			}
+			public static class Barrel extends ScaledPositioned {}
 		}
+	}
+
+	public static class Positioned
+	{
+		@Optional public double xOffset;
+		@Optional public double yOffset;
+		@Optional public double zOffset;
+	}
+
+	public static class ScaledPositioned extends Positioned
+	{
+		@Optional public double scale = 1.0;
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
