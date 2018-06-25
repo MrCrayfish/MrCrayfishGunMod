@@ -19,7 +19,7 @@
         },
         "fixed": {
             "rotation": [ 0, 90, 0 ],
-            "translation": [ -9.5, 10, 0 ],
+            "translation": [ -0.5, 10, 0 ],
             "scale": [ 2, 2, 2 ]
         },
         "thirdperson_righthand": {
