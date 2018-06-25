@@ -140,6 +140,7 @@ public class Gun
 		public String fire;
 		public String reload;
 		public String cock;
+		@Optional public String silenced_fire = "silenced_fire";
 	}
 
 	public static class Display

@@ -135,7 +135,15 @@ public class ItemGun extends ItemColored
 			bullet.setDamageModifier(0.75F);
 		}
 		worldIn.spawnEntity(bullet);
-		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, !silenced ? 5.0F : 0.25F, 0.8F + itemRand.nextFloat() * 0.2F);
+
+		if(silenced)
+		{
+			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.silenced_fire), SoundCategory.HOSTILE, 1F, 0.8F + itemRand.nextFloat() * 0.2F);
+		}
+		else
+		{
+			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+		}
 
 		if(gun.display.flash != null)
 		{
