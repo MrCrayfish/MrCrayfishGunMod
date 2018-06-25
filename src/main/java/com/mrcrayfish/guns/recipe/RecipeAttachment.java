@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -24,7 +25,7 @@ public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegist
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        ItemStack gun = ItemStack.EMPTY;
+        ItemStack weapon = ItemStack.EMPTY;
         ItemStack attachment = ItemStack.EMPTY;
 
         for(int i = 0; i < inv.getSizeInventory(); i++)
@@ -34,19 +35,28 @@ public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegist
             {
                 if(stack.getItem() instanceof ItemGun)
                 {
-                    if(!gun.isEmpty()) return false;
-                    gun = stack;
+                    if(!weapon.isEmpty())
+                        return false;
+                    weapon = stack;
                 }
 
                 if(stack.getItem() instanceof IAttachment)
                 {
-                    if(!attachment.isEmpty()) return false;
+                    if(!attachment.isEmpty())
+                        return false;
                     attachment = stack;
                 }
             }
         }
 
-        return !gun.isEmpty() && !attachment.isEmpty();
+        if(!weapon.isEmpty()&& !attachment.isEmpty())
+        {
+            IAttachment.Type type = ((IAttachment)attachment.getItem()).getType();
+            Gun gun = ((ItemGun)weapon.getItem()).getGun();
+            return gun.canAttachType(type);
+        }
+
+        return false;
     }
 
     @Override
