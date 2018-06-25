@@ -57,7 +57,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 		updateHeading();
 
 		this.setSize(projectile.size, projectile.size);
-		this.setPosition(shooter.posX + dir.x, shooter.posY + shooter.getEyeHeight() - 0.10000000149011612D + dir.y, shooter.posZ + dir.z);
+		this.setPosition(shooter.posX + dir.x, shooter.posY + shooter.getEyeHeight() + dir.y, shooter.posZ + dir.z);
 
 		switch(projectile.type)
 		{
