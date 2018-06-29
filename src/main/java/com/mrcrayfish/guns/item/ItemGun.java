@@ -149,6 +149,9 @@ public class ItemGun extends ItemColored
 			double dx, dy, dz;
 			for (EntityLivingBase entity : playerIn.world.getEntitiesWithinAABB(EntityLivingBase.class, box))
 			{
+				if (ConfigMod.SERVER.aggroMobsExemptClasses.contains(entity.getClass()))
+					continue;
+
 				dx = x - entity.posX;
 				dy = y - entity.posY;
 				dz = z - entity.posZ;

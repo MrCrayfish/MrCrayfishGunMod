@@ -32,3 +32,5 @@ cgm.config.server.aggro.silenced=Aggro Range Silenced
 cgm.config.server.aggro.silenced.tooltip=Any mobs within a sphere of this radius will aggro on the shooter of a silenced gun.
 cgm.config.server.aggro.unsilenced=Aggro Range Unsilenced
 cgm.config.server.aggro.unsilenced.tooltip=Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.
+cgm.config.server.aggro.exempt=Aggro Mob Exemption Classes
+cgm.config.server.aggro.exempt.tooltip=Any mobs of classes with class pathes in this list will not aggro on shooters.
