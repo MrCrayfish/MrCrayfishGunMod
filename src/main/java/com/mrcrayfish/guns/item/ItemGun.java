@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.item;
 
+import com.mrcrayfish.guns.ConfigMod;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
@@ -137,21 +138,24 @@ public class ItemGun extends ItemColored
 		}
 		worldIn.spawnEntity(bullet);
 
-		double r = silenced ? 10 : 20;
-		double x = playerIn.posX + 0.5;
-		double y = playerIn.posY + 0.5;
-		double z = playerIn.posZ + 0.5;
-		AxisAlignedBB box = new AxisAlignedBB(x - r, y - r, z - r, x + r, y + r, z + r);
-		r *= r;
-		double dx, dy, dz;
-		for (EntityLivingBase entity : playerIn.world.getEntitiesWithinAABB(EntityLivingBase.class, box))
+		if (ConfigMod.SERVER.aggroMobs)
 		{
-			dx = x - entity.posX;
-			dy = y - entity.posY;
-			dz = z - entity.posZ;
-			if (dx * dx + dy * dy + dz * dz <= r)
+			double r = silenced ? ConfigMod.SERVER.rangeSilenced : ConfigMod.SERVER.rangeUnsilenced;
+			double x = playerIn.posX + 0.5;
+			double y = playerIn.posY + 0.5;
+			double z = playerIn.posZ + 0.5;
+			AxisAlignedBB box = new AxisAlignedBB(x - r, y - r, z - r, x + r, y + r, z + r);
+			r *= r;
+			double dx, dy, dz;
+			for (EntityLivingBase entity : playerIn.world.getEntitiesWithinAABB(EntityLivingBase.class, box))
 			{
-				entity.setRevengeTarget(playerIn);
+				dx = x - entity.posX;
+				dy = y - entity.posY;
+				dz = z - entity.posZ;
+				if (dx * dx + dy * dy + dz * dz <= r)
+				{
+					entity.setRevengeTarget(playerIn);
+				}
 			}
 		}
 
