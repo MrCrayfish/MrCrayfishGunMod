@@ -21,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -135,6 +136,24 @@ public class ItemGun extends ItemColored
 			bullet.setDamageModifier(0.75F);
 		}
 		worldIn.spawnEntity(bullet);
+
+		double r = silenced ? 10 : 20;
+		double x = playerIn.posX + 0.5;
+		double y = playerIn.posY + 0.5;
+		double z = playerIn.posZ + 0.5;
+		AxisAlignedBB box = new AxisAlignedBB(x - r, y - r, z - r, x + r, y + r, z + r);
+		r *= r;
+		double dx, dy, dz;
+		for (EntityLivingBase entity : playerIn.world.getEntitiesWithinAABB(EntityLivingBase.class, box))
+		{
+			dx = x - entity.posX;
+			dy = y - entity.posY;
+			dz = z - entity.posZ;
+			if (dx * dx + dy * dy + dz * dz <= r)
+			{
+				entity.setRevengeTarget(playerIn);
+			}
+		}
 
 		if(silenced)
 		{
