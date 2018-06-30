@@ -1,5 +1,7 @@
 package com.mrcrayfish.guns;
 
+import org.apache.logging.log4j.Logger;
+
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
@@ -30,10 +32,13 @@ public class MrCrayfishGunMod
 	public static CommonProxy proxy;
 	
 	public static final CreativeTabs GUN_TAB = new TabGun();
-	
+
+	public static Logger logger;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		logger = event.getModLog();
 		ModGuns.register();
 		ModSounds.register();
 		ModCrafting.register();

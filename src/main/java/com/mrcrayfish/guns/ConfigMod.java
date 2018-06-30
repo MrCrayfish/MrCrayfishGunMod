@@ -55,19 +55,22 @@ public class ConfigMod
 		@Name("Exempt Mob Classes")
 		@Comment("Any mobs of classes with class pathes in this list will not aggro on shooters.")
 		@LangKey(Reference.MOD_ID + ".config.server.aggro.exempt")
-		public String[] aggroMobsExemptClassNames = new String[] {"net.minecraft.entity.passive.EntityVillager"};
+		public String[] exemptClassNames = new String[] {"net.minecraft.entity.passive.EntityVillager"};
 		public static Set<Class> exemptClasses = Sets.<Class>newHashSet();
 
 		public void setExemptionClasses()
 		{
 			exemptClasses.clear();
-			for (String classname : aggroMobsExemptClassNames)
+			for (String className : exemptClassNames)
 			{
 				try
 				{
-					exemptClasses.add(Class.forName(classname));
+					exemptClasses.add(Class.forName(className));
 				}
-				catch (ClassNotFoundException e) {}
+				catch (ClassNotFoundException e)
+				{
+					MrCrayfishGunMod.logger.warn("Exempt aggro mob class '" + className + "' was not found:", e);
+				}
 			}
 		}
 	}
