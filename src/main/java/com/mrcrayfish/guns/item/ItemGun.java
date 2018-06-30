@@ -163,7 +163,7 @@ public class ItemGun extends ItemColored
 				dz = z - entity.posZ;
 				if (dx * dx + dy * dy + dz * dz <= r)
 				{
-					entity.setRevengeTarget(playerIn);
+					entity.setRevengeTarget(ConfigMod.SERVER.aggroMobs.angerHostileMobs ? playerIn : entity);
 				}
 			}
 		}

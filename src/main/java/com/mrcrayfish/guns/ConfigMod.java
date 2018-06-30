@@ -40,6 +40,11 @@ public class ConfigMod
 		@LangKey(Reference.MOD_ID + ".config.server.aggro.enabled")
 		public boolean enabled = true;
 
+		@Name("Anger Hostile Mobs")
+		@Comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.")
+		@LangKey(Reference.MOD_ID + ".config.server.aggro.hostile")
+		public boolean angerHostileMobs = true;
+
 		@Name("Range Silenced")
 		@Comment("Any mobs within a sphere of this radius will aggro on the shooter of a silenced gun.")
 		@LangKey(Reference.MOD_ID + ".config.server.aggro.silenced")
@@ -53,7 +58,7 @@ public class ConfigMod
 		public double rangeUnsilenced = 20;
 
 		@Name("Exempt Mob Classes")
-		@Comment("Any mobs of classes with class pathes in this list will not aggro on shooters.")
+		@Comment("Any mobs of classes with class paths in this list will not aggro on shooters.")
 		@LangKey(Reference.MOD_ID + ".config.server.aggro.exempt")
 		public String[] exemptClassNames = new String[] {"net.minecraft.entity.passive.EntityVillager"};
 		public static Set<Class> exemptClasses = Sets.<Class>newHashSet();
