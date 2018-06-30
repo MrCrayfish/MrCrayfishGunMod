@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.ConfigMod;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
@@ -32,7 +33,15 @@ import java.awt.*;
 public class ItemGun extends ItemColored
 {
 	private final Gun gun;
-	
+
+	private static final Predicate<EntityLivingBase> NOT_AGGRO_EXEMPT = new Predicate<EntityLivingBase>()
+	{
+		public boolean apply(@Nullable EntityLivingBase entity)
+		{
+			return !(entity instanceof EntityPlayer) && !ConfigMod.SERVER.aggroMobsExemptClasses.contains(entity.getClass());
+		}
+	};
+
 	public ItemGun(Gun gun) 
 	{
 		this.gun = gun;
@@ -147,11 +156,8 @@ public class ItemGun extends ItemColored
 			AxisAlignedBB box = new AxisAlignedBB(x - r, y - r, z - r, x + r, y + r, z + r);
 			r *= r;
 			double dx, dy, dz;
-			for (EntityLivingBase entity : playerIn.world.getEntitiesWithinAABB(EntityLivingBase.class, box))
+			for (EntityLivingBase entity : playerIn.world.getEntitiesWithinAABB(EntityLivingBase.class, box, NOT_AGGRO_EXEMPT))
 			{
-				if (ConfigMod.SERVER.aggroMobsExemptClasses.contains(entity.getClass()))
-					continue;
-
 				dx = x - entity.posX;
 				dy = y - entity.posY;
 				dz = z - entity.posZ;
