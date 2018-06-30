@@ -2,7 +2,6 @@ package com.mrcrayfish.guns;
 
 import java.util.Set;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.LangKey;
@@ -31,36 +30,42 @@ public class ConfigMod
 		@Name("Aggro Mobs")
 		@Comment("Nearby mobs are angered and/or scared by the firing of guns.")
 		@LangKey(Reference.MOD_ID + ".config.server.aggro")
-		public boolean aggroMobs = true;
+		public AggroMobs aggroMobs = new AggroMobs();
+	}
 
-		@Name("Aggro Range Silenced")
+	public static class AggroMobs
+	{
+		@Name("Aggro Mobs Enabled")
+		@Comment("If true, nearby mobs are angered and/or scared by the firing of guns.")
+		@LangKey(Reference.MOD_ID + ".config.server.aggro.enabled")
+		public boolean enabled = true;
+
+		@Name("Range Silenced")
 		@Comment("Any mobs within a sphere of this radius will aggro on the shooter of a silenced gun.")
 		@LangKey(Reference.MOD_ID + ".config.server.aggro.silenced")
 		@RangeDouble(min = 0)
 		public double rangeSilenced = 10;
 
-		@Name("Aggro Range Unsilenced")
+		@Name("Range Unsilenced")
 		@Comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.")
 		@LangKey(Reference.MOD_ID + ".config.server.aggro.unsilenced")
 		@RangeDouble(min = 0)
 		public double rangeUnsilenced = 20;
 
-		@Name("Aggro Mob Exemption Classes")
+		@Name("Exempt Mob Classes")
 		@Comment("Any mobs of classes with class pathes in this list will not aggro on shooters.")
 		@LangKey(Reference.MOD_ID + ".config.server.aggro.exempt")
 		public String[] aggroMobsExemptClassNames = new String[] {"net.minecraft.entity.passive.EntityVillager"};
+		public static Set<Class> exemptClasses = Sets.<Class>newHashSet();
 
-		@Ignore
-		public static Set<Class> aggroMobsExemptClasses = Sets.<Class>newHashSet();
-
-		public void setAggroMobsExemptionClasses()
+		public void setExemptionClasses()
 		{
-			aggroMobsExemptClasses.clear();
+			exemptClasses.clear();
 			for (String classname : aggroMobsExemptClassNames)
 			{
 				try
 				{
-					aggroMobsExemptClasses.add(Class.forName(classname));
+					exemptClasses.add(Class.forName(classname));
 				}
 				catch (ClassNotFoundException e) {}
 			}
@@ -73,7 +78,7 @@ public class ConfigMod
 		if (event.getModID().equalsIgnoreCase(Reference.MOD_ID))
 		{
 			ConfigManager.sync(Reference.MOD_ID, Type.INSTANCE);
-			SERVER.setAggroMobsExemptionClasses();
+			SERVER.aggroMobs.setExemptionClasses();
 		}
 	}
 }

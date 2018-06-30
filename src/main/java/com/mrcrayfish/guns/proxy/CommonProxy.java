@@ -11,7 +11,7 @@ public class CommonProxy
 	public void preInit()
 	{
 		MinecraftForge.EVENT_BUS.register(new CommonEvents());
-		ConfigMod.SERVER.setAggroMobsExemptionClasses();
+		ConfigMod.SERVER.aggroMobs.setExemptionClasses();
 	}
 
 	public void init() {}

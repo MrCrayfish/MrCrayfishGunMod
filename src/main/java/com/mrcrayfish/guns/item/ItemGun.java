@@ -38,7 +38,7 @@ public class ItemGun extends ItemColored
 	{
 		public boolean apply(@Nullable EntityLivingBase entity)
 		{
-			return !(entity instanceof EntityPlayer) && !ConfigMod.SERVER.aggroMobsExemptClasses.contains(entity.getClass());
+			return !(entity instanceof EntityPlayer) && !ConfigMod.SERVER.aggroMobs.exemptClasses.contains(entity.getClass());
 		}
 	};
 
@@ -147,9 +147,9 @@ public class ItemGun extends ItemColored
 		}
 		worldIn.spawnEntity(bullet);
 
-		if (ConfigMod.SERVER.aggroMobs)
+		if (ConfigMod.SERVER.aggroMobs.enabled)
 		{
-			double r = silenced ? ConfigMod.SERVER.rangeSilenced : ConfigMod.SERVER.rangeUnsilenced;
+			double r = silenced ? ConfigMod.SERVER.aggroMobs.rangeSilenced : ConfigMod.SERVER.aggroMobs.rangeUnsilenced;
 			double x = playerIn.posX + 0.5;
 			double y = playerIn.posY + 0.5;
 			double z = playerIn.posZ + 0.5;
