@@ -2,6 +2,7 @@ package com.mrcrayfish.guns;
 
 import java.util.Set;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.LangKey;
@@ -68,13 +69,22 @@ public class ConfigMod
 			exemptClasses.clear();
 			for (String className : exemptClassNames)
 			{
+				String prefix = "Exempt aggro mob class '" + className;
 				try
 				{
-					exemptClasses.add(Class.forName(className));
+					Class<?> classMob = Class.forName(className);
+					if (EntityLivingBase.class.isAssignableFrom(classMob))
+					{
+						exemptClasses.add(classMob);
+					}
+					else
+					{
+						MrCrayfishGunMod.logger.warn(prefix + "' must exend EntityLivingBase.");
+					}
 				}
 				catch (ClassNotFoundException e)
 				{
-					MrCrayfishGunMod.logger.warn("Exempt aggro mob class '" + className + "' was not found:", e);
+					MrCrayfishGunMod.logger.warn(prefix + "' was not found:", e);
 				}
 			}
 		}
