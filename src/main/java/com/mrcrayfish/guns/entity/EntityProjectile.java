@@ -196,8 +196,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                     entity.attackEntityFrom(source, getDamage());
                     entity.hurtResistantTime = 0;
                     break;
+                case MISSILE:
+                    world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 3F, true);
+                    break;
                 case GRENADE:
-                    world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 5F, true);
+                    world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 1.5F, true);
                     break;
             }
 
