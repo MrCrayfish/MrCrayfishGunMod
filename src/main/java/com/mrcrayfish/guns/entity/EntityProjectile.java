@@ -220,15 +220,14 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 world.destroyBlock(raytraceResultIn.getBlockPos(), false);
             }
 
-            if(block instanceof IDamageable)
-            {
-                ((IDamageable) block).onProjectileDamaged(world, state, pos, this);
-                this.setDead();
-            }
-
             if(!block.isReplaceable(world, raytraceResultIn.getBlockPos()))
             {
                 this.setDead();
+            }
+
+            if(block instanceof IDamageable)
+            {
+                ((IDamageable) block).onBlockDamaged(world, state, pos, (int) Math.ceil(getDamage() / 2.0) + 1);
             }
 
             if(projectile.type == ItemAmmo.Type.GRENADE)
