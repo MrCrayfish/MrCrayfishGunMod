@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -325,57 +326,66 @@ public class RenderEvents
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent // FIXME add the ability to cancel a specific hand for rendering. EG: render the left hand but not the right hand somehow
 	public void onRenderHeldItem(RenderItemEvent.Held.Pre event)
 	{
-		if (event.getEntity().getPrimaryHand() != event.getHandSide())
+		EntityLivingBase entity = event.getEntity();
+		for (int i = 0; i < EnumHand.values().length; i++)
 		{
-			ItemStack heldItem = event.getEntity().getHeldItemMainhand();
-			if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+			ItemStack heldItem = entity.getHeldItem(EnumHand.values()[i]);
+			// if (entity.getPrimaryHand() != event.getHandSide())
+			// {
+			// if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+			// {
+			// Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+			// if (!gun.general.gripType.canRenderOffhand())
+			// {
+			// event.setCanceled(true);
+			// return;
+			// }
+			// }
+			// }
+			if (heldItem.getItem() instanceof ItemGun)
 			{
 				Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-				if (!gun.general.gripType.canRenderOffhand())
-				{
-					event.setCanceled(true);
-					return;
-				}
+				gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(EnumHand.values()[i], entity instanceof EntityPlayer ? GunHandler.getAimProgress((EntityPlayer) entity, event.getPartialTicks()) : 0f);
+				return;
 			}
-		}
-
-		ItemStack heldItem = event.getItem();
-		if (heldItem.getItem() instanceof ItemGun)
-		{
-			event.setCanceled(true);
-			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialTicks()));
-			this.renderWeapon(heldItem, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, event.getPartialTicks());
 		}
 	}
 
 	@SubscribeEvent
 	public void onSetupAngles(ModelPlayerEvent.SetupAngles.Post event)
 	{
-		EntityPlayer player = event.getEntityPlayer();
-		ItemStack heldItem = player.getHeldItemMainhand();
-		if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+		for (int i = 0; i < EnumHand.values().length; i++)
 		{
-			ModelPlayer model = event.getModelPlayer();
-			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			gun.general.gripType.getHeldAnimation().applyPlayerModelRotation(model, GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialTicks()));
-			copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
-			copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
+			EntityPlayer player = event.getEntityPlayer();
+			ItemStack heldItem = player.getHeldItem(EnumHand.values()[i]);
+			if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+			{
+				ModelPlayer model = event.getModelPlayer();
+				Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+				gun.general.gripType.getHeldAnimation().applyPlayerModelRotation(model, EnumHand.values()[i], GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialTicks()));
+				copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
+				copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
+				return;
+			}
 		}
 	}
 
 	@SubscribeEvent
 	public void onRenderPlayer(RenderPlayerEvent.Pre event)
 	{
-		EntityPlayer player = event.getEntityPlayer();
-		ItemStack heldItem = player.getHeldItemMainhand();
-		if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+		for (int i = 0; i < EnumHand.values().length; i++)
 		{
-			Gun gun = ((ItemGun) heldItem.getItem()).getGun();
-			gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialRenderTick()));
+			EntityPlayer player = event.getEntityPlayer();
+			ItemStack heldItem = player.getHeldItem(EnumHand.values()[i]);
+			if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+			{
+				Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+				gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, EnumHand.values()[i], GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialRenderTick()));
+				return;
+			}
 		}
 	}
 
