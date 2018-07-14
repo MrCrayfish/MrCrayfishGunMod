@@ -19,9 +19,9 @@ public class Gun
 	public Display display = new Display();
 	public Modules modules = new Modules();
 
-	public boolean canAttachType(IAttachment.Type type)
+	public boolean canAttachType(@Nullable IAttachment.Type type)
 	{
-		if(modules.attachments != null)
+		if(modules.attachments != null && type != null)
 		{
 			switch(type)
 			{
