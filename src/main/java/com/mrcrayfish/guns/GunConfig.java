@@ -18,7 +18,7 @@ import com.google.common.collect.Sets;
 
 @Config(modid = Reference.MOD_ID)
 @LangKey(Reference.MOD_ID + ".config.title")
-@EventBusSubscriber
+@EventBusSubscriber(modid = Reference.MOD_ID)
 public class GunConfig
 {
 	@Name("Server")
