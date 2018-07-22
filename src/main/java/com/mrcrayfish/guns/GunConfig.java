@@ -19,7 +19,7 @@ import com.google.common.collect.Sets;
 @Config(modid = Reference.MOD_ID)
 @LangKey(Reference.MOD_ID + ".config.title")
 @EventBusSubscriber
-public class ConfigMod
+public class GunConfig
 {
 	@Name("Server")
 	@Comment("Server-only configs.")

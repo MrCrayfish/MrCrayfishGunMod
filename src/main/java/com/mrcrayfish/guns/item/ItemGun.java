@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.item;
 
 import com.google.common.base.Predicate;
-import com.mrcrayfish.guns.ConfigMod;
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
@@ -38,7 +38,7 @@ public class ItemGun extends ItemColored
 	{
 		public boolean apply(@Nullable EntityLivingBase entity)
 		{
-			return !(entity instanceof EntityPlayer) && !ConfigMod.SERVER.aggroMobs.exemptClasses.contains(entity.getClass());
+			return !(entity instanceof EntityPlayer) && !GunConfig.SERVER.aggroMobs.exemptClasses.contains(entity.getClass());
 		}
 	};
 
@@ -147,9 +147,9 @@ public class ItemGun extends ItemColored
 		}
 		worldIn.spawnEntity(bullet);
 
-		if (ConfigMod.SERVER.aggroMobs.enabled)
+		if (GunConfig.SERVER.aggroMobs.enabled)
 		{
-			double r = silenced ? ConfigMod.SERVER.aggroMobs.rangeSilenced : ConfigMod.SERVER.aggroMobs.rangeUnsilenced;
+			double r = silenced ? GunConfig.SERVER.aggroMobs.rangeSilenced : GunConfig.SERVER.aggroMobs.rangeUnsilenced;
 			double x = playerIn.posX + 0.5;
 			double y = playerIn.posY + 0.5;
 			double z = playerIn.posZ + 0.5;
@@ -163,7 +163,7 @@ public class ItemGun extends ItemColored
 				dz = z - entity.posZ;
 				if (dx * dx + dy * dy + dz * dz <= r)
 				{
-					entity.setRevengeTarget(ConfigMod.SERVER.aggroMobs.angerHostileMobs ? playerIn : entity);
+					entity.setRevengeTarget(GunConfig.SERVER.aggroMobs.angerHostileMobs ? playerIn : entity);
 				}
 			}
 		}
