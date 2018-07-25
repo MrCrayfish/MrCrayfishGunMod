@@ -16,6 +16,7 @@ item.ammo_missile.name=導彈
 item.scope_small.name=範圍（短）
 item.scope_medium.name=範圍（中）
 item.scope_long.name=範圍（長）
+item.silencer.name=消音器
 
 itemGroup.tabCGM=MrCrayfish槍械模組
 
