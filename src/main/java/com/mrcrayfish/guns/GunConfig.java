@@ -17,20 +17,22 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.google.common.collect.Sets;
 
 @Config(modid = Reference.MOD_ID)
-@LangKey(Reference.MOD_ID + ".config.title")
+@LangKey("config." + Reference.MOD_ID + ".title")
 @EventBusSubscriber(modid = Reference.MOD_ID)
 public class GunConfig
 {
+    private static final String PREFIX = "config." + Reference.MOD_ID + ".";
+
 	@Name("Server")
 	@Comment("Server-only configs.")
-	@LangKey(Reference.MOD_ID + ".config.server")
+	@LangKey(PREFIX + "server")
 	public static final Server SERVER = new Server();
 
 	public static class Server
 	{
 		@Name("Aggro Mobs")
 		@Comment("Nearby mobs are angered and/or scared by the firing of guns.")
-		@LangKey(Reference.MOD_ID + ".config.server.aggro")
+		@LangKey(PREFIX + "server.aggro")
 		public AggroMobs aggroMobs = new AggroMobs();
 	}
 
@@ -38,29 +40,29 @@ public class GunConfig
 	{
 		@Name("Aggro Mobs Enabled")
 		@Comment("If true, nearby mobs are angered and/or scared by the firing of guns.")
-		@LangKey(Reference.MOD_ID + ".config.server.aggro.enabled")
+		@LangKey(PREFIX + "server.aggro.enabled")
 		public boolean enabled = true;
 
 		@Name("Anger Hostile Mobs")
 		@Comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.")
-		@LangKey(Reference.MOD_ID + ".config.server.aggro.hostile")
+		@LangKey(PREFIX + "server.aggro.hostile")
 		public boolean angerHostileMobs = true;
 
 		@Name("Range Silenced")
 		@Comment("Any mobs within a sphere of this radius will aggro on the shooter of a silenced gun.")
-		@LangKey(Reference.MOD_ID + ".config.server.aggro.silenced")
+		@LangKey(PREFIX + "server.aggro.silenced")
 		@RangeDouble(min = 0)
 		public double rangeSilenced = 10;
 
 		@Name("Range Unsilenced")
 		@Comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.")
-		@LangKey(Reference.MOD_ID + ".config.server.aggro.unsilenced")
+		@LangKey(PREFIX + "server.aggro.unsilenced")
 		@RangeDouble(min = 0)
 		public double rangeUnsilenced = 20;
 
 		@Name("Exempt Mob Classes")
 		@Comment("Any mobs of classes with class paths in this list will not aggro on shooters.")
-		@LangKey(Reference.MOD_ID + ".config.server.aggro.exempt")
+		@LangKey(PREFIX + "server.aggro.exempt")
 		public String[] exemptClassNames = new String[] {"net.minecraft.entity.passive.EntityVillager"};
 		public static Set<Class> exemptClasses = Sets.<Class>newHashSet();
 
