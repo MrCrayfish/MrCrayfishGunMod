@@ -5,10 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.mrcrayfish.guns.item.ItemAmmo;
-import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.item.ItemPart;
-import com.mrcrayfish.guns.item.ItemScope;
+import com.mrcrayfish.guns.item.*;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.item.Item;
 
@@ -26,6 +23,7 @@ public class ModGuns
 	public static final Item PARTS;
 	public static final Item AMMO;
 	public static final Item SCOPES;
+	public static final Item SILENCER;
 
 	static
 	{
@@ -62,6 +60,7 @@ public class ModGuns
 		PARTS = new ItemPart();
 		AMMO = new ItemAmmo();
 		SCOPES = new ItemScope();
+		SILENCER = new ItemAttachment("silencer", IAttachment.Type.BARREL);
 	}
 
 	public static void register()
@@ -73,6 +72,7 @@ public class ModGuns
 		register(PARTS);
 		register(AMMO);
 		register(SCOPES);
+		register(SILENCER);
 	}
 
 	private static void register(Item item)

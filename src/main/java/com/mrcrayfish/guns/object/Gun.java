@@ -1,23 +1,14 @@
 package com.mrcrayfish.guns.object;
 
-import com.google.gson.*;
-import com.google.gson.annotations.SerializedName;
-
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.lang.annotation.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 public class Gun
 {
@@ -28,9 +19,35 @@ public class Gun
 	public Display display = new Display();
 	public Modules modules = new Modules();
 
-	public boolean canAttachScope()
+	public boolean canAttachType(@Nullable IAttachment.Type type)
 	{
-		return modules.attachments != null && modules.attachments.scope != null;
+		if(modules.attachments != null && type != null)
+		{
+			switch(type)
+			{
+				case SCOPE:
+					return modules.attachments.scope != null;
+				case BARREL:
+					return modules.attachments.barrel != null;
+			}
+		}
+		return false;
+	}
+
+	@Nullable
+	public ScaledPositioned getAttachmentPosition(IAttachment.Type type)
+	{
+		if(modules.attachments != null)
+		{
+			switch(type)
+			{
+				case SCOPE:
+					return modules.attachments.scope;
+				case BARREL:
+					return modules.attachments.barrel;
+			}
+		}
+		return null;
 	}
 
 	@Nullable
@@ -50,12 +67,29 @@ public class Gun
 		return null;
 	}
 
+	public static ItemStack getAttachment(IAttachment.Type type, ItemStack gun)
+	{
+		if(gun.hasTagCompound())
+		{
+			if(gun.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
+			{
+				NBTTagCompound attachment = gun.getTagCompound().getCompoundTag("attachments");
+				if(attachment.hasKey(type.getName(), Constants.NBT.TAG_COMPOUND))
+				{
+					return new ItemStack(attachment.getCompoundTag(type.getName()));
+				}
+			}
+		}
+		return ItemStack.EMPTY;
+	}
+
 	public static class General
 	{
 		@Optional public boolean auto = false;
 		public int rate;
 		public GripType gripType;
 		public int maxAmmo;
+		@Optional public int reloadSpeed = 1;
 	}
 	
 	public static class Projectile implements INBTSerializable<NBTTagCompound>
@@ -106,18 +140,14 @@ public class Gun
 		public String fire;
 		public String reload;
 		public String cock;
+		@Optional public String silenced_fire = "silenced_fire";
 	}
 
 	public static class Display
 	{
 		@Optional public Flash flash;
 
-		public static class Flash
-		{
-			@Optional public double xOffset;
-			@Optional public double yOffset;
-			@Optional public double zOffset;
-		}
+		public static class Flash extends ScaledPositioned {}
 	}
 
 	public static class Modules
@@ -125,27 +155,36 @@ public class Gun
 		@Optional public Zoom zoom;
 		public Attachments attachments = new Attachments();
 
-		public static class Zoom
+		public static class Zoom extends Positioned
 		{
 			@Optional public float fovModifier;
 			@Optional public boolean smooth;
-			@Optional public double xOffset;
-			@Optional public double yOffset;
-			@Optional public double zOffset;
 		}
 
 		public static class Attachments
 		{
 			@Optional public Scope scope;
+			@Optional public Barrel barrel;
 
-			public static class Scope
+			public static class Scope extends ScaledPositioned
 			{
 				@Optional public boolean smooth;
-				@Optional public double xOffset;
-				@Optional public double yOffset;
-				@Optional public double zOffset;
 			}
+
+			public static class Barrel extends ScaledPositioned {}
 		}
+	}
+
+	public static class Positioned
+	{
+		@Optional public double xOffset;
+		@Optional public double yOffset;
+		@Optional public double zOffset;
+	}
+
+	public static class ScaledPositioned extends Positioned
+	{
+		@Optional public double scale = 1.0;
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)

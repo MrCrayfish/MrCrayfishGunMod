@@ -18,12 +18,13 @@
         "sounds": {
 			"fire": "pistol_fire",
 			"reload": "pistol_reload",
-			"cock": "shotgun_fire"
+			"cock": "shotgun_fire",
+			"silenced_fire": "pistol_fire_silenced"
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2,
-				"zOffset": 0.35
+				"yOffset": -4.2,
+				"zOffset": 0.5
 			}
 		},
 		"modules": {
@@ -35,6 +36,11 @@
 				"scope": {
 					"yOffset": 4.48,
 					"zOffset": 5
+				},
+				"barrel": {
+					"yOffset": -4.2,
+					"zOffset": 0.6,
+					"scale": 0.4
 				}
 			}
 		}
@@ -60,12 +66,13 @@
         "sounds": {
 			"fire": "shotgun_fire",
 			"reload": "pistol_reload",
-			"cock": "shotgun_fire"
+			"cock": "shotgun_fire",
+			"silenced_fire": "shotgun_fire_silenced"
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2,
-				"zOffset": -0.1
+				"yOffset": -4.2,
+				"zOffset": -9.0
 			}
 		},
 		"modules": {
@@ -77,6 +84,11 @@
 				"scope": {
 					"yOffset": 4.4,
 					"zOffset": 2.4
+				},
+				"barrel": {
+					"yOffset": -4.2,
+					"zOffset": -9.0,
+					"scale": 0.5
 				}
 			}
 		}
@@ -100,12 +112,13 @@
         "sounds": {
 			"fire": "rifle_fire",
 			"reload": "pistol_reload",
-			"cock": "shotgun_fire"
+			"cock": "shotgun_fire",
+			"silenced_fire": "rifle_fire_silenced"
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.15,
-				"zOffset": -0.3
+				"yOffset": -3.8,
+				"zOffset": -13
 			}
 		},
 		"modules": {
@@ -119,6 +132,11 @@
 					"smooth": true,
 					"yOffset": 4.5,
 					"zOffset": 2
+				},
+				"barrel": {
+					"yOffset": -3.8,
+					"zOffset": -13,
+					"scale": 0.35
 				}
 			}
 		}
@@ -149,7 +167,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2
+				"yOffset": -4.6,
+				"zOffset": -6.8
 			}
 		}
     },
@@ -179,7 +198,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2
+				"yOffset": -3.8,
+				"zOffset": -8.0
 			}
 		},
 		"modules": {
@@ -198,7 +218,8 @@
 			"auto": true,
 			"rate": 2,
 			"gripType": "chain_gun",
-			"maxAmmo": 100
+			"maxAmmo": 100,
+			"reloadSpeed": 4
 		},
 		"projectile": {
 			"type": "basic",
@@ -215,8 +236,8 @@
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.35,
-				"zOffset": -0.2
+				"yOffset": -6,
+				"zOffset": -15
 			}
 		}
 	},
@@ -226,7 +247,8 @@
 			"auto": true,
 			"rate": 4,
 			"gripType": "two_handed",
-			"maxAmmo": 30
+			"maxAmmo": 30,
+			"reloadSpeed": 2
 		},
 		"projectile": {
 			"type": "basic",
@@ -239,11 +261,13 @@
 		"sounds": {
 			"fire": "rifle_fire",
 			"reload": "pistol_reload",
-			"cock": "shotgun_fire"
+			"cock": "shotgun_fire",
+			"silenced_fire": "rifle_fire_silenced"
 		},
 		"display": {
 			"flash": {
-				"yOffset": -0.2
+				"yOffset": -4.5,
+				"zOffset": -6
 			}
 		},
 		"modules": {
@@ -256,6 +280,11 @@
 				"scope": {
 					"yOffset": 4.32,
 					"zOffset": 4
+				},
+				"barrel": {
+					"yOffset": -4.5,
+					"zOffset": -5.25,
+					"scale": 0.4
 				}
 			}
 		}

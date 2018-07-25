@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.item;
 
+import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.event.CommonEvents;
@@ -21,11 +22,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.awt.*;
 
-public class ItemGun extends Item 
+public class ItemGun extends ItemColored
 {
 	private final Gun gun;
 	
@@ -119,10 +121,29 @@ public class ItemGun extends Item
 			playerIn.getDataManager().set(CommonEvents.RELOADING, false);
 		}
 
+		boolean silenced = false;
+		ItemStack barrel = Gun.getAttachment(IAttachment.Type.BARREL, heldItem);
+		if(!barrel.isEmpty())
+		{
+			silenced = barrel.getItem() == ModGuns.SILENCER;
+		}
+
 		Gun gun = getGun(heldItem);
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
+		if(silenced)
+		{
+			bullet.setDamageModifier(0.75F);
+		}
 		worldIn.spawnEntity(bullet);
-		worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+
+		if(silenced)
+		{
+			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.silenced_fire), SoundCategory.HOSTILE, 1F, 0.8F + itemRand.nextFloat() * 0.2F);
+		}
+		else
+		{
+			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+		}
 
 		if(gun.display.flash != null)
 		{
@@ -131,7 +152,7 @@ public class ItemGun extends Item
 
 		if(!playerIn.capabilities.isCreativeMode)
 		{
-			NBTTagCompound tag = createTagCompound(heldItem);
+			NBTTagCompound tag = ItemStackUtil.createTagCompound(heldItem);
 			if(!tag.getBoolean("IgnoreAmmo"))
 			{
 				tag.setInteger("AmmoCount", Math.max(0, tag.getInteger("AmmoCount") - 1));
@@ -141,6 +162,10 @@ public class ItemGun extends Item
 	
 	public static ItemStack findAmmo(EntityPlayer player, ItemAmmo.Type type)
     {
+    	if(player.capabilities.isCreativeMode)
+		{
+			return new ItemStack(ModGuns.AMMO, 64, type.ordinal());
+		}
 		for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
 		{
 			ItemStack stack = player.inventory.getStackInSlot(i);
@@ -159,7 +184,7 @@ public class ItemGun extends Item
 
 	public static boolean hasAmmo(ItemStack gunStack)
 	{
-		NBTTagCompound tag = createTagCompound(gunStack);
+		NBTTagCompound tag = ItemStackUtil.createTagCompound(gunStack);
 		return tag.getBoolean("IgnoreAmmo") || tag.getInteger("AmmoCount") > 0;
 	}
 
@@ -169,18 +194,9 @@ public class ItemGun extends Item
 		if(isInCreativeTab(tab))
 		{
 			ItemStack stack = new ItemStack(this);
-			createTagCompound(stack).setInteger("AmmoCount", gun.general.maxAmmo);
+			ItemStackUtil.createTagCompound(stack).setInteger("AmmoCount", gun.general.maxAmmo);
 			items.add(stack);
 		}
-	}
-
-	private static NBTTagCompound createTagCompound(ItemStack stack)
-	{
-		if(!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		return stack.getTagCompound();
 	}
 
 	@Override
@@ -192,14 +208,14 @@ public class ItemGun extends Item
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		NBTTagCompound tagCompound = createTagCompound(stack);
-		return tagCompound.getInteger("AmmoCount") != gun.general.maxAmmo;
+		NBTTagCompound tagCompound = ItemStackUtil.createTagCompound(stack);
+		return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInteger("AmmoCount") != gun.general.maxAmmo;
 	}
 
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		NBTTagCompound tagCompound = createTagCompound(stack);
+		NBTTagCompound tagCompound = ItemStackUtil.createTagCompound(stack);
 		return 1.0 - (tagCompound.getInteger("AmmoCount") / (double) gun.general.maxAmmo);
 	}
 

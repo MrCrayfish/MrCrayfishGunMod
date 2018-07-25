@@ -1,11 +1,13 @@
 package com.mrcrayfish.guns.client.event;
 
+import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
 import com.mrcrayfish.guns.object.Gun;
@@ -31,12 +33,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -189,7 +189,7 @@ public class RenderEvents
                 double zOffset = 0.0;
 
                 Gun gun = itemGun.getGun();
-                if(gun.canAttachScope() && scope != null && scopeType != null)
+                if(gun.canAttachType(IAttachment.Type.SCOPE) && scope != null && scopeType != null)
                 {
                     xOffset -= gun.modules.attachments.scope.xOffset * 0.0625 * scaleX;
                     yOffset -= gun.modules.attachments.scope.yOffset * 0.0625 * scaleY - translateY + scopeType.getHeightToCenter() * scaleY * 0.0625;
@@ -231,52 +231,7 @@ public class RenderEvents
             GlStateManager.translate(0, 0, -0.1 * reloadProgress);
             GlStateManager.rotate(45F * reloadProgress, 1, 0, 0);
 
-            Gun gun = ((ItemGun) event.getItemStack().getItem()).getGun();
-            if(gun.canAttachScope() && scope != null)
-            {
-                IBakedModel scopeModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(scope);
-                GlStateManager.pushMatrix();
-                {
-                    double displayX = gun.modules.attachments.scope.xOffset * 0.0625 * scaleX;
-                    double displayY = gun.modules.attachments.scope.yOffset * 0.0625 * scaleY;
-                    double displayZ = gun.modules.attachments.scope.zOffset * 0.0625 * scaleZ;
-                    GlStateManager.translate(displayX, displayY, displayZ);
-                    RenderUtil.renderModel(scopeModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
-                }
-                GlStateManager.popMatrix();
-            }
-
-            if(drawFlash)
-            {
-                if(flash == null) flash = new ItemStack(ModGuns.PARTS, 1, 2);
-                IBakedModel flashModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(flash);
-                GlStateManager.pushMatrix();
-                {
-                    GlStateManager.disableLighting();
-                    GlStateManager.translate(gun.display.flash.xOffset, gun.display.flash.yOffset, gun.display.flash.zOffset);
-                    Minecraft.getMinecraft().entityRenderer.disableLightmap();
-                    RenderUtil.renderModel(flashModel, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
-                    Minecraft.getMinecraft().entityRenderer.enableLightmap();
-                    GlStateManager.enableLighting();
-                }
-                GlStateManager.popMatrix();
-                drawFlash = false;
-            }
-
-            GlStateManager.pushMatrix();
-            {
-                IGunModel gunModel = ModelOverrides.getModel(event.getItemStack().getItem());
-                if(gunModel != null)
-                {
-                    gunModel.registerPieces();
-                    gunModel.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
-                }
-                else
-                {
-                    Minecraft.getMinecraft().getRenderItem().renderItem(event.getItemStack(), ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND);
-                }
-            }
-            GlStateManager.popMatrix();
+            this.renderWeapon(heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getPartialTicks());
         }
     }
 
@@ -311,28 +266,14 @@ public class RenderEvents
         if(heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemGun))
             return;
 
-        ItemStack scope = null;
-        if(heldItem.hasTagCompound())
-        {
-            if(heldItem.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
-            {
-                NBTTagCompound attachment = heldItem.getTagCompound().getCompoundTag("attachments");
-                if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
-                {
-                    scope = new ItemStack(attachment.getCompoundTag("scope"));
-                }
-            }
-        }
-
         Minecraft mc = Minecraft.getMinecraft();
         ScaledResolution scaledResolution = new ScaledResolution(mc);
 
-        if(scope != null)
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
         {
-            ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
+            ItemScope.Type scopeType = ItemScope.Type.getFromStack(Gun.getAttachment(IAttachment.Type.SCOPE, heldItem));
             if(scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
             {
-
                 mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
                 GlStateManager.color(1.0F, 1.0F, 1.0F);
                 GlStateManager.enableBlend();
@@ -352,10 +293,7 @@ public class RenderEvents
                 GlStateManager.disableBlend();
                 GlStateManager.enableDepth();
             }
-        }
 
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
-        {
             Gun gun = ((ItemGun) heldItem.getItem()).getGun();
             if(!gun.general.auto)
             {
@@ -366,7 +304,6 @@ public class RenderEvents
                     int i = (int) ((scaledResolution.getScaledHeight() / 2 - 7 - 60) / scale);
                     int j = (int) Math.ceil((scaledResolution.getScaledWidth() / 2 - 8 * scale) / scale);
 
-                    //GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                     GlStateManager.enableAlpha();
                     mc.getTextureManager().bindTexture(Gui.ICONS);
 
@@ -404,22 +341,9 @@ public class RenderEvents
         if(heldItem.getItem() instanceof ItemGun)
         {
             event.setCanceled(true);
-
             Gun gun = ((ItemGun) heldItem.getItem()).getGun();
             gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(GunHandler.getAimProgress((EntityPlayer) event.getEntity(), event.getPartialTicks()));
-
-            RenderUtil.applyTransformType(heldItem, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND);
-            if(ModelOverrides.hasModel(heldItem.getItem()))
-            {
-                IGunModel model = ModelOverrides.getModel(heldItem.getItem());
-                model.registerPieces();
-                model.render(event.getPartialTicks(), ItemCameraTransforms.TransformType.NONE);
-            }
-            else
-            {
-                Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), heldItem, ItemCameraTransforms.TransformType.NONE, event.getHandSide() == EnumHandSide.LEFT);
-            }
-            this.renderAttachments(heldItem);
+            this.renderWeapon(heldItem, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, event.getPartialTicks());
         }
     }
 
@@ -453,29 +377,52 @@ public class RenderEvents
     @SubscribeEvent
     public void onRenderEntityItem(RenderItemEvent.Entity.Pre event)
     {
-        event.setCanceled(this.renderGun(event.getItem(), event.getTransformType()));
+        event.setCanceled(this.renderWeapon(event.getItem(), event.getTransformType(), event.getPartialTicks()));
     }
 
     @SubscribeEvent
     public void onRenderEntityItem(RenderItemEvent.Gui.Pre event)
     {
-        event.setCanceled(this.renderGun(event.getItem(), event.getTransformType()));
+        event.setCanceled(this.renderWeapon(event.getItem(), event.getTransformType(), event.getPartialTicks()));
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
     }
 
-    private boolean renderGun(ItemStack stack, ItemCameraTransforms.TransformType transformType)
+    private boolean renderWeapon(ItemStack stack, ItemCameraTransforms.TransformType transformType, float partialTicks)
     {
         if(stack.getItem() instanceof ItemGun)
         {
             GlStateManager.pushMatrix();
             RenderUtil.applyTransformType(stack, transformType);
-            RenderUtil.renderModel(stack);
+            this.renderGun(stack, partialTicks);
             this.renderAttachments(stack);
+
+            if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
+            {
+                this.renderMuzzleFlash(stack);
+            }
+
             GlStateManager.popMatrix();
             return true;
         }
         return false;
+    }
+
+    private void renderGun(ItemStack stack, float partialTicks)
+    {
+        if(ModelOverrides.hasModel(stack.getItem()))
+        {
+            IGunModel model = ModelOverrides.getModel(stack.getItem());
+            if(model != null)
+            {
+                model.registerPieces();
+                model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack);
+            }
+        }
+        else
+        {
+            RenderUtil.renderModel(stack);
+        }
     }
 
     private void renderAttachments(ItemStack stack)
@@ -483,24 +430,65 @@ public class RenderEvents
         if(stack.getItem() instanceof ItemGun)
         {
             Gun gun = ((ItemGun) stack.getItem()).getGun();
-            NBTTagCompound itemTag = stack.getTagCompound();
-            if(itemTag != null)
+            NBTTagCompound gunTag = ItemStackUtil.createTagCompound(stack);
+            NBTTagCompound attachments = gunTag.getCompoundTag("attachments");
+            for(String attachmentKey : attachments.getKeySet())
             {
-                if(gun.canAttachScope() && itemTag.hasKey("attachments", Constants.NBT.TAG_COMPOUND))
+                IAttachment.Type type = IAttachment.Type.getType(attachmentKey);
+                if(gun.canAttachType(type))
                 {
-                    NBTTagCompound attachment = itemTag.getCompoundTag("attachments");
-                    if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
+                    ItemStack attachmentStack = Gun.getAttachment(type, stack);
+                    if(!attachmentStack.isEmpty())
                     {
                         GlStateManager.pushMatrix();
                         {
-                            ItemStack scope = new ItemStack(attachment.getCompoundTag("scope"));
-                            GlStateManager.translate(gun.modules.attachments.scope.xOffset * 0.0625, gun.modules.attachments.scope.yOffset * 0.0625, gun.modules.attachments.scope.zOffset * 0.0625);
-                            RenderUtil.renderModel(scope);
+                            Gun.ScaledPositioned positioned = gun.getAttachmentPosition(type);
+                            if(positioned != null)
+                            {
+                                double displayX = positioned.xOffset * 0.0625;
+                                double displayY = positioned.yOffset * 0.0625;
+                                double displayZ = positioned.zOffset * 0.0625;
+                                GlStateManager.translate(displayX, displayY, displayZ);
+                                GlStateManager.scale(positioned.scale, positioned.scale, positioned.scale);
+                                RenderUtil.renderModel(attachmentStack);
+                            }
                         }
                         GlStateManager.popMatrix();
                     }
                 }
             }
+        }
+    }
+
+    private void renderMuzzleFlash(ItemStack weapon)
+    {
+        Gun gun = ((ItemGun) weapon.getItem()).getGun();
+        if(drawFlash)
+        {
+            if(flash == null) flash = new ItemStack(ModGuns.PARTS, 1, 2);
+            IBakedModel flashModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(flash);
+            GlStateManager.pushMatrix();
+            {
+                GlStateManager.disableLighting();
+                GlStateManager.translate(gun.display.flash.xOffset * 0.0625, gun.display.flash.yOffset * 0.0625, gun.display.flash.zOffset * 0.0625);
+
+                if(!Gun.getAttachment(IAttachment.Type.BARREL, weapon).isEmpty())
+                {
+                    Gun.ScaledPositioned positioned = gun.getAttachmentPosition(IAttachment.Type.BARREL);
+                    if(positioned != null)
+                    {
+                        GlStateManager.translate(0, 0, (gun.display.flash.zOffset - positioned.zOffset) * 0.0625 - positioned.scale);
+                        GlStateManager.scale(0.5, 0.5, 0);
+                    }
+                }
+
+                Minecraft.getMinecraft().entityRenderer.disableLightmap();
+                RenderUtil.renderModel(flashModel, weapon);
+                Minecraft.getMinecraft().entityRenderer.enableLightmap();
+                GlStateManager.enableLighting();
+            }
+            GlStateManager.popMatrix();
+            drawFlash = false;
         }
     }
 

@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.render.gun;
 
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.item.ItemStack;
 
 /**
  * Author: MrCrayfish
@@ -11,5 +12,5 @@ public interface IGunModel
 
     void tick();
 
-    void render(float partialTicks, ItemCameraTransforms.TransformType transformType);
+    void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack);
 }
