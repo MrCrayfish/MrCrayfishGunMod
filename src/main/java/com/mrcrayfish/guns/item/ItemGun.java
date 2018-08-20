@@ -1,5 +1,7 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.base.Predicate;
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
@@ -21,6 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -30,7 +33,15 @@ import java.awt.*;
 public class ItemGun extends ItemColored
 {
 	private final Gun gun;
-	
+
+	private static final Predicate<EntityLivingBase> NOT_AGGRO_EXEMPT = new Predicate<EntityLivingBase>()
+	{
+		public boolean apply(@Nullable EntityLivingBase entity)
+		{
+			return !(entity instanceof EntityPlayer) && !GunConfig.SERVER.aggroMobs.exemptClasses.contains(entity.getClass());
+		}
+	};
+
 	public ItemGun(Gun gun) 
 	{
 		this.gun = gun;
@@ -135,6 +146,27 @@ public class ItemGun extends ItemColored
 			bullet.setDamageModifier(0.75F);
 		}
 		worldIn.spawnEntity(bullet);
+
+		if (GunConfig.SERVER.aggroMobs.enabled)
+		{
+			double r = silenced ? GunConfig.SERVER.aggroMobs.rangeSilenced : GunConfig.SERVER.aggroMobs.rangeUnsilenced;
+			double x = playerIn.posX + 0.5;
+			double y = playerIn.posY + 0.5;
+			double z = playerIn.posZ + 0.5;
+			AxisAlignedBB box = new AxisAlignedBB(x - r, y - r, z - r, x + r, y + r, z + r);
+			r *= r;
+			double dx, dy, dz;
+			for (EntityLivingBase entity : playerIn.world.getEntitiesWithinAABB(EntityLivingBase.class, box, NOT_AGGRO_EXEMPT))
+			{
+				dx = x - entity.posX;
+				dy = y - entity.posY;
+				dz = z - entity.posZ;
+				if (dx * dx + dy * dy + dz * dz <= r)
+				{
+					entity.setRevengeTarget(GunConfig.SERVER.aggroMobs.angerHostileMobs ? playerIn : entity);
+				}
+			}
+		}
 
 		if(silenced)
 		{

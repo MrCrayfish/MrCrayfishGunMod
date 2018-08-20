@@ -22,3 +22,19 @@ itemGroup.tabCGM=MrCrayfish's Gun Mod
 
 death.attack.bullet=%1$s was gunned down by %2$s
 death.attack.bullet.item=%1$s was gunned down by %2$s using a %3$s
+
+config.cgm.title=MrCrayfish's Gun Mod Config
+config.cgm.server=Server
+config.cgm.server.tooltip=Server-only configs.
+config.cgm.server.aggro=Aggro Mobs
+config.cgm.server.aggro.tooltip=Nearby mobs are angered and/or scared by the firing of guns.
+config.cgm.server.aggro.enabled=Aggro Mobs Enabled
+config.cgm.server.aggro.enabled.tooltip=If true, nearby mobs are angered and/or scared by the firing of guns.
+config.cgm.server.aggro.hostile=Anger Hostile Mobs
+config.cgm.server.aggro.hostile.tooltip=If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.
+config.cgm.server.aggro.silenced=Range Silenced
+config.cgm.server.aggro.silenced.tooltip=Any mobs within a sphere of this radius will aggro on the shooter of a silenced gun.
+config.cgm.server.aggro.unsilenced=Range Unsilenced
+config.cgm.server.aggro.unsilenced.tooltip=Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.
+config.cgm.server.aggro.exempt=Exempt Mob Classes
+config.cgm.server.aggro.exempt.tooltip=Any mobs of classes with class pathes in this list will not aggro on shooters.
