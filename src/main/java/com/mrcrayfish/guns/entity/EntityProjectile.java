@@ -192,7 +192,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 case BASIC:
                 case SHELL:
                 case ADVANCED:
-                    DamageSource source = new EntityDamageSourceIndirect("bullet", this, shooter).setProjectile();
+                    DamageSource source = new DamageSourceProjectile("bullet", this, shooter).setProjectile();
                     entity.attackEntityFrom(source, getDamage());
                     entity.hurtResistantTime = 0;
                     break;
