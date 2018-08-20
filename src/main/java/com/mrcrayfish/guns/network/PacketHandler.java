@@ -1,10 +1,7 @@
 package com.mrcrayfish.guns.network;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.network.message.MessageAim;
-import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
-import com.mrcrayfish.guns.network.message.MessageReload;
-import com.mrcrayfish.guns.network.message.MessageShoot;
+import com.mrcrayfish.guns.network.message.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -19,5 +16,6 @@ public class PacketHandler
 		INSTANCE.registerMessage(MessageReload.class, MessageReload.class, 1, Side.SERVER);
 		INSTANCE.registerMessage(MessageShoot.class, MessageShoot.class, 2, Side.SERVER);
 		INSTANCE.registerMessage(MessageMuzzleFlash.class, MessageMuzzleFlash.class, 3, Side.CLIENT);
+		INSTANCE.registerMessage(MessageSound.class, MessageSound.class, 4, Side.CLIENT);
 	}
 }

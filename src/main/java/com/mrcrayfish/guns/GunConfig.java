@@ -23,10 +23,31 @@ public class GunConfig
 {
     private static final String PREFIX = "config." + Reference.MOD_ID + ".";
 
+	@Name("Client")
+	@Comment("Client-only configs.")
+	@LangKey(PREFIX + "client")
+	public static final Client CLIENT = new Client();
+
 	@Name("Server")
 	@Comment("Server-only configs.")
 	@LangKey(PREFIX + "server")
 	public static final Server SERVER = new Server();
+
+	public static class Client
+	{
+		@Name("Sounds")
+		@Comment("Control sounds triggered by guns")
+		@LangKey(PREFIX + "client.sounds")
+		public Sounds sound = new Sounds();
+	}
+
+	public static class Sounds
+	{
+		@Name("Play Hit Sound")
+		@Comment("If true, a ding sound will play when you successfully hit a player with a gun")
+		@LangKey(PREFIX + "client.sounds.hit_sound")
+		public boolean hitSound = true;
+	}
 
 	public static class Server
 	{

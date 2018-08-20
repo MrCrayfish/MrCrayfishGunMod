@@ -24,7 +24,15 @@ death.attack.bullet=%1$s was gunned down by %2$s
 death.attack.bullet.item=%1$s was gunned down by %2$s using a %3$s
 
 config.cgm.title=MrCrayfish's Gun Mod Config
+
+config.cgm.client=Client
+config.cgm.client.tooltip=Client-only configs.
+config.cgm.client.sounds=Sounds
+config.cgm.client.sounds.tooltip=Control sounds triggered by guns
+config.cgm.client.sounds.hit_sound=Play Hit Sound
+config.cgm.client.sounds.hit_sound.tooltip=If true, a ding sound will play when you successfully hit a player with a gun
 config.cgm.server=Server
+
 config.cgm.server.tooltip=Server-only configs.
 config.cgm.server.aggro=Aggro Mobs
 config.cgm.server.aggro.tooltip=Nearby mobs are angered and/or scared by the firing of guns.

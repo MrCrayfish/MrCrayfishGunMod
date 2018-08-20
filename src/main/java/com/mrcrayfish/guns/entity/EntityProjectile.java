@@ -2,8 +2,11 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.ItemAmmo;
+import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageSound;
 import com.mrcrayfish.guns.object.Gun.Projectile;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -14,12 +17,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.network.play.server.SPacketChangeGameState;
+import net.minecraft.network.play.server.SPacketCustomSound;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -58,7 +62,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         updateHeading();
 
         this.setSize(projectile.size, projectile.size);
-        this.setPosition(shooter.posX + dir.x, shooter.posY + shooter.getEyeHeight() + dir.y, shooter.posZ + dir.z);
+        this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
 
         switch(projectile.type)
         {
@@ -157,8 +161,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         for(int i = 0; i < list.size(); ++i)
         {
             Entity hitEntity = list.get(i);
-
-            if(hitEntity != this.shooter)
+            if(!hitEntity.equals(this.shooter))
             {
                 AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox().grow(0.3);
                 RayTraceResult result = axisalignedbb.calculateIntercept(start, end);
@@ -195,6 +198,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                     DamageSource source = new DamageSourceProjectile("bullet", this, shooter).setProjectile();
                     entity.attackEntityFrom(source, getDamage());
                     entity.hurtResistantTime = 0;
+
+                    if(entity instanceof EntityPlayer && shooter instanceof EntityPlayerMP)
+                    {
+                        PacketHandler.INSTANCE.sendTo(new MessageSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, SoundCategory.PLAYERS, shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, 0.15F, 0.45F), (EntityPlayerMP) shooter);
+                    }
                     break;
                 case MISSILE:
                     world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 3F, true);
