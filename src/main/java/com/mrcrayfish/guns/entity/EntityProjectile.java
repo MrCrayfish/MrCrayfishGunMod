@@ -52,9 +52,9 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.projectile = projectile;
 
         Vec3d dir = getVectorFromRotation(shooter.rotationPitch, shooter.getRotationYawHead());
-        this.motionX = dir.x * projectile.speed + shooter.motionX;
+        this.motionX = dir.x * projectile.speed;
         this.motionY = dir.y * projectile.speed;
-        this.motionZ = dir.z * projectile.speed + shooter.motionZ;
+        this.motionZ = dir.z * projectile.speed;
         updateHeading();
 
         this.setSize(projectile.size, projectile.size);
@@ -160,7 +160,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
             if(hitEntity != this.shooter)
             {
-                AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox();
+                AxisAlignedBB axisalignedbb = hitEntity.getEntityBoundingBox().grow(0.3);
                 RayTraceResult result = axisalignedbb.calculateIntercept(start, end);
 
                 if(result != null)
