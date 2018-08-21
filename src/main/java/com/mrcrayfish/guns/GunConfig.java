@@ -1,8 +1,21 @@
 package com.mrcrayfish.guns;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Field;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.LangKey;
@@ -16,12 +29,52 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.google.common.collect.Sets;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 @Config(modid = Reference.MOD_ID)
 @LangKey("config." + Reference.MOD_ID + ".title")
 @EventBusSubscriber(modid = Reference.MOD_ID)
 public class GunConfig
 {
-    private static final String PREFIX = "config." + Reference.MOD_ID + ".";
+	@Config.Ignore
+	public static final ImmutableMap<String, Gun> ID_TO_GUN;
+
+	static
+	{
+		ImmutableMap.Builder<String, Gun> builder = ImmutableMap.builder();
+		Reader reader = new InputStreamReader(ModGuns.class.getResourceAsStream("/assets/cgm/guns.json"));
+		JsonParser parser = new JsonParser();
+		JsonArray elements = parser.parse(reader).getAsJsonArray();
+		try
+		{
+			Gson gson = new Gson();
+			for(JsonElement element : elements)
+			{
+				Gun gun = gson.fromJson(element, new TypeToken<Gun>() {}.getType());
+				if(!validateFields(gun))
+				{
+					if(gun.id != null)
+					{
+						throw new NullPointerException("The gun '" + gun.id + "' is missing required attributes");
+					}
+					else
+					{
+						throw new NullPointerException("Invalid gun entry");
+					}
+				}
+				builder.put(gun.id, gun);
+			}
+		}
+		catch(IllegalAccessException e)
+		{
+			e.printStackTrace();
+		}
+		ID_TO_GUN = builder.build();
+	}
+
+	@Config.Ignore
+    public static final String PREFIX = "config." + Reference.MOD_ID + ".";
 
 	@Name("Client")
 	@Comment("Client-only configs.")
@@ -55,6 +108,11 @@ public class GunConfig
 		@Comment("Nearby mobs are angered and/or scared by the firing of guns.")
 		@LangKey(PREFIX + "server.aggro")
 		public AggroMobs aggroMobs = new AggroMobs();
+
+		@Name("Guns")
+		@Comment("Change the properties of guns")
+		@LangKey(PREFIX + "server.guns")
+		public Guns guns = new Guns();
 	}
 
 	public static class AggroMobs
@@ -113,6 +171,44 @@ public class GunConfig
 		}
 	}
 
+	public static class Guns
+	{
+		@Name("Pistol")
+		@Comment("Change the properties of the Pistol")
+		@LangKey(PREFIX + "server.guns.pistol")
+		public Gun pistol = ID_TO_GUN.get("handgun");
+
+		@Name("Shotgun")
+		@Comment("Change the properties of the Shotgun")
+		@LangKey(PREFIX + "server.guns.shotgun")
+		public Gun shotgun = ID_TO_GUN.get("shotgun");
+
+		@Name("Rifle")
+		@Comment("Change the properties of the Rifle")
+		@LangKey(PREFIX + "server.guns.rifle")
+		public Gun rifle = ID_TO_GUN.get("rifle");
+
+		@Name("Grenade Launcher")
+		@Comment("Change the properties of the Grenade Launcher")
+		@LangKey(PREFIX + "server.guns.grenade_launcher")
+		public Gun grenadeLauncher = ID_TO_GUN.get("grenade_launcher");
+
+		@Name("Bazooka")
+		@Comment("Change the properties of the Bazooka")
+		@LangKey(PREFIX + "server.guns.bazooka")
+		public Gun bazooka = ID_TO_GUN.get("bazooka");
+
+		@Name("Minigun")
+		@Comment("Change the properties of the Minigun")
+		@LangKey(PREFIX + "server.guns.chain_gun")
+		public Gun chainGun = ID_TO_GUN.get("chain_gun");
+
+		@Name("Assault Rifle")
+		@Comment("Change the properties of the Assault Rifle")
+		@LangKey(PREFIX + "server.guns.assault_rifle")
+		public Gun assaultRifle = ID_TO_GUN.get("assault_rifle");
+	}
+
 	@SubscribeEvent
 	public static void onConfigChanged(OnConfigChangedEvent event)
 	{
@@ -121,5 +217,26 @@ public class GunConfig
 			ConfigManager.sync(Reference.MOD_ID, Type.INSTANCE);
 			SERVER.aggroMobs.setExemptionClasses();
 		}
+	}
+
+	private static <T> boolean validateFields(@Nonnull T t) throws IllegalAccessException
+	{
+		Field[] fields = t.getClass().getDeclaredFields();
+		for(Field field : fields)
+		{
+			if(field.getDeclaredAnnotation(Gun.Optional.class) == null)
+			{
+				if(field.get(t) == null)
+				{
+					return false;
+				}
+
+				if(!field.getType().isPrimitive() && field.getType() != String.class && !field.getType().isEnum())
+				{
+					return validateFields(field.get(t));
+				}
+			}
+		}
+		return true;
 	}
 }
