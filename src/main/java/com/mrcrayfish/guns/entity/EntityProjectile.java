@@ -148,7 +148,19 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             this.motionY -= 0.05;
         }
 
-        if(this.ticksExisted >= this.projectile.life) this.setDead();
+        if(this.ticksExisted >= this.projectile.life)
+        {
+            if(!this.isDead)
+            {
+                if(projectile.type == ItemAmmo.Type.MISSILE)
+                {
+                    world.createExplosion(shooter, this.posX, this.posY, this.posZ, 3F, true);
+                    WorldServer worldServer = (WorldServer) world;
+                    worldServer.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, this.posX, this.posY, this.posZ, 0, 0.0, 0.0, 0.0, 0);
+                }
+            }
+            this.setDead();
+        }
     }
 
     @Nullable
@@ -201,7 +213,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
                     if(entity instanceof EntityPlayer && shooter instanceof EntityPlayerMP)
                     {
-                        PacketHandler.INSTANCE.sendTo(new MessageSound(SoundEvents.ENTITY_ARROW_HIT_PLAYER, SoundCategory.PLAYERS, shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, 0.15F, 0.45F), (EntityPlayerMP) shooter);
+                        PacketHandler.INSTANCE.sendTo(new MessageSound(SoundEvents.ENTITY_PLAYER_HURT, SoundCategory.PLAYERS, shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, 0.75F, 3.0F), (EntityPlayerMP) shooter);
                     }
                     break;
                 case MISSILE:
@@ -240,11 +252,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
             if(projectile.type == ItemAmmo.Type.GRENADE)
             {
-                world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 5F, true);
+                world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 1.5F, true);
             }
             else if(projectile.type == ItemAmmo.Type.MISSILE)
             {
-                world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 10F, true);
+                world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 3F, true);
                 WorldServer worldServer = (WorldServer) world;
                 worldServer.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 0, 0.0, 0.0, 0.0, 0);
             }

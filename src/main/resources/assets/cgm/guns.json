@@ -185,9 +185,8 @@
 			"auto": false,
 			"damage": 20.0,
 			"size": 0.2,
-			"speed": 4,
-			"life": 500,
-			"gravity": true,
+			"speed": 2,
+			"life": 100,
 			"damageReduceOverLife": false,
 			"damageReduceIfNotZoomed": false
 		},
