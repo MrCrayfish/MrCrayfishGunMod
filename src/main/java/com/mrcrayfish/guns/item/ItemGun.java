@@ -98,14 +98,11 @@ public class ItemGun extends ItemColored
 		{
 			if(ItemGun.hasAmmo(heldItem) || playerIn.capabilities.isCreativeMode)
 			{
-				System.out.println(playerIn.isHandActive());
 				if(playerIn.isHandActive())
 				{
 					return new ActionResult<>(EnumActionResult.FAIL, heldItem);
 				}
 				playerIn.setActiveHand(handIn);
-
-				System.out.println("Shooooooot");
 
 				if(!gun.general.auto)
 				{
@@ -114,7 +111,6 @@ public class ItemGun extends ItemColored
 					{
 						tracker.setCooldown(heldItem.getItem(), gun.general.rate);
 						PacketHandler.INSTANCE.sendToServer(new MessageShoot());
-						System.out.println("Shooting");
 					}
 				}
 			}
