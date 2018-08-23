@@ -12,6 +12,8 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,11 +23,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 public class ItemGun extends ItemColored
 {
@@ -51,6 +56,20 @@ public class ItemGun extends ItemColored
 	public Gun getGun()
 	{
 		return gun;
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+	{
+		NBTTagCompound tagCompound = stack.getTagCompound();
+		if(tagCompound != null)
+		{
+			if(tagCompound.hasKey("AdditionalDamage", Constants.NBT.TAG_FLOAT))
+			{
+				String damage = TextFormatting.RESET + Float.toString(tagCompound.getFloat("AdditionalDamage"));
+				tooltip.add(TextFormatting.YELLOW + I18n.format("info.cgm.additional_damage", damage));
+			}
+		}
 	}
 
 	@Override
@@ -141,10 +160,8 @@ public class ItemGun extends ItemColored
 		ItemGun item = (ItemGun) heldItem.getItem();
 		Gun gun = item.getModifiedGun(heldItem);
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
-		if(silenced)
-		{
-			bullet.setDamageModifier(0.75F);
-		}
+		bullet.setAdditionalDamage(ItemGun.getAdditionalDamage(heldItem));
+		if(silenced) bullet.setDamageModifier(0.75F);
 		worldIn.spawnEntity(bullet);
 
 		if (GunConfig.SERVER.aggroMobs.enabled)
@@ -191,7 +208,13 @@ public class ItemGun extends ItemColored
 			}
 		}
 	}
-	
+
+	private static float getAdditionalDamage(ItemStack gunStack)
+	{
+		NBTTagCompound tag = ItemStackUtil.createTagCompound(gunStack);
+		return tag.getFloat("AdditionalDamage");
+	}
+
 	public static ItemStack findAmmo(EntityPlayer player, ItemAmmo.Type type)
     {
     	if(player.capabilities.isCreativeMode)

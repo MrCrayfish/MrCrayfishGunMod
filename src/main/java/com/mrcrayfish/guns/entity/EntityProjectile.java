@@ -42,6 +42,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     private Projectile projectile;
     private ItemStack item = ItemStack.EMPTY;
     private float damageModifier = 1.0F;
+    private float additionalDamage = 0.0F;
 
     public EntityProjectile(World worldIn)
     {
@@ -83,6 +84,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     public void setDamageModifier(float damageModifier)
     {
         this.damageModifier = damageModifier;
+    }
+
+    public void setAdditionalDamage(float additionalDamage)
+    {
+        this.additionalDamage = additionalDamage;
     }
 
     @Override
@@ -347,11 +353,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
     public float getDamage()
     {
-        float damage = this.projectile.damage * this.damageModifier;
+        float damage = (this.projectile.damage + this.additionalDamage) * this.damageModifier;
         if(this.projectile.damageReduceOverLife)
         {
-            float percent = ((float) this.projectile.life - (float) this.ticksExisted) / (float) this.projectile.life;
-            damage = this.projectile.damage * percent + this.projectile.damage / this.projectile.life;
+            float modifier = ((float) this.projectile.life - (float) this.ticksExisted) / (float) this.projectile.life;
+            return damage * modifier;
         }
         return damage;
     }

@@ -23,6 +23,8 @@ itemGroup.tabCGM=MrCrayfish's Gun Mod
 death.attack.bullet=%1$s was gunned down by %2$s
 death.attack.bullet.item=%1$s was gunned down by %2$s using a %3$s
 
+info.cgm.additional_damage=Additional Damage: %s
+
 config.cgm.title=MrCrayfish's Gun Mod Config
 
 config.cgm.client=Client
