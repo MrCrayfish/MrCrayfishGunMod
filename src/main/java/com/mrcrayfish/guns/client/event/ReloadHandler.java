@@ -63,6 +63,8 @@ public class ReloadHandler
                     NBTTagCompound tag = stack.getTagCompound();
                     if(tag != null)
                     {
+                        if(tag.getBoolean("IgnoreAmmo"))
+                            return;
                         Gun gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
                         if(tag.getInteger("AmmoCount") >= gun.general.maxAmmo)
                             return;
