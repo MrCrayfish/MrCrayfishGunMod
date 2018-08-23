@@ -12,14 +12,11 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -51,7 +48,7 @@ public class ItemGun extends ItemColored
 		this.setMaxStackSize(1);
 	}
 	
-	public Gun getGun() 
+	public Gun getGun()
 	{
 		return gun;
 	}
@@ -71,7 +68,8 @@ public class ItemGun extends ItemColored
 	@Override
 	public void onUsingTick(ItemStack stack, EntityLivingBase entity, int count)
 	{
-		if(!gun.general.auto)
+		Gun modifiedGun = getModifiedGun(stack);
+		if(!modifiedGun.general.auto)
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
@@ -84,7 +82,7 @@ public class ItemGun extends ItemColored
 			CooldownTracker tracker = player.getCooldownTracker();
 			if(!tracker.hasCooldown(stack.getItem()))
 			{
-				tracker.setCooldown(stack.getItem(), gun.general.rate);
+				tracker.setCooldown(stack.getItem(), modifiedGun.general.rate);
 				PacketHandler.INSTANCE.sendToServer(new MessageShoot());
 			}
 		}
@@ -104,12 +102,13 @@ public class ItemGun extends ItemColored
 				}
 				playerIn.setActiveHand(handIn);
 
-				if(!gun.general.auto)
+				Gun modifiedGun = getModifiedGun(heldItem);
+				if(!modifiedGun.general.auto)
 				{
 					CooldownTracker tracker = playerIn.getCooldownTracker();
 					if(!tracker.hasCooldown(heldItem.getItem()))
 					{
-						tracker.setCooldown(heldItem.getItem(), gun.general.rate);
+						tracker.setCooldown(heldItem.getItem(), modifiedGun.general.rate);
 						PacketHandler.INSTANCE.sendToServer(new MessageShoot());
 					}
 				}
@@ -139,7 +138,8 @@ public class ItemGun extends ItemColored
 			silenced = barrel.getItem() == ModGuns.SILENCER;
 		}
 
-		Gun gun = getGun(heldItem);
+		ItemGun item = (ItemGun) heldItem.getItem();
+		Gun gun = item.getModifiedGun(heldItem);
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
 		if(silenced)
 		{
@@ -170,7 +170,7 @@ public class ItemGun extends ItemColored
 
 		if(silenced)
 		{
-			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.silenced_fire), SoundCategory.HOSTILE, 1F, 0.8F + itemRand.nextFloat() * 0.2F);
+			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.silencedFire), SoundCategory.HOSTILE, 1F, 0.8F + itemRand.nextFloat() * 0.2F);
 		}
 		else
 		{
@@ -257,13 +257,15 @@ public class ItemGun extends ItemColored
 		return Color.CYAN.getRGB();
 	}
 
-	@Nullable
-	public static Gun getGun(ItemStack stack)
+	public Gun getModifiedGun(ItemStack stack)
 	{
-		if(stack.getItem() instanceof ItemGun)
+		NBTTagCompound tagCompound = stack.getTagCompound();
+		if(tagCompound != null && tagCompound.hasKey("Gun", Constants.NBT.TAG_COMPOUND))
 		{
-			return ((ItemGun) stack.getItem()).gun;
+			Gun gunCopy = gun.copy();
+			gunCopy.deserializeNBT(tagCompound.getCompoundTag("Gun"));
+			return gunCopy;
 		}
-		return null;
+		return gun;
 	}
 }

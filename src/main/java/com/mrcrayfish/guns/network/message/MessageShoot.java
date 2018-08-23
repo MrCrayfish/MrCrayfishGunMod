@@ -31,9 +31,10 @@ public class MessageShoot implements IMessage, IMessageHandler<MessageShoot, IMe
         EntityPlayer player = ctx.getServerHandler().player;
         World world = player.world;
         ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-        if(ItemGun.hasAmmo(heldItem) || player.capabilities.isCreativeMode)
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun && (ItemGun.hasAmmo(heldItem) || player.capabilities.isCreativeMode))
         {
-            Gun gun = ItemGun.getGun(heldItem);
+            ItemGun item = (ItemGun) heldItem.getItem();
+            Gun gun = item.getModifiedGun(heldItem);
             if(gun != null)
             {
                 MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();

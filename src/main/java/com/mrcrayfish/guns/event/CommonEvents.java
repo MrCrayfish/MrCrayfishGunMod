@@ -77,12 +77,14 @@ public class CommonEvents
         private int startTick;
         private int slot;
         private ItemStack stack;
+        private Gun gun;
 
         private ReloadTracker(EntityPlayer player)
         {
             this.startTick = player.ticksExisted;
             this.slot = player.inventory.currentItem;
             this.stack = player.inventory.getCurrentItem();
+            this.gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
         }
 
         public boolean isSameWeapon(EntityPlayer player)
@@ -97,13 +99,11 @@ public class CommonEvents
                 stack.setTagCompound(new NBTTagCompound());
             }
             NBTTagCompound tag = stack.getTagCompound();
-            Gun gun = ((ItemGun) stack.getItem()).getGun();
             return tag.getInteger("AmmoCount") >= gun.general.maxAmmo;
         }
 
         public boolean hasAmmo(EntityPlayer player)
         {
-            Gun gun = ((ItemGun) stack.getItem()).getGun();
             return ItemGun.findAmmo(player, gun.projectile.type) != null;
         }
 
@@ -115,7 +115,6 @@ public class CommonEvents
 
         public void increaseAmmo(EntityPlayer player)
         {
-            Gun gun = ((ItemGun) stack.getItem()).getGun();
             ItemStack ammo = ItemGun.findAmmo(player, gun.projectile.type);
             if(ammo != null)
             {

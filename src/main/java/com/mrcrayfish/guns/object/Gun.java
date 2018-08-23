@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import javax.annotation.Nullable;
 import java.lang.annotation.*;
 
-public class Gun
+public class Gun implements INBTSerializable<NBTTagCompound>
 {
 	@Config.Ignore
 	public String id;
@@ -38,11 +38,11 @@ public class Gun
 	@Config.Ignore
 	public Modules modules = new Modules();
 
-	public static class General
+	public static class General implements INBTSerializable<NBTTagCompound>
 	{
 		@Optional
 		@Config.Ignore
-		public boolean auto = false;
+		public boolean auto = false; //{Gun:{general:{auto:true}}}
 
 		@Config.Ignore
 		public int rate;
@@ -60,6 +60,54 @@ public class Gun
 		@Config.Comment("The amount of bullets added to the gun on each reload")
 		@Config.LangKey(GunConfig.PREFIX + "gun.general.reload_speed")
 		public int reloadSpeed = 1;
+
+		@Override
+		public NBTTagCompound serializeNBT()
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setBoolean("auto", auto);
+			tag.setInteger("rate", rate);
+			tag.setInteger("gripType", gripType.ordinal());
+			tag.setInteger("maxAmmo", maxAmmo);
+			tag.setInteger("reloadSpeed", reloadSpeed);
+			return tag;
+		}
+
+		@Override
+		public void deserializeNBT(NBTTagCompound tag)
+		{
+			if(tag.hasKey("auto", Constants.NBT.TAG_BYTE))
+			{
+				this.auto = tag.getBoolean("auto");
+			}
+			if(tag.hasKey("rate", Constants.NBT.TAG_INT))
+			{
+				this.rate = tag.getInteger("rate");
+			}
+			if(tag.hasKey("gripType", Constants.NBT.TAG_INT))
+			{
+				this.gripType = GripType.values()[tag.getInteger("gripType")];
+			}
+			if(tag.hasKey("maxAmmo", Constants.NBT.TAG_INT))
+			{
+				this.maxAmmo = tag.getInteger("maxAmmo");
+			}
+			if(tag.hasKey("reloadSpeed", Constants.NBT.TAG_INT))
+			{
+				this.reloadSpeed = tag.getInteger("reloadSpeed");
+			}
+		}
+
+		public General copy()
+		{
+			General general = new General();
+			general.auto = auto;
+			general.rate = rate;
+			general.gripType = gripType;
+			general.maxAmmo = maxAmmo;
+			general.reloadSpeed = reloadSpeed;
+			return general;
+		}
 	}
 	
 	public static class Projectile implements INBTSerializable<NBTTagCompound>
@@ -130,19 +178,61 @@ public class Gun
 		@Override
 		public void deserializeNBT(NBTTagCompound tag) 
 		{
-			this.type = ItemAmmo.Type.values()[tag.getInteger("type")];
-			this.visible = tag.getBoolean("visible");
-			this.damage = tag.getFloat("damage");
-			this.size = tag.getFloat("size");
-			this.speed = tag.getDouble("speed");
-			this.life = tag.getInteger("life");
-			this.gravity = tag.getBoolean("gravity");
-			this.damageReduceOverLife = tag.getBoolean("damageReduceOverLife");
-			this.damageReduceIfNotZoomed = tag.getBoolean("damageReduceIfNotZoomed");
+			if(tag.hasKey("type", Constants.NBT.TAG_INT))
+			{
+				this.type = ItemAmmo.Type.values()[tag.getInteger("type")];
+			}
+			if(tag.hasKey("visible", Constants.NBT.TAG_BYTE))
+			{
+				this.visible = tag.getBoolean("visible");
+			}
+			if(tag.hasKey("damage", Constants.NBT.TAG_FLOAT))
+			{
+				this.damage = tag.getFloat("damage");
+			}
+			if(tag.hasKey("size", Constants.NBT.TAG_FLOAT))
+			{
+				this.size = tag.getFloat("size");
+			}
+			if(tag.hasKey("speed", Constants.NBT.TAG_DOUBLE))
+			{
+				this.speed = tag.getDouble("speed");
+			}
+			if(tag.hasKey("life", Constants.NBT.TAG_INT))
+			{
+				this.life = tag.getInteger("life");
+			}
+			if(tag.hasKey("gravity", Constants.NBT.TAG_BYTE))
+			{
+				this.gravity = tag.getBoolean("gravity");
+			}
+			if(tag.hasKey("damageReduceOverLife", Constants.NBT.TAG_BYTE))
+			{
+				this.damageReduceOverLife = tag.getBoolean("damageReduceOverLife");
+			}
+			if(tag.hasKey("damageReduceIfNotZoomed", Constants.NBT.TAG_BYTE))
+			{
+				this.damageReduceIfNotZoomed = tag.getBoolean("damageReduceIfNotZoomed");
+			}
+		}
+
+		public Projectile copy()
+		{
+			Projectile projectile = new Projectile();
+			projectile.type = type;
+			projectile.visible = visible;
+			projectile.damage = damage;
+			projectile.size = size;
+			projectile.speed = speed;
+			projectile.life = life;
+			projectile.gravity = gravity;
+			projectile.damageReduceOverLife = damageReduceOverLife;
+			projectile.damageReduceIfNotZoomed = damageReduceIfNotZoomed;
+			return projectile;
 		}
 	}
 	
-	public static class Sounds
+	public static class Sounds implements INBTSerializable<NBTTagCompound>
 	{
 		@Config.Name("Fire")
 		@Config.Comment("The sound played when the gun is fired")
@@ -163,14 +253,75 @@ public class Gun
 		@Config.Name("Silenced")
 		@Config.Comment("The sound played when gun is fired with the silencer attached")
 		@Config.LangKey(GunConfig.PREFIX + "gun.sounds.silenced_fire")
-		public String silenced_fire = "silenced_fire";
+		public String silencedFire = "silenced_fire";
+
+
+		@Override
+		public NBTTagCompound serializeNBT()
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("fire", fire);
+			tag.setString("reload", reload);
+			tag.setString("cock", cock);
+			tag.setString("silencedFire", silencedFire);
+			return tag;
+		}
+
+		@Override
+		public void deserializeNBT(NBTTagCompound tag)
+		{
+			if(tag.hasKey("fire", Constants.NBT.TAG_STRING))
+			{
+				this.fire = tag.getString("fire");
+			}
+			if(tag.hasKey("reload", Constants.NBT.TAG_STRING))
+			{
+				this.reload = tag.getString("reload");
+			}
+			if(tag.hasKey("cock", Constants.NBT.TAG_STRING))
+			{
+				this.cock = tag.getString("cock");
+			}
+			if(tag.hasKey("silencedFire", Constants.NBT.TAG_STRING))
+			{
+				this.silencedFire = tag.getString("silencedFire");
+			}
+		}
+
+		public Sounds copy()
+		{
+			Sounds sounds = new Sounds();
+			sounds.fire = fire;
+			sounds.reload = reload;
+			sounds.cock = cock;
+			sounds.silencedFire = silencedFire;
+			return sounds;
+		}
 	}
 
 	public static class Display
 	{
 		@Optional public Flash flash;
 
-		public static class Flash extends ScaledPositioned {}
+		public static class Flash extends ScaledPositioned
+		{
+			public Flash copy()
+			{
+				Flash flash = new Flash();
+				flash.scale = scale;
+				flash.xOffset = xOffset;
+				flash.yOffset = yOffset;
+				flash.zOffset = zOffset;
+				return flash;
+			}
+		}
+
+		public Display copy()
+		{
+			Display display = new Display();
+			display.flash = flash.copy();
+			return display;
+		}
 	}
 
 	public static class Modules
@@ -182,6 +333,17 @@ public class Gun
 		{
 			@Optional public float fovModifier;
 			@Optional public boolean smooth;
+
+			public Zoom copy()
+			{
+				Zoom zoom = new Zoom();
+				zoom.fovModifier = fovModifier;
+				zoom.smooth = smooth;
+				zoom.xOffset = xOffset;
+				zoom.yOffset = yOffset;
+				zoom.zOffset = zOffset;
+				return zoom;
+			}
 		}
 
 		public static class Attachments
@@ -192,9 +354,56 @@ public class Gun
 			public static class Scope extends ScaledPositioned
 			{
 				@Optional public boolean smooth;
+
+				public Scope copy()
+				{
+					Scope scope = new Scope();
+					scope.smooth = smooth;
+					scope.scale = scale;
+					scope.xOffset = xOffset;
+					scope.yOffset = yOffset;
+					scope.zOffset = zOffset;
+					return scope;
+				}
 			}
 
-			public static class Barrel extends ScaledPositioned {}
+			public static class Barrel extends ScaledPositioned
+			{
+				public Barrel copy()
+				{
+					Barrel barrel = new Barrel();
+					barrel.scale = scale;
+					barrel.xOffset = xOffset;
+					barrel.yOffset = yOffset;
+					barrel.zOffset = zOffset;
+					return barrel;
+				}
+			}
+
+			public Attachments copy()
+			{
+				Attachments attachments = new Attachments();
+				if(scope != null)
+				{
+					attachments.scope = scope.copy();
+				}
+				if(barrel != null)
+				{
+					attachments.barrel = barrel.copy();
+				}
+				return attachments;
+			}
+		}
+
+		public Modules copy()
+		{
+			Modules modules = new Modules();
+			if(zoom != null)
+			{
+				modules.zoom = zoom.copy();
+			}
+			modules.attachments = attachments.copy();
+			return modules;
 		}
 	}
 
@@ -212,9 +421,50 @@ public class Gun
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
-	public @interface Optional
-	{
+	public @interface Optional {}
 
+	@Override
+	public NBTTagCompound serializeNBT()
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setString("id", id);
+		tag.setTag("general", general.serializeNBT());
+		tag.setTag("projectile", projectile.serializeNBT());
+		tag.setTag("sounds", sounds.serializeNBT());
+		return tag;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound tag)
+	{
+		if(tag.hasKey("id", Constants.NBT.TAG_STRING))
+		{
+			this.id = tag.getString("id");
+		}
+		if(tag.hasKey("general", Constants.NBT.TAG_COMPOUND))
+		{
+			this.general.deserializeNBT(tag.getCompoundTag("general"));
+		}
+		if(tag.hasKey("projectile", Constants.NBT.TAG_COMPOUND))
+		{
+			this.projectile.deserializeNBT(tag.getCompoundTag("projectile"));
+		}
+		if(tag.hasKey("sounds", Constants.NBT.TAG_COMPOUND))
+		{
+			this.sounds.deserializeNBT(tag.getCompoundTag("sounds"));
+		}
+	}
+
+	public Gun copy()
+	{
+		Gun gun = new Gun();
+		gun.id = id;
+		gun.general = general.copy();
+		gun.projectile = projectile.copy();
+		gun.sounds = sounds.copy();
+		gun.display = display.copy();
+		gun.modules = modules.copy();
+		return gun;
 	}
 
 	public boolean canAttachType(@Nullable IAttachment.Type type)

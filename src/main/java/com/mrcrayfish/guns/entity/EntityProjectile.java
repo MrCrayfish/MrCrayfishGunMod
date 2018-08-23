@@ -155,8 +155,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 if(projectile.type == ItemAmmo.Type.MISSILE)
                 {
                     world.createExplosion(shooter, this.posX, this.posY, this.posZ, 3F, true);
-                    WorldServer worldServer = (WorldServer) world;
-                    worldServer.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, this.posX, this.posY, this.posZ, 0, 0.0, 0.0, 0.0, 0);
+                    if(world instanceof WorldServer)
+                    {
+                        WorldServer worldServer = (WorldServer) world;
+                        worldServer.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, this.posX, this.posY, this.posZ, 0, 0.0, 0.0, 0.0, 0);
+                    }
                 }
             }
             this.setDead();
@@ -200,7 +203,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
         if(entity != null)
         {
-            if(entity.getEntityId() == this.shooterId) return;
+            if(entity.getEntityId() == this.shooterId)
+                return;
 
             switch(projectile.type)
             {

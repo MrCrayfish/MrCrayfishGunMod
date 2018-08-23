@@ -64,6 +64,7 @@ public class GunConfig
 					}
 				}
 				builder.put(gun.id, gun);
+				System.out.println(new Gson().toJson(gun));
 			}
 		}
 		catch(IllegalAccessException e)

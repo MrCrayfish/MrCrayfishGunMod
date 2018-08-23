@@ -11,7 +11,6 @@ import com.mrcrayfish.guns.object.Gun;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModSounds 
 {
@@ -34,11 +33,11 @@ public class ModSounds
 				SoundEvent event = new SoundEvent(sound).setRegistryName(gun.sounds.reload);
 				SOUNDS.put(gun.sounds.reload, event);
 			}
-			if(!SOUNDS.containsKey(gun.sounds.silenced_fire))
+			if(!SOUNDS.containsKey(gun.sounds.silencedFire))
 			{
-				ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, gun.sounds.silenced_fire);
-				SoundEvent event = new SoundEvent(sound).setRegistryName(gun.sounds.silenced_fire);
-				SOUNDS.put(gun.sounds.silenced_fire, event);
+				ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, gun.sounds.silencedFire);
+				SoundEvent event = new SoundEvent(sound).setRegistryName(gun.sounds.silencedFire);
+				SOUNDS.put(gun.sounds.silencedFire, event);
 			}
 		}
 	}
