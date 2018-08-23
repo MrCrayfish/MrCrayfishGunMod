@@ -61,13 +61,37 @@ public class ItemGun extends ItemColored
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
 	{
+		Gun modifiedGun = getModifiedGun(stack);
+
+		String additionalDamageText = "";
 		NBTTagCompound tagCompound = stack.getTagCompound();
 		if(tagCompound != null)
 		{
 			if(tagCompound.hasKey("AdditionalDamage", Constants.NBT.TAG_FLOAT))
 			{
-				String damage = TextFormatting.RESET + Float.toString(tagCompound.getFloat("AdditionalDamage"));
-				tooltip.add(TextFormatting.YELLOW + I18n.format("info.cgm.additional_damage", damage));
+				float additionalDamage = tagCompound.getFloat("AdditionalDamage");
+				if(additionalDamage > 0)
+				{
+					additionalDamageText = TextFormatting.GREEN + " +" + Float.toString(tagCompound.getFloat("AdditionalDamage"));
+				}
+				else if(additionalDamage < 0)
+				{
+					additionalDamageText = TextFormatting.RED + " " + Float.toString(tagCompound.getFloat("AdditionalDamage"));
+				}
+			}
+		}
+		tooltip.add(TextFormatting.GRAY + I18n.format("info.cgm.damage", TextFormatting.RESET + Float.toString(modifiedGun.projectile.damage) + additionalDamageText));
+
+		if(tagCompound != null)
+		{
+			if(tagCompound.getBoolean("IgnoreAmmo"))
+			{
+				tooltip.add(TextFormatting.AQUA + I18n.format("info.cgm.ignore_ammo"));
+			}
+			else
+			{
+				int ammoCount = tagCompound.getInteger("AmmoCount");
+				tooltip.add(TextFormatting.GRAY + I18n.format("info.cgm.ammo", TextFormatting.RESET + Integer.toString(ammoCount), modifiedGun.general.maxAmmo));
 			}
 		}
 	}

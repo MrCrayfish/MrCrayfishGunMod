@@ -23,7 +23,9 @@ itemGroup.tabCGM=MrCrayfish's Gun Mod
 death.attack.bullet=%1$s was gunned down by %2$s
 death.attack.bullet.item=%1$s was gunned down by %2$s using a %3$s
 
-info.cgm.additional_damage=Additional Damage: %s
+info.cgm.damage=Damage: %s
+info.cgm.ammo=Ammo: %s/%s
+info.cgm.ignore_ammo=Infinite Ammo
 
 config.cgm.title=MrCrayfish's Gun Mod Config
 

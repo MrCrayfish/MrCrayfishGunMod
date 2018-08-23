@@ -42,7 +42,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	{
 		@Optional
 		@Config.Ignore
-		public boolean auto = false; //{Gun:{general:{auto:true}}}
+		public boolean auto = false;
 
 		@Config.Ignore
 		public int rate;
