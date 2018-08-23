@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
@@ -66,5 +67,14 @@ public class ClientProxy extends CommonProxy
 	public void playClientSound(SoundEvent sound)
 	{
 		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, 1.0F));
+	}
+
+	@Override
+	public void playClientSound(double posX, double posY, double posZ, SoundEvent event, SoundCategory category, float volume, float pitch)
+	{
+		Minecraft.getMinecraft().addScheduledTask(() ->
+		{
+			Minecraft.getMinecraft().world.playSound(Minecraft.getMinecraft().player, posX, posY, posZ, event, category, volume, pitch);
+		});
 	}
 }

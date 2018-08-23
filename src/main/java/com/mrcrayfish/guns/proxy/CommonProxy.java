@@ -2,7 +2,9 @@ package com.mrcrayfish.guns.proxy;
 
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.event.CommonEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -21,4 +23,6 @@ public class CommonProxy
 	public void showMuzzleFlash() {}
 
 	public void playClientSound(SoundEvent sound) {}
+
+	public void playClientSound(double posX, double posY, double posZ, SoundEvent event, SoundCategory category, float volume, float pitch) {}
 }
