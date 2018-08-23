@@ -150,7 +150,8 @@ public class RenderEvents
 				{
 					reloadTimer++;
 				}
-			} else if (reloadTimer > 0)
+			}
+			else if (reloadTimer > 0)
 			{
 				reloadTimer -= 2;
 				if (reloadTimer < 0)
