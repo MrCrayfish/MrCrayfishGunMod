@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.object;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemAmmo;
+import com.mrcrayfish.guns.item.ItemGun;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Config;
@@ -14,6 +15,10 @@ import java.lang.annotation.*;
 
 public class Gun implements INBTSerializable<NBTTagCompound>
 {
+	@Ignored
+	@Config.Ignore
+	public ServerGun serverGun;
+
 	@Config.Ignore
 	public String id;
 
@@ -60,6 +65,20 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Config.Comment("The amount of bullets added to the gun on each reload")
 		@Config.LangKey(GunConfig.PREFIX + "gun.general.reload_speed")
 		public int reloadSpeed = 1;
+
+		public int getMaxAmmo(Gun modifiedGun)
+		{
+			int maxAmmo = this.maxAmmo;
+			if(modifiedGun.serverGun != null)
+			{
+				maxAmmo = modifiedGun.serverGun.maxAmmo;
+			}
+			if(modifiedGun.general.maxAmmo != maxAmmo)
+			{
+				maxAmmo = modifiedGun.general.maxAmmo;
+			}
+			return maxAmmo;
+		}
 
 		@Override
 		public NBTTagCompound serializeNBT()
@@ -158,6 +177,20 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Config.Comment("If true, the damage of the gun will be reduced if not zoomed")
 		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.damage_reduce_zoomed")
 		public boolean damageReduceIfNotZoomed;
+
+		public float getDamage(Gun modifiedGun)
+		{
+			float damage = this.damage;
+			if(modifiedGun.serverGun != null)
+			{
+				damage = modifiedGun.serverGun.damage;
+			}
+			if(modifiedGun.projectile.damage != this.damage && modifiedGun.projectile.damage != damage)
+			{
+				damage = modifiedGun.projectile.damage;
+			}
+			return damage;
+		}
 
 		@Override
 		public NBTTagCompound serializeNBT() 
@@ -423,6 +456,10 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	@Target(ElementType.FIELD)
 	public @interface Optional {}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	public @interface Ignored {}
+
 	@Override
 	public NBTTagCompound serializeNBT()
 	{
@@ -458,6 +495,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	public Gun copy()
 	{
 		Gun gun = new Gun();
+		gun.serverGun = serverGun;
 		gun.id = id;
 		gun.general = general.copy();
 		gun.projectile = projectile.copy();
@@ -465,6 +503,11 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		gun.display = display.copy();
 		gun.modules = modules.copy();
 		return gun;
+	}
+
+	public void setServerGun(ServerGun serverGun)
+	{
+		this.serverGun = serverGun;
 	}
 
 	public boolean canAttachType(@Nullable IAttachment.Type type)

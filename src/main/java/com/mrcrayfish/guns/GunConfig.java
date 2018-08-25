@@ -64,7 +64,6 @@ public class GunConfig
 					}
 				}
 				builder.put(gun.id, gun);
-				System.out.println(new Gson().toJson(gun));
 			}
 		}
 		catch(IllegalAccessException e)
@@ -225,17 +224,17 @@ public class GunConfig
 		Field[] fields = t.getClass().getDeclaredFields();
 		for(Field field : fields)
 		{
-			if(field.getDeclaredAnnotation(Gun.Optional.class) == null)
-			{
-				if(field.get(t) == null)
-				{
-					return false;
-				}
+			if(field.getDeclaredAnnotation(Gun.Ignored.class) != null || field.getDeclaredAnnotation(Gun.Optional.class) != null)
+				continue;
 
-				if(!field.getType().isPrimitive() && field.getType() != String.class && !field.getType().isEnum())
-				{
-					return validateFields(field.get(t));
-				}
+			if(field.get(t) == null)
+			{
+				return false;
+			}
+
+			if(!field.getType().isPrimitive() && field.getType() != String.class && !field.getType().isEnum())
+			{
+				return validateFields(field.get(t));
 			}
 		}
 		return true;

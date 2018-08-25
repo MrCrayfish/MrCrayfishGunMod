@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.proxy;
 
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
@@ -8,6 +9,7 @@ import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.ItemColored;
+import com.mrcrayfish.guns.object.ServerGun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -18,13 +20,16 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.awt.*;
+import java.util.Map;
 
 public class ClientProxy extends CommonProxy
 {
 	@Override
-	public void preInit() 
+	public void preInit()
 	{
 		super.preInit();
 
@@ -78,5 +83,17 @@ public class ClientProxy extends CommonProxy
 			ISound sound = new PositionedSoundRecord(event.getSoundName(), category, volume, pitch, false, 0, ISound.AttenuationType.NONE, 0, 0, 0);
 			Minecraft.getMinecraft().getSoundHandler().playSound(sound);
 		});
+	}
+
+	@Override
+	public void syncServerGunProperties(Map<String, ServerGun> properties)
+	{
+		GunConfig.ID_TO_GUN.forEach((s, gun) -> gun.serverGun = properties.get(s));
+	}
+
+	@SubscribeEvent
+	public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
+	{
+		GunConfig.ID_TO_GUN.forEach((s, gun) -> gun.serverGun = null);
 	}
 }

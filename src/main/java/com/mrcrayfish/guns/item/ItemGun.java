@@ -12,6 +12,7 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.object.ServerGun;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -40,7 +41,7 @@ public class ItemGun extends ItemColored
 	{
 		public boolean apply(@Nullable EntityLivingBase entity)
 		{
-			return !(entity instanceof EntityPlayer) && !GunConfig.SERVER.aggroMobs.exemptClasses.contains(entity.getClass());
+			return !(entity instanceof EntityPlayer) && !GunConfig.AggroMobs.exemptClasses.contains(entity.getClass());
 		}
 	};
 
@@ -80,7 +81,8 @@ public class ItemGun extends ItemColored
 				}
 			}
 		}
-		tooltip.add(TextFormatting.GRAY + I18n.format("info.cgm.damage", TextFormatting.RESET + Float.toString(modifiedGun.projectile.damage) + additionalDamageText));
+
+		tooltip.add(TextFormatting.GRAY + I18n.format("info.cgm.damage", TextFormatting.RESET + Float.toString(gun.projectile.getDamage(modifiedGun)) + additionalDamageText));
 
 		if(tagCompound != null)
 		{
@@ -91,7 +93,7 @@ public class ItemGun extends ItemColored
 			else
 			{
 				int ammoCount = tagCompound.getInteger("AmmoCount");
-				tooltip.add(TextFormatting.GRAY + I18n.format("info.cgm.ammo", TextFormatting.RESET + Integer.toString(ammoCount), modifiedGun.general.maxAmmo));
+				tooltip.add(TextFormatting.GRAY + I18n.format("info.cgm.ammo", TextFormatting.RESET + Integer.toString(ammoCount), gun.general.getMaxAmmo(modifiedGun)));
 			}
 		}
 	}
