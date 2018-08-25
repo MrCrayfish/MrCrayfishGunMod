@@ -9,6 +9,7 @@ import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.ItemColored;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -74,7 +75,8 @@ public class ClientProxy extends CommonProxy
 	{
 		Minecraft.getMinecraft().addScheduledTask(() ->
 		{
-			Minecraft.getMinecraft().world.playSound(Minecraft.getMinecraft().player, posX, posY, posZ, event, category, volume, pitch);
+			ISound sound = new PositionedSoundRecord(event.getSoundName(), category, volume, pitch, false, 0, ISound.AttenuationType.NONE, 0, 0, 0);
+			Minecraft.getMinecraft().getSoundHandler().playSound(sound);
 		});
 	}
 }

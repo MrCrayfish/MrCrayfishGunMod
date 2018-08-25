@@ -19,7 +19,7 @@
 			"fire": "pistol_fire",
 			"reload": "pistol_reload",
 			"cock": "shotgun_fire",
-			"silenced_fire": "pistol_fire_silenced"
+			"silencedFire": "pistol_fire_silenced"
 		},
 		"display": {
 			"flash": {
@@ -67,7 +67,7 @@
 			"fire": "shotgun_fire",
 			"reload": "pistol_reload",
 			"cock": "shotgun_fire",
-			"silenced_fire": "shotgun_fire_silenced"
+			"silencedFire": "shotgun_fire_silenced"
 		},
 		"display": {
 			"flash": {
@@ -113,7 +113,7 @@
 			"fire": "rifle_fire",
 			"reload": "pistol_reload",
 			"cock": "shotgun_fire",
-			"silenced_fire": "rifle_fire_silenced"
+			"silencedFire": "rifle_fire_silenced"
 		},
 		"display": {
 			"flash": {
@@ -261,7 +261,7 @@
 			"fire": "rifle_fire",
 			"reload": "pistol_reload",
 			"cock": "shotgun_fire",
-			"silenced_fire": "rifle_fire_silenced"
+			"silencedFire": "rifle_fire_silenced"
 		},
 		"display": {
 			"flash": {
