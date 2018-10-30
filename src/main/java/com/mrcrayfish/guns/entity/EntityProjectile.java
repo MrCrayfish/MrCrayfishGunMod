@@ -40,6 +40,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     private int shooterId;
     private EntityLivingBase shooter;
     private Projectile projectile;
+    private ItemStack weapon = ItemStack.EMPTY;
     private ItemStack item = ItemStack.EMPTY;
     private float damageModifier = 1.0F;
     private float additionalDamage = 0.0F;
@@ -74,6 +75,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 this.item = ItemAmmo.getAmmo(ItemAmmo.Type.MISSILE, 1);
                 break;
         }
+    }
+
+    public void setWeapon(ItemStack weapon)
+    {
+        this.weapon = weapon.copy();
     }
 
     public ItemStack getItem()
@@ -217,7 +223,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 case BASIC:
                 case SHELL:
                 case ADVANCED:
-                    DamageSource source = new EntityDamageSourceIndirect("bullet", this, shooter).setProjectile();
+                    DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
                     entity.attackEntityFrom(source, getDamage());
                     entity.hurtResistantTime = 0;
 

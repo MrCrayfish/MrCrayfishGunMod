@@ -186,6 +186,7 @@ public class ItemGun extends ItemColored
 		ItemGun item = (ItemGun) heldItem.getItem();
 		Gun gun = item.getModifiedGun(heldItem);
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
+		bullet.setWeapon(heldItem);
 		bullet.setAdditionalDamage(ItemGun.getAdditionalDamage(heldItem));
 		if(silenced) bullet.setDamageModifier(0.75F);
 		worldIn.spawnEntity(bullet);
