@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.event.CommonEvents;
+import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -26,6 +27,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -190,6 +192,8 @@ public class ItemGun extends ItemColored
 		bullet.setAdditionalDamage(ItemGun.getAdditionalDamage(heldItem));
 		if(silenced) bullet.setDamageModifier(0.75F);
 		worldIn.spawnEntity(bullet);
+
+		MinecraftForge.EVENT_BUS.post(new GunFireEvent(playerIn, item));
 
 		if (GunConfig.SERVER.aggroMobs.enabled)
 		{
