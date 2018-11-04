@@ -2,11 +2,9 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.mrcrayfish.guns.event.GunHitEvent;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.ItemAmmo;
-import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageSound;
 import com.mrcrayfish.guns.object.Gun.Projectile;
@@ -29,7 +27,6 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -241,11 +238,6 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 case GRENADE:
                     world.createExplosion(shooter, raytraceResultIn.hitVec.x, raytraceResultIn.hitVec.y, raytraceResultIn.hitVec.z, 1.5F, true);
                     break;
-            }
-
-            if(shooter instanceof EntityPlayer && !weapon.isEmpty() && weapon.getItem() instanceof ItemGun)
-            {
-                MinecraftForge.EVENT_BUS.post(new GunHitEvent((EntityPlayer) shooter, (ItemGun) weapon.getItem()));
             }
 
             this.setDead();
