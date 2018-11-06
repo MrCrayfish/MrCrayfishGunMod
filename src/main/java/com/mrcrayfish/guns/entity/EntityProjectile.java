@@ -82,6 +82,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.weapon = weapon.copy();
     }
 
+    public ItemStack getWeapon()
+    {
+        return weapon;
+    }
+
     public ItemStack getItem()
     {
         return item;

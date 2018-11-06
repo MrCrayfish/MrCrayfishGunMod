@@ -20,8 +20,11 @@ item.silencer.name=Silencer
 
 itemGroup.tabCGM=MrCrayfish's Gun Mod
 
-death.attack.bullet=%1$s was gunned down by %2$s
-death.attack.bullet.item=%1$s was gunned down by %2$s using a %3$s
+death.attack.cgm.bullet.killed=%1$s was taken down by %2$s
+death.attack.cgm.bullet.eliminated=%1$s was eliminated by %2$s
+death.attack.cgm.bullet.executed=%1$s was executed by %2$s
+death.attack.cgm.bullet.annihilated=%1$s was annihilated by %2$s
+death.attack.cgm.bullet.decimated=%1$s was decimated by %2$s
 
 info.cgm.damage=Damage: %s
 info.cgm.ammo=Ammo: %s/%s
