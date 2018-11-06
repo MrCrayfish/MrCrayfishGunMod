@@ -106,3 +106,8 @@ config.cgm.gun.sounds.cock=Gun Cock
 config.cgm.gun.sounds.cock.tooltip=The sound played when the gun is cocked
 config.cgm.gun.sounds.silenced_fire=Silenced Fire
 config.cgm.gun.sounds.silenced_fire.tooltip=The sound played when gun is fired with the silencer attached
+
+key.categories.gun=MrCrayfish's Gun Mod
+key.aim=Aim
+key.reload=Reload
+key.unload=Unload

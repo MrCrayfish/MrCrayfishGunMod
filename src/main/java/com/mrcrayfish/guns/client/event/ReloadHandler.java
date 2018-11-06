@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageReload;
+import com.mrcrayfish.guns.network.message.MessageUnload;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,13 +41,22 @@ public class ReloadHandler
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
-        if(KeyBinds.KEY_RELOAD.isKeyDown())
+        if(KeyBinds.KEY_RELOAD.isPressed())
         {
             if(!Minecraft.getMinecraft().player.getDataManager().get(CommonEvents.RELOADING))
             {
                 setReloading(true);
                 reloadingSlot = Minecraft.getMinecraft().player.inventory.currentItem;
             }
+            else
+            {
+                setReloading(false);
+            }
+        }
+        if(KeyBinds.KEY_UNLOAD.isPressed())
+        {
+            setReloading(false);
+            PacketHandler.INSTANCE.sendToServer(new MessageUnload());
         }
     }
 

@@ -18,5 +18,6 @@ public class PacketHandler
 		INSTANCE.registerMessage(MessageMuzzleFlash.class, MessageMuzzleFlash.class, 3, Side.CLIENT);
 		INSTANCE.registerMessage(MessageSound.class, MessageSound.class, 4, Side.CLIENT);
 		INSTANCE.registerMessage(MessageSyncProperties.class, MessageSyncProperties.class, 5, Side.CLIENT);
+		INSTANCE.registerMessage(MessageUnload.class, MessageUnload.class, 6, Side.SERVER);
 	}
 }
