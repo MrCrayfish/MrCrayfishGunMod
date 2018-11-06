@@ -88,7 +88,7 @@ public class CommonEvents
 
         public boolean isSameWeapon(EntityPlayer player)
         {
-            return player.inventory.currentItem == slot && player.inventory.getCurrentItem() == stack;
+            return !stack.isEmpty() && player.inventory.currentItem == slot && player.inventory.getCurrentItem() == stack;
         }
 
         public boolean isWeaponFull()
