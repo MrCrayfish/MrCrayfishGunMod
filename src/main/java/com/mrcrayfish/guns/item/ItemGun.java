@@ -1,5 +1,7 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.base.Predicate;
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.entity.EntityProjectile;
@@ -10,27 +12,39 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
+import com.mrcrayfish.guns.object.ServerGun;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 public class ItemGun extends ItemColored
 {
 	private final Gun gun;
-	
+
+	private static final Predicate<EntityLivingBase> NOT_AGGRO_EXEMPT = new Predicate<EntityLivingBase>()
+	{
+		public boolean apply(@Nullable EntityLivingBase entity)
+		{
+			return !(entity instanceof EntityPlayer) && !GunConfig.AggroMobs.exemptClasses.contains(entity.getClass());
+		}
+	};
+
 	public ItemGun(Gun gun) 
 	{
 		this.gun = gun;
@@ -40,9 +54,48 @@ public class ItemGun extends ItemColored
 		this.setMaxStackSize(1);
 	}
 	
-	public Gun getGun() 
+	public Gun getGun()
 	{
 		return gun;
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+	{
+		Gun modifiedGun = getModifiedGun(stack);
+
+		String additionalDamageText = "";
+		NBTTagCompound tagCompound = stack.getTagCompound();
+		if(tagCompound != null)
+		{
+			if(tagCompound.hasKey("AdditionalDamage", Constants.NBT.TAG_FLOAT))
+			{
+				float additionalDamage = tagCompound.getFloat("AdditionalDamage");
+				if(additionalDamage > 0)
+				{
+					additionalDamageText = TextFormatting.GREEN + " +" + Float.toString(tagCompound.getFloat("AdditionalDamage"));
+				}
+				else if(additionalDamage < 0)
+				{
+					additionalDamageText = TextFormatting.RED + " " + Float.toString(tagCompound.getFloat("AdditionalDamage"));
+				}
+			}
+		}
+
+		tooltip.add(TextFormatting.GRAY + I18n.format("info.cgm.damage", TextFormatting.RESET + Float.toString(gun.projectile.getDamage(modifiedGun)) + additionalDamageText));
+
+		if(tagCompound != null)
+		{
+			if(tagCompound.getBoolean("IgnoreAmmo"))
+			{
+				tooltip.add(TextFormatting.AQUA + I18n.format("info.cgm.ignore_ammo"));
+			}
+			else
+			{
+				int ammoCount = tagCompound.getInteger("AmmoCount");
+				tooltip.add(TextFormatting.GRAY + I18n.format("info.cgm.ammo", TextFormatting.RESET + Integer.toString(ammoCount), gun.general.getMaxAmmo(modifiedGun)));
+			}
+		}
 	}
 
 	@Override
@@ -60,7 +113,8 @@ public class ItemGun extends ItemColored
 	@Override
 	public void onUsingTick(ItemStack stack, EntityLivingBase entity, int count)
 	{
-		if(!gun.general.auto)
+		Gun modifiedGun = getModifiedGun(stack);
+		if(!modifiedGun.general.auto)
 			return;
 
 		EntityPlayer player = (EntityPlayer) entity;
@@ -73,7 +127,7 @@ public class ItemGun extends ItemColored
 			CooldownTracker tracker = player.getCooldownTracker();
 			if(!tracker.hasCooldown(stack.getItem()))
 			{
-				tracker.setCooldown(stack.getItem(), gun.general.rate);
+				tracker.setCooldown(stack.getItem(), modifiedGun.general.rate);
 				PacketHandler.INSTANCE.sendToServer(new MessageShoot());
 			}
 		}
@@ -93,12 +147,13 @@ public class ItemGun extends ItemColored
 				}
 				playerIn.setActiveHand(handIn);
 
-				if(!gun.general.auto)
+				Gun modifiedGun = getModifiedGun(heldItem);
+				if(!modifiedGun.general.auto)
 				{
 					CooldownTracker tracker = playerIn.getCooldownTracker();
 					if(!tracker.hasCooldown(heldItem.getItem()))
 					{
-						tracker.setCooldown(heldItem.getItem(), gun.general.rate);
+						tracker.setCooldown(heldItem.getItem(), modifiedGun.general.rate);
 						PacketHandler.INSTANCE.sendToServer(new MessageShoot());
 					}
 				}
@@ -128,17 +183,38 @@ public class ItemGun extends ItemColored
 			silenced = barrel.getItem() == ModGuns.SILENCER;
 		}
 
-		Gun gun = getGun(heldItem);
+		ItemGun item = (ItemGun) heldItem.getItem();
+		Gun gun = item.getModifiedGun(heldItem);
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
-		if(silenced)
-		{
-			bullet.setDamageModifier(0.75F);
-		}
+		bullet.setWeapon(heldItem);
+		bullet.setAdditionalDamage(ItemGun.getAdditionalDamage(heldItem));
+		if(silenced) bullet.setDamageModifier(0.75F);
 		worldIn.spawnEntity(bullet);
+
+		if (GunConfig.SERVER.aggroMobs.enabled)
+		{
+			double r = silenced ? GunConfig.SERVER.aggroMobs.rangeSilenced : GunConfig.SERVER.aggroMobs.rangeUnsilenced;
+			double x = playerIn.posX + 0.5;
+			double y = playerIn.posY + 0.5;
+			double z = playerIn.posZ + 0.5;
+			AxisAlignedBB box = new AxisAlignedBB(x - r, y - r, z - r, x + r, y + r, z + r);
+			r *= r;
+			double dx, dy, dz;
+			for (EntityLivingBase entity : playerIn.world.getEntitiesWithinAABB(EntityLivingBase.class, box, NOT_AGGRO_EXEMPT))
+			{
+				dx = x - entity.posX;
+				dy = y - entity.posY;
+				dz = z - entity.posZ;
+				if (dx * dx + dy * dy + dz * dz <= r)
+				{
+					entity.setRevengeTarget(GunConfig.SERVER.aggroMobs.angerHostileMobs ? playerIn : entity);
+				}
+			}
+		}
 
 		if(silenced)
 		{
-			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.silenced_fire), SoundCategory.HOSTILE, 1F, 0.8F + itemRand.nextFloat() * 0.2F);
+			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.silencedFire), SoundCategory.HOSTILE, 1F, 0.8F + itemRand.nextFloat() * 0.2F);
 		}
 		else
 		{
@@ -159,7 +235,13 @@ public class ItemGun extends ItemColored
 			}
 		}
 	}
-	
+
+	private static float getAdditionalDamage(ItemStack gunStack)
+	{
+		NBTTagCompound tag = ItemStackUtil.createTagCompound(gunStack);
+		return tag.getFloat("AdditionalDamage");
+	}
+
 	public static ItemStack findAmmo(EntityPlayer player, ItemAmmo.Type type)
     {
     	if(player.capabilities.isCreativeMode)
@@ -225,13 +307,15 @@ public class ItemGun extends ItemColored
 		return Color.CYAN.getRGB();
 	}
 
-	@Nullable
-	public static Gun getGun(ItemStack stack)
+	public Gun getModifiedGun(ItemStack stack)
 	{
-		if(stack.getItem() instanceof ItemGun)
+		NBTTagCompound tagCompound = stack.getTagCompound();
+		if(tagCompound != null && tagCompound.hasKey("Gun", Constants.NBT.TAG_COMPOUND))
 		{
-			return ((ItemGun) stack.getItem()).gun;
+			Gun gunCopy = gun.copy();
+			gunCopy.deserializeNBT(tagCompound.getCompoundTag("Gun"));
+			return gunCopy;
 		}
-		return null;
+		return gun;
 	}
 }

@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.event;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.obfuscate.common.event.EntityLivingInitEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -77,17 +76,19 @@ public class CommonEvents
         private int startTick;
         private int slot;
         private ItemStack stack;
+        private Gun gun;
 
         private ReloadTracker(EntityPlayer player)
         {
             this.startTick = player.ticksExisted;
             this.slot = player.inventory.currentItem;
             this.stack = player.inventory.getCurrentItem();
+            this.gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
         }
 
         public boolean isSameWeapon(EntityPlayer player)
         {
-            return player.inventory.currentItem == slot && player.inventory.getCurrentItem() == stack;
+            return !stack.isEmpty() && player.inventory.currentItem == slot && player.inventory.getCurrentItem() == stack;
         }
 
         public boolean isWeaponFull()
@@ -97,13 +98,11 @@ public class CommonEvents
                 stack.setTagCompound(new NBTTagCompound());
             }
             NBTTagCompound tag = stack.getTagCompound();
-            Gun gun = ((ItemGun) stack.getItem()).getGun();
             return tag.getInteger("AmmoCount") >= gun.general.maxAmmo;
         }
 
         public boolean hasAmmo(EntityPlayer player)
         {
-            Gun gun = ((ItemGun) stack.getItem()).getGun();
             return ItemGun.findAmmo(player, gun.projectile.type) != null;
         }
 
@@ -115,7 +114,6 @@ public class CommonEvents
 
         public void increaseAmmo(EntityPlayer player)
         {
-            Gun gun = ((ItemGun) stack.getItem()).getGun();
             ItemStack ammo = ItemGun.findAmmo(player, gun.projectile.type);
             if(ammo != null)
             {
