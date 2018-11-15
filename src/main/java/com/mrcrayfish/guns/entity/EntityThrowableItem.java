@@ -3,6 +3,8 @@ package com.mrcrayfish.guns.entity;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,14 +17,14 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityThrowableItem extends net.minecraft.entity.projectile.EntityThrowable implements IEntityAdditionalSpawnData
+public abstract class EntityThrowableItem extends EntityThrowable implements IEntityAdditionalSpawnData
 {
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
     private float gravityVelocity = 0.03F;
 
     /* The max life of the entity. If -1, will stay alive forever and will need to be explicitly removed. */
-    private int maxLife = -1;
+    private int maxLife = 20 * 10;
 
     public EntityThrowableItem(World worldIn)
     {
@@ -74,7 +76,7 @@ public abstract class EntityThrowableItem extends net.minecraft.entity.projectil
     public void onUpdate()
     {
         super.onUpdate();
-        if(maxLife != -1 && ticksExisted >= maxLife)
+        if(shouldBounce && ticksExisted >= maxLife)
         {
             this.setDead();
             this.onDeath();
@@ -117,7 +119,8 @@ public abstract class EntityThrowableItem extends net.minecraft.entity.projectil
                 }
                 else
                 {
-
+                    this.setDead();
+                    this.onDeath();
                 }
                 break;
             case ENTITY:
