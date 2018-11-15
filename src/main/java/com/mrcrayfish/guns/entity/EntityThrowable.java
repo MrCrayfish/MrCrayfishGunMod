@@ -323,7 +323,7 @@ public abstract class EntityThrowable extends Entity implements IProjectile
         compound.setInteger("yTile", this.yTile);
         compound.setInteger("zTile", this.zTile);
         ResourceLocation resourcelocation = Block.REGISTRY.getNameForObject(this.inTile);
-        compound.setString("inTile", resourcelocation.toString());
+        compound.setString("inTile", resourcelocation != null ? resourcelocation.toString() : "");
         compound.setByte("shake", (byte) this.throwableShake);
         compound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
 
