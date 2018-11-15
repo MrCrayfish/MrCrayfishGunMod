@@ -58,6 +58,8 @@ public class EntityGrenade extends EntityThrowableItem
         {
             rotation += speed * 50;
         }
+
+        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY + 0.25, posZ, 0, 0, 0, 10);
     }
 
     @Override
