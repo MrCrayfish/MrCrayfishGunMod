@@ -5,7 +5,9 @@ import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.client.event.RenderEvents;
+import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
+import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.ItemColored;
@@ -37,6 +39,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(new GunHandler());
 		MinecraftForge.EVENT_BUS.register(new ReloadHandler());
 		RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, RenderGrenade::new);
 		KeyBinds.register();
 	}
 

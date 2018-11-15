@@ -3,14 +3,16 @@ package com.mrcrayfish.guns.item;
 import com.google.gson.annotations.SerializedName;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.init.ModGuns;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.*;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -44,6 +46,52 @@ public class ItemAmmo extends Item implements ISubItems
             {
                 items.add(new ItemStack(this, 1, i));
             }
+        }
+    }
+
+    @Override
+    public EnumAction getItemUseAction(ItemStack stack)
+    {
+        return EnumAction.BOW;
+    }
+
+    @Override
+    public int getMaxItemUseDuration(ItemStack stack)
+    {
+        return 72000;
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+    {
+        ItemStack stack = playerIn.getHeldItem(handIn);
+        if(stack.getMetadata() == Type.GRENADE.ordinal())
+        {
+            playerIn.setActiveHand(handIn);
+        }
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+    }
+
+    @Override
+    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
+    {
+        if(stack.getMetadata() != Type.GRENADE.ordinal())
+            return;
+
+        if(entityLiving instanceof EntityPlayer)
+        {
+            if(!((EntityPlayer) entityLiving).capabilities.isCreativeMode)
+            {
+                stack.shrink(1);
+            }
+        }
+        if (!worldIn.isRemote && entityLiving instanceof EntityPlayer)
+        {
+            int duration = this.getMaxItemUseDuration(stack) - timeLeft;
+            EntityPlayer player = (EntityPlayer) entityLiving;
+            EntityGrenade grenade = new EntityGrenade(worldIn, player);
+            grenade.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+            worldIn.spawnEntity(grenade);
         }
     }
 

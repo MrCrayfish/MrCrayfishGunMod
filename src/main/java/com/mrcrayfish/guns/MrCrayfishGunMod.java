@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns;
 
+import com.mrcrayfish.guns.entity.EntityGrenade;
 import org.apache.logging.log4j.Logger;
 
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
@@ -52,6 +53,7 @@ public class MrCrayfishGunMod
 	public void init(FMLInitializationEvent event)
 	{
 		EntityRegistry.registerModEntity(new ResourceLocation("cgm:projectile"), EntityProjectile.class, "cgmProjectile", 0, this, 64, 80, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("cgm:grenade"), EntityGrenade.class, "cgm.throwable", 1, this, 64, 80, true);
 
 		proxy.init();
 	}
