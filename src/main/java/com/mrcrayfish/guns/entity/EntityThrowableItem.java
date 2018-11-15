@@ -9,6 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -93,6 +95,13 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
             case BLOCK:
                 if(shouldBounce)
                 {
+                    IBlockState state = world.getBlockState(result.getBlockPos());
+                    SoundEvent event = state.getBlock().getSoundType().getStepSound();
+                    double speed = Math.sqrt(Math.pow(this.motionX, 2) + Math.pow(this.motionY, 2) + Math.pow(this.motionZ, 2));
+                    if(speed > 0.1)
+                    {
+                        world.playSound(null, result.hitVec.x, result.hitVec.y, result.hitVec.z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
+                    }
                     EnumFacing facing = result.sideHit;
                     switch(facing.getAxis())
                     {
