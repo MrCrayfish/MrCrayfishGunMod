@@ -39,8 +39,6 @@ public class RenderGrenade extends Render<EntityGrenade>
     @Override
     public void doRender(EntityGrenade entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(true);
-
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(x, y, z);
