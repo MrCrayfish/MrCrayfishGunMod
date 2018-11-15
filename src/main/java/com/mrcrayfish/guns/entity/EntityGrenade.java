@@ -74,7 +74,7 @@ public class EntityGrenade extends EntityThrowableItem
         explosion.doExplosionA();
         explosion.doExplosionB(true);
 
-        if (!isSmoking)
+        if(!isSmoking)
         {
             explosion.clearAffectedBlockPositions();
         }
