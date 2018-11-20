@@ -1,0 +1,15 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "cgm:workbench"
+    },
+    "variants": {
+        "inventory": {
+            "model": "cgm:workbench"
+        },
+        "facing=north": { "y": 0   },
+        "facing=east":  { "y": 90  },
+        "facing=south": { "y": 180 },
+        "facing=west":  { "y": 270 }
+    }
+}

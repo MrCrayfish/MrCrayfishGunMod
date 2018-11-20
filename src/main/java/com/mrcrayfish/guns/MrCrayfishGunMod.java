@@ -1,14 +1,14 @@
 package com.mrcrayfish.guns;
 
+import com.mrcrayfish.guns.common.GuiHandler;
 import com.mrcrayfish.guns.entity.EntityGrenade;
+import com.mrcrayfish.guns.init.*;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Logger;
 
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
-import com.mrcrayfish.guns.init.ModCrafting;
-import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.proxy.CommonProxy;
 
@@ -29,6 +29,9 @@ import net.minecraftforge.fml.relauncher.Side;
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = Reference.MC_VERSION, dependencies = Reference.DEPENDENCIES)
 public class MrCrayfishGunMod
 {
+	@Mod.Instance
+	public static MrCrayfishGunMod instance;
+
 	@SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_SERVER)
 	public static CommonProxy proxy;
 
@@ -40,9 +43,11 @@ public class MrCrayfishGunMod
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		logger = event.getModLog();
+		ModBlocks.register();
 		ModGuns.register();
 		ModSounds.register();
 		ModCrafting.register();
+		ModTileEntities.register();
 
 		PacketHandler.init();
 
@@ -54,6 +59,8 @@ public class MrCrayfishGunMod
 	{
 		EntityRegistry.registerModEntity(new ResourceLocation("cgm:projectile"), EntityProjectile.class, "cgmProjectile", 0, this, 64, 80, true);
 		EntityRegistry.registerModEntity(new ResourceLocation("cgm:grenade"), EntityGrenade.class, "cgm.throwable", 1, this, 64, 80, true);
+
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
 		proxy.init();
 	}
