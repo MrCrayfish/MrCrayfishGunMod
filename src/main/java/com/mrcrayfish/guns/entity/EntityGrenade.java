@@ -70,14 +70,11 @@ public class EntityGrenade extends EntityThrowableItem
 
     private static void createGrenadeExplosion(EntityGrenade grenade, Entity thrower, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
     {
-        Explosion explosion = new ExplosionGrenade(grenade.world, grenade, thrower, x, y, z, strength, isFlaming, isSmoking);
+        boolean canGunGrief = grenade.world.getGameRules().getBoolean("gunGriefing");
+        Explosion explosion = new ExplosionGrenade(grenade.world, grenade, thrower, x, y, z, strength, isFlaming, canGunGrief);
         explosion.doExplosionA();
         explosion.doExplosionB(true);
-
-        if(!isSmoking)
-        {
-            explosion.clearAffectedBlockPositions();
-        }
+        explosion.clearAffectedBlockPositions();
 
         if(grenade.world instanceof WorldServer)
         {
