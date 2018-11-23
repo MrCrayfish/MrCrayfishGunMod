@@ -1,14 +1,14 @@
 {
-   "shotgun_fire": { "category": "player", "sounds": [{ "name": "cgm:shotgun_fire", "stream": false }]},
-   "rifle_fire": { "category": "player", "sounds": [{ "name": "cgm:rifle_fire", "stream": false }]},
-   "pistol_fire": { "category": "player", "sounds": [{ "name": "cgm:pistol_fire", "stream": false }]},
-   "grenade_fire": { "category": "player", "sounds": [{ "name": "cgm:grenade_fire", "stream": false }]},
-   "bazooka_fire": { "category": "player", "sounds": [{ "name": "cgm:bazooka_fire", "stream": true }]},
-   "chain_gun_fire": { "category": "player", "sounds": [{ "name": "cgm:chain_gun_fire", "stream": false }]},
-   "pistol_reload": { "category": "player", "sounds": [{ "name": "cgm:pistol_reload", "stream": false }]},
-   "pistol_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:pistol_fire_silenced", "stream": false }]},
-   "shotgun_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:shotgun_fire_silenced", "stream": false }]},
-   "rifle_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:rifle_fire_silenced", "stream": false }]},
-   "grenade_stun_explosion": { "sounds": [{ "name": "cgm:grenade_stun_explosion" }], "subtitle": "subtitle.cgm.stun.explosion"},
-   "grenade_stun_ring": { "sounds": [{ "name": "cgm:grenade_stun_ring", "stream": true }], "subtitle": "subtitle.cgm.stun.ring"}
+   "shotgun_fire":           { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:shotgun_fire" }]},
+   "rifle_fire":             { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:rifle_fire" }]},
+   "pistol_fire":            { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:pistol_fire" }]},
+   "grenade_fire":           { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:grenade_fire" }]},
+   "bazooka_fire":           { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:bazooka_fire", "stream": true }]},
+   "chain_gun_fire":         { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:chain_gun_fire" }]},
+   "pistol_fire_silenced":   { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:pistol_fire_silenced" }]},
+   "shotgun_fire_silenced":  { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:shotgun_fire_silenced" }]},
+   "rifle_fire_silenced":    { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:rifle_fire_silenced" }]},
+   "pistol_reload":          { "subtitle": "subtitle.cgm.reload",         "sounds": [{ "name": "cgm:pistol_reload" }]},
+   "grenade_stun_explosion": { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:grenade_stun_explosion" }]},
+   "grenade_stun_ring":      { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:grenade_stun_ring", "stream": true }]}
 }
