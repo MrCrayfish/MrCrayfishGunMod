@@ -129,7 +129,7 @@ public class GuiWorkbench extends GuiContainer
         int startY = (this.height - this.ySize) / 2;
         this.buttonList.add(new GuiButton(1, startX, startY, 15, 20, "<"));
         this.buttonList.add(new GuiButton(2, startX + 161, startY, 15, 20, ">"));
-        this.buttonList.add(btnCraft = new GuiButton(3, startX + 186, startY + 6, 97, 20, "Craft"));
+        this.buttonList.add(btnCraft = new GuiButton(3, startX + 186, startY + 6, 97, 20, "Assemble"));
         this.btnCraft.enabled = false;
         this.checkBoxMaterials = new GuiCheckBox(186, 90, "Show Remaining");
         this.checkBoxMaterials.setToggled(GuiWorkbench.showRemaining);
