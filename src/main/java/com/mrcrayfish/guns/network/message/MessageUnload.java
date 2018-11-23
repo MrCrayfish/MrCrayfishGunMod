@@ -9,7 +9,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -30,7 +29,7 @@ public class MessageUnload implements IMessage, IMessageHandler<MessageUnload, I
     @Override
     public IMessage onMessage(MessageUnload message, MessageContext ctx)
     {
-        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
             EntityPlayer player = ctx.getServerHandler().player;
             ItemStack stack = player.inventory.getCurrentItem();

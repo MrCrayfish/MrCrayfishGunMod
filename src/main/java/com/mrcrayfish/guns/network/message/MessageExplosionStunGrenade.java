@@ -40,7 +40,10 @@ public class MessageExplosionStunGrenade implements IMessage, IMessageHandler<Me
     @Override
     public IMessage onMessage(MessageExplosionStunGrenade message, MessageContext ctx)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> MrCrayfishGunMod.proxy.createExplosionStunGrenade(message.x, message.y, message.z));
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        {
+            MrCrayfishGunMod.proxy.createExplosionStunGrenade(message.x, message.y, message.z);
+        });
         return null;
     }
 }

@@ -28,31 +28,34 @@ public class MessageShoot implements IMessage, IMessageHandler<MessageShoot, IMe
     @Override
     public IMessage onMessage(MessageShoot message, MessageContext ctx)
     {
-        EntityPlayer player = ctx.getServerHandler().player;
-        World world = player.world;
-        ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun && (ItemGun.hasAmmo(heldItem) || player.capabilities.isCreativeMode))
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            ItemGun item = (ItemGun) heldItem.getItem();
-            Gun gun = item.getModifiedGun(heldItem);
-            if(gun != null)
+            EntityPlayer player = ctx.getServerHandler().player;
+            World world = player.world;
+            ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
+            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun && (ItemGun.hasAmmo(heldItem) || player.capabilities.isCreativeMode))
             {
-                MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-                server.addScheduledTask(() ->
+                ItemGun item = (ItemGun) heldItem.getItem();
+                Gun gun = item.getModifiedGun(heldItem);
+                if(gun != null)
                 {
-                    CooldownTracker tracker = player.getCooldownTracker();
-                    if(!tracker.hasCooldown(heldItem.getItem()))
+                    MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+                    server.addScheduledTask(() ->
                     {
-                        tracker.setCooldown(heldItem.getItem(), gun.general.rate);
-                        ItemGun.fire(world, player, heldItem);
-                    }
-                });
+                        CooldownTracker tracker = player.getCooldownTracker();
+                        if(!tracker.hasCooldown(heldItem.getItem()))
+                        {
+                            tracker.setCooldown(heldItem.getItem(), gun.general.rate);
+                            ItemGun.fire(world, player, heldItem);
+                        }
+                    });
+                }
             }
-        }
-        else
-        {
-            world.playSound(null, player.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
-        }
+            else
+            {
+                world.playSound(null, player.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
+            }
+        });
         return null;
     }
 }

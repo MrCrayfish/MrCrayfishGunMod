@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.MrCrayfishGunMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -64,7 +65,10 @@ public class MessageSound implements IMessage, IMessageHandler<MessageSound, IMe
     {
         if(GunConfig.CLIENT.sound.hitSound)
         {
-            MrCrayfishGunMod.proxy.playClientSound(posX, posY, posZ, message.sound, message.category, message.volume, message.pitch);
+            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+            {
+                MrCrayfishGunMod.proxy.playClientSound(posX, posY, posZ, message.sound, message.category, message.volume, message.pitch);
+            });
         }
         return null;
     }

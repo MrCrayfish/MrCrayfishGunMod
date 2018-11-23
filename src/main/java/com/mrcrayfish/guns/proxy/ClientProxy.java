@@ -94,11 +94,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void playClientSound(double posX, double posY, double posZ, SoundEvent event, SoundCategory category, float volume, float pitch)
 	{
-		Minecraft.getMinecraft().addScheduledTask(() ->
-		{
-			ISound sound = new PositionedSoundRecord(event.getSoundName(), category, volume, pitch, false, 0, ISound.AttenuationType.NONE, 0, 0, 0);
-			Minecraft.getMinecraft().getSoundHandler().playSound(sound);
-		});
+		ISound sound = new PositionedSoundRecord(event.getSoundName(), category, volume, pitch, false, 0, ISound.AttenuationType.NONE, 0, 0, 0);
+		Minecraft.getMinecraft().getSoundHandler().playSound(sound);
 	}
 
 	@SubscribeEvent
