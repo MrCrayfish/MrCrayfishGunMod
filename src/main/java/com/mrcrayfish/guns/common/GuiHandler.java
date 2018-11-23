@@ -24,7 +24,7 @@ public class GuiHandler implements IGuiHandler
         TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof TileEntityWorkbench)
         {
-            return new ContainerWorkbench();
+            return new ContainerWorkbench(player.inventory, (TileEntityWorkbench) tileEntity);
         }
         return null;
     }
@@ -37,7 +37,7 @@ public class GuiHandler implements IGuiHandler
         TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof TileEntityWorkbench)
         {
-            return new GuiWorkbench();
+            return new GuiWorkbench(player.inventory, (TileEntityWorkbench) tileEntity);
         }
         return null;
     }

@@ -18,7 +18,7 @@ public class ModSounds
 
 	static
 	{
-		for(ItemGun gunItem : ModGuns.GUNS)
+		for(ItemGun gunItem : ModGuns.GUNS.values())
 		{
 			Gun gun = gunItem.getGun();
 			if(!SOUNDS.containsKey(gun.sounds.fire))

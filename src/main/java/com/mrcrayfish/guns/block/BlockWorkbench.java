@@ -44,7 +44,7 @@ public class BlockWorkbench extends BlockRotatedObject
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if(tileEntity instanceof TileEntityWorkbench)
             {
-                //playerIn.openGui(MrCrayfishGunMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                playerIn.openGui(MrCrayfishGunMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
             }
         }
         return true;

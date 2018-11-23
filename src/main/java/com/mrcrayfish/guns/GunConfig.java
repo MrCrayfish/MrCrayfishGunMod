@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Config(modid = Reference.MOD_ID)
-@LangKey("config." + Reference.MOD_ID + ".title")
+@Config.LangKey("config." + Reference.MOD_ID + ".title")
 @EventBusSubscriber(modid = Reference.MOD_ID)
 public class GunConfig
 {
@@ -76,72 +76,77 @@ public class GunConfig
 	@Config.Ignore
     public static final String PREFIX = "config." + Reference.MOD_ID + ".";
 
-	@Name("Client")
-	@Comment("Client-only configs.")
-	@LangKey(PREFIX + "client")
+	@Config.Name("Client")
+	@Config.Comment("Client-only configs.")
+	@Config.LangKey(PREFIX + "client")
 	public static final Client CLIENT = new Client();
 
-	@Name("Server")
-	@Comment("Server-only configs.")
-	@LangKey(PREFIX + "server")
+	@Config.Name("Server")
+	@Config.Comment("Server-only configs.")
+	@Config.LangKey(PREFIX + "server")
 	public static final Server SERVER = new Server();
 
 	public static class Client
 	{
-		@Name("Sounds")
-		@Comment("Control sounds triggered by guns")
-		@LangKey(PREFIX + "client.sounds")
+		@Config.Name("Sounds")
+		@Config.Comment("Control sounds triggered by guns")
+		@Config.LangKey(PREFIX + "client.sounds")
 		public Sounds sound = new Sounds();
+
+		@Config.Name("Display")
+		@Config.Comment("Configuration for display related options")
+		@Config.LangKey(PREFIX + "client.display")
+		public Display display = new Display();
 	}
 
 	public static class Sounds
 	{
-		@Name("Play Hit Sound")
-		@Comment("If true, a ding sound will play when you successfully hit a player with a gun")
-		@LangKey(PREFIX + "client.sounds.hit_sound")
+		@Config.Name("Play Hit Sound")
+		@Config.Comment("If true, a ding sound will play when you successfully hit a player with a gun")
+		@Config.LangKey(PREFIX + "client.sounds.hit_sound")
 		public boolean hitSound = true;
 	}
 
 	public static class Server
 	{
-		@Name("Aggro Mobs")
-		@Comment("Nearby mobs are angered and/or scared by the firing of guns.")
-		@LangKey(PREFIX + "server.aggro")
+		@Config.Name("Aggro Mobs")
+		@Config.Comment("Nearby mobs are angered and/or scared by the firing of guns.")
+		@Config.LangKey(PREFIX + "server.aggro")
 		public AggroMobs aggroMobs = new AggroMobs();
 
-		@Name("Guns")
-		@Comment("Change the properties of guns")
-		@LangKey(PREFIX + "server.guns")
+		@Config.Name("Guns")
+		@Config.Comment("Change the properties of guns")
+		@Config.LangKey(PREFIX + "server.guns")
 		public Guns guns = new Guns();
 	}
 
 	public static class AggroMobs
 	{
-		@Name("Aggro Mobs Enabled")
-		@Comment("If true, nearby mobs are angered and/or scared by the firing of guns.")
-		@LangKey(PREFIX + "server.aggro.enabled")
+		@Config.Name("Aggro Mobs Enabled")
+		@Config.Comment("If true, nearby mobs are angered and/or scared by the firing of guns.")
+		@Config.LangKey(PREFIX + "server.aggro.enabled")
 		public boolean enabled = true;
 
-		@Name("Anger Hostile Mobs")
-		@Comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.")
-		@LangKey(PREFIX + "server.aggro.hostile")
+		@Config.Name("Anger Hostile Mobs")
+		@Config.Comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.")
+		@Config.LangKey(PREFIX + "server.aggro.hostile")
 		public boolean angerHostileMobs = true;
 
-		@Name("Range Silenced")
-		@Comment("Any mobs within a sphere of this radius will aggro on the shooter of a silenced gun.")
-		@LangKey(PREFIX + "server.aggro.silenced")
+		@Config.Name("Range Silenced")
+		@Config.Comment("Any mobs within a sphere of this radius will aggro on the shooter of a silenced gun.")
+		@Config.LangKey(PREFIX + "server.aggro.silenced")
 		@RangeDouble(min = 0)
 		public double rangeSilenced = 10;
 
-		@Name("Range Unsilenced")
-		@Comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.")
-		@LangKey(PREFIX + "server.aggro.unsilenced")
+		@Config.Name("Range Unsilenced")
+		@Config.Comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.")
+		@Config.LangKey(PREFIX + "server.aggro.unsilenced")
 		@RangeDouble(min = 0)
 		public double rangeUnsilenced = 20;
 
-		@Name("Exempt Mob Classes")
-		@Comment("Any mobs of classes with class paths in this list will not aggro on shooters.")
-		@LangKey(PREFIX + "server.aggro.exempt")
+		@Config.Name("Exempt Mob Classes")
+		@Config.Comment("Any mobs of classes with class paths in this list will not aggro on shooters.")
+		@Config.LangKey(PREFIX + "server.aggro.exempt")
 		public String[] exemptClassNames = new String[] {"net.minecraft.entity.passive.EntityVillager"};
 		public static Set<Class> exemptClasses = Sets.<Class>newHashSet();
 
@@ -171,41 +176,49 @@ public class GunConfig
 		}
 	}
 
+	public static class Display
+	{
+		@Config.Name("Workbench Animation")
+		@Config.Comment("If true, an animation is performed while cycling items in the Workbench")
+		@Config.LangKey(PREFIX + "client.display.workbench_animation")
+		public boolean workbenchAnimation = true;
+	}
+
 	public static class Guns
 	{
-		@Name("Pistol")
-		@Comment("Change the properties of the Pistol")
-		@LangKey(PREFIX + "server.guns.pistol")
+		@Config.Name("Pistol")
+		@Config.Comment("Change the properties of the Pistol")
+		@Config.LangKey(PREFIX + "server.guns.pistol")
 		public Gun pistol = ID_TO_GUN.get("handgun");
 
-		@Name("Shotgun")
-		@Comment("Change the properties of the Shotgun")
-		@LangKey(PREFIX + "server.guns.shotgun")
+		@Config.Name("Shotgun")
+		@Config.Comment("Change the properties of the Shotgun")
+		@Config.LangKey(PREFIX + "server.guns.shotgun")
 		public Gun shotgun = ID_TO_GUN.get("shotgun");
 
-		@Name("Rifle")
-		@Comment("Change the properties of the Rifle")
-		@LangKey(PREFIX + "server.guns.rifle")
+		@Config.Name("Rifle")
+		@Config.Comment("Change the properties of the Rifle")
+		@Config.LangKey(PREFIX + "server.guns.rifle")
 		public Gun rifle = ID_TO_GUN.get("rifle");
 
-		@Name("Grenade Launcher")
-		@Comment("Change the properties of the Grenade Launcher")
-		@LangKey(PREFIX + "server.guns.grenade_launcher")
+		@Config.Name("Grenade Launcher")
+		@Config.Comment("Change the properties of the Grenade Launcher")
+		@Config.LangKey(PREFIX + "server.guns.grenade_launcher")
 		public Gun grenadeLauncher = ID_TO_GUN.get("grenade_launcher");
 
-		@Name("Bazooka")
-		@Comment("Change the properties of the Bazooka")
-		@LangKey(PREFIX + "server.guns.bazooka")
+		@Config.Name("Bazooka")
+		@Config.Comment("Change the properties of the Bazooka")
+		@Config.LangKey(PREFIX + "server.guns.bazooka")
 		public Gun bazooka = ID_TO_GUN.get("bazooka");
 
-		@Name("Minigun")
-		@Comment("Change the properties of the Minigun")
-		@LangKey(PREFIX + "server.guns.chain_gun")
+		@Config.Name("Minigun")
+		@Config.Comment("Change the properties of the Minigun")
+		@Config.LangKey(PREFIX + "server.guns.chain_gun")
 		public Gun chainGun = ID_TO_GUN.get("chain_gun");
 
-		@Name("Assault Rifle")
-		@Comment("Change the properties of the Assault Rifle")
-		@LangKey(PREFIX + "server.guns.assault_rifle")
+		@Config.Name("Assault Rifle")
+		@Config.Comment("Change the properties of the Assault Rifle")
+		@Config.LangKey(PREFIX + "server.guns.assault_rifle")
 		public Gun assaultRifle = ID_TO_GUN.get("assault_rifle");
 	}
 

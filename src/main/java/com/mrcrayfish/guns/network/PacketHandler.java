@@ -19,5 +19,6 @@ public class PacketHandler
 		INSTANCE.registerMessage(MessageSound.class, MessageSound.class, 4, Side.CLIENT);
 		INSTANCE.registerMessage(MessageSyncProperties.class, MessageSyncProperties.class, 5, Side.CLIENT);
 		INSTANCE.registerMessage(MessageUnload.class, MessageUnload.class, 6, Side.SERVER);
+		INSTANCE.registerMessage(MessageCraft.class, MessageCraft.class, 7, Side.SERVER);
 	}
 }
