@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.entity.EntityGrenade;
+import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import com.mrcrayfish.guns.init.ModGuns;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -65,7 +66,7 @@ public class ItemAmmo extends Item implements ISubItems
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        if(stack.getMetadata() == Type.GRENADE.ordinal())
+        if(stack.getMetadata() == Type.GRENADE.ordinal() || stack.getMetadata() == Type.GRENADE_STUN.ordinal())
         {
             playerIn.setActiveHand(handIn);
         }
@@ -75,7 +76,8 @@ public class ItemAmmo extends Item implements ISubItems
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
     {
-        if(stack.getMetadata() != Type.GRENADE.ordinal())
+        boolean isStun = stack.getMetadata() == Type.GRENADE_STUN.ordinal();
+        if(!isStun && stack.getMetadata() != Type.GRENADE.ordinal())
             return;
 
         if(entityLiving instanceof EntityPlayer)
@@ -89,7 +91,7 @@ public class ItemAmmo extends Item implements ISubItems
         {
             int duration = this.getMaxItemUseDuration(stack) - timeLeft;
             EntityPlayer player = (EntityPlayer) entityLiving;
-            EntityGrenade grenade = new EntityGrenade(worldIn, player);
+            EntityGrenade grenade = isStun ? new EntityGrenadeStun(worldIn, player) : new EntityGrenade(worldIn, player);
             grenade.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
             worldIn.spawnEntity(grenade);
         }
@@ -122,6 +124,8 @@ public class ItemAmmo extends Item implements ISubItems
         SHELL("shell"),
         @SerializedName("grenade")
         GRENADE("grenade"),
+        @SerializedName("grenade_stun")
+        GRENADE_STUN("grenade_stun"),
         @SerializedName("missile")
         MISSILE("missile");
 

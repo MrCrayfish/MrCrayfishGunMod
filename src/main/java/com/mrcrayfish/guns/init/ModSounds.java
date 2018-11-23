@@ -21,26 +21,23 @@ public class ModSounds
 		for(ItemGun gunItem : ModGuns.GUNS)
 		{
 			Gun gun = gunItem.getGun();
-			if(!SOUNDS.containsKey(gun.sounds.fire))
-			{
-				ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, gun.sounds.fire);
-				SoundEvent event = new SoundEvent(sound).setRegistryName(gun.sounds.fire);
-				SOUNDS.put(gun.sounds.fire, event);
-			}
-			if(!SOUNDS.containsKey(gun.sounds.reload))
-			{
-				ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, gun.sounds.reload);
-				SoundEvent event = new SoundEvent(sound).setRegistryName(gun.sounds.reload);
-				SOUNDS.put(gun.sounds.reload, event);
-			}
-			if(!SOUNDS.containsKey(gun.sounds.silencedFire))
-			{
-				ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, gun.sounds.silencedFire);
-				SoundEvent event = new SoundEvent(sound).setRegistryName(gun.sounds.silencedFire);
-				SOUNDS.put(gun.sounds.silencedFire, event);
-			}
+			register(gun.sounds.fire);
+			register(gun.sounds.reload);
+			register(gun.sounds.silencedFire);
 		}
+		register("grenade_stun_explosion");
+		register("grenade_stun_ring");
 	}
+
+    private static void register(String name)
+    {
+        if(!SOUNDS.containsKey(name))
+        {
+        	ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, name);
+        	SoundEvent event = new SoundEvent(sound).setRegistryName(name);
+        	SOUNDS.put(name, event);
+        }
+    }
 
 	public static void register()
 	{

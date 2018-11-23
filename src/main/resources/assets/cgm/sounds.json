@@ -8,5 +8,7 @@
    "pistol_reload": { "category": "player", "sounds": [{ "name": "cgm:pistol_reload", "stream": false }]},
    "pistol_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:pistol_fire_silenced", "stream": false }]},
    "shotgun_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:shotgun_fire_silenced", "stream": false }]},
-   "rifle_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:rifle_fire_silenced", "stream": false }]}
+   "rifle_fire_silenced": { "category": "player", "sounds": [{ "name": "cgm:rifle_fire_silenced", "stream": false }]},
+   "grenade_stun_explosion": { "sounds": [{ "name": "cgm:grenade_stun_explosion" }], "subtitle": "subtitle.cgm.stun.explosion"},
+   "grenade_stun_ring": { "sounds": [{ "name": "cgm:grenade_stun_ring", "stream": true }], "subtitle": "subtitle.cgm.stun.ring"}
 }

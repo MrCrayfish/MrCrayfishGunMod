@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client.event;
 
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.KeyBinds;
@@ -8,6 +9,7 @@ import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
@@ -33,6 +35,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
@@ -41,6 +44,8 @@ import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -566,4 +571,20 @@ public class RenderEvents
 		GlStateManager.enableCull();
 		GlStateManager.popMatrix();
 	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
+    public void blindPlayer(RenderGameOverlayEvent.Pre event)
+    {
+        if (event.getType() != ElementType.ALL)
+            return;
+
+        PotionEffect effect = Minecraft.getMinecraft().player.getActivePotionEffect(ModPotions.BLINDED);
+        if (effect != null)
+        {
+            // Render white screen-filling overlay at full alpha effect when duration is above threshold
+            // When below threshold, fade to full transparency as duration approaches 0
+            float percent = Math.min((effect.getDuration() / (float) GunConfig.SERVER.stunGrenades.blind.alphaFadeThresholdSynced), 1);
+            Gui.drawRect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, ((int) (percent * GunConfig.SERVER.stunGrenades.blind.alphaOverlaySynced + 0.5) << 24) | 16777215);
+        }
+    }
 }
