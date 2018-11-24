@@ -75,6 +75,9 @@ public class SoundEvents
             }
         }
 
+        if (GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced == 1)
+            return;
+
         // Access the sound manager's sound system and list of playing sounds
         SoundSystem soundSystem;
         Map<String, ISound> playingSounds;
@@ -128,7 +131,8 @@ public class SoundEvents
         if (soundManager == null)
             soundManager = event.getManager();
 
-        if (!isDeafened || Minecraft.getMinecraft().player == null || event.getSound() instanceof ITickableSound)
+        if (!isDeafened || GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced == 1
+                || Minecraft.getMinecraft().player == null || event.getSound() instanceof ITickableSound)
             return;
 
         // Exempt initial explosion from muting
