@@ -1,14 +1,19 @@
 package com.mrcrayfish.guns;
 
-import com.mrcrayfish.guns.common.GuiHandler;
-import com.mrcrayfish.guns.entity.EntityGrenade;
-import com.mrcrayfish.guns.init.*;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Logger;
 
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
+import com.mrcrayfish.guns.common.GuiHandler;
+import com.mrcrayfish.guns.entity.EntityGrenade;
+import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.init.ModBlocks;
+import com.mrcrayfish.guns.init.ModCrafting;
+import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.init.ModPotions;
+import com.mrcrayfish.guns.init.ModSounds;
+import com.mrcrayfish.guns.init.ModTileEntities;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.proxy.CommonProxy;
 
@@ -23,6 +28,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -48,6 +54,7 @@ public class MrCrayfishGunMod
 		ModSounds.register();
 		ModCrafting.register();
 		ModTileEntities.register();
+        ModPotions.register();
 
 		PacketHandler.init();
 
@@ -58,7 +65,8 @@ public class MrCrayfishGunMod
 	public void init(FMLInitializationEvent event)
 	{
 		EntityRegistry.registerModEntity(new ResourceLocation("cgm:projectile"), EntityProjectile.class, "cgmProjectile", 0, this, 64, 80, true);
-		EntityRegistry.registerModEntity(new ResourceLocation("cgm:grenade"), EntityGrenade.class, "cgm.throwable", 1, this, 64, 80, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("cgm:grenade"), EntityGrenade.class, "cgm.grenade", 1, this, 64, 80, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("cgm:grenade_stun"), EntityGrenadeStun.class, "cgm.grenade_stun", 2, this, 64, 80, true);
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 

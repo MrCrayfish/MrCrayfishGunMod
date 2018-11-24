@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -120,6 +121,23 @@ public class RegistrationHandler
         public static void register(final RegistryEvent.Register<IRecipe> event)
         {
             RECIPES.forEach(recipe -> event.getRegistry().register(recipe));
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+    public static class Potions
+    {
+        private static final List<Potion> POTIONS = new LinkedList<>();
+
+        static void add(Potion potion)
+        {
+            POTIONS.add(potion);
+        }
+
+        @SubscribeEvent
+        public static void register(final RegistryEvent.Register<Potion> event)
+        {
+            POTIONS.forEach(potion -> event.getRegistry().register(potion));
         }
     }
 }

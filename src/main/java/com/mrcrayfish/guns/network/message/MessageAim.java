@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.event.CommonEvents;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -35,8 +35,10 @@ public class MessageAim implements IMessage, IMessageHandler<MessageAim, IMessag
 	@Override
 	public IMessage onMessage(MessageAim message, MessageContext ctx)
 	{
-		EntityPlayer player = ctx.getServerHandler().player;
-		player.getDataManager().set(CommonEvents.AIMING, message.aiming);
+	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+	    {
+	        ctx.getServerHandler().player.getDataManager().set(CommonEvents.AIMING, message.aiming);
+	    });
 		return null;
 	}
 }
