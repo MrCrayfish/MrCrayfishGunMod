@@ -36,11 +36,17 @@ info.cgm.ignore_ammo=Infinite Ammo
 config.cgm.title=MrCrayfish's Gun Mod Config
 
 config.cgm.client=Client
+
 config.cgm.client.tooltip=Client-only configs.
 config.cgm.client.sounds=Sounds
 config.cgm.client.sounds.tooltip=Control sounds triggered by guns
 config.cgm.client.sounds.hit_sound=Play Hit Sound
 config.cgm.client.sounds.hit_sound.tooltip=If true, a ding sound will play when you successfully hit a player with a gun
+config.cgm.client.display=Display
+config.cgm.client.display.tooltip=Configuration for display related options
+config.cgm.client.display.workbench_animation=Workbench Animation
+config.cgm.client.display.workbench_animation.tooltip=If true, an animation is performed while cycling items in the Workbench
+
 config.cgm.server=Server
 
 config.cgm.server.tooltip=Server-only configs.
