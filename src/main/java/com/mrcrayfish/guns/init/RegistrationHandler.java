@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.ISubItems;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
@@ -24,6 +25,23 @@ import java.util.List;
  */
 public class RegistrationHandler
 {
+    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+    public static class Blocks
+    {
+        private static final List<Block> BLOCKS = new LinkedList<>();
+
+        static void add(Block block)
+        {
+            BLOCKS.add(block);
+        }
+
+        @SubscribeEvent
+        public static void register(final RegistryEvent.Register<Block> event)
+        {
+            BLOCKS.forEach(block -> event.getRegistry().register(block));
+        }
+    }
+
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class Items
     {

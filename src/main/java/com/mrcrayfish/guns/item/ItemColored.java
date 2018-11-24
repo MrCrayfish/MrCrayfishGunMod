@@ -28,4 +28,10 @@ public class ItemColored extends Item
         NBTTagCompound tagCompound = ItemStackUtil.createTagCompound(stack);
         tagCompound.setInteger("color", color);
     }
+
+    public void removeColor(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = ItemStackUtil.createTagCompound(stack);
+        tagCompound.removeTag("color");
+    }
 }

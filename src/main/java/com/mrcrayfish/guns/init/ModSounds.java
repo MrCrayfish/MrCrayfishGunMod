@@ -18,7 +18,7 @@ public class ModSounds
 
 	static
 	{
-		for(ItemGun gunItem : ModGuns.GUNS)
+		for(ItemGun gunItem : ModGuns.GUNS.values())
 		{
 			Gun gun = gunItem.getGun();
 			register(gun.sounds.fire);

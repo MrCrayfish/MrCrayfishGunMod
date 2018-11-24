@@ -1,0 +1,20 @@
+{
+    "result": {
+        "item": "cgm:workbench"
+    },
+    "pattern": [
+        "CCC",
+        "III",
+        "I I"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 8
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    }
+}
