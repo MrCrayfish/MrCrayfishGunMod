@@ -42,6 +42,7 @@ public class SoundEvents
     private static Field soundSystem, playingSounds;
     private static SoundManager soundManager;
     private static SoundRinging ringing;
+    private static float masterVolume = -1;
 
     public static void initReflection()
     {
@@ -74,8 +75,30 @@ public class SoundEvents
             }
         }
 
-        if (GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced == 1)
+        float percent = GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced;
+        if (percent == 1)
             return;
+
+        if (GunConfig.SERVER.stunGrenades.deafen.effectAllSoundsSynced)
+        {
+            // Mute all game sounds -- including the ringing sound and the sound of the initial deafening explosion
+            if (effect != null)
+            {
+                if (masterVolume < 0)
+                    masterVolume = Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER);
+
+                Minecraft.getMinecraft().getSoundHandler().setSoundLevel(SoundCategory.MASTER, getMutedVolume(effect.getDuration(), masterVolume));
+                isDeafened = true;
+            }
+            else if (isDeafened)
+            {
+                // Restore sound levels to initial values
+                isDeafened = false;
+                Minecraft.getMinecraft().getSoundHandler().setSoundLevel(SoundCategory.MASTER, masterVolume);
+                masterVolume = -1;
+            }
+            return;
+        }
 
         // Access the sound manager's sound system and list of playing sounds
         SoundSystem soundSystem;
@@ -130,7 +153,7 @@ public class SoundEvents
         if (soundManager == null)
             soundManager = event.getManager();
 
-        if (!isDeafened || GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced == 1
+        if (!isDeafened || GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced == 1 || GunConfig.SERVER.stunGrenades.deafen.effectAllSoundsSynced
                 || Minecraft.getMinecraft().player == null || event.getSound() instanceof ITickableSound)
             return;
 
