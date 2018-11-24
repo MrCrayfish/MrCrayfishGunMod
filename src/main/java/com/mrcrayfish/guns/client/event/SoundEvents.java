@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 
 import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.audio.SoundRinging;
 import com.mrcrayfish.guns.init.ModPotions;
