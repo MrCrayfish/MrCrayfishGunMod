@@ -124,10 +124,10 @@ public class ItemAmmo extends Item implements ISubItems
         SHELL("shell"),
         @SerializedName("grenade")
         GRENADE("grenade"),
-        @SerializedName("grenade_stun")
-        GRENADE_STUN("grenade_stun"),
         @SerializedName("missile")
-        MISSILE("missile");
+        MISSILE("missile"),
+        @SerializedName("grenade_stun")
+        GRENADE_STUN("grenade_stun");
 
         public final String name;
 
