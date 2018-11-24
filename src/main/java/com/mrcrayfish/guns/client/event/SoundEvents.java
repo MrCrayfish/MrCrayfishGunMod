@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -44,8 +45,8 @@ public class SoundEvents
 
     public static void initReflection()
     {
-        soundSystem = ReflectionHelper.findField(SoundManager.class, "sndSystem", "field_148620_e");
-        playingSounds = ReflectionHelper.findField(SoundManager.class, "playingSounds", "field_148629_h");
+        soundSystem = ReflectionHelper.findField(SoundManager.class, ObfuscationReflectionHelper.remapFieldNames(SoundManager.class.getName(), "field_148620_e"));
+        playingSounds = ReflectionHelper.findField(SoundManager.class, ObfuscationReflectionHelper.remapFieldNames(SoundManager.class.getName(), "field_148629_h"));
     }
 
     @SubscribeEvent
