@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -39,16 +38,12 @@ public class MessageShoot implements IMessage, IMessageHandler<MessageShoot, IMe
                 Gun gun = item.getModifiedGun(heldItem);
                 if(gun != null)
                 {
-                    MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-                    server.addScheduledTask(() ->
+                    CooldownTracker tracker = player.getCooldownTracker();
+                    if(!tracker.hasCooldown(heldItem.getItem()))
                     {
-                        CooldownTracker tracker = player.getCooldownTracker();
-                        if(!tracker.hasCooldown(heldItem.getItem()))
-                        {
-                            tracker.setCooldown(heldItem.getItem(), gun.general.rate);
-                            ItemGun.fire(world, player, heldItem);
-                        }
-                    });
+                        tracker.setCooldown(heldItem.getItem(), gun.general.rate);
+                        ItemGun.fire(world, player, heldItem);
+                    }
                 }
             }
             else
