@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 
 import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.audio.SoundRinging;
 import com.mrcrayfish.guns.init.ModPotions;
@@ -28,8 +29,8 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import paulscode.sound.SoundSystem;
@@ -50,23 +51,28 @@ public class SoundEvents
     }
 
     @SubscribeEvent
-    public static void deafenPlayer(PlayerTickEvent event)
+    public static void deafenPlayer(ClientTickEvent event)
     {
-        if (soundManager == null || event.phase == Phase.START)
+        if (event.phase == Phase.START || Minecraft.getMinecraft().player == null || soundManager == null)
             return;
 
         // If deafened, play ringing sound if not already playing, otherwise return
-        PotionEffect effect = event.player.getActivePotionEffect(ModPotions.DEAFENED);
+        PotionEffect effect = Minecraft.getMinecraft().player.getActivePotionEffect(ModPotions.DEAFENED);
         if (effect == null)
         {
             if (!isDeafened)
                 return;
         }
-        else if (isDeafened && GunConfig.SERVER.stunGrenades.deafen.ringVolumeSynced > 0
-                && (ringing == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(ringing)))
+        else
         {
-            ringing = new SoundRinging();
-            Minecraft.getMinecraft().getSoundHandler().playSound(ringing);
+            isDeafened = true;
+            if (GunConfig.SERVER.stunGrenades.deafen.ringVolumeSynced > 0
+                    && (ringing == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(ringing)))
+            {
+                ringing = new SoundRinging();
+                Minecraft.getMinecraft().getSoundHandler().playSound(ringing);
+                return; // Return after playing sound, as doing so in the tame tick that sounds are muted causes crashing in SoundManager#updateAllSounds
+            }
         }
 
         // Access the sound manager's sound system and list of playing sounds
