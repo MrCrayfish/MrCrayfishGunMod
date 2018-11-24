@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -53,9 +52,10 @@ public class RenderGrenade extends Render<EntityGrenade>
 
             if(entity instanceof EntityGrenadeStun)
             {
-                GlStateManager.translate(0, 0.3, 0);
-                GlStateManager.rotate(-90F, 0, 0, 1);
-                GlStateManager.translate(0, -((EntityGrenadeStun) entity).height / 2, 0);
+                float offset = ((EntityGrenadeStun) entity).height / 1.5F;
+                GlStateManager.translate(0, offset, 0);
+                GlStateManager.rotate(90.F, 0, 0, 1);
+                GlStateManager.translate(0, -offset, 0);
             }
 
             GlStateManager.translate(-0.5, 0, -0.5);
