@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.render.entity;
 
 import com.mrcrayfish.guns.entity.EntityGrenade;
+import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -49,6 +50,13 @@ public class RenderGrenade extends Render<EntityGrenade>
             GlStateManager.translate(0, 0.15, 0);
             GlStateManager.rotate(-rotation, 1, 0, 0);
             GlStateManager.translate(0, -0.15, 0);
+
+            if(entity instanceof EntityGrenadeStun)
+            {
+                GlStateManager.translate(0, 0.3, 0);
+                GlStateManager.rotate(-90F, 0, 0, 1);
+                GlStateManager.translate(0, -((EntityGrenadeStun) entity).height / 2, 0);
+            }
 
             GlStateManager.translate(-0.5, 0, -0.5);
 

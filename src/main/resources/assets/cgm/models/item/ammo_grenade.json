@@ -30,11 +30,6 @@
             "rotation": [ 0, 45, 0 ],
             "translation": [ 0, 6, 0 ],
             "scale": [ 1, 1, 1 ]
-        },
-        "firstperson_lefthand": {
-            "rotation": [ 0, 225, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.4, 0.4, 0.4 ]
         }
     },
     "elements": [
