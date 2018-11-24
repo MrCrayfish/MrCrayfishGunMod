@@ -4,11 +4,13 @@ import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -27,6 +29,27 @@ public class CommonEvents
     public static final DataParameter<Boolean> AIMING = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
     public static final DataParameter<Boolean> RELOADING = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
 
+    /**
+     * A custom implementation of the cooldown tracker in order to provide the best experience for
+     * players. On servers, Minecraft's cooldown tracker is sent to the client but the latency creates
+     * an awkward experience as the cooldown applies to the item after the packet has traveled to the
+     * server then back to the client. To fix this and still apply security, we just handle the
+     * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
+     * applied on the client in {@link ItemGun#onItemRightClick} and {@link ItemGun#onUsingTick}.
+     */
+    private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
+
+    public static CooldownTracker getCooldownTracker(UUID uuid)
+    {
+        if(!COOLDOWN_TRACKER_MAP.containsKey(uuid))
+        {
+            COOLDOWN_TRACKER_MAP.put(uuid, new CooldownTracker());
+        }
+        return COOLDOWN_TRACKER_MAP.get(uuid);
+    }
+
+    private Map<UUID, ReloadTracker> reloadTrackerMap = new HashMap<>();
+
     @SubscribeEvent
     public void onPlayerInit(EntityEvent.EntityConstructing event)
     {
@@ -36,8 +59,6 @@ public class CommonEvents
             event.getEntity().getDataManager().register(RELOADING, false);
         }
     }
-
-    private Map<UUID, ReloadTracker> reloadTrackerMap = new HashMap<>();
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -68,6 +89,7 @@ public class CommonEvents
                     }
                 }
             }
+            getCooldownTracker(player.getUniqueID()).tick();
         }
     }
 

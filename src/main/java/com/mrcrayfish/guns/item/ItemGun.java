@@ -45,7 +45,7 @@ public class ItemGun extends ItemColored
 		}
 	};
 
-	public ItemGun(Gun gun) 
+	public ItemGun(Gun gun)
 	{
 		this.gun = gun;
 		this.setUnlocalizedName(gun.id);
@@ -53,7 +53,7 @@ public class ItemGun extends ItemColored
 		this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 		this.setMaxStackSize(1);
 	}
-	
+
 	public Gun getGun()
 	{
 		return gun;
@@ -105,7 +105,7 @@ public class ItemGun extends ItemColored
 	}
 
 	@Override
-	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) 
+	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
 	{
 		return true;
 	}
@@ -134,7 +134,7 @@ public class ItemGun extends ItemColored
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) 
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
 	{
 		ItemStack heldItem = playerIn.getHeldItem(handIn);
 		if(worldIn.isRemote)
@@ -171,6 +171,13 @@ public class ItemGun extends ItemColored
 		if(worldIn.isRemote)
 			return;
 
+		ItemGun item = (ItemGun) heldItem.getItem();
+		if(CommonEvents.getCooldownTracker(playerIn.getUniqueID()).hasCooldown(item))
+		{
+			MrCrayfishGunMod.logger.info(playerIn.getName() + "(" + playerIn.getUniqueID() + ") tried to fire before cooldown finished or server is lagging?");
+			return;
+		}
+
 		if(playerIn.getDataManager().get(CommonEvents.RELOADING))
 		{
 			playerIn.getDataManager().set(CommonEvents.RELOADING, false);
@@ -183,7 +190,6 @@ public class ItemGun extends ItemColored
 			silenced = barrel.getItem() == ModGuns.SILENCER;
 		}
 
-		ItemGun item = (ItemGun) heldItem.getItem();
 		Gun gun = item.getModifiedGun(heldItem);
 		EntityProjectile bullet = new EntityProjectile(worldIn, playerIn, gun.projectile);
 		bullet.setWeapon(heldItem);
@@ -234,6 +240,8 @@ public class ItemGun extends ItemColored
 				tag.setInteger("AmmoCount", Math.max(0, tag.getInteger("AmmoCount") - 1));
 			}
 		}
+
+		CommonEvents.getCooldownTracker(playerIn.getUniqueID()).setCooldown(item, gun.general.rate);
 	}
 
 	private static float getAdditionalDamage(ItemStack gunStack)
@@ -258,7 +266,7 @@ public class ItemGun extends ItemColored
 		}
 		return null;
     }
-	
+
 	private static boolean isAmmo(ItemStack stack, ItemAmmo.Type type)
     {
         return stack != null && stack.getItem() == ModGuns.AMMO && stack.getItemDamage() == type.ordinal();
