@@ -46,6 +46,8 @@ import java.util.stream.Collectors;
  */
 public class GuiWorkbench extends GuiContainer
 {
+    private static final int MAX_TRANSITION_TICKS = 5;
+    private static final ResourceLocation GUI = new ResourceLocation("cgm:textures/gui/workbench.png");
     private static final ImmutableMap<ItemStack, DisplayProperty> DISPLAY_PROPERTIES;
 
     static
@@ -91,9 +93,6 @@ public class GuiWorkbench extends GuiContainer
         }
         return null;
     }
-
-    private static final ResourceLocation GUI = new ResourceLocation("cgm:textures/gui/workbench.png");
-    private static final int MAX_TRANSITION_TICKS = 5;
 
     private List<MaterialItem> materials;
     private static int currentIndex = 0;
@@ -174,9 +173,9 @@ public class GuiWorkbench extends GuiContainer
                         if(optional.isPresent())
                         {
                             float[] color = optional.get().getColorComponentValues();
-                            int red = (int)(color[0] * 255F);
-                            int green = (int)(color[1] * 255F);
-                            int blue = (int)(color[2] * 255F);
+                            int red = (int) (color[0] * 255F);
+                            int green = (int) (color[1] * 255F);
+                            int blue = (int) (color[2] * 255F);
                             colored.setColor(currentWeapon, ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF)));
                         }
                     }
@@ -304,7 +303,7 @@ public class GuiWorkbench extends GuiContainer
     {
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
-        
+
         //TODO add hover tool tip to material list
         //this.renderToolTip(this.hoveredSlot.getStack(), p_191948_1_, p_191948_2_);
     }
@@ -445,9 +444,9 @@ public class GuiWorkbench extends GuiContainer
         private boolean enabled = false;
         private ItemStack stack = ItemStack.EMPTY;
 
-        public MaterialItem() {}
+        private MaterialItem() {}
 
-        public MaterialItem(ItemStack stack)
+        private MaterialItem(ItemStack stack)
         {
             this.stack = stack;
         }
@@ -456,7 +455,7 @@ public class GuiWorkbench extends GuiContainer
         {
             return stack;
         }
-        
+
         public void update()
         {
             if(!stack.isEmpty())
