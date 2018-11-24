@@ -111,7 +111,7 @@ public class SoundEvents
                     soundSystem.setVolume(id, getMutedVolume(effect.getDuration(), SOUND_VOLUMES.get(id)));
                 }
             }
-            catch (ConcurrentModificationException e) {} //SoundManager#playingSounds is accessed from another thread, so it's key set iterator can throw a CME
+            catch (ConcurrentModificationException e) {} // SoundManager#playingSounds is accessed from another thread, so it's key set iterator can throw a CME
             isDeafened = true;
         }
         else if (isDeafened)
