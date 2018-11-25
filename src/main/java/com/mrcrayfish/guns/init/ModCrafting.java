@@ -62,6 +62,10 @@ public class ModCrafting
 		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.MISSILE.ordinal()),
 				new ItemStack(Items.GUNPOWDER, 8),
 				new ItemStack(Items.IRON_INGOT, 4));
+		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE_STUN.ordinal()),
+				new ItemStack(Items.GLOWSTONE_DUST, 4),
+				new ItemStack(Items.GUNPOWDER, 2),
+				new ItemStack(Items.IRON_INGOT, 2));
 		registerRecipe(mapBuilder, new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()),
 				new ItemStack(Items.IRON_INGOT, 4),
 				new ItemStack(Blocks.GLASS_PANE, 1),
