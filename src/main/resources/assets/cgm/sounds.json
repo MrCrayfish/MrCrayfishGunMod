@@ -10,5 +10,8 @@
    "rifle_fire_silenced":    { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:rifle_fire_silenced" }]},
    "pistol_reload":          { "subtitle": "subtitle.cgm.reload",         "sounds": [{ "name": "cgm:pistol_reload" }]},
    "grenade_stun_explosion": { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:grenade_stun_explosion" }]},
-   "grenade_stun_ring":      { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:grenade_stun_ring", "stream": true }]}
+   "grenade_stun_ring":      { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:grenade_stun_ring", "stream": true }]},
+   "grenade_hit_glass":      { "subtitle": "subtitle.cgm.grenade.hit",    "sounds": [{ "name": "cgm:grenade_hit_glass" }]},
+   "grenade_hit_stone":      { "subtitle": "subtitle.cgm.grenade.hit",    "sounds": [{ "name": "cgm:grenade_hit_stone" }]},
+   "grenade_hit_wood":      { "subtitle": "subtitle.cgm.grenade.hit",    "sounds": [{ "name": "cgm:grenade_hit_wood" }]}
 }

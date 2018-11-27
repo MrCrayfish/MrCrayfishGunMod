@@ -1,12 +1,14 @@
 package com.mrcrayfish.guns.entity;
 
 import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
@@ -100,7 +102,20 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
                     double speed = Math.sqrt(Math.pow(this.motionX, 2) + Math.pow(this.motionY, 2) + Math.pow(this.motionZ, 2));
                     if(speed > 0.1)
                     {
-                        world.playSound(null, result.hitVec.x, result.hitVec.y, result.hitVec.z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
+                        float pitch = 1.4F + 0.2F * rand.nextFloat();
+                        boolean hitStone = event == SoundEvents.BLOCK_STONE_STEP;
+                        if (hitStone || event == SoundEvents.BLOCK_METAL_STEP || event == SoundEvents.BLOCK_ANVIL_STEP)
+                        {
+                            event = ModSounds.getSound("grenade_hit_stone");
+                            if (!hitStone)
+                                pitch += 0.5F;
+                        }
+                        else if (event == SoundEvents.BLOCK_GLASS_STEP)
+                            event = ModSounds.getSound("grenade_hit_glass");
+                        else if (event == SoundEvents.BLOCK_WOOD_STEP || event == SoundEvents.BLOCK_LADDER_STEP)
+                            event = ModSounds.getSound("grenade_hit_wood");
+
+                        world.playSound(null, result.hitVec.x, result.hitVec.y, result.hitVec.z, event, SoundCategory.AMBIENT, 1.0F, pitch);
                     }
                     EnumFacing facing = result.sideHit;
                     switch(facing.getAxis())

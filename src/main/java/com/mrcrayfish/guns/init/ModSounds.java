@@ -27,6 +27,9 @@ public class ModSounds
 		}
 		register("grenade_stun_explosion");
 		register("grenade_stun_ring");
+		register("grenade_hit_glass");
+		register("grenade_hit_stone");
+		register("grenade_hit_wood");
 	}
 
     private static void register(String name)
