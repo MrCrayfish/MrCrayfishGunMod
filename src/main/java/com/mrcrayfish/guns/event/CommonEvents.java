@@ -1,10 +1,12 @@
 package com.mrcrayfish.guns.event;
 
+import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
+
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -14,6 +16,7 @@ import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -91,6 +94,13 @@ public class CommonEvents
             }
             getCooldownTracker(player.getUniqueID()).tick();
         }
+    }
+
+    @SubscribeEvent
+    public void blindMobs(LivingSetAttackTargetEvent event)
+    {
+        if (event.getTarget() != null && event.getEntityLiving() instanceof EntityLiving && event.getEntityLiving().isPotionActive(ModPotions.BLINDED))
+            ((EntityLiving) event.getEntityLiving()).setAttackTarget(null);
     }
 
     private static class ReloadTracker

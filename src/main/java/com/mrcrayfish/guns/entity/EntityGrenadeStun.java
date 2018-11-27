@@ -14,6 +14,7 @@ import com.mrcrayfish.guns.network.message.MessageExplosionStunGrenade;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -79,7 +80,9 @@ public class EntityGrenadeStun extends EntityGrenade
             if (calculateAndApplyEffect(ModPotions.DEAFENED, GunConfig.SERVER.stunGrenades.deafen.criteria, entity, grenade, eyes, distance, angle))
                 entity.setRevengeTarget(entity);
 
-            calculateAndApplyEffect(ModPotions.BLINDED, GunConfig.SERVER.stunGrenades.blind.criteria, entity, grenade, eyes, distance, angle);
+            if (calculateAndApplyEffect(ModPotions.BLINDED, GunConfig.SERVER.stunGrenades.blind.criteria, entity, grenade, eyes, distance, angle)
+                    && entity instanceof EntityLiving)
+                ((EntityLiving) entity).setAttackTarget(null);
         }
     }
 
