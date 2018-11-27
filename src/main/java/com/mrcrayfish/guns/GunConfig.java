@@ -286,7 +286,7 @@ public class GunConfig
         @Config.Name("Blind Mobs")
         @Config.Comment("If true, hostile mobs will be unable to target entities while they have the blinded effect.")
         @Config.LangKey(PREFIX + ".mobs.blind")
-        public boolean blindMobs;
+        public boolean blindMobs = true;
     }
 
 	public static class Deafen
@@ -325,7 +325,7 @@ public class GunConfig
         @Config.Name("Panic Mobs")
         @Config.Comment("If true, peaceful mobs will panic upon being deafened by a stun grenade explosion.")
         @Config.LangKey(PREFIX + ".mobs.panic")
-        public boolean panicMobs;
+        public boolean panicMobs = true;
     }
 
 	public static class EffectCriteria
