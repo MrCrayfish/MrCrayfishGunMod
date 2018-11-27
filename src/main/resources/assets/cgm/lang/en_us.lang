@@ -76,6 +76,8 @@ config.cgm.server.grenade.stun.blind.overlay.alpha=Overlay Alpha
 config.cgm.server.grenade.stun.blind.overlay.alpha.tooltip=After the duration drops to this many ticks, the transparency of the overlay when blinded will gradually fade to 0 alpha.
 config.cgm.server.grenade.stun.blind.overlay.fade=Overlay Fade Threshold
 config.cgm.server.grenade.stun.blind.overlay.fade.tooltip=Transparency of the overlay when blinded will be this alpha value, before eventually fading to 0 alpha.
+config.cgm.server.grenade.stun.blind.mobs.blind=Blind Mobs
+config.cgm.server.grenade.stun.blind.mobs.blind.tooltip=If true, hostile mobs will be unable to target entities while they have the blinded effect.
 
 config.cgm.server.grenade.stun.effect_criteria.deafen=Effect Criteria
 config.cgm.server.grenade.stun.effect_criteria.deafen.tooltip=Criteria that determines the presence/absence and duration of the deafening effect.
@@ -85,6 +87,8 @@ config.cgm.server.grenade.stun.deafen.sound.fade=Sound Fade Threshold
 config.cgm.server.grenade.stun.deafen.sound.fade.tooltip=After the duration drops to this many ticks, the ringing volume will gradually fade to 0 and other sound volumes will fade back to %100.
 config.cgm.server.grenade.stun.deafen.sound.ring=Ring Volume
 config.cgm.server.grenade.stun.deafen.sound.ring.tooltip=Volume of the ringing sound when deafened will play at this volume, before eventually fading to 0.
+config.cgm.server.grenade.stun.deafen.mobs.panic=Panic Mobs
+config.cgm.server.grenade.stun.deafen.mobs.panic.tooltip=If true, peaceful mobs will panic upon being deafened by a stun grenade explosion.
 
 config.cgm.server.grenade.stun.effect_criteria.radius=Radius
 config.cgm.server.grenade.stun.effect_criteria.radius.tooltip=Grenade must be no more than this many meters away to have an effect.

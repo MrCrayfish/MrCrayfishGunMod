@@ -77,11 +77,12 @@ public class EntityGrenadeStun extends EntityGrenade
             double angle = Math.toDegrees(Math.acos(entity.getLook(1).dotProduct(directionGrenade.normalize())));
 
             // Apply effects as determined by their criteria
-            if (calculateAndApplyEffect(ModPotions.DEAFENED, GunConfig.SERVER.stunGrenades.deafen.criteria, entity, grenade, eyes, distance, angle))
+            if (calculateAndApplyEffect(ModPotions.DEAFENED, GunConfig.SERVER.stunGrenades.deafen.criteria, entity, grenade, eyes, distance, angle)
+                    && GunConfig.SERVER.stunGrenades.deafen.panicMobs)
                 entity.setRevengeTarget(entity);
 
             if (calculateAndApplyEffect(ModPotions.BLINDED, GunConfig.SERVER.stunGrenades.blind.criteria, entity, grenade, eyes, distance, angle)
-                    && entity instanceof EntityLiving)
+                    && GunConfig.SERVER.stunGrenades.blind.blindMobs && entity instanceof EntityLiving)
                 ((EntityLiving) entity).setAttackTarget(null);
         }
     }

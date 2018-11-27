@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.event;
 
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.ItemGun;
@@ -99,7 +100,8 @@ public class CommonEvents
     @SubscribeEvent
     public void blindMobs(LivingSetAttackTargetEvent event)
     {
-        if (event.getTarget() != null && event.getEntityLiving() instanceof EntityLiving && event.getEntityLiving().isPotionActive(ModPotions.BLINDED))
+        if (GunConfig.SERVER.stunGrenades.blind.blindMobs && event.getTarget() != null
+                && event.getEntityLiving() instanceof EntityLiving && event.getEntityLiving().isPotionActive(ModPotions.BLINDED))
             ((EntityLiving) event.getEntityLiving()).setAttackTarget(null);
     }
 

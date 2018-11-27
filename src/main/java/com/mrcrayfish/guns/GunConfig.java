@@ -282,6 +282,11 @@ public class GunConfig
         @Config.RequiresWorldRestart
         public int alphaFadeThreshold = 40;
         public static int alphaFadeThresholdSynced = Integer.MAX_VALUE;
+
+        @Config.Name("Blind Mobs")
+        @Config.Comment("If true, hostile mobs will be unable to target entities while they have the blinded effect.")
+        @Config.LangKey(PREFIX + ".mobs.blind")
+        public boolean blindMobs;
     }
 
 	public static class Deafen
@@ -316,6 +321,11 @@ public class GunConfig
         @Config.RequiresWorldRestart
         public double ringVolume = 1;
         public static float ringVolumeSynced = 1;
+
+        @Config.Name("Panic Mobs")
+        @Config.Comment("If true, peaceful mobs will panic upon being deafened by a stun grenade explosion.")
+        @Config.LangKey(PREFIX + ".mobs.panic")
+        public boolean panicMobs;
     }
 
 	public static class EffectCriteria
