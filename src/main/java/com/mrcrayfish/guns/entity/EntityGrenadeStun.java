@@ -14,8 +14,8 @@ import com.mrcrayfish.guns.network.message.MessageExplosionStunGrenade;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -59,34 +59,36 @@ public class EntityGrenadeStun extends EntityGrenade
         int minZ = MathHelper.floor(posZ - diameter);
         int maxZ = MathHelper.floor(posZ + diameter);
 
-        // Affect all non-spectating players in range of the blast
+        // Affect all non-spectating entities in range of the blast
         Vec3d grenade = new Vec3d(posX, y, posZ);
         Vec3d eyes, directionGrenade;
         double distance;
-        for (EntityPlayerMP player : world.getEntitiesWithinAABB(EntityPlayerMP.class, new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ)))
+        for (EntityLivingBase entity : world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ)))
         {
-            if (player.isImmuneToExplosions())
+            if (entity.isImmuneToExplosions())
                 continue;
 
-            eyes = player.getPositionEyes(1);
+            eyes = entity.getPositionEyes(1);
             directionGrenade = grenade.subtract(eyes);
             distance = directionGrenade.lengthVector();
 
             // Calculate angle between eye-gaze line and eye-grenade line
-            double angle = Math.toDegrees(Math.acos(player.getLook(1).dotProduct(directionGrenade.normalize())));
- 
+            double angle = Math.toDegrees(Math.acos(entity.getLook(1).dotProduct(directionGrenade.normalize())));
+
             // Apply effects as determined by their criteria
-            calculateAndApplyEffect(ModPotions.DEAFENED, GunConfig.SERVER.stunGrenades.deafen.criteria, player, grenade, eyes, distance, angle);
-            calculateAndApplyEffect(ModPotions.BLINDED, GunConfig.SERVER.stunGrenades.blind.criteria, player, grenade, eyes, distance, angle);
+            if (calculateAndApplyEffect(ModPotions.DEAFENED, GunConfig.SERVER.stunGrenades.deafen.criteria, entity, grenade, eyes, distance, angle))
+                entity.setRevengeTarget(entity);
+
+            calculateAndApplyEffect(ModPotions.BLINDED, GunConfig.SERVER.stunGrenades.blind.criteria, entity, grenade, eyes, distance, angle);
         }
     }
 
-    private void calculateAndApplyEffect(Potion effect, EffectCriteria criteria, EntityPlayerMP player, Vec3d grenade, Vec3d eyes, double distance, double angle)
+    private boolean calculateAndApplyEffect(Potion effect, EffectCriteria criteria, EntityLivingBase entity, Vec3d grenade, Vec3d eyes, double distance, double angle)
     {
         double angleMax = criteria.angleEffect * 0.5;
         if (distance <= criteria.radius && angleMax > 0 && angle <= angleMax)
         {
-            // Verify that light can pass through all blocks obstructing the player's line of sight to the grenade
+            // Verify that light can pass through all blocks obstructing the entity's line of sight to the grenade
             if (effect != ModPotions.BLINDED || rayTraceOpaqueBlocks(world, eyes, grenade, false, false, false) == null)
             {
                 // Duration attenuated by distance
@@ -94,9 +96,11 @@ public class EntityGrenadeStun extends EntityGrenade
 
                 // Duration further attenuated by angle
                 durationBlinded *= 1 - (angle * (1 - criteria.angleAttenuationMax)) / angleMax;
-                player.addPotionEffect(new PotionEffect(effect, durationBlinded, 0, false, false));
+                entity.addPotionEffect(new PotionEffect(effect, durationBlinded, 0, false, false));
+                return !(entity instanceof EntityPlayer);
             }
         }
+        return false;
     }
 
     /**
