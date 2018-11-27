@@ -115,7 +115,7 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
                         else if (event == SoundEvents.BLOCK_WOOD_STEP || event == SoundEvents.BLOCK_LADDER_STEP)
                             event = ModSounds.getSound("grenade_hit_wood");
 
-                        world.playSound(null, result.hitVec.x, result.hitVec.y, result.hitVec.z, event, SoundCategory.AMBIENT, 1.0F, pitch);
+                        world.playSound(null, result.hitVec.x, result.hitVec.y, result.hitVec.z, event, SoundCategory.AMBIENT, (float) Math.min(1, speed), pitch);
                     }
                     EnumFacing facing = result.sideHit;
                     switch(facing.getAxis())
