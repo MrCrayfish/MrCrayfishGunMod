@@ -1,0 +1,168 @@
+tile.workbench.name=Рабочий станок
+
+item.handgun.name=Пистолет
+item.shotgun.name=Дробовик
+item.sniper_rifle.name=Снайперская винтовка
+item.grenade_launcher.name=Гранатомёт
+item.bazooka.name=Базука
+item.chain_gun.name=Миниган
+item.rifle.name=Винтовка
+item.assault_rifle.name=Штурмовая винтовка
+
+item.ammo_basic.name=Базовые боеприпасы
+item.ammo_advanced.name=Улучшенные боеприпасы
+item.ammo_shell.name=Снаряд
+item.ammo_grenade.name=Граната
+item.ammo_grenade_stun.name=Светошумовая граната
+item.ammo_missile.name=Ракетный снаряд
+
+item.scope_small.name=Прицел (Короткий)
+item.scope_medium.name=Прицел (Средний)
+item.scope_long.name=Прицел (Большой)
+item.silencer.name=Глушитель
+
+itemGroup.tabCGM=MrCrayfish's Gun Mod
+
+death.attack.cgm.bullet.killed=%1$s был убит %2$s
+death.attack.cgm.bullet.eliminated=%1$s был уничтожен %2$s
+death.attack.cgm.bullet.executed=%1$s был расстрелян %2$s
+death.attack.cgm.bullet.annihilated=%1$s был ликвидирован %2$s
+death.attack.cgm.bullet.decimated=%1$s был укокошен %2$s
+
+info.cgm.damage=Урон: %s
+info.cgm.ammo=Боеприпасы: %s/%s
+info.cgm.ignore_ammo=Бесконечные Боеприпасы
+
+config.cgm.title=MrCrayfish's Gun Mod: Конфигурация
+
+config.cgm.client=Клиент
+
+config.cgm.client.tooltip=Конфигурация для клиента
+config.cgm.client.sounds=Звуки
+config.cgm.client.sounds.tooltip=Настройка звуков, издаваемых оружием
+config.cgm.client.sounds.hit_sound=Проигрывать звук попадания
+config.cgm.client.sounds.hit_sound.tooltip=Если значение установлено на true, при успешном попадании в другого игрока будет проигрываться особый звук
+config.cgm.client.display=Дисплей
+config.cgm.client.display.tooltip=Конфигурация опций, относящихся к дисплею
+config.cgm.client.display.workbench_animation=Анимация рабочего станка
+config.cgm.client.display.workbench_animation.tooltip=Если значение установлено на true, при переключении в меню рабочего станка будет проигрываться анимация
+
+config.cgm.server=Сервер
+
+config.cgm.server.tooltip=Конфигурация для сервера
+config.cgm.server.aggro=Провоцировать мобов
+config.cgm.server.aggro.tooltip=Близлежащих мобов злят и/или пугают звуки стрельбы
+config.cgm.server.aggro.enabled=Провоцировать мобов: Включено
+config.cgm.server.aggro.enabled.tooltip=Если значение установлено на true, близлежащих мобов будут злить и/или пугать звуки стрельбы
+config.cgm.server.aggro.hostile=Злить враждебных мобов
+config.cgm.server.aggro.hostile.tooltip=Если значение установлено на true, в дополнении к панической реакции дружелюбных мобов, звуки стрельбы будут провоцировать близлежащих враждебных мобов
+config.cgm.server.aggro.silenced=Диапазон заглушенной стрельбы
+config.cgm.server.aggro.silenced.tooltip=Любые мобы в пределах указанного диапазона будут спровоцированы стрельбой из заглушенного оружия
+config.cgm.server.aggro.unsilenced=Диапазон незаглушенной стрельбы
+config.cgm.server.aggro.unsilenced.tooltip=Любые мобы в пределах указанного диапазона будут спровоцированы стрельбой из незаглушенного оружия
+config.cgm.server.aggro.exempt=Исключить классы мобов
+config.cgm.server.aggro.exempt.tooltip=Любые мобы указанных в этом списке классов не будут преследовать стреляющих из оружия
+
+config.cgm.server.grenade.stun=Светошумовые гранаты
+config.cgm.server.grenade.stun.tooltip=Настройка ослепляющих/оглушающих свойств светошумовых гранат
+config.cgm.server.grenade.stun.blind=Ослепление
+config.cgm.server.grenade.stun.blind.tooltip=Настройка ослепляющего свойства светошумовых гранат
+config.cgm.server.grenade.stun.deafen=Оглушение
+config.cgm.server.grenade.stun.deafen.tooltip=Настройка оглушающего свойства светошумовых гранат
+
+config.cgm.server.grenade.stun.effect_criteria.blind=Критерии эффекта
+config.cgm.server.grenade.stun.effect_criteria.blind.tooltip=Критерий, определяющий наличие/отсутствие и продолжительность ослепляющего эффекта
+config.cgm.server.grenade.stun.blind.overlay.alpha=Альфа-наложение
+config.cgm.server.grenade.stun.blind.overlay.alpha.tooltip=По прохождении указанной продолжительности эффекта, прозрачность наложения при ослеплении будет постепенно снижаться вплоть до 0 Alpha
+config.cgm.server.grenade.stun.blind.overlay.fade=Ограничение затухания наложения
+config.cgm.server.grenade.stun.blind.overlay.fade.tooltip=Прозрачность наложения при ослеплении будет указанного значения, до того пока окончательно не снизится до 0 Alpha
+
+config.cgm.server.grenade.stun.effect_criteria.deafen=Критерии эффекта
+config.cgm.server.grenade.stun.effect_criteria.deafen.tooltip=Критерий, определяющий наличие/отсутствие и продолжительность оглушающего эффекта
+config.cgm.server.grenade.stun.deafen.sound.percentage=Процентный состав звука
+config.cgm.server.grenade.stun.deafen.sound.percentage.tooltip=Громкость большинства игровых звуков при оглушении будет проигрываться на уровне указанных процентов, до того как окончательно не вернётся к 100%
+config.cgm.server.grenade.stun.deafen.sound.fade=Ограничение исчезания звука
+config.cgm.server.grenade.stun.deafen.sound.fade.tooltip=По прохождении указанной продолжительности эффекта, громкость звона постепенно снизится до 0, а остальные звуки вернутся к 100%
+config.cgm.server.grenade.stun.deafen.sound.ring=Громкость звона
+config.cgm.server.grenade.stun.deafen.sound.ring.tooltip=Громкость звона при оглушении будет проигрываться на указанном уровне, до того пока не снизится до 0
+
+config.cgm.server.grenade.stun.effect_criteria.radius=Радиус
+config.cgm.server.grenade.stun.effect_criteria.radius.tooltip=Граната должна быть не более чем на указанном расстоянии, чтобы повлиять на игрока
+config.cgm.server.grenade.stun.effect_criteria.duration.max=Макс. продолжительность
+config.cgm.server.grenade.stun.effect_criteria.duration.max.tooltip=Эффект будет иметь указанную продолжительность (в тиках), если граната находится непосредственно в поле зрения игрока
+config.cgm.server.grenade.stun.effect_criteria.duration.min=Мин. продолжительность на расстоянии
+config.cgm.server.grenade.stun.effect_criteria.duration.min.tooltip=Эффект будет иметь указанную продолжительность (в тиках), если граната находится на максимальном расстоянии от поля зрения игрока
+config.cgm.server.grenade.stun.effect_criteria.angle.effect=Угол наклона эффекта
+config.cgm.server.grenade.stun.effect_criteria.angle.effect.tooltip=Угол между направлением взора игрока и направлением взрыва гранаты должен быть не более чем половина указанных градусов, чтобы повлиять на игрока
+config.cgm.server.grenade.stun.effect_criteria.angle.attenuation.max=Макс. ослабление углом наклона
+config.cgm.server.grenade.stun.effect_criteria.angle.attenuation.max.tooltip=После того, как продолжительность эффекта ослабится расстоянием, она будет дополнительно ослаблена в зависимости от угла наклона (в градусах) между направлением взора и направлением взрыва гранаты. Это делается путём его умножения на 1 (без ослабления), если угол наклона равен 0; и на указанное значение, если угол максимален в пределах наклона эффекта
+config.cgm.server.grenade.stun.effect_criteria.raytrace.opaque=Трассировка лучей через непрозрачные блоки
+config.cgm.server.grenade.stun.effect_criteria.raytrace.opaque.tooltip=Если значение установлено на true, эффект будет применён только если линия между полем зрения игрока и гранатой не касается нежидкого блока с непрозрачностью выше, чем 0
+
+config.cgm.server.guns=Оружие
+config.cgm.server.guns.tooltip=Настройка характеристик оружия
+config.cgm.server.guns.pistol=Пистолет
+config.cgm.server.guns.pistol.tooltip=Настройка характеристик Пистолета
+config.cgm.server.guns.shotgun=Дробовик
+config.cgm.server.guns.shotgun.tooltip=Настройка характеристик Дробовика
+config.cgm.server.guns.rifle=Винтовка
+config.cgm.server.guns.rifle.tooltip=Настройка характеристик Винтовки
+config.cgm.server.guns.grenade_launcher=Гранатомёт
+config.cgm.server.guns.grenade_launcher.tooltip=Настройка характеристик Гранатомёта
+config.cgm.server.guns.bazooka=Базука
+config.cgm.server.guns.bazooka.tooltip=Настройка характеристик Базуки
+config.cgm.server.guns.chain_gun=Миниган
+config.cgm.server.guns.chain_gun.tooltip=Настройка характеристик Минигана
+config.cgm.server.guns.assault_rifle=Штурмовая винтовка
+config.cgm.server.guns.assault_rifle.tooltip=Настройка характеристик Штурмовой винтовки
+
+config.cgm.gun.general=Общее
+config.cgm.gun.general.tooltip=Настройка общих характеристик оружия
+config.cgm.gun.general.max_ammo=Макс. боеприпасы
+config.cgm.gun.general.max_ammo.tooltip=Максимальное кол-во боеприпасов, которое может вмещать данное оружие
+config.cgm.gun.general.reload_speed=Скорость перезарядки
+config.cgm.gun.general.reload_speed.tooltip=Кол-во снарядов, добавляемое оружию во время каждой перезарядки
+
+config.cgm.gun.projectile=Снаряды
+config.cgm.gun.projectile.tooltip=Настройка свойств снарядов, выпускаемых оружием
+config.cgm.gun.projectile.visible=Видимость
+config.cgm.gun.projectile.visible.tooltip=Если значение установлено на true, снаряды будут отрисовываться. Данная функция отключена для быстрых снарядов в связи с ошибками отрисовки.
+config.cgm.gun.projectile.damage=Урон
+config.cgm.gun.projectile.damage.tooltip=Урон, который может нанести оружие. Значение каждого атрибута равняется половине сердечка.
+config.cgm.gun.projectile.size=Размер
+config.cgm.gun.projectile.size.tooltip=Размер снарядов, добавляемых оружию во время каждой перезарядки
+config.cgm.gun.projectile.speed=Скорость
+config.cgm.gun.projectile.speed.tooltip=Кол-во снарядов, добавляемых оружию во время каждой перезарядки
+config.cgm.gun.projectile.life=Срок
+config.cgm.gun.projectile.life.tooltip=Кол-во тиков, на протяжении которых снаряды не будут удаляться из мира
+config.cgm.gun.projectile.gravity=Гравитация
+config.cgm.gun.projectile.gravity.tooltip=Если значение установлено на true, на снаряд будет действовать гравитация, и он будет снижать высоту
+config.cgm.gun.projectile.damage_fall_off=Спад урона
+config.cgm.gun.projectile.damage_fall_off.tooltip=Если значение установлено на true, урон от оружия будет тем меньше, чем дальше цель
+config.cgm.gun.projectile.damage_reduce_zoomed=Спад урона без приближения
+config.cgm.gun.projectile.damage_reduce_zoomed.tooltip=Если значение установлено на true, урон от оружия будет уменьшаться, если стреляющий не прицеливается
+
+config.cgm.gun.sounds=Звуки
+config.cgm.gun.sounds.tooltip=Настройка звуков оружия
+config.cgm.gun.sounds.fire=Стрельба
+config.cgm.gun.sounds.fire.tooltip=Проигрывание звуков при стрельбе из оружия
+config.cgm.gun.sounds.reload=Перезарядка
+config.cgm.gun.sounds.reload.tooltip=Проигрывание звуков при перезарядке оружия
+config.cgm.gun.sounds.cock=Нет боеприпасов
+config.cgm.gun.sounds.cock.tooltip=Проигрывание звуков при попытке стрельбы из пустого оружия
+config.cgm.gun.sounds.silenced_fire=Заглушенная стрельба
+config.cgm.gun.sounds.silenced_fire.tooltip=Проигрывание звуков при стрельбе из оружия с установленным глушителем
+
+key.categories.gun=MrCrayfish's Gun Mod
+key.aim=Прицелиться
+key.reload=Перезарядить
+key.unload=Разрядить
+
+effect.cgm.blinded=Ослеплён
+effect.cgm.deafened=Оглушён
+
+subtitle.cgm.stun.explosion=Взрыв светошумовой гранаты
+subtitle.cgm.stun.ring=Звон
+subtitle.cgm.fire=Стрельба
+subtitle.cgm.fire.silenced=Заглушенная стрельба
+subtitle.cgm.reload=Перезарядка
