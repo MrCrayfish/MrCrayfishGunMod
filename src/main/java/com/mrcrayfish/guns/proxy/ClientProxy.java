@@ -19,6 +19,7 @@ import com.mrcrayfish.guns.item.ItemColored;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleCloud;
@@ -39,6 +40,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.lwjgl.input.Mouse;
 
 import java.awt.*;
 import java.util.Random;
@@ -146,7 +148,7 @@ public class ClientProxy extends CommonProxy
     @Override
 	public boolean isZooming()
 	{
-		boolean zooming = KeyBinds.KEY_AIM.isKeyDown();
+		boolean zooming = GunConfig.CLIENT.controls.oldControls ? GuiScreen.isAltKeyDown() : Mouse.isButtonDown(1);
 		if(controllableLoaded)
 		{
 			Controller controller = Controllable.getController();

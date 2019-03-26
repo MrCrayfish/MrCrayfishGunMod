@@ -103,6 +103,11 @@ public class GunConfig
 		@Config.Comment("Configuration for display related options")
 		@Config.LangKey(Display.PREFIX)
 		public Display display = new Display();
+
+		@Config.Name("Controls")
+		@Config.Comment("Configuration for control options")
+		@Config.LangKey(Controls.PREFIX)
+		public Controls controls = new Controls();
 	}
 
 	public static class Sounds
@@ -201,6 +206,16 @@ public class GunConfig
 		@Config.Comment("If true, an animation is performed while cycling items in the Workbench")
 		@Config.LangKey(PREFIX + ".workbench_animation")
 		public boolean workbenchAnimation = true;
+	}
+
+	public static class Controls
+	{
+		private static final String PREFIX = Client.PREFIX + ".controls";
+
+		@Config.Name("Use Old Controls")
+		@Config.Comment("If true, uses the old controls in order to aim and shoot")
+		@Config.LangKey(PREFIX + ".old_controls")
+		public boolean oldControls = false;
 	}
 
 	public static class Guns

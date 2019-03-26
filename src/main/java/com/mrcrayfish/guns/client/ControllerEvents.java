@@ -8,6 +8,7 @@ import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.item.ItemGun;
@@ -42,10 +43,10 @@ public class ControllerEvents
             switch(event.getButton())
             {
                 case Buttons.RIGHT_TRIGGER:
-                    if(heldItem.getItem() instanceof ItemGun || shooting)
+                    if(heldItem.getItem() instanceof ItemGun)
                     {
-                        event.setButton(Buttons.LEFT_TRIGGER);
-                        shooting = event.getState();
+                        event.setCanceled(true);
+                        GunHandler.fire(player, heldItem);
                     }
                     break;
                 case Buttons.LEFT_TRIGGER:
@@ -167,6 +168,11 @@ public class ControllerEvents
         EntityPlayer player = mc.player;
         if(player == null)
             return;
+
+        if(controller.getState().rightTrigger > 0.05)
+        {
+            GunHandler.fire(player, player.getHeldItemMainhand());
+        }
 
         if(mc.currentScreen == null && reloadCounter != -1)
         {
