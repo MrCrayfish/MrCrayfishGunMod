@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client.event;
 
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.ItemStackUtil;
+import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
@@ -270,7 +271,7 @@ public class RenderEvents
 			if (stack.getItem() instanceof ItemGun)
 			{
 				Gun gun = ((ItemGun) stack.getItem()).getGun();
-				return gun.modules != null && gun.modules.zoom != null && KeyBinds.KEY_AIM.isKeyDown();
+				return gun.modules != null && gun.modules.zoom != null && MrCrayfishGunMod.proxy.isZooming();
 			}
 		}
 		return false;

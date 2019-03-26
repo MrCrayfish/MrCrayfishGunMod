@@ -1,6 +1,9 @@
 package com.mrcrayfish.guns.proxy;
 
+import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.client.ControllerEvents;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
@@ -33,6 +36,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
@@ -41,6 +45,8 @@ import java.util.Random;
 
 public class ClientProxy extends CommonProxy
 {
+	private boolean controllableLoaded = false;
+
 	@Override
 	public void preInit()
 	{
@@ -54,6 +60,12 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeStun.class, RenderGrenade::new);
 		KeyBinds.register();
 		SoundEvents.initReflection();
+
+		if(Loader.isModLoaded("controllable"))
+		{
+			controllableLoaded = true;
+			MinecraftForge.EVENT_BUS.register(new ControllerEvents());
+		}
 	}
 
 	@Override
@@ -130,4 +142,19 @@ public class ClientProxy extends CommonProxy
         return factory.createParticle(0, world, x + (rand.nextDouble() - 0.5) * 0.6, y + (rand.nextDouble() - 0.5) * 0.6, z + (rand.nextDouble() - 0.5) * 0.6,
                 (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
+
+    @Override
+	public boolean isZooming()
+	{
+		boolean zooming = KeyBinds.KEY_AIM.isKeyDown();
+		if(controllableLoaded)
+		{
+			Controller controller = Controllable.getController();
+			if(controller != null)
+			{
+				zooming |= controller.getLTriggerValue() >= 0.5;
+			}
+		}
+		return zooming;
+	}
 }
