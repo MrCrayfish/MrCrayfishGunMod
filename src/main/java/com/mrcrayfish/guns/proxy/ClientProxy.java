@@ -148,6 +148,10 @@ public class ClientProxy extends CommonProxy
     @Override
 	public boolean isZooming()
 	{
+		Minecraft mc = Minecraft.getMinecraft();
+		if(!mc.inGameHasFocus)
+			return false;
+
 		boolean zooming = GunConfig.CLIENT.controls.oldControls ? GuiScreen.isAltKeyDown() : Mouse.isButtonDown(1);
 		if(controllableLoaded)
 		{
