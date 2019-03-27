@@ -1,7 +1,5 @@
 package com.mrcrayfish.guns.entity;
 
-import javax.annotation.Nullable;
-
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.GunConfig.EffectCriteria;
 import com.mrcrayfish.guns.init.ModGuns;
@@ -10,7 +8,6 @@ import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageExplosionStunGrenade;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -21,13 +18,11 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+
+import javax.annotation.Nullable;
 
 public class EntityGrenadeStun extends EntityGrenade
 {

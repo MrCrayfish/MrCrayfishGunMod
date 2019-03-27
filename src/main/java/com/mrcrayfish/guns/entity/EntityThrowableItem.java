@@ -1,9 +1,6 @@
 package com.mrcrayfish.guns.entity;
 
-import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.item.ItemAmmo;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.potion;
 
 import com.mrcrayfish.guns.Reference;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;

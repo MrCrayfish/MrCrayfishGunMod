@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.MrCrayfishGunMod;
-import net.minecraft.item.Item;
 
 /**
  * Author: MrCrayfish

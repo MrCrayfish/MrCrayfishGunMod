@@ -4,7 +4,6 @@ import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageSyncProperties;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;

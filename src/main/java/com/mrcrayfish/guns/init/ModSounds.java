@@ -1,16 +1,14 @@
 package com.mrcrayfish.guns.init;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModSounds 
 {

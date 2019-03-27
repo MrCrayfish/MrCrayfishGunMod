@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.client.audio;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.init.ModSounds;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;

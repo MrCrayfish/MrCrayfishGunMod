@@ -1,11 +1,10 @@
 package com.mrcrayfish.guns.init;
 
+import com.mrcrayfish.guns.potion.PotionIncurable;
+import net.minecraft.potion.Potion;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mrcrayfish.guns.potion.PotionIncurable;
-
-import net.minecraft.potion.Potion;
 
 public class ModPotions
 {
