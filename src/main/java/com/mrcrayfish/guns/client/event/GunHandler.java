@@ -35,6 +35,9 @@ public class GunHandler
     @SubscribeEvent
     public void onKeyPressed(MouseEvent event)
     {
+        if(!Minecraft.getMinecraft().inGameHasFocus)
+            return;
+
         EntityPlayer player = Minecraft.getMinecraft().player;
         if(player != null)
         {
@@ -68,6 +71,9 @@ public class GunHandler
         if(event.phase != TickEvent.Phase.END)
             return;
 
+        if(!Minecraft.getMinecraft().inGameHasFocus)
+            return;
+
         EntityPlayer player = Minecraft.getMinecraft().player;
         if(player != null)
         {
@@ -82,6 +88,9 @@ public class GunHandler
     public static void fire(EntityPlayer player, ItemStack heldItem)
     {
         if(!(heldItem.getItem() instanceof ItemGun))
+            return;
+
+        if(!ItemGun.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
             return;
 
         CooldownTracker tracker = player.getCooldownTracker();
