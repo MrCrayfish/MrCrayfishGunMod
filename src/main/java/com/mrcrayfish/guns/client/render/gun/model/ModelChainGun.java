@@ -1,9 +1,16 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
+import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Controller;
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
+import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.proxy.ClientProxy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
@@ -23,17 +30,35 @@ public class ModelChainGun implements IGunModel
     @Override
     public void registerPieces()
     {
-        //if(init) return;
+        if(init) return;
         base = RenderUtil.getModel(new ResourceLocation("cgm:part"), 0);
         barrel = RenderUtil.getModel(new ResourceLocation("cgm:part"), 1);
-        //init = true;
+        init = true;
     }
 
     @Override
     public void tick()
     {
         lastRotation = rotation;
-        if(Mouse.isButtonDown(1))
+        boolean shooting = Mouse.isButtonDown(GunConfig.CLIENT.controls.oldControls ? 1 : 0);
+
+        if(ClientProxy.controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                shooting |= controller.getState().rightTrigger >= 0.5;
+            }
+        }
+
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(!ItemGun.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
+        {
+            shooting = false;
+        }
+
+        if(shooting)
         {
             rotation += 20;
         }

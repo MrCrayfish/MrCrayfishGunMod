@@ -39,7 +39,7 @@ import java.util.Random;
 
 public class ClientProxy extends CommonProxy
 {
-	private boolean controllableLoaded = false;
+	public static boolean controllableLoaded = false;
 
 	@Override
 	public void preInit()
