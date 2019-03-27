@@ -1,30 +1,20 @@
 package com.mrcrayfish.guns.client.event;
 
+import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.client.AimTracker;
-import com.mrcrayfish.guns.client.KeyBinds;
-import com.mrcrayfish.guns.client.render.gun.IGunModel;
-import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
-import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAim;
+import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
-import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHandSide;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.util.CooldownTracker;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Mouse;
 
@@ -43,15 +33,71 @@ public class GunHandler
     public static boolean aiming = false;
 
     @SubscribeEvent
-    public void onKeyPressed(InputEvent.MouseInputEvent event)
+    public void onKeyPressed(MouseEvent event)
     {
-
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(player != null)
+        {
+            ItemStack heldItem = player.getHeldItemMainhand();
+            if(heldItem.getItem() instanceof ItemGun)
+            {
+                int button = event.getButton();
+                if(!GunConfig.CLIENT.controls.oldControls)
+                {
+                    if(button == 0 || button == 1)
+                    {
+                        event.setCanceled(true);
+                    }
+                    if(event.isButtonstate() && button == 0)
+                    {
+                        fire(player, heldItem);
+                    }
+                }
+                else if(button == 1)
+                {
+                    event.setCanceled(true);
+                    fire(player, heldItem);
+                }
+            }
+        }
     }
 
     @SubscribeEvent
-    public void onKeyPressed(InputEvent.KeyInputEvent event)
+    public void onPostClientTick(TickEvent.ClientTickEvent event)
     {
-        if(KeyBinds.KEY_AIM.isKeyDown())
+        if(event.phase != TickEvent.Phase.END)
+            return;
+
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(player != null)
+        {
+            ItemStack heldItem = player.getHeldItemMainhand();
+            if(Mouse.isButtonDown(0))
+            {
+                fire(player, heldItem);
+            }
+        }
+    }
+
+    public static void fire(EntityPlayer player, ItemStack heldItem)
+    {
+        if(!(heldItem.getItem() instanceof ItemGun))
+            return;
+
+        CooldownTracker tracker = player.getCooldownTracker();
+        if(!tracker.hasCooldown(heldItem.getItem()))
+        {
+            ItemGun itemGun = (ItemGun) heldItem.getItem();
+            Gun modifiedGun = itemGun.getModifiedGun(heldItem);
+            tracker.setCooldown(heldItem.getItem(), modifiedGun.general.rate);
+            PacketHandler.INSTANCE.sendToServer(new MessageShoot());
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        if(MrCrayfishGunMod.proxy.isZooming())
         {
             if(!aiming)
             {

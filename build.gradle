@@ -20,7 +20,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.1.2602"
+    version = "1.12.2-14.23.5.2768"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -30,14 +30,19 @@ minecraft {
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20171003"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    useDepAts = true
 }
 
 repositories {
-    maven { url = "https://mrcrayfish.com/maven" }
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
 }
 
 dependencies {
-    compile "com.mrcrayfish:obfuscate:0.2.2-1.12.2"
+    compile "obfuscate:Obfuscate:0.2.6:1.12.2"
+    compile 'controllable:Controllable:1.12.2:0.3.0'
 }
 
 processResources {

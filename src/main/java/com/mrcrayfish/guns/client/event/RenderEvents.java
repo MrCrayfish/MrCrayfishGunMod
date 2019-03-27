@@ -2,8 +2,8 @@ package com.mrcrayfish.guns.client.event;
 
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.ItemStackUtil;
+import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -16,7 +16,6 @@ import com.mrcrayfish.guns.item.ItemScope;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
@@ -42,9 +41,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -54,7 +53,7 @@ public class RenderEvents
 {
 	private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Reference.MOD_ID, "textures/scope_long_overlay.png");
 
-	private static final double ZOOM_TICKS = 8;
+	private static final double ZOOM_TICKS = 4;
 	public static boolean drawFlash = false;
 
 	private int zoomProgress;
@@ -106,8 +105,9 @@ public class RenderEvents
 							}
 						}
 					}
-					event.setNewfov(newFov);
-				} else
+					event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (zoomProgress / (float) ZOOM_TICKS)));
+				}
+				else
 				{
 					mc.gameSettings.smoothCamera = lastSmoothCamera;
 				}
@@ -116,53 +116,67 @@ public class RenderEvents
 	}
 
 	@SubscribeEvent
-	public void onTick(TickEvent.ClientTickEvent event)
+	public void onPreClientTick(TickEvent.ClientTickEvent event)
 	{
+		if(event.phase != TickEvent.Phase.START)
+			return;
+
 		lastZoomProgress = zoomProgress;
-		prevReloadTimer = reloadTimer;
 
 		EntityPlayer player = Minecraft.getMinecraft().player;
-		if (player != null && isZooming(player) && !player.getDataManager().get(CommonEvents.RELOADING))
+		if(isZooming(player) && !player.getDataManager().get(CommonEvents.RELOADING))
 		{
-			Minecraft.getMinecraft().player.prevCameraYaw = 0.0075F;
-			Minecraft.getMinecraft().player.cameraYaw = 0.0075F;
-
-			if (zoomProgress < ZOOM_TICKS)
+			if(zoomProgress < ZOOM_TICKS)
 			{
 				zoomProgress++;
 			}
-		} else
+		}
+		else
 		{
-			if (zoomProgress > 0)
+			if(zoomProgress > 0)
 			{
 				zoomProgress--;
 			}
 		}
+	}
 
-		if (player != null)
+	@SubscribeEvent
+	public void onTick(TickEvent.ClientTickEvent event)
+	{
+		if(event.phase != TickEvent.Phase.END)
+			return;
+
+		prevReloadTimer = reloadTimer;
+
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		if(isZooming(player) && !player.getDataManager().get(CommonEvents.RELOADING))
+		{
+			Minecraft.getMinecraft().player.prevCameraYaw = 0.0075F;
+			Minecraft.getMinecraft().player.cameraYaw = 0.0075F;
+		}
+
+		if(player != null)
 		{
 			ItemStack heldItem = player.getHeldItemMainhand();
-			if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+			if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
 			{
 				IGunModel model = ModelOverrides.getModel(heldItem.getItem());
-				if (model != null)
+				if(model != null)
+				{
 					model.tick();
+				}
 			}
 
-			if (player.getDataManager().get(CommonEvents.RELOADING))
+			if(player.getDataManager().get(CommonEvents.RELOADING))
 			{
-				if (reloadTimer < 10)
+				if(reloadTimer < 5)
 				{
 					reloadTimer++;
 				}
 			}
-			else if (reloadTimer > 0)
+			else if(reloadTimer > 0)
 			{
-				reloadTimer -= 2;
-				if (reloadTimer < 0)
-				{
-					reloadTimer = 0;
-				}
+				reloadTimer -= 1;
 			}
 		}
 	}
@@ -170,7 +184,7 @@ public class RenderEvents
 	@SubscribeEvent
 	public void onRenderOverlay(RenderGameOverlayEvent event)
 	{
-		normalZoomProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0 : event.getPartialTicks())) / ZOOM_TICKS;
+		normalZoomProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0.0 : event.getPartialTicks())) / ZOOM_TICKS;
 		if (normalZoomProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
 		{
 			event.setCanceled(true);
@@ -243,15 +257,16 @@ public class RenderEvents
 		
 		GlStateManager.translate(0, -event.getEquipProgress(), 0);
 
-		if (right)
+		if(right)
 		{
 			GlStateManager.translate(0.56F, -0.56F, -0.72F);
-		} else
+		}
+		else
 		{
 			GlStateManager.translate(0.56F - 0.72, -0.56F, -0.75F);
 		}
 
-		float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * event.getPartialTicks()) / 10F;
+		float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * event.getPartialTicks()) / 5F;
 
 		GlStateManager.translate(0, 0.35 * reloadProgress, 0);
 		GlStateManager.translate(0, 0, -0.1 * reloadProgress);
@@ -270,7 +285,7 @@ public class RenderEvents
 			if (stack.getItem() instanceof ItemGun)
 			{
 				Gun gun = ((ItemGun) stack.getItem()).getGun();
-				return gun.modules != null && gun.modules.zoom != null && KeyBinds.KEY_AIM.isKeyDown();
+				return gun.modules != null && gun.modules.zoom != null && MrCrayfishGunMod.proxy.isZooming();
 			}
 		}
 		return false;
