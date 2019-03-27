@@ -211,7 +211,7 @@ public class RenderEvents
 
 		ItemStack scope = Gun.getScope(heldItem);
 		ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
-		if (scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
+		if (scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
 			return;
 
 		IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(heldItem);
@@ -297,7 +297,11 @@ public class RenderEvents
 		if (event.phase.equals(TickEvent.Phase.START))
 			return;
 
-		EntityPlayer player = Minecraft.getMinecraft().player;
+		Minecraft mc = Minecraft.getMinecraft();
+		if(!mc.inGameHasFocus)
+			return;
+
+		EntityPlayer player = mc.player;
 		if (player == null)
 			return;
 
@@ -308,13 +312,12 @@ public class RenderEvents
 		if (heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemGun))
 			return;
 
-		Minecraft mc = Minecraft.getMinecraft();
 		ScaledResolution scaledResolution = new ScaledResolution(mc);
 
 		if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
 		{
 			ItemScope.Type scopeType = ItemScope.Type.getFromStack(Gun.getAttachment(IAttachment.Type.SCOPE, heldItem));
-			if (scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
+			if (scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
 			{
 				mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
 				GlStateManager.color(1.0F, 1.0F, 1.0F);
