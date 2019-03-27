@@ -88,7 +88,7 @@ public class RenderEvents
 				ItemStack scope = Gun.getScope(heldItem);
 
 				ItemGun gun = (ItemGun) heldItem.getItem();
-				if (isZooming(Minecraft.getMinecraft().player))
+				if (isZooming(Minecraft.getMinecraft().player) && !mc.player.getDataManager().get(CommonEvents.RELOADING))
 				{
 					mc.gameSettings.smoothCamera = gun.getGun().modules.zoom.smooth;
 					float newFov = gun.getGun().modules.zoom.fovModifier - 0.1F;
