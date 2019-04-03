@@ -25,6 +25,7 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -39,15 +40,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.opengl.GL11;
 
 public class RenderEvents
 {
@@ -65,6 +64,8 @@ public class RenderEvents
     private boolean lastSmoothCamera = Minecraft.getMinecraft().gameSettings.smoothCamera;
 
     private ItemStack flash = null;
+
+    private int renderTextureId = -1;
 
     @SubscribeEvent
     public void onKeyPressedEvent(KeyInputEvent event)
@@ -211,8 +212,8 @@ public class RenderEvents
 
         ItemStack scope = Gun.getScope(heldItem);
         ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
-        if(scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
-            return;
+        //if(scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
+            //return;
 
         IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(heldItem);
         float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
@@ -321,6 +322,8 @@ public class RenderEvents
             ItemScope.Type scopeType = ItemScope.Type.getFromStack(Gun.getAttachment(IAttachment.Type.SCOPE, heldItem));
             if(scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
             {
+                if(true) return;
+
                 mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
                 GlStateManager.color(1.0F, 1.0F, 1.0F);
                 GlStateManager.enableBlend();
@@ -455,6 +458,7 @@ public class RenderEvents
             if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
             {
                 this.renderMuzzleFlash(stack);
+                this.renderScopeImage();
             }
 
             GlStateManager.popMatrix();
@@ -550,6 +554,33 @@ public class RenderEvents
         }
     }
 
+    private void renderScopeImage()
+    {
+        if(renderTextureId != -1)
+        {
+            GlStateManager.color(1.0F, 1.0F, 1.0F, (float) normalZoomProgress);
+            GlStateManager.enableBlend();
+            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            GlStateManager.disableLighting();
+            GlStateManager.bindTexture(renderTextureId);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+
+            double crop = 0.25;
+            Minecraft mc = Minecraft.getMinecraft();
+            double texU = ((mc.displayWidth - mc.displayHeight + mc.displayHeight * crop * 2) / 2.0) / mc.displayWidth;
+
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder buffer = tessellator.getBuffer();
+            buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
+            buffer.pos(-0.0375, -0.125 + 0.0375, 0.365).tex(texU, 1.0 - crop).endVertex();
+            buffer.pos(-0.0375, -0.125 - 0.0375, 0.365).tex(texU, crop).endVertex();
+            buffer.pos(0.0375, -0.125 - 0.0375, 0.365).tex(1.0 - texU, crop).endVertex();
+            buffer.pos(0.0375, -0.125 + 0.0375, 0.365).tex(1.0 - texU, 1.0 - crop).endVertex();
+            tessellator.draw();
+        }
+    }
+
     private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
     {
         dest.rotateAngleX = source.rotateAngleX;
@@ -609,5 +640,17 @@ public class RenderEvents
             float percent = Math.min((effect.getDuration() / (float) GunConfig.Blind.alphaFadeThresholdSynced), 1);
             Gui.drawRect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, ((int) (percent * GunConfig.Blind.alphaOverlaySynced + 0.5) << 24) | 16777215);
         }
+    }
+
+    @SubscribeEvent
+    public void onRenderLastWorld(RenderWorldLastEvent event)
+    {
+        if(renderTextureId == -1)
+        {
+            renderTextureId = GlStateManager.generateTexture();
+        }
+        Minecraft mc = Minecraft.getMinecraft();
+        GlStateManager.bindTexture(renderTextureId);
+        GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.displayWidth, mc.displayHeight, 0);
     }
 }
