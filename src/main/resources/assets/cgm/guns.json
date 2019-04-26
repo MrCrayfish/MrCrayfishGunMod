@@ -131,7 +131,8 @@
 				"scope": {
 					"smooth": true,
 					"yOffset": 4.5,
-					"zOffset": 2
+					"zOffset": 2,
+					"scale": 0.75
 				},
 				"barrel": {
 					"yOffset": -3.8,
