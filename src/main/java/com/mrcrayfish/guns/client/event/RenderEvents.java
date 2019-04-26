@@ -32,9 +32,11 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
@@ -49,10 +51,14 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class RenderEvents
 {
     private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Reference.MOD_ID, "textures/scope_long_overlay.png");
-
+    private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
     private static final double ZOOM_TICKS = 4;
     public static boolean drawFlash = false;
 
@@ -65,6 +71,15 @@ public class RenderEvents
     private boolean lastSmoothCamera = Minecraft.getMinecraft().gameSettings.smoothCamera;
 
     private ItemStack flash = null;
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.START && event.player.world.isRemote)
+        {
+            getCooldownTracker(event.player.getUniqueID()).tick();
+        }
+    }
 
     @SubscribeEvent
     public void onKeyPressedEvent(KeyInputEvent event)
@@ -269,15 +284,41 @@ public class RenderEvents
             GlStateManager.translate(0.56F - 0.72, -0.56F, -0.75F);
         }
 
-        float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * event.getPartialTicks()) / 5F;
-
-        GlStateManager.translate(0, 0.35 * reloadProgress, 0);
-        GlStateManager.translate(0, 0, -0.1 * reloadProgress);
-        GlStateManager.rotate(45F * reloadProgress, 1, 0, 0);
-
+        this.applyReload(event.getPartialTicks());
+        this.applyRecoil(heldItem.getItem(), ((ItemGun) heldItem.getItem()).getGun());
         this.renderWeapon(heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getPartialTicks());
 
         GlStateManager.popMatrix();
+    }
+
+    private void applyReload(float partialTicks)
+    {
+        float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
+        GlStateManager.translate(0, 0.35 * reloadProgress, 0);
+        GlStateManager.translate(0, 0, -0.1 * reloadProgress);
+        GlStateManager.rotate(45F * reloadProgress, 1, 0, 0);
+    }
+
+    private void applyRecoil(Item item, Gun gun)
+    {
+        CooldownTracker tracker = getCooldownTracker(Minecraft.getMinecraft().player.getUniqueID());
+        float cooldown = tracker.getCooldown(item, Minecraft.getMinecraft().getRenderPartialTicks());
+        cooldown = cooldown >= gun.general.recoilDurationOffset  ? (cooldown - gun.general.recoilDurationOffset) / (1.0F - gun.general.recoilDurationOffset) : 0.0F;
+
+        GlStateManager.translate(0, 0, 0.35);
+        float recoilNormal;
+        if(cooldown >= 0.8)
+        {
+            float amount = 1.0F * ((1.0F - cooldown) / 0.2F);
+            recoilNormal = 1 - (--amount) * amount * amount * amount;
+        }
+        else
+        {
+            float amount = (cooldown / 0.8F);
+            recoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
+        }
+        GlStateManager.rotate(gun.general.recoilAngle * recoilNormal, 1, 0, 0);
+        GlStateManager.translate(0, 0, -0.35);
     }
 
     private boolean isZooming(EntityPlayer player)
@@ -612,5 +653,14 @@ public class RenderEvents
             float percent = Math.min((effect.getDuration() / (float) GunConfig.Blind.alphaFadeThresholdSynced), 1);
             Gui.drawRect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, ((int) (percent * GunConfig.Blind.alphaOverlaySynced + 0.5) << 24) | 16777215);
         }
+    }
+
+    public static CooldownTracker getCooldownTracker(UUID uuid)
+    {
+        if(!COOLDOWN_TRACKER_MAP.containsKey(uuid))
+        {
+            COOLDOWN_TRACKER_MAP.put(uuid, new CooldownTracker());
+        }
+        return COOLDOWN_TRACKER_MAP.get(uuid);
     }
 }

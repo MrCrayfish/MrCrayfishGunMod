@@ -4,7 +4,8 @@
 		"general": {
 			"rate": 12,
 			"gripType": "one_handed",
-			"maxAmmo": 15
+			"maxAmmo": 15,
+			"recoilAngle": 15.0
 		},
 		"projectile": {
 			"type": "basic",
@@ -50,7 +51,8 @@
 		"general": {
 			"rate": 20,
 			"gripType": "two_handed",
-			"maxAmmo": 4
+			"maxAmmo": 4,
+			"recoilAngle": 10.0
 		},
 		"projectile": {
 			"type": "shell",
@@ -83,7 +85,7 @@
 			"attachments": {
 				"scope": {
 					"yOffset": 4.4,
-					"zOffset": 2.4
+					"zOffset": 4.0
 				},
 				"barrel": {
 					"yOffset": -4.2,
@@ -98,7 +100,9 @@
 		"general": {
 			"rate": 40,
 			"gripType": "two_handed",
-			"maxAmmo": 1
+			"maxAmmo": 1,
+			"recoilAngle": 15.0,
+			"recoilDurationOffset": 0.25
 		},
 		"projectile": {
 			"type": "advanced",
@@ -147,7 +151,9 @@
 		"general": {
 			"rate": 20,
 			"gripType": "two_handed",
-			"maxAmmo": 1
+			"maxAmmo": 1,
+			"recoilAngle": 5.0,
+			"recoilDurationOffset": 0.75
 		},
 		"projectile": {
 			"type": "grenade",
@@ -178,7 +184,9 @@
 		"general": {
 			"rate": 80,
 			"gripType": "two_handed",
-			"maxAmmo": 1
+			"maxAmmo": 1,
+			"recoilAngle": 10.0,
+			"recoilDurationOffset": 0.25
 		},
 		"projectile": {
 			"type": "missile",
@@ -219,7 +227,8 @@
 			"rate": 2,
 			"gripType": "chain_gun",
 			"maxAmmo": 100,
-			"reloadSpeed": 4
+			"reloadSpeed": 4,
+			"recoilAngle": 1.0
 		},
 		"projectile": {
 			"type": "basic",
@@ -248,7 +257,8 @@
 			"rate": 4,
 			"gripType": "two_handed",
 			"maxAmmo": 30,
-			"reloadSpeed": 2
+			"reloadSpeed": 2,
+			"recoilAngle": 1.0
 		},
 		"projectile": {
 			"type": "basic",
@@ -259,7 +269,7 @@
 			"life": 10
 		},
 		"sounds": {
-			"fire": "rifle_fire",
+			"fire": "pistol_fire",
 			"reload": "pistol_reload",
 			"cock": "shotgun_fire",
 			"silencedFire": "rifle_fire_silenced"
