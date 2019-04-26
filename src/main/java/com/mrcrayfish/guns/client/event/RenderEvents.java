@@ -234,9 +234,10 @@ public class RenderEvents
                 Gun gun = itemGun.getGun();
                 if(gun.canAttachType(IAttachment.Type.SCOPE) && scope != null && scopeType != null)
                 {
-                    xOffset -= gun.modules.attachments.scope.xOffset * 0.0625 * scaleX;
-                    yOffset -= gun.modules.attachments.scope.yOffset * 0.0625 * scaleY - translateY + scopeType.getHeightToCenter() * scaleY * 0.0625;
-                    zOffset -= gun.modules.attachments.scope.zOffset * 0.0625 * scaleZ - translateZ - 0.45;
+                    Gun.ScaledPositioned scaledPos = gun.modules.attachments.scope;
+                    xOffset -= scaledPos.xOffset * 0.0625 * scaleX;
+                    yOffset -= scaledPos.yOffset * 0.0625 * scaleY - translateY + scopeType.getHeightToCenter() * scaleY * 0.0625 * scaledPos.scale;
+                    zOffset -= scaledPos.zOffset * 0.0625 * scaleZ - translateZ - 0.45;
                 }
                 else if(gun.modules.zoom != null)
                 {
@@ -504,7 +505,9 @@ public class RenderEvents
                                 double displayY = positioned.yOffset * 0.0625;
                                 double displayZ = positioned.zOffset * 0.0625;
                                 GlStateManager.translate(displayX, displayY, displayZ);
+                                GlStateManager.translate(0, -0.5, 0);
                                 GlStateManager.scale(positioned.scale, positioned.scale, positioned.scale);
+                                GlStateManager.translate(0, 0.5, 0);
                                 RenderUtil.renderModel(attachmentStack);
                             }
                         }
