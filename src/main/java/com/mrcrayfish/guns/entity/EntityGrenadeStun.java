@@ -65,7 +65,7 @@ public class EntityGrenadeStun extends EntityGrenade
 
             eyes = player.getPositionEyes(1);
             directionGrenade = grenade.subtract(eyes);
-            distance = directionGrenade.lengthVector();
+            distance = directionGrenade.length();
 
             // Calculate angle between eye-gaze line and eye-grenade line
             double angle = Math.toDegrees(Math.acos(player.getLook(1).dotProduct(directionGrenade.normalize())));

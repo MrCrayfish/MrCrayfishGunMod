@@ -24,7 +24,7 @@ public class BlockObject extends Block
     public BlockObject(Material material, MapColor mapColor, String id)
     {
         super(material, mapColor);
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
         this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
     }
