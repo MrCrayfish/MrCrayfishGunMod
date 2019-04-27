@@ -269,7 +269,7 @@
 			"life": 10
 		},
 		"sounds": {
-			"fire": "pistol_fire",
+			"fire": "assault_rifle_fire",
 			"reload": "pistol_reload",
 			"cock": "shotgun_fire",
 			"silencedFire": "rifle_fire_silenced"
