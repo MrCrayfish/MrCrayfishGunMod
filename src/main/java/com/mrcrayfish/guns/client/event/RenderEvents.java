@@ -548,7 +548,6 @@ public class RenderEvents
                                 GlStateManager.translate(displayX, displayY, displayZ);
                                 GlStateManager.translate(0, -0.5, 0);
                                 GlStateManager.scale(positioned.scale, positioned.scale, positioned.scale);
-                                GlStateManager.translate(0, 0.5, 0);
                                 RenderUtil.renderModel(attachmentStack, stack);
                             }
                         }
