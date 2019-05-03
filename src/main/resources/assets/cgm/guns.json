@@ -136,7 +136,7 @@
 					"smooth": true,
 					"yOffset": 4.5,
 					"zOffset": 2,
-					"scale": 0.75
+					"scale": 0.9
 				},
 				"barrel": {
 					"yOffset": -3.8,
