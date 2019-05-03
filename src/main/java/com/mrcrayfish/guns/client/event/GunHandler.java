@@ -79,7 +79,7 @@ public class GunHandler
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof ItemGun)
             {
-                 Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+                 Gun gun = ((ItemGun) heldItem.getItem()).getModifiedGun(heldItem);
                  if(gun.general.auto)
                  {
                      if(Mouse.isButtonDown(0))
