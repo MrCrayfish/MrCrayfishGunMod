@@ -549,7 +549,7 @@ public class RenderEvents
                                 GlStateManager.translate(0, -0.5, 0);
                                 GlStateManager.scale(positioned.scale, positioned.scale, positioned.scale);
                                 GlStateManager.translate(0, 0.5, 0);
-                                RenderUtil.renderModel(attachmentStack);
+                                RenderUtil.renderModel(attachmentStack, stack);
                             }
                         }
                         GlStateManager.popMatrix();
