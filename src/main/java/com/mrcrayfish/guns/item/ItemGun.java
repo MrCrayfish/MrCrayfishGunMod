@@ -46,7 +46,7 @@ public class ItemGun extends ItemColored
 	public ItemGun(Gun gun)
 	{
 		this.gun = gun;
-		this.setUnlocalizedName(gun.id);
+		this.setTranslationKey(gun.id);
 		this.setRegistryName(gun.id);
 		this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 		this.setMaxStackSize(1);

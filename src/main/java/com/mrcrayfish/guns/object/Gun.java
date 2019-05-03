@@ -68,6 +68,19 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Config.LangKey(GunConfig.PREFIX + "gun.general.reload_speed")
 		public int reloadSpeed = 1;
 
+		@Optional
+		@Config.Name("Recoil Angle")
+		@Config.Comment("The angle of recoil after the gun has been fired")
+		@Config.LangKey(GunConfig.PREFIX + "gun.general.recoil_angle")
+		public float recoilAngle;
+
+		@Optional
+		@Config.Name("Recoil Duration Offset")
+		@Config.Comment("The percentage of time to offset the recoil animation")
+		@Config.LangKey(GunConfig.PREFIX + "gun.general.recoil_duration_offset")
+		@Config.RangeDouble(min = 0.0, max = 1.0)
+		public float recoilDurationOffset;
+
 		public int getMaxAmmo(Gun modifiedGun)
 		{
 			int maxAmmo = this.maxAmmo;
@@ -91,6 +104,8 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			tag.setInteger("gripType", gripType.ordinal());
 			tag.setInteger("maxAmmo", maxAmmo);
 			tag.setInteger("reloadSpeed", reloadSpeed);
+			tag.setFloat("recoilAngle", recoilAngle);
+			tag.setFloat("recoilDurationOffset", recoilDurationOffset);
 			return tag;
 		}
 
@@ -117,6 +132,14 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			{
 				this.reloadSpeed = tag.getInteger("reloadSpeed");
 			}
+			if(tag.hasKey("recoilAngle", Constants.NBT.TAG_FLOAT))
+			{
+				this.recoilAngle = tag.getFloat("recoilAngle");
+			}
+			if(tag.hasKey("recoilDurationOffset", Constants.NBT.TAG_FLOAT))
+			{
+				this.recoilDurationOffset = tag.getFloat("recoilDurationOffset");
+			}
 		}
 
 		public General copy()
@@ -127,6 +150,8 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			general.gripType = gripType;
 			general.maxAmmo = maxAmmo;
 			general.reloadSpeed = reloadSpeed;
+			general.recoilAngle = recoilAngle;
+			general.recoilDurationOffset = recoilDurationOffset;
 			return general;
 		}
 	}

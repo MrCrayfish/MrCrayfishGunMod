@@ -29,7 +29,6 @@ import java.util.UUID;
 public class GunHandler
 {
     private static final Map<UUID, AimTracker> AIMING_MAP = new HashMap<>();
-
     public static boolean aiming = false;
 
     @SubscribeEvent
@@ -78,9 +77,16 @@ public class GunHandler
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
-            if(Mouse.isButtonDown(0))
+            if(heldItem.getItem() instanceof ItemGun)
             {
-                fire(player, heldItem);
+                 Gun gun = ((ItemGun) heldItem.getItem()).getModifiedGun(heldItem);
+                 if(gun.general.auto)
+                 {
+                     if(Mouse.isButtonDown(0))
+                     {
+                         fire(player, heldItem);
+                     }
+                 }
             }
         }
     }
@@ -99,6 +105,7 @@ public class GunHandler
             ItemGun itemGun = (ItemGun) heldItem.getItem();
             Gun modifiedGun = itemGun.getModifiedGun(heldItem);
             tracker.setCooldown(heldItem.getItem(), modifiedGun.general.rate);
+            RenderEvents.getCooldownTracker(player.getUniqueID()).setCooldown(heldItem.getItem(), modifiedGun.general.rate);
             PacketHandler.INSTANCE.sendToServer(new MessageShoot());
         }
     }

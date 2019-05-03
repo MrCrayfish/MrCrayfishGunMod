@@ -15,16 +15,16 @@ public class ItemPart extends Item implements ISubItems
 
     public ItemPart()
     {
-        this.setUnlocalizedName("part");
+        this.setTranslationKey("part");
         this.setRegistryName("part");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        return super.getUnlocalizedName(stack) + "_" + PARTS[stack.getItemDamage()];
+        return super.getTranslationKey(stack) + "_" + PARTS[stack.getItemDamage()];
     }
 
     @Override

@@ -11,7 +11,7 @@ public class ItemAttachment extends ItemColored implements IAttachment
 
     public ItemAttachment(String id, IAttachment.Type type)
     {
-        this.setUnlocalizedName(id);
+        this.setTranslationKey(id);
         this.setRegistryName(id);
         this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
         this.type = type;

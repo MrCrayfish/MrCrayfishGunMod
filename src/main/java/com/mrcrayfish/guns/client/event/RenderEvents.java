@@ -33,9 +33,11 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
@@ -48,10 +50,14 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class RenderEvents
 {
     private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Reference.MOD_ID, "textures/scope_long_overlay.png");
-
+    private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
     private static final double ZOOM_TICKS = 4;
     public static boolean drawFlash = false;
 
@@ -66,6 +72,15 @@ public class RenderEvents
     private ItemStack flash = null;
 
     private int renderTextureId = -1;
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.START && event.player.world.isRemote)
+        {
+            getCooldownTracker(event.player.getUniqueID()).tick();
+        }
+    }
 
     @SubscribeEvent
     public void onKeyPressedEvent(KeyInputEvent event)
@@ -235,9 +250,10 @@ public class RenderEvents
                 Gun gun = itemGun.getGun();
                 if(gun.canAttachType(IAttachment.Type.SCOPE) && scope != null && scopeType != null)
                 {
-                    xOffset -= gun.modules.attachments.scope.xOffset * 0.0625 * scaleX;
-                    yOffset -= gun.modules.attachments.scope.yOffset * 0.0625 * scaleY - translateY + scopeType.getHeightToCenter() * scaleY * 0.0625;
-                    zOffset -= gun.modules.attachments.scope.zOffset * 0.0625 * scaleZ - translateZ - 0.45;
+                    Gun.ScaledPositioned scaledPos = gun.modules.attachments.scope;
+                    xOffset -= scaledPos.xOffset * 0.0625 * scaleX;
+                    yOffset -= scaledPos.yOffset * 0.0625 * scaleY - translateY + scopeType.getHeightToCenter() * scaleY * 0.0625 * scaledPos.scale;
+                    zOffset -= scaledPos.zOffset * 0.0625 * scaleZ - translateZ - 0.45;
                 }
                 else if(gun.modules.zoom != null)
                 {
@@ -269,15 +285,41 @@ public class RenderEvents
             GlStateManager.translate(0.56F - 0.72, -0.56F, -0.75F);
         }
 
-        float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * event.getPartialTicks()) / 5F;
-
-        GlStateManager.translate(0, 0.35 * reloadProgress, 0);
-        GlStateManager.translate(0, 0, -0.1 * reloadProgress);
-        GlStateManager.rotate(45F * reloadProgress, 1, 0, 0);
-
+        this.applyReload(event.getPartialTicks());
+        this.applyRecoil(heldItem.getItem(), ((ItemGun) heldItem.getItem()).getGun());
         this.renderWeapon(heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getPartialTicks());
 
         GlStateManager.popMatrix();
+    }
+
+    private void applyReload(float partialTicks)
+    {
+        float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
+        GlStateManager.translate(0, 0.35 * reloadProgress, 0);
+        GlStateManager.translate(0, 0, -0.1 * reloadProgress);
+        GlStateManager.rotate(45F * reloadProgress, 1, 0, 0);
+    }
+
+    private void applyRecoil(Item item, Gun gun)
+    {
+        CooldownTracker tracker = getCooldownTracker(Minecraft.getMinecraft().player.getUniqueID());
+        float cooldown = tracker.getCooldown(item, Minecraft.getMinecraft().getRenderPartialTicks());
+        cooldown = cooldown >= gun.general.recoilDurationOffset  ? (cooldown - gun.general.recoilDurationOffset) / (1.0F - gun.general.recoilDurationOffset) : 0.0F;
+
+        GlStateManager.translate(0, 0, 0.35);
+        float recoilNormal;
+        if(cooldown >= 0.8)
+        {
+            float amount = 1.0F * ((1.0F - cooldown) / 0.2F);
+            recoilNormal = 1 - (--amount) * amount * amount * amount;
+        }
+        else
+        {
+            float amount = (cooldown / 0.8F);
+            recoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
+        }
+        GlStateManager.rotate(gun.general.recoilAngle * recoilNormal, 1, 0, 0);
+        GlStateManager.translate(0, 0, -0.35);
     }
 
     private boolean isZooming(EntityPlayer player)
@@ -508,8 +550,9 @@ public class RenderEvents
                                 double displayY = positioned.yOffset * 0.0625;
                                 double displayZ = positioned.zOffset * 0.0625;
                                 GlStateManager.translate(displayX, displayY, displayZ);
+                                GlStateManager.translate(0, -0.5, 0);
                                 GlStateManager.scale(positioned.scale, positioned.scale, positioned.scale);
-                                RenderUtil.renderModel(attachmentStack);
+                                RenderUtil.renderModel(attachmentStack, stack);
                             }
                         }
                         GlStateManager.popMatrix();
@@ -652,5 +695,14 @@ public class RenderEvents
         Minecraft mc = Minecraft.getMinecraft();
         GlStateManager.bindTexture(renderTextureId);
         GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.displayWidth, mc.displayHeight, 0);
+    }
+
+    public static CooldownTracker getCooldownTracker(UUID uuid)
+    {
+        if(!COOLDOWN_TRACKER_MAP.containsKey(uuid))
+        {
+            COOLDOWN_TRACKER_MAP.put(uuid, new CooldownTracker());
+        }
+        return COOLDOWN_TRACKER_MAP.get(uuid);
     }
 }

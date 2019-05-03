@@ -72,7 +72,7 @@ public class ClientProxy extends CommonProxy
 			{
 				return stack.getTagCompound().getInteger("color");
 			}
-			return Color.decode("#66FFFFFF").getRGB();
+			return -1;
 		};
 		RegistrationHandler.Items.getItems().forEach(item ->
 		{
@@ -86,8 +86,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void showMuzzleFlash()
 	{
-		EntityPlayer player = Minecraft.getMinecraft().player;
-		player.rotationPitch -= 0.4f;
 		RenderEvents.drawFlash = true;
 	}
 

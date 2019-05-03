@@ -23,9 +23,9 @@ public class ItemScope extends ItemAttachment implements ISubItems
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        return super.getUnlocalizedName(stack) + "_" + Type.values()[stack.getItemDamage()].name;
+        return super.getTranslationKey(stack) + "_" + Type.values()[stack.getItemDamage()].name;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class ItemAmmo extends Item implements ISubItems
 {
     public ItemAmmo()
     {
-        this.setUnlocalizedName("ammo");
+        this.setTranslationKey("ammo");
         this.setRegistryName("ammo");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
@@ -32,10 +32,10 @@ public class ItemAmmo extends Item implements ISubItems
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        if(stack.getItemDamage() >= Type.values().length) return super.getUnlocalizedName(stack);
-        return super.getUnlocalizedName(stack) + "_" + Type.values()[stack.getItemDamage()].name;
+        if(stack.getItemDamage() >= Type.values().length) return super.getTranslationKey(stack);
+        return super.getTranslationKey(stack) + "_" + Type.values()[stack.getItemDamage()].name;
     }
 
     @Override
