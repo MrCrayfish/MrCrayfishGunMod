@@ -39,7 +39,7 @@
 					"zOffset": 5
 				},
 				"barrel": {
-					"yOffset": -4.2,
+					"yOffset": 3.8,
 					"zOffset": 0.6,
 					"scale": 0.4
 				}
@@ -88,7 +88,7 @@
 					"zOffset": 4.0
 				},
 				"barrel": {
-					"yOffset": -4.2,
+					"yOffset": 3.8,
 					"zOffset": -9.0,
 					"scale": 0.5
 				}
@@ -138,7 +138,7 @@
 					"zOffset": 2
 				},
 				"barrel": {
-					"yOffset": -3.8,
+					"yOffset": 4.2,
 					"zOffset": -13,
 					"scale": 0.35
 				}
@@ -291,7 +291,7 @@
 					"zOffset": 4
 				},
 				"barrel": {
-					"yOffset": -4.5,
+					"yOffset": 3.5,
 					"zOffset": -5.25,
 					"scale": 0.4
 				}
