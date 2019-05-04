@@ -253,7 +253,7 @@ public class RenderEvents
                     Gun.ScaledPositioned scaledPos = gun.modules.attachments.scope;
                     xOffset -= scaledPos.xOffset * 0.0625 * scaleX;
                     yOffset -= scaledPos.yOffset * 0.0625 * scaleY - translateY + scopeType.getHeightToCenter() * scaleY * 0.0625 * scaledPos.scale;
-                    zOffset -= scaledPos.zOffset * 0.0625 * scaleZ - translateZ - 0.45;
+                    zOffset -= scaledPos.zOffset * 0.0625 * scaleZ - translateZ - 0.35;
                 }
                 else if(gun.modules.zoom != null)
                 {
@@ -306,7 +306,6 @@ public class RenderEvents
         float cooldown = tracker.getCooldown(item, Minecraft.getMinecraft().getRenderPartialTicks());
         cooldown = cooldown >= gun.general.recoilDurationOffset  ? (cooldown - gun.general.recoilDurationOffset) / (1.0F - gun.general.recoilDurationOffset) : 0.0F;
 
-        GlStateManager.translate(0, 0, 0.35);
         float recoilNormal;
         if(cooldown >= 0.8)
         {
@@ -318,6 +317,8 @@ public class RenderEvents
             float amount = (cooldown / 0.8F);
             recoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
         }
+        GlStateManager.translate(0, 0, gun.general.recoilKick * 0.0625 * recoilNormal);
+        GlStateManager.translate(0, 0, 0.35);
         GlStateManager.rotate(gun.general.recoilAngle * recoilNormal, 1, 0, 0);
         GlStateManager.translate(0, 0, -0.35);
     }

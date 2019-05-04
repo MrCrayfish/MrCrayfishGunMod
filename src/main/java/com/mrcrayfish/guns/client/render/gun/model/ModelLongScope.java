@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -20,6 +22,8 @@ import org.lwjgl.opengl.GL11;
  */
 public class ModelLongScope implements IOverrideModel
 {
+    private static final ResourceLocation RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/blocks/sniper_reticle.png");
+
     @Override
     public void init() {}
 
@@ -45,21 +49,33 @@ public class ModelLongScope implements IOverrideModel
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
                 double size = 1.2 / 16.0;
-                double crop = 0.4;
+                double crop = 0.45;
                 Minecraft mc = Minecraft.getMinecraft();
                 double offset = -15 * (1.0 / mc.displayHeight);
                 double texU = ((mc.displayWidth - mc.displayHeight + mc.displayHeight * crop * 2.0) / 2.0) / mc.displayWidth;
 
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(-size / 2, 0.0625, 3.8 * 0.0625);
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBuffer();
-                buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
-                buffer.pos(0, size, 0).tex(texU, 1.0 - crop + offset).endVertex();
-                buffer.pos(0, 0, 0).tex(texU, crop + offset).endVertex();
-                buffer.pos(size, 0, 0).tex(1.0 - texU, crop + offset).endVertex();
-                buffer.pos(size, size, 0).tex(1.0 - texU, 1.0 - crop + offset).endVertex();
-                tessellator.draw();
+                {
+                    GlStateManager.translate(-size / 2, 0.0625, 3.5 * 0.0625);
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder buffer = tessellator.getBuffer();
+                    buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
+                    buffer.pos(0, size, 0).tex(texU, 1.0 - crop + offset).endVertex();
+                    buffer.pos(0, 0, 0).tex(texU, crop + offset).endVertex();
+                    buffer.pos(size, 0, 0).tex(1.0 - texU, crop + offset).endVertex();
+                    buffer.pos(size, size, 0).tex(1.0 - texU, 1.0 - crop + offset).endVertex();
+                    tessellator.draw();
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.renderEvents.normalZoomProgress * 0.8F + 0.2F);
+                    GlStateManager.translate(0, 0, 0.001);
+                    mc.getTextureManager().bindTexture(RETICLE);
+                    buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
+                    buffer.pos(0, 0, 0).tex(0.984375, 0.984375).endVertex();
+                    buffer.pos(size, 0, 0).tex(0, 0.984375).endVertex();
+                    buffer.pos(size, size, 0).tex(0, 0).endVertex();
+                    buffer.pos(0, size, 0).tex(0.984375, 0).endVertex();
+                    tessellator.draw();
+                }
                 GlStateManager.popMatrix();
             }
         }

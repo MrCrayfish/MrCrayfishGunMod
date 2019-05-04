@@ -52,6 +52,7 @@
 			"rate": 20,
 			"gripType": "two_handed",
 			"maxAmmo": 4,
+			"recoilKick": 0.5,
 			"recoilAngle": 10.0
 		},
 		"projectile": {
@@ -102,6 +103,7 @@
 			"gripType": "two_handed",
 			"maxAmmo": 1,
 			"recoilAngle": 15.0,
+			"recoilKick": 1.0,
 			"recoilDurationOffset": 0.25
 		},
 		"projectile": {
@@ -151,7 +153,8 @@
 			"gripType": "two_handed",
 			"maxAmmo": 1,
 			"recoilAngle": 5.0,
-			"recoilDurationOffset": 0.75
+			"recoilKick": 1.0,
+			"recoilDurationOffset": 0.5
 		},
 		"projectile": {
 			"type": "grenade",
@@ -256,7 +259,7 @@
 			"gripType": "two_handed",
 			"maxAmmo": 30,
 			"reloadSpeed": 2,
-			"recoilAngle": 1.0
+			"recoilKick": 0.25
 		},
 		"projectile": {
 			"type": "basic",
