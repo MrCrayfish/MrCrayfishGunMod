@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -28,10 +29,10 @@ public class ModelStandard implements IGunModel
     }
 
     @Override
-    public void tick() {}
+    public void tick(EntityLivingBase entity) {}
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, EntityLivingBase entity)
     {
         RenderUtil.renderModel(base, transformType, stack);
     }

@@ -179,7 +179,7 @@ public class RenderEvents
                 IGunModel model = ModelOverrides.getModel(heldItem.getItem());
                 if(model != null)
                 {
-                    model.tick();
+                    model.tick(player);
                 }
             }
 
@@ -287,7 +287,7 @@ public class RenderEvents
 
         this.applyReload(event.getPartialTicks());
         this.applyRecoil(heldItem.getItem(), ((ItemGun) heldItem.getItem()).getGun());
-        this.renderWeapon(heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getPartialTicks());
+        this.renderWeapon(Minecraft.getMinecraft().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getPartialTicks());
 
         GlStateManager.popMatrix();
     }
@@ -426,7 +426,7 @@ public class RenderEvents
             gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(hand, entity instanceof EntityPlayer ? GunHandler.getAimProgress((EntityPlayer) entity, event.getPartialTicks()) : 0f);
             if(hand == EnumHand.MAIN_HAND)
             {
-                this.renderWeapon(heldItem, event.getTransformType(), event.getPartialTicks());
+                this.renderWeapon(entity, heldItem, event.getTransformType(), event.getPartialTicks());
             }
             else
             {
@@ -436,12 +436,12 @@ public class RenderEvents
                     Gun mainhandGun = ((ItemGun) mainHand.getItem()).getGun();
                     if(mainhandGun.general.gripType.canRenderOffhand())
                     {
-                        this.renderWeapon(heldItem, event.getTransformType(), event.getPartialTicks());
+                        this.renderWeapon(entity, heldItem, event.getTransformType(), event.getPartialTicks());
                     }
                 }
                 else
                 {
-                    this.renderWeapon(heldItem, event.getTransformType(), event.getPartialTicks());
+                    this.renderWeapon(entity, heldItem, event.getTransformType(), event.getPartialTicks());
                 }
             }
         }
@@ -477,24 +477,26 @@ public class RenderEvents
     @SubscribeEvent
     public void onRenderEntityItem(RenderItemEvent.Entity.Pre event)
     {
-        event.setCanceled(this.renderWeapon(event.getItem(), event.getTransformType(), event.getPartialTicks()));
+        Minecraft mc = Minecraft.getMinecraft();
+        event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getPartialTicks()));
     }
 
     @SubscribeEvent
     public void onRenderEntityItem(RenderItemEvent.Gui.Pre event)
     {
-        event.setCanceled(this.renderWeapon(event.getItem(), event.getTransformType(), event.getPartialTicks()));
+        Minecraft mc = Minecraft.getMinecraft();
+        event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getPartialTicks()));
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
     }
 
-    private boolean renderWeapon(ItemStack stack, ItemCameraTransforms.TransformType transformType, float partialTicks)
+    private boolean renderWeapon(EntityLivingBase entity, ItemStack stack, ItemCameraTransforms.TransformType transformType, float partialTicks)
     {
         if(stack.getItem() instanceof ItemGun)
         {
             GlStateManager.pushMatrix();
             RenderUtil.applyTransformType(stack, transformType);
-            this.renderGun(stack, partialTicks);
+            this.renderGun(entity, stack, partialTicks);
             this.renderAttachments(stack);
 
             if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
@@ -509,7 +511,7 @@ public class RenderEvents
         return false;
     }
 
-    private void renderGun(ItemStack stack, float partialTicks)
+    private void renderGun(EntityLivingBase entity, ItemStack stack, float partialTicks)
     {
         if(ModelOverrides.hasModel(stack.getItem()))
         {
@@ -517,7 +519,7 @@ public class RenderEvents
             if(model != null)
             {
                 model.registerPieces();
-                model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack);
+                model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, entity);
             }
         }
         else

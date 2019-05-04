@@ -11,6 +11,7 @@ import com.mrcrayfish.guns.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
@@ -37,7 +38,7 @@ public class ModelChainGun implements IGunModel
     }
 
     @Override
-    public void tick()
+    public void tick(EntityLivingBase entity)
     {
         lastRotation = rotation;
         boolean shooting = Mouse.isButtonDown(GunConfig.CLIENT.controls.oldControls ? 1 : 0);
@@ -69,7 +70,7 @@ public class ModelChainGun implements IGunModel
     }
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, EntityLivingBase entity)
     {
         RenderUtil.renderModel(base, transformType, stack);
         RenderUtil.renderModel(barrel, transformType, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks), stack, ItemStack.EMPTY);
