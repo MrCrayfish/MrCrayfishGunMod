@@ -5,6 +5,7 @@ import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
+import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
@@ -12,7 +13,6 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
 /**
@@ -31,8 +31,8 @@ public class ModelChainGun implements IGunModel
     public void registerPieces()
     {
         if(init) return;
-        base = RenderUtil.getModel(new ResourceLocation("cgm:part"), 0);
-        barrel = RenderUtil.getModel(new ResourceLocation("cgm:part"), 1);
+        base = RenderUtil.getModel(ModGuns.PARTS, 0);
+        barrel = RenderUtil.getModel(ModGuns.PARTS, 1);
         init = true;
     }
 

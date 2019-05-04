@@ -14,26 +14,26 @@ import java.util.Map;
  */
 public class ModelOverrides
 {
-    private static final Map<ResourceLocation, IGunModel> MODEL_MAP = new HashMap<>();
+    private static final Map<Item, IGunModel> MODEL_MAP = new HashMap<>();
 
-    public static void register(@Nonnull ResourceLocation resource)
+    public static void register(Item item)
     {
-        register(resource, new ModelStandard(resource));
+        register(item, new ModelStandard(item));
     }
 
-    public static void register(@Nonnull ResourceLocation resource, @Nonnull IGunModel model)
+    public static void register(Item item, IGunModel model)
     {
-        MODEL_MAP.put(resource, model);
+        MODEL_MAP.put(item, model);
     }
 
     public static boolean hasModel(Item item)
     {
-        return MODEL_MAP.containsKey(Item.REGISTRY.getNameForObject(item));
+        return MODEL_MAP.containsKey(item);
     }
 
     @Nullable
     public static IGunModel getModel(Item item)
     {
-        return MODEL_MAP.get(Item.REGISTRY.getNameForObject(item));
+        return MODEL_MAP.get(item);
     }
 }

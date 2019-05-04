@@ -22,9 +22,9 @@ import java.util.List;
 
 public class RenderUtil
 {
-    public static IBakedModel getModel(ResourceLocation resource, int meta)
+    public static IBakedModel getModel(Item item, int meta)
     {
-        return Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(Item.getByNameOrId(resource.toString()), 1, meta));
+        return Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(item, 1, meta));
     }
 
     public static void rotateZ(float xOffset, float yOffset, float rotation)

@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.client.render.gun.IGunModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -12,18 +13,18 @@ import net.minecraft.util.ResourceLocation;
  */
 public class ModelStandard implements IGunModel
 {
-    private final ResourceLocation resource;
+    private final Item item;
     private IBakedModel base;
 
-    public ModelStandard(ResourceLocation resource)
+    public ModelStandard(Item item)
     {
-        this.resource = resource;
+        this.item = item;
     }
 
     @Override
     public void registerPieces()
     {
-        base = RenderUtil.getModel(resource, 0);
+        base = RenderUtil.getModel(item, 0);
     }
 
     @Override

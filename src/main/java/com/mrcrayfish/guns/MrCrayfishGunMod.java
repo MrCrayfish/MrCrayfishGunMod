@@ -71,7 +71,7 @@ public class MrCrayfishGunMod
 	{
 		if (event.getSide() == Side.CLIENT)
 		{
-			ModelOverrides.register(new ResourceLocation("cgm:chain_gun"), new ModelChainGun());
+			ModelOverrides.register(ModGuns.getGun("chain_gun"), new ModelChainGun());
 		}
 	}
 
