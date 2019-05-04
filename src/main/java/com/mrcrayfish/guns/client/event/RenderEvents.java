@@ -177,7 +177,7 @@ public class RenderEvents
             ItemStack heldItem = player.getHeldItemMainhand();
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
             {
-                IOverrideModel model = ModelOverrides.getModel(heldItem.getItem());
+                IOverrideModel model = ModelOverrides.getModel(heldItem);
                 if(model != null)
                 {
                     model.tick(player);
@@ -514,9 +514,9 @@ public class RenderEvents
 
     private void renderGun(EntityLivingBase entity, ItemStack stack, float partialTicks)
     {
-        if(ModelOverrides.hasModel(stack.getItem()))
+        if(ModelOverrides.hasModel(stack))
         {
-            IOverrideModel model = ModelOverrides.getModel(stack.getItem());
+            IOverrideModel model = ModelOverrides.getModel(stack);
             if(model != null)
             {
                 model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, entity);
@@ -555,7 +555,7 @@ public class RenderEvents
                                 GlStateManager.translate(0, -0.5, 0);
                                 GlStateManager.scale(positioned.scale, positioned.scale, positioned.scale);
 
-                                IOverrideModel model = ModelOverrides.getModel(attachmentStack.getItem());
+                                IOverrideModel model = ModelOverrides.getModel(attachmentStack);
                                 if(model != null)
                                 {
                                     model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, entity);

@@ -11,6 +11,7 @@ import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.event.SoundEvents;
 import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
+import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.entity.EntityGrenade;
@@ -25,6 +26,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -56,8 +58,8 @@ public class ClientProxy extends CommonProxy
 		KeyBinds.register();
 		SoundEvents.initReflection();
 
-		ModelOverrides.register(ModGuns.getGun("chain_gun"), new ModelChainGun());
-		ModelOverrides.register(ModGuns.SCOPES, new ModelChainGun());
+		ModelOverrides.register(new ItemStack(ModGuns.getGun("chain_gun")), new ModelChainGun());
+		//ModelOverrides.register(ModGuns.SCOPES, new ModelChainGun());
 
 		if(Loader.isModLoaded("controllable"))
 		{
@@ -86,7 +88,7 @@ public class ClientProxy extends CommonProxy
 			}
 		});
 
-		ModelOverrides.getModelMap().forEach((item, model) -> model.init());
+		ModelOverrides.getModelMap().forEach((item, map) -> map.values().forEach(IOverrideModel::init));
 	}
 
 	@Override
