@@ -498,7 +498,7 @@ public class RenderEvents
             GlStateManager.pushMatrix();
             RenderUtil.applyTransformType(stack, transformType);
             this.renderGun(entity, stack, partialTicks);
-            this.renderAttachments(stack);
+            this.renderAttachments(entity, stack, partialTicks);
 
             if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
             {
@@ -528,7 +528,7 @@ public class RenderEvents
         }
     }
 
-    private void renderAttachments(ItemStack stack)
+    private void renderAttachments(EntityLivingBase entity, ItemStack stack, float partialTicks)
     {
         if(stack.getItem() instanceof ItemGun)
         {
@@ -554,7 +554,16 @@ public class RenderEvents
                                 GlStateManager.translate(displayX, displayY, displayZ);
                                 GlStateManager.translate(0, -0.5, 0);
                                 GlStateManager.scale(positioned.scale, positioned.scale, positioned.scale);
-                                RenderUtil.renderModel(attachmentStack, stack);
+
+                                IOverrideModel model = ModelOverrides.getModel(attachmentStack.getItem());
+                                if(model != null)
+                                {
+                                    model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, entity);
+                                }
+                                else
+                                {
+                                    RenderUtil.renderModel(attachmentStack, stack);
+                                }
                             }
                         }
                         GlStateManager.popMatrix();
