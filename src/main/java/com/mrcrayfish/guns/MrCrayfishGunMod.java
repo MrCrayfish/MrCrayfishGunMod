@@ -67,15 +67,6 @@ public class MrCrayfishGunMod
 	}
 
 	@EventHandler
-	public void init(FMLLoadCompleteEvent event)
-	{
-		if (event.getSide() == Side.CLIENT)
-		{
-			ModelOverrides.register(ModGuns.getGun("chain_gun"), new ModelChainGun());
-		}
-	}
-
-	@EventHandler
 	public void onServerStart(FMLServerStartedEvent event)
 	{
 		GameRules rules = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getGameRules();

@@ -1,18 +1,17 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
-import com.mrcrayfish.guns.client.render.gun.IGunModel;
+import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
-public class ModelStandard implements IGunModel
+public class ModelStandard implements IOverrideModel
 {
     private final Item item;
     private IBakedModel base;
@@ -23,7 +22,7 @@ public class ModelStandard implements IGunModel
     }
 
     @Override
-    public void registerPieces()
+    public void init()
     {
         base = RenderUtil.getModel(item, 0);
     }

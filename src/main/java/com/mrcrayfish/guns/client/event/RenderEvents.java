@@ -4,7 +4,7 @@ import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.render.gun.IGunModel;
+import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.event.CommonEvents;
@@ -58,6 +58,7 @@ public class RenderEvents
 {
     private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Reference.MOD_ID, "textures/scope_long_overlay.png");
     private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
+    //private static final Map<Item, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
     private static final double ZOOM_TICKS = 4;
     public static boolean drawFlash = false;
 
@@ -176,7 +177,7 @@ public class RenderEvents
             ItemStack heldItem = player.getHeldItemMainhand();
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
             {
-                IGunModel model = ModelOverrides.getModel(heldItem.getItem());
+                IOverrideModel model = ModelOverrides.getModel(heldItem.getItem());
                 if(model != null)
                 {
                     model.tick(player);
@@ -515,10 +516,9 @@ public class RenderEvents
     {
         if(ModelOverrides.hasModel(stack.getItem()))
         {
-            IGunModel model = ModelOverrides.getModel(stack.getItem());
+            IOverrideModel model = ModelOverrides.getModel(stack.getItem());
             if(model != null)
             {
-                model.registerPieces();
                 model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, entity);
             }
         }

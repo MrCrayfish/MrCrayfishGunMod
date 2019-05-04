@@ -11,9 +11,12 @@ import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.event.SoundEvents;
 import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
+import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
+import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.ItemColored;
 import net.minecraft.client.Minecraft;
@@ -22,7 +25,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -34,7 +36,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.lwjgl.input.Mouse;
 
-import java.awt.*;
 import java.util.Random;
 
 public class ClientProxy extends CommonProxy
@@ -54,6 +55,9 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeStun.class, RenderGrenade::new);
 		KeyBinds.register();
 		SoundEvents.initReflection();
+
+		ModelOverrides.register(ModGuns.getGun("chain_gun"), new ModelChainGun());
+		ModelOverrides.register(ModGuns.SCOPES, new ModelChainGun());
 
 		if(Loader.isModLoaded("controllable"))
 		{
@@ -81,6 +85,8 @@ public class ClientProxy extends CommonProxy
 				Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
 			}
 		});
+
+		ModelOverrides.getModelMap().forEach((item, model) -> model.init());
 	}
 
 	@Override

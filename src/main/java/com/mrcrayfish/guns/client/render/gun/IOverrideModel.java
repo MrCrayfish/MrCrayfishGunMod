@@ -7,9 +7,9 @@ import net.minecraft.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public interface IGunModel
+public interface IOverrideModel
 {
-    void registerPieces();
+    void init();
 
     void tick(EntityLivingBase entity);
 

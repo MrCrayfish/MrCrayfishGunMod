@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.client.render.gun.model;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.client.render.gun.IGunModel;
+import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.ItemGun;
@@ -19,7 +19,7 @@ import org.lwjgl.input.Mouse;
 /**
  * Author: MrCrayfish
  */
-public class ModelChainGun implements IGunModel
+public class ModelChainGun implements IOverrideModel
 {
     private boolean init = false;
     private IBakedModel base;
@@ -29,7 +29,7 @@ public class ModelChainGun implements IGunModel
     private int rotation;
 
     @Override
-    public void registerPieces()
+    public void init()
     {
         if(init) return;
         base = RenderUtil.getModel(ModGuns.PARTS, 0);
