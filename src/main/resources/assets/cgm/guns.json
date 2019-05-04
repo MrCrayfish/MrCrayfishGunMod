@@ -134,8 +134,7 @@
 			"attachments": {
 				"scope": {
 					"smooth": true,
-					"yOffset": 4.5,
-					"zOffset": 2
+					"yOffset": 4.5
 				},
 				"barrel": {
 					"yOffset": 4.2,

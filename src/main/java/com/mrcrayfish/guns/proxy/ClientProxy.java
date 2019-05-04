@@ -14,12 +14,14 @@ import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
+import com.mrcrayfish.guns.client.render.gun.model.ModelLongScope;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.ItemColored;
+import com.mrcrayfish.guns.item.ItemScope;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -42,6 +44,7 @@ import java.util.Random;
 
 public class ClientProxy extends CommonProxy
 {
+	public static RenderEvents renderEvents;
 	public static boolean controllableLoaded = false;
 
 	@Override
@@ -49,7 +52,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.preInit();
 
-		MinecraftForge.EVENT_BUS.register(new RenderEvents());
+		MinecraftForge.EVENT_BUS.register(renderEvents = new RenderEvents());
 		MinecraftForge.EVENT_BUS.register(new GunHandler());
 		MinecraftForge.EVENT_BUS.register(new ReloadHandler());
 		RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
@@ -59,7 +62,7 @@ public class ClientProxy extends CommonProxy
 		SoundEvents.initReflection();
 
 		ModelOverrides.register(new ItemStack(ModGuns.getGun("chain_gun")), new ModelChainGun());
-		//ModelOverrides.register(ModGuns.SCOPES, new ModelChainGun());
+		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new ModelLongScope());
 
 		if(Loader.isModLoaded("controllable"))
 		{

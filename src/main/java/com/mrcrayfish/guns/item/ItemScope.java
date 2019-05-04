@@ -56,7 +56,7 @@ public class ItemScope extends ItemAttachment implements ISubItems
     {
         SMALL("small", 0.1F, 1.0F, 2F),
         MEDIUM("medium", 0.25F, 2.1F, 3F),
-        LONG("long", 0.5F, 1.6F, 10F);
+        LONG("long", 0.4F, 1.59F, 4F);
 
         private String name;
         private float additionalZoom;

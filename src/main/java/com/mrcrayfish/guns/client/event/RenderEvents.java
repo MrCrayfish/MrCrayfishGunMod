@@ -58,13 +58,12 @@ public class RenderEvents
 {
     private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Reference.MOD_ID, "textures/scope_long_overlay.png");
     private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
-    //private static final Map<Item, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
     private static final double ZOOM_TICKS = 4;
     public static boolean drawFlash = false;
 
     private int zoomProgress;
     private int lastZoomProgress;
-    private double normalZoomProgress;
+    public double normalZoomProgress;
 
     private int reloadTimer;
     private int prevReloadTimer;
@@ -72,7 +71,7 @@ public class RenderEvents
 
     private ItemStack flash = null;
 
-    private int renderTextureId = -1;
+    public static int screenTextureId = -1;
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -503,7 +502,6 @@ public class RenderEvents
             if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
             {
                 this.renderMuzzleFlash(stack);
-                this.renderScopeImage();
             }
 
             GlStateManager.popMatrix();
@@ -558,7 +556,7 @@ public class RenderEvents
                                 IOverrideModel model = ModelOverrides.getModel(attachmentStack);
                                 if(model != null)
                                 {
-                                    model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, entity);
+                                    model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, attachmentStack, entity);
                                 }
                                 else
                                 {
@@ -605,33 +603,6 @@ public class RenderEvents
             }
             GlStateManager.popMatrix();
             drawFlash = false;
-        }
-    }
-
-    private void renderScopeImage()
-    {
-        if(renderTextureId != -1)
-        {
-            GlStateManager.color(1.0F, 1.0F, 1.0F, (float) normalZoomProgress);
-            GlStateManager.enableBlend();
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-            GlStateManager.disableLighting();
-            GlStateManager.bindTexture(renderTextureId);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
-            double crop = 0.25;
-            Minecraft mc = Minecraft.getMinecraft();
-            double texU = ((mc.displayWidth - mc.displayHeight + mc.displayHeight * crop * 2) / 2.0) / mc.displayWidth;
-
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
-            buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
-            buffer.pos(-0.0375, -0.125 + 0.0375, 0.365).tex(texU, 1.0 - crop).endVertex();
-            buffer.pos(-0.0375, -0.125 - 0.0375, 0.365).tex(texU, crop).endVertex();
-            buffer.pos(0.0375, -0.125 - 0.0375, 0.365).tex(1.0 - texU, crop).endVertex();
-            buffer.pos(0.0375, -0.125 + 0.0375, 0.365).tex(1.0 - texU, 1.0 - crop).endVertex();
-            tessellator.draw();
         }
     }
 
@@ -699,12 +670,12 @@ public class RenderEvents
     @SubscribeEvent
     public void onRenderLastWorld(RenderWorldLastEvent event)
     {
-        if(renderTextureId == -1)
+        if(screenTextureId == -1)
         {
-            renderTextureId = GlStateManager.generateTexture();
+            screenTextureId = GlStateManager.generateTexture();
         }
         Minecraft mc = Minecraft.getMinecraft();
-        GlStateManager.bindTexture(renderTextureId);
+        GlStateManager.bindTexture(screenTextureId);
         GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.displayWidth, mc.displayHeight, 0);
     }
 

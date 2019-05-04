@@ -75,6 +75,12 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		public float recoilAngle;
 
 		@Optional
+		@Config.Name("Recoil Kick")
+		@Config.Comment("The amount of z offset the gun will recieve after being fired")
+		@Config.LangKey(GunConfig.PREFIX + "gun.general.recoil_kick")
+		public float recoilKick;
+
+		@Optional
 		@Config.Name("Recoil Duration Offset")
 		@Config.Comment("The percentage of time to offset the recoil animation")
 		@Config.LangKey(GunConfig.PREFIX + "gun.general.recoil_duration_offset")
