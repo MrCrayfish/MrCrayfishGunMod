@@ -154,7 +154,7 @@
 			"maxAmmo": 1,
 			"recoilAngle": 5.0,
 			"recoilKick": 1.0,
-			"recoilDurationOffset": 0.5
+			"recoilDurationOffset": 0.25
 		},
 		"projectile": {
 			"type": "grenade",
