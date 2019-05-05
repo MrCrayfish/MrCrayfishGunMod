@@ -25,7 +25,6 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -44,10 +43,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.optifine.shaders.Shaders;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -74,6 +75,7 @@ public class RenderEvents
     private ItemStack flash = null;
 
     public static int screenTextureId = -1;
+    public static boolean shadersEnabled;
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -683,13 +685,25 @@ public class RenderEvents
     @SubscribeEvent
     public void onRenderLastWorld(RenderWorldLastEvent event)
     {
-        if(screenTextureId == -1)
+        if(FMLClientHandler.instance().hasOptifine())
         {
-            screenTextureId = GlStateManager.generateTexture();
+            shadersEnabled = Shaders.activeProgramID != 0;
         }
-        Minecraft mc = Minecraft.getMinecraft();
-        GlStateManager.bindTexture(screenTextureId);
-        GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.displayWidth, mc.displayHeight, 0);
+        if(!shadersEnabled)
+        {
+            if(screenTextureId == -1)
+            {
+                screenTextureId = GlStateManager.generateTexture();
+            }
+            Minecraft mc = Minecraft.getMinecraft();
+            GlStateManager.bindTexture(screenTextureId);
+            GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.displayWidth, mc.displayHeight, 0);
+        }
+        else if(screenTextureId != -1)
+        {
+            GlStateManager.deleteTexture(screenTextureId);
+            screenTextureId = -1;
+        }
     }
 
     public static CooldownTracker getCooldownTracker(UUID uuid)

@@ -43,6 +43,7 @@ repositories {
 dependencies {
     compile "obfuscate:Obfuscate:0.2.6:1.12.2"
     compile 'controllable:Controllable:1.12.2:0.3.0'
+    provided files("libs/OptiFine_1.12.2_HD_U_E3.jar");
 }
 
 processResources {

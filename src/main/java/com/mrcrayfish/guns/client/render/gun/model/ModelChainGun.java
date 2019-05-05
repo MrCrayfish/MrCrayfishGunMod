@@ -21,21 +21,11 @@ import org.lwjgl.input.Mouse;
  */
 public class ModelChainGun implements IOverrideModel
 {
-    private boolean init = false;
-    private IBakedModel base;
-    private IBakedModel barrel;
-
     private int lastRotation;
     private int rotation;
 
     @Override
-    public void init()
-    {
-        if(init) return;
-        base = RenderUtil.getModel(ModGuns.PARTS, 0);
-        barrel = RenderUtil.getModel(ModGuns.PARTS, 1);
-        init = true;
-    }
+    public void init() {}
 
     @Override
     public void tick(EntityLivingBase entity)
@@ -72,7 +62,7 @@ public class ModelChainGun implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
     {
-        RenderUtil.renderModel(base, transformType, stack);
-        RenderUtil.renderModel(barrel, transformType, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks), stack, ItemStack.EMPTY);
+        RenderUtil.renderModel(RenderUtil.getModel(ModGuns.PARTS, 0), transformType, stack);
+        RenderUtil.renderModel(RenderUtil.getModel(ModGuns.PARTS, 1), transformType, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks), stack, ItemStack.EMPTY);
     }
 }
