@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL11;
 public class ModelLongScope implements IOverrideModel
 {
     private static final ResourceLocation RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/blocks/sniper_reticle.png");
+    private static final ResourceLocation VIGNETTE = new ResourceLocation(Reference.MOD_ID, "textures/effect/scope_vignette.png");
 
     @Override
     public void init() {}
@@ -56,7 +57,7 @@ public class ModelLongScope implements IOverrideModel
 
                 GlStateManager.pushMatrix();
                 {
-                    GlStateManager.translate(-size / 2, 0.0625, 3.5 * 0.0625);
+                    GlStateManager.translate(-size / 2, 0.0625, 3.8 * 0.0625);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder buffer = tessellator.getBuffer();
                     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -67,8 +68,18 @@ public class ModelLongScope implements IOverrideModel
                     tessellator.draw();
 
                     GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.renderEvents.normalZoomProgress * 0.8F + 0.2F);
-                    GlStateManager.translate(0, 0, 0.001);
+                    GlStateManager.translate(0, 0, 0.0001);
                     mc.getTextureManager().bindTexture(RETICLE);
+                    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                    buffer.pos(0, 0, 0).tex(0.984375, 0.984375).endVertex();
+                    buffer.pos(size, 0, 0).tex(0, 0.984375).endVertex();
+                    buffer.pos(size, size, 0).tex(0, 0).endVertex();
+                    buffer.pos(0, size, 0).tex(0.984375, 0).endVertex();
+                    tessellator.draw();
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.translate(0, 0, 0.0001);
+                    mc.getTextureManager().bindTexture(VIGNETTE);
                     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
                     buffer.pos(0, 0, 0).tex(0.984375, 0.984375).endVertex();
                     buffer.pos(size, 0, 0).tex(0, 0.984375).endVertex();
