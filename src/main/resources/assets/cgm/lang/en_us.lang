@@ -142,17 +142,6 @@ config.cgm.gun.projectile.damage_fall_off.tooltip=If true, the damage of the gun
 config.cgm.gun.projectile.damage_reduce_zoomed=Damage Reduced Not Zoomed
 config.cgm.gun.projectile.damage_reduce_zoomed.tooltip=If true, the damage of the gun will be reduced if not zoomed
 
-config.cgm.gun.sounds=Sounds
-config.cgm.gun.sounds.tooltip=Change around the sounds of the gun
-config.cgm.gun.sounds.fire=Fire
-config.cgm.gun.sounds.fire.tooltip=The sound played when the gun is fired
-config.cgm.gun.sounds.reload=Reload
-config.cgm.gun.sounds.reload.tooltip=The sound played when the gun is reloading
-config.cgm.gun.sounds.cock=Gun Cock
-config.cgm.gun.sounds.cock.tooltip=The sound played when the gun is cocked
-config.cgm.gun.sounds.silenced_fire=Silenced Fire
-config.cgm.gun.sounds.silenced_fire.tooltip=The sound played when gun is fired with the silencer attached
-
 key.categories.gun=MrCrayfish's Gun Mod
 key.aim=Aim
 key.reload=Reload
