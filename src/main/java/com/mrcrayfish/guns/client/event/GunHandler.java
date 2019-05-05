@@ -9,10 +9,15 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAim;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -37,7 +42,21 @@ public class GunHandler
         if(!Minecraft.getMinecraft().inGameHasFocus)
             return;
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(!event.isButtonstate())
+            return;
+
+        Minecraft mc = Minecraft.getMinecraft();
+        if(mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
+        {
+            IBlockState state = mc.world.getBlockState(mc.objectMouseOver.getBlockPos());
+            Block block = state.getBlock();
+            if(block instanceof BlockContainer || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE)
+            {
+                return;
+            }
+        }
+
+        EntityPlayer player = mc.player;
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
@@ -50,6 +69,7 @@ public class GunHandler
                     {
                         event.setCanceled(true);
                     }
+
                     if(event.isButtonstate() && button == 0)
                     {
                         fire(player, heldItem);
