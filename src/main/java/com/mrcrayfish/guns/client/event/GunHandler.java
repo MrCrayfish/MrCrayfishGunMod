@@ -55,7 +55,7 @@ public class GunHandler
                         fire(player, heldItem);
                     }
                 }
-                else if(button == 1)
+                else if(event.isButtonstate() && button == 1)
                 {
                     event.setCanceled(true);
                     fire(player, heldItem);
@@ -82,7 +82,7 @@ public class GunHandler
                  Gun gun = ((ItemGun) heldItem.getItem()).getModifiedGun(heldItem);
                  if(gun.general.auto)
                  {
-                     if(Mouse.isButtonDown(0))
+                     if(Mouse.isButtonDown(GunConfig.CLIENT.controls.oldControls ? 1 : 0))
                      {
                          fire(player, heldItem);
                      }
