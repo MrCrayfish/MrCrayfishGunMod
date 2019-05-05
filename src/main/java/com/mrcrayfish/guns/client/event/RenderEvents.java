@@ -130,6 +130,14 @@ public class RenderEvents
                     mc.gameSettings.smoothCamera = lastSmoothCamera;
                 }
             }
+            else
+            {
+                mc.gameSettings.smoothCamera = lastSmoothCamera;
+            }
+        }
+        else
+        {
+            mc.gameSettings.smoothCamera = lastSmoothCamera;
         }
     }
 
