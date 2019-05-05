@@ -65,6 +65,7 @@ public class RenderEvents
     private int lastZoomProgress;
     public double normalZoomProgress;
     public double recoilNormal;
+    public double recoilAngle;
 
     private int reloadTimer;
     private int prevReloadTimer;
@@ -317,6 +318,9 @@ public class RenderEvents
             float amount = (cooldown / 0.8F);
             recoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
         }
+
+        recoilAngle = gun.general.recoilAngle;
+
         GlStateManager.translate(0, 0, gun.general.recoilKick * 0.0625 * recoilNormal);
         GlStateManager.translate(0, 0, 0.35);
         GlStateManager.rotate((float) (gun.general.recoilAngle * recoilNormal), 1, 0, 0);
