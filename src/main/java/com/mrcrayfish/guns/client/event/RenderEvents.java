@@ -64,6 +64,7 @@ public class RenderEvents
     private int zoomProgress;
     private int lastZoomProgress;
     public double normalZoomProgress;
+    public double recoilNormal;
 
     private int reloadTimer;
     private int prevReloadTimer;
@@ -306,7 +307,6 @@ public class RenderEvents
         float cooldown = tracker.getCooldown(item, Minecraft.getMinecraft().getRenderPartialTicks());
         cooldown = cooldown >= gun.general.recoilDurationOffset  ? (cooldown - gun.general.recoilDurationOffset) / (1.0F - gun.general.recoilDurationOffset) : 0.0F;
 
-        float recoilNormal;
         if(cooldown >= 0.8)
         {
             float amount = 1.0F * ((1.0F - cooldown) / 0.2F);
@@ -319,7 +319,7 @@ public class RenderEvents
         }
         GlStateManager.translate(0, 0, gun.general.recoilKick * 0.0625 * recoilNormal);
         GlStateManager.translate(0, 0, 0.35);
-        GlStateManager.rotate(gun.general.recoilAngle * recoilNormal, 1, 0, 0);
+        GlStateManager.rotate((float) (gun.general.recoilAngle * recoilNormal), 1, 0, 0);
         GlStateManager.translate(0, 0, -0.35);
     }
 

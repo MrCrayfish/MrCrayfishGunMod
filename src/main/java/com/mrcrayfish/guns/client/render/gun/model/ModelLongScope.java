@@ -49,9 +49,9 @@ public class ModelLongScope implements IOverrideModel
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
                 double size = 1.2 / 16.0;
-                double crop = 0.45;
+                double crop = 0.425;
                 Minecraft mc = Minecraft.getMinecraft();
-                double offset = -15 * (1.0 / mc.displayHeight);
+                double offset = -15 * (1.0 / mc.displayHeight) + ClientProxy.renderEvents.recoilNormal * 50 * (1.0 / mc.displayHeight);
                 double texU = ((mc.displayWidth - mc.displayHeight + mc.displayHeight * crop * 2.0) / 2.0) / mc.displayWidth;
 
                 GlStateManager.pushMatrix();
