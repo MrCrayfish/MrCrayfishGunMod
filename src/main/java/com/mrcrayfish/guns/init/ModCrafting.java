@@ -42,23 +42,23 @@ public class ModCrafting
 				new ItemStack(Items.IRON_INGOT, 38));
 		registerGunRecipe(mapBuilder, "assault_rifle",
 				new ItemStack(Items.IRON_INGOT, 28));
-		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 8, ItemAmmo.Type.BASIC.ordinal()),
+		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 32, ItemAmmo.Type.BASIC.ordinal()),
 				new ItemStack(Items.GUNPOWDER, 1),
 				new ItemStack(Items.IRON_NUGGET, 8));
-		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 2, ItemAmmo.Type.ADVANCED.ordinal()),
+		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 16, ItemAmmo.Type.ADVANCED.ordinal()),
 				new ItemStack(Items.GUNPOWDER, 1),
 				new ItemStack(Items.IRON_NUGGET, 4));
-		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 4, ItemAmmo.Type.SHELL.ordinal()),
+		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 24, ItemAmmo.Type.SHELL.ordinal()),
 				new ItemStack(Items.GUNPOWDER, 1),
 				new ItemStack(Items.GOLD_NUGGET, 2),
 				new ItemStack(Items.IRON_NUGGET, 4));
-		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE.ordinal()),
+		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 2, ItemAmmo.Type.GRENADE.ordinal()),
 				new ItemStack(Items.GUNPOWDER, 4),
 				new ItemStack(Items.IRON_INGOT, 2));
-		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.MISSILE.ordinal()),
+		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 2, ItemAmmo.Type.MISSILE.ordinal()),
 				new ItemStack(Items.GUNPOWDER, 8),
 				new ItemStack(Items.IRON_INGOT, 4));
-		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE_STUN.ordinal()),
+		registerRecipe(mapBuilder, new ItemStack(ModGuns.AMMO, 2, ItemAmmo.Type.GRENADE_STUN.ordinal()),
 				new ItemStack(Items.GLOWSTONE_DUST, 4),
 				new ItemStack(Items.GUNPOWDER, 2),
 				new ItemStack(Items.IRON_INGOT, 2));
