@@ -41,7 +41,7 @@ public class ModelChainGun implements IOverrideModel
     public void tick(EntityLivingBase entity)
     {
         lastRotation = rotation;
-        boolean shooting = Mouse.isButtonDown(GunConfig.CLIENT.controls.oldControls ? 1 : 0);
+        boolean shooting = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(GunConfig.CLIENT.controls.oldControls ? 1 : 0);
 
         if(ClientProxy.controllableLoaded)
         {
