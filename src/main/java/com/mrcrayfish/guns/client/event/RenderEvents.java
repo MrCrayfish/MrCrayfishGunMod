@@ -48,7 +48,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.optifine.shaders.Shaders;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -687,7 +686,20 @@ public class RenderEvents
     {
         if(FMLClientHandler.instance().hasOptifine())
         {
-            shadersEnabled = Shaders.activeProgramID != 0;
+            try
+            {
+                Class<?> clazz = Class.forName("net.optifine.shaders.Shaders");
+                if(clazz != null)
+                {
+                    Field field = clazz.getDeclaredField("activeProgramID");
+                    int activeProgramID = (int) field.get(null);
+                    shadersEnabled = activeProgramID != 0;
+                }
+            }
+            catch(ClassNotFoundException | NoSuchFieldException | IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
         }
         if(!shadersEnabled)
         {
