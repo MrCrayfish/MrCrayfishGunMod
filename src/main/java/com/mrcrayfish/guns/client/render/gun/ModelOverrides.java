@@ -1,16 +1,12 @@
 package com.mrcrayfish.guns.client.render.gun;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.guns.client.render.gun.model.ModelStandard;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish

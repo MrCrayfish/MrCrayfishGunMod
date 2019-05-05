@@ -50,6 +50,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -510,8 +511,8 @@ public class RenderEvents
         {
             GlStateManager.pushMatrix();
             RenderUtil.applyTransformType(stack, transformType);
-            this.renderGun(entity, stack, partialTicks);
-            this.renderAttachments(entity, stack, partialTicks);
+            this.renderGun(entity, transformType, stack, partialTicks);
+            this.renderAttachments(entity, transformType, stack, partialTicks);
 
             if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
             {
@@ -524,14 +525,14 @@ public class RenderEvents
         return false;
     }
 
-    private void renderGun(EntityLivingBase entity, ItemStack stack, float partialTicks)
+    private void renderGun(EntityLivingBase entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, float partialTicks)
     {
         if(ModelOverrides.hasModel(stack))
         {
             IOverrideModel model = ModelOverrides.getModel(stack);
             if(model != null)
             {
-                model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, ItemStack.EMPTY, entity);
+                model.render(partialTicks, transformType, stack, ItemStack.EMPTY, entity);
             }
         }
         else
@@ -540,7 +541,7 @@ public class RenderEvents
         }
     }
 
-    private void renderAttachments(EntityLivingBase entity, ItemStack stack, float partialTicks)
+    private void renderAttachments(EntityLivingBase entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, float partialTicks)
     {
         if(stack.getItem() instanceof ItemGun)
         {
@@ -570,7 +571,7 @@ public class RenderEvents
                                 IOverrideModel model = ModelOverrides.getModel(attachmentStack);
                                 if(model != null)
                                 {
-                                    model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, attachmentStack, stack, entity);
+                                    model.render(partialTicks, transformType, attachmentStack, stack, entity);
                                 }
                                 else
                                 {

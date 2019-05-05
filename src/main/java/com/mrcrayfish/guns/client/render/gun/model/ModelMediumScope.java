@@ -34,14 +34,14 @@ public class ModelMediumScope implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
     {
-        if(RenderEvents.shadersEnabled && entity.equals(Minecraft.getMinecraft().player))
+        if(RenderEvents.shadersEnabled && isFirstPerson(transformType) && entity.equals(Minecraft.getMinecraft().player))
         {
-            GlStateManager.translate(0, 0, 0.25 * ClientProxy.renderEvents.normalZoomProgress);
+            GlStateManager.translate(0, 0, 0.15 * ClientProxy.renderEvents.normalZoomProgress);
             GlStateManager.scale(1, 1, 0.2 + 0.8 * (1.0 - ClientProxy.renderEvents.normalZoomProgress));
         }
         RenderUtil.renderModel(stack, parent);
 
-        if(transformType == ItemCameraTransforms.TransformType.NONE && entity.equals(Minecraft.getMinecraft().player))
+        if(isFirstPerson(transformType) && entity.equals(Minecraft.getMinecraft().player))
         {
             if(!RenderEvents.shadersEnabled && RenderEvents.screenTextureId != -1)
             {

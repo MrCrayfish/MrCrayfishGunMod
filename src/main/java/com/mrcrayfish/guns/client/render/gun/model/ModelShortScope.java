@@ -4,7 +4,6 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
-import com.mrcrayfish.guns.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -39,7 +38,6 @@ public class ModelShortScope implements IOverrideModel
         {
             if(RenderEvents.screenTextureId != -1)
             {
-                RenderUtil.applyTransformType(stack, transformType);
                 GlStateManager.enableBlend();
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
                 GlStateManager.disableLighting();
