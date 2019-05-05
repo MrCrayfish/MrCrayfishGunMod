@@ -518,7 +518,7 @@ public class RenderEvents
             IOverrideModel model = ModelOverrides.getModel(stack);
             if(model != null)
             {
-                model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, entity);
+                model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, stack, ItemStack.EMPTY, entity);
             }
         }
         else
@@ -557,7 +557,7 @@ public class RenderEvents
                                 IOverrideModel model = ModelOverrides.getModel(attachmentStack);
                                 if(model != null)
                                 {
-                                    model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, attachmentStack, entity);
+                                    model.render(partialTicks, ItemCameraTransforms.TransformType.NONE, attachmentStack, stack, entity);
                                 }
                                 else
                                 {

@@ -13,5 +13,5 @@ public interface IOverrideModel
 
     void tick(EntityLivingBase entity);
 
-    void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, EntityLivingBase entity);
+    void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity);
 }

@@ -31,7 +31,7 @@ public class ModelStandard implements IOverrideModel
     public void tick(EntityLivingBase entity) {}
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, EntityLivingBase entity)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
     {
         RenderUtil.renderModel(base, transformType, stack);
     }

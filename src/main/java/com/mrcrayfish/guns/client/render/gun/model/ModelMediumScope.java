@@ -32,9 +32,9 @@ public class ModelMediumScope implements IOverrideModel
     public void tick(EntityLivingBase entity) {}
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, EntityLivingBase entity)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
     {
-        RenderUtil.renderModel(stack, ItemStack.EMPTY);
+        RenderUtil.renderModel(stack, parent);
 
         if(transformType == ItemCameraTransforms.TransformType.NONE && entity.equals(Minecraft.getMinecraft().player))
         {

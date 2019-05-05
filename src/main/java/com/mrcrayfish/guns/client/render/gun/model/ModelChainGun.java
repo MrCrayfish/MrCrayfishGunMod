@@ -70,7 +70,7 @@ public class ModelChainGun implements IOverrideModel
     }
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, EntityLivingBase entity)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
     {
         RenderUtil.renderModel(base, transformType, stack);
         RenderUtil.renderModel(barrel, transformType, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks), stack, ItemStack.EMPTY);
