@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Author: MrCrayfish
  */
-public class ModelLongScope implements IOverrideModel
+public class ModelMediumScope implements IOverrideModel
 {
     private static final ResourceLocation RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/blocks/sniper_reticle.png");
 
@@ -40,30 +40,38 @@ public class ModelLongScope implements IOverrideModel
             if(RenderEvents.screenTextureId != -1)
             {
                 RenderUtil.applyTransformType(stack, transformType);
-                GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.renderEvents.normalZoomProgress * 0.5F + 0.5F);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.renderEvents.normalZoomProgress * 0.75F + 0.25F);
                 GlStateManager.enableBlend();
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
                 GlStateManager.disableLighting();
-                GlStateManager.bindTexture(RenderEvents.screenTextureId );
+                GlStateManager.bindTexture(RenderEvents.screenTextureId);
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-                double size = 1.2 / 16.0;
-                double crop = 0.45;
+                double scopeSize = 2.0;
+                double size = scopeSize / 16.0;
+                double offset = 0.58 / 16.0;
+                double crop = 0.4;
                 Minecraft mc = Minecraft.getMinecraft();
-                double offset = -15 * (1.0 / mc.displayHeight);
+                double texOffset = -5 * (1.0 / mc.displayHeight);
                 double texU = ((mc.displayWidth - mc.displayHeight + mc.displayHeight * crop * 2.0) / 2.0) / mc.displayWidth;
+                double texScaleX = (1.0 - texU * 2) / scopeSize;
+                double texScaleY = (1.0 - crop * 2) / scopeSize;
 
                 GlStateManager.pushMatrix();
                 {
-                    GlStateManager.translate(-size / 2, 0.0625, 3.5 * 0.0625);
+                    GlStateManager.translate(-size / 2, 1.1 * 0.0625, 0.5 * 0.0625);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder buffer = tessellator.getBuffer();
-                    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                    buffer.pos(0, size, 0).tex(texU, 1.0 - crop + offset).endVertex();
-                    buffer.pos(0, 0, 0).tex(texU, crop + offset).endVertex();
-                    buffer.pos(size, 0, 0).tex(1.0 - texU, crop + offset).endVertex();
-                    buffer.pos(size, size, 0).tex(1.0 - texU, 1.0 - crop + offset).endVertex();
+                    buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
+                    buffer.pos(offset, 0, 0).tex(texU + 0.58 * texScaleX, crop + texOffset).endVertex();
+                    buffer.pos(size - offset, 0, 0).tex(1.0 - texU - 0.58 * texScaleX, crop + texOffset).endVertex();
+                    buffer.pos(size, offset, 0).tex(1.0 - texU, crop + texOffset + 0.58 * texScaleY).endVertex();
+                    buffer.pos(size, size - offset, 0).tex(1.0 - texU, 1.0 - crop + texOffset - 0.58 * texScaleY).endVertex();
+                    buffer.pos(size - offset, size, 0).tex(1.0 - texU - 0.58 * texScaleX, 1.0 - crop + texOffset).endVertex();
+                    buffer.pos(offset, size, 0).tex(texU + 0.58 * texScaleX, 1.0 - crop + texOffset).endVertex();
+                    buffer.pos(0, size - offset, 0).tex(texU, 1.0 - crop + texOffset - 0.58 * texScaleY).endVertex();
+                    buffer.pos(0, offset, 0).tex(texU, crop + texOffset + 0.58 * texScaleY).endVertex();
                     tessellator.draw();
 
                     GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.renderEvents.normalZoomProgress * 0.8F + 0.2F);

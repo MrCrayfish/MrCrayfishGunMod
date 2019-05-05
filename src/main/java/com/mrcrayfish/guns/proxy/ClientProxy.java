@@ -15,6 +15,7 @@ import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.client.render.gun.model.ModelLongScope;
+import com.mrcrayfish.guns.client.render.gun.model.ModelMediumScope;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
@@ -62,6 +63,7 @@ public class ClientProxy extends CommonProxy
 		SoundEvents.initReflection();
 
 		ModelOverrides.register(new ItemStack(ModGuns.getGun("chain_gun")), new ModelChainGun());
+		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new ModelMediumScope());
 		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new ModelLongScope());
 
 		if(Loader.isModLoaded("controllable"))
