@@ -45,7 +45,6 @@ public class ModelMediumScope implements IOverrideModel
         {
             if(!RenderEvents.shadersEnabled && RenderEvents.screenTextureId != -1)
             {
-                RenderUtil.applyTransformType(stack, transformType);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.renderEvents.normalZoomProgress * 0.75F + 0.25F);
                 GlStateManager.enableBlend();
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
