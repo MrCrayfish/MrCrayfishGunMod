@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "0.10.0-1.12.2"
+version = "0.11.0-1.12.2"
 group = "com.mrcrayfish.guns" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "guns"
 
@@ -43,7 +43,6 @@ repositories {
 dependencies {
     compile "obfuscate:Obfuscate:0.2.6:1.12.2"
     compile 'controllable:Controllable:1.12.2:0.3.0'
-    provided files("libs/OptiFine_1.12.2_HD_U_E3.jar");
 }
 
 processResources {
