@@ -296,9 +296,11 @@ public class RenderEvents
 
         GlStateManager.translate(0, -event.getEquipProgress(), 0);
 
+        EnumHandSide hand = right ? EnumHandSide.RIGHT : EnumHandSide.LEFT;
+
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
-        renderReloadArm(heldItem, EnumHandSide.LEFT);
+        renderReloadArm(heldItem, hand);
 
         /* Translate the item position based on the hand side */
         GlStateManager.translate(0.56F - (right ? 0.0F : 0.72F), -0.56F, -0.72F);
@@ -310,7 +312,7 @@ public class RenderEvents
         /* Render offhand arm so it is holding the weapon. Only applies if it's a two handed weapon */
         GlStateManager.pushMatrix();
         GlStateManager.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.56F, 0.72F);
-        renderHeldArm(heldItem, EnumHandSide.LEFT, event.getPartialTicks());
+        renderHeldArm(heldItem, hand, event.getPartialTicks());
         GlStateManager.popMatrix();
 
         /* Renders the weapon */
@@ -666,6 +668,24 @@ public class RenderEvents
             GlStateManager.rotate(15F, 0, 1, 0);
             GlStateManager.rotate(15F, 0, 0, 1);
             GlStateManager.rotate(-35F, 1, 0, 0);
+
+            GlStateManager.scale(0.5, 0.5, 0.5);
+            this.renderArm(hand.opposite(), 0.0625F);
+        }
+        else if(gun.general.gripType == GripType.ONE_HANDED)
+        {
+            GlStateManager.translate(0, 0, -1);
+            GlStateManager.rotate(180F, 0, 1, 0);
+
+            double centerOffset = 3.0;
+            if(Minecraft.getMinecraft().player.getSkinType().equals("slim"))
+            {
+                centerOffset += hand == EnumHandSide.RIGHT ? -0.3 : 0.3;
+            }
+            centerOffset = hand == EnumHandSide.RIGHT ? -centerOffset : centerOffset;
+            GlStateManager.translate(centerOffset * 0.0625, -0.45, -1.0);
+
+            GlStateManager.rotate(75F, 1, 0, 0);
 
             GlStateManager.scale(0.5, 0.5, 0.5);
             this.renderArm(hand, 0.0625F);
