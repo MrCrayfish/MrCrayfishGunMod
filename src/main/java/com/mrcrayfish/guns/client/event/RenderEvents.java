@@ -10,13 +10,16 @@ import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModPotions;
+import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -36,11 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.*;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -68,6 +67,8 @@ public class RenderEvents
     public double recoilNormal;
     public double recoilAngle;
 
+    public boolean playAnimation;
+    private int startTick;
     private int reloadTimer;
     private int prevReloadTimer;
     private boolean lastSmoothCamera = Minecraft.getMinecraft().gameSettings.smoothCamera;
@@ -197,14 +198,29 @@ public class RenderEvents
 
             if(player.getDataManager().get(CommonEvents.RELOADING))
             {
+                if(startTick == -1)
+                {
+                    startTick = player.ticksExisted + 5;
+                }
+
                 if(reloadTimer < 5)
                 {
                     reloadTimer++;
                 }
             }
-            else if(reloadTimer > 0)
+            else
             {
-                reloadTimer -= 1;
+                playAnimation = false;
+
+                if(startTick != -1)
+                {
+                    startTick = -1;
+                }
+
+                if(reloadTimer > 0)
+                {
+                    reloadTimer -= 1;
+                }
             }
         }
     }
@@ -239,9 +255,6 @@ public class RenderEvents
 
         ItemStack scope = Gun.getScope(heldItem);
         ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
-        //if(scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
-            //return;
-
         IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(heldItem);
         float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
         float scaleY = model.getItemCameraTransforms().firstperson_right.scale.getY();
@@ -282,9 +295,15 @@ public class RenderEvents
             }
         }
 
-        /*
-         * if(Minecraft.getMinecraft().player.getDataManager().get(CommonEvents.RELOADING)) { GlStateManager.pushMatrix(); { renderArmFirstPerson(EnumHandSide.LEFT, event.getPartialTicks()); } GlStateManager.popMatrix(); }
-         */
+        if(playAnimation)
+        {
+            GlStateManager.pushMatrix();
+            {
+                renderArmFirstPerson(heldItem, EnumHandSide.LEFT);
+                //renderArmFirstPerson(0F, 0F, EnumHandSide.RIGHT);
+            }
+            GlStateManager.popMatrix();
+        }
 
         GlStateManager.translate(0, -event.getEquipProgress(), 0);
 
@@ -628,38 +647,66 @@ public class RenderEvents
         dest.rotateAngleZ = source.rotateAngleZ;
     }
 
-    private void renderArmFirstPerson(float equipProgress, float swingProgress, EnumHandSide hand)
+    private void renderArmFirstPerson(ItemStack stack, EnumHandSide hand)
     {
+        Minecraft mc = Minecraft.getMinecraft();
+        if(mc.player.ticksExisted < startTick)
+            return;
+
+        Gun gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
+
         GlStateManager.pushMatrix();
-        boolean flag = hand != EnumHandSide.LEFT;
-        float f = flag ? 1.0F : -1.0F;
-        float f1 = MathHelper.sqrt(swingProgress);
-        float f2 = -0.3F * MathHelper.sin(f1 * (float) Math.PI);
-        float f3 = 0.4F * MathHelper.sin(f1 * ((float) Math.PI * 2F));
-        float f4 = -0.4F * MathHelper.sin(swingProgress * (float) Math.PI);
-        GlStateManager.translate(f * (f2 + 0.64000005F), f3 + -0.6F + equipProgress * -0.6F, f4 + -0.71999997F);
-        GlStateManager.rotate(f * 45.0F, 0.0F, 1.0F, 0.0F);
-        float f5 = MathHelper.sin(swingProgress * swingProgress * (float) Math.PI);
-        float f6 = MathHelper.sin(f1 * (float) Math.PI);
-        GlStateManager.rotate(f * f6 * 70.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(f * f5 * -20.0F, 0.0F, 0.0F, 1.0F);
-        AbstractClientPlayer abstractclientplayer = Minecraft.getMinecraft().player;
-        Minecraft.getMinecraft().getTextureManager().bindTexture(abstractclientplayer.getLocationSkin());
-        GlStateManager.translate(f * -1.0F, 3.6F, 3.5F);
-        GlStateManager.rotate(f * 120.0F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(200.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate(f * -135.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(f * 5.6F, 0.0F, 0.0F);
-        RenderPlayer renderplayer = (RenderPlayer) Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(abstractclientplayer);
+
+        float reload = ((mc.player.ticksExisted - startTick + mc.getRenderPartialTicks()) % 10F) / 10F;
+        float percent = 1.0F - reload;
+        if(percent >= 0.5F)
+        {
+            percent = 1.0F - percent;
+        }
+        percent *= 2F;
+        percent = percent < 0.5 ? 2 * percent * percent : -1 + (4 - 2 * percent) * percent;
+
+        int centerOffset = hand == EnumHandSide.RIGHT ? -6 : 6;
+        GlStateManager.translate(centerOffset * 0.0625, -0.25, -0.75);
+        GlStateManager.rotate(180F, 0, 1, 0);
+        GlStateManager.translate(0, -0.5 * (1.0 - percent), 0);
+
+        int offset = hand == EnumHandSide.RIGHT ? -2 : 2;
+        GlStateManager.translate(offset * 0.0625, 0, 0);
+        GlStateManager.translate(0, -0.75, 0);
+        GlStateManager.rotate(90F, 1, 0, 0);
+        GlStateManager.rotate(35F, 0, 1, 0);
+        GlStateManager.rotate(-75F * percent, 1, 0, 0);
+
+        if(reload < 0.5F)
+        {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(5 * 0.0625, 15 * 0.0625, -1 * 0.0625);
+            GlStateManager.rotate(180F, 1, 0, 0);
+            GlStateManager.scale(0.75, 0.75, 0.75);
+            RenderUtil.renderModel(ItemAmmo.getAmmo(gun.projectile.type, 1), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
+            GlStateManager.popMatrix();
+        }
+
+        AbstractClientPlayer abstractClientPlayer = Minecraft.getMinecraft().player;
+        Minecraft.getMinecraft().getTextureManager().bindTexture(abstractClientPlayer.getLocationSkin());
+        RenderPlayer renderPlayer = (RenderPlayer) Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(abstractClientPlayer);
+
         GlStateManager.disableCull();
 
-        if(flag)
+        if(hand == EnumHandSide.RIGHT)
         {
-            renderplayer.renderRightArm(abstractclientplayer);
+            renderPlayer.getMainModel().bipedRightArm.rotateAngleX = 0F;
+            renderPlayer.getMainModel().bipedRightArm.rotateAngleY = 0F;
+            renderPlayer.getMainModel().bipedRightArm.rotateAngleZ = 0F;
+            renderPlayer.getMainModel().bipedRightArm.render(0.0625F);
         }
         else
         {
-            renderplayer.renderLeftArm(abstractclientplayer);
+            renderPlayer.getMainModel().bipedLeftArm.rotateAngleX = 0F;
+            renderPlayer.getMainModel().bipedLeftArm.rotateAngleY = 0F;
+            renderPlayer.getMainModel().bipedLeftArm.rotateAngleZ = 0F;
+            renderPlayer.getMainModel().bipedLeftArm.render(0.0625F);
         }
 
         GlStateManager.enableCull();

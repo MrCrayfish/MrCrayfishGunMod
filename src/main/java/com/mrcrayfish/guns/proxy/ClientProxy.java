@@ -168,4 +168,10 @@ public class ClientProxy extends CommonProxy
 		}
 		return zooming;
 	}
+
+	@Override
+	public void startReloadAnimation()
+	{
+		renderEvents.playAnimation = true;
+	}
 }

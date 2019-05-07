@@ -40,6 +40,6 @@ public class MessageReload implements IMessage, IMessageHandler<MessageReload, I
         {
             ctx.getServerHandler().player.getDataManager().set(CommonEvents.RELOADING, message.reload);
         });
-        return null;
+        return new MessageReloadAnimation();
     }
 }
