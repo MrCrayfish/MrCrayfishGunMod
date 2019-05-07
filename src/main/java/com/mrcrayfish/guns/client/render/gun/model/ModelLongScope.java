@@ -95,6 +95,8 @@ public class ModelLongScope implements IOverrideModel
                     tessellator.draw();
                 }
                 GlStateManager.popMatrix();
+
+                GlStateManager.enableLighting();
             }
         }
     }

@@ -106,6 +106,8 @@ public class ModelMediumScope implements IOverrideModel
                     tessellator.draw();
                 }
                 GlStateManager.popMatrix();
+
+                GlStateManager.enableLighting();
             }
         }
     }

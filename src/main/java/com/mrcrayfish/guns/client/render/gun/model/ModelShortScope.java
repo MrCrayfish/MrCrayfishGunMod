@@ -57,5 +57,7 @@ public class ModelShortScope implements IOverrideModel
             tessellator.draw();
         }
         GlStateManager.popMatrix();
+
+        GlStateManager.enableLighting();
     }
 }
