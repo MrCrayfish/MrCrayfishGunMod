@@ -658,15 +658,17 @@ public class RenderEvents
             float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
             GlStateManager.translate(0, -reloadProgress * 2, 0);
 
-            int centerOffset = hand == EnumHandSide.RIGHT ? 6 : -6;
-            GlStateManager.translate(centerOffset * 0.0625, -0.55, -0.5625);
+            int side = hand.opposite() == EnumHandSide.RIGHT ? 1 : -1;
+            GlStateManager.translate(6 * side * 0.0625, -0.55, -0.5625);
 
-            int offset = hand == EnumHandSide.RIGHT ? 2 : 0;
-            GlStateManager.translate(offset * 0.0625, 0, 0);
+            if(Minecraft.getMinecraft().player.getSkinType().equals("slim") && hand.opposite() == EnumHandSide.LEFT)
+            {
+                GlStateManager.translate(0.03125F * -side, 0, 0);
+            }
 
             GlStateManager.rotate(90F, 1, 0, 0);
-            GlStateManager.rotate(15F, 0, 1, 0);
-            GlStateManager.rotate(15F, 0, 0, 1);
+            GlStateManager.rotate(15F * -side, 0, 1, 0);
+            GlStateManager.rotate(15F * -side, 0, 0, 1);
             GlStateManager.rotate(-35F, 1, 0, 0);
 
             GlStateManager.scale(0.5, 0.5, 0.5);
