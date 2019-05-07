@@ -712,19 +712,19 @@ public class RenderEvents
         percent *= 2F;
         percent = percent < 0.5 ? 2 * percent * percent : -1 + (4 - 2 * percent) * percent;
 
-        int centerOffset = hand == EnumHandSide.RIGHT ? 0 : 3;
+        int centerOffset = hand.opposite() == EnumHandSide.RIGHT ? 0 : 3;
         GlStateManager.translate(centerOffset * 0.0625, -0.5625, -0.5625);
         GlStateManager.rotate(180F, 0, 1, 0);
         GlStateManager.translate(0, -0.35 * (1.0 - percent), 0);
 
-        int offset = hand == EnumHandSide.RIGHT ? -2 : -2;
+        int offset = hand.opposite() == EnumHandSide.RIGHT ? -2 : -2;
         GlStateManager.translate(offset * 0.0625, 0, 0);
         GlStateManager.rotate(90F, 1, 0, 0);
         GlStateManager.rotate(35F, 0, 1, 0);
         GlStateManager.rotate(-75F * percent, 1, 0, 0);
 
         GlStateManager.scale(0.5, 0.5, 0.5);
-        this.renderArm(hand, 0.0625F);
+        this.renderArm(hand.opposite(), 0.0625F);
         if(reload < 0.5F)
         {
             GlStateManager.pushMatrix();
