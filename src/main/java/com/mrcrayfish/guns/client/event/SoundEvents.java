@@ -1,39 +1,31 @@
 package com.mrcrayfish.guns.client.event;
 
-import java.lang.reflect.Field;
-import java.util.ConcurrentModificationException;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.annotation.Nullable;
-
 import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.audio.SoundRinging;
 import com.mrcrayfish.guns.init.ModPotions;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundEventAccessor;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.SoundManager;
+import net.minecraft.client.audio.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import paulscode.sound.SoundSystem;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.util.ConcurrentModificationException;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 @EventBusSubscriber(Side.CLIENT)
 public class SoundEvents

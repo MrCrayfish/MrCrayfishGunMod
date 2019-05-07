@@ -22,10 +22,11 @@ public class BlockWorkbench extends BlockRotatedObject
     public BlockWorkbench()
     {
         super(Material.IRON, "workbench");
+        this.setHardness(1.0F);
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer()
+    public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }

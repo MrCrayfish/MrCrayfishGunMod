@@ -1,7 +1,10 @@
 package com.mrcrayfish.guns.client.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -19,9 +22,9 @@ import java.util.List;
 
 public class RenderUtil
 {
-    public static IBakedModel getModel(ResourceLocation resource, int meta)
+    public static IBakedModel getModel(Item item, int meta)
     {
-        return Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(Item.getByNameOrId(resource.toString()), 1, meta));
+        return Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(item, 1, meta));
     }
 
     public static void rotateZ(float xOffset, float yOffset, float rotation)
@@ -39,7 +42,7 @@ public class RenderUtil
     public static void renderModel(ItemStack child, ItemStack parent)
     {
         IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(child);
-        renderModel(model, ItemCameraTransforms.TransformType.NONE, parent);
+        renderModel(model, ItemCameraTransforms.TransformType.NONE, null, child, parent);
     }
 
     public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType)
@@ -55,10 +58,10 @@ public class RenderUtil
 
     public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, ItemStack stack)
     {
-        renderModel(model, transformType, null, stack);
+        renderModel(model, transformType, null, stack, ItemStack.EMPTY);
     }
 
-    public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, @Nullable Transform transform, ItemStack stack)
+    public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, @Nullable Transform transform, ItemStack stack, ItemStack parent)
     {
         GlStateManager.pushMatrix();
         {
@@ -75,7 +78,7 @@ public class RenderUtil
 
             GlStateManager.pushMatrix();
             {
-                RenderUtil.renderModel(model, transform, stack);
+                RenderUtil.renderModel(model, transform, stack, parent);
             }
             GlStateManager.popMatrix();
 
@@ -89,7 +92,7 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
-    private static void renderModel(IBakedModel model, @Nullable Transform transform, ItemStack stack)
+    private static void renderModel(IBakedModel model, @Nullable Transform transform, ItemStack stack, ItemStack parent)
     {
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
         if(transform != null) transform.apply();
@@ -98,22 +101,22 @@ public class RenderUtil
         buffer.begin(7, DefaultVertexFormats.ITEM);
         for(EnumFacing enumfacing : EnumFacing.values())
         {
-            renderQuads(buffer, model.getQuads(null, enumfacing, 0L), stack);
+            renderQuads(buffer, model.getQuads(null, enumfacing, 0L), stack, parent);
         }
-        renderQuads(buffer, model.getQuads(null, null, 0L), stack);
+        renderQuads(buffer, model.getQuads(null, null, 0L), stack, parent);
         tessellator.draw();
     }
 
-    private static void renderQuads(BufferBuilder buffer, List<BakedQuad> quads, ItemStack stack)
+    private static void renderQuads(BufferBuilder buffer, List<BakedQuad> quads, ItemStack stack, ItemStack parent)
     {
         int i = 0;
         for (int j = quads.size(); i < j; ++i)
         {
-            BakedQuad bakedquad = quads.get(i);
+            BakedQuad bakedQuad = quads.get(i);
             int color = -1;
-            if (bakedquad.hasTintIndex())
+            if (bakedQuad.hasTintIndex())
             {
-                color = Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, bakedquad.getTintIndex());
+                color = getItemStackColor(stack, parent, bakedQuad.getTintIndex());
 
                 if (EntityRenderer.anaglyphEnable)
                 {
@@ -124,6 +127,19 @@ public class RenderUtil
             }
             net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quads.get(i), color);
         }
+    }
+
+    private static int getItemStackColor(ItemStack stack, ItemStack parent, int tintIndex)
+    {
+        int color = Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, tintIndex);
+        if(color == -1)
+        {
+            if(!parent.isEmpty())
+            {
+                return getItemStackColor(parent, ItemStack.EMPTY, tintIndex);
+            }
+        }
+        return color;
     }
 
     public static void applyTransformType(ItemStack stack, ItemCameraTransforms.TransformType transformType)

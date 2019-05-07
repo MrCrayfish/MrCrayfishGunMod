@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.MrCrayfishGunMod;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

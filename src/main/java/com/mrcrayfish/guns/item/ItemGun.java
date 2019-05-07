@@ -12,7 +12,6 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.guns.object.ServerGun;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -30,7 +29,6 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 
 public class ItemGun extends ItemColored
@@ -48,7 +46,7 @@ public class ItemGun extends ItemColored
 	public ItemGun(Gun gun)
 	{
 		this.gun = gun;
-		this.setUnlocalizedName(gun.id);
+		this.setTranslationKey(gun.id);
 		this.setRegistryName(gun.id);
 		this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
 		this.setMaxStackSize(1);

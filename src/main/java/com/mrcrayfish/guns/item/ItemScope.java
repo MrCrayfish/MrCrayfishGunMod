@@ -23,9 +23,9 @@ public class ItemScope extends ItemAttachment implements ISubItems
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        return super.getUnlocalizedName(stack) + "_" + Type.values()[stack.getItemDamage()].name;
+        return super.getTranslationKey(stack) + "_" + Type.values()[stack.getItemDamage()].name;
     }
 
     @Override
@@ -54,21 +54,19 @@ public class ItemScope extends ItemAttachment implements ISubItems
 
     public enum Type
     {
-        SMALL("small", 0.1F, 1.0F, 2F),
-        MEDIUM("medium", 0.25F, 2.1F, 3F),
-        LONG("long", 0.5F, 1.6F, 10F);
+        SMALL("small", 0.1F, 1.0F),
+        MEDIUM("medium", 0.2F, 2.1F),
+        LONG("long", 0.35F, 1.59F);
 
         private String name;
         private float additionalZoom;
         private double heightToCenter;
-        private float length;
 
-        Type(String name, float additionalZoom, double heightToCenter, float length)
+        Type(String name, float additionalZoom, double heightToCenter)
         {
             this.name = name;
             this.additionalZoom = additionalZoom;
             this.heightToCenter = heightToCenter;
-            this.length = length;
         }
 
         public float getAdditionalZoom()
@@ -79,11 +77,6 @@ public class ItemScope extends ItemAttachment implements ISubItems
         public double getHeightToCenter()
         {
             return heightToCenter;
-        }
-
-        public float getLength()
-        {
-            return length;
         }
 
         @Nullable

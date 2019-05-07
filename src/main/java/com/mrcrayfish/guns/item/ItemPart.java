@@ -1,14 +1,10 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.Reference;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
@@ -19,16 +15,16 @@ public class ItemPart extends Item implements ISubItems
 
     public ItemPart()
     {
-        this.setUnlocalizedName("part");
+        this.setTranslationKey("part");
         this.setRegistryName("part");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        return super.getUnlocalizedName(stack) + "_" + PARTS[stack.getItemDamage()];
+        return super.getTranslationKey(stack) + "_" + PARTS[stack.getItemDamage()];
     }
 
     @Override

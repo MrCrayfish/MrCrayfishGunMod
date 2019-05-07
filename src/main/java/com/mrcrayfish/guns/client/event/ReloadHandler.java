@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
  */
 public class ReloadHandler
 {
-    private static int reloadingSlot;
+    public static int reloadingSlot;
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)

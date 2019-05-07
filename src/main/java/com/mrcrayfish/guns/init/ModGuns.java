@@ -5,9 +5,7 @@ import com.mrcrayfish.guns.item.*;
 import net.minecraft.item.Item;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ModGuns

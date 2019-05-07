@@ -1,6 +1,9 @@
 package com.mrcrayfish.guns.proxy;
 
+import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.client.ControllerEvents;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
@@ -8,45 +11,50 @@ import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.event.SoundEvents;
 import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
+import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
+import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
+import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
+import com.mrcrayfish.guns.client.render.gun.model.ModelLongScope;
+import com.mrcrayfish.guns.client.render.gun.model.ModelMediumScope;
+import com.mrcrayfish.guns.client.render.gun.model.ModelShortScope;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.ItemColored;
+import com.mrcrayfish.guns.item.ItemScope;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleCloud;
-import net.minecraft.client.particle.ParticleCrit;
-import net.minecraft.client.particle.ParticleFirework;
-import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.lwjgl.input.Mouse;
 
-import java.awt.*;
 import java.util.Random;
 
 public class ClientProxy extends CommonProxy
 {
+	public static RenderEvents renderEvents;
+	public static boolean controllableLoaded = false;
+
 	@Override
 	public void preInit()
 	{
 		super.preInit();
 
-		MinecraftForge.EVENT_BUS.register(new RenderEvents());
+		MinecraftForge.EVENT_BUS.register(renderEvents = new RenderEvents());
 		MinecraftForge.EVENT_BUS.register(new GunHandler());
 		MinecraftForge.EVENT_BUS.register(new ReloadHandler());
 		RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
@@ -54,6 +62,17 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeStun.class, RenderGrenade::new);
 		KeyBinds.register();
 		SoundEvents.initReflection();
+
+		ModelOverrides.register(new ItemStack(ModGuns.getGun("chain_gun")), new ModelChainGun());
+		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()), new ModelShortScope());
+		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new ModelMediumScope());
+		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new ModelLongScope());
+
+		if(Loader.isModLoaded("controllable"))
+		{
+			controllableLoaded = true;
+			MinecraftForge.EVENT_BUS.register(new ControllerEvents());
+		}
 	}
 
 	@Override
@@ -66,7 +85,7 @@ public class ClientProxy extends CommonProxy
 			{
 				return stack.getTagCompound().getInteger("color");
 			}
-			return Color.decode("#66FFFFFF").getRGB();
+			return -1;
 		};
 		RegistrationHandler.Items.getItems().forEach(item ->
 		{
@@ -75,13 +94,13 @@ public class ClientProxy extends CommonProxy
 				Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
 			}
 		});
+
+		ModelOverrides.getModelMap().forEach((item, map) -> map.values().forEach(IOverrideModel::init));
 	}
 
 	@Override
 	public void showMuzzleFlash()
 	{
-		EntityPlayer player = Minecraft.getMinecraft().player;
-		player.rotationPitch -= 0.4f;
 		RenderEvents.drawFlash = true;
 	}
 
@@ -130,4 +149,23 @@ public class ClientProxy extends CommonProxy
         return factory.createParticle(0, world, x + (rand.nextDouble() - 0.5) * 0.6, y + (rand.nextDouble() - 0.5) * 0.6, z + (rand.nextDouble() - 0.5) * 0.6,
                 (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
+
+    @Override
+	public boolean isZooming()
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		if(!mc.inGameHasFocus)
+			return false;
+
+		boolean zooming = GunConfig.CLIENT.controls.oldControls ? GuiScreen.isAltKeyDown() : Mouse.isButtonDown(1);
+		if(controllableLoaded)
+		{
+			Controller controller = Controllable.getController();
+			if(controller != null)
+			{
+				zooming |= controller.getLTriggerValue() >= 0.5;
+			}
+		}
+		return zooming;
+	}
 }

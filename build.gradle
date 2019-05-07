@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "0.9.2-1.12.2"
+version = "0.11.0-1.12.2"
 group = "com.mrcrayfish.guns" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "guns"
 
@@ -20,7 +20,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.1.2602"
+    version = "1.12.2-14.23.5.2768"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -28,16 +28,21 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20171003"
+    mappings = "snapshot_20180808"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    useDepAts = true
 }
 
 repositories {
-    maven { url = "https://mrcrayfish.com/maven" }
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
 }
 
 dependencies {
-    compile "com.mrcrayfish:obfuscate:0.2.2-1.12.2"
+    compile "obfuscate:Obfuscate:0.2.6:1.12.2"
+    compile 'controllable:Controllable:1.12.2:0.3.0'
 }
 
 processResources {

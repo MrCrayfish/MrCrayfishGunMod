@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.object;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemAmmo;
-import com.mrcrayfish.guns.item.ItemGun;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Config;
@@ -11,7 +10,10 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 public class Gun implements INBTSerializable<NBTTagCompound>
 {
@@ -32,9 +34,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	@Config.LangKey(GunConfig.PREFIX + "gun.projectile")
 	public Projectile projectile = new Projectile();
 
-	@Config.Name("Sounds")
-	@Config.Comment("Change around the sounds of the gun")
-	@Config.LangKey(GunConfig.PREFIX + "gun.sounds")
+	@Config.Ignore
 	public Sounds sounds = new Sounds();
 
 	@Config.Ignore
@@ -66,6 +66,18 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Config.LangKey(GunConfig.PREFIX + "gun.general.reload_speed")
 		public int reloadSpeed = 1;
 
+		@Optional
+		@Config.Ignore
+		public float recoilAngle;
+
+		@Optional
+		@Config.Ignore
+		public float recoilKick;
+
+		@Optional
+		@Config.Ignore
+		public float recoilDurationOffset;
+
 		public int getMaxAmmo(Gun modifiedGun)
 		{
 			int maxAmmo = this.maxAmmo;
@@ -89,6 +101,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			tag.setInteger("gripType", gripType.ordinal());
 			tag.setInteger("maxAmmo", maxAmmo);
 			tag.setInteger("reloadSpeed", reloadSpeed);
+			tag.setFloat("recoilAngle", recoilAngle);
+			tag.setFloat("recoilKick", recoilKick);
+			tag.setFloat("recoilDurationOffset", recoilDurationOffset);
 			return tag;
 		}
 
@@ -115,6 +130,18 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			{
 				this.reloadSpeed = tag.getInteger("reloadSpeed");
 			}
+			if(tag.hasKey("recoilAngle", Constants.NBT.TAG_FLOAT))
+			{
+				this.recoilAngle = tag.getFloat("recoilAngle");
+			}
+			if(tag.hasKey("recoilKick", Constants.NBT.TAG_FLOAT))
+			{
+				this.recoilKick = tag.getFloat("recoilKick");
+			}
+			if(tag.hasKey("recoilDurationOffset", Constants.NBT.TAG_FLOAT))
+			{
+				this.recoilDurationOffset = tag.getFloat("recoilDurationOffset");
+			}
 		}
 
 		public General copy()
@@ -125,6 +152,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			general.gripType = gripType;
 			general.maxAmmo = maxAmmo;
 			general.reloadSpeed = reloadSpeed;
+			general.recoilAngle = recoilAngle;
+			general.recoilKick = recoilKick;
+			general.recoilDurationOffset = recoilDurationOffset;
 			return general;
 		}
 	}
@@ -267,27 +297,17 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	
 	public static class Sounds implements INBTSerializable<NBTTagCompound>
 	{
-		@Config.Name("Fire")
-		@Config.Comment("The sound played when the gun is fired")
-		@Config.LangKey(GunConfig.PREFIX + "gun.sounds.fire")
+		@Config.Ignore
 		public String fire = "";
 
-		@Config.Name("Reload")
-		@Config.Comment("The sound played when the gun is reloading")
-		@Config.LangKey(GunConfig.PREFIX + "gun.sounds.reload")
+		@Config.Ignore
 		public String reload = "";
 
-		@Config.Name("Cock")
-		@Config.Comment("The sound played when the gun is cocked")
-		@Config.LangKey(GunConfig.PREFIX + "gun.sounds.cock")
+		@Config.Ignore
 		public String cock = "";
 
-		@Optional
-		@Config.Name("Silenced")
-		@Config.Comment("The sound played when gun is fired with the silencer attached")
-		@Config.LangKey(GunConfig.PREFIX + "gun.sounds.silenced_fire")
+		@Config.Ignore
 		public String silencedFire = "silenced_fire";
-
 
 		@Override
 		public NBTTagCompound serializeNBT()

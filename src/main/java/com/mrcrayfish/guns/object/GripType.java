@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.object;
 
 import com.google.gson.annotations.SerializedName;
 import com.mrcrayfish.guns.client.render.HeldAnimation;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;

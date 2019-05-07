@@ -1,22 +1,14 @@
 package com.mrcrayfish.guns;
 
-import org.apache.logging.log4j.Logger;
-
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.common.GuiHandler;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
-import com.mrcrayfish.guns.init.ModBlocks;
-import com.mrcrayfish.guns.init.ModCrafting;
-import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.init.ModPotions;
-import com.mrcrayfish.guns.init.ModSounds;
-import com.mrcrayfish.guns.init.ModTileEntities;
+import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.proxy.CommonProxy;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
@@ -31,6 +23,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = Reference.MC_VERSION, dependencies = Reference.DEPENDENCIES)
 public class MrCrayfishGunMod
@@ -71,15 +64,6 @@ public class MrCrayfishGunMod
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
 		proxy.init();
-	}
-
-	@EventHandler
-	public void init(FMLLoadCompleteEvent event)
-	{
-		if (event.getSide() == Side.CLIENT)
-		{
-			ModelOverrides.register(new ResourceLocation("cgm:chain_gun"), new ModelChainGun());
-		}
 	}
 
 	@EventHandler

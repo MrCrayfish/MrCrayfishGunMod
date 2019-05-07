@@ -2,6 +2,7 @@
    "shotgun_fire":           { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:shotgun_fire" }]},
    "rifle_fire":             { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:rifle_fire" }]},
    "pistol_fire":            { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:pistol_fire" }]},
+   "assault_rifle_fire":     { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:assault_rifle_fire" }]},
    "grenade_fire":           { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:grenade_fire" }]},
    "bazooka_fire":           { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:bazooka_fire", "stream": true }]},
    "chain_gun_fire":         { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:chain_gun_fire" }]},
