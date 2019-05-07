@@ -10,16 +10,15 @@ import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModPotions;
-import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
+import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -295,29 +294,26 @@ public class RenderEvents
             }
         }
 
-        if(playAnimation)
-        {
-            GlStateManager.pushMatrix();
-            {
-                renderArmFirstPerson(heldItem, EnumHandSide.LEFT);
-                //renderArmFirstPerson(0F, 0F, EnumHandSide.RIGHT);
-            }
-            GlStateManager.popMatrix();
-        }
-
         GlStateManager.translate(0, -event.getEquipProgress(), 0);
 
-        if(right)
-        {
-            GlStateManager.translate(0.56F, -0.56F, -0.72F);
-        }
-        else
-        {
-            GlStateManager.translate(0.56F - 0.72, -0.56F, -0.75F);
-        }
+        /* Renders the reload arm. Will only render if actually reloading. This is applied before
+         * any recoil or reload rotations as the animations would be borked if applied after. */
+        renderReloadArm(heldItem, EnumHandSide.LEFT);
 
-        this.applyReload(event.getPartialTicks());
+        /* Translate the item position based on the hand side */
+        GlStateManager.translate(0.56F - (right ? 0.0F : 0.72F), -0.56F, -0.72F);
+
+        /* Applies recoil and reload rotations */
         this.applyRecoil(heldItem.getItem(), ((ItemGun) heldItem.getItem()).getGun());
+        this.applyReload(event.getPartialTicks());
+
+        /* Render offhand arm so it is holding the weapon. Only applies if it's a two handed weapon */
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.56F, 0.72F);
+        renderHeldArm(heldItem, EnumHandSide.LEFT, event.getPartialTicks());
+        GlStateManager.popMatrix();
+
+        /* Renders the weapon */
         this.renderWeapon(Minecraft.getMinecraft().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getPartialTicks());
 
         GlStateManager.popMatrix();
@@ -647,10 +643,40 @@ public class RenderEvents
         dest.rotateAngleZ = source.rotateAngleZ;
     }
 
-    private void renderArmFirstPerson(ItemStack stack, EnumHandSide hand)
+    private void renderHeldArm(ItemStack stack, EnumHandSide hand, float partialTicks)
+    {
+        GlStateManager.pushMatrix();
+
+        Gun gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
+        if(gun.general.gripType == GripType.TWO_HANDED)
+        {
+            GlStateManager.translate(0, 0, -1);
+            GlStateManager.rotate(180F, 0, 1, 0);
+
+            float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
+            GlStateManager.translate(0, -reloadProgress * 2, 0);
+
+            int centerOffset = hand == EnumHandSide.RIGHT ? 6 : -6;
+            GlStateManager.translate(centerOffset * 0.0625, -0.55, -0.5625);
+
+            int offset = hand == EnumHandSide.RIGHT ? 2 : 0;
+            GlStateManager.translate(offset * 0.0625, 0, 0);
+
+            GlStateManager.rotate(90F, 1, 0, 0);
+            GlStateManager.rotate(15F, 0, 1, 0);
+            GlStateManager.rotate(15F, 0, 0, 1);
+            GlStateManager.rotate(-35F, 1, 0, 0);
+
+            GlStateManager.scale(0.5, 0.5, 0.5);
+            this.renderArm(hand, 0.0625F);
+        }
+        GlStateManager.popMatrix();
+    }
+
+    private void renderReloadArm(ItemStack stack, EnumHandSide hand)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        if(mc.player.ticksExisted < startTick)
+        if(mc.player.ticksExisted < startTick || reloadTimer != 5)
             return;
 
         Gun gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
@@ -666,18 +692,19 @@ public class RenderEvents
         percent *= 2F;
         percent = percent < 0.5 ? 2 * percent * percent : -1 + (4 - 2 * percent) * percent;
 
-        int centerOffset = hand == EnumHandSide.RIGHT ? -6 : 6;
-        GlStateManager.translate(centerOffset * 0.0625, -0.25, -0.75);
+        int centerOffset = hand == EnumHandSide.RIGHT ? 0 : 3;
+        GlStateManager.translate(centerOffset * 0.0625, -0.5625, -0.5625);
         GlStateManager.rotate(180F, 0, 1, 0);
-        GlStateManager.translate(0, -0.5 * (1.0 - percent), 0);
+        GlStateManager.translate(0, -0.35 * (1.0 - percent), 0);
 
-        int offset = hand == EnumHandSide.RIGHT ? -2 : 2;
+        int offset = hand == EnumHandSide.RIGHT ? -2 : -2;
         GlStateManager.translate(offset * 0.0625, 0, 0);
-        GlStateManager.translate(0, -0.75, 0);
         GlStateManager.rotate(90F, 1, 0, 0);
         GlStateManager.rotate(35F, 0, 1, 0);
         GlStateManager.rotate(-75F * percent, 1, 0, 0);
 
+        GlStateManager.scale(0.5, 0.5, 0.5);
+        this.renderArm(hand, 0.0625F);
         if(reload < 0.5F)
         {
             GlStateManager.pushMatrix();
@@ -688,6 +715,11 @@ public class RenderEvents
             GlStateManager.popMatrix();
         }
 
+        GlStateManager.popMatrix();
+    }
+
+    private void renderArm(EnumHandSide hand, float scale)
+    {
         AbstractClientPlayer abstractClientPlayer = Minecraft.getMinecraft().player;
         Minecraft.getMinecraft().getTextureManager().bindTexture(abstractClientPlayer.getLocationSkin());
         RenderPlayer renderPlayer = (RenderPlayer) Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(abstractClientPlayer);
@@ -699,18 +731,17 @@ public class RenderEvents
             renderPlayer.getMainModel().bipedRightArm.rotateAngleX = 0F;
             renderPlayer.getMainModel().bipedRightArm.rotateAngleY = 0F;
             renderPlayer.getMainModel().bipedRightArm.rotateAngleZ = 0F;
-            renderPlayer.getMainModel().bipedRightArm.render(0.0625F);
+            renderPlayer.getMainModel().bipedRightArm.render(scale);
         }
         else
         {
             renderPlayer.getMainModel().bipedLeftArm.rotateAngleX = 0F;
             renderPlayer.getMainModel().bipedLeftArm.rotateAngleY = 0F;
             renderPlayer.getMainModel().bipedLeftArm.rotateAngleZ = 0F;
-            renderPlayer.getMainModel().bipedLeftArm.render(0.0625F);
+            renderPlayer.getMainModel().bipedLeftArm.render(scale);
         }
 
         GlStateManager.enableCull();
-        GlStateManager.popMatrix();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
