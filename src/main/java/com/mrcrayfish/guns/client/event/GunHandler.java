@@ -118,6 +118,9 @@ public class GunHandler
 
         if(!ItemGun.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
             return;
+        
+        if(player.isSpectator())
+            return;
 
         CooldownTracker tracker = player.getCooldownTracker();
         if(!tracker.hasCooldown(heldItem.getItem()))
