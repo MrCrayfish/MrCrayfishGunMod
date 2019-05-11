@@ -45,7 +45,10 @@ public class ControllerEvents
                     if(heldItem.getItem() instanceof ItemGun)
                     {
                         event.setCanceled(true);
-                        GunHandler.fire(player, heldItem);
+                        if(event.getState())
+                        {
+                            GunHandler.fire(player, heldItem);
+                        }
                     }
                     break;
                 case Buttons.LEFT_TRIGGER:
@@ -170,7 +173,15 @@ public class ControllerEvents
 
         if(controller.getState().rightTrigger > 0.05)
         {
-            GunHandler.fire(player, player.getHeldItemMainhand());
+            ItemStack heldItem = player.getHeldItemMainhand();
+            if(heldItem.getItem() instanceof ItemGun)
+            {
+                Gun gun = ((ItemGun) heldItem.getItem()).getModifiedGun(heldItem);
+                if(gun.general.auto)
+                {
+                    GunHandler.fire(player, heldItem);
+                }
+            }
         }
 
         if(mc.currentScreen == null && reloadCounter != -1)
