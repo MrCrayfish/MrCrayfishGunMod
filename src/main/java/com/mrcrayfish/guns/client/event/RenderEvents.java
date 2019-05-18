@@ -41,6 +41,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -527,8 +528,23 @@ public class RenderEvents
         if(stack.getItem() instanceof ItemGun)
         {
             GlStateManager.pushMatrix();
-            RenderUtil.applyTransformType(stack, transformType);
-            this.renderGun(entity, transformType, stack, partialTicks);
+
+            ItemStack model = ItemStack.EMPTY;
+            if(stack.getTagCompound() != null)
+            {
+                if(stack.getTagCompound().hasKey("model", Constants.NBT.TAG_COMPOUND))
+                {
+                    model = new ItemStack(stack.getTagCompound().getCompoundTag("model"));
+                    model.setTagCompound(stack.getTagCompound().copy());
+                }
+            }
+
+            if(model.isEmpty())
+            {
+                RenderUtil.applyTransformType(stack, transformType);
+            }
+
+            this.renderGun(entity, transformType, model.isEmpty() ? stack : model, partialTicks, !model.isEmpty());
             this.renderAttachments(entity, transformType, stack, partialTicks);
 
             if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
@@ -542,7 +558,7 @@ public class RenderEvents
         return false;
     }
 
-    private void renderGun(EntityLivingBase entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, float partialTicks)
+    private void renderGun(EntityLivingBase entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, float partialTicks, boolean overriddenModel)
     {
         if(ModelOverrides.hasModel(stack))
         {
@@ -551,6 +567,10 @@ public class RenderEvents
             {
                 model.render(partialTicks, transformType, stack, ItemStack.EMPTY, entity);
             }
+        }
+        else if(overriddenModel)
+        {
+            RenderUtil.renderModel(stack, transformType);
         }
         else
         {
