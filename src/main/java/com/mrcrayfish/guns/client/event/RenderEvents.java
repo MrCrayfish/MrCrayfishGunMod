@@ -463,20 +463,25 @@ public class RenderEvents
             {
                 this.renderWeapon(entity, heldItem, event.getTransformType(), event.getPartialTicks());
             }
-            else
+        }
+
+        if(hand == EnumHand.OFF_HAND)
+        {
+            ItemStack mainHandStack = entity.getHeldItemMainhand();
+            if(!mainHandStack.isEmpty() && mainHandStack.getItem() instanceof ItemGun)
             {
-                ItemStack mainHand = entity.getHeldItemMainhand();
-                if(mainHand.getItem() instanceof ItemGun)
+                Gun mainHandGun = ((ItemGun) mainHandStack.getItem()).getGun();
+                if(!mainHandGun.general.gripType.canRenderOffhand())
                 {
-                    Gun mainhandGun = ((ItemGun) mainHand.getItem()).getGun();
-                    if(mainhandGun.general.gripType.canRenderOffhand())
+                    event.setCanceled(true);
+                }
+                else if(heldItem.getItem() instanceof ItemGun)
+                {
+                    Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+                    if(gun.general.gripType.canRenderOffhand())
                     {
                         this.renderWeapon(entity, heldItem, event.getTransformType(), event.getPartialTicks());
                     }
-                }
-                else
-                {
-                    this.renderWeapon(entity, heldItem, event.getTransformType(), event.getPartialTicks());
                 }
             }
         }
