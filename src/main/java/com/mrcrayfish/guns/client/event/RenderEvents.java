@@ -553,6 +553,7 @@ public class RenderEvents
                 }
                 GlStateManager.rotate(90F, 0, 1, 0);
                 GlStateManager.rotate(75F, 0, 0, 1);
+                GlStateManager.rotate((float) Math.toDegrees(event.getRenderer().getMainModel().bipedRightLeg.rotateAngleX) / 10F, 0, 0, 1);
                 GlStateManager.scale(0.5, 0.5, 0.5);
                 this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, event.getPartialRenderTick());
                 GlStateManager.popMatrix();
