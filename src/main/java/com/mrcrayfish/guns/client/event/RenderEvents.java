@@ -515,6 +515,28 @@ public class RenderEvents
     }
 
     @SubscribeEvent
+    public void onRenderPlayer(RenderPlayerEvent.Post event)
+    {
+        EntityPlayer player = event.getEntityPlayer();
+        ItemStack heldItem = player.getHeldItemOffhand();
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun)
+        {
+            Gun gun = ((ItemGun) heldItem.getItem()).getGun();
+            if(!gun.general.gripType.canRenderOffhand())
+            {
+                GlStateManager.pushMatrix();
+                float renderYawOffset = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * event.getPartialRenderTick();
+                GlStateManager.rotate(-renderYawOffset, 0, 1, 0);
+                GlStateManager.translate(0 * 0.0625, 18 * 0.0625, -2.75 * 0.0625);
+                GlStateManager.rotate(-45F, 0, 0, 1);
+                GlStateManager.scale(0.5, 0.5, 0.5);
+                this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, event.getPartialRenderTick());
+                GlStateManager.popMatrix();
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onRenderEntityItem(RenderItemEvent.Entity.Pre event)
     {
         Minecraft mc = Minecraft.getMinecraft();
