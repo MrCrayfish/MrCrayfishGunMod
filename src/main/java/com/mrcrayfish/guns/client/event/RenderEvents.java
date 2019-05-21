@@ -23,6 +23,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -240,6 +241,20 @@ public class RenderEvents
     {
         boolean right = Minecraft.getMinecraft().gameSettings.mainHand == EnumHandSide.RIGHT ? event.getHand() == EnumHand.MAIN_HAND : event.getHand() == EnumHand.OFF_HAND;
         ItemStack heldItem = event.getItemStack();
+
+        if(event.getHand() == EnumHand.OFF_HAND)
+        {
+            ItemStack mainHandStack = Minecraft.getMinecraft().player.getHeldItemMainhand();
+            if(mainHandStack.getItem() instanceof ItemGun)
+            {
+                if(((ItemGun) mainHandStack.getItem()).getGun().general.gripType != GripType.ONE_HANDED)
+                {
+                    event.setCanceled(true);
+                    return;
+                }
+            }
+        }
+
         if(!(heldItem.getItem() instanceof ItemGun))
             return;
 
