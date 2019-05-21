@@ -512,6 +512,25 @@ public class RenderEvents
     }
 
     @SubscribeEvent
+    public void onModelRender(ModelPlayerEvent.Render.Pre event)
+    {
+        EntityPlayer player = event.getEntityPlayer();
+        ItemStack offHandStack = player.getHeldItemOffhand();
+        if(offHandStack.getItem() instanceof ItemGun)
+        {
+            switch(player.getPrimaryHand().opposite())
+            {
+                case LEFT:
+                    event.getModelPlayer().leftArmPose = ModelBiped.ArmPose.EMPTY;
+                    break;
+                case RIGHT:
+                    event.getModelPlayer().rightArmPose = ModelBiped.ArmPose.EMPTY;
+                    break;
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onRenderPlayer(RenderPlayerEvent.Post event)
     {
         EntityPlayer player = event.getEntityPlayer();
