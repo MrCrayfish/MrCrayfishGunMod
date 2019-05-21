@@ -679,7 +679,7 @@ public class RenderEvents
             GlStateManager.translate(0, -reloadProgress * 2, 0);
 
             int side = hand.opposite() == EnumHandSide.RIGHT ? 1 : -1;
-            GlStateManager.translate(6 * side * 0.0625, -0.55, -0.5625);
+            GlStateManager.translate(6.5 * side * 0.0625, -0.55, -0.5625);
 
             if(Minecraft.getMinecraft().player.getSkinType().equals("slim") && hand.opposite() == EnumHandSide.LEFT)
             {
@@ -699,10 +699,10 @@ public class RenderEvents
             GlStateManager.translate(0, 0, -1);
             GlStateManager.rotate(180F, 0, 1, 0);
 
-            double centerOffset = 3.0;
+            double centerOffset = 2.5;
             if(Minecraft.getMinecraft().player.getSkinType().equals("slim"))
             {
-                centerOffset += hand == EnumHandSide.RIGHT ? -0.3 : 0.3;
+                centerOffset += hand == EnumHandSide.RIGHT ? 0.2 : 0.8;
             }
             centerOffset = hand == EnumHandSide.RIGHT ? -centerOffset : centerOffset;
             GlStateManager.translate(centerOffset * 0.0625, -0.45, -1.0);
@@ -734,15 +734,14 @@ public class RenderEvents
         percent *= 2F;
         percent = percent < 0.5 ? 2 * percent * percent : -1 + (4 - 2 * percent) * percent;
 
-        int centerOffset = hand.opposite() == EnumHandSide.RIGHT ? 0 : 3;
-        GlStateManager.translate(centerOffset * 0.0625, -0.5625, -0.5625);
+        int side = hand.opposite() == EnumHandSide.RIGHT ? 1 : -1;
+        GlStateManager.translate(-2.75 * side * 0.0625, -0.5625, -0.5625);
         GlStateManager.rotate(180F, 0, 1, 0);
         GlStateManager.translate(0, -0.35 * (1.0 - percent), 0);
 
-        int offset = hand.opposite() == EnumHandSide.RIGHT ? -2 : -2;
-        GlStateManager.translate(offset * 0.0625, 0, 0);
+        GlStateManager.translate(side * 1 * 0.0625, 0, 0);
         GlStateManager.rotate(90F, 1, 0, 0);
-        GlStateManager.rotate(35F, 0, 1, 0);
+        GlStateManager.rotate(35F * -side, 0, 1, 0);
         GlStateManager.rotate(-75F * percent, 1, 0, 0);
 
         GlStateManager.scale(0.5, 0.5, 0.5);
@@ -750,7 +749,7 @@ public class RenderEvents
         if(reload < 0.5F)
         {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(5 * 0.0625, 15 * 0.0625, -1 * 0.0625);
+            GlStateManager.translate(-side * 5 * 0.0625, 15 * 0.0625, -1 * 0.0625);
             GlStateManager.rotate(180F, 1, 0, 0);
             GlStateManager.scale(0.75, 0.75, 0.75);
             RenderUtil.renderModel(ItemAmmo.getAmmo(gun.projectile.type, 1), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
