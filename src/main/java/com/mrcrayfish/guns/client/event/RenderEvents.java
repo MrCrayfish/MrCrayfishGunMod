@@ -249,10 +249,7 @@ public class RenderEvents
         // Ignores rendering the gun if the grip type doesn't allow it to be render in the offhand
         if(event.getHand() == EnumHand.OFF_HAND)
         {
-            if(!((ItemGun) heldItem.getItem()).getGun().general.gripType.canRenderOffhand())
-            {
-                return;
-            }
+            return;
         }
 
         ItemStack scope = Gun.getScope(heldItem);
@@ -529,6 +526,18 @@ public class RenderEvents
                 GlStateManager.rotate(-renderYawOffset, 0, 1, 0);
                 GlStateManager.translate(0 * 0.0625, 18 * 0.0625, -2.75 * 0.0625);
                 GlStateManager.rotate(-45F, 0, 0, 1);
+                GlStateManager.scale(0.5, 0.5, 0.5);
+                this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, event.getPartialRenderTick());
+                GlStateManager.popMatrix();
+            }
+            else
+            {
+                GlStateManager.pushMatrix();
+                float renderYawOffset = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * event.getPartialRenderTick();
+                GlStateManager.rotate(-renderYawOffset, 0, 1, 0);
+                GlStateManager.translate(-4.5 * 0.0625, 10 * 0.0625, 0 * 0.0625);
+                GlStateManager.rotate(90F, 0, 1, 0);
+                GlStateManager.rotate(75F, 0, 0, 1);
                 GlStateManager.scale(0.5, 0.5, 0.5);
                 this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, event.getPartialRenderTick());
                 GlStateManager.popMatrix();
