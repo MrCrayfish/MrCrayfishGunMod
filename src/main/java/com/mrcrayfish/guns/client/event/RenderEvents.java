@@ -524,7 +524,15 @@ public class RenderEvents
                 GlStateManager.pushMatrix();
                 float renderYawOffset = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * event.getPartialRenderTick();
                 GlStateManager.rotate(-renderYawOffset, 0, 1, 0);
-                GlStateManager.translate(0 * 0.0625, 18 * 0.0625, -2.75 * 0.0625);
+                if(player.isSneaking())
+                {
+                    GlStateManager.translate(0 * 0.0625, 14 * 0.0625, -5 * 0.0625);
+                    GlStateManager.rotate(30F, 1, 0, 0);
+                }
+                else
+                {
+                    GlStateManager.translate(0 * 0.0625, 18 * 0.0625, -2.75 * 0.0625);
+                }
                 GlStateManager.rotate(-45F, 0, 0, 1);
                 GlStateManager.scale(0.5, 0.5, 0.5);
                 this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, event.getPartialRenderTick());
@@ -535,7 +543,14 @@ public class RenderEvents
                 GlStateManager.pushMatrix();
                 float renderYawOffset = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * event.getPartialRenderTick();
                 GlStateManager.rotate(-renderYawOffset, 0, 1, 0);
-                GlStateManager.translate(-4.5 * 0.0625, 10 * 0.0625, 0 * 0.0625);
+                if(player.isSneaking())
+                {
+                    GlStateManager.translate(-4.5 * 0.0625, 7 * 0.0625, -4 * 0.0625);
+                }
+                else
+                {
+                    GlStateManager.translate(-4.5 * 0.0625, 10 * 0.0625, 0 * 0.0625);
+                }
                 GlStateManager.rotate(90F, 0, 1, 0);
                 GlStateManager.rotate(75F, 0, 0, 1);
                 GlStateManager.scale(0.5, 0.5, 0.5);
