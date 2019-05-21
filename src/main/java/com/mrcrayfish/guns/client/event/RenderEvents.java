@@ -246,11 +246,13 @@ public class RenderEvents
         // Cancel it because we are doing our own custom render
         event.setCanceled(true);
 
-        ItemStack mainHand = Minecraft.getMinecraft().player.getHeldItemMainhand();
-        if(mainHand.getItem() instanceof ItemGun)
+        // Ignores rendering the gun if the grip type doesn't allow it to be render in the offhand
+        if(event.getHand() == EnumHand.OFF_HAND)
         {
-            if(event.getHand() != EnumHand.MAIN_HAND && !((ItemGun) mainHand.getItem()).getGun().general.gripType.canRenderOffhand())
+            if(!((ItemGun) heldItem.getItem()).getGun().general.gripType.canRenderOffhand())
+            {
                 return;
+            }
         }
 
         ItemStack scope = Gun.getScope(heldItem);
