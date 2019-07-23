@@ -133,6 +133,12 @@ public class GunHandler
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
     {
+        if(event.phase != TickEvent.Phase.START)
+            return;
+
+        if(Minecraft.getMinecraft().player == null)
+            return;
+
         if(MrCrayfishGunMod.proxy.isZooming())
         {
             if(!aiming)
@@ -153,6 +159,9 @@ public class GunHandler
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
+        if(event.phase != TickEvent.Phase.START)
+            return;
+
         EntityPlayer player = event.player;
         AimTracker tracker = getAimTracker(player);
         if(tracker != null)
