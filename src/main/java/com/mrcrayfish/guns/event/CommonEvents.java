@@ -69,6 +69,11 @@ public class CommonEvents
             {
                 if(!reloadTrackerMap.containsKey(player.getUniqueID()))
                 {
+                    if(!(player.inventory.getCurrentItem().getItem() instanceof ItemGun))
+                    {
+                        player.getDataManager().set(RELOADING, false);
+                        return;
+                    }
                     reloadTrackerMap.put(player.getUniqueID(), new ReloadTracker(player));
                 }
                 ReloadTracker tracker = reloadTrackerMap.get(player.getUniqueID());
