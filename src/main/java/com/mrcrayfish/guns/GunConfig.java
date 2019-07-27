@@ -299,12 +299,19 @@ public class GunConfig
         public EffectCriteria criteria = new EffectCriteria(15, 280, 100, 360, 0.75, false);
 
         @Config.Name("Sound Percentage")
-        @Config.Comment("Volume of most game sounds when deafened will play at this percent, before eventually fading back to %100.")
+        @Config.Comment("Volume of game sounds when deafened will play at this percent, before eventually fading back to %100.")
         @Config.LangKey(PREFIX + ".sound.percentage")
         @Config.RangeDouble(min = 0, max = 1)
         @Config.RequiresWorldRestart
         public double soundPercentage = 0.05;
         public static float soundPercentageSynced = 0;
+
+        @Config.Name("Effect All Sounds")
+        @Config.Comment("If true, all sounds will be reduced when deafened -- even the ringing sound and the sound of the initial deafening explosion.")
+        @Config.LangKey(PREFIX + ".sound.effect_all")
+        @Config.RequiresWorldRestart
+        public boolean effectAllSounds = false;
+        public static boolean effectAllSoundsSynced = true;
 
         @Config.Name("Sound Fade Threshold")
         @Config.Comment("After the duration drops to this many ticks, the ringing volume will gradually fade to 0 and other sound volumes will fade back to %100.")
@@ -383,6 +390,7 @@ public class GunConfig
         private ImmutableMap<String, ServerGun> serverGunMap;
         private int blindnessAlphaOverlay, alphaFadeThreshold, soundFadeThreshold;
         private float soundPercentage, ringVolume;
+        private boolean effectAllSounds;
 
         public void toBytes(ByteBuf buffer)
         {
@@ -398,6 +406,7 @@ public class GunConfig
             buffer.writeFloat((float) GunConfig.SERVER.stunGrenades.deafen.soundPercentage);
             buffer.writeInt(GunConfig.SERVER.stunGrenades.deafen.soundFadeThreshold);
             buffer.writeFloat((float) GunConfig.SERVER.stunGrenades.deafen.ringVolume);
+            buffer.writeBoolean(GunConfig.SERVER.stunGrenades.deafen.effectAllSounds);
         }
 
         public void fromBytes(ByteBuf buffer)
@@ -418,6 +427,7 @@ public class GunConfig
             soundPercentage = buffer.readFloat();
             soundFadeThreshold = buffer.readInt();
             ringVolume = buffer.readFloat();
+            effectAllSounds = buffer.readBoolean();
         }
 
         public void syncClientToServer()
@@ -428,6 +438,7 @@ public class GunConfig
             GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced = soundPercentage;
             GunConfig.SERVER.stunGrenades.deafen.soundFadeThresholdSynced = soundFadeThreshold;
             GunConfig.SERVER.stunGrenades.deafen.ringVolumeSynced = ringVolume;
+            GunConfig.SERVER.stunGrenades.deafen.effectAllSoundsSynced = effectAllSounds;
         }
     }
 

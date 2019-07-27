@@ -46,15 +46,19 @@ public class RenderGrenade extends Render<EntityGrenade>
             GlStateManager.rotate(entityYaw, 0, 1, 0);
 
             float rotation = entity.prevRotation + (entity.rotation - entity.prevRotation) * partialTicks;
-            GlStateManager.translate(0, 0.15, 0);
+            float offset = 0;
+            if (entity instanceof EntityGrenadeStun)
+                offset = entity.height / 1.5F;
+
+            GlStateManager.translate(0, 0.15 - offset * 0.5, 0);
             GlStateManager.rotate(-rotation, 1, 0, 0);
             GlStateManager.translate(0, -0.15, 0);
 
-            if(entity instanceof EntityGrenadeStun)
+            if(offset > 0)
             {
-                GlStateManager.translate(0, 0.3, 0);
-                GlStateManager.rotate(-90F, 0, 0, 1);
-                GlStateManager.translate(0, -((EntityGrenadeStun) entity).height / 2, 0);
+                GlStateManager.translate(0, offset, 0);
+                GlStateManager.rotate(90.F, 0, 0, 1);
+                GlStateManager.translate(0, -offset, 0);
             }
 
             GlStateManager.translate(-0.5, 0, -0.5);
