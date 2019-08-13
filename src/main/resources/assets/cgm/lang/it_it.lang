@@ -11,7 +11,7 @@ item.assault_rifle.name=Fucile d'assalto
 
 item.ammo_basic.name=Munizioni base
 item.ammo_advanced.name=Munizioni avanzate
-item.ammo_shell.name=Guscio
+item.ammo_shell.name=Bossolo
 item.ammo_grenade.name=Granata
 item.ammo_grenade_stun.name=Granata stordente
 item.ammo_missile.name=Missile
