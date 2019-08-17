@@ -176,12 +176,12 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		public float damage;
 
 		@Config.Name("Size")
-		@Config.Comment("The amount of bullets added to the gun on each reload")
+		@Config.Comment("The size of the projectile")
 		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.size")
 		public float size;
 
 		@Config.Name("Speed")
-		@Config.Comment("The amount of bullets added to the gun on each reload")
+		@Config.Comment("The distance the projectile travels each tick")
 		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.speed")
 		public double speed;
 
