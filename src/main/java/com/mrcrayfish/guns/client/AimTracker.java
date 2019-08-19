@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class AimTracker
 {
-    private static final double MAX_AIM = 14;
+    private static final double MAX_AIM = 8;
 
     private int currentAim;
     private int previousAim;
