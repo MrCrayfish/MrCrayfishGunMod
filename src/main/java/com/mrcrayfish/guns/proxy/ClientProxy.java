@@ -9,6 +9,8 @@ import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.event.SoundEvents;
+import com.mrcrayfish.guns.client.gui.DisplayProperty;
+import com.mrcrayfish.guns.client.gui.GuiWorkbench;
 import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -22,6 +24,8 @@ import com.mrcrayfish.guns.entity.EntityGrenadeStun;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.RegistrationHandler;
+import com.mrcrayfish.guns.item.GunRegistry;
+import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.item.ItemColored;
 import com.mrcrayfish.guns.item.ItemScope;
 import net.minecraft.client.Minecraft;
@@ -57,16 +61,14 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(renderEvents = new RenderEvents());
 		MinecraftForge.EVENT_BUS.register(new GunHandler());
 		MinecraftForge.EVENT_BUS.register(new ReloadHandler());
+
 		RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, RenderGrenade::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeStun.class, RenderGrenade::new);
-		KeyBinds.register();
-		SoundEvents.initReflection();
 
-		ModelOverrides.register(new ItemStack(ModGuns.getGun("chain_gun")), new ModelChainGun());
-		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()), new ModelShortScope());
-		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new ModelMediumScope());
-		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new ModelLongScope());
+		KeyBinds.register();
+
+		SoundEvents.initReflection();
 
 		if(Loader.isModLoaded("controllable"))
 		{
@@ -76,6 +78,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
+	@SuppressWarnings({"ConstantConditions"})
 	public void init()
 	{
 		super.init();
@@ -95,6 +98,34 @@ public class ClientProxy extends CommonProxy
 			}
 		});
 
+		ModelOverrides.register(new ItemStack(ModGuns.CHAIN_GUN), new ModelChainGun());
+		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()), new ModelShortScope());
+		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new ModelMediumScope());
+		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new ModelLongScope());
+
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.PISTOL), new DisplayProperty(0.0F, 0.55F, -0.25F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SHOTGUN), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.RIFLE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.GRENADE_LAUNCHER), new DisplayProperty(0.0F, 0.55F, -0.1F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.BAZOOKA), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.5F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.CHAIN_GUN), new DisplayProperty(0.0F, 0.55F, 0.1F, 0.0F, 0.0F, 0.0F, 2.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.ASSAULT_RIFLE), new DisplayProperty(0.0F, 0.55F, -0.15F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.BASIC.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.ADVANCED.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.SHELL.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.5F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.MISSILE.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE_STUN.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SILENCER), new DisplayProperty(0.0F, 0.25F, 0.5F, 0.0F, 0.0F, 0.0F, 1.5F));
+	}
+
+	@Override
+	public void postInit()
+	{
+		super.postInit();
 		ModelOverrides.getModelMap().forEach((item, map) -> map.values().forEach(IOverrideModel::init));
 	}
 
@@ -120,7 +151,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
 	{
-		GunConfig.ID_TO_GUN.forEach((id, gun) -> gun.serverGun = null);
+		GunRegistry.getInstance().getGuns().forEach((location, gun) -> gun.getGun().serverGun = null);
 	}
 
 	@Override

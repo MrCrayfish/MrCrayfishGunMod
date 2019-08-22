@@ -9,6 +9,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -20,13 +21,13 @@ public abstract class BlockRotatedObject extends BlockObject
 {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
-    public BlockRotatedObject(Material material, String id)
+    public BlockRotatedObject(Material material, ResourceLocation id)
     {
         super(material, id);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
-    public BlockRotatedObject(Material material, MapColor color, String id)
+    public BlockRotatedObject(Material material, MapColor color, ResourceLocation id)
     {
         super(material, color, id);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));

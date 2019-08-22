@@ -1,0 +1,49 @@
+{
+    "id": "assault_rifle",
+    "general": {
+        "auto": true,
+        "rate": 4,
+        "gripType": "two_handed",
+        "maxAmmo": 30,
+        "reloadSpeed": 2,
+        "recoilKick": 0.25
+    },
+    "projectile": {
+        "type": "basic",
+        "visible": false,
+        "damage": 6.0,
+        "size": 0.2,
+        "speed": 10.0,
+        "life": 10
+    },
+    "sounds": {
+        "fire": "assault_rifle_fire",
+        "reload": "pistol_reload",
+        "cock": "shotgun_fire",
+        "silencedFire": "rifle_fire_silenced"
+    },
+    "display": {
+        "flash": {
+            "yOffset": -4.5,
+            "zOffset": -6
+        }
+    },
+    "modules": {
+        "zoom": {
+            "fovModifier": 0.6,
+            "yOffset": 4.9,
+            "zOffset": -3.2
+        },
+        "attachments": {
+            "scope": {
+                "yOffset": 4.32,
+                "zOffset": 4
+            },
+            "barrel": {
+                "yOffset": 3.5,
+                "zOffset": -5.25,
+                "scale": 0.4
+            }
+        }
+    }
+}

@@ -1,10 +1,12 @@
 package com.mrcrayfish.guns.object;
 
+import com.google.gson.*;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -14,6 +16,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Type;
 
 public class Gun implements INBTSerializable<NBTTagCompound>
 {
@@ -309,6 +312,46 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Config.Ignore
 		public String silencedFire = "silenced_fire";
 
+		public String getFire(Gun modifiedGun)
+		{
+			String fire = this.fire;
+			if(!modifiedGun.sounds.fire.equals(fire))
+			{
+				fire = modifiedGun.sounds.fire;
+			}
+			return fire;
+		}
+
+		public String getReload(Gun modifiedGun)
+		{
+			String reload = this.reload;
+			if(!modifiedGun.sounds.reload.equals(reload))
+			{
+				reload = modifiedGun.sounds.reload;
+			}
+			return reload;
+		}
+
+		public String getCock(Gun modifiedGun)
+		{
+			String cock = this.cock;
+			if(!modifiedGun.sounds.cock.equals(cock))
+			{
+				cock = modifiedGun.sounds.cock;
+			}
+			return cock;
+		}
+
+		public String getSilencedFire(Gun modifiedGun)
+		{
+			String silencedFire = this.silencedFire;
+			if(!modifiedGun.sounds.silencedFire.equals(silencedFire))
+			{
+				silencedFire = modifiedGun.sounds.silencedFire;
+			}
+			return silencedFire;
+		}
+
 		@Override
 		public NBTTagCompound serializeNBT()
 		{
@@ -592,5 +635,60 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			}
 		}
 		return ItemStack.EMPTY;
+	}
+
+	public static class Serializer implements JsonSerializer<Gun>
+	{
+		@Override
+		public JsonElement serialize(Gun gun, Type typeOfSrc, JsonSerializationContext context)
+		{
+			JsonObject parent = new JsonObject();
+
+			JsonObject general = new JsonObject();
+			general.addProperty("Max Ammo", gun.general.maxAmmo);
+			general.addProperty("Reload Speed", gun.general.reloadSpeed);
+			parent.add("General", general);
+
+			JsonObject projectile = new JsonObject();
+			projectile.addProperty("Damage", gun.projectile.damage);
+			projectile.addProperty("Damage Falloff", gun.projectile.damageReduceOverLife);
+			projectile.addProperty("Gravity", gun.projectile.gravity);
+			projectile.addProperty("Ticks Before Removed", gun.projectile.life);
+			projectile.addProperty("Reduce Damage If Not Zoomed", gun.projectile.damageReduceIfNotZoomed);
+			projectile.addProperty("Size", gun.projectile.size);
+			projectile.addProperty("Speed", gun.projectile.speed);
+			parent.add("Projectile", projectile);
+
+			return parent;
+		}
+	}
+
+	public static class Deserializer implements JsonDeserializer<Gun>
+	{
+		private Gun base;
+
+		public Deserializer(Gun base)
+		{
+			this.base = base;
+		}
+
+		@Override
+		public Gun deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		{
+			JsonObject general = JsonUtils.getJsonObject(json.getAsJsonObject(), "General");
+			this.base.general.maxAmmo = JsonUtils.getInt(general, "Max Ammo");
+			this.base.general.reloadSpeed = JsonUtils.getInt(general, "Reload Speed");
+
+			JsonObject projectile = JsonUtils.getJsonObject(json.getAsJsonObject(), "Projectile");
+			this.base.projectile.damage = JsonUtils.getFloat(projectile, "Damage", this.base.projectile.damage);
+			this.base.projectile.damageReduceOverLife = JsonUtils.getBoolean(projectile, "Damage Falloff", this.base.projectile.damageReduceOverLife);
+			this.base.projectile.gravity = JsonUtils.getBoolean(projectile, "Gravity", this.base.projectile.gravity);
+			this.base.projectile.life = JsonUtils.getInt(projectile, "Ticks Before Removed", this.base.projectile.life);
+			this.base.projectile.damageReduceIfNotZoomed = JsonUtils.getBoolean(projectile, "Reduce Damage If Not Zoomed", this.base.projectile.damageReduceIfNotZoomed);
+			this.base.projectile.size = JsonUtils.getFloat(projectile, "Size", this.base.projectile.size);
+			this.base.projectile.speed = JsonUtils.getFloat(projectile, "Speed", (float) this.base.projectile.speed);
+
+			return this.base;
+		}
 	}
 }

@@ -8,10 +8,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.item.GunRegistry;
+import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.ServerGun;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Type;
 import net.minecraftforge.common.config.ConfigManager;
@@ -19,11 +22,13 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEve
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Set;
 
 @Config(modid = Reference.MOD_ID)
@@ -31,42 +36,6 @@ import java.util.Set;
 @EventBusSubscriber(modid = Reference.MOD_ID)
 public class GunConfig
 {
-	@Config.Ignore
-	public static final ImmutableMap<String, Gun> ID_TO_GUN;
-
-	static
-	{
-		ImmutableMap.Builder<String, Gun> builder = ImmutableMap.builder();
-		Reader reader = new InputStreamReader(ModGuns.class.getResourceAsStream("/assets/cgm/guns.json"));
-		JsonParser parser = new JsonParser();
-		JsonArray elements = parser.parse(reader).getAsJsonArray();
-		try
-		{
-			Gson gson = new Gson();
-			for(JsonElement element : elements)
-			{
-				Gun gun = gson.fromJson(element, new TypeToken<Gun>() {}.getType());
-				if(!validateFields(gun))
-				{
-					if(gun.id != null)
-					{
-						throw new NullPointerException("The gun '" + gun.id + "' is missing required attributes");
-					}
-					else
-					{
-						throw new NullPointerException("Invalid gun entry");
-					}
-				}
-				builder.put(gun.id, gun);
-			}
-		}
-		catch(IllegalAccessException e)
-		{
-			e.printStackTrace();
-		}
-		ID_TO_GUN = builder.build();
-	}
-
 	@Config.Ignore
     public static final String PREFIX = "config." + Reference.MOD_ID + ".";
 
@@ -118,11 +87,6 @@ public class GunConfig
 		@Config.Comment("Nearby mobs are angered and/or scared by the firing of guns.")
 		@Config.LangKey(AggroMobs.PREFIX)
 		public AggroMobs aggroMobs = new AggroMobs();
-
-		@Config.Name("Guns")
-		@Config.Comment("Change the properties of guns")
-		@Config.LangKey(Guns.PREFIX)
-		public Guns guns = new Guns();
 
 		@Config.Name("Stun Grenades")
         @Config.Comment("Blinding/deafening properties of stun grenades.")
@@ -208,46 +172,6 @@ public class GunConfig
 		public boolean oldControls = false;
 	}
 
-	public static class Guns
-	{
-	    private static final String PREFIX = Server.PREFIX + ".guns";
-
-		@Config.Name("Pistol")
-		@Config.Comment("Change the properties of the Pistol")
-		@Config.LangKey(PREFIX + ".pistol")
-		public Gun pistol = ID_TO_GUN.get("handgun");
-
-		@Config.Name("Shotgun")
-		@Config.Comment("Change the properties of the Shotgun")
-		@Config.LangKey(PREFIX + ".shotgun")
-		public Gun shotgun = ID_TO_GUN.get("shotgun");
-
-		@Config.Name("Rifle")
-		@Config.Comment("Change the properties of the Rifle")
-		@Config.LangKey(PREFIX + ".rifle")
-		public Gun rifle = ID_TO_GUN.get("rifle");
-
-		@Config.Name("Grenade Launcher")
-		@Config.Comment("Change the properties of the Grenade Launcher")
-		@Config.LangKey(PREFIX + ".grenade_launcher")
-		public Gun grenadeLauncher = ID_TO_GUN.get("grenade_launcher");
-
-		@Config.Name("Bazooka")
-		@Config.Comment("Change the properties of the Bazooka")
-		@Config.LangKey(PREFIX + ".bazooka")
-		public Gun bazooka = ID_TO_GUN.get("bazooka");
-
-		@Config.Name("Minigun")
-		@Config.Comment("Change the properties of the Minigun")
-		@Config.LangKey(PREFIX + ".chain_gun")
-		public Gun chainGun = ID_TO_GUN.get("chain_gun");
-
-		@Config.Name("Assault Rifle")
-		@Config.Comment("Change the properties of the Assault Rifle")
-		@Config.LangKey(PREFIX + ".assault_rifle")
-		public Gun assaultRifle = ID_TO_GUN.get("assault_rifle");
-	}
-
 	public static class StunGrenades
     {
 	    private static final String PREFIX = Server.PREFIX + ".grenade.stun";
@@ -278,7 +202,7 @@ public class GunConfig
         @Config.RangeInt(min = 0, max = 255)
         @Config.RequiresWorldRestart
         public int alphaOverlay = 255;
-        public static int alphaOverlaySynced = 255;
+        public int alphaOverlaySynced = 255;
 
         @Config.Name("Overlay Fade Threshold")
         @Config.Comment("Transparency of the overlay when blinded will be this alpha value, before eventually fading to 0 alpha.")
@@ -286,7 +210,7 @@ public class GunConfig
         @Config.RangeInt(min = 0)
         @Config.RequiresWorldRestart
         public int alphaFadeThreshold = 40;
-        public static int alphaFadeThresholdSynced = Integer.MAX_VALUE;
+        public int alphaFadeThresholdSynced = Integer.MAX_VALUE;
     }
 
 	public static class Deafen
@@ -304,7 +228,7 @@ public class GunConfig
         @Config.RangeDouble(min = 0, max = 1)
         @Config.RequiresWorldRestart
         public double soundPercentage = 0.05;
-        public static float soundPercentageSynced = 0;
+        public float soundPercentageSynced = 0;
 
         @Config.Name("Sound Fade Threshold")
         @Config.Comment("After the duration drops to this many ticks, the ringing volume will gradually fade to 0 and other sound volumes will fade back to %100.")
@@ -312,7 +236,7 @@ public class GunConfig
         @Config.RangeInt(min = 0)
         @Config.RequiresWorldRestart
         public int soundFadeThreshold = 90;
-        public static int soundFadeThresholdSynced = Integer.MAX_VALUE;
+        public int soundFadeThresholdSynced = Integer.MAX_VALUE;
 
         @Config.Name("Ring Volume")
         @Config.Comment("Volume of the ringing sound when deafened will play at this volume, before eventually fading to 0.")
@@ -320,7 +244,7 @@ public class GunConfig
         @Config.RangeDouble(min = 0)
         @Config.RequiresWorldRestart
         public double ringVolume = 1;
-        public static float ringVolumeSynced = 1;
+        public float ringVolumeSynced = 1;
     }
 
 	public static class EffectCriteria
@@ -380,19 +304,20 @@ public class GunConfig
      */
     public static class SyncedData
     {
-        private ImmutableMap<String, ServerGun> serverGunMap;
+        private ImmutableMap<ResourceLocation, ServerGun> serverGunMap;
         private int blindnessAlphaOverlay, alphaFadeThreshold, soundFadeThreshold;
         private float soundPercentage, ringVolume;
 
         public void toBytes(ByteBuf buffer)
         {
-            buffer.writeInt(GunConfig.ID_TO_GUN.size());
-            GunConfig.ID_TO_GUN.forEach((id, gun) ->
-            {
-                ByteBufUtils.writeUTF8String(buffer, id);
-                buffer.writeFloat(gun.projectile.damage);
-                buffer.writeInt(gun.general.maxAmmo);
-            });
+			Map<ResourceLocation, ItemGun> guns = GunRegistry.getInstance().getGuns();
+			buffer.writeInt(guns.size());
+			guns.forEach((location, gun) ->
+			{
+				ByteBufUtils.writeUTF8String(buffer, location.toString());
+				buffer.writeFloat(gun.getGun().projectile.damage);
+				buffer.writeInt(gun.getGun().general.maxAmmo);
+			});
             buffer.writeInt(GunConfig.SERVER.stunGrenades.blind.alphaOverlay);
             buffer.writeInt(GunConfig.SERVER.stunGrenades.blind.alphaFadeThreshold);
             buffer.writeFloat((float) GunConfig.SERVER.stunGrenades.deafen.soundPercentage);
@@ -402,11 +327,11 @@ public class GunConfig
 
         public void fromBytes(ByteBuf buffer)
         {
-            ImmutableMap.Builder<String, ServerGun> builder = ImmutableMap.builder();
+            ImmutableMap.Builder<ResourceLocation, ServerGun> builder = ImmutableMap.builder();
             int size = buffer.readInt();
             for(int i = 0; i < size; i++)
             {
-                String id = ByteBufUtils.readUTF8String(buffer);
+				ResourceLocation id = new ResourceLocation(ByteBufUtils.readUTF8String(buffer));
                 ServerGun gun = new ServerGun();
                 gun.damage = buffer.readFloat();
                 gun.maxAmmo = buffer.readInt();
@@ -422,7 +347,14 @@ public class GunConfig
 
         public void syncClientToServer()
         {
-            GunConfig.ID_TO_GUN.forEach((id, gun) -> gun.serverGun = serverGunMap.get(id));
+			serverGunMap.forEach((id, serverGun) ->
+			{
+				ItemGun gun = GunRegistry.getInstance().getGun(id);
+				if(gun != null)
+				{
+					gun.getGun().serverGun = serverGun;
+				}
+			});
             GunConfig.SERVER.stunGrenades.blind.alphaOverlaySynced = blindnessAlphaOverlay;
             GunConfig.SERVER.stunGrenades.blind.alphaFadeThresholdSynced = alphaFadeThreshold;
             GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced = soundPercentage;
@@ -439,26 +371,5 @@ public class GunConfig
 			ConfigManager.sync(Reference.MOD_ID, Type.INSTANCE);
 			SERVER.aggroMobs.setExemptionClasses();
 		}
-	}
-
-	private static <T> boolean validateFields(@Nonnull T t) throws IllegalAccessException
-	{
-		Field[] fields = t.getClass().getDeclaredFields();
-		for(Field field : fields)
-		{
-			if(field.getDeclaredAnnotation(Gun.Ignored.class) != null || field.getDeclaredAnnotation(Gun.Optional.class) != null)
-				continue;
-
-			if(field.get(t) == null)
-			{
-				return false;
-			}
-
-			if(!field.getType().isPrimitive() && field.getType() != String.class && !field.getType().isEnum())
-			{
-				return validateFields(field.get(t));
-			}
-		}
-		return true;
 	}
 }

@@ -1,51 +1,64 @@
 package com.mrcrayfish.guns.init;
 
-import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.*;
 import net.minecraft.item.Item;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModGuns
 {
-    static final Map<String, ItemGun> GUNS = new HashMap<>();
+    @GameRegistry.ObjectHolder("cgm:handgun")
+    public static final Item PISTOL = null;
 
-    public static final Item PARTS;
-    public static final Item AMMO;
-    public static final Item SCOPES;
-    public static final Item SILENCER;
+    @GameRegistry.ObjectHolder("cgm:shotgun")
+    public static final Item SHOTGUN = null;
 
-    static
-    {
-        GunConfig.ID_TO_GUN.forEach((s, gun) -> GUNS.put(s, new ItemGun(gun)));
-        PARTS = new ItemPart();
-        AMMO = new ItemAmmo();
-        SCOPES = new ItemScope();
-        SILENCER = new ItemAttachment("silencer", IAttachment.Type.BARREL);
-    }
+    @GameRegistry.ObjectHolder("cgm:rifle")
+    public static final Item RIFLE = null;
+
+    @GameRegistry.ObjectHolder("cgm:grenade_launcher")
+    public static final Item GRENADE_LAUNCHER = null;
+
+    @GameRegistry.ObjectHolder("cgm:bazooka")
+    public static final Item BAZOOKA = null;
+
+    @GameRegistry.ObjectHolder("cgm:chain_gun")
+    public static final Item CHAIN_GUN = null;
+
+    @GameRegistry.ObjectHolder("cgm:assault_rifle")
+    public static final Item ASSAULT_RIFLE = null;
+
+    @GameRegistry.ObjectHolder("cgm:part")
+    public static final Item PARTS = null;
+
+    @GameRegistry.ObjectHolder("cgm:ammo")
+    public static final Item AMMO = null;
+
+    @GameRegistry.ObjectHolder("cgm:scope")
+    public static final Item SCOPES = null;
+
+    @GameRegistry.ObjectHolder("cgm:silencer")
+    public static final Item SILENCER = null;
 
     public static void register()
     {
-        for(Item item : GUNS.values())
-        {
-            register(item);
-        }
-        register(PARTS);
-        register(AMMO);
-        register(SCOPES);
-        register(SILENCER);
+        register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "handgun")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "shotgun")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "rifle")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "grenade_launcher")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "bazooka")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "chain_gun")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "assault_rifle")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemPart());
+        register(new ItemAmmo());
+        register(new ItemScope());
+        register(new ItemAttachment(new ResourceLocation(Reference.MOD_ID, "silencer"), IAttachment.Type.BARREL));
     }
 
     private static void register(Item item)
     {
         RegistrationHandler.Items.add(item);
-    }
-
-    @Nullable
-    public static ItemGun getGun(String id)
-    {
-        return GUNS.get(id);
     }
 }

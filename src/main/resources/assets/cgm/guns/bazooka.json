@@ -1,0 +1,41 @@
+{
+    "id": "bazooka",
+    "general": {
+        "rate": 80,
+        "gripType": "two_handed",
+        "maxAmmo": 1,
+        "recoilAngle": 10.0,
+        "recoilDurationOffset": 0.25
+    },
+    "projectile": {
+        "type": "missile",
+        "visible": true,
+        "auto": false,
+        "damage": 20.0,
+        "size": 0.2,
+        "speed": 2,
+        "life": 100,
+        "damageReduceOverLife": false,
+        "damageReduceIfNotZoomed": false
+    },
+    "sounds": {
+        "fire": "bazooka_fire",
+        "reload": "pistol_reload",
+        "cock": "shotgun_fire"
+    },
+    "display": {
+        "flash": {
+            "yOffset": -3.8,
+            "zOffset": -8.0
+        }
+    },
+    "modules": {
+        "zoom": {
+            "fovModifier": 0.4,
+            "smooth": true,
+            "xOffset": -3.6,
+            "yOffset": 4.2,
+            "zOffset": 0
+        }
+    }
+}

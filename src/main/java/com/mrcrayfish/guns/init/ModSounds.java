@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.item.GunRegistry;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.util.ResourceLocation;
@@ -16,13 +17,14 @@ public class ModSounds
 
 	static
 	{
-		for(ItemGun gunItem : ModGuns.GUNS.values())
+		for(ItemGun gunItem : GunRegistry.getInstance().getGuns().values())
 		{
 			Gun gun = gunItem.getGun();
 			register(gun.sounds.fire);
 			register(gun.sounds.reload);
 			register(gun.sounds.silencedFire);
 		}
+		register("");
 		register("grenade_stun_explosion");
 		register("grenade_stun_ring");
 	}

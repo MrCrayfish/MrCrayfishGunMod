@@ -8,6 +8,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
@@ -16,15 +17,15 @@ import net.minecraft.world.IBlockAccess;
  */
 public class BlockObject extends Block
 {
-    public BlockObject(Material material, String id)
+    public BlockObject(Material material, ResourceLocation id)
     {
         this(material, material.getMaterialMapColor(), id);
     }
 
-    public BlockObject(Material material, MapColor mapColor, String id)
+    public BlockObject(Material material, MapColor mapColor, ResourceLocation id)
     {
         super(material, mapColor);
-        this.setTranslationKey(id);
+        this.setTranslationKey(id.getNamespace() + "." + id.getPath());
         this.setRegistryName(id);
         this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
     }

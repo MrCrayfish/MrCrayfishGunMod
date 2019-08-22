@@ -3,22 +3,19 @@ package com.mrcrayfish.guns.init;
 import com.mrcrayfish.guns.block.BlockWorkbench;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Author: MrCrayfish
  */
 public class ModBlocks
 {
-    public static final Block WORKBENCH;
-
-    static
-    {
-        WORKBENCH = new BlockWorkbench();
-    }
+    @GameRegistry.ObjectHolder("cgm:workbench")
+    public static final Block WORKBENCH = null;
 
     public static void register()
     {
-        registerBlock(WORKBENCH);
+        registerBlock(new BlockWorkbench());
     }
 
     private static void registerBlock(Block block)

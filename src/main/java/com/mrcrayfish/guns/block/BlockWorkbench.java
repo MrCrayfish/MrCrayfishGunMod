@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.block;
 
 import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -9,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -21,7 +23,7 @@ public class BlockWorkbench extends BlockRotatedObject
 {
     public BlockWorkbench()
     {
-        super(Material.IRON, "workbench");
+        super(Material.IRON, new ResourceLocation(Reference.MOD_ID, "workbench"));
         this.setHardness(1.0F);
     }
 

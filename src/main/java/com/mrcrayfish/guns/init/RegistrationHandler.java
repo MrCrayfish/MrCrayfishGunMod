@@ -85,7 +85,7 @@ public class RegistrationHandler
             }
             else
             {
-                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getTranslationKey().substring(5), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
             }
         }
     }
@@ -112,7 +112,7 @@ public class RegistrationHandler
     {
         private static final List<IRecipe> RECIPES = new LinkedList<>();
 
-        static void add(IRecipe recipe)
+        public static void add(IRecipe recipe)
         {
             RECIPES.add(recipe);
         }

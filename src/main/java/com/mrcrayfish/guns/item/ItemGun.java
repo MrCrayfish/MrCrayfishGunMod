@@ -33,23 +33,21 @@ import java.util.List;
 
 public class ItemGun extends ItemColored
 {
-	private final Gun gun;
+	private Gun gun;
 
-	private static final Predicate<EntityLivingBase> NOT_AGGRO_EXEMPT = new Predicate<EntityLivingBase>()
+	private static final Predicate<EntityLivingBase> NOT_AGGRO_EXEMPT = entity -> !(entity instanceof EntityPlayer) && !GunConfig.AggroMobs.exemptClasses.contains(entity.getClass());
+
+	public ItemGun(ResourceLocation id)
 	{
-		public boolean apply(@Nullable EntityLivingBase entity)
-		{
-			return !(entity instanceof EntityPlayer) && !GunConfig.AggroMobs.exemptClasses.contains(entity.getClass());
-		}
-	};
+		this.setTranslationKey(id.getNamespace() + "." + id.getPath());
+		this.setRegistryName(id);
+		this.setMaxStackSize(1);
+		GunRegistry.getInstance().register(this);
+	}
 
-	public ItemGun(Gun gun)
+	void setGun(Gun gun)
 	{
 		this.gun = gun;
-		this.setTranslationKey(gun.id);
-		this.setRegistryName(gun.id);
-		this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
-		this.setMaxStackSize(1);
 	}
 
 	public Gun getGun()
@@ -218,11 +216,29 @@ public class ItemGun extends ItemColored
 
 		if(silenced)
 		{
-			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.silencedFire), SoundCategory.HOSTILE, 1F, 0.8F + itemRand.nextFloat() * 0.2F);
+			String silencedSound = gun.sounds.getSilencedFire(gun);
+			SoundEvent event = ModSounds.getSound(silencedSound);
+			if(event == null)
+			{
+				event = SoundEvent.REGISTRY.getObject(new ResourceLocation(silencedSound));
+			}
+			if(event != null)
+			{
+				worldIn.playSound(null, playerIn.getPosition(), event, SoundCategory.HOSTILE, 1F, 0.8F + itemRand.nextFloat() * 0.2F);
+			}
 		}
 		else
 		{
-			worldIn.playSound(null, playerIn.getPosition(), ModSounds.getSound(gun.sounds.fire), SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+			String fireSound = gun.sounds.getFire(gun);
+			SoundEvent event = ModSounds.getSound(fireSound);
+			if(event == null)
+			{
+				event = SoundEvent.REGISTRY.getObject(new ResourceLocation(fireSound));
+			}
+			if(event != null)
+			{
+				worldIn.playSound(null, playerIn.getPosition(), event, SoundCategory.HOSTILE, 5.0F, 0.8F + itemRand.nextFloat() * 0.2F);
+			}
 		}
 
 		if(gun.display.flash != null)

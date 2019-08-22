@@ -23,6 +23,8 @@ public class CommonProxy
 
 	public void init() {}
 
+	public void postInit() {}
+
 	public void spawnParticle(EnumParticleTypes type, boolean ignoreRange, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {}
 
 	public void showMuzzleFlash() {}

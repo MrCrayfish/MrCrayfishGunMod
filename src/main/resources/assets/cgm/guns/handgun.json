@@ -1,0 +1,48 @@
+{
+    "id": "handgun",
+    "general": {
+        "rate": 12,
+        "gripType": "one_handed",
+        "maxAmmo": 15,
+        "recoilAngle": 15.0
+    },
+    "projectile": {
+        "type": "basic",
+        "visible": false,
+        "damage": 10.0,
+        "size": 0.2,
+        "speed": 10.0,
+        "life": 10,
+        "damageReduceOverLife": true
+    },
+    "sounds": {
+        "fire": "pistol_fire",
+        "reload": "pistol_reload",
+        "cock": "shotgun_fire",
+        "silencedFire": "pistol_fire_silenced"
+    },
+    "display": {
+        "flash": {
+            "yOffset": -4.2,
+            "zOffset": 0.5
+        }
+    },
+    "modules": {
+        "zoom": {
+            "fovModifier": 0.7,
+            "yOffset": 4.9,
+            "zOffset": -1.0
+        },
+        "attachments": {
+            "scope": {
+                "yOffset": 4.48,
+                "zOffset": 5
+            },
+            "barrel": {
+                "yOffset": 3.8,
+                "zOffset": 0.6,
+                "scale": 0.4
+            }
+        }
+    }
+}

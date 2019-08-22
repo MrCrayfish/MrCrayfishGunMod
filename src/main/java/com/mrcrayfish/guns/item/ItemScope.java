@@ -17,7 +17,7 @@ public class ItemScope extends ItemAttachment implements ISubItems
 {
     public ItemScope()
     {
-        super("scope", IAttachment.Type.SCOPE);
+        super(new ResourceLocation(Reference.MOD_ID, "scope"), IAttachment.Type.SCOPE);
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }
@@ -25,7 +25,7 @@ public class ItemScope extends ItemAttachment implements ISubItems
     @Override
     public String getTranslationKey(ItemStack stack)
     {
-        return super.getTranslationKey(stack) + "_" + Type.values()[stack.getItemDamage()].name;
+        return super.getTranslationKey(stack) + "." + Type.values()[stack.getItemDamage()].name;
     }
 
     @Override

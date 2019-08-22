@@ -4,14 +4,17 @@ import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.CooldownTracker;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -153,7 +156,12 @@ public class CommonEvents
                 ammo.shrink(amount);
             }
 
-            SoundEvent event = ModSounds.getSound(gun.sounds.reload);
+            String reloadSound = gun.sounds.getReload(gun);
+            SoundEvent event = ModSounds.getSound(reloadSound);
+            if(event == null)
+            {
+                event = SoundEvent.REGISTRY.getObject(new ResourceLocation(reloadSound));
+            }
             if(event != null)
             {
                 player.world.playSound(null, player.posX, player.posY + 1.0D, player.posZ, event, SoundCategory.PLAYERS, 1.0F, 1.0F);

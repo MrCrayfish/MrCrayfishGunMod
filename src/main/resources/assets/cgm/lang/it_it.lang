@@ -1,25 +1,25 @@
-tile.workbench.name=Banco da lavoro
+tile.cgm.workbench.name=Banco da lavoro
 
-item.handgun.name=Pistola
-item.shotgun.name=Fucile a pompa
-item.sniper_rifle.name=Fucile di precisione
-item.grenade_launcher.name=Lanciagranate
-item.bazooka.name=Bazooka
-item.chain_gun.name=Minigun
-item.rifle.name=Fucile
-item.assault_rifle.name=Fucile d'assalto
+item.cgm.handgun.name=Pistola
+item.cgm.shotgun.name=Fucile a pompa
+item.cgm.sniper_rifle.name=Fucile di precisione
+item.cgm.grenade_launcher.name=Lanciagranate
+item.cgm.bazooka.name=Bazooka
+item.cgm.chain_gun.name=Minigun
+item.cgm.rifle.name=Fucile
+item.cgm.assault_rifle.name=Fucile d'assalto
 
-item.ammo_basic.name=Munizioni base
-item.ammo_advanced.name=Munizioni avanzate
-item.ammo_shell.name=Bossolo
-item.ammo_grenade.name=Granata
-item.ammo_grenade_stun.name=Granata stordente
-item.ammo_missile.name=Missile
+item.cgm.ammo.basic.name=Munizioni base
+item.cgm.ammo.advanced.name=Munizioni avanzate
+item.cgm.ammo.shell.name=Bossolo
+item.cgm.ammo.grenade.name=Granata
+item.cgm.ammo.grenade_stun.name=Granata stordente
+item.cgm.ammo.missile.name=Missile
 
-item.scope_small.name=Mirino (corto)
-item.scope_medium.name=Mirino (medio)
-item.scope_long.name=Mirino (lungo)
-item.silencer.name=Silenziatore
+item.cgm.scope.small.name=Mirino (corto)
+item.cgm.scope.medium.name=Mirino (medio)
+item.cgm.scope.long.name=Mirino (lungo)
+item.cgm.silencer.name=Silenziatore
 
 itemGroup.tabCGM=MrCrayfish's Gun Mod
 
@@ -98,49 +98,6 @@ config.cgm.server.grenade.stun.effect_criteria.angle.attenuation.max=Attenuazion
 config.cgm.server.grenade.stun.effect_criteria.angle.attenuation.max.tooltip=Dopo che la durata si e' attenuata dalla distanza, viene attenuata ulteriormente a seconda dell'angolo (in gradi) tra l'occhio/direzione visiva e l'occhio/direzione della granata. Si fa cio' moltiplicandolo per 1 (senza attenuazione) se l'angolo e' 0; e da questo valore se l'angolo e' massimo entro l'angolo d'effetto.
 config.cgm.server.grenade.stun.effect_criteria.raytrace.opaque=Raytrace blocchi opachi
 config.cgm.server.grenade.stun.effect_criteria.raytrace.opaque.tooltip=Se attivo, l'effetto e' applicato solo se la linea tra gli occhi e la granata non si interseca con qualsiasi blocco non-liquido con un opacita' con valore positivo.
-
-config.cgm.server.guns=Armi
-config.cgm.server.guns.tooltip=Cambia le proprieta' delle armi
-config.cgm.server.guns.pistol=Pistola
-config.cgm.server.guns.pistol.tooltip=Cambia le proprieta' della pistola
-config.cgm.server.guns.shotgun=Fucile a pompa
-config.cgm.server.guns.shotgun.tooltip=Cambia le proprieta' del fucile a pompa
-config.cgm.server.guns.rifle=Fucile
-config.cgm.server.guns.rifle.tooltip=Cambia le proprieta' del fucile
-config.cgm.server.guns.grenade_launcher=Lanciagranate
-config.cgm.server.guns.grenade_launcher.tooltip=Cambia le proprieta' del lanciagranate
-config.cgm.server.guns.bazooka=Bazooka
-config.cgm.server.guns.bazooka.tooltip=Cambia le proprieta' del bazooka
-config.cgm.server.guns.chain_gun=Minigun
-config.cgm.server.guns.chain_gun.tooltip=Cambia le proprieta' della minigun
-config.cgm.server.guns.assault_rifle=Fucile d'assalto
-config.cgm.server.guns.assault_rifle.tooltip=Cambia le proprieta' del fucile d'assalto
-
-config.cgm.gun.general=Generale
-config.cgm.gun.general.tooltip=Cambia le proprieta' generali delle armi
-config.cgm.gun.general.max_ammo=Munizioni massime
-config.cgm.gun.general.max_ammo.tooltip=L'ammontare massimo di munizioni che puo' tenere quest'arma
-config.cgm.gun.general.reload_speed=Velocita' di ricarica
-config.cgm.gun.general.reload_speed.tooltip=La velocita' con cui viene ricaricata l'arma.
-
-config.cgm.gun.projectile=Proiettile
-config.cgm.gun.projectile.tooltip=Cambia le proprieta' del proiettile sparato dall'arma
-config.cgm.gun.projectile.visible=Visibile
-config.cgm.gun.projectile.visible.tooltip=Se attivo, renderizzera' il proiettile. Disabilitato per proiettili veloci per problemi di rendering.
-config.cgm.gun.projectile.damage=Danno
-config.cgm.gun.projectile.damage.tooltip=Il danno che quest'arma causa. Ogni unita' di valore e' equivalente a mezzo cuore.
-config.cgm.gun.projectile.size=Dimensione
-config.cgm.gun.projectile.size.tooltip=L'ammontare di proiettili aggiunti all'arma ad ogni ricarica.
-config.cgm.gun.projectile.speed=Velocita'
-config.cgm.gun.projectile.speed.tooltip=La velocita' con cui l'arma spara.
-config.cgm.gun.projectile.life=Vita
-config.cgm.gun.projectile.life.tooltip=La quantita' di tick prima che il proiettile venga rimosso dal mondo.
-config.cgm.gun.projectile.gravity=Gravita'
-config.cgm.gun.projectile.gravity.tooltip=Se attivo, il proiettile verra' affetto dalla gravita' e cadra'.
-config.cgm.gun.projectile.damage_fall_off=Riduzione del danno
-config.cgm.gun.projectile.damage_fall_off.tooltip=Se attivo, il danno si riduce di piu' se il proiettile percorre un percorso piu' lontano.
-config.cgm.gun.projectile.damage_reduce_zoomed=Danno ridotto (no zoom)
-config.cgm.gun.projectile.damage_reduce_zoomed.tooltip=Se attivo, il danno viene ridotto se non si zooma.
 
 key.categories.gun=MrCrayfish's Gun Mod
 key.aim=Mira

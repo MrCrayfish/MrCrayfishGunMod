@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.common.container.ContainerWorkbench;
-import com.mrcrayfish.guns.init.ModCrafting;
+import com.mrcrayfish.guns.common.WorkbenchRegistry;
 import com.mrcrayfish.guns.item.ItemColored;
 import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
 import com.mrcrayfish.guns.util.InventoryUtil;
@@ -59,7 +59,7 @@ public class MessageCraft implements IMessage, IMessageHandler<MessageCraft, IMe
     @Override
     public IMessage onMessage(MessageCraft message, MessageContext ctx)
     {
-        if(message.stack.isEmpty() || ModCrafting.getMaterialsForStack(message.stack) == null)
+        if(message.stack.isEmpty() || WorkbenchRegistry.getMaterialsForStack(message.stack) == null)
         {
             ctx.getServerHandler().player.connection.disconnect(new TextComponentString("Attempted to craft a weapon that didn't exist on the server"));
             return null;
@@ -72,7 +72,7 @@ public class MessageCraft implements IMessage, IMessageHandler<MessageCraft, IMe
             ContainerWorkbench workbench = (ContainerWorkbench) player.openContainer;
             if(workbench.getPos().equals(message.pos))
             {
-                List<ItemStack> materials = ModCrafting.getMaterialsForStack(message.stack);
+                List<ItemStack> materials = WorkbenchRegistry.getMaterialsForStack(message.stack);
                 if(materials != null)
                 {
                     for(ItemStack stack : materials)

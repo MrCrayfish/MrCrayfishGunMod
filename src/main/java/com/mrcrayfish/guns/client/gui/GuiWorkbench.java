@@ -1,14 +1,9 @@
 package com.mrcrayfish.guns.client.gui;
 
-import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.common.container.ContainerWorkbench;
-import com.mrcrayfish.guns.init.ModCrafting;
-import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.item.ItemAmmo;
+import com.mrcrayfish.guns.common.WorkbenchRegistry;
 import com.mrcrayfish.guns.item.ItemColored;
-import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.item.ItemScope;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageCraft;
 import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
@@ -36,9 +31,8 @@ import net.minecraftforge.oredict.DyeUtils;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,38 +42,18 @@ public class GuiWorkbench extends GuiContainer
 {
     private static final int MAX_TRANSITION_TICKS = 5;
     private static final ResourceLocation GUI = new ResourceLocation("cgm:textures/gui/workbench.png");
-    private static final ImmutableMap<ItemStack, DisplayProperty> DISPLAY_PROPERTIES;
+    private static final Map<ItemStack, DisplayProperty> DISPLAY_PROPERTIES = new HashMap<>();
 
-    static
+    public static void addDisplayProperty(ItemStack stack, DisplayProperty property)
     {
-        ImmutableMap.Builder<ItemStack, DisplayProperty> builder = ImmutableMap.builder();
-        registerGunDisplayProperty(builder, "handgun", new DisplayProperty(0.0F, 0.55F, -0.25F, 0.0F, 0.0F, 0.0F, 3.0F));
-        registerGunDisplayProperty(builder, "shotgun", new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-        registerGunDisplayProperty(builder, "rifle", new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-        registerGunDisplayProperty(builder, "grenade_launcher", new DisplayProperty(0.0F, 0.55F, -0.1F, 0.0F, 0.0F, 0.0F, 3.0F));
-        registerGunDisplayProperty(builder, "bazooka", new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.5F));
-        registerGunDisplayProperty(builder, "chain_gun", new DisplayProperty(0.0F, 0.55F, 0.1F, 0.0F, 0.0F, 0.0F, 2.0F));
-        registerGunDisplayProperty(builder, "assault_rifle", new DisplayProperty(0.0F, 0.55F, -0.15F, 0.0F, 0.0F, 0.0F, 3.0F));
-        builder.put(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.BASIC.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-        builder.put(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.ADVANCED.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-        builder.put(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.SHELL.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-        builder.put(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.MISSILE.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0F));
-        builder.put(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE_STUN.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-        builder.put(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-        builder.put(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-        builder.put(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-        builder.put(new ItemStack(ModGuns.SILENCER), new DisplayProperty(0.0F, 0.25F, 0.5F, 0.0F, 0.0F, 0.0F, 1.5F));
-        DISPLAY_PROPERTIES = builder.build();
-    }
-
-    private static void registerGunDisplayProperty(ImmutableMap.Builder<ItemStack, DisplayProperty> builder, String id, DisplayProperty property)
-    {
-        ItemGun gun = ModGuns.getGun(id);
-        if(gun != null)
+        for(ItemStack key : DISPLAY_PROPERTIES.keySet())
         {
-            builder.put(new ItemStack(gun), property);
+            if(ItemStackHelper.areItemStackEqualIgnoreTag(key, stack))
+            {
+                return;
+            }
         }
+        DISPLAY_PROPERTIES.put(stack, property);
     }
 
     @Nullable
@@ -118,7 +92,7 @@ public class GuiWorkbench extends GuiContainer
         this.xSize = 289;
         this.ySize = 202;
         this.materials = new ArrayList<>();
-        this.cachedItems = NonNullList.withSize(ModCrafting.getRecipeMaterials().size(), ItemStack.EMPTY);
+        this.cachedItems = NonNullList.withSize(WorkbenchRegistry.getRecipeMap().size(), ItemStack.EMPTY);
     }
 
     @Override
@@ -227,7 +201,7 @@ public class GuiWorkbench extends GuiContainer
         {
             if(currentIndex - 1 < 0)
             {
-                this.loadItem(ModCrafting.getRecipeMaterials().size() - 1);
+                this.loadItem(cachedItems.size() - 1);
             }
             else
             {
@@ -237,7 +211,7 @@ public class GuiWorkbench extends GuiContainer
         }
         else if(button.id == 2)
         {
-            if(currentIndex + 1 >= ModCrafting.getRecipeMaterials().size())
+            if(currentIndex + 1 >= cachedItems.size())
             {
                 this.loadItem(0);
             }
@@ -267,7 +241,7 @@ public class GuiWorkbench extends GuiContainer
         previousIndex = currentIndex;
         prevDisplayProperty = displayProperty;
 
-        ItemStack stack = ModCrafting.getRecipeMaterials().keySet().asList().get(index);
+        ItemStack stack = WorkbenchRegistry.getRecipeMap().keySet().asList().get(index);
         if(cachedItems.get(index).isEmpty())
         {
             cachedItems.set(index, stack.copy());
@@ -279,7 +253,7 @@ public class GuiWorkbench extends GuiContainer
 
             displayProperty = getDisplayProperty(stack);
 
-            List<ItemStack> materials = ModCrafting.getMaterialsForStack(stack);
+            List<ItemStack> materials = WorkbenchRegistry.getMaterialsForStack(stack);
             if(materials != null)
             {
                 for(ItemStack material : materials)

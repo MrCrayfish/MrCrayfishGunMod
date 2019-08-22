@@ -1,0 +1,30 @@
+{
+    "id": "chain_gun",
+    "general": {
+        "auto": true,
+        "rate": 2,
+        "gripType": "chain_gun",
+        "maxAmmo": 100,
+        "reloadSpeed": 4,
+        "recoilAngle": 1.0
+    },
+    "projectile": {
+        "type": "basic",
+        "visible": false,
+        "damage": 4.0,
+        "size": 0.2,
+        "speed": 10.0,
+        "life": 10
+    },
+    "sounds": {
+        "fire": "chain_gun_fire",
+        "reload": "pistol_reload",
+        "cock": "shotgun_fire"
+    },
+    "display": {
+        "flash": {
+            "yOffset": -6,
+            "zOffset": -15
+        }
+    }
+}

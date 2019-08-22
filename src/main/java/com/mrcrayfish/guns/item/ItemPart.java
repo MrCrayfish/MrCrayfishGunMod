@@ -15,8 +15,8 @@ public class ItemPart extends Item implements ISubItems
 
     public ItemPart()
     {
-        this.setTranslationKey("part");
-        this.setRegistryName("part");
+        this.setTranslationKey(Reference.MOD_ID + ".part");
+        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "part"));
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }

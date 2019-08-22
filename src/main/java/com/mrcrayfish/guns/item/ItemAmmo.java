@@ -24,8 +24,8 @@ public class ItemAmmo extends Item implements ISubItems
 {
     public ItemAmmo()
     {
-        this.setTranslationKey("ammo");
-        this.setRegistryName("ammo");
+        this.setTranslationKey(Reference.MOD_ID + ".ammo");
+        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "ammo"));
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
         this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
@@ -35,7 +35,7 @@ public class ItemAmmo extends Item implements ISubItems
     public String getTranslationKey(ItemStack stack)
     {
         if(stack.getItemDamage() >= Type.values().length) return super.getTranslationKey(stack);
-        return super.getTranslationKey(stack) + "_" + Type.values()[stack.getItemDamage()].name;
+        return super.getTranslationKey(stack) + "." + Type.values()[stack.getItemDamage()].name;
     }
 
     @Override
