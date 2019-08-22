@@ -17,14 +17,17 @@ public class ModSounds
 
 	static
 	{
-		for(ItemGun gunItem : GunRegistry.getInstance().getGuns().values())
-		{
-			Gun gun = gunItem.getGun();
-			register(gun.sounds.fire);
-			register(gun.sounds.reload);
-			register(gun.sounds.silencedFire);
-		}
-		register("");
+		register("pistol_fire");
+		register("shotgun_fire");
+		register("rifle_fire");
+		register("assault_rifle_fire");
+		register("grenade_fire");
+		register("bazooka_fire");
+		register("chain_gun_fire");
+		register("pistol_fire_silenced");
+		register("shotgun_fire_silenced");
+		register("rifle_fire_silenced");
+		register("pistol_reload");
 		register("grenade_stun_explosion");
 		register("grenade_stun_ring");
 	}
