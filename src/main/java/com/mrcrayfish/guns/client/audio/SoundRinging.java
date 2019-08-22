@@ -13,7 +13,7 @@ public class SoundRinging extends MovingSound
 {
     public SoundRinging()
     {
-        super(ModSounds.getSound("grenade_stun_ring"), SoundCategory.MASTER);
+        super(ModSounds.getSound("cgm:grenade_stun_ring"), SoundCategory.MASTER);
         repeat = true;
         attenuationType = AttenuationType.NONE;
         update();

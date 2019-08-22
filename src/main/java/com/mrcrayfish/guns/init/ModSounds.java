@@ -38,7 +38,7 @@ public class ModSounds
         {
         	ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, name);
         	SoundEvent event = new SoundEvent(sound).setRegistryName(name);
-        	SOUNDS.put(name, event);
+        	SOUNDS.put(sound.toString(), event);
         }
     }
 

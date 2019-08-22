@@ -21,9 +21,9 @@
         "damageReduceIfNotZoomed": false
     },
     "sounds": {
-        "fire": "grenade_fire",
-        "reload": "pistol_reload",
-        "cock": "shotgun_fire"
+        "fire": "cgm:grenade_fire",
+        "reload": "cgm:pistol_reload",
+        "cock": "cgm:shotgun_fire"
     },
     "display": {
         "flash": {

@@ -42,7 +42,7 @@ public class EntityGrenadeStun extends EntityGrenade
     public void onDeath()
     {
         double y = posY + height * 0.5;
-        world.playSound(null, posX, y, posZ, ModSounds.getSound("grenade_stun_explosion"), SoundCategory.BLOCKS, 4, (1 + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+        world.playSound(null, posX, y, posZ, ModSounds.getSound("cgm:grenade_stun_explosion"), SoundCategory.BLOCKS, 4, (1 + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
         PacketHandler.INSTANCE.sendToAllAround(new MessageExplosionStunGrenade(posX, y, posZ), new TargetPoint(world.provider.getDimension(), posX, y, posZ, 4096));
 
         // Calculate bounds of area where potentially effected players my be

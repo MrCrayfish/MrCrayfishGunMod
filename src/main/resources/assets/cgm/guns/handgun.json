@@ -16,10 +16,10 @@
         "damageReduceOverLife": true
     },
     "sounds": {
-        "fire": "pistol_fire",
-        "reload": "pistol_reload",
-        "cock": "shotgun_fire",
-        "silencedFire": "pistol_fire_silenced"
+        "fire": "cgm:pistol_fire",
+        "reload": "cgm:pistol_reload",
+        "cock": "cgm:shotgun_fire",
+        "silencedFire": "cgm:pistol_fire_silenced"
     },
     "display": {
         "flash": {
