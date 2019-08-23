@@ -9,12 +9,12 @@ item.cgm.chain_gun.name=Minigun
 item.cgm.rifle.name=Rifle
 item.cgm.assault_rifle.name=Assault Rifle
 
-item.cgm.ammo.basic.name=Basic Ammo
-item.cgm.ammo.advanced.name=Advanced Ammo
-item.cgm.ammo.shell.name=Shell
-item.cgm.ammo.grenade.name=Grenade
-item.cgm.ammo.grenade_stun.name=Stun Grenade
-item.cgm.ammo.missile.name=Missile
+item.cgm.basic_ammo.name=Basic Ammo
+item.cgm.advanced_ammo.name=Advanced Ammo
+item.cgm.shell.name=Shell
+item.cgm.grenade.name=Grenade
+item.cgm.stun_grenade.name=Stun Grenade
+item.cgm.missile.name=Missile
 
 item.cgm.scope.small.name=Scope (Short)
 item.cgm.scope.medium.name=Scope (Medium)

@@ -1,17 +1,15 @@
 package com.mrcrayfish.guns;
 
 import com.mrcrayfish.guns.common.GuiHandler;
-import com.mrcrayfish.guns.common.WorkbenchRegistry;
 import com.mrcrayfish.guns.entity.EntityGrenade;
-import com.mrcrayfish.guns.entity.EntityGrenadeStun;
-import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.entity.EntityMissile;
 import com.mrcrayfish.guns.init.*;
+import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.proxy.CommonProxy;
 import com.mrcrayfish.guns.recipe.RecipeAttachment;
 import com.mrcrayfish.guns.recipe.RecipeColorItem;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -19,7 +17,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = Reference.MC_VERSION, dependencies = Reference.DEPENDENCIES)
@@ -47,6 +44,9 @@ public class MrCrayfishGunMod
         ModPotions.register();
 		PacketHandler.init();
 
+		RegistrationHandler.Recipes.add(new RecipeAttachment());
+		RegistrationHandler.Recipes.add(new RecipeColorItem());
+
 		proxy.preInit();
 	}
 
@@ -55,6 +55,9 @@ public class MrCrayfishGunMod
 	{
 		ModCrafting.register();
 		ModEntities.register();
+
+		AmmoRegistry.getInstance().registerProjectileFactory(ModGuns.GRENADE, (worldIn, entity, gun) -> new EntityGrenade(worldIn, entity, gun.projectile));
+		AmmoRegistry.getInstance().registerProjectileFactory(ModGuns.MISSILE, (worldIn, entity, gun) -> new EntityMissile(worldIn, entity, gun.projectile));
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 

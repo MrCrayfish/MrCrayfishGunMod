@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.entity;
 
-import com.mrcrayfish.guns.entity.EntityGrenade;
-import com.mrcrayfish.guns.entity.EntityGrenadeStun;
+import com.mrcrayfish.guns.entity.EntityThrowableGrenade;
+import com.mrcrayfish.guns.entity.EntityThrowableStunGrenade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class RenderGrenade extends Render<EntityGrenade>
+public class RenderGrenade extends Render<EntityThrowableGrenade>
 {
     public RenderGrenade(RenderManager renderManager)
     {
@@ -31,13 +31,13 @@ public class RenderGrenade extends Render<EntityGrenade>
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityGrenade entity)
+    protected ResourceLocation getEntityTexture(EntityThrowableGrenade entity)
     {
         return null;
     }
 
     @Override
-    public void doRender(EntityGrenade entity, double x, double y, double z, float entityYaw, float partialTicks)
+    public void doRender(EntityThrowableGrenade entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
         GlStateManager.pushMatrix();
         {
@@ -50,11 +50,11 @@ public class RenderGrenade extends Render<EntityGrenade>
             GlStateManager.rotate(-rotation, 1, 0, 0);
             GlStateManager.translate(0, -0.15, 0);
 
-            if(entity instanceof EntityGrenadeStun)
+            if(entity instanceof EntityThrowableStunGrenade)
             {
                 GlStateManager.translate(0, 0.3, 0);
                 GlStateManager.rotate(-90F, 0, 0, 1);
-                GlStateManager.translate(0, -((EntityGrenadeStun) entity).height / 2, 0);
+                GlStateManager.translate(0, -((EntityThrowableStunGrenade) entity).height / 2, 0);
             }
 
             GlStateManager.translate(-0.5, 0, -0.5);

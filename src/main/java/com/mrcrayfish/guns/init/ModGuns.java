@@ -33,8 +33,23 @@ public class ModGuns
     @GameRegistry.ObjectHolder("cgm:part")
     public static final Item PARTS = null;
 
-    @GameRegistry.ObjectHolder("cgm:ammo")
-    public static final Item AMMO = null;
+    @GameRegistry.ObjectHolder("cgm:basic_ammo")
+    public static final Item BASIC_AMMO = null;
+
+    @GameRegistry.ObjectHolder("cgm:advanced_ammo")
+    public static final Item ADVANCED_AMMO = null;
+
+    @GameRegistry.ObjectHolder("cgm:shell")
+    public static final Item SHELL = null;
+
+    @GameRegistry.ObjectHolder("cgm:missile")
+    public static final ItemAmmo MISSILE = null;
+
+    @GameRegistry.ObjectHolder("cgm:grenade")
+    public static final ItemAmmo GRENADE = null;
+
+    @GameRegistry.ObjectHolder("cgm:stun_grenade")
+    public static final Item STUN_GRENADE = null;
 
     @GameRegistry.ObjectHolder("cgm:scope")
     public static final Item SCOPES = null;
@@ -51,8 +66,15 @@ public class ModGuns
         register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "bazooka")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
         register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "chain_gun")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
         register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "assault_rifle")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+
+        register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "basic_ammo")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "advanced_ammo")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "shell")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "missile")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "grenade")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "stun_grenade")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+
         register(new ItemPart());
-        register(new ItemAmmo());
         register(new ItemScope());
         register(new ItemAttachment(new ResourceLocation(Reference.MOD_ID, "silencer"), IAttachment.Type.BARREL));
     }

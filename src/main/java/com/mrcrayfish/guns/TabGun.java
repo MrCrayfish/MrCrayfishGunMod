@@ -14,7 +14,6 @@ public class TabGun extends CreativeTabs
 	@Override
 	public ItemStack createIcon()
 	{
-		return new ItemStack(ModGuns.AMMO);
+		return new ItemStack(ModGuns.PISTOL);
 	}
-
 }

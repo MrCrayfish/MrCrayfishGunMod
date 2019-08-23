@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
@@ -9,6 +10,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -43,18 +45,22 @@ public class MessageUnload implements IMessage, IMessageHandler<MessageUnload, I
 
                     ItemGun itemGun = (ItemGun) stack.getItem();
                     Gun gun = itemGun.getModifiedGun(stack);
-                    ItemAmmo.Type ammoType = gun.projectile.type;
+                    ResourceLocation id = gun.projectile.item;
+
+                    ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(id);
+                    if(ammo == null)
+                        return;
 
                     int stacks = count / 64;
                     for(int i = 0; i < stacks; i++)
                     {
-                        spawnAmmo(player, new ItemStack(ModGuns.AMMO, 64, ammoType.ordinal()));
+                        spawnAmmo(player, new ItemStack(ammo, 64));
                     }
 
                     int remaining = count % 64;
                     if(remaining > 0)
                     {
-                        spawnAmmo(player, new ItemStack(ModGuns.AMMO, count, ammoType.ordinal()));
+                        spawnAmmo(player, new ItemStack(ammo, count));
                     }
                 }
             }

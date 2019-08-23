@@ -27,6 +27,7 @@ import java.util.Objects;
 public class GunRegistry
 {
     private static final Type GUN_TYPE = new TypeToken<Gun>(){}.getType();
+    private static final Type RESOURCE_LOCATION_TYPE = new TypeToken<ResourceLocation>(){}.getType();
 
     private static GunRegistry instance = null;
 
@@ -67,7 +68,9 @@ public class GunRegistry
 
         String assetsFile = String.format("/assets/%s/guns/%s.json", id.getNamespace(), id.getPath());
         Reader reader = new InputStreamReader(GunRegistry.class.getResourceAsStream(assetsFile));
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationDeserializer());
+        Gson gson = builder.create();
         Gun gun = gson.fromJson(reader, GUN_TYPE);
 
         try
@@ -94,8 +97,9 @@ public class GunRegistry
         {
             reader = new InputStreamReader(new FileInputStream(gunFile));
             JsonElement parent = new JsonParser().parse(reader);
-            GsonBuilder builder = new GsonBuilder();
+            builder = new GsonBuilder();
             builder.registerTypeAdapter(GUN_TYPE, new Gun.Deserializer(gun));
+            builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationDeserializer());
             gson = builder.create();
             gun = gson.fromJson(parent, GUN_TYPE);
             itemGun.setGun(gun);
@@ -113,6 +117,7 @@ public class GunRegistry
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
             builder.registerTypeAdapter(GUN_TYPE, new Gun.Serializer());
+            builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationSerializer());
             Gson gson = builder.create();
             OutputStream os = new FileOutputStream(gunFile);
             IOUtils.write(gson.toJson(gun), os, StandardCharsets.UTF_8);

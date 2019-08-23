@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.JsonUtils;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -20,66 +21,24 @@ import java.lang.reflect.Type;
 
 public class Gun implements INBTSerializable<NBTTagCompound>
 {
-	@Ignored
-	@Config.Ignore
-	public ServerGun serverGun;
-
-	@Config.Ignore
+	@Ignored public ServerGun serverGun;
 	public String id;
-
-	@Config.Name("General")
-	@Config.Comment("Change the general properties of the gun")
-	@Config.LangKey(GunConfig.PREFIX + "gun.general")
 	public General general = new General();
-
-	@Config.Name("Projectile")
-	@Config.Comment("Change the properties of the projectile fired from the gun")
-	@Config.LangKey(GunConfig.PREFIX + "gun.projectile")
 	public Projectile projectile = new Projectile();
-
-	@Config.Ignore
 	public Sounds sounds = new Sounds();
-
-	@Config.Ignore
 	public Display display = new Display();
-
-	@Config.Ignore
 	public Modules modules = new Modules();
 
 	public static class General implements INBTSerializable<NBTTagCompound>
 	{
-		@Optional
-		@Config.Ignore
-		public boolean auto = false;
-
-		@Config.Ignore
+		@Optional public boolean auto = false;
 		public int rate;
-
-		@Config.Ignore
 		public GripType gripType;
-
-		@Config.Name("Max Ammo")
-		@Config.Comment("The maximum amount of ammo this gun can hold")
-		@Config.LangKey(GunConfig.PREFIX + "gun.general.max_ammo")
 		public int maxAmmo;
-
-		@Optional
-		@Config.Name("Reload Speed")
-		@Config.Comment("The amount of bullets added to the gun on each reload")
-		@Config.LangKey(GunConfig.PREFIX + "gun.general.reload_speed")
-		public int reloadSpeed = 1;
-
-		@Optional
-		@Config.Ignore
-		public float recoilAngle;
-
-		@Optional
-		@Config.Ignore
-		public float recoilKick;
-
-		@Optional
-		@Config.Ignore
-		public float recoilDurationOffset;
+		@Optional public int reloadSpeed = 1;
+		@Optional public float recoilAngle;
+		@Optional public float recoilKick;
+		@Optional public float recoilDurationOffset;
 
 		public int getMaxAmmo(Gun modifiedGun)
 		{
@@ -164,52 +123,15 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	
 	public static class Projectile implements INBTSerializable<NBTTagCompound>
 	{
-		@Config.Ignore
-		public ItemAmmo.Type type;
-
-		@Optional
-		@Config.Name("Visible")
-		@Config.Comment("If true, will render the projectile. This is disabled for fast projectiles because of rendering issues")
-		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.visible")
-		public boolean visible;
-
-		@Config.Name("Damage")
-		@Config.Comment("The damage this gun will cause. Each value is equivalent to half a heart.")
-		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.damage")
+		public ResourceLocation item;
+		@Optional public boolean visible;
 		public float damage;
-
-		@Config.Name("Size")
-		@Config.Comment("The size of the projectile")
-		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.size")
 		public float size;
-
-		@Config.Name("Speed")
-		@Config.Comment("The distance the projectile travels each tick")
-		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.speed")
 		public double speed;
-
-		@Config.Name("Life")
-		@Config.Comment("The amount of ticks before the projectile is removed for the world")
-		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.life")
 		public int life;
-
-		@Optional
-		@Config.Name("Gravity")
-		@Config.Comment("If true, the projectile will be affected by gravity and drop")
-		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.gravity")
-		public boolean gravity;
-
-		@Optional
-		@Config.Name("Damage Falloff")
-		@Config.Comment("If true, the damage of the gun will reduce the further the target is away")
-		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.damage_fall_off")
-		public boolean damageReduceOverLife;
-
-		@Optional
-		@Config.Name("Reduce Damage Not Zoomed")
-		@Config.Comment("If true, the damage of the gun will be reduced if not zoomed")
-		@Config.LangKey(GunConfig.PREFIX + "gun.projectile.damage_reduce_zoomed")
-		public boolean damageReduceIfNotZoomed;
+		@Optional public boolean gravity;
+		@Optional public boolean damageReduceOverLife;
+		@Optional public boolean damageReduceIfNotZoomed;
 
 		public float getDamage(Gun modifiedGun)
 		{
@@ -229,7 +151,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		public NBTTagCompound serializeNBT() 
 		{
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("type", this.type.ordinal());
+			tag.setString("item", this.item.toString());
 			tag.setBoolean("visible", this.visible);
 			tag.setFloat("damage", this.damage);
 			tag.setFloat("size", this.size);
@@ -244,9 +166,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Override
 		public void deserializeNBT(NBTTagCompound tag) 
 		{
-			if(tag.hasKey("type", Constants.NBT.TAG_INT))
+			if(tag.hasKey("item", Constants.NBT.TAG_STRING))
 			{
-				this.type = ItemAmmo.Type.values()[tag.getInteger("type")];
+				this.item = new ResourceLocation(tag.getString("item"));
 			}
 			if(tag.hasKey("visible", Constants.NBT.TAG_BYTE))
 			{
@@ -285,7 +207,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		public Projectile copy()
 		{
 			Projectile projectile = new Projectile();
-			projectile.type = type;
+			projectile.item = item;
 			projectile.visible = visible;
 			projectile.damage = damage;
 			projectile.size = size;
@@ -300,16 +222,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	
 	public static class Sounds implements INBTSerializable<NBTTagCompound>
 	{
-		@Config.Ignore
 		public String fire = "";
-
-		@Config.Ignore
 		public String reload = "";
-
-		@Config.Ignore
 		public String cock = "";
-
-		@Config.Ignore
 		public String silencedFire = "silenced_fire";
 
 		public String getFire(Gun modifiedGun)
@@ -635,6 +550,24 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			}
 		}
 		return ItemStack.EMPTY;
+	}
+
+	public static class ResourceLocationSerializer implements JsonSerializer<ResourceLocation>
+	{
+		@Override
+		public JsonElement serialize(ResourceLocation src, Type typeOfSrc, JsonSerializationContext context)
+		{
+			return new JsonPrimitive(src.toString());
+		}
+	}
+
+	public static class ResourceLocationDeserializer implements JsonDeserializer<ResourceLocation>
+	{
+		@Override
+		public ResourceLocation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		{
+			return new ResourceLocation(json.getAsString());
+		}
 	}
 
 	public static class Serializer implements JsonSerializer<Gun>

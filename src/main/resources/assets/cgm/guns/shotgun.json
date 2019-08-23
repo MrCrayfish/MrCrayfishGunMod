@@ -8,7 +8,7 @@
         "recoilAngle": 10.0
     },
     "projectile": {
-        "type": "shell",
+        "item": "cgm:shell",
         "visible": false,
         "damage": 15.0,
         "size": 1.0,

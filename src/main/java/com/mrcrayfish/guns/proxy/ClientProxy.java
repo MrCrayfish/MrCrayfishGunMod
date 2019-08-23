@@ -19,9 +19,7 @@ import com.mrcrayfish.guns.client.render.gun.model.ModelChainGun;
 import com.mrcrayfish.guns.client.render.gun.model.ModelLongScope;
 import com.mrcrayfish.guns.client.render.gun.model.ModelMediumScope;
 import com.mrcrayfish.guns.client.render.gun.model.ModelShortScope;
-import com.mrcrayfish.guns.entity.EntityGrenade;
-import com.mrcrayfish.guns.entity.EntityGrenadeStun;
-import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.entity.*;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.GunRegistry;
@@ -63,8 +61,8 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(new ReloadHandler());
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityGrenade.class, RenderGrenade::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityGrenadeStun.class, RenderGrenade::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityThrowableGrenade.class, RenderGrenade::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityThrowableStunGrenade.class, RenderGrenade::new);
 
 		KeyBinds.register();
 
@@ -110,12 +108,12 @@ public class ClientProxy extends CommonProxy
 		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.BAZOOKA), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.5F));
 		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.CHAIN_GUN), new DisplayProperty(0.0F, 0.55F, 0.1F, 0.0F, 0.0F, 0.0F, 2.0F));
 		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.ASSAULT_RIFLE), new DisplayProperty(0.0F, 0.55F, -0.15F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.BASIC.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.ADVANCED.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.SHELL.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.5F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.MISSILE.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE_STUN.ordinal()), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.BASIC_AMMO), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.ADVANCED_AMMO), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SHELL), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.5F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.GRENADE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.MISSILE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.STUN_GRENADE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
 		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
 		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
 		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));

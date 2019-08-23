@@ -18,9 +18,6 @@ public class ModCrafting
     @SuppressWarnings("ConstantConditions")
     public static void register()
     {
-        RegistrationHandler.Recipes.add(new RecipeAttachment());
-        RegistrationHandler.Recipes.add(new RecipeColorItem());
-
         WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.PISTOL),
                 new ItemStack(Items.IRON_INGOT, 14));
         WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.SHOTGUN),
@@ -37,23 +34,23 @@ public class ModCrafting
                 new ItemStack(Items.IRON_INGOT, 38));
         WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.ASSAULT_RIFLE),
                 new ItemStack(Items.IRON_INGOT, 28));
-        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.AMMO, 32, ItemAmmo.Type.BASIC.ordinal()),
+        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.BASIC_AMMO, 32),
                 new ItemStack(Items.GUNPOWDER, 1),
                 new ItemStack(Items.IRON_NUGGET, 8));
-        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.AMMO, 16, ItemAmmo.Type.ADVANCED.ordinal()),
+        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.ADVANCED_AMMO, 16),
                 new ItemStack(Items.GUNPOWDER, 1),
                 new ItemStack(Items.IRON_NUGGET, 4));
-        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.AMMO, 24, ItemAmmo.Type.SHELL.ordinal()),
+        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.SHELL, 24),
                 new ItemStack(Items.GUNPOWDER, 1),
                 new ItemStack(Items.GOLD_NUGGET, 2),
                 new ItemStack(Items.IRON_NUGGET, 4));
-        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.AMMO, 2, ItemAmmo.Type.GRENADE.ordinal()),
+        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.GRENADE, 2),
                 new ItemStack(Items.GUNPOWDER, 4),
                 new ItemStack(Items.IRON_INGOT, 2));
-        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.AMMO, 2, ItemAmmo.Type.MISSILE.ordinal()),
+        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.MISSILE, 2),
                 new ItemStack(Items.GUNPOWDER, 8),
                 new ItemStack(Items.IRON_INGOT, 4));
-        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.AMMO, 2, ItemAmmo.Type.GRENADE_STUN.ordinal()),
+        WorkbenchRegistry.registerRecipe(new ItemStack(ModGuns.STUN_GRENADE, 2),
                 new ItemStack(Items.GLOWSTONE_DUST, 4),
                 new ItemStack(Items.GUNPOWDER, 2),
                 new ItemStack(Items.IRON_INGOT, 2));

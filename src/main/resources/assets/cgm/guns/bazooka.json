@@ -8,7 +8,7 @@
         "recoilDurationOffset": 0.25
     },
     "projectile": {
-        "type": "missile",
+        "item": "cgm:missile",
         "visible": true,
         "auto": false,
         "damage": 20.0,

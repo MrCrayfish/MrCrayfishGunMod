@@ -9,7 +9,7 @@
         "recoilKick": 0.25
     },
     "projectile": {
-        "type": "basic",
+        "item": "cgm:basic_ammo",
         "visible": false,
         "damage": 6.0,
         "size": 0.2,

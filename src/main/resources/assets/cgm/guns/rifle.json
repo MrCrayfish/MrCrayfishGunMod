@@ -9,7 +9,7 @@
         "recoilDurationOffset": 0.25
     },
     "projectile": {
-        "type": "advanced",
+        "item": "cgm:advanced_ammo",
         "visible": false,
         "damage": 20.0,
         "size": 0.0625,

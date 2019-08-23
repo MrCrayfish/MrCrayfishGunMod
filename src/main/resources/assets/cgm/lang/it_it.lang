@@ -9,12 +9,12 @@ item.cgm.chain_gun.name=Minigun
 item.cgm.rifle.name=Fucile
 item.cgm.assault_rifle.name=Fucile d'assalto
 
-item.cgm.ammo.basic.name=Munizioni base
-item.cgm.ammo.advanced.name=Munizioni avanzate
-item.cgm.ammo.shell.name=Bossolo
-item.cgm.ammo.grenade.name=Granata
-item.cgm.ammo.grenade_stun.name=Granata stordente
-item.cgm.ammo.missile.name=Missile
+item.cgm.basic_ammo.name=Munizioni base
+item.cgm.advanced_ammo.name=Munizioni avanzate
+item.cgm.shell.name=Bossolo
+item.cgm.grenade.name=Granata
+item.cgm.stun_grenade.name=Granata stordente
+item.cgm.missile.name=Missile
 
 item.cgm.scope.small.name=Mirino (corto)
 item.cgm.scope.medium.name=Mirino (medio)

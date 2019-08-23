@@ -78,7 +78,7 @@ public class ReloadHandler
                         Gun gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
                         if(tag.getInteger("AmmoCount") >= gun.general.maxAmmo)
                             return;
-                        if(ItemGun.findAmmo(player, gun.projectile.type) == null)
+                        if(ItemGun.findAmmo(player, gun.projectile.item).isEmpty())
                             return;
                         Minecraft.getMinecraft().player.getDataManager().set(CommonEvents.RELOADING, true);
                         PacketHandler.INSTANCE.sendToServer(new MessageReload(true));

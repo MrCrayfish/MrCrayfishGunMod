@@ -7,7 +7,7 @@
         "recoilAngle": 15.0
     },
     "projectile": {
-        "type": "basic",
+        "item": "cgm:basic_ammo",
         "visible": false,
         "damage": 10.0,
         "size": 0.2,

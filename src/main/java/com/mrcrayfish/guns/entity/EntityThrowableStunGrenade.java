@@ -24,18 +24,17 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import javax.annotation.Nullable;
 
-public class EntityGrenadeStun extends EntityGrenade
+public class EntityThrowableStunGrenade extends EntityThrowableGrenade
 {
-
-    public EntityGrenadeStun(World world)
+    public EntityThrowableStunGrenade(World world)
     {
         super(world);
     }
 
-    public EntityGrenadeStun(World world, EntityPlayer player)
+    public EntityThrowableStunGrenade(World world, EntityPlayer player)
     {
         super(world, player);
-        setItem(new ItemStack(ModGuns.AMMO, 1, ItemAmmo.Type.GRENADE_STUN.ordinal()));
+        this.setItem(new ItemStack(ModGuns.STUN_GRENADE));
     }
 
     @Override

@@ -10,10 +10,7 @@ import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModPotions;
-import com.mrcrayfish.guns.item.IAttachment;
-import com.mrcrayfish.guns.item.ItemAmmo;
-import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.item.ItemScope;
+import com.mrcrayfish.guns.item.*;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
@@ -803,6 +800,10 @@ public class RenderEvents
 
         Gun gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
 
+        ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(gun.projectile.item);
+        if(ammo == null)
+            return;
+
         GlStateManager.pushMatrix();
 
         float reload = ((mc.player.ticksExisted - startTick + mc.getRenderPartialTicks()) % 10F) / 10F;
@@ -832,7 +833,7 @@ public class RenderEvents
             GlStateManager.translate(-side * 5 * 0.0625, 15 * 0.0625, -1 * 0.0625);
             GlStateManager.rotate(180F, 1, 0, 0);
             GlStateManager.scale(0.75, 0.75, 0.75);
-            RenderUtil.renderModel(ItemAmmo.getAmmo(gun.projectile.type, 1), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
+            RenderUtil.renderModel(new ItemStack(ammo), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
             GlStateManager.popMatrix();
         }
 

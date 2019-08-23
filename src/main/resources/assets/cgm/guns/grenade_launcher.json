@@ -9,7 +9,7 @@
         "recoilDurationOffset": 0.25
     },
     "projectile": {
-        "type": "grenade",
+        "item": "cgm:grenade",
         "visible": true,
         "auto": false,
         "damage": 30.0,

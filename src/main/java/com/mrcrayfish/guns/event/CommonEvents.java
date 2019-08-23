@@ -132,7 +132,7 @@ public class CommonEvents
 
         public boolean hasAmmo(EntityPlayer player)
         {
-            return ItemGun.findAmmo(player, gun.projectile.type) != null;
+            return ItemGun.findAmmo(player, gun.projectile.item) != null;
         }
 
         public boolean canReload(EntityPlayer player)
@@ -143,8 +143,8 @@ public class CommonEvents
 
         public void increaseAmmo(EntityPlayer player)
         {
-            ItemStack ammo = ItemGun.findAmmo(player, gun.projectile.type);
-            if(ammo != null)
+            ItemStack ammo = ItemGun.findAmmo(player, gun.projectile.item);
+            if(!ammo.isEmpty())
             {
                 int amount = Math.min(ammo.getCount(), gun.general.reloadSpeed);
                 NBTTagCompound tag = stack.getTagCompound();
