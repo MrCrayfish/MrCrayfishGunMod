@@ -978,16 +978,17 @@ public class RenderEvents
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
             Vec3d motionVec = new Vec3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
+            double length = motionVec.length() / 2.0;
 
             buffer.pos(0, 0, -0.05).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
             buffer.pos(0, 0, 0.05).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0, -motionVec.length(), 0.05).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0, -motionVec.length(), -0.05).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, -length, 0.05).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, -length, -0.05).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
 
             buffer.pos(-0.05, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
             buffer.pos(0.05, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0.05, -motionVec.length(), 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(-0.05, -motionVec.length(), 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0.05, -length, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(-0.05, -length, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
 
             tessellator.draw();
             GlStateManager.enableCull();
