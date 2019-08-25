@@ -62,6 +62,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.motionZ = dir.z * projectile.speed;
         updateHeading();
 
+        System.out.println(this.motionX);
+
         this.setSize(projectile.size, projectile.size);
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
 
@@ -292,6 +294,9 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         buffer.writeInt(this.shooterId);
         buffer.writeFloat(this.rotationYaw);
         buffer.writeFloat(this.rotationPitch);
+        buffer.writeDouble(this.motionX);
+        buffer.writeDouble(this.motionY);
+        buffer.writeDouble(this.motionZ);
     }
 
     @Override
@@ -307,15 +312,17 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.prevRotationYaw = this.rotationYaw;
         this.rotationPitch = additionalData.readFloat();
         this.prevRotationPitch = this.rotationPitch;
+        this.motionX = additionalData.readDouble();
+        this.motionY = additionalData.readDouble();
+        this.motionZ = additionalData.readDouble();
 
-        if(this.projectile.visible)
+        ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(projectile.item);
+        if(ammo != null)
         {
-            ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(projectile.item);
-            if(ammo != null)
-            {
-                this.item = new ItemStack(ammo);
-            }
+            this.item = new ItemStack(ammo);
         }
+
+        this.setSize(this.projectile.size, this.projectile.size);
     }
 
     public void updateHeading()

@@ -10,6 +10,7 @@ import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
@@ -203,6 +204,12 @@ public class ItemGun extends ItemColored
             bullet.setDamageModifier(0.75F);
         }
         worldIn.spawnEntity(bullet);
+
+        if(!gun.projectile.visible)
+        {
+            PacketHandler.INSTANCE.sendToAllTracking(new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ), playerIn);
+            PacketHandler.INSTANCE.sendTo(new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ), (EntityPlayerMP) playerIn);
+        }
 
         if(GunConfig.SERVER.aggroMobs.enabled)
         {

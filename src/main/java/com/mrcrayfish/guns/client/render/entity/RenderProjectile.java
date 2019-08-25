@@ -35,6 +35,9 @@ public class RenderProjectile extends Render<EntityProjectile>
     @Override
     public void doRender(EntityProjectile entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
+        if(!entity.getProjectile().visible)
+            return;
+
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(x, y, z);

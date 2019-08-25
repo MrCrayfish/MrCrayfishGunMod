@@ -11,10 +11,12 @@ import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.item.*;
+import com.mrcrayfish.guns.object.Bullet;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
@@ -26,10 +28,13 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -37,6 +42,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.util.Constants;
@@ -46,18 +52,20 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class RenderEvents
 {
     private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Reference.MOD_ID, "textures/scope_long_overlay.png");
+    private static final ResourceLocation WHITE_GRADIENT = new ResourceLocation(Reference.MOD_ID, "textures/effect/white_gradient.png");
     private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
     private static final double ZOOM_TICKS = 4;
     public static boolean drawFlash = false;
+    public static int screenTextureId = -1;
+    public static boolean shadersEnabled;
 
     private int zoomProgress;
     private int lastZoomProgress;
@@ -73,8 +81,7 @@ public class RenderEvents
 
     private ItemStack flash = null;
 
-    public static int screenTextureId = -1;
-    public static boolean shadersEnabled;
+    private List<Bullet> bullets = new ArrayList<>();
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -926,5 +933,110 @@ public class RenderEvents
             COOLDOWN_TRACKER_MAP.put(uuid, new CooldownTracker());
         }
         return COOLDOWN_TRACKER_MAP.get(uuid);
+    }
+
+    @SubscribeEvent
+    public void onRenderBullets(RenderWorldLastEvent event)
+    {
+        for(Bullet bullet : bullets)
+        {
+            this.renderBullet(bullet, event.getPartialTicks());
+        }
+    }
+
+    private void renderBullet(Bullet bullet, float partialTicks)
+    {
+        Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
+        if(entity == null || bullet.isFinished() || bullet.getProjectile() == null)
+            return;
+
+        double doubleX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double doubleY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double doubleZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+
+        GlStateManager.pushMatrix();
+
+        GlStateManager.translate(-doubleX, -doubleY, -doubleZ);
+
+        double bulletX = bullet.getPosX() + bullet.getMotionX() * partialTicks;
+        double bulletY = bullet.getPosY() + bullet.getMotionY() * partialTicks;
+        double bulletZ = bullet.getPosZ() + bullet.getMotionZ() * partialTicks;
+        GlStateManager.translate(bulletX, bulletY, bulletZ);
+
+        GlStateManager.rotate(bullet.getRotationYaw(), 0, 1, 0);
+        GlStateManager.rotate(-bullet.getRotationPitch() + 90, 1, 0, 0);
+
+        {
+            GlStateManager.pushAttrib();
+            GlStateManager.enableBlend();
+            GlStateManager.disableCull();
+
+            Minecraft.getMinecraft().getTextureManager().bindTexture(WHITE_GRADIENT);
+
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder buffer = tessellator.getBuffer();
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+
+            Vec3d motionVec = new Vec3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
+
+            buffer.pos(0, 0, -0.05).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, 0, 0.05).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, -motionVec.length(), 0.05).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, -motionVec.length(), -0.05).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+
+            buffer.pos(-0.05, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0.05, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0.05, -motionVec.length(), 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(-0.05, -motionVec.length(), 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+
+            tessellator.draw();
+            GlStateManager.enableCull();
+            GlStateManager.disableBlend();
+            GlStateManager.popAttrib();
+        }
+
+        GlStateManager.scale(0.275, 0.275, 0.275);
+
+        GlStateManager.translate(-0.5, -0.5, -0.5);
+
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(bullet.getProjectile().getItem());
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+        for(EnumFacing enumfacing : EnumFacing.values())
+        {
+            this.renderQuads(buffer, model.getQuads(null, enumfacing, 0L));
+        }
+        this.renderQuads(buffer, model.getQuads(null, null, 0L));
+        tessellator.draw();
+
+        GlStateManager.popMatrix();
+    }
+
+    private void renderQuads(BufferBuilder buffer, List<BakedQuad> quads)
+    {
+        int i = 0;
+        for(int j = quads.size(); i < j; ++i)
+        {
+            BakedQuad quad = quads.get(i);
+            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quad, -1);
+        }
+    }
+
+    @SubscribeEvent
+    public void onTickBullets(TickEvent.ClientTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.END)
+        {
+            bullets.forEach(bullet -> bullet.tick(Minecraft.getMinecraft().world));
+            bullets.removeIf(Bullet::isFinished);
+        }
+    }
+
+    public void addBullet(Bullet bullet)
+    {
+        this.bullets.add(bullet);
     }
 }

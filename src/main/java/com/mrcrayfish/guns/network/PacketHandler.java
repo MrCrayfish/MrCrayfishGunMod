@@ -27,6 +27,7 @@ public class PacketHandler
 		registerMessage(MessageExplosionStunGrenade.class, Side.CLIENT);
 		registerMessage(MessageCraft.class, Side.SERVER);
 		registerMessage(MessageReloadAnimation.class, Side.CLIENT);
+		registerMessage(MessageBullet.class, Side.CLIENT);
 	}
 
 	private static void registerMessage(Class packet, Side side)
