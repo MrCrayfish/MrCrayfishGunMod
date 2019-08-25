@@ -965,6 +965,7 @@ public class RenderEvents
 
         GlStateManager.rotate(bullet.getRotationYaw(), 0, 1, 0);
         GlStateManager.rotate(-bullet.getRotationPitch() + 90, 1, 0, 0);
+        GlStateManager.rotate((bullet.getProjectile().ticksExisted + partialTicks) * (float) 50, 0, 1, 0);
 
         {
             GlStateManager.pushAttrib();
