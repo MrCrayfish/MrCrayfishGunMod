@@ -11,9 +11,10 @@
     "projectile": {
         "item": "cgm:advanced_ammo",
         "visible": false,
+        "gravity": true,
         "damage": 20.0,
         "size": 0.0625,
-        "speed": 20.0,
+        "speed": 15.0,
         "life": 10,
         "damageReduceIfNotZoomed": true
     },
