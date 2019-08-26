@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -67,14 +68,21 @@ public class GunRegistry
         File configFolder = new File(new File("."), "config/" + id.getNamespace() + "/guns/");
         configFolder.mkdirs();
 
-        System.out.println(configFolder.getAbsolutePath());
-
+        Gun gun = null;
         String assetsFile = String.format("/assets/%s/guns/%s.json", id.getNamespace(), id.getPath());
-        Reader reader = new InputStreamReader(GunRegistry.class.getResourceAsStream(assetsFile));
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationDeserializer());
-        Gson gson = builder.create();
-        Gun gun = gson.fromJson(reader, GUN_TYPE);
+        try(Reader reader = new InputStreamReader(GunRegistry.class.getResourceAsStream(assetsFile)))
+        {
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationDeserializer());
+            Gson gson = builder.create();
+            gun = gson.fromJson(reader, GUN_TYPE);
+        }
+        catch(IOException e)
+        {
+            MrCrayfishGunMod.logger.error("Failed to load gun json '" + itemGun.getRegistryName() + "'");
+            e.printStackTrace();
+            return;
+        }
 
         try
         {
@@ -82,7 +90,9 @@ public class GunRegistry
         }
         catch(IllegalAccessException e)
         {
+            MrCrayfishGunMod.logger.error("Failed to validate gun fields for '" + itemGun.getRegistryName() + "'");
             e.printStackTrace();
+            return;
         }
         catch(InvalidObjectException e)
         {
@@ -96,21 +106,23 @@ public class GunRegistry
             writeGunToFile(gun, gunFile);
         }
 
-        try
+        try(Reader reader = new InputStreamReader(new FileInputStream(gunFile)))
         {
-            reader = new InputStreamReader(new FileInputStream(gunFile));
             JsonElement parent = new JsonParser().parse(reader);
-            builder = new GsonBuilder();
+            GsonBuilder builder = new GsonBuilder();
             builder.registerTypeAdapter(GUN_TYPE, new Gun.Deserializer(gun));
             builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationDeserializer());
-            gson = builder.create();
+            Gson gson = builder.create();
             gun = gson.fromJson(parent, GUN_TYPE);
             itemGun.setGun(gun);
         }
-        catch(FileNotFoundException e)
+        catch(IOException e)
         {
             e.printStackTrace();
         }
+
+        /* Rewrites the gun mod file in the case a new value is added */
+        writeGunToFile(gun, gunFile);
     }
 
     private static void writeGunToFile(Gun gun, File gunFile)
