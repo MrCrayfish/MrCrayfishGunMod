@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.client.gui;
 
 import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.common.container.ContainerWorkbench;
 import com.mrcrayfish.guns.common.WorkbenchRegistry;
+import com.mrcrayfish.guns.common.container.ContainerWorkbench;
 import com.mrcrayfish.guns.item.ItemColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageCraft;

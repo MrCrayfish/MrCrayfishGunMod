@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.common.container.ContainerWorkbench;
 import com.mrcrayfish.guns.common.WorkbenchRegistry;
+import com.mrcrayfish.guns.common.container.ContainerWorkbench;
 import com.mrcrayfish.guns.item.ItemColored;
 import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
 import com.mrcrayfish.guns.util.InventoryUtil;

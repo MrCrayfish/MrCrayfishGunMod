@@ -1,14 +1,11 @@
 package com.mrcrayfish.guns.object;
 
 import com.google.gson.*;
-import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.item.IAttachment;
-import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 

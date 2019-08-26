@@ -1,16 +1,7 @@
 package com.mrcrayfish.guns.common;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.init.RegistrationHandler;
-import com.mrcrayfish.guns.item.ItemAmmo;
-import com.mrcrayfish.guns.item.ItemScope;
-import com.mrcrayfish.guns.recipe.RecipeAttachment;
-import com.mrcrayfish.guns.recipe.RecipeColorItem;
 import com.mrcrayfish.guns.util.ItemStackHelper;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nullable;

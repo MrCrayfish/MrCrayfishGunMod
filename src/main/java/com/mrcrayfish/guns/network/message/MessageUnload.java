@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.item.ItemGun;

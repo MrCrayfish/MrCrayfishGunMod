@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.collect.Sets;
 import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.item.ItemAmmo;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentProtection;

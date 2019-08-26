@@ -1,10 +1,7 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.common.WorkbenchRegistry;
-import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.item.ItemScope;
-import com.mrcrayfish.guns.recipe.RecipeAttachment;
-import com.mrcrayfish.guns.recipe.RecipeColorItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;

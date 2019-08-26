@@ -1,9 +1,6 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.item.GunRegistry;
-import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 

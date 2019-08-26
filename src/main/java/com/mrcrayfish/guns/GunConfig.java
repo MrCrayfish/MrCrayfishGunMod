@@ -2,15 +2,8 @@ package com.mrcrayfish.guns;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.item.GunRegistry;
 import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.ServerGun;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,12 +15,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEve
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
-import javax.annotation.Nonnull;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 

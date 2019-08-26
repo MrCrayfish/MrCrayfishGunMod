@@ -5,7 +5,6 @@ import com.mrcrayfish.guns.GunConfig.EffectCriteria;
 import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.init.ModSounds;
-import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageExplosionStunGrenade;
 import net.minecraft.block.Block;
