@@ -306,13 +306,13 @@ public class GunConfig
 		@Config.Comment("The amount of time in milliseconds before logic to apply spread is skipped. The value indicates a reasonable amount of time before a weapon is considered stable again.")
 		@Config.LangKey(PREFIX + ".spread_threshold")
 		@Config.RangeInt(min = 0, max = 1000)
-		public long spreadThreshold = 300;
+		public int spreadThreshold = 300;
 
 		@Config.Name("Max Count")
 		@Config.Comment("The amount of times a player has too shoot within the spread threshold before the maximum amount of spread is applied. Setting the value higher means it will take longer for the spread to be applied.")
 		@Config.LangKey(PREFIX + ".max_count")
 		@Config.RangeInt(min = 1)
-		public long maxCount = 10;
+		public int maxCount = 10;
 	}
 
     /**
