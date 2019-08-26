@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.common;
 
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.item.ItemGun;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableLong;
@@ -23,9 +24,9 @@ public class SpreadTracker
         {
             MutableInt spreadCount = entry.getRight();
             long deltaTime = System.currentTimeMillis() - lastFire.getValue();
-            if(deltaTime < 300) //Make config option
+            if(deltaTime < GunConfig.SERVER.projectileSpread.spreadThreshold)
             {
-                if(spreadCount.getValue() < 10) //Make config option
+                if(spreadCount.getValue() < GunConfig.SERVER.projectileSpread.maxCount)
                 {
                     spreadCount.increment();
                 }
@@ -43,7 +44,7 @@ public class SpreadTracker
         Pair<MutableLong, MutableInt> entry = SPREAD_TRACKER_MAP.get(item);
         if(entry != null)
         {
-            return entry.getRight().getValue() / 10F;
+            return (float) entry.getRight().getValue() / (float) GunConfig.SERVER.projectileSpread.maxCount;
         }
         return 0F;
     }

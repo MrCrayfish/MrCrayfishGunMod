@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.common.SpreadHandler;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.AmmoRegistry;
@@ -89,15 +90,12 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             return this.getVectorFromRotation(shooter.rotationPitch, shooter.getRotationYawHead());
         }
 
-        if(modifiedGun.general.alwaysSpread)
-        {
-            return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.getRotationYawHead() - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
-        }
-        else
+        if(!modifiedGun.general.alwaysSpread)
         {
             gunSpread *= SpreadHandler.getSpreadTracker(shooter.getUniqueID()).getSpread(item);
-            return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.getRotationYawHead() - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
         }
+
+        return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.getRotationYawHead() - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
     }
 
     public void setWeapon(ItemStack weapon)
@@ -207,7 +205,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             Entity hitEntity = list.get(i);
             if(!hitEntity.equals(this.shooter))
             {
-                AxisAlignedBB boundingBox = hitEntity.getEntityBoundingBox().grow(0.3);
+                AxisAlignedBB boundingBox = hitEntity.getEntityBoundingBox().grow(GunConfig.SERVER.growBoundingBoxAmount);
                 RayTraceResult result = boundingBox.calculateIntercept(start, end);
                 if(result != null)
                 {

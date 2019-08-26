@@ -48,8 +48,10 @@ config.cgm.client.display.workbench_animation=Workbench Animation
 config.cgm.client.display.workbench_animation.tooltip=If true, an animation is performed while cycling items in the Workbench
 
 config.cgm.server=Server
-
 config.cgm.server.tooltip=Server-only configs.
+config.cgm.server.grow_bounding_box_amount=Grow Bounding Box
+config.cgm.server.grow_bounding_box_amount.tooltip=The extra amount to expand an entity's bounding box when checking for projectile collision. Setting this value higher will make it easier to hit players
+
 config.cgm.server.aggro=Aggro Mobs
 config.cgm.server.aggro.tooltip=Nearby mobs are angered and/or scared by the firing of guns.
 config.cgm.server.aggro.enabled=Aggro Mobs Enabled
@@ -98,6 +100,13 @@ config.cgm.server.grenade.stun.effect_criteria.angle.attenuation.max=Max Attenua
 config.cgm.server.grenade.stun.effect_criteria.angle.attenuation.max.tooltip=After duration is attenuated by distance, it will be further attenuated depending on the angle (in degrees) between the eye/looking direction and the eye/grenade direction. This is done by multiplying it by 1 (no attenuation) if the angle is 0; and by this value if the angle is the maximum within the angle of effect.
 config.cgm.server.grenade.stun.effect_criteria.raytrace.opaque=Raytrace Opaque Blocks
 config.cgm.server.grenade.stun.effect_criteria.raytrace.opaque.tooltip=If true, the effect is only applied if the line between the eyes and the grenade does not intersect any non-liquid blocks with an opacity greater than 0.
+
+config.cgm.server.projectile_spread=Projectile Spread
+config.cgm.server.projectile_spread.tooltip=Properties relating to projectile spread
+config.cgm.server.projectile_spread.spread_threshold=Spread Threshold
+config.cgm.server.projectile_spread.spread_threshold.tooltip=The amount of time in milliseconds before logic to apply spread is skipped. The value indicates a reasonable amount of time before a weapon is considered stable again.
+config.cgm.server.projectile_spread.max_count=Max Count
+config.cgm.server.projectile_spread.max_count.tooltip=The amount of times a player has too shoot within the spread threshold before the maximum amount of spread is applied. Setting the value higher means it will take longer for the spread to be applied.
 
 key.categories.gun=MrCrayfish's Gun Mod
 key.aim=Aim

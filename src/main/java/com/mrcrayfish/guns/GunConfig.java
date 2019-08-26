@@ -80,6 +80,17 @@ public class GunConfig
         @Config.Comment("Blinding/deafening properties of stun grenades.")
         @Config.LangKey(StunGrenades.PREFIX)
         public StunGrenades stunGrenades = new StunGrenades();
+
+		@Config.Name("Projectile Spread")
+		@Config.Comment("Properties relating to projectile spread")
+		@Config.LangKey(ProjectileSpread.PREFIX)
+		public ProjectileSpread projectileSpread = new ProjectileSpread();
+
+		@Config.Name("Grow Bounding Box")
+		@Config.Comment("The extra amount to expand an entity's bounding box when checking for projectile collision. Setting this value higher will make it easier to hit players")
+		@Config.LangKey(PREFIX + ".grow_bounding_box")
+		@Config.RangeDouble(min = 0.0, max = 1.0)
+		public double growBoundingBoxAmount = 0.3;
 	}
 
 	public static class AggroMobs
@@ -286,6 +297,23 @@ public class GunConfig
             this.raytraceOpaqueBlocks = raytraceOpaqueBlocks;
         }
     }
+
+    public static class ProjectileSpread
+	{
+		private static final String PREFIX = Server.PREFIX + ".projectile_spread";
+
+		@Config.Name("Spread Threshold")
+		@Config.Comment("The amount of time in milliseconds before logic to apply spread is skipped. The value indicates a reasonable amount of time before a weapon is considered stable again.")
+		@Config.LangKey(PREFIX + ".spread_threshold")
+		@Config.RangeInt(min = 0, max = 1000)
+		public long spreadThreshold = 300;
+
+		@Config.Name("Max Count")
+		@Config.Comment("The amount of times a player has too shoot within the spread threshold before the maximum amount of spread is applied. Setting the value higher means it will take longer for the spread to be applied.")
+		@Config.LangKey(PREFIX + ".max_count")
+		@Config.RangeInt(min = 1)
+		public long maxCount = 10;
+	}
 
     /**
      * Sets client data values as dictated by the server, either for exclusive access on the client or for shared access
