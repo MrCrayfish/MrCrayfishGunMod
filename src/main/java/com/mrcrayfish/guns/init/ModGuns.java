@@ -71,8 +71,8 @@ public class ModGuns
         register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "advanced_ammo")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
         register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "shell")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
         register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "missile")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
-        register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "grenade")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
-        register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "stun_grenade")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemGrenade(new ResourceLocation(Reference.MOD_ID, "grenade")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemStunGrenade(new ResourceLocation(Reference.MOD_ID, "stun_grenade")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
 
         register(new ItemPart());
         register(new ItemScope());
