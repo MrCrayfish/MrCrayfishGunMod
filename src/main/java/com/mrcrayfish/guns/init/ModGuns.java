@@ -19,7 +19,7 @@ public class ModGuns
     public static final Item RIFLE = null;
 
     @GameRegistry.ObjectHolder("cgm:grenade_launcher")
-    public static final Item GRENADE_LAUNCHER = null;
+    public static final ItemGun GRENADE_LAUNCHER = null;
 
     @GameRegistry.ObjectHolder("cgm:bazooka")
     public static final Item BAZOOKA = null;

@@ -9,6 +9,7 @@ import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -25,7 +26,10 @@ import java.util.Set;
 public class ProjectileExplosion extends Explosion
 {
     private final World world;
-    private final EntityProjectile projectile;
+    private final Entity projectile;
+    private final Entity shooter;
+    private final ItemStack weapon;
+    private float damage;
     private final double x, y, z;
     private double radius;
 
@@ -34,6 +38,23 @@ public class ProjectileExplosion extends Explosion
         super(projectile.world, projectile.getShooter(), x, y, z, (float) (radius * 2), false, damagesTerrain);
         this.world = projectile.world;
         this.projectile = projectile;
+        this.shooter = projectile.getShooter();
+        this.weapon = projectile.getWeapon();
+        this.damage = projectile.getDamage();
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.radius = radius;
+    }
+
+    public ProjectileExplosion(World world, Entity shooter, Entity source, ItemStack weapon, double x, double y, double z, float damage, double radius, boolean damagesTerrain)
+    {
+        super(world, shooter, x, y, z, (float) (radius * 2), false, damagesTerrain);
+        this.world = world;
+        this.projectile = source;
+        this.shooter = shooter;
+        this.weapon = weapon;
+        this.damage = damage;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -44,7 +65,6 @@ public class ProjectileExplosion extends Explosion
     public void doExplosionA()
     {
         float size = (float) (this.radius * 2);
-        Entity shooter = projectile.getShooter();
         Set<BlockPos> set = Sets.newHashSet();
         for(int j = 0; j < 16; ++j)
         {
@@ -73,11 +93,11 @@ public class ProjectileExplosion extends Explosion
 
                             if(state.getMaterial() != Material.AIR)
                             {
-                                float resistance = shooter != null ? shooter.getExplosionResistance(this, this.world, pos, state) : state.getBlock().getExplosionResistance(world, pos, null, this);
+                                float resistance = this.shooter != null ? this.shooter.getExplosionResistance(this, this.world, pos, state) : state.getBlock().getExplosionResistance(world, pos, null, this);
                                 f -= (resistance + 0.3F) * 0.3F;
                             }
 
-                            if(f > 0.0F && (shooter == null || shooter.canExplosionDestroyBlock(this, this.world, pos, state, f)))
+                            if(f > 0.0F && (this.shooter == null || this.shooter.canExplosionDestroyBlock(this, this.world, pos, state, f)))
                             {
                                 set.add(pos);
                             }
@@ -121,7 +141,7 @@ public class ProjectileExplosion extends Explosion
                         double density = (double) this.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
                         double damage = ((this.radius - distanceToExplosion) / this.radius) * density;
 
-                        entity.attackEntityFrom(new DamageSourceProjectile("bullet", projectile, shooter, projectile.getWeapon()), (float) (damage * projectile.getDamage()));
+                        entity.attackEntityFrom(new DamageSourceProjectile("bullet", projectile, shooter, this.weapon), (float) (damage * this.damage));
 
                         double motion = damage;
                         if(entity instanceof EntityLivingBase)
