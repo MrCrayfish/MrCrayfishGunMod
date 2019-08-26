@@ -1,11 +1,13 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.annotations.Beta;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
+@Beta
 public class ItemAttachment extends ItemColored implements IAttachment
 {
     private final IAttachment.Type type;

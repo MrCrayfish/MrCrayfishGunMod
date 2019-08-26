@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.annotations.Beta;
 import com.mrcrayfish.guns.common.ProjectileFactory;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import net.minecraft.util.ResourceLocation;
@@ -12,6 +13,7 @@ import java.util.Objects;
 /**
  * Author: MrCrayfish
  */
+@Beta
 public class AmmoRegistry
 {
     private static AmmoRegistry instance = null;
@@ -25,7 +27,7 @@ public class AmmoRegistry
         return instance;
     }
 
-    private final ProjectileFactory DEFAULT_FACTORY = (worldIn, entity, gun) -> new EntityProjectile(worldIn, entity, gun.projectile);
+    private final ProjectileFactory DEFAULT_FACTORY = EntityProjectile::new;
 
     private final Map<ResourceLocation, ItemAmmo> AMMO = new HashMap<>();
     private final Map<ResourceLocation, ProjectileFactory> FACTORIES = new HashMap<>();

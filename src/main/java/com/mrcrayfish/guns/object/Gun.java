@@ -39,6 +39,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Optional public float recoilAngle;
 		@Optional public float recoilKick;
 		@Optional public float recoilDurationOffset;
+		@Optional public int projectileAmount = 1;
+		@Optional public boolean alwaysSpread;
+		@Optional public float spread;
 
 		public int getMaxAmmo(Gun modifiedGun)
 		{
@@ -66,6 +69,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			tag.setFloat("recoilAngle", recoilAngle);
 			tag.setFloat("recoilKick", recoilKick);
 			tag.setFloat("recoilDurationOffset", recoilDurationOffset);
+			tag.setInteger("projectileAmount", projectileAmount);
+			tag.setBoolean("alwaysSpread", alwaysSpread);
+			tag.setFloat("spread", spread);
 			return tag;
 		}
 
@@ -104,6 +110,18 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			{
 				this.recoilDurationOffset = tag.getFloat("recoilDurationOffset");
 			}
+			if(tag.hasKey("projectileAmount", Constants.NBT.TAG_INT))
+			{
+				this.projectileAmount = tag.getInteger("projectileAmount");
+			}
+			if(tag.hasKey("alwaysSpread", Constants.NBT.TAG_BYTE))
+			{
+				this.alwaysSpread = tag.getBoolean("alwaysSpread");
+			}
+			if(tag.hasKey("spread", Constants.NBT.TAG_FLOAT))
+			{
+				this.spread = tag.getFloat("spread");
+			}
 		}
 
 		public General copy()
@@ -117,6 +135,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			general.recoilAngle = recoilAngle;
 			general.recoilKick = recoilKick;
 			general.recoilDurationOffset = recoilDurationOffset;
+			general.projectileAmount = projectileAmount;
+			general.alwaysSpread = alwaysSpread;
+			general.spread = spread;
 			return general;
 		}
 	}
@@ -580,6 +601,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			JsonObject general = new JsonObject();
 			general.addProperty("Max Ammo", gun.general.maxAmmo);
 			general.addProperty("Reload Speed", gun.general.reloadSpeed);
+			general.addProperty("Projectile Count", gun.general.projectileAmount);
+			general.addProperty("Always Spread", gun.general.alwaysSpread);
+			general.addProperty("Spread", gun.general.spread);
 			parent.add("General", general);
 
 			JsonObject projectile = new JsonObject();
@@ -609,8 +633,11 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		public Gun deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 		{
 			JsonObject general = JsonUtils.getJsonObject(json.getAsJsonObject(), "General");
-			this.base.general.maxAmmo = JsonUtils.getInt(general, "Max Ammo");
-			this.base.general.reloadSpeed = JsonUtils.getInt(general, "Reload Speed");
+			this.base.general.maxAmmo = JsonUtils.getInt(general, "Max Ammo", this.base.general.maxAmmo);
+			this.base.general.reloadSpeed = JsonUtils.getInt(general, "Reload Speed", this.base.general.reloadSpeed);
+			this.base.general.projectileAmount = JsonUtils.getInt(general, "Projectile Count", this.base.general.projectileAmount);
+			this.base.general.alwaysSpread = JsonUtils.getBoolean(general, "Always Spread", this.base.general.alwaysSpread);
+			this.base.general.spread = JsonUtils.getFloat(general, "Spread", this.base.general.spread);
 
 			JsonObject projectile = JsonUtils.getJsonObject(json.getAsJsonObject(), "Projectile");
 			this.base.projectile.damage = JsonUtils.getFloat(projectile, "Damage", this.base.projectile.damage);

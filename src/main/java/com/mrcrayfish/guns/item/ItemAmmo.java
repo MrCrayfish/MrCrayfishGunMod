@@ -1,12 +1,13 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.google.common.annotations.Beta;
 import net.minecraft.item.Item;
-import net.minecraft.util.*;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
+@Beta
 public class ItemAmmo extends Item
 {
     public ItemAmmo(ResourceLocation id)

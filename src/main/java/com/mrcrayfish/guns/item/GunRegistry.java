@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.guns.object.Gun;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
@@ -24,6 +24,7 @@ import java.util.Objects;
 /**
  * Author: MrCrayfish
  */
+@Beta
 public class GunRegistry
 {
     private static final Type GUN_TYPE = new TypeToken<Gun>(){}.getType();
@@ -63,8 +64,10 @@ public class GunRegistry
     {
         ResourceLocation id = Objects.requireNonNull(itemGun.getRegistryName());
 
-        File configFolder = new File(Minecraft.getMinecraft().gameDir, "config/" + id.getNamespace() + "/guns/");
+        File configFolder = new File(new File("."), "config/" + id.getNamespace() + "/guns/");
         configFolder.mkdirs();
+
+        System.out.println(configFolder.getAbsolutePath());
 
         String assetsFile = String.format("/assets/%s/guns/%s.json", id.getNamespace(), id.getPath());
         Reader reader = new InputStreamReader(GunRegistry.class.getResourceAsStream(assetsFile));

@@ -2,11 +2,14 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.mrcrayfish.guns.common.SpreadHandler;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.ItemAmmo;
+import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageSound;
+import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -38,7 +41,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
     protected int shooterId;
     protected EntityLivingBase shooter;
-    protected Projectile projectile;
+    protected Gun.General general;
+    protected Gun.Projectile projectile;
     private ItemStack weapon = ItemStack.EMPTY;
     private ItemStack item = ItemStack.EMPTY;
     private float damageModifier = 1.0F;
@@ -49,31 +53,50 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         super(worldIn);
     }
 
-    public EntityProjectile(World worldIn, EntityLivingBase shooter, Projectile projectile)
+    public EntityProjectile(World worldIn, EntityLivingBase shooter, ItemGun item, Gun modifiedGun)
     {
         this(worldIn);
         this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
-        this.projectile = projectile;
+        this.general = modifiedGun.general;
+        this.projectile = modifiedGun.projectile;
 
-        Vec3d dir = getVectorFromRotation(shooter.rotationPitch, shooter.getRotationYawHead());
-        this.motionX = dir.x * projectile.speed;
-        this.motionY = dir.y * projectile.speed;
-        this.motionZ = dir.z * projectile.speed;
-        updateHeading();
+        Vec3d dir = this.getDirection(shooter, item, modifiedGun);
+        this.motionX = dir.x * this.projectile.speed;
+        this.motionY = dir.y * this.projectile.speed;
+        this.motionZ = dir.z * this.projectile.speed;
+        this.updateHeading();
 
-        System.out.println(this.motionX);
-
-        this.setSize(projectile.size, projectile.size);
+        this.setSize(this.projectile.size, this.projectile.size);
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
 
-        if(projectile.visible)
+        if(this.projectile.visible)
         {
-            ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(projectile.item);
+            ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
             if(ammo != null)
             {
                 this.item = new ItemStack(ammo);
             }
+        }
+    }
+
+    private Vec3d getDirection(EntityLivingBase shooter, ItemGun item, Gun modifiedGun)
+    {
+        float gunSpread = modifiedGun.general.spread;
+
+        if(gunSpread == 0F)
+        {
+            return this.getVectorFromRotation(shooter.rotationPitch, shooter.getRotationYawHead());
+        }
+
+        if(modifiedGun.general.alwaysSpread)
+        {
+            return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.getRotationYawHead() - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
+        }
+        else
+        {
+            gunSpread *= SpreadHandler.getSpreadTracker(shooter.getUniqueID()).getSpread(item);
+            return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.getRotationYawHead() - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
         }
     }
 
@@ -359,8 +382,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         if(this.projectile.damageReduceOverLife)
         {
             float modifier = ((float) this.projectile.life - (float) this.ticksExisted) / (float) this.projectile.life;
-            return damage * modifier;
+            damage *= modifier;
         }
-        return damage;
+        return damage / this.general.projectileAmount;
     }
 }

@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.entity;
 
+import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -19,9 +20,9 @@ public class EntityMissile extends EntityProjectile
         super(worldIn);
     }
 
-    public EntityMissile(World worldIn, EntityLivingBase shooter, Gun.Projectile projectile)
+    public EntityMissile(World worldIn, EntityLivingBase shooter, ItemGun item, Gun modifiedGun)
     {
-        super(worldIn, shooter, projectile);
+        super(worldIn, shooter, item, modifiedGun);
     }
 
     @Override

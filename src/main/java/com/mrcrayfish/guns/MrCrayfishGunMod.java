@@ -56,8 +56,8 @@ public class MrCrayfishGunMod
 		ModCrafting.register();
 		ModEntities.register();
 
-		AmmoRegistry.getInstance().registerProjectileFactory(ModGuns.GRENADE, (worldIn, entity, gun) -> new EntityGrenade(worldIn, entity, gun.projectile));
-		AmmoRegistry.getInstance().registerProjectileFactory(ModGuns.MISSILE, (worldIn, entity, gun) -> new EntityMissile(worldIn, entity, gun.projectile));
+		AmmoRegistry.getInstance().registerProjectileFactory(ModGuns.GRENADE, EntityGrenade::new);
+		AmmoRegistry.getInstance().registerProjectileFactory(ModGuns.MISSILE, EntityMissile::new);
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 

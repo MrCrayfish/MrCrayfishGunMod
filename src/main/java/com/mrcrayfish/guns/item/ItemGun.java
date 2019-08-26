@@ -1,10 +1,12 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.common.ProjectileFactory;
+import com.mrcrayfish.guns.common.SpreadHandler;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.event.CommonEvents;
 import com.mrcrayfish.guns.init.ModGuns;
@@ -33,6 +35,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 
+@Beta
 public class ItemGun extends ItemColored
 {
     private Gun gun;
@@ -71,11 +74,11 @@ public class ItemGun extends ItemColored
                 float additionalDamage = tagCompound.getFloat("AdditionalDamage");
                 if(additionalDamage > 0)
                 {
-                    additionalDamageText = TextFormatting.GREEN + " +" + Float.toString(tagCompound.getFloat("AdditionalDamage"));
+                    additionalDamageText = TextFormatting.GREEN + " +" + tagCompound.getFloat("AdditionalDamage");
                 }
                 else if(additionalDamage < 0)
                 {
-                    additionalDamageText = TextFormatting.RED + " " + Float.toString(tagCompound.getFloat("AdditionalDamage"));
+                    additionalDamageText = TextFormatting.RED + " " + tagCompound.getFloat("AdditionalDamage");
                 }
             }
         }
@@ -187,28 +190,31 @@ public class ItemGun extends ItemColored
             playerIn.getDataManager().set(CommonEvents.RELOADING, false);
         }
 
-        boolean silenced = false;
-        ItemStack barrel = Gun.getAttachment(IAttachment.Type.BARREL, heldItem);
-        if(!barrel.isEmpty())
+        boolean silenced = Gun.getAttachment(IAttachment.Type.BARREL, heldItem).getItem() == ModGuns.SILENCER;
+
+        Gun modifiedGun = item.getModifiedGun(heldItem);
+        if(!modifiedGun.general.alwaysSpread && modifiedGun.general.spread > 0F)
         {
-            silenced = barrel.getItem() == ModGuns.SILENCER;
+            SpreadHandler.getSpreadTracker(playerIn.getUniqueID()).update(item);
         }
 
-        Gun gun = item.getModifiedGun(heldItem);
-        ProjectileFactory factory = AmmoRegistry.getInstance().getFactory(gun.projectile.item);
-        EntityProjectile bullet = factory.create(worldIn, playerIn, gun);
-        bullet.setWeapon(heldItem);
-        bullet.setAdditionalDamage(ItemGun.getAdditionalDamage(heldItem));
-        if(silenced)
+        for(int i = 0; i < modifiedGun.general.projectileAmount; i++)
         {
-            bullet.setDamageModifier(0.75F);
-        }
-        worldIn.spawnEntity(bullet);
+            ProjectileFactory factory = AmmoRegistry.getInstance().getFactory(modifiedGun.projectile.item);
+            EntityProjectile bullet = factory.create(worldIn, playerIn, item, modifiedGun);
+            bullet.setWeapon(heldItem);
+            bullet.setAdditionalDamage(ItemGun.getAdditionalDamage(heldItem));
+            if(silenced)
+            {
+                bullet.setDamageModifier(0.75F);
+            }
+            worldIn.spawnEntity(bullet);
 
-        if(!gun.projectile.visible)
-        {
-            PacketHandler.INSTANCE.sendToAllTracking(new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ), playerIn);
-            PacketHandler.INSTANCE.sendTo(new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ), (EntityPlayerMP) playerIn);
+            if(!modifiedGun.projectile.visible)
+            {
+                PacketHandler.INSTANCE.sendToAllTracking(new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ), playerIn);
+                PacketHandler.INSTANCE.sendTo(new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ), (EntityPlayerMP) playerIn);
+            }
         }
 
         if(GunConfig.SERVER.aggroMobs.enabled)
@@ -234,7 +240,7 @@ public class ItemGun extends ItemColored
 
         if(silenced)
         {
-            String silencedSound = gun.sounds.getSilencedFire(gun);
+            String silencedSound = modifiedGun.sounds.getSilencedFire(modifiedGun);
             SoundEvent event = ModSounds.getSound(silencedSound);
             if(event == null)
             {
@@ -247,7 +253,7 @@ public class ItemGun extends ItemColored
         }
         else
         {
-            String fireSound = gun.sounds.getFire(gun);
+            String fireSound = modifiedGun.sounds.getFire(modifiedGun);
             SoundEvent event = ModSounds.getSound(fireSound);
             if(event == null)
             {
@@ -259,7 +265,7 @@ public class ItemGun extends ItemColored
             }
         }
 
-        if(gun.display.flash != null)
+        if(modifiedGun.display.flash != null)
         {
             PacketHandler.INSTANCE.sendTo(new MessageMuzzleFlash(), (EntityPlayerMP) playerIn);
         }
@@ -273,7 +279,7 @@ public class ItemGun extends ItemColored
             }
         }
 
-        CommonEvents.getCooldownTracker(playerIn.getUniqueID()).setCooldown(item, gun.general.rate);
+        CommonEvents.getCooldownTracker(playerIn.getUniqueID()).setCooldown(item, modifiedGun.general.rate);
     }
 
     private static float getAdditionalDamage(ItemStack gunStack)
