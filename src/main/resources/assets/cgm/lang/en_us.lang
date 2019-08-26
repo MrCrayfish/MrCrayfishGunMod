@@ -65,6 +65,16 @@ config.cgm.server.aggro.unsilenced.tooltip=Any mobs within a sphere of this radi
 config.cgm.server.aggro.exempt=Exempt Mob Classes
 config.cgm.server.aggro.exempt.tooltip=Any mobs of classes with class pathes in this list will not aggro on shooters.
 
+config.cgm.server.missiles.normal=Grenades
+config.cgm.server.missiles.normal.tooltip=Properties relating to missiles.
+config.cgm.server.missiles.normal.explosion_range=Explosion Radius
+config.cgm.server.missiles.normal.explosion_range.tooltip=The max distance which the explosion is effective to.
+
+config.cgm.server.grenade.normal=Grenades
+config.cgm.server.grenade.normal.tooltip=Properties relating to grenades.
+config.cgm.server.grenade.normal.explosion_range=Explosion Radius
+config.cgm.server.grenade.normal.explosion_range.tooltip=The max distance which the explosion is effective to.
+
 config.cgm.server.grenade.stun=Stun Grenades
 config.cgm.server.grenade.stun.tooltip=Blinding/deafening properties of stun grenades.
 config.cgm.server.grenade.stun.blind=Blind

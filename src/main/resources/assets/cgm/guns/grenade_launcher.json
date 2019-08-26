@@ -12,7 +12,7 @@
         "item": "cgm:grenade",
         "visible": true,
         "auto": false,
-        "damage": 30.0,
+        "damage": 15.0,
         "size": 0.2,
         "speed": 1,
         "life": 50,

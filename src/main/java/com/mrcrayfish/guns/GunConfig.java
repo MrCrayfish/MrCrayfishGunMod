@@ -76,6 +76,16 @@ public class GunConfig
 		@Config.LangKey(AggroMobs.PREFIX)
 		public AggroMobs aggroMobs = new AggroMobs();
 
+		@Config.Name("Missiles")
+		@Config.Comment("Properties relating to missiles.")
+		@Config.LangKey(Missiles.PREFIX)
+		public Missiles missiles = new Missiles();
+
+		@Config.Name("Grenades")
+		@Config.Comment("Properties relating to grenades.")
+		@Config.LangKey(Grenades.PREFIX)
+		public Grenades grenades = new Grenades();
+
 		@Config.Name("Stun Grenades")
         @Config.Comment("Blinding/deafening properties of stun grenades.")
         @Config.LangKey(StunGrenades.PREFIX)
@@ -169,6 +179,28 @@ public class GunConfig
 		@Config.Comment("If true, uses the old controls in order to aim and shoot")
 		@Config.LangKey(PREFIX + ".old_controls")
 		public boolean oldControls = false;
+	}
+
+	public static class Missiles
+	{
+		private static final String PREFIX = Server.PREFIX + ".missiles.normal";
+
+		@Config.Name("Explosion Radius")
+		@Config.Comment("The max distance which the explosion is effective to.")
+		@Config.LangKey(PREFIX + ".explosion_range")
+		@Config.RangeDouble(min = 0)
+		public double explosionRadius = 5.0;
+	}
+
+	public static class Grenades
+	{
+		private static final String PREFIX = Server.PREFIX + ".grenade.normal";
+
+		@Config.Name("Explosion Radius")
+		@Config.Comment("The max distance which the explosion is effective to.")
+		@Config.LangKey(PREFIX + ".explosion_range")
+		@Config.RangeDouble(min = 0)
+		public double explosionRadius = 5.0;
 	}
 
 	public static class StunGrenades

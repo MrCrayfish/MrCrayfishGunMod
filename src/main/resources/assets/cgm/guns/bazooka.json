@@ -11,7 +11,7 @@
         "item": "cgm:missile",
         "visible": true,
         "auto": false,
-        "damage": 20.0,
+        "damage": 25.0,
         "size": 0.2,
         "speed": 2,
         "life": 100,

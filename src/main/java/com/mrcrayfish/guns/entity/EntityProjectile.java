@@ -46,8 +46,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     protected Gun.Projectile projectile;
     private ItemStack weapon = ItemStack.EMPTY;
     private ItemStack item = ItemStack.EMPTY;
-    private float damageModifier = 1.0F;
-    private float additionalDamage = 0.0F;
+    protected float damageModifier = 1.0F;
+    protected float additionalDamage = 0.0F;
 
     public EntityProjectile(World worldIn)
     {
