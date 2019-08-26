@@ -177,7 +177,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             this.motionY -= 0.05;
         }
 
-        if(this.ticksExisted >= this.projectile.life)
+        if(this.ticksExisted > this.projectile.life)
         {
             if(!this.isDead)
             {
