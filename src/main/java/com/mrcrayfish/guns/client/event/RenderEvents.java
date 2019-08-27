@@ -977,7 +977,7 @@ public class RenderEvents
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
             Vec3d motionVec = new Vec3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
-            double length = motionVec.length() / 2.0;
+            double length = motionVec.length() / 3.0;
 
             buffer.pos(0, 0, -0.05).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
             buffer.pos(0, 0, 0.05).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
