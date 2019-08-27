@@ -31,14 +31,17 @@ public class EntityMissile extends EntityProjectile
     @Override
     protected void onTick()
     {
-        for(int i = 5; i > 0; i--)
+        if(this.world.isRemote)
         {
-            this.world.spawnParticle(EnumParticleTypes.CLOUD, true, this.posX - (this.motionX / i), this.posY - (this.motionY / i), this.posZ - (this.motionZ / i), 0, 0, 0);
-        }
-        if(this.world.rand.nextInt(2) == 0)
-        {
-            this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, this.posX, this.posY, this.posZ, 0, 0, 0);
-            this.world.spawnParticle(EnumParticleTypes.FLAME, true, this.posX, this.posY, this.posZ, 0, 0, 0);
+            for(int i = 5; i > 0; i--)
+            {
+                this.world.spawnParticle(EnumParticleTypes.CLOUD, true, this.posX - (this.motionX / i), this.posY - (this.motionY / i), this.posZ - (this.motionZ / i), 0, 0, 0);
+            }
+            if(this.world.rand.nextInt(2) == 0)
+            {
+                this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, true, this.posX, this.posY, this.posZ, 0, 0, 0);
+                this.world.spawnParticle(EnumParticleTypes.FLAME, true, this.posX, this.posY, this.posZ, 0, 0, 0);
+            }
         }
     }
 
