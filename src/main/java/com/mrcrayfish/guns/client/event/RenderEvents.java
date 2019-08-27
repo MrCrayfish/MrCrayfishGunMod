@@ -26,10 +26,12 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -963,7 +965,6 @@ public class RenderEvents
 
         GlStateManager.rotate(bullet.getRotationYaw(), 0, 1, 0);
         GlStateManager.rotate(-bullet.getRotationPitch() + 90, 1, 0, 0);
-        GlStateManager.rotate((bullet.getProjectile().ticksExisted + partialTicks) * (float) 50, 0, 1, 0);
 
         {
             GlStateManager.pushAttrib();
@@ -979,27 +980,32 @@ public class RenderEvents
             Vec3d motionVec = new Vec3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
             double length = motionVec.length() / 3.0;
 
-            buffer.pos(0, 0, -0.05).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0, 0, 0.05).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0, -length, 0.05).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0, -length, -0.05).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, 0, -0.035).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, 0, 0.035).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, -length, 0.035).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, -length, -0.035).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
 
-            buffer.pos(-0.05, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0.05, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0.05, -length, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(-0.05, -length, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(-0.035, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0.035, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0.035, -length, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(-0.035, -length, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
 
             tessellator.draw();
+
             GlStateManager.enableCull();
             GlStateManager.disableBlend();
             GlStateManager.popAttrib();
         }
+
+        GlStateManager.rotate((bullet.getProjectile().ticksExisted + partialTicks) * (float) 50, 0, 1, 0);
 
         GlStateManager.scale(0.275, 0.275, 0.275);
 
         GlStateManager.translate(-0.5, -0.5, -0.5);
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+        GlStateManager.enableLighting();
 
         IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(bullet.getProjectile().getItem());
         Tessellator tessellator = Tessellator.getInstance();
@@ -1011,6 +1017,8 @@ public class RenderEvents
         }
         this.renderQuads(buffer, model.getQuads(null, null, 0L));
         tessellator.draw();
+
+        GlStateManager.disableLighting();
 
         GlStateManager.popMatrix();
     }
