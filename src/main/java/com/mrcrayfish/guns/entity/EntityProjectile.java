@@ -175,7 +175,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             this.motionY -= 0.05;
         }
 
-        if(this.ticksExisted > this.projectile.life)
+        if(this.ticksExisted >= this.projectile.life)
         {
             if(!this.isDead)
             {
@@ -379,7 +379,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         float damage = (this.projectile.damage + this.additionalDamage) * this.damageModifier;
         if(this.projectile.damageReduceOverLife)
         {
-            float modifier = ((float) this.projectile.life - (float) this.ticksExisted) / (float) this.projectile.life;
+            float modifier = ((float) this.projectile.life - (float) (this.ticksExisted - 1)) / (float) this.projectile.life;
             damage *= modifier;
         }
         return damage / this.general.projectileAmount;
