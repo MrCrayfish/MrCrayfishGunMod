@@ -58,9 +58,8 @@ public class ModelMediumScope implements IOverrideModel
                 double offset = 0.58 / 16.0;
                 double crop = 0.4;
                 Minecraft mc = Minecraft.getMinecraft();
-                double texOffset = -5 * (1.0 / mc.displayHeight);
-                int kickAmount = ClientProxy.renderEvents.recoilAngle > 0 ? 50 : 5;
-                texOffset += ClientProxy.renderEvents.recoilNormal * kickAmount * (1.0 / mc.displayHeight);
+                int kickAmount = ClientProxy.renderEvents.recoilAngle > 0 ? 50 : 0;
+                double texOffset = ClientProxy.renderEvents.recoilNormal * kickAmount * (1.0 / mc.displayHeight);
                 double texU = ((mc.displayWidth - mc.displayHeight + mc.displayHeight * crop * 2.0) / 2.0) / mc.displayWidth;
                 double texScaleX = (1.0 - texU * 2) / scopeSize;
                 double texScaleY = (1.0 - crop * 2) / scopeSize;

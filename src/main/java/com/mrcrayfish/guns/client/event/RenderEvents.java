@@ -322,7 +322,7 @@ public class RenderEvents
         renderReloadArm(heldItem, hand);
 
         /* Translate the item position based on the hand side */
-        GlStateManager.translate(0.56F - (right ? 0.0F : 0.72F), -0.56F, -0.72F);
+        GlStateManager.translate(0.5602F - (right ? 0.0F : 0.72F), -0.55625F, -0.72F);
 
         /* Applies recoil and reload rotations */
         this.applyRecoil(heldItem.getItem(), ((ItemGun) heldItem.getItem()).getGun());
