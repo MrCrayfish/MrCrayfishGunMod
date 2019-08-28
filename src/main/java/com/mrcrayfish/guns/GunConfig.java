@@ -101,6 +101,17 @@ public class GunConfig
 		@Config.LangKey(PREFIX + ".grow_bounding_box")
 		@Config.RangeDouble(min = 0.0, max = 1.0)
 		public double growBoundingBoxAmount = 0.3;
+
+		@Config.Name("Enable Head Shots")
+		@Config.Comment("Enables the check for head shots for players. Projectiles that hit the head of a player will have increased damage.")
+		@Config.LangKey(PREFIX + ".enabled_head_shots")
+		public boolean enableHeadShots = true;
+
+		@Config.Name("Head Shot Damage Multiplier")
+		@Config.Comment("The value to multiply the damage by if projectile hit the players head")
+		@Config.LangKey(PREFIX + ".head_shot_damage_multiplier")
+		@Config.RangeDouble(min = 1.0)
+		public double headShotDamageMultiplier = 1.1;
 	}
 
 	public static class AggroMobs

@@ -10,6 +10,7 @@ import com.mrcrayfish.guns.item.ItemAmmo;
 import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageSound;
+import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
 import io.netty.buffer.ByteBuf;
@@ -28,6 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -142,11 +144,10 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             endVec = new Vec3d(result.hitVec.x, result.hitVec.y, result.hitVec.z);
         }
 
-        Entity entity = this.findEntityOnPath(startVec, endVec);
-
-        if(entity != null)
+        EntityResult entityResult = this.findEntityOnPath(startVec, endVec);
+        if(entityResult != null)
         {
-            result = new RayTraceResult(entity);
+            result = new RayTraceResult(entityResult.entity, entityResult.hitVec);
         }
 
         if(result != null && result.entityHit instanceof EntityPlayer)
@@ -194,17 +195,17 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Nullable
-    protected Entity findEntityOnPath(Vec3d start, Vec3d end)
+    protected EntityResult findEntityOnPath(Vec3d start, Vec3d end)
     {
+        Vec3d hitVec = null;
         Entity foundEntity = null;
         List<Entity> entities = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0), ARROW_TARGETS);
         double closestDistance = 0.0D;
-        double distanceToEnd = start.squareDistanceTo(end);
         for(Entity entity : entities)
         {
             if(!entity.equals(this.shooter))
             {
-                AxisAlignedBB boundingBox = entity.getEntityBoundingBox();
+                AxisAlignedBB boundingBox = entity.getEntityBoundingBox().expand(0, 0.0625, 0); //Player bounding box is one pixel off from the top of the head
                 RayTraceResult result = boundingBox.calculateIntercept(start, end);
                 if(result == null)
                 {
@@ -226,13 +227,13 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 double distanceToHit = start.squareDistanceTo(result.hitVec);
                 if(distanceToHit < closestDistance || closestDistance == 0.0D)
                 {
+                    hitVec = result.hitVec;
                     foundEntity = entity;
                     closestDistance = distanceToHit;
                 }
             }
         }
-
-        return foundEntity;
+        return foundEntity != null ? new EntityResult(foundEntity, hitVec) : null;
     }
 
     private void onHit(RayTraceResult result)
@@ -281,12 +282,25 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
     protected void onHitEntity(Entity entity, double x, double y, double z)
     {
+        boolean headShot = false;
+        float damage = this.getDamage();
+        if(GunConfig.SERVER.enableHeadShots && entity instanceof EntityPlayer)
+        {
+            AxisAlignedBB boundingBox = entity.getEntityBoundingBox().expand(0, 0.0625, 0);
+            if(boundingBox.maxY - y <= 8.0 * 0.0625)
+            {
+                headShot = true;
+                damage *= GunConfig.SERVER.headShotDamageMultiplier;
+            }
+        }
+
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
-        entity.attackEntityFrom(source, getDamage());
+        entity.attackEntityFrom(source, damage);
 
         if(entity instanceof EntityPlayer && shooter instanceof EntityPlayerMP)
         {
-            PacketHandler.INSTANCE.sendTo(new MessageSound(SoundEvents.ENTITY_PLAYER_HURT, SoundCategory.PLAYERS, shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, 0.75F, 3.0F), (EntityPlayerMP) shooter);
+            SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
+            PacketHandler.INSTANCE.sendTo(new MessageSound(event, SoundCategory.PLAYERS, shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, 0.75F, 3.0F), (EntityPlayerMP) shooter);
         }
     }
 

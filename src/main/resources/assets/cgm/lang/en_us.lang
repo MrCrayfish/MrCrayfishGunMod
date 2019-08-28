@@ -52,6 +52,10 @@ config.cgm.server=Server
 config.cgm.server.tooltip=Server-only configs.
 config.cgm.server.grow_bounding_box_amount=Grow Bounding Box
 config.cgm.server.grow_bounding_box_amount.tooltip=The extra amount to expand an entity's bounding box when checking for projectile collision. Setting this value higher will make it easier to hit players
+config.cgm.server.enabled_head_shots=Enable Head Shots
+config.cgm.server.enabled_head_shots.tooltip=Enables the check for head shots for players. Projectiles that hit the head of a player will have increased damage.
+config.cgm.server.head_shot_damage_multiplier=Head Shot Damage Multiplier
+config.cgm.server.head_shot_damage_multiplier.tooltip=The value to multiply the damage by if projectile hit the players head
 
 config.cgm.server.aggro=Aggro Mobs
 config.cgm.server.aggro.tooltip=Nearby mobs are angered and/or scared by the firing of guns.
