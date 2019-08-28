@@ -30,6 +30,9 @@ public class ModGuns
     @GameRegistry.ObjectHolder("cgm:assault_rifle")
     public static final Item ASSAULT_RIFLE = null;
 
+    @GameRegistry.ObjectHolder("cgm:machine_pistol")
+    public static final Item MACHINE_PISTOL = null;
+
     @GameRegistry.ObjectHolder("cgm:part")
     public static final Item PARTS = null;
 
@@ -66,6 +69,7 @@ public class ModGuns
         register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "bazooka")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
         register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "chain_gun")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
         register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "assault_rifle")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
+        register(new ItemGun(new ResourceLocation(Reference.MOD_ID, "machine_pistol")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
 
         register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "basic_ammo")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
         register(new ItemAmmo(new ResourceLocation(Reference.MOD_ID, "advanced_ammo")).setCreativeTab(MrCrayfishGunMod.GUN_TAB));
