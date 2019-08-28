@@ -632,13 +632,14 @@ public class RenderEvents
             }
 
             RenderUtil.applyTransformType(model.isEmpty() ? stack : model, transformType);
-            this.renderGun(entity, transformType, model.isEmpty() ? stack : model, partialTicks);
-            this.renderAttachments(entity, transformType, stack, partialTicks);
 
             if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
             {
                 this.renderMuzzleFlash(stack);
             }
+
+            this.renderGun(entity, transformType, model.isEmpty() ? stack : model, partialTicks);
+            this.renderAttachments(entity, transformType, stack, partialTicks);
 
             GlStateManager.popMatrix();
             return true;
