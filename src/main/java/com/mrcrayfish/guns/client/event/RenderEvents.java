@@ -889,7 +889,7 @@ public class RenderEvents
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRenderLastWorld(RenderWorldLastEvent event)
     {
         if(FMLClientHandler.instance().hasOptifine())
