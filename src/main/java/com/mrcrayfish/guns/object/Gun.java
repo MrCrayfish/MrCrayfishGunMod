@@ -30,7 +30,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	{
 		@Optional public boolean auto = false;
 		public int rate;
-		public GripType gripType;
+		public GripType gripType = GripType.ONE_HANDED;
 		public int maxAmmo;
 		@Optional public int reloadSpeed = 1;
 		@Optional public float recoilAngle;

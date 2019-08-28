@@ -298,20 +298,24 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
     {
-        this.projectile = new Projectile();
+        this.projectile = new Gun.Projectile();
         this.projectile.deserializeNBT(compound.getCompoundTag("projectile"));
+        this.general = new Gun.General();
+        this.general.deserializeNBT(compound.getCompoundTag("general"));
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
         compound.setTag("projectile", this.projectile.serializeNBT());
+        compound.setTag("general", this.general.serializeNBT());
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
         ByteBufUtils.writeTag(buffer, this.projectile.serializeNBT());
+        ByteBufUtils.writeTag(buffer, this.general.serializeNBT());
         buffer.writeInt(this.shooterId);
         buffer.writeFloat(this.rotationYaw);
         buffer.writeFloat(this.rotationPitch);
@@ -323,11 +327,10 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
-        if(this.projectile == null)
-        {
-            this.projectile = new Projectile();
-        }
+        this.projectile = new Gun.Projectile();
         this.projectile.deserializeNBT(ByteBufUtils.readTag(additionalData));
+        this.general = new Gun.General();
+        this.general.deserializeNBT(ByteBufUtils.readTag(additionalData));
         this.shooterId = additionalData.readInt();
         this.rotationYaw = additionalData.readFloat();
         this.prevRotationYaw = this.rotationYaw;
