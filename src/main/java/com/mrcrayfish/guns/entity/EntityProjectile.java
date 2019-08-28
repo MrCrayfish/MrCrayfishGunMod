@@ -223,8 +223,6 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                     }
                 }
 
-                System.out.println(result.hitVec);
-
                 double distanceToHit = start.squareDistanceTo(result.hitVec);
                 if(distanceToHit < closestDistance || closestDistance == 0.0D)
                 {
