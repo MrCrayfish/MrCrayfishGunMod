@@ -196,52 +196,49 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     @Nullable
     protected Entity findEntityOnPath(Vec3d start, Vec3d end)
     {
-        Entity entity = null;
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ), ARROW_TARGETS);
+        Entity foundEntity = null;
+        List<Entity> entities = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0), ARROW_TARGETS);
         double closestDistance = 0.0D;
-
-        for(int i = 0; i < list.size(); ++i)
+        double distanceToEnd = start.squareDistanceTo(end);
+        for(Entity entity : entities)
         {
-            Entity hitEntity = list.get(i);
-            if(!hitEntity.equals(this.shooter))
+            if(!entity.equals(this.shooter))
             {
-                AxisAlignedBB boundingBox = hitEntity.getEntityBoundingBox().grow(GunConfig.SERVER.growBoundingBoxAmount);
+                AxisAlignedBB boundingBox = entity.getEntityBoundingBox();
                 RayTraceResult result = boundingBox.calculateIntercept(start, end);
-                if(result != null)
+                if(result == null)
                 {
-                    double distanceToHit = start.squareDistanceTo(result.hitVec);
-                    if(distanceToHit < closestDistance || closestDistance == 0.0D)
+                    boundingBox = entity.getEntityBoundingBox().grow(GunConfig.SERVER.growBoundingBoxAmount, 0.0625, GunConfig.SERVER.growBoundingBoxAmount);
+                    result = boundingBox.calculateIntercept(start, end);
+                    if(result == null)
                     {
-                        entity = hitEntity;
-                        closestDistance = distanceToHit;
+                        continue;
                     }
+
+                    Vec3d entityVec = new Vec3d(entity.posX, result.hitVec.y, entity.posZ);
+                    RayTraceResult blockResult = this.world.rayTraceBlocks(result.hitVec, entityVec, false, true, false);
+                    if(blockResult != null)
+                    {
+                        continue;
+                    }
+                }
+
+                System.out.println(result.hitVec);
+
+                double distanceToHit = start.squareDistanceTo(result.hitVec);
+                if(distanceToHit < closestDistance || closestDistance == 0.0D)
+                {
+                    foundEntity = entity;
+                    closestDistance = distanceToHit;
                 }
             }
         }
 
-        return entity;
+        return foundEntity;
     }
 
     private void onHit(RayTraceResult result)
     {
-        Entity entity = result.entityHit;
-
-        if(entity != null)
-        {
-            if(entity.getEntityId() == this.shooterId)
-            {
-                return;
-            }
-
-            this.onHitEntity(entity, result.hitVec.x, result.hitVec.y, result.hitVec.z);
-
-            entity.hurtResistantTime = 0;
-
-            this.setDead();
-
-            return;
-        }
-
         if(result.getBlockPos() != null)
         {
             BlockPos pos = result.getBlockPos();
@@ -265,6 +262,22 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             }
 
             this.onHitBlock(state, pos, result.hitVec.x, result.hitVec.y, result.hitVec.z);
+
+            return;
+        }
+
+        Entity entity = result.entityHit;
+        if(entity != null)
+        {
+            if(entity.getEntityId() == this.shooterId)
+            {
+                return;
+            }
+
+            this.onHitEntity(entity, result.hitVec.x, result.hitVec.y, result.hitVec.z);
+            this.setDead();
+
+            entity.hurtResistantTime = 0;
         }
     }
 
