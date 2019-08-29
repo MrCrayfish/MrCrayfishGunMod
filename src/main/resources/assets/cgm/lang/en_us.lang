@@ -57,6 +57,11 @@ config.cgm.server.enabled_head_shots.tooltip=Enables the check for head shots fo
 config.cgm.server.head_shot_damage_multiplier=Head Shot Damage Multiplier
 config.cgm.server.head_shot_damage_multiplier.tooltip=The value to multiply the damage by if projectile hit the players head
 
+config.cgm.server.network=Network
+config.cgm.server.network.tooltip=Properties relating to network
+config.cgm.server.network.projectile_tracking_range=Projectile Tracking Range
+config.cgm.server.network.projectile_tracking_range.tooltip=The distance players need to be within to be able to track new projectiles trails. Higher values means you can see projectiles from that start from further away.
+
 config.cgm.server.aggro=Aggro Mobs
 config.cgm.server.aggro.tooltip=Nearby mobs are angered and/or scared by the firing of guns.
 config.cgm.server.aggro.enabled=Aggro Mobs Enabled

@@ -15,6 +15,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEve
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import sun.nio.ch.Net;
 
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +72,11 @@ public class GunConfig
 	{
 	    private static final String PREFIX = GunConfig.PREFIX + "server";
 
+		@Config.Name("Network")
+		@Config.Comment("Properties relating to network")
+		@Config.LangKey(Network.PREFIX)
+		public Network network = new Network();
+
 		@Config.Name("Aggro Mobs")
 		@Config.Comment("Nearby mobs are angered and/or scared by the firing of guns.")
 		@Config.LangKey(AggroMobs.PREFIX)
@@ -112,6 +118,17 @@ public class GunConfig
 		@Config.LangKey(PREFIX + ".head_shot_damage_multiplier")
 		@Config.RangeDouble(min = 1.0)
 		public double headShotDamageMultiplier = 1.1;
+	}
+
+	public static class Network
+	{
+		private static final String PREFIX = Server.PREFIX + ".network";
+
+		@Config.Name("Projectile Tracking Range")
+		@Config.Comment("The distance players need to be within to be able to track new projectiles trails. Higher values means you can see projectiles from that start from further away.")
+		@Config.LangKey(PREFIX + ".projectile_tracking_range")
+		@Config.RangeDouble(min = 0.0)
+		public double distance = 200.0;
 	}
 
 	public static class AggroMobs

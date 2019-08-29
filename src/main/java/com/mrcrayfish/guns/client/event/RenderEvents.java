@@ -979,17 +979,24 @@ public class RenderEvents
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
             Vec3d motionVec = new Vec3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
-            double length = motionVec.length() / 3.0;
+            double length = 100 * motionVec.length() / 3.0;
 
-            buffer.pos(0, 0, -0.035).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0, 0, 0.035).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0, -length, 0.035).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0, -length, -0.035).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            int trailColor = bullet.getTrailColor();
+            //System.out.println(trailColor);
+            float r = (float)(trailColor >> 16 & 255) / 255.0F;
+            float g = (float)(trailColor >> 8 & 255) / 255.0F;
+            float b = (float)(trailColor & 255) / 255.0F;
+            float a = 1.0F;
 
-            buffer.pos(-0.035, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0.035, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(0.035, -length, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-            buffer.pos(-0.035, -length, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+            buffer.pos(0, 0, -0.035).tex(0, 0).color(r, g, b, a).endVertex();
+            buffer.pos(0, 0, 0.035).tex(1, 0).color(r, g, b, a).endVertex();
+            buffer.pos(0, -length, 0.035).tex(1, 1).color(r, g, b, a).endVertex();
+            buffer.pos(0, -length, -0.035).tex(0, 1).color(r, g, b, a).endVertex();
+
+            buffer.pos(-0.035, 0, 0).tex(0, 0).color(r, g, b, a).endVertex();
+            buffer.pos(0.035, 0, 0).tex(1, 0).color(r, g, b, a).endVertex();
+            buffer.pos(0.035, -length, 0).tex(1, 1).color(r, g, b, a).endVertex();
+            buffer.pos(-0.035, -length, 0).tex(0, 1).color(r, g, b, a).endVertex();
 
             tessellator.draw();
 

@@ -342,11 +342,6 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         ByteBufUtils.writeTag(buffer, this.projectile.serializeNBT());
         ByteBufUtils.writeTag(buffer, this.general.serializeNBT());
         buffer.writeInt(this.shooterId);
-        buffer.writeFloat(this.rotationYaw);
-        buffer.writeFloat(this.rotationPitch);
-        buffer.writeDouble(this.motionX);
-        buffer.writeDouble(this.motionY);
-        buffer.writeDouble(this.motionZ);
     }
 
     @Override
@@ -357,13 +352,6 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.general = new Gun.General();
         this.general.deserializeNBT(ByteBufUtils.readTag(additionalData));
         this.shooterId = additionalData.readInt();
-        this.rotationYaw = additionalData.readFloat();
-        this.prevRotationYaw = this.rotationYaw;
-        this.rotationPitch = additionalData.readFloat();
-        this.prevRotationPitch = this.rotationPitch;
-        this.motionX = additionalData.readDouble();
-        this.motionY = additionalData.readDouble();
-        this.motionZ = additionalData.readDouble();
 
         ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(projectile.item);
         if(ammo != null)

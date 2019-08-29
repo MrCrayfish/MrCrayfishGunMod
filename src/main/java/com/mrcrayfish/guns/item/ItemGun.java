@@ -30,6 +30,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -212,8 +213,9 @@ public class ItemGun extends ItemColored
 
             if(!modifiedGun.projectile.visible)
             {
-                PacketHandler.INSTANCE.sendToAllTracking(new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ), playerIn);
-                PacketHandler.INSTANCE.sendTo(new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ), (EntityPlayerMP) playerIn);
+                MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ, modifiedGun.projectile.trailColor);
+                PacketHandler.INSTANCE.sendToAllAround(messageBullet, new NetworkRegistry.TargetPoint(playerIn.dimension, playerIn.posX, playerIn.posY, playerIn.posZ, 200));
+                PacketHandler.INSTANCE.sendTo(messageBullet, (EntityPlayerMP) playerIn);
             }
         }
 

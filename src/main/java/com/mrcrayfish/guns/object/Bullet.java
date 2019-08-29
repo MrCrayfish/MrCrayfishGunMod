@@ -23,8 +23,9 @@ public class Bullet
     private float rotationYaw;
     private float rotationPitch;
     private boolean finished = false;
+    private int trailColor;
 
-    public Bullet(@Nullable EntityProjectile projectile, int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ)
+    public Bullet(@Nullable EntityProjectile projectile, int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, int trailColor)
     {
         this.projectile = projectile;
         this.entityId = entityId;
@@ -34,6 +35,7 @@ public class Bullet
         this.motionX = motionX;
         this.motionY = motionY;
         this.motionZ = motionZ;
+        this.trailColor = trailColor;
         this.updateHeading();
     }
 
@@ -126,5 +128,10 @@ public class Bullet
     public boolean isFinished()
     {
         return finished;
+    }
+
+    public int getTrailColor()
+    {
+        return trailColor;
     }
 }

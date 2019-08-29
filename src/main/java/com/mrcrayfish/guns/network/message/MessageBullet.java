@@ -23,10 +23,11 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
     private double motionX;
     private double motionY;
     private double motionZ;
+    private int trailColor;
 
     public MessageBullet() {}
 
-    public MessageBullet(int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ)
+    public MessageBullet(int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, int trailColor)
     {
         this.entityId = entityId;
         this.posX = posX;
@@ -35,6 +36,7 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
         this.motionX = motionX;
         this.motionY = motionY;
         this.motionZ = motionZ;
+        this.trailColor = trailColor;
     }
 
     @Override
@@ -47,6 +49,7 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
         buf.writeDouble(this.motionX);
         buf.writeDouble(this.motionY);
         buf.writeDouble(this.motionZ);
+        buf.writeInt(this.trailColor);
     }
 
     @Override
@@ -59,6 +62,7 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
         this.motionX = buf.readDouble();
         this.motionY = buf.readDouble();
         this.motionZ = buf.readDouble();
+        this.trailColor = buf.readInt();
     }
 
     @Override
@@ -72,7 +76,7 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
             {
                 projectile = (EntityProjectile) entity;
             }
-            Bullet bullet = new Bullet(projectile, message.entityId, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
+            Bullet bullet = new Bullet(projectile, message.entityId, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ, message.trailColor);
             ClientProxy.renderEvents.addBullet(bullet);
         });
         return null;

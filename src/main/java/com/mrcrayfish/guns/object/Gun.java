@@ -150,6 +150,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Optional public boolean gravity;
 		@Optional public boolean damageReduceOverLife;
 		@Optional public boolean damageReduceIfNotZoomed;
+		@Optional public int trailColor = 0xFFFFFF;
 
 		public float getDamage(Gun modifiedGun)
 		{
@@ -178,6 +179,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			tag.setBoolean("gravity", this.gravity);
 			tag.setBoolean("damageReduceOverLife", this.damageReduceOverLife);
 			tag.setBoolean("damageReduceIfNotZoomed", this.damageReduceIfNotZoomed);
+			tag.setInteger("trailColor", this.trailColor);
 			return tag;
 		}
 
@@ -220,6 +222,10 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			{
 				this.damageReduceIfNotZoomed = tag.getBoolean("damageReduceIfNotZoomed");
 			}
+			if(tag.hasKey("trailColor", Constants.NBT.TAG_INT))
+			{
+				this.trailColor = tag.getInteger("trailColor");
+			}
 		}
 
 		public Projectile copy()
@@ -234,6 +240,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			projectile.gravity = gravity;
 			projectile.damageReduceOverLife = damageReduceOverLife;
 			projectile.damageReduceIfNotZoomed = damageReduceIfNotZoomed;
+			projectile.trailColor = trailColor;
 			return projectile;
 		}
 	}
