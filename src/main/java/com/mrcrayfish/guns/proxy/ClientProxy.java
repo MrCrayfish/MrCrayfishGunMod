@@ -27,15 +27,22 @@ import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.GunRegistry;
 import com.mrcrayfish.guns.item.ItemColored;
 import com.mrcrayfish.guns.item.ItemScope;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
@@ -180,7 +187,13 @@ public class ClientProxy extends CommonProxy
                 (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
 
-    @Override
+	@Override
+	public boolean canShoot()
+	{
+		return GunConfig.CLIENT.controls.oldControls;
+	}
+
+	@Override
 	public boolean isZooming()
 	{
 		Minecraft mc = Minecraft.getMinecraft();
@@ -199,12 +212,47 @@ public class ClientProxy extends CommonProxy
 				zooming |= controller.getLTriggerValue() >= 0.5;
 			}
 		}
-		return zooming;
+
+		if(!zooming)
+		{
+			return false;
+		}
+
+		return !ClientProxy.isLookingAtInteract();
 	}
 
 	@Override
 	public void startReloadAnimation()
 	{
 		renderEvents.playAnimation = true;
+	}
+
+	public static boolean isLookingAtInteract()
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.objectMouseOver != null)
+		{
+			if(mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
+			{
+				IBlockState state = mc.world.getBlockState(mc.objectMouseOver.getBlockPos());
+				Block block = state.getBlock();
+				if(block instanceof BlockContainer || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE)
+				{
+					return true;
+				}
+			}
+			else if(mc.objectMouseOver.typeOfHit == RayTraceResult.Type.ENTITY)
+			{
+				Entity entity = mc.objectMouseOver.entityHit;
+				if(entity != null)
+				{
+					if(entity.processInitialInteract(Minecraft.getMinecraft().player, EnumHand.MAIN_HAND))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

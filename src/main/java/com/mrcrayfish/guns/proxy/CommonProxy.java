@@ -44,6 +44,11 @@ public class CommonProxy
 
 	public void createExplosionStunGrenade(double x, double y, double z) {}
 
+	public boolean canShoot()
+	{
+		return false;
+	}
+
 	public boolean isZooming()
 	{
 		return false;

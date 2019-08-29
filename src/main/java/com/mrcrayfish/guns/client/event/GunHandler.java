@@ -9,14 +9,17 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAim;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.proxy.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -45,17 +48,10 @@ public class GunHandler
         if(!event.isButtonstate())
             return;
 
-        Minecraft mc = Minecraft.getMinecraft();
-        if(mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
-        {
-            IBlockState state = mc.world.getBlockState(mc.objectMouseOver.getBlockPos());
-            Block block = state.getBlock();
-            if(block instanceof BlockContainer || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE)
-            {
-                return;
-            }
-        }
+        if(event.getButton() == 1 && ClientProxy.isLookingAtInteract())
+            return;
 
+        Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         if(player != null)
         {

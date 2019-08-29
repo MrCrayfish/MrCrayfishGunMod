@@ -145,6 +145,11 @@ public class ItemGun extends ItemColored
         ItemStack heldItem = playerIn.getHeldItem(handIn);
         if(worldIn.isRemote)
         {
+            if(!MrCrayfishGunMod.proxy.canShoot())
+            {
+                return new ActionResult<>(EnumActionResult.FAIL, heldItem);
+            }
+
             if(ItemGun.hasAmmo(heldItem) || playerIn.capabilities.isCreativeMode)
             {
                 if(playerIn.isHandActive())
