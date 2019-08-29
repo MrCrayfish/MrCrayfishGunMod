@@ -979,10 +979,9 @@ public class RenderEvents
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 
             Vec3d motionVec = new Vec3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
-            double length = 100 * motionVec.length() / 3.0;
+            double length = motionVec.length() / 3.0;
 
             int trailColor = bullet.getTrailColor();
-            //System.out.println(trailColor);
             float r = (float)(trailColor >> 16 & 255) / 255.0F;
             float g = (float)(trailColor >> 8 & 255) / 255.0F;
             float b = (float)(trailColor & 255) / 255.0F;
