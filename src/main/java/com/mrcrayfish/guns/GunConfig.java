@@ -128,7 +128,7 @@ public class GunConfig
 		@Config.Comment("The distance players need to be within to be able to track new projectiles trails. Higher values means you can see projectiles from that start from further away.")
 		@Config.LangKey(PREFIX + ".projectile_tracking_range")
 		@Config.RangeDouble(min = 0.0)
-		public double distance = 200.0;
+		public double projectileTrackingRange = 200.0;
 	}
 
 	public static class AggroMobs

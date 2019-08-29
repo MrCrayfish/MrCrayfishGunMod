@@ -214,7 +214,7 @@ public class ItemGun extends ItemColored
             if(!modifiedGun.projectile.visible)
             {
                 MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ, modifiedGun.projectile.trailColor);
-                PacketHandler.INSTANCE.sendToAllAround(messageBullet, new NetworkRegistry.TargetPoint(playerIn.dimension, playerIn.posX, playerIn.posY, playerIn.posZ, 200));
+                PacketHandler.INSTANCE.sendToAllAround(messageBullet, new NetworkRegistry.TargetPoint(playerIn.dimension, playerIn.posX, playerIn.posY, playerIn.posZ, GunConfig.SERVER.network.projectileTrackingRange));
                 PacketHandler.INSTANCE.sendTo(messageBullet, (EntityPlayerMP) playerIn);
             }
         }
