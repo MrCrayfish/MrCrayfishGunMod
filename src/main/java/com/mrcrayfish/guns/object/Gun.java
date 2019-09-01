@@ -355,7 +355,10 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		public Display copy()
 		{
 			Display display = new Display();
-			display.flash = flash.copy();
+			if(flash != null)
+			{
+				display.flash = flash.copy();
+			}
 			return display;
 		}
 	}
