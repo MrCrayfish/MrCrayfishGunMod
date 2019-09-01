@@ -26,12 +26,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -306,7 +304,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
     protected void onHitBlock(IBlockState state, BlockPos pos, double x, double y, double z)
     {
-
+        ((WorldServer)this.world).spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, (int) this.projectile.damage, 0.0, 0.0, 0.0, 0.05, Block.getStateId(state));
     }
 
     @Override
