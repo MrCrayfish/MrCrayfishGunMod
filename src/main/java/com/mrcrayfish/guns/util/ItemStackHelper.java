@@ -41,6 +41,10 @@ public class ItemStackHelper
 
     public static void writeItemStackToBufIgnoreTag(ByteBuf buf, ItemStack stack)
     {
+        if (stack.isEmpty())
+        {
+            buf.writeShort(-1);
+        }
         buf.writeShort(Item.getIdFromItem(stack.getItem()));
         buf.writeByte(stack.getCount());
         buf.writeShort(stack.getMetadata());
@@ -49,10 +53,10 @@ public class ItemStackHelper
     public static ItemStack readItemStackFromBufIgnoreTag(ByteBuf buf)
     {
         int id = buf.readShort();
-        if(id >= 0)
+        if (id < 0)
         {
-            return new ItemStack(Item.getItemById(id), buf.readByte(), buf.readShort());
+            return ItemStack.EMPTY;
         }
-        return ItemStack.EMPTY;
+        return new ItemStack(Item.getItemById(id), buf.readByte(), buf.readShort());
     }
 }

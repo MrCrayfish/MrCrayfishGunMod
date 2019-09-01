@@ -24,10 +24,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -43,6 +40,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -1004,40 +1003,30 @@ public class RenderEvents
             GlStateManager.popAttrib();
         }
 
+        // No point rendering item if empty, so return
+        if(bullet.getProjectile().getItem().isEmpty())
+            return;
+
         GlStateManager.rotate((bullet.getProjectile().ticksExisted + partialTicks) * (float) 50, 0, 1, 0);
 
         GlStateManager.scale(0.275, 0.275, 0.275);
 
-        GlStateManager.translate(-0.5, -0.5, -0.5);
-
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
-        GlStateManager.enableLighting();
-
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(bullet.getProjectile().getItem());
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
-        for(EnumFacing enumfacing : EnumFacing.values())
+        Minecraft mc = Minecraft.getMinecraft();
+        mc.entityRenderer.enableLightmap();
+        int brightness = 0;
+        BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos(MathHelper.floor(doubleX), 0, MathHelper.floor(doubleZ));
+        if (mc.world.isBlockLoaded(blockPos))
         {
-            this.renderQuads(buffer, model.getQuads(null, enumfacing, 0L));
+            blockPos.setY(MathHelper.floor(doubleY));
+            brightness = mc.world.getCombinedLight(blockPos, 0);
         }
-        this.renderQuads(buffer, model.getQuads(null, null, 0L));
-        tessellator.draw();
-
-        GlStateManager.disableLighting();
+        int x = brightness % 65536;
+        int y = brightness / 65536;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)x, (float)y);
+        Minecraft.getMinecraft().getRenderItem().renderItem(bullet.getProjectile().getItem(), ItemCameraTransforms.TransformType.NONE);
+        mc.entityRenderer.disableLightmap();
 
         GlStateManager.popMatrix();
-    }
-
-    private void renderQuads(BufferBuilder buffer, List<BakedQuad> quads)
-    {
-        int i = 0;
-        for(int j = quads.size(); i < j; ++i)
-        {
-            BakedQuad quad = quads.get(i);
-            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quad, -1);
-        }
     }
 
     @SubscribeEvent

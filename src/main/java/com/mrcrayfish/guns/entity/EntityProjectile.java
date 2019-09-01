@@ -13,6 +13,7 @@ import com.mrcrayfish.guns.network.message.MessageSound;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
+import com.mrcrayfish.guns.util.ItemStackHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBreakable;
@@ -106,6 +107,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     public ItemStack getWeapon()
     {
         return weapon;
+    }
+
+    public void setItem(ItemStack item)
+    {
+        this.item = item;
     }
 
     public ItemStack getItem()
@@ -335,11 +341,12 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    public void writeSpawnData(ByteBuf buffer)
+    public void writeSpawnData(ByteBuf additionalData)
     {
-        ByteBufUtils.writeTag(buffer, this.projectile.serializeNBT());
-        ByteBufUtils.writeTag(buffer, this.general.serializeNBT());
-        buffer.writeInt(this.shooterId);
+        ByteBufUtils.writeTag(additionalData, this.projectile.serializeNBT());
+        ByteBufUtils.writeTag(additionalData, this.general.serializeNBT());
+        additionalData.writeInt(this.shooterId);
+        ItemStackHelper.writeItemStackToBufIgnoreTag(additionalData, this.item);
     }
 
     @Override
@@ -350,13 +357,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.general = new Gun.General();
         this.general.deserializeNBT(ByteBufUtils.readTag(additionalData));
         this.shooterId = additionalData.readInt();
-
-        ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(projectile.item);
-        if(ammo != null)
-        {
-            this.item = new ItemStack(ammo);
-        }
-
+        this.item = ItemStackHelper.readItemStackFromBufIgnoreTag(additionalData);
         this.setSize(this.projectile.size, this.projectile.size);
     }
 
