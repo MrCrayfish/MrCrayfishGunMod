@@ -24,10 +24,11 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
     private double motionY;
     private double motionZ;
     private int trailColor;
+    private double trailLengthMultiplier;
 
     public MessageBullet() {}
 
-    public MessageBullet(int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, int trailColor)
+    public MessageBullet(int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, int trailColor, double trailLengthMultiplier)
     {
         this.entityId = entityId;
         this.posX = posX;
@@ -37,6 +38,7 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
         this.motionY = motionY;
         this.motionZ = motionZ;
         this.trailColor = trailColor;
+        this.trailLengthMultiplier = trailLengthMultiplier;
     }
 
     @Override
@@ -50,6 +52,7 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
         buf.writeDouble(this.motionY);
         buf.writeDouble(this.motionZ);
         buf.writeInt(this.trailColor);
+        buf.writeDouble(this.trailLengthMultiplier);
     }
 
     @Override
@@ -63,6 +66,7 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
         this.motionY = buf.readDouble();
         this.motionZ = buf.readDouble();
         this.trailColor = buf.readInt();
+        this.trailLengthMultiplier = buf.readDouble();
     }
 
     @Override
@@ -76,7 +80,7 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
             {
                 projectile = (EntityProjectile) entity;
             }
-            Bullet bullet = new Bullet(projectile, message.entityId, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ, message.trailColor);
+            Bullet bullet = new Bullet(projectile, message.entityId, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ, message.trailColor, message.trailLengthMultiplier);
             ClientProxy.renderEvents.addBullet(bullet);
         });
         return null;

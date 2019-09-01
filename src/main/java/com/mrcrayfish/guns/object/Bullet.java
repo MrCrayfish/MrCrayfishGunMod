@@ -24,8 +24,9 @@ public class Bullet
     private float rotationPitch;
     private boolean finished = false;
     private int trailColor;
+    private double trailLengthMultiplier;
 
-    public Bullet(@Nullable EntityProjectile projectile, int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, int trailColor)
+    public Bullet(@Nullable EntityProjectile projectile, int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, int trailColor, double trailLengthMultiplier)
     {
         this.projectile = projectile;
         this.entityId = entityId;
@@ -36,6 +37,7 @@ public class Bullet
         this.motionY = motionY;
         this.motionZ = motionZ;
         this.trailColor = trailColor;
+        this.trailLengthMultiplier = trailLengthMultiplier;
         this.updateHeading();
     }
 
@@ -133,5 +135,10 @@ public class Bullet
     public int getTrailColor()
     {
         return trailColor;
+    }
+
+    public double getTrailLengthMultiplier()
+    {
+        return trailLengthMultiplier;
     }
 }
