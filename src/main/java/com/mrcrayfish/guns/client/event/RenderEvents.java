@@ -950,11 +950,11 @@ public class RenderEvents
         if(entity == null || bullet.isFinished() || bullet.getProjectile() == null)
             return;
 
+        GlStateManager.pushMatrix();
+
         double doubleX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
         double doubleY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
         double doubleZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
-
-        GlStateManager.pushMatrix();
 
         GlStateManager.translate(-doubleX, -doubleY, -doubleZ);
 
@@ -1005,7 +1005,10 @@ public class RenderEvents
 
         // No point rendering item if empty, so return
         if(bullet.getProjectile().getItem().isEmpty())
+        {
+            GlStateManager.popMatrix();
             return;
+        }
 
         GlStateManager.rotate((bullet.getProjectile().ticksExisted + partialTicks) * (float) 50, 0, 1, 0);
 
