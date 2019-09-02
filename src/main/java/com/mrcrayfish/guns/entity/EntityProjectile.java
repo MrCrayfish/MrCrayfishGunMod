@@ -72,13 +72,10 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.setSize(this.projectile.size, this.projectile.size);
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
 
-        if(this.projectile.visible)
+        ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
+        if(ammo != null)
         {
-            ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
-            if(ammo != null)
-            {
-                this.item = new ItemStack(ammo);
-            }
+            this.item = new ItemStack(ammo);
         }
     }
 
