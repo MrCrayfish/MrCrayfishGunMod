@@ -26,6 +26,7 @@ import com.mrcrayfish.guns.init.ModGuns;
 import com.mrcrayfish.guns.init.RegistrationHandler;
 import com.mrcrayfish.guns.item.GunRegistry;
 import com.mrcrayfish.guns.item.ItemColored;
+import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.item.ItemScope;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -201,6 +202,9 @@ public class ClientProxy extends CommonProxy
 			return false;
 		
 		if(mc.player.isSpectator())
+			return false;
+		
+		if(!(mc.player.inventory.getCurrentItem().getItem() instanceof ItemGun))
 			return false;
 
 		boolean zooming = GunConfig.CLIENT.controls.oldControls ? GuiScreen.isAltKeyDown() : Mouse.isButtonDown(1);
