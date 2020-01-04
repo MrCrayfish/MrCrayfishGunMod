@@ -38,9 +38,9 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.RayTraceResult;
@@ -203,7 +203,7 @@ public class ClientProxy extends CommonProxy
 		
 		if(mc.player.isSpectator())
 			return false;
-		
+
 		if(!(mc.player.inventory.getCurrentItem().getItem() instanceof ItemGun))
 			return false;
 
@@ -217,12 +217,7 @@ public class ClientProxy extends CommonProxy
 			}
 		}
 
-		if(!zooming)
-		{
-			return false;
-		}
-
-		return !ClientProxy.isLookingAtInteract();
+		return zooming;
 	}
 
 	@Override
@@ -250,10 +245,7 @@ public class ClientProxy extends CommonProxy
 				Entity entity = mc.objectMouseOver.entityHit;
 				if(entity != null)
 				{
-					if(entity.processInitialInteract(Minecraft.getMinecraft().player, EnumHand.MAIN_HAND))
-					{
-						return true;
-					}
+					return true;
 				}
 			}
 		}

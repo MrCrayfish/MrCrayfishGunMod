@@ -10,17 +10,10 @@ import com.mrcrayfish.guns.network.message.MessageAim;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.proxy.ClientProxy;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -48,10 +41,16 @@ public class GunHandler
         if(!event.isButtonstate())
             return;
 
-        if(event.getButton() == 1 && ClientProxy.isLookingAtInteract())
-            return;
-
         Minecraft mc = Minecraft.getMinecraft();
+        if(event.getButton() == 1 && ClientProxy.isLookingAtInteract())
+        {
+            if(mc.player.getHeldItemMainhand().getItem() instanceof ItemGun)
+            {
+                event.setCanceled(true);
+            }
+            return;
+        }
+
         EntityPlayer player = mc.player;
         if(player != null)
         {
