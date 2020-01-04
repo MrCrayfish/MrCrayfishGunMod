@@ -44,7 +44,7 @@ public class GunHandler
         Minecraft mc = Minecraft.getMinecraft();
         if(event.getButton() == 1 && ClientProxy.isLookingAtInteract())
         {
-            if(mc.player.getHeldItemMainhand().getItem() instanceof ItemGun)
+            if(mc.player.getHeldItemMainhand().getItem() instanceof ItemGun && !ClientProxy.isLookingAtInteractBlock())
             {
                 event.setCanceled(true);
             }

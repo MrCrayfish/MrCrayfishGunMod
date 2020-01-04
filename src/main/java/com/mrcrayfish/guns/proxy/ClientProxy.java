@@ -226,6 +226,24 @@ public class ClientProxy extends CommonProxy
 		renderEvents.playAnimation = true;
 	}
 
+	public static boolean isLookingAtInteractBlock()
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.objectMouseOver != null)
+		{
+			if(mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
+			{
+				IBlockState state = mc.world.getBlockState(mc.objectMouseOver.getBlockPos());
+				Block block = state.getBlock();
+				if(block instanceof BlockContainer || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public static boolean isLookingAtInteract()
 	{
 		Minecraft mc = Minecraft.getMinecraft();
