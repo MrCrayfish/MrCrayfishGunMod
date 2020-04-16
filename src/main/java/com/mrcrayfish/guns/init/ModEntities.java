@@ -1,21 +1,33 @@
 package com.mrcrayfish.guns.init;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
-import com.mrcrayfish.guns.entity.*;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
+import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.entity.EntityProjectile;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.BiFunction;
 
 /**
  * Author: MrCrayfish
  */
 public class ModEntities
 {
-    public static void register()
+    public static final DeferredRegister<EntityType<?>> REGISTER = new DeferredRegister<>(ForgeRegistries.ENTITIES, Reference.MOD_ID);
+
+    public static final RegistryObject<EntityType<EntityProjectile>> PROJECTILE = register("projectile", EntityProjectile::new);
+    public static final RegistryObject<EntityType<EntityProjectile>> GRENADE = register("projectile", EntityProjectile::new);
+    public static final RegistryObject<EntityType<EntityProjectile>> MISSILE = register("projectile", EntityProjectile::new);
+    public static final RegistryObject<EntityType<EntityProjectile>> THROWABLE_GRENADE = register("projectile", EntityProjectile::new);
+    public static final RegistryObject<EntityType<EntityProjectile>> THROWABLE_STUN_GRENADE = register("projectile", EntityProjectile::new);
+
+    private static <T extends Entity> RegistryObject<EntityType<T>> register(String id, BiFunction<EntityType<T>, World, T> function)
     {
-        EntityRegistry.registerModEntity(new ResourceLocation("cgm:projectile"),        EntityProjectile.class,           "cgm.projectile",        0, MrCrayfishGunMod.instance, 64, 80, true);
-        EntityRegistry.registerModEntity(new ResourceLocation("cgm:grenade"),           EntityGrenade.class,              "cgm.grenade",           1, MrCrayfishGunMod.instance, 64, 80, true);
-        EntityRegistry.registerModEntity(new ResourceLocation("cgm:missile"),           EntityMissile.class,              "cgm.missile",           2, MrCrayfishGunMod.instance, 64, 80, true);
-        EntityRegistry.registerModEntity(new ResourceLocation("cgm:throwable_grenade"), EntityThrowableGrenade.class,     "cgm.throwable_grenade", 3, MrCrayfishGunMod.instance, 64, 80, true);
-        EntityRegistry.registerModEntity(new ResourceLocation("cgm:grenade_stun"),      EntityThrowableStunGrenade.class, "cgm.grenade_stun",      4, MrCrayfishGunMod.instance, 64, 80, true);
+        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).setTrackingRange(100).setUpdateInterval(1).disableSummoning().immuneToFire().setShouldReceiveVelocityUpdates(true).build(id);
+        return REGISTER.register(id, () -> type);
     }
 }

@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.GunMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -41,7 +41,7 @@ public class MessageExplosionStunGrenade implements IMessage, IMessageHandler<Me
     {
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            MrCrayfishGunMod.proxy.createExplosionStunGrenade(message.x, message.y, message.z);
+            GunMod.proxy.createExplosionStunGrenade(message.x, message.y, message.z);
         });
         return null;
     }

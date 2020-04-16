@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.proxy;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
-import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.ControllerEvents;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.event.GunHandler;
@@ -22,12 +22,11 @@ import com.mrcrayfish.guns.client.render.gun.model.ModelShortScope;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.entity.EntityThrowableGrenade;
 import com.mrcrayfish.guns.entity.EntityThrowableStunGrenade;
-import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.RegistrationHandler;
-import com.mrcrayfish.guns.item.GunRegistry;
-import com.mrcrayfish.guns.item.ItemColored;
-import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.item.ItemScope;
+import com.mrcrayfish.guns.item.*;
+import com.mrcrayfish.guns.item.ColoredItem;
+import com.mrcrayfish.guns.item.ScopeItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
@@ -38,7 +37,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
@@ -99,34 +97,34 @@ public class ClientProxy extends CommonProxy
 		};
 		RegistrationHandler.Items.getItems().forEach(item ->
 		{
-			if(item instanceof ItemColored)
+			if(item instanceof ColoredItem)
 			{
 				Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
 			}
 		});
 
-		ModelOverrides.register(new ItemStack(ModGuns.CHAIN_GUN), new ModelChainGun());
-		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()), new ModelShortScope());
-		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new ModelMediumScope());
-		ModelOverrides.register(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new ModelLongScope());
+		ModelOverrides.register(new ItemStack(ModItems.MINI_GUN), new ModelChainGun());
+		ModelOverrides.register(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.SMALL.ordinal()), new ModelShortScope());
+		ModelOverrides.register(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.MEDIUM.ordinal()), new ModelMediumScope());
+		ModelOverrides.register(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.LONG.ordinal()), new ModelLongScope());
 
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.PISTOL), new DisplayProperty(0.0F, 0.55F, -0.25F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SHOTGUN), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.RIFLE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.GRENADE_LAUNCHER), new DisplayProperty(0.0F, 0.55F, -0.1F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.BAZOOKA), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.5F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.CHAIN_GUN), new DisplayProperty(0.0F, 0.55F, 0.1F, 0.0F, 0.0F, 0.0F, 2.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.ASSAULT_RIFLE), new DisplayProperty(0.0F, 0.55F, -0.15F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.BASIC_AMMO), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.ADVANCED_AMMO), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SHELL), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.5F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.GRENADE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.MISSILE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.STUN_GRENADE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.SMALL.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.MEDIUM.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SCOPES, 1, ItemScope.Type.LONG.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-		GuiWorkbench.addDisplayProperty(new ItemStack(ModGuns.SILENCER), new DisplayProperty(0.0F, 0.25F, 0.5F, 0.0F, 0.0F, 0.0F, 1.5F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.PISTOL), new DisplayProperty(0.0F, 0.55F, -0.25F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.SHOTGUN), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.RIFLE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.GRENADE_LAUNCHER), new DisplayProperty(0.0F, 0.55F, -0.1F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.BAZOOKA), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.5F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.MINI_GUN), new DisplayProperty(0.0F, 0.55F, 0.1F, 0.0F, 0.0F, 0.0F, 2.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.ASSAULT_RIFLE), new DisplayProperty(0.0F, 0.55F, -0.15F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.BASIC_AMMO), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.ADVANCED_AMMO), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.SHELL), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.5F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.GRENADE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.MISSILE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.STUN_GRENADE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.SMALL.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.MEDIUM.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.LONG.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
+		GuiWorkbench.addDisplayProperty(new ItemStack(ModItems.SILENCER), new DisplayProperty(0.0F, 0.25F, 0.5F, 0.0F, 0.0F, 0.0F, 1.5F));
 	}
 
 	@Override
@@ -191,7 +189,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public boolean canShoot()
 	{
-		return GunConfig.CLIENT.controls.oldControls;
+		return Config.CLIENT.controls.oldControls;
 	}
 
 	@Override
@@ -204,10 +202,10 @@ public class ClientProxy extends CommonProxy
 		if(mc.player.isSpectator())
 			return false;
 
-		if(!(mc.player.inventory.getCurrentItem().getItem() instanceof ItemGun))
+		if(!(mc.player.inventory.getCurrentItem().getItem() instanceof GunItem))
 			return false;
 
-		boolean zooming = GunConfig.CLIENT.controls.oldControls ? GuiScreen.isAltKeyDown() : Mouse.isButtonDown(1);
+		boolean zooming = Config.CLIENT.controls.oldControls ? GuiScreen.isAltKeyDown() : Mouse.isButtonDown(1);
 		if(controllableLoaded)
 		{
 			Controller controller = Controllable.getController();

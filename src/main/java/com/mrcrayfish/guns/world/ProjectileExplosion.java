@@ -8,7 +8,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -152,13 +152,13 @@ public class ProjectileExplosion extends Explosion
                         entity.motionY += deltaY * motion;
                         entity.motionZ += deltaZ * motion;
 
-                        if(entity instanceof EntityPlayer)
+                        if(entity instanceof PlayerEntity)
                         {
-                            EntityPlayer entityplayer = (EntityPlayer) entity;
+                            PlayerEntity PlayerEntity = (PlayerEntity) entity;
 
-                            if(!entityplayer.isSpectator() && (!entityplayer.isCreative() || !entityplayer.capabilities.isFlying))
+                            if(!PlayerEntity.isSpectator() && (!PlayerEntity.isCreative() || !PlayerEntity.capabilities.isFlying))
                             {
-                                this.getPlayerKnockbackMap().put(entityplayer, new Vec3d(deltaX * damage, deltaY * damage, deltaZ * damage));
+                                this.getPlayerKnockbackMap().put(PlayerEntity, new Vec3d(deltaX * damage, deltaY * damage, deltaZ * damage));
                             }
                         }
                     }

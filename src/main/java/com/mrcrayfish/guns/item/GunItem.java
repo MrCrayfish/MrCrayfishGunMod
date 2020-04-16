@@ -2,14 +2,14 @@ package com.mrcrayfish.guns.item;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
-import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.ItemStackUtil;
-import com.mrcrayfish.guns.MrCrayfishGunMod;
 import com.mrcrayfish.guns.common.ProjectileFactory;
 import com.mrcrayfish.guns.common.SpreadHandler;
 import com.mrcrayfish.guns.entity.EntityProjectile;
-import com.mrcrayfish.guns.event.CommonEvents;
-import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.common.CommonEvents;
+import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
@@ -20,9 +20,11 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -37,17 +39,15 @@ import java.awt.*;
 import java.util.List;
 
 @Beta
-public class ItemGun extends ItemColored
+public class GunItem extends ColoredItem
 {
     private Gun gun;
 
-    private static final Predicate<EntityLivingBase> NOT_AGGRO_EXEMPT = entity -> !(entity instanceof EntityPlayer) && !GunConfig.AggroMobs.exemptClasses.contains(entity.getClass());
+    private static final Predicate<LivingEntity> NOT_AGGRO_EXEMPT = entity -> !(entity instanceof PlayerEntity) && !Config.COMMON.aggroMobs.exemptEntities.get().contains(entity.getType().getRegistryName().toString());
 
-    public ItemGun(ResourceLocation id)
+    public GunItem(Item.Properties properties)
     {
-        this.setTranslationKey(id.getNamespace() + "." + id.getPath());
-        this.setRegistryName(id);
-        this.setMaxStackSize(1);
+        super(properties);
         GunRegistry.getInstance().register(this);
     }
 
@@ -107,13 +107,13 @@ public class ItemGun extends ItemColored
     }
 
     @Override
-    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
+    public boolean onEntitySwing(LivingEntity entity, ItemStack stack)
     {
         return true;
     }
 
     @Override
-    public void onUsingTick(ItemStack stack, EntityLivingBase entity, int count)
+    public void onUsingTick(ItemStack stack, LivingEntity entity, int count)
     {
         Gun modifiedGun = getModifiedGun(stack);
         if(!modifiedGun.general.auto)
@@ -121,14 +121,14 @@ public class ItemGun extends ItemColored
             return;
         }
 
-        EntityPlayer player = (EntityPlayer) entity;
+        PlayerEntity player = (PlayerEntity) entity;
 
         if(!player.world.isRemote)
         {
             return;
         }
 
-        if(ItemGun.hasAmmo(stack) || player.capabilities.isCreativeMode)
+        if(GunItem.hasAmmo(stack) || player.isCreative())
         {
             CooldownTracker tracker = player.getCooldownTracker();
             if(!tracker.hasCooldown(stack.getItem()))
@@ -140,17 +140,17 @@ public class ItemGun extends ItemColored
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, EnumHand handIn)
     {
         ItemStack heldItem = playerIn.getHeldItem(handIn);
         if(worldIn.isRemote)
         {
-            if(!MrCrayfishGunMod.proxy.canShoot())
+            if(!GunMod.proxy.canShoot())
             {
                 return new ActionResult<>(EnumActionResult.FAIL, heldItem);
             }
 
-            if(ItemGun.hasAmmo(heldItem) || playerIn.capabilities.isCreativeMode)
+            if(GunItem.hasAmmo(heldItem) || playerIn.capabilities.isCreativeMode)
             {
                 if(playerIn.isHandActive())
                 {
@@ -171,23 +171,23 @@ public class ItemGun extends ItemColored
             }
             else
             {
-                MrCrayfishGunMod.proxy.playClientSound(SoundEvents.BLOCK_LEVER_CLICK);
+                GunMod.proxy.playClientSound(SoundEvents.BLOCK_LEVER_CLICK);
             }
         }
         return new ActionResult<>(EnumActionResult.FAIL, heldItem);
     }
 
-    public static void fire(World worldIn, EntityPlayer playerIn, ItemStack heldItem)
+    public static void fire(World worldIn, PlayerEntity playerIn, ItemStack heldItem)
     {
         if(worldIn.isRemote)
         {
             return;
         }
 
-        ItemGun item = (ItemGun) heldItem.getItem();
+        GunItem item = (GunItem) heldItem.getItem();
         if(CommonEvents.getCooldownTracker(playerIn.getUniqueID()).hasCooldown(item))
         {
-            MrCrayfishGunMod.logger.info(playerIn.getName() + "(" + playerIn.getUniqueID() + ") tried to fire before cooldown finished or server is lagging?");
+            GunMod.logger.info(playerIn.getName() + "(" + playerIn.getUniqueID() + ") tried to fire before cooldown finished or server is lagging?");
             return;
         }
 
@@ -196,7 +196,7 @@ public class ItemGun extends ItemColored
             playerIn.getDataManager().set(CommonEvents.RELOADING, false);
         }
 
-        boolean silenced = Gun.getAttachment(IAttachment.Type.BARREL, heldItem).getItem() == ModGuns.SILENCER;
+        boolean silenced = Gun.getAttachment(IAttachment.Type.BARREL, heldItem).getItem() == ModItems.SILENCER;
 
         Gun modifiedGun = item.getModifiedGun(heldItem);
         if(!modifiedGun.general.alwaysSpread && modifiedGun.general.spread > 0F)
@@ -209,7 +209,7 @@ public class ItemGun extends ItemColored
             ProjectileFactory factory = AmmoRegistry.getInstance().getFactory(modifiedGun.projectile.item);
             EntityProjectile bullet = factory.create(worldIn, playerIn, item, modifiedGun);
             bullet.setWeapon(heldItem);
-            bullet.setAdditionalDamage(ItemGun.getAdditionalDamage(heldItem));
+            bullet.setAdditionalDamage(GunItem.getAdditionalDamage(heldItem));
             if(silenced)
             {
                 bullet.setDamageModifier(0.75F);
@@ -219,14 +219,14 @@ public class ItemGun extends ItemColored
             if(!modifiedGun.projectile.visible)
             {
                 MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.posX, bullet.posY, bullet.posZ, bullet.motionX, bullet.motionY, bullet.motionZ, modifiedGun.projectile.trailColor, modifiedGun.projectile.trailLengthMultiplier);
-                PacketHandler.INSTANCE.sendToAllAround(messageBullet, new NetworkRegistry.TargetPoint(playerIn.dimension, playerIn.posX, playerIn.posY, playerIn.posZ, GunConfig.SERVER.network.projectileTrackingRange));
-                PacketHandler.INSTANCE.sendTo(messageBullet, (EntityPlayerMP) playerIn);
+                PacketHandler.INSTANCE.sendToAllAround(messageBullet, new NetworkRegistry.TargetPoint(playerIn.dimension, playerIn.posX, playerIn.posY, playerIn.posZ, Config.SERVER.network.projectileTrackingRange));
+                PacketHandler.INSTANCE.sendTo(messageBullet, (PlayerEntityMP) playerIn);
             }
         }
 
-        if(GunConfig.SERVER.aggroMobs.enabled)
+        if(Config.SERVER.aggroMobs.enabled)
         {
-            double r = silenced ? GunConfig.SERVER.aggroMobs.rangeSilenced : GunConfig.SERVER.aggroMobs.rangeUnsilenced;
+            double r = silenced ? Config.SERVER.aggroMobs.rangeSilenced : Config.SERVER.aggroMobs.rangeUnsilenced;
             double x = playerIn.posX + 0.5;
             double y = playerIn.posY + 0.5;
             double z = playerIn.posZ + 0.5;
@@ -240,7 +240,7 @@ public class ItemGun extends ItemColored
                 dz = z - entity.posZ;
                 if(dx * dx + dy * dy + dz * dz <= r)
                 {
-                    entity.setRevengeTarget(GunConfig.SERVER.aggroMobs.angerHostileMobs ? playerIn : entity);
+                    entity.setRevengeTarget(Config.SERVER.aggroMobs.angerHostileMobs ? playerIn : entity);
                 }
             }
         }
@@ -274,7 +274,7 @@ public class ItemGun extends ItemColored
 
         if(modifiedGun.display.flash != null)
         {
-            PacketHandler.INSTANCE.sendTo(new MessageMuzzleFlash(), (EntityPlayerMP) playerIn);
+            PacketHandler.INSTANCE.sendTo(new MessageMuzzleFlash(), (PlayerEntityMP) playerIn);
         }
 
         if(!playerIn.capabilities.isCreativeMode)
@@ -295,11 +295,11 @@ public class ItemGun extends ItemColored
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static ItemStack findAmmo(EntityPlayer player, ResourceLocation id)
+    public static ItemStack findAmmo(PlayerEntity player, ResourceLocation id)
     {
         if(player.capabilities.isCreativeMode)
         {
-            ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(id);
+            AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(id);
             return ammo != null ? new ItemStack(ammo, 64) : ItemStack.EMPTY;
         }
         for(int i = 0; i < player.inventory.getSizeInventory(); ++i)

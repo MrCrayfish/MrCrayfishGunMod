@@ -2,16 +2,16 @@ package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
-import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
-import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.init.ModItems;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
 
@@ -30,7 +30,7 @@ public class ModelChainGun implements IOverrideModel
     public void tick(EntityLivingBase entity)
     {
         lastRotation = rotation;
-        boolean shooting = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(GunConfig.CLIENT.controls.oldControls ? 1 : 0);
+        boolean shooting = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(Config.CLIENT.controls.oldControls ? 1 : 0);
 
         if(ClientProxy.controllableLoaded)
         {
@@ -41,9 +41,9 @@ public class ModelChainGun implements IOverrideModel
             }
         }
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getMinecraft().player;
         ItemStack heldItem = player.getHeldItemMainhand();
-        if(!ItemGun.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
+        if(!GunItem.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
         {
             shooting = false;
         }
@@ -61,7 +61,7 @@ public class ModelChainGun implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
     {
-        RenderUtil.renderModel(RenderUtil.getModel(ModGuns.PARTS, 0), stack);
-        RenderUtil.renderModel(RenderUtil.getModel(ModGuns.PARTS, 1), ItemCameraTransforms.TransformType.NONE, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks), stack, ItemStack.EMPTY);
+        RenderUtil.renderModel(RenderUtil.getModel(ModItems.PARTS, 0), stack);
+        RenderUtil.renderModel(RenderUtil.getModel(ModItems.PARTS, 1), ItemCameraTransforms.TransformType.NONE, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks), stack, ItemStack.EMPTY);
     }
 }

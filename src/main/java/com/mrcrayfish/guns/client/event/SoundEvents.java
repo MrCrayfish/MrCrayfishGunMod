@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.client.event;
 
-import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.audio.SoundRinging;
 import com.mrcrayfish.guns.init.ModPotions;
@@ -58,7 +58,7 @@ public class SoundEvents
         else
         {
             isDeafened = true;
-            if (GunConfig.SERVER.stunGrenades.deafen.ringVolumeSynced > 0
+            if (Config.SERVER.stunGrenades.deafen.ringVolumeSynced > 0
                     && (ringing == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(ringing)))
             {
                 ringing = new SoundRinging();
@@ -144,8 +144,8 @@ public class SoundEvents
 
     private static float getMutedVolume(float duration, float volumeBase)
     {
-        float volumeMin = volumeBase * GunConfig.SERVER.stunGrenades.deafen.soundPercentageSynced;
-        float percent = Math.min((duration / GunConfig.SERVER.stunGrenades.deafen.soundFadeThresholdSynced), 1);
+        float volumeMin = volumeBase * Config.SERVER.stunGrenades.deafen.soundPercentageSynced;
+        float percent = Math.min((duration / Config.SERVER.stunGrenades.deafen.soundFadeThresholdSynced), 1);
         return volumeMin + (1 - percent) * (volumeBase - volumeMin);
     }
 

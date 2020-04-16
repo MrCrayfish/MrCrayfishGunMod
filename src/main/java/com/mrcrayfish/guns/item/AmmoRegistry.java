@@ -29,22 +29,22 @@ public class AmmoRegistry
 
     private final ProjectileFactory DEFAULT_FACTORY = EntityProjectile::new;
 
-    private final Map<ResourceLocation, ItemAmmo> AMMO = new HashMap<>();
+    private final Map<ResourceLocation, AmmoItem> AMMO = new HashMap<>();
     private final Map<ResourceLocation, ProjectileFactory> FACTORIES = new HashMap<>();
 
-    void register(ItemAmmo ammo)
+    void register(AmmoItem ammo)
     {
         Objects.requireNonNull(ammo.getRegistryName());
         AMMO.put(ammo.getRegistryName(), ammo);
     }
 
-    public void registerProjectileFactory(ItemAmmo ammo, ProjectileFactory factory)
+    public void registerProjectileFactory(AmmoItem ammo, ProjectileFactory factory)
     {
         FACTORIES.put(ammo.getRegistryName(), factory);
     }
 
     @Nullable
-    public ItemAmmo getAmmo(ResourceLocation id)
+    public AmmoItem getAmmo(ResourceLocation id)
     {
         return AMMO.get(id);
     }

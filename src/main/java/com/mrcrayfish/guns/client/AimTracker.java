@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.guns.event.CommonEvents;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.guns.common.CommonEvents;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * Author: MrCrayfish
@@ -13,7 +13,7 @@ public class AimTracker
     private int currentAim;
     private int previousAim;
 
-    public void handleAiming(EntityPlayer player)
+    public void handleAiming(PlayerEntity player)
     {
         previousAim = currentAim;
         if(player.getDataManager().get(CommonEvents.AIMING))

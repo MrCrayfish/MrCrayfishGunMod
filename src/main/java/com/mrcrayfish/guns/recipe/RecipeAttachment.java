@@ -2,8 +2,8 @@ package com.mrcrayfish.guns.recipe;
 
 import com.mrcrayfish.guns.ItemStackUtil;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
-import com.mrcrayfish.guns.item.ItemGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegist
             ItemStack stack = inv.getStackInSlot(i);
             if(!stack.isEmpty())
             {
-                if(stack.getItem() instanceof ItemGun)
+                if(stack.getItem() instanceof GunItem)
                 {
                     if(!weapon.isEmpty())
                         return false;
@@ -52,7 +52,7 @@ public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegist
         if(!weapon.isEmpty()&& !attachment.isEmpty())
         {
             IAttachment.Type type = ((IAttachment)attachment.getItem()).getType();
-            Gun gun = ((ItemGun)weapon.getItem()).getGun();
+            Gun gun = ((GunItem)weapon.getItem()).getGun();
             return gun.canAttachType(type);
         }
 
@@ -70,7 +70,7 @@ public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegist
             ItemStack stack = inv.getStackInSlot(i);
             if(!stack.isEmpty())
             {
-                if(stack.getItem() instanceof ItemGun)
+                if(stack.getItem() instanceof GunItem)
                 {
                     if(!gun.isEmpty())
                         return null;

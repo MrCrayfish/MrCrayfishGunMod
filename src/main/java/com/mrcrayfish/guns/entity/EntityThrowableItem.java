@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.entity;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
@@ -30,7 +30,7 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
         super(worldIn);
     }
 
-    public EntityThrowableItem(World world, EntityPlayer player)
+    public EntityThrowableItem(World world, PlayerEntity player)
     {
         super(world, player);
     }

@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.mrcrayfish.guns.item.IAttachment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
@@ -646,21 +647,22 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		@Override
 		public Gun deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 		{
-			JsonObject general = JsonUtils.getJsonObject(json.getAsJsonObject(), "General");
-			this.base.general.maxAmmo = JsonUtils.getInt(general, "Max Ammo", this.base.general.maxAmmo);
-			this.base.general.reloadSpeed = JsonUtils.getInt(general, "Reload Speed", this.base.general.reloadSpeed);
-			this.base.general.projectileAmount = JsonUtils.getInt(general, "Projectile Count", this.base.general.projectileAmount);
-			this.base.general.alwaysSpread = JsonUtils.getBoolean(general, "Always Spread", this.base.general.alwaysSpread);
-			this.base.general.spread = JsonUtils.getFloat(general, "Spread", this.base.general.spread);
 
-			JsonObject projectile = JsonUtils.getJsonObject(json.getAsJsonObject(), "Projectile");
-			this.base.projectile.damage = JsonUtils.getFloat(projectile, "Damage", this.base.projectile.damage);
-			this.base.projectile.damageReduceOverLife = JsonUtils.getBoolean(projectile, "Damage Falloff", this.base.projectile.damageReduceOverLife);
-			this.base.projectile.gravity = JsonUtils.getBoolean(projectile, "Gravity", this.base.projectile.gravity);
-			this.base.projectile.life = JsonUtils.getInt(projectile, "Ticks Before Removed", this.base.projectile.life);
-			this.base.projectile.damageReduceIfNotZoomed = JsonUtils.getBoolean(projectile, "Reduce Damage If Not Zoomed", this.base.projectile.damageReduceIfNotZoomed);
-			this.base.projectile.size = JsonUtils.getFloat(projectile, "Size", this.base.projectile.size);
-			this.base.projectile.speed = JsonUtils.getFloat(projectile, "Speed", (float) this.base.projectile.speed);
+			JsonObject general = JSONUtils.getJsonObject(json.getAsJsonObject(), "General");
+			this.base.general.maxAmmo = JSONUtils.getInt(general, "Max Ammo", this.base.general.maxAmmo);
+			this.base.general.reloadSpeed = JSONUtils.getInt(general, "Reload Speed", this.base.general.reloadSpeed);
+			this.base.general.projectileAmount = JSONUtils.getInt(general, "Projectile Count", this.base.general.projectileAmount);
+			this.base.general.alwaysSpread = JSONUtils.getBoolean(general, "Always Spread", this.base.general.alwaysSpread);
+			this.base.general.spread = JSONUtils.getFloat(general, "Spread", this.base.general.spread);
+
+			JsonObject projectile = JSONUtils.getJsonObject(json.getAsJsonObject(), "Projectile");
+			this.base.projectile.damage = JSONUtils.getFloat(projectile, "Damage", this.base.projectile.damage);
+			this.base.projectile.damageReduceOverLife = JSONUtils.getBoolean(projectile, "Damage Falloff", this.base.projectile.damageReduceOverLife);
+			this.base.projectile.gravity = JSONUtils.getBoolean(projectile, "Gravity", this.base.projectile.gravity);
+			this.base.projectile.life = JSONUtils.getInt(projectile, "Ticks Before Removed", this.base.projectile.life);
+			this.base.projectile.damageReduceIfNotZoomed = JSONUtils.getBoolean(projectile, "Reduce Damage If Not Zoomed", this.base.projectile.damageReduceIfNotZoomed);
+			this.base.projectile.size = JSONUtils.getFloat(projectile, "Size", this.base.projectile.size);
+			this.base.projectile.speed = JSONUtils.getFloat(projectile, "Speed", (float) this.base.projectile.speed);
 
 			return this.base;
 		}

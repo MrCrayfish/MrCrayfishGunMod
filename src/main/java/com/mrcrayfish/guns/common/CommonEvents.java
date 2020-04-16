@@ -1,19 +1,21 @@
-package com.mrcrayfish.guns.event;
+package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.init.ModSounds;
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.guns.util.ItemStackUtil;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -26,16 +28,13 @@ import java.util.UUID;
  */
 public class CommonEvents
 {
-    public static final DataParameter<Boolean> AIMING = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
-    public static final DataParameter<Boolean> RELOADING = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
-
     /**
      * A custom implementation of the cooldown tracker in order to provide the best experience for
      * players. On servers, Minecraft's cooldown tracker is sent to the client but the latency creates
      * an awkward experience as the cooldown applies to the item after the packet has traveled to the
      * server then back to the client. To fix this and still apply security, we just handle the
      * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
-     * applied on the client in {@link ItemGun#onItemRightClick} and {@link ItemGun#onUsingTick}.
+     * applied on the client in {@link GunItem#onItemRightClick} and {@link GunItem#onUsingTick}.
      */
     private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
 
@@ -51,37 +50,27 @@ public class CommonEvents
     private Map<UUID, ReloadTracker> reloadTrackerMap = new HashMap<>();
 
     @SubscribeEvent
-    public void onPlayerInit(EntityEvent.EntityConstructing event)
-    {
-        if(event.getEntity() instanceof EntityPlayer)
-        {
-            event.getEntity().getDataManager().register(AIMING, false);
-            event.getEntity().getDataManager().register(RELOADING, false);
-        }
-    }
-
-    @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
         if(event.phase == TickEvent.Phase.START && !event.player.world.isRemote)
         {
-            EntityPlayer player = event.player;
-            if(player.getDataManager().get(RELOADING))
+            PlayerEntity player = event.player;
+            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
-                if(!reloadTrackerMap.containsKey(player.getUniqueID()))
+                if(!this.reloadTrackerMap.containsKey(player.getUniqueID()))
                 {
-                    if(!(player.inventory.getCurrentItem().getItem() instanceof ItemGun))
+                    if(!(player.inventory.getCurrentItem().getItem() instanceof GunItem))
                     {
-                        player.getDataManager().set(RELOADING, false);
+                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                         return;
                     }
-                    reloadTrackerMap.put(player.getUniqueID(), new ReloadTracker(player));
+                    this.reloadTrackerMap.put(player.getUniqueID(), new ReloadTracker(player));
                 }
-                ReloadTracker tracker = reloadTrackerMap.get(player.getUniqueID());
+                ReloadTracker tracker = this.reloadTrackerMap.get(player.getUniqueID());
                 if(!tracker.isSameWeapon(player) || tracker.isWeaponFull() || !tracker.hasAmmo(player))
                 {
-                    reloadTrackerMap.remove(player.getUniqueID());
-                    player.getDataManager().set(RELOADING, false);
+                    this.reloadTrackerMap.remove(player.getUniqueID());
+                    SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                     return;
                 }
                 if(tracker.canReload(player))
@@ -89,8 +78,8 @@ public class CommonEvents
                     tracker.increaseAmmo(player);
                     if(tracker.isWeaponFull() || !tracker.hasAmmo(player))
                     {
-                        reloadTrackerMap.remove(player.getUniqueID());
-                        player.getDataManager().set(RELOADING, false);
+                        this.reloadTrackerMap.remove(player.getUniqueID());
+                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                     }
                 }
             }
@@ -105,51 +94,47 @@ public class CommonEvents
         private ItemStack stack;
         private Gun gun;
 
-        private ReloadTracker(EntityPlayer player)
+        private ReloadTracker(PlayerEntity player)
         {
             this.startTick = player.ticksExisted;
             this.slot = player.inventory.currentItem;
             this.stack = player.inventory.getCurrentItem();
-            this.gun = ((ItemGun) stack.getItem()).getModifiedGun(stack);
+            this.gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
         }
 
-        public boolean isSameWeapon(EntityPlayer player)
+        public boolean isSameWeapon(PlayerEntity player)
         {
-            return !stack.isEmpty() && player.inventory.currentItem == slot && player.inventory.getCurrentItem() == stack;
+            return !this.stack.isEmpty() && player.inventory.currentItem == this.slot && player.inventory.getCurrentItem() == this.stack;
         }
 
         public boolean isWeaponFull()
         {
-            if(!stack.hasTagCompound())
-            {
-                stack.setTagCompound(new NBTTagCompound());
-            }
-            NBTTagCompound tag = stack.getTagCompound();
-            return tag.getInteger("AmmoCount") >= gun.general.maxAmmo;
+            CompoundNBT tag = ItemStackUtil.createTagCompound(this.stack);
+            return tag.getInt("AmmoCount") >= gun.general.maxAmmo;
         }
 
-        public boolean hasAmmo(EntityPlayer player)
+        public boolean hasAmmo(PlayerEntity player)
         {
-            return ItemGun.findAmmo(player, gun.projectile.item) != null;
+            return GunItem.findAmmo(player, gun.projectile.item) != null;
         }
 
-        public boolean canReload(EntityPlayer player)
+        public boolean canReload(PlayerEntity player)
         {
             int deltaTicks = player.ticksExisted - startTick;
             return deltaTicks > 0 && deltaTicks % 10 == 0;
         }
 
-        public void increaseAmmo(EntityPlayer player)
+        public void increaseAmmo(PlayerEntity player)
         {
-            ItemStack ammo = ItemGun.findAmmo(player, gun.projectile.item);
+            ItemStack ammo = GunItem.findAmmo(player, gun.projectile.item);
             if(!ammo.isEmpty())
             {
                 int amount = Math.min(ammo.getCount(), gun.general.reloadSpeed);
-                NBTTagCompound tag = stack.getTagCompound();
+                CompoundNBT tag = stack.getTag();
                 if(tag != null)
                 {
-                    amount = Math.min(amount, gun.general.maxAmmo - tag.getInteger("AmmoCount"));
-                    tag.setInteger("AmmoCount", tag.getInteger("AmmoCount") + amount);
+                    amount = Math.min(amount, gun.general.maxAmmo - tag.getInt("AmmoCount"));
+                    tag.putInt("AmmoCount", tag.getInt("AmmoCount") + amount);
                 }
                 ammo.shrink(amount);
             }

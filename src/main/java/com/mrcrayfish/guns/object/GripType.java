@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.fml.relauncher.Side;
@@ -47,7 +47,7 @@ public enum GripType
 		}
 
 		@Override
-		public void applyPlayerPreRender(EntityPlayer player, EnumHand hand, float aimProgress)
+		public void applyPlayerPreRender(PlayerEntity player, EnumHand hand, float aimProgress)
 		{
 			boolean right = Minecraft.getMinecraft().gameSettings.mainHand == EnumHandSide.RIGHT ? hand == EnumHand.MAIN_HAND : hand == EnumHand.OFF_HAND;
 			player.prevRenderYawOffset = player.prevRotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
@@ -87,7 +87,7 @@ public enum GripType
 		}
 
 		@Override
-		public void applyPlayerPreRender(EntityPlayer player, EnumHand hand, float aimProgress)
+		public void applyPlayerPreRender(PlayerEntity player, EnumHand hand, float aimProgress)
 		{
 			boolean right = Minecraft.getMinecraft().gameSettings.mainHand == EnumHandSide.RIGHT ? hand == EnumHand.MAIN_HAND : hand == EnumHand.OFF_HAND;
 			player.prevRenderYawOffset = player.prevRotationYaw + 45F * (right ? 1F : -1F);

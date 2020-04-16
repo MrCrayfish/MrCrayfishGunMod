@@ -1,29 +1,20 @@
 package com.mrcrayfish.guns.entity;
 
-import com.google.common.collect.Sets;
-import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.world.ProjectileExplosion;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish
@@ -38,12 +29,12 @@ public class EntityThrowableGrenade extends EntityThrowableItem
         super(worldIn);
     }
 
-    public EntityThrowableGrenade(World world, EntityPlayer player)
+    public EntityThrowableGrenade(World world, PlayerEntity player)
     {
         super(world, player);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
-        this.setItem(new ItemStack(ModGuns.GRENADE));
+        this.setItem(new ItemStack(ModItems.GRENADE));
         this.setMaxLife(20 * 3);
         this.setSize(0.25F, 0.25F);
     }
@@ -72,7 +63,7 @@ public class EntityThrowableGrenade extends EntityThrowableItem
     private static void createGrenadeExplosion(EntityThrowableGrenade grenade, Entity thrower, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
     {
         boolean canGunGrief = grenade.world.getGameRules().getBoolean("gunGriefing");
-        Explosion explosion = new ProjectileExplosion(grenade.world, thrower, grenade, grenade.getItem(), x, y, z, ModGuns.GRENADE_LAUNCHER.getGun().projectile.damage, GunConfig.SERVER.grenades.explosionRadius, canGunGrief);
+        Explosion explosion = new ProjectileExplosion(grenade.world, thrower, grenade, grenade.getItem(), x, y, z, ModItems.GRENADE_LAUNCHER.getGun().projectile.damage, Config.SERVER.grenades.explosionRadius, canGunGrief);
         explosion.doExplosionA();
         explosion.doExplosionB(true);
         explosion.clearAffectedBlockPositions();

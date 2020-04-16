@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.common.container;
 
-import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -15,10 +15,10 @@ import net.minecraft.util.math.BlockPos;
  */
 public class ContainerWorkbench extends Container
 {
-    private TileEntityWorkbench workbench;
+    private WorkbenchTileEntity workbench;
     private BlockPos pos;
 
-    public ContainerWorkbench(IInventory playerInventory, TileEntityWorkbench workbench)
+    public ContainerWorkbench(IInventory playerInventory, WorkbenchTileEntity workbench)
     {
         this.workbench = workbench;
         this.pos = workbench.getPos();
@@ -53,13 +53,13 @@ public class ContainerWorkbench extends Container
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn)
+    public boolean canInteractWith(PlayerEntity playerIn)
     {
         return workbench.isUsableByPlayer(playerIn);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
     {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
@@ -122,7 +122,7 @@ public class ContainerWorkbench extends Container
         return stack;
     }
 
-    public TileEntityWorkbench getWorkbench()
+    public WorkbenchTileEntity getWorkbench()
     {
         return workbench;
     }

@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.recipe;
 
 import com.google.common.collect.Lists;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.item.ItemColored;
+import com.mrcrayfish.guns.item.ColoredItem;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -33,7 +33,7 @@ public class RecipeColorItem extends net.minecraftforge.registries.IForgeRegistr
             ItemStack stack = inv.getStackInSlot(i);
             if (!stack.isEmpty())
             {
-                if (stack.getItem() instanceof ItemColored)
+                if (stack.getItem() instanceof ColoredItem)
                 {
                     if (!item.isEmpty())
                     {
@@ -59,7 +59,7 @@ public class RecipeColorItem extends net.minecraftforge.registries.IForgeRegistr
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
         ItemStack item = ItemStack.EMPTY;
-        ItemColored colored = null;
+        ColoredItem colored = null;
 
         int[] combinedValues = new int[3];
         int combinedColor = 0;
@@ -70,9 +70,9 @@ public class RecipeColorItem extends net.minecraftforge.registries.IForgeRegistr
             ItemStack stack = inv.getStackInSlot(k);
             if (!stack.isEmpty())
             {
-                if (stack.getItem() instanceof ItemColored)
+                if (stack.getItem() instanceof ColoredItem)
                 {
-                    colored = (ItemColored) stack.getItem();
+                    colored = (ColoredItem) stack.getItem();
                     if (!item.isEmpty())
                     {
                         return ItemStack.EMPTY;

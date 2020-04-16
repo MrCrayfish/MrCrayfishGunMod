@@ -1,14 +1,14 @@
 package com.mrcrayfish.guns.client.gui;
 
-import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.WorkbenchRegistry;
 import com.mrcrayfish.guns.common.container.ContainerWorkbench;
-import com.mrcrayfish.guns.item.ItemColored;
+import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageCraft;
-import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
+import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import com.mrcrayfish.guns.util.InventoryUtil;
-import com.mrcrayfish.guns.util.ItemStackHelper;
+import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
@@ -48,7 +48,7 @@ public class GuiWorkbench extends GuiContainer
     {
         for(ItemStack key : DISPLAY_PROPERTIES.keySet())
         {
-            if(ItemStackHelper.areItemStackEqualIgnoreTag(key, stack))
+            if(ItemStackUtil.areItemStackEqualIgnoreTag(key, stack))
             {
                 return;
             }
@@ -61,7 +61,7 @@ public class GuiWorkbench extends GuiContainer
     {
         for(ItemStack stack : DISPLAY_PROPERTIES.keySet())
         {
-            if(ItemStackHelper.areItemStackSameItem(stack, find))
+            if(ItemStackUtil.areItemStackSameItem(stack, find))
             {
                 return DISPLAY_PROPERTIES.get(stack);
             }
@@ -75,7 +75,7 @@ public class GuiWorkbench extends GuiContainer
     private static boolean showRemaining = false;
     private NonNullList<ItemStack> cachedItems;
     private IInventory playerInventory;
-    private TileEntityWorkbench workbench;
+    private WorkbenchTileEntity workbench;
     private GuiButton btnCraft;
     private GuiCheckBox checkBoxMaterials;
     private boolean transitioning;
@@ -84,7 +84,7 @@ public class GuiWorkbench extends GuiContainer
     private DisplayProperty displayProperty;
     private DisplayProperty prevDisplayProperty;
 
-    public GuiWorkbench(IInventory playerInventory, TileEntityWorkbench workbench)
+    public GuiWorkbench(IInventory playerInventory, WorkbenchTileEntity workbench)
     {
         super(new ContainerWorkbench(playerInventory, workbench));
         this.playerInventory = playerInventory;
@@ -136,9 +136,9 @@ public class GuiWorkbench extends GuiContainer
         if(!currentWeapon.isEmpty())
         {
             Item item = currentWeapon.getItem();
-            if(item instanceof ItemColored)
+            if(item instanceof ColoredItem)
             {
-                ItemColored colored = (ItemColored) item;
+                ColoredItem colored = (ColoredItem) item;
                 if(!workbench.getStackInSlot(0).isEmpty())
                 {
                     ItemStack dyeStack = workbench.getStackInSlot(0);
@@ -265,7 +265,7 @@ public class GuiWorkbench extends GuiContainer
 
                 currentIndex = index;
 
-                if(GunConfig.CLIENT.display.workbenchAnimation && previousIndex != currentIndex)
+                if(Config.CLIENT.display.workbenchAnimation && previousIndex != currentIndex)
                 {
                     transitioning = true;
                 }

@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.GunMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -21,7 +21,7 @@ public class MessageMuzzleFlash implements IMessage, IMessageHandler<MessageMuzz
     @Override
     public IMessage onMessage(MessageMuzzleFlash message, MessageContext ctx)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> MrCrayfishGunMod.proxy.showMuzzleFlash());
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> GunMod.proxy.showMuzzleFlash());
         return null;
     }
 }

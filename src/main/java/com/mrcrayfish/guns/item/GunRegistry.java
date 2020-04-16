@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -42,28 +42,28 @@ public class GunRegistry
         return instance;
     }
 
-    private final Map<ResourceLocation, ItemGun> GUNS = new HashMap<>();
+    private final Map<ResourceLocation, GunItem> GUNS = new HashMap<>();
 
-    void register(ItemGun gun)
+    void register(GunItem gun)
     {
         GUNS.put(Objects.requireNonNull(gun.getRegistryName()), gun);
         loadProperties(gun);
     }
 
     @Nullable
-    public ItemGun getGun(ResourceLocation id)
+    public GunItem getGun(ResourceLocation id)
     {
         return GUNS.get(id);
     }
 
-    public Map<ResourceLocation, ItemGun> getGuns()
+    public Map<ResourceLocation, GunItem> getGuns()
     {
         return ImmutableMap.copyOf(GUNS);
     }
 
-    private static void loadProperties(ItemGun itemGun)
+    private static void loadProperties(GunItem gunItem)
     {
-        ResourceLocation id = Objects.requireNonNull(itemGun.getRegistryName());
+        ResourceLocation id = Objects.requireNonNull(gunItem.getRegistryName());
 
         File configFolder = new File(new File("."), "config/" + id.getNamespace() + "/guns/");
         configFolder.mkdirs();
@@ -79,7 +79,7 @@ public class GunRegistry
         }
         catch(IOException e)
         {
-            MrCrayfishGunMod.logger.error("Failed to load gun json '" + itemGun.getRegistryName() + "'");
+            GunMod.LOGGER.error("Failed to load gun json '" + gunItem.getRegistryName() + "'");
             e.printStackTrace();
             return;
         }
@@ -90,7 +90,7 @@ public class GunRegistry
         }
         catch(IllegalAccessException e)
         {
-            MrCrayfishGunMod.logger.error("Failed to validate gun fields for '" + itemGun.getRegistryName() + "'");
+            GunMod.LOGGER.error("Failed to validate gun fields for '" + gunItem.getRegistryName() + "'");
             e.printStackTrace();
             return;
         }
@@ -114,7 +114,7 @@ public class GunRegistry
             builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationDeserializer());
             Gson gson = builder.create();
             gun = gson.fromJson(parent, GUN_TYPE);
-            itemGun.setGun(gun);
+            gunItem.setGun(gun);
         }
         catch(IOException e)
         {

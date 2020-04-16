@@ -1,8 +1,12 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -10,45 +14,27 @@ import java.util.Map;
 
 public class ModSounds 
 {
-	private static final Map<String, SoundEvent> SOUNDS = new HashMap<String, SoundEvent>();
+	public static final DeferredRegister<SoundEvent> REGISTER = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
 
-	static
-	{
-		register("pistol_fire");
-		register("shotgun_fire");
-		register("rifle_fire");
-		register("assault_rifle_fire");
-		register("grenade_fire");
-		register("bazooka_fire");
-		register("chain_gun_fire");
-		register("pistol_fire_silenced");
-		register("shotgun_fire_silenced");
-		register("rifle_fire_silenced");
-		register("pistol_reload");
-		register("grenade_stun_explosion");
-		register("grenade_stun_ring");
-		register("machine_pistol_fire");
-		register("machine_pistol_fire_silenced");
-	}
+	public static final RegistryObject<SoundEvent> ITEM_PISTOL_FIRE = register("item.pistol.fire");
+	public static final RegistryObject<SoundEvent> ITEM_PISTOL_SILENCED_FIRE = register("item.pistol.silenced_fire");
+	public static final RegistryObject<SoundEvent> ITEM_PISTOL_RELOAD = register("item.pistol.reload");
+	public static final RegistryObject<SoundEvent> ITEM_SHOTGUN_FIRE = register("item.shotgun.fire");
+	public static final RegistryObject<SoundEvent> ITEM_SHOTGUN_SILENCED_FIRE = register("item.shotgun.silenced_fire");
+	public static final RegistryObject<SoundEvent> ITEM_RIFLE_FIRE = register("item.rifle.fire");
+	public static final RegistryObject<SoundEvent> ITEM_RIFLE_SILENCED_FIRE = register("item.rifle.silenced_fire");
+	public static final RegistryObject<SoundEvent> ITEM_ASSAULT_RIFLE_FIRE = register("item.assault_rifle.fire");
+	public static final RegistryObject<SoundEvent> ITEM_ASSAULT_RIFLE_SILENCED_FIRE = register("item.assault_rifle.silenced_fire");
+	public static final RegistryObject<SoundEvent> ITEM_GRENADE_FIRE = register("item.grenade.fire");
+	public static final RegistryObject<SoundEvent> ITEM_BAZOOKA_FIRE = register("item.bazooka.fire");
+	public static final RegistryObject<SoundEvent> ITEM_CHAIN_GUN_FIRE = register("item.chain_gun.fire");
+	public static final RegistryObject<SoundEvent> ITEM_MACHINE_PISTOL_FIRE = register("item.machine_pistol.fire");
+	public static final RegistryObject<SoundEvent> ITEM_MACHINE_PISTOL_SILENCED_FIRE = register("item.machine_pistol.silenced_fire");
+	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_EXPLOSION = register("entity.stun_grenade.explosion");
+	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_RING = register("entity.stun_grenade.explosion");
 
-    private static void register(String name)
-    {
-        if(!SOUNDS.containsKey(name))
-        {
-        	ResourceLocation sound = new ResourceLocation(Reference.MOD_ID, name);
-        	SoundEvent event = new SoundEvent(sound).setRegistryName(name);
-        	SOUNDS.put(sound.toString(), event);
-        }
-    }
-
-	public static void register()
+	private static RegistryObject<SoundEvent> register(String key)
 	{
-		SOUNDS.values().forEach(RegistrationHandler.Sounds::add);
-	}
-	
-	@Nullable
-	public static SoundEvent getSound(String name)
-	{
-		return SOUNDS.get(name);
+		return REGISTER.register(key, () -> new SoundEvent(new ResourceLocation(Reference.MOD_ID, key)));
 	}
 }

@@ -8,12 +8,11 @@ import net.minecraft.util.ResourceLocation;
  * Author: MrCrayfish
  */
 @Beta
-public class ItemAmmo extends Item
+public class AmmoItem extends Item
 {
-    public ItemAmmo(ResourceLocation id)
+    public AmmoItem(Item.Properties properties)
     {
-        this.setTranslationKey(id.getNamespace() + "." + id.getPath());
-        this.setRegistryName(id);
+        super(properties);
         AmmoRegistry.getInstance().register(this);
     }
 }

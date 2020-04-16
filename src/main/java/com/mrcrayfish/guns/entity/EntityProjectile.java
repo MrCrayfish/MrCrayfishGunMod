@@ -2,18 +2,18 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.mrcrayfish.guns.GunConfig;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.SpreadHandler;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.AmmoRegistry;
-import com.mrcrayfish.guns.item.ItemAmmo;
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.item.AmmoItem;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageSound;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
-import com.mrcrayfish.guns.util.ItemStackHelper;
+import com.mrcrayfish.guns.util.ItemStackUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBreakable;
@@ -22,8 +22,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,12 +51,12 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     protected float damageModifier = 1.0F;
     protected float additionalDamage = 0.0F;
 
-    public EntityProjectile(World worldIn)
+    public EntityProjectile(EntityType<? extends Entity> entityType, World worldIn)
     {
-        super(worldIn);
+        super(entityType, worldIn);
     }
 
-    public EntityProjectile(World worldIn, EntityLivingBase shooter, ItemGun item, Gun modifiedGun)
+    public EntityProjectile(World worldIn, EntityLivingBase shooter, GunItem item, Gun modifiedGun)
     {
         this(worldIn);
         this.shooterId = shooter.getEntityId();
@@ -72,14 +73,14 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.setSize(this.projectile.size, this.projectile.size);
         this.setPosition(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ);
 
-        ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
+        AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
         if(ammo != null)
         {
             this.item = new ItemStack(ammo);
         }
     }
 
-    private Vec3d getDirection(EntityLivingBase shooter, ItemGun item, Gun modifiedGun)
+    private Vec3d getDirection(EntityLivingBase shooter, GunItem item, Gun modifiedGun)
     {
         float gunSpread = modifiedGun.general.spread;
 
@@ -151,11 +152,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             result = new RayTraceResult(entityResult.entity, entityResult.hitVec);
         }
 
-        if(result != null && result.entityHit instanceof EntityPlayer)
+        if(result != null && result.entityHit instanceof PlayerEntity)
         {
-            EntityPlayer player = (EntityPlayer) result.entityHit;
+            PlayerEntity player = (PlayerEntity) result.entityHit;
 
-            if(this.shooter instanceof EntityPlayer && !((EntityPlayer) this.shooter).canAttackPlayer(player))
+            if(this.shooter instanceof PlayerEntity && !((PlayerEntity) this.shooter).canAttackPlayer(player))
             {
                 result = null;
             }
@@ -210,7 +211,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 RayTraceResult result = boundingBox.calculateIntercept(start, end);
                 if(result == null)
                 {
-                    boundingBox = entity.getEntityBoundingBox().grow(GunConfig.SERVER.growBoundingBoxAmount, 0.0625, GunConfig.SERVER.growBoundingBoxAmount);
+                    boundingBox = entity.getEntityBoundingBox().grow(Config.SERVER.growBoundingBoxAmount, 0.0625, Config.SERVER.growBoundingBoxAmount);
                     result = boundingBox.calculateIntercept(start, end);
                     if(result == null)
                     {
@@ -285,23 +286,23 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     {
         boolean headShot = false;
         float damage = this.getDamage();
-        if(GunConfig.SERVER.enableHeadShots && entity instanceof EntityPlayer)
+        if(Config.SERVER.enableHeadShots && entity instanceof PlayerEntity)
         {
             AxisAlignedBB boundingBox = entity.getEntityBoundingBox().expand(0, 0.0625, 0);
             if(boundingBox.maxY - y <= 8.0 * 0.0625)
             {
                 headShot = true;
-                damage *= GunConfig.SERVER.headShotDamageMultiplier;
+                damage *= Config.SERVER.headShotDamageMultiplier;
             }
         }
 
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
         entity.attackEntityFrom(source, damage);
 
-        if(entity instanceof EntityPlayer && shooter instanceof EntityPlayerMP)
+        if(entity instanceof PlayerEntity && shooter instanceof PlayerEntityMP)
         {
             SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
-            PacketHandler.INSTANCE.sendTo(new MessageSound(event, SoundCategory.PLAYERS, shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, 0.75F, 3.0F), (EntityPlayerMP) shooter);
+            PacketHandler.INSTANCE.sendTo(new MessageSound(event, SoundCategory.PLAYERS, shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, 0.75F, 3.0F), (PlayerEntityMP) shooter);
         }
     }
 
@@ -343,7 +344,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         ByteBufUtils.writeTag(additionalData, this.projectile.serializeNBT());
         ByteBufUtils.writeTag(additionalData, this.general.serializeNBT());
         additionalData.writeInt(this.shooterId);
-        ItemStackHelper.writeItemStackToBufIgnoreTag(additionalData, this.item);
+        ItemStackUtil.writeItemStackToBufIgnoreTag(additionalData, this.item);
     }
 
     @Override
@@ -354,7 +355,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.general = new Gun.General();
         this.general.deserializeNBT(ByteBufUtils.readTag(additionalData));
         this.shooterId = additionalData.readInt();
-        this.item = ItemStackHelper.readItemStackFromBufIgnoreTag(additionalData);
+        this.item = ItemStackUtil.readItemStackFromBufIgnoreTag(additionalData);
         this.setSize(this.projectile.size, this.projectile.size);
     }
 

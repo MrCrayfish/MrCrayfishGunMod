@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.block;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.GunMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -27,7 +27,7 @@ public class BlockObject extends Block
         super(material, mapColor);
         this.setTranslationKey(id.getNamespace() + "." + id.getPath());
         this.setRegistryName(id);
-        this.setCreativeTab(MrCrayfishGunMod.GUN_TAB);
+        this.setCreativeTab(GunMod.GROUP);
     }
 
     @Override

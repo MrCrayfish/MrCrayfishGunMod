@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.GunMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -20,7 +20,7 @@ public class MessageReloadAnimation implements IMessage, IMessageHandler<Message
     @Override
     public IMessage onMessage(MessageReloadAnimation message, MessageContext ctx)
     {
-        MrCrayfishGunMod.proxy.startReloadAnimation();
+        GunMod.proxy.startReloadAnimation();
         return null;
     }
 }

@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.common;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.guns.util.ItemStackHelper;
+import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ public class WorkbenchRegistry
 	{
 		for(ItemStack key : RECIPE_MAP.keySet())
 		{
-			if(ItemStackHelper.areItemStackEqualIgnoreTag(key, stack))
+			if(ItemStackUtil.areItemStackEqualIgnoreTag(key, stack))
 			{
 				return;
 			}
@@ -42,7 +42,7 @@ public class WorkbenchRegistry
 	{
 		for(ItemStack stack : RECIPE_MAP.keySet())
 		{
-			if(ItemStackHelper.areItemStackEqualIgnoreTag(stack, find))
+			if(ItemStackUtil.areItemStackEqualIgnoreTag(stack, find))
 			{
 				return RECIPE_MAP.get(stack);
 			}

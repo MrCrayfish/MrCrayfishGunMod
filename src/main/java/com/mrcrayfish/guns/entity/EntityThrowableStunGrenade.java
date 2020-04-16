@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.entity;
 
-import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.GunConfig.EffectCriteria;
-import com.mrcrayfish.guns.init.ModGuns;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.Config.EffectCriteria;
+import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -10,8 +10,8 @@ import com.mrcrayfish.guns.network.message.MessageExplosionStunGrenade;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -30,10 +30,10 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
         super(world);
     }
 
-    public EntityThrowableStunGrenade(World world, EntityPlayer player)
+    public EntityThrowableStunGrenade(World world, PlayerEntity player)
     {
         super(world, player);
-        this.setItem(new ItemStack(ModGuns.STUN_GRENADE));
+        this.setItem(new ItemStack(ModItems.STUN_GRENADE));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
         PacketHandler.INSTANCE.sendToAllAround(new MessageExplosionStunGrenade(posX, y, posZ), new TargetPoint(world.provider.getDimension(), posX, y, posZ, 4096));
 
         // Calculate bounds of area where potentially effected players my be
-        double diameter = Math.max(GunConfig.SERVER.stunGrenades.deafen.criteria.radius, GunConfig.SERVER.stunGrenades.blind.criteria.radius) * 2 + 1;
+        double diameter = Math.max(Config.SERVER.stunGrenades.deafen.criteria.radius, Config.SERVER.stunGrenades.blind.criteria.radius) * 2 + 1;
         int minX = MathHelper.floor(posX - diameter);
         int maxX = MathHelper.floor(posX + diameter);
         int minY = MathHelper.floor(y - diameter);
@@ -56,7 +56,7 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
         Vec3d grenade = new Vec3d(posX, y, posZ);
         Vec3d eyes, directionGrenade;
         double distance;
-        for (EntityPlayerMP player : world.getEntitiesWithinAABB(EntityPlayerMP.class, new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ)))
+        for (PlayerEntityMP player : world.getEntitiesWithinAABB(PlayerEntityMP.class, new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ)))
         {
             if (player.isImmuneToExplosions())
                 continue;
@@ -69,12 +69,12 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
             double angle = Math.toDegrees(Math.acos(player.getLook(1).dotProduct(directionGrenade.normalize())));
  
             // Apply effects as determined by their criteria
-            calculateAndApplyEffect(ModPotions.DEAFENED, GunConfig.SERVER.stunGrenades.deafen.criteria, player, grenade, eyes, distance, angle);
-            calculateAndApplyEffect(ModPotions.BLINDED, GunConfig.SERVER.stunGrenades.blind.criteria, player, grenade, eyes, distance, angle);
+            calculateAndApplyEffect(ModPotions.DEAFENED, Config.SERVER.stunGrenades.deafen.criteria, player, grenade, eyes, distance, angle);
+            calculateAndApplyEffect(ModPotions.BLINDED, Config.SERVER.stunGrenades.blind.criteria, player, grenade, eyes, distance, angle);
         }
     }
 
-    private void calculateAndApplyEffect(Potion effect, EffectCriteria criteria, EntityPlayerMP player, Vec3d grenade, Vec3d eyes, double distance, double angle)
+    private void calculateAndApplyEffect(Potion effect, EffectCriteria criteria, PlayerEntityMP player, Vec3d grenade, Vec3d eyes, double distance, double angle)
     {
         double angleMax = criteria.angleEffect * 0.5;
         if (distance <= criteria.radius && angleMax > 0 && angle <= angleMax)

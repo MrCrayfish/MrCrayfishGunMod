@@ -1,12 +1,12 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.item.AmmoRegistry;
-import com.mrcrayfish.guns.item.ItemAmmo;
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.item.AmmoItem;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -32,9 +32,9 @@ public class MessageUnload implements IMessage, IMessageHandler<MessageUnload, I
     {
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            EntityPlayer player = ctx.getServerHandler().player;
+            PlayerEntity player = ctx.getServerHandler().player;
             ItemStack stack = player.inventory.getCurrentItem();
-            if(stack.getItem() instanceof ItemGun)
+            if(stack.getItem() instanceof GunItem)
             {
                 NBTTagCompound tag = stack.getTagCompound();
                 if(tag != null && tag.hasKey("AmmoCount", Constants.NBT.TAG_INT))
@@ -42,11 +42,11 @@ public class MessageUnload implements IMessage, IMessageHandler<MessageUnload, I
                     int count = tag.getInteger("AmmoCount");
                     tag.setInteger("AmmoCount", 0);
 
-                    ItemGun itemGun = (ItemGun) stack.getItem();
-                    Gun gun = itemGun.getModifiedGun(stack);
+                    GunItem gunItem = (GunItem) stack.getItem();
+                    Gun gun = gunItem.getModifiedGun(stack);
                     ResourceLocation id = gun.projectile.item;
 
-                    ItemAmmo ammo = AmmoRegistry.getInstance().getAmmo(id);
+                    AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(id);
                     if(ammo == null)
                         return;
 
@@ -67,7 +67,7 @@ public class MessageUnload implements IMessage, IMessageHandler<MessageUnload, I
         return null;
     }
 
-    private void spawnAmmo(EntityPlayer player, ItemStack stack)
+    private void spawnAmmo(PlayerEntity player, ItemStack stack)
     {
         player.inventory.addItemStackToInventory(stack);
         if(stack.getCount() > 0)

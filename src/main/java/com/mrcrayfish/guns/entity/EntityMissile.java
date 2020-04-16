@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.entity;
 
-import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.world.ProjectileExplosion;
 import net.minecraft.block.state.IBlockState;
@@ -23,7 +23,7 @@ public class EntityMissile extends EntityProjectile
         super(worldIn);
     }
 
-    public EntityMissile(World worldIn, EntityLivingBase shooter, ItemGun item, Gun modifiedGun)
+    public EntityMissile(World worldIn, EntityLivingBase shooter, GunItem item, Gun modifiedGun)
     {
         super(worldIn, shooter, item, modifiedGun);
     }
@@ -67,7 +67,7 @@ public class EntityMissile extends EntityProjectile
     {
         boolean canGunGrief = this.world.getGameRules().getBoolean("gunGriefing");
 
-        Explosion explosion = new ProjectileExplosion(this, x, y, z, GunConfig.SERVER.missiles.explosionRadius, canGunGrief); //TODO Make radius configurable
+        Explosion explosion = new ProjectileExplosion(this, x, y, z, Config.SERVER.missiles.explosionRadius, canGunGrief); //TODO Make radius configurable
         explosion.doExplosionA();
         explosion.doExplosionB(true);
         explosion.clearAffectedBlockPositions();

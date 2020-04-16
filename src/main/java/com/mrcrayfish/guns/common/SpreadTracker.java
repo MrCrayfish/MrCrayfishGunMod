@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.common;
 
-import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.item.GunItem;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.commons.lang3.tuple.Pair;
@@ -14,9 +14,9 @@ import java.util.Map;
  */
 public class SpreadTracker
 {
-    private final Map<ItemGun, Pair<MutableLong, MutableInt>> SPREAD_TRACKER_MAP = new HashMap<>();
+    private final Map<GunItem, Pair<MutableLong, MutableInt>> SPREAD_TRACKER_MAP = new HashMap<>();
 
-    public void update(ItemGun item)
+    public void update(GunItem item)
     {
         Pair<MutableLong, MutableInt> entry = SPREAD_TRACKER_MAP.computeIfAbsent(item, gun -> Pair.of(new MutableLong(-1), new MutableInt()));
         MutableLong lastFire = entry.getLeft();
@@ -24,9 +24,9 @@ public class SpreadTracker
         {
             MutableInt spreadCount = entry.getRight();
             long deltaTime = System.currentTimeMillis() - lastFire.getValue();
-            if(deltaTime < GunConfig.SERVER.projectileSpread.spreadThreshold)
+            if(deltaTime < Config.SERVER.projectileSpread.spreadThreshold)
             {
-                if(spreadCount.getValue() < GunConfig.SERVER.projectileSpread.maxCount)
+                if(spreadCount.getValue() < Config.SERVER.projectileSpread.maxCount)
                 {
                     spreadCount.increment();
                 }
@@ -39,12 +39,12 @@ public class SpreadTracker
         lastFire.setValue(System.currentTimeMillis());
     }
 
-    public float getSpread(ItemGun item)
+    public float getSpread(GunItem item)
     {
         Pair<MutableLong, MutableInt> entry = SPREAD_TRACKER_MAP.get(item);
         if(entry != null)
         {
-            return (float) entry.getRight().getValue() / (float) GunConfig.SERVER.projectileSpread.maxCount;
+            return (float) entry.getRight().getValue() / (float) Config.SERVER.projectileSpread.maxCount;
         }
         return 0F;
     }

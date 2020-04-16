@@ -1,9 +1,9 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -31,12 +31,12 @@ public class MessageShoot implements IMessage, IMessageHandler<MessageShoot, IMe
     {
         FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            EntityPlayer player = ctx.getServerHandler().player;
+            PlayerEntity player = ctx.getServerHandler().player;
             World world = player.world;
             ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun && (ItemGun.hasAmmo(heldItem) || player.capabilities.isCreativeMode))
+            if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem && (GunItem.hasAmmo(heldItem) || player.capabilities.isCreativeMode))
             {
-                ItemGun item = (ItemGun) heldItem.getItem();
+                GunItem item = (GunItem) heldItem.getItem();
                 Gun gun = item.getModifiedGun(heldItem);
                 if(gun != null)
                 {
@@ -44,7 +44,7 @@ public class MessageShoot implements IMessage, IMessageHandler<MessageShoot, IMe
                     if(!tracker.hasCooldown(heldItem.getItem()))
                     {
                         tracker.setCooldown(heldItem.getItem(), gun.general.rate);
-                        ItemGun.fire(world, player, heldItem);
+                        GunItem.fire(world, player, heldItem);
                     }
                 }
             }

@@ -1,10 +1,10 @@
 package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Reference;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,12 +26,13 @@ public class SpreadHandler
     @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if(!event.player.world.isRemote)
+        if(!event.getPlayer().world.isRemote) //TODO probably dont need this
             return;
 
-        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
+        MinecraftServer server = event.getPlayer().getServer();
+        if(server != null)
         {
-            TRACKER_MAP.remove(event.player.getUniqueID());
-        });
+            server.execute(() -> TRACKER_MAP.remove(event.getPlayer().getUniqueID()));
+        }
     }
 }

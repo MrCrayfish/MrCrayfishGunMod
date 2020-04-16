@@ -2,13 +2,13 @@ package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.common.WorkbenchRegistry;
 import com.mrcrayfish.guns.common.container.ContainerWorkbench;
-import com.mrcrayfish.guns.item.ItemColored;
-import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
+import com.mrcrayfish.guns.item.ColoredItem;
+import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import com.mrcrayfish.guns.util.InventoryUtil;
-import com.mrcrayfish.guns.util.ItemStackHelper;
+import com.mrcrayfish.guns.util.ItemStackUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
@@ -46,14 +46,14 @@ public class MessageCraft implements IMessage, IMessageHandler<MessageCraft, IMe
     public void toBytes(ByteBuf buf)
     {
         buf.writeLong(pos.toLong());
-        ItemStackHelper.writeItemStackToBufIgnoreTag(buf, stack);
+        ItemStackUtil.writeItemStackToBufIgnoreTag(buf, stack);
     }
 
     @Override
     public void fromBytes(ByteBuf buf)
     {
         pos = BlockPos.fromLong(buf.readLong());
-        stack = ItemStackHelper.readItemStackFromBufIgnoreTag(buf);
+        stack = ItemStackUtil.readItemStackFromBufIgnoreTag(buf);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class MessageCraft implements IMessage, IMessageHandler<MessageCraft, IMe
             return null;
         }
 
-        EntityPlayer player = ctx.getServerHandler().player;
+        PlayerEntity player = ctx.getServerHandler().player;
         World world = player.world;
         if(player.openContainer instanceof ContainerWorkbench)
         {
@@ -88,11 +88,11 @@ public class MessageCraft implements IMessage, IMessageHandler<MessageCraft, IMe
                         InventoryUtil.removeItemStack(player, stack);
                     }
 
-                    TileEntityWorkbench tileEntityWorkbench = workbench.getWorkbench();
+                    WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
 
                     /* Gets the color based on the dye */
                     int color = -1;
-                    ItemStack dyeStack = tileEntityWorkbench.getInventory().get(0);
+                    ItemStack dyeStack = workbenchTileEntity.getInventory().get(0);
                     if(dyeStack.getItem() instanceof ItemDye)
                     {
                         Optional<EnumDyeColor> optional = DyeUtils.colorFromStack(dyeStack);
@@ -103,7 +103,7 @@ public class MessageCraft implements IMessage, IMessageHandler<MessageCraft, IMe
                             int green = (int) (colorComponentValues[1] * 255F);
                             int blue = (int) (colorComponentValues[2] * 255F);
                             color = ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF));
-                            tileEntityWorkbench.getInventory().set(0, ItemStack.EMPTY);
+                            workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
                         }
                     }
 
@@ -111,9 +111,9 @@ public class MessageCraft implements IMessage, IMessageHandler<MessageCraft, IMe
                     FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
                     {
                         ItemStack stack = message.stack.copy();
-                        if(finalColor != -1 && stack.getItem() instanceof ItemColored)
+                        if(finalColor != -1 && stack.getItem() instanceof ColoredItem)
                         {
-                            ItemColored colored = (ItemColored) stack.getItem();
+                            ColoredItem colored = (ColoredItem) stack.getItem();
                             colored.setColor(stack, finalColor);
                         }
                         world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));

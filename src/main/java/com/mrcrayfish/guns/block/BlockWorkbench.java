@@ -1,11 +1,13 @@
 package com.mrcrayfish.guns.block;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
+import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -21,7 +23,7 @@ import javax.annotation.Nullable;
  */
 public class BlockWorkbench extends BlockRotatedObject
 {
-    public BlockWorkbench()
+    public BlockWorkbench(Block.Properties properties)
     {
         super(Material.IRON, new ResourceLocation(Reference.MOD_ID, "workbench"));
         this.setHardness(1.0F);
@@ -40,29 +42,29 @@ public class BlockWorkbench extends BlockRotatedObject
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, PlayerEntity playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if(!worldIn.isRemote)
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityWorkbench)
+            if(tileEntity instanceof WorkbenchTileEntity)
             {
-                playerIn.openGui(MrCrayfishGunMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                playerIn.openGui(GunMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
             }
         }
         return true;
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state)
+    public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(World world, BlockState state)
     {
-        return new TileEntityWorkbench();
+        return new WorkbenchTileEntity();
     }
 }
