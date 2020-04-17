@@ -23,11 +23,14 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
@@ -43,7 +46,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     private static final Predicate<Entity> ARROW_TARGETS = Predicates.and(EntitySelectors.NOT_SPECTATING, EntitySelectors.IS_ALIVE, Entity::canBeCollidedWith);
 
     protected int shooterId;
-    protected EntityLivingBase shooter;
+    protected LivingEntity shooter;
     protected Gun.General general;
     protected Gun.Projectile projectile;
     private ItemStack weapon = ItemStack.EMPTY;
@@ -299,10 +302,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
         entity.attackEntityFrom(source, damage);
 
-        if(entity instanceof PlayerEntity && shooter instanceof PlayerEntityMP)
+        if(entity instanceof PlayerEntity && shooter instanceof ServerPlayerEntity)
         {
             SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
-            PacketHandler.INSTANCE.sendTo(new MessageSound(event, SoundCategory.PLAYERS, shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, 0.75F, 3.0F), (PlayerEntityMP) shooter);
+            ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
+            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 3.0F));
         }
     }
 
@@ -323,7 +327,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound)
+    protected void readEntityFromNBT(CompoundNBT compound)
     {
         this.projectile = new Gun.Projectile();
         this.projectile.deserializeNBT(compound.getCompoundTag("projectile"));
@@ -332,7 +336,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound)
+    protected void writeEntityToNBT(CompoundNBT compound)
     {
         compound.setTag("projectile", this.projectile.serializeNBT());
         compound.setTag("general", this.general.serializeNBT());

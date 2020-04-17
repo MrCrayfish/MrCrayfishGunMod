@@ -207,7 +207,7 @@ public class GuiWorkbench extends GuiContainer
             {
                 this.loadItem(currentIndex - 1);
             }
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            Minecraft.getInstance().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
         else if(button.id == 2)
         {
@@ -219,7 +219,7 @@ public class GuiWorkbench extends GuiContainer
             {
                 this.loadItem(currentIndex + 1);
             }
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            Minecraft.getInstance().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
         else if(button.id == 3)
         {
@@ -287,7 +287,7 @@ public class GuiWorkbench extends GuiContainer
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
         /* Fixes partial ticks to use percentage from 0 to 1 */
-        partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+        partialTicks = Minecraft.getInstance().getRenderPartialTicks();
 
         this.drawDefaultBackground();
 
@@ -329,7 +329,7 @@ public class GuiWorkbench extends GuiContainer
             GlStateManager.scale(scale, -scale, scale);
 
             GlStateManager.rotate(5F, 1, 0, 0);
-            GlStateManager.rotate(Minecraft.getMinecraft().player.ticksExisted + partialTicks, 0, 1, 0);
+            GlStateManager.rotate(Minecraft.getInstance().player.ticksExisted + partialTicks, 0, 1, 0);
 
             DisplayProperty property = transitioning ? prevDisplayProperty : displayProperty;
             if(property != null)
@@ -343,7 +343,7 @@ public class GuiWorkbench extends GuiContainer
 
             int vehicleIndex = transitioning ? previousIndex : currentIndex;
             RenderHelper.enableStandardItemLighting();
-            Minecraft.getMinecraft().getRenderItem().renderItem(cachedItems.get(vehicleIndex), ItemCameraTransforms.TransformType.NONE);
+            Minecraft.getInstance().getRenderItem().renderItem(cachedItems.get(vehicleIndex), ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
 
@@ -381,16 +381,16 @@ public class GuiWorkbench extends GuiContainer
                 fontRenderer.drawString(name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 95, Color.WHITE.getRGB());
 
                 RenderHelper.enableGUIStandardItemLighting();
-                Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 95);
+                Minecraft.getInstance().getRenderItem().renderItemAndEffectIntoGUI(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 95);
 
                 if(checkBoxMaterials.isToggled())
                 {
-                    int count = InventoryUtil.getItemStackAmount(Minecraft.getMinecraft().player, stack);
+                    int count = InventoryUtil.getItemStackAmount(Minecraft.getInstance().player, stack);
                     stack = stack.copy();
                     stack.setCount(stack.getCount() - count);
                 }
 
-                Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(fontRenderer, stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 95, null);
+                Minecraft.getInstance().getRenderItem().renderItemOverlayIntoGUI(fontRenderer, stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 95, null);
             }
         }
     }
@@ -435,7 +435,7 @@ public class GuiWorkbench extends GuiContainer
         {
             if(!stack.isEmpty())
             {
-                enabled = InventoryUtil.hasItemStack(Minecraft.getMinecraft().player, stack);
+                enabled = InventoryUtil.hasItemStack(Minecraft.getInstance().player, stack);
             }
         }
 

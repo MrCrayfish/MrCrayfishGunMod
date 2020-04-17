@@ -1,20 +1,15 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.entity.EntityProjectile;
-import com.mrcrayfish.guns.object.Bullet;
-import com.mrcrayfish.guns.proxy.ClientProxy;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import com.mrcrayfish.guns.client.ClientHandler;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, IMessage>
+public class MessageBullet implements IMessage
 {
     private int entityId;
     private double posX;
@@ -42,47 +37,82 @@ public class MessageBullet implements IMessage, IMessageHandler<MessageBullet, I
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(PacketBuffer buffer)
     {
-        buf.writeInt(this.entityId);
-        buf.writeDouble(this.posX);
-        buf.writeDouble(this.posY);
-        buf.writeDouble(this.posZ);
-        buf.writeDouble(this.motionX);
-        buf.writeDouble(this.motionY);
-        buf.writeDouble(this.motionZ);
-        buf.writeInt(this.trailColor);
-        buf.writeDouble(this.trailLengthMultiplier);
+        buffer.writeVarInt(this.entityId);
+        buffer.writeDouble(this.posX);
+        buffer.writeDouble(this.posY);
+        buffer.writeDouble(this.posZ);
+        buffer.writeDouble(this.motionX);
+        buffer.writeDouble(this.motionY);
+        buffer.writeDouble(this.motionZ);
+        buffer.writeVarInt(this.trailColor);
+        buffer.writeDouble(this.trailLengthMultiplier);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public void decode(PacketBuffer buffer)
     {
-        this.entityId = buf.readInt();
-        this.posX = buf.readDouble();
-        this.posY = buf.readDouble();
-        this.posZ = buf.readDouble();
-        this.motionX = buf.readDouble();
-        this.motionY = buf.readDouble();
-        this.motionZ = buf.readDouble();
-        this.trailColor = buf.readInt();
-        this.trailLengthMultiplier = buf.readDouble();
+        this.entityId = buffer.readVarInt();
+        this.posX = buffer.readDouble();
+        this.posY = buffer.readDouble();
+        this.posZ = buffer.readDouble();
+        this.motionX = buffer.readDouble();
+        this.motionY = buffer.readDouble();
+        this.motionZ = buffer.readDouble();
+        this.trailColor = buffer.readVarInt();
+        this.trailLengthMultiplier = buffer.readDouble();
     }
 
     @Override
-    public IMessage onMessage(MessageBullet message, MessageContext ctx)
+    public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            EntityProjectile projectile = null;
-            Entity entity = Minecraft.getMinecraft().world.getEntityByID(message.entityId);
-            if(entity instanceof EntityProjectile)
-            {
-                projectile = (EntityProjectile) entity;
-            }
-            Bullet bullet = new Bullet(projectile, message.entityId, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ, message.trailColor, message.trailLengthMultiplier);
-            ClientProxy.renderEvents.addBullet(bullet);
-        });
-        return null;
+        supplier.get().enqueueWork(() -> ClientHandler.handleMessageBullet(this));
+        supplier.get().setPacketHandled(true);
+    }
+
+    public int getEntityId()
+    {
+        return entityId;
+    }
+
+    public double getPosX()
+    {
+        return posX;
+    }
+
+    public double getPosY()
+    {
+        return posY;
+    }
+
+    public double getPosZ()
+    {
+        return posZ;
+    }
+
+    public double getMotionX()
+    {
+        return motionX;
+    }
+
+    public double getMotionY()
+    {
+        return motionY;
+    }
+
+    public double getMotionZ()
+    {
+        return motionZ;
+    }
+
+    public int getTrailColor()
+    {
+        return trailColor;
+    }
+
+    public double getTrailLengthMultiplier()
+    {
+        return trailLengthMultiplier;
     }
 }

@@ -47,7 +47,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.*;
@@ -70,31 +70,28 @@ import org.lwjgl.opengl.GL11;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class RenderEvents
+public class GunRenderer
 {
     private static final ResourceLocation SCOPE_OVERLAY = new ResourceLocation(Reference.MOD_ID, "textures/scope_long_overlay.png");
-    private static final ResourceLocation WHITE_GRADIENT = new ResourceLocation(Reference.MOD_ID, "textures/effect/white_gradient.png");
     private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
     private static final double ZOOM_TICKS = 4;
-    public static boolean drawFlash = false;
+
     public static int screenTextureId = -1;
     public static boolean shadersEnabled;
 
+    public boolean drawFlash = false;
     private int zoomProgress;
     private int lastZoomProgress;
     public double normalZoomProgress;
     public double recoilNormal;
     public double recoilAngle;
 
-    public boolean playAnimation;
     private int startTick;
     private int reloadTimer;
     private int prevReloadTimer;
     private boolean lastSmoothCamera = Minecraft.getInstance().gameSettings.smoothCamera;
 
     private ItemStack flash = null;
-
-
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -228,8 +225,6 @@ public class RenderEvents
             }
             else
             {
-                playAnimation = false;
-
                 if(startTick != -1)
                 {
                     startTick = -1;
@@ -681,8 +676,8 @@ public class RenderEvents
         if(stack.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) stack.getItem()).getGun();
-            NBTTagCompound gunTag = ItemStackUtil.createTagCompound(stack);
-            NBTTagCompound attachments = gunTag.getCompoundTag("attachments");
+            CompoundNBT gunTag = ItemStackUtil.createTagCompound(stack);
+            CompoundNBT attachments = gunTag.getCompoundTag("attachments");
             for(String attachmentKey : attachments.getKeySet())
             {
                 IAttachment.Type type = IAttachment.Type.getType(attachmentKey);

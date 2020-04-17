@@ -18,7 +18,7 @@ import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -34,8 +34,8 @@ public class ControllerEvents
     @SubscribeEvent
     public void onButtonInput(ControllerEvent.ButtonInput event)
     {
-        PlayerEntity player = Minecraft.getMinecraft().player;
-        World world = Minecraft.getMinecraft().world;
+        PlayerEntity player = Minecraft.getInstance().player;
+        World world = Minecraft.getInstance().world;
         if(player != null && world != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
@@ -80,7 +80,7 @@ public class ControllerEvents
     @SubscribeEvent
     public void onControllerTurn(ControllerEvent.Turn event)
     {
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
@@ -123,11 +123,11 @@ public class ControllerEvents
     @SubscribeEvent
     public void updateAvailableActions(AvailableActionsEvent event)
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         if(mc.currentScreen != null)
             return;
 
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
@@ -137,7 +137,7 @@ public class ControllerEvents
                 event.getActions().put(Buttons.RIGHT_TRIGGER, new Action("Shoot", Action.Side.RIGHT));
 
                 GunItem gunItem = (GunItem) heldItem.getItem();
-                NBTTagCompound tag = heldItem.getTagCompound();
+                CompoundNBT tag = heldItem.getTagCompound();
                 if(tag != null && tag.getInteger("AmmoCount") < gunItem.getGun().general.maxAmmo)
                 {
                     event.getActions().put(Buttons.X, new Action("Reload", Action.Side.LEFT));
@@ -166,7 +166,7 @@ public class ControllerEvents
         if(event.phase == TickEvent.Phase.END)
             return;
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         PlayerEntity player = mc.player;
         if(player == null)
             return;
@@ -200,10 +200,10 @@ public class ControllerEvents
         }
         else if(reloadCounter > 0 && !controller.getState().x)
         {
-            if(!Minecraft.getMinecraft().player.getDataManager().get(CommonEvents.RELOADING))
+            if(!Minecraft.getInstance().player.getDataManager().get(CommonEvents.RELOADING))
             {
                 ReloadHandler.setReloading(true);
-                ReloadHandler.reloadingSlot = Minecraft.getMinecraft().player.inventory.currentItem;
+                ReloadHandler.reloadingSlot = Minecraft.getInstance().player.inventory.currentItem;
             }
             else
             {

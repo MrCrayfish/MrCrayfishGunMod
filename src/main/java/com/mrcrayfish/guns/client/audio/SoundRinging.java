@@ -23,7 +23,7 @@ public class SoundRinging extends MovingSound
     public void update()
     {
         donePlaying = true;
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if (player != null && !player.isDead)
         {
             PotionEffect effect = player.getActivePotionEffect(ModPotions.DEAFENED);

@@ -1,27 +1,26 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.GunMod;
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import com.mrcrayfish.guns.client.ClientHandler;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageMuzzleFlash implements IMessage, IMessageHandler<MessageMuzzleFlash, IMessage>
+public class MessageMuzzleFlash implements IMessage
 {
     @Override
-    public void toBytes(ByteBuf buf) {}
+    public void encode(PacketBuffer buffer) {}
 
     @Override
-    public void fromBytes(ByteBuf buf) {}
+    public void decode(PacketBuffer buffer) {}
 
     @Override
-    public IMessage onMessage(MessageMuzzleFlash message, MessageContext ctx)
+    public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> GunMod.proxy.showMuzzleFlash());
-        return null;
+        supplier.get().enqueueWork(ClientHandler::showMuzzleFlash);
+        supplier.get().setPacketHandled(true);
     }
 }

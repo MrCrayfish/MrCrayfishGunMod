@@ -2,8 +2,10 @@ package com.mrcrayfish.guns.object;
 
 import com.google.gson.*;
 import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
@@ -17,7 +19,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 
-public class Gun implements INBTSerializable<NBTTagCompound>
+public class Gun implements INBTSerializable<CompoundNBT>
 {
 	@Ignored public ServerGun serverGun;
 	public String id;
@@ -27,7 +29,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	public Display display = new Display();
 	public Modules modules = new Modules();
 
-	public static class General implements INBTSerializable<NBTTagCompound>
+	public static class General implements INBTSerializable<CompoundNBT>
 	{
 		@Optional public boolean auto = false;
 		public int rate;
@@ -56,9 +58,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		}
 
 		@Override
-		public NBTTagCompound serializeNBT()
+		public CompoundNBT serializeNBT()
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundNBT tag = new CompoundNBT();
 			tag.setBoolean("auto", auto);
 			tag.setInteger("rate", rate);
 			tag.setInteger("gripType", gripType.ordinal());
@@ -74,7 +76,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		}
 
 		@Override
-		public void deserializeNBT(NBTTagCompound tag)
+		public void deserializeNBT(CompoundNBT tag)
 		{
 			if(tag.hasKey("auto", Constants.NBT.TAG_BYTE))
 			{
@@ -140,7 +142,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		}
 	}
 	
-	public static class Projectile implements INBTSerializable<NBTTagCompound>
+	public static class Projectile implements INBTSerializable<CompoundNBT>
 	{
 		public ResourceLocation item;
 		@Optional public boolean visible;
@@ -169,9 +171,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		}
 
 		@Override
-		public NBTTagCompound serializeNBT() 
+		public CompoundNBT serializeNBT()
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundNBT tag = new CompoundNBT();
 			tag.setString("item", this.item.toString());
 			tag.setBoolean("visible", this.visible);
 			tag.setFloat("damage", this.damage);
@@ -187,7 +189,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		}
 
 		@Override
-		public void deserializeNBT(NBTTagCompound tag) 
+		public void deserializeNBT(CompoundNBT tag)
 		{
 			if(tag.hasKey("item", Constants.NBT.TAG_STRING))
 			{
@@ -253,7 +255,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		}
 	}
 	
-	public static class Sounds implements INBTSerializable<NBTTagCompound>
+	public static class Sounds implements INBTSerializable<CompoundNBT>
 	{
 		public String fire = "";
 		public String reload = "";
@@ -301,9 +303,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		}
 
 		@Override
-		public NBTTagCompound serializeNBT()
+		public CompoundNBT serializeNBT()
 		{
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundNBT tag = new CompoundNBT();
 			tag.setString("fire", fire);
 			tag.setString("reload", reload);
 			tag.setString("cock", cock);
@@ -312,7 +314,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		}
 
 		@Override
-		public void deserializeNBT(NBTTagCompound tag)
+		public void deserializeNBT(CompoundNBT tag)
 		{
 			if(tag.hasKey("fire", Constants.NBT.TAG_STRING))
 			{
@@ -475,9 +477,9 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	public @interface Ignored {}
 
 	@Override
-	public NBTTagCompound serializeNBT()
+	public CompoundNBT serializeNBT()
 	{
-		NBTTagCompound tag = new NBTTagCompound();
+		CompoundNBT tag = new CompoundNBT();
 		tag.setString("id", id);
 		tag.setTag("general", general.serializeNBT());
 		tag.setTag("projectile", projectile.serializeNBT());
@@ -486,7 +488,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound tag)
+	public void deserializeNBT(CompoundNBT tag)
 	{
 		if(tag.hasKey("id", Constants.NBT.TAG_STRING))
 		{
@@ -562,7 +564,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		{
 			if(gun.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
 			{
-				NBTTagCompound attachment = gun.getTagCompound().getCompoundTag("attachments");
+				CompoundNBT attachment = gun.getTagCompound().getCompoundTag("attachments");
 				if(attachment.hasKey("scope", Constants.NBT.TAG_COMPOUND))
 				{
 					return new ItemStack(attachment.getCompoundTag("scope"));
@@ -578,7 +580,7 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 		{
 			if(gun.getTagCompound().hasKey("attachments", Constants.NBT.TAG_COMPOUND))
 			{
-				NBTTagCompound attachment = gun.getTagCompound().getCompoundTag("attachments");
+				CompoundNBT attachment = gun.getTagCompound().getCompoundTag("attachments");
 				if(attachment.hasKey(type.getName(), Constants.NBT.TAG_COMPOUND))
 				{
 					return new ItemStack(attachment.getCompoundTag(type.getName()));
@@ -586,6 +588,12 @@ public class Gun implements INBTSerializable<NBTTagCompound>
 			}
 		}
 		return ItemStack.EMPTY;
+	}
+
+	public static float getAdditionalDamage(ItemStack gunStack)
+	{
+		CompoundNBT tag = ItemStackUtil.createTagCompound(gunStack);
+		return tag.getFloat("AdditionalDamage");
 	}
 
 	public static class ResourceLocationSerializer implements JsonSerializer<ResourceLocation>

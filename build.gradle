@@ -19,7 +19,7 @@ archivesBaseName = "gun-mod"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200122-1.15.1'
+    mappings channel: 'snapshot', version: '20200416-1.15.1'
 
     runs {
         client {

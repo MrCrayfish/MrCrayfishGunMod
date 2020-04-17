@@ -2,45 +2,48 @@ package com.mrcrayfish.guns.network;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.network.message.*;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+
+import java.util.function.Supplier;
 
 public class PacketHandler
 {
-	public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
-	private static int messageId = 0;
+    public static final String PROTOCOL_VERSION = "1";
+    private static SimpleChannel playChannel;
+    private static int nextMessageId = 0;
 
-    private static enum Side
+    public static void init()
     {
-        CLIENT, SERVER, BOTH;
+        playChannel = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(Reference.MOD_ID, "play")).networkProtocolVersion(() -> PROTOCOL_VERSION).clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals).simpleChannel();
+
+        registerPlayMessage(MessageAim.class, MessageAim::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageReload.class, MessageReload::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageShoot.class, MessageShoot::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageMuzzleFlash.class, MessageMuzzleFlash::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageUnload.class, MessageUnload::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageStunGrenade.class, MessageStunGrenade::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageCraft.class, MessageCraft::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageBullet.class, MessageBullet::new, LogicalSide.CLIENT);
     }
 
-	public static void init()
-	{
-		registerMessage(MessageAim.class, Side.SERVER);
-		registerMessage(MessageReload.class, Side.SERVER);
-		registerMessage(MessageShoot.class, Side.SERVER);
-		registerMessage(MessageMuzzleFlash.class, Side.CLIENT);
-		registerMessage(MessageSound.class, Side.CLIENT);
-		registerMessage(MessageSyncProperties.class, Side.CLIENT);
-		registerMessage(MessageUnload.class, Side.SERVER);
-		registerMessage(MessageExplosionStunGrenade.class, Side.CLIENT);
-		registerMessage(MessageCraft.class, Side.SERVER);
-		registerMessage(MessageReloadAnimation.class, Side.CLIENT);
-		registerMessage(MessageBullet.class, Side.CLIENT);
-	}
-
-	private static void registerMessage(Class packet, Side side)
+    private static <T extends IMessage> void registerPlayMessage(Class<T> clazz, Supplier<T> messageSupplier, LogicalSide side)
     {
-        if (side != Side.CLIENT)
-            registerMessage(packet, net.minecraftforge.fml.relauncher.Side.SERVER);
-
-        if (side != Side.SERVER)
-            registerMessage(packet, net.minecraftforge.fml.relauncher.Side.CLIENT);
+        playChannel.registerMessage(nextMessageId++, clazz, IMessage::encode, buffer -> {
+            T t = messageSupplier.get();
+            t.decode(buffer);
+            return t;
+        }, (t, supplier) -> {
+            if(supplier.get().getDirection().getReceptionSide() != side)
+                throw new RuntimeException("Attempted to handle message " + clazz.getSimpleName() + " on the wrong logical side!");
+            t.handle(supplier);
+        });
     }
 
-    private static void registerMessage(Class packet, net.minecraftforge.fml.relauncher.Side side)
+    public static SimpleChannel getPlayChannel()
     {
-        INSTANCE.registerMessage(packet, packet, messageId++, side);
+        return playChannel;
     }
 }

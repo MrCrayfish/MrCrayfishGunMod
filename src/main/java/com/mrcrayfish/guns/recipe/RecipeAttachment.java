@@ -8,7 +8,7 @@ import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -86,12 +86,12 @@ public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegist
             }
         }
 
-        NBTTagCompound itemTag = new NBTTagCompound();
-        NBTTagCompound attachments = new NBTTagCompound();
-        attachments.setTag(((IAttachment)attachment.getItem()).getType().getName(), attachment.writeToNBT(new NBTTagCompound()));
+        CompoundNBT itemTag = new CompoundNBT();
+        CompoundNBT attachments = new CompoundNBT();
+        attachments.setTag(((IAttachment)attachment.getItem()).getType().getName(), attachment.writeToNBT(new CompoundNBT()));
         itemTag.setTag("attachments", attachments);
 
-        NBTTagCompound gunTag = ItemStackUtil.createTagCompound(gun);
+        CompoundNBT gunTag = ItemStackUtil.createTagCompound(gun);
         gunTag.merge(itemTag);
 
         return gun;

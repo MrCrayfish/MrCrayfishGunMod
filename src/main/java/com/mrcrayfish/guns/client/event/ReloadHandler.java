@@ -10,7 +10,7 @@ import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -28,7 +28,7 @@ public class ReloadHandler
         if(event.phase != TickEvent.Phase.END)
             return;
 
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if(player != null && player.getDataManager().get(CommonEvents.RELOADING))
         {
             if(reloadingSlot != player.inventory.currentItem)
@@ -43,10 +43,10 @@ public class ReloadHandler
     {
         if(KeyBinds.KEY_RELOAD.isPressed())
         {
-            if(!Minecraft.getMinecraft().player.getDataManager().get(CommonEvents.RELOADING))
+            if(!Minecraft.getInstance().player.getDataManager().get(CommonEvents.RELOADING))
             {
                 setReloading(true);
-                reloadingSlot = Minecraft.getMinecraft().player.inventory.currentItem;
+                reloadingSlot = Minecraft.getInstance().player.inventory.currentItem;
             }
             else
             {
@@ -62,7 +62,7 @@ public class ReloadHandler
 
     public static void setReloading(boolean reloading)
     {
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
             if(reloading)
@@ -70,7 +70,7 @@ public class ReloadHandler
                 ItemStack stack = player.getHeldItemMainhand();
                 if(stack.getItem() instanceof GunItem)
                 {
-                    NBTTagCompound tag = stack.getTagCompound();
+                    CompoundNBT tag = stack.getTagCompound();
                     if(tag != null)
                     {
                         if(tag.getBoolean("IgnoreAmmo"))
@@ -80,14 +80,14 @@ public class ReloadHandler
                             return;
                         if(GunItem.findAmmo(player, gun.projectile.item).isEmpty())
                             return;
-                        Minecraft.getMinecraft().player.getDataManager().set(CommonEvents.RELOADING, true);
+                        Minecraft.getInstance().player.getDataManager().set(CommonEvents.RELOADING, true);
                         PacketHandler.INSTANCE.sendToServer(new MessageReload(true));
                     }
                 }
             }
             else
             {
-                Minecraft.getMinecraft().player.getDataManager().set(CommonEvents.RELOADING, false);
+                Minecraft.getInstance().player.getDataManager().set(CommonEvents.RELOADING, false);
                 PacketHandler.INSTANCE.sendToServer(new MessageReload(false));
             }
         }

@@ -45,11 +45,11 @@ public class SoundEvents
     @SubscribeEvent
     public static void deafenPlayer(ClientTickEvent event)
     {
-        if (event.phase == Phase.START || Minecraft.getMinecraft().player == null || soundManager == null)
+        if (event.phase == Phase.START || Minecraft.getInstance().player == null || soundManager == null)
             return;
 
         // If deafened, play ringing sound if not already playing, otherwise return
-        PotionEffect effect = Minecraft.getMinecraft().player.getActivePotionEffect(ModPotions.DEAFENED);
+        PotionEffect effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED);
         if (effect == null)
         {
             if (!isDeafened)
@@ -59,10 +59,10 @@ public class SoundEvents
         {
             isDeafened = true;
             if (Config.SERVER.stunGrenades.deafen.ringVolumeSynced > 0
-                    && (ringing == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(ringing)))
+                    && (ringing == null || !Minecraft.getInstance().getSoundHandler().isSoundPlaying(ringing)))
             {
                 ringing = new SoundRinging();
-                Minecraft.getMinecraft().getSoundHandler().playSound(ringing);
+                Minecraft.getInstance().getSoundHandler().playSound(ringing);
                 return; // Return after playing sound, as doing so in the tame tick that sounds are muted causes crashing in SoundManager#updateAllSounds
             }
         }
@@ -120,12 +120,12 @@ public class SoundEvents
         if (soundManager == null)
             soundManager = event.getManager();
 
-        if (!isDeafened || Minecraft.getMinecraft().player == null || event.getSound() instanceof ITickableSound)
+        if (!isDeafened || Minecraft.getInstance().player == null || event.getSound() instanceof ITickableSound)
             return;
 
         // Exempt initial explosion from muting
         ResourceLocation loc = event.getSound().getSoundLocation();
-        PotionEffect effect = Minecraft.getMinecraft().player.getActivePotionEffect(ModPotions.DEAFENED);
+        PotionEffect effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED);
         int duration = effect != null ? effect.getDuration() : 0;
         boolean isStunGrenade = isStunGrenade(loc);
         if (duration == 0 && isStunGrenade)
@@ -133,7 +133,7 @@ public class SoundEvents
 
         // Reduce volume to full value when duration is above threshold
         // When below threshold, fade to original sound level as duration approaches 0
-        event.getSound().createAccessor(Minecraft.getMinecraft().getSoundHandler());
+        event.getSound().createAccessor(Minecraft.getInstance().getSoundHandler());
         event.setResultSound(new SoundMuted(event.getSound(), duration, isStunGrenade));
     }
 

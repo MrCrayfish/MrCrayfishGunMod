@@ -6,8 +6,8 @@ import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.ControllerEvents;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.event.GunHandler;
+import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
-import com.mrcrayfish.guns.client.event.RenderEvents;
 import com.mrcrayfish.guns.client.event.SoundEvents;
 import com.mrcrayfish.guns.client.gui.DisplayProperty;
 import com.mrcrayfish.guns.client.gui.GuiWorkbench;
@@ -55,7 +55,6 @@ import java.util.Random;
 
 public class ClientProxy extends CommonProxy
 {
-	public static RenderEvents renderEvents;
 	public static boolean controllableLoaded = false;
 
 	@Override
@@ -63,7 +62,6 @@ public class ClientProxy extends CommonProxy
 	{
 		super.preInit();
 
-		MinecraftForge.EVENT_BUS.register(renderEvents = new RenderEvents());
 		MinecraftForge.EVENT_BUS.register(new GunHandler());
 		MinecraftForge.EVENT_BUS.register(new ReloadHandler());
 
@@ -99,7 +97,7 @@ public class ClientProxy extends CommonProxy
 		{
 			if(item instanceof ColoredItem)
 			{
-				Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
+				Minecraft.getInstance().getItemColors().registerItemColorHandler(color, item);
 			}
 		});
 
@@ -137,20 +135,13 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void showMuzzleFlash()
 	{
-		RenderEvents.drawFlash = true;
+		GunRenderer.drawFlash = true;
 	}
 
 	@Override
 	public void playClientSound(SoundEvent sound)
 	{
-		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, 1.0F));
-	}
-
-	@Override
-	public void playClientSound(double posX, double posY, double posZ, SoundEvent event, SoundCategory category, float volume, float pitch)
-	{
-		ISound sound = new PositionedSoundRecord(event.getSoundName(), category, volume, pitch, false, 0, ISound.AttenuationType.NONE, 0, 0, 0);
-		Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+		Minecraft.getInstance().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, 1.0F));
 	}
 
 	@SubscribeEvent
@@ -159,26 +150,6 @@ public class ClientProxy extends CommonProxy
 		GunRegistry.getInstance().getGuns().forEach((location, gun) -> gun.getGun().serverGun = null);
 	}
 
-	@Override
-	public void createExplosionStunGrenade(double x, double y, double z)
-	{
-        ParticleManager particleManager = Minecraft.getMinecraft().effectRenderer;
-        World world = Minecraft.getMinecraft().world;
-        Random rand = world.rand;
-
-        // Spawn lingering smoke particles
-        for (int i = 0; i < 30; i++)
-            particleManager.addEffect(createParticle(x, y, z, world, rand, new ParticleCloud.Factory(), 0.2));
-
-        // Spawn fast moving smoke/spark particles
-        for (int i = 0; i < 30; i++)
-        {
-            Particle smoke = createParticle(x, y, z, world, rand, new ParticleCloud.Factory(), 4);
-            smoke.setMaxAge((int)((8 / (Math.random() * 0.1 + 0.4)) * 0.5));
-            particleManager.addEffect(smoke);
-            particleManager.addEffect(createParticle(x, y, z, world, rand, new ParticleCrit.Factory(), 4));
-        }
-	}
 
     private Particle createParticle(double x, double y, double z, World world, Random rand, IParticleFactory factory, double velocityMultiplier)
     {
@@ -195,7 +166,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public boolean isZooming()
 	{
-		Minecraft mc = Minecraft.getMinecraft();
+		Minecraft mc = Minecraft.getInstance();
 		if(!mc.inGameHasFocus)
 			return false;
 		
@@ -221,12 +192,12 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void startReloadAnimation()
 	{
-		renderEvents.playAnimation = true;
+		gunRenderer.playAnimation = true;
 	}
 
 	public static boolean isLookingAtInteractBlock()
 	{
-		Minecraft mc = Minecraft.getMinecraft();
+		Minecraft mc = Minecraft.getInstance();
 		if(mc.objectMouseOver != null)
 		{
 			if(mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
@@ -244,7 +215,7 @@ public class ClientProxy extends CommonProxy
 
 	public static boolean isLookingAtInteract()
 	{
-		Minecraft mc = Minecraft.getMinecraft();
+		Minecraft mc = Minecraft.getInstance();
 		if(mc.objectMouseOver != null)
 		{
 			if(mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)

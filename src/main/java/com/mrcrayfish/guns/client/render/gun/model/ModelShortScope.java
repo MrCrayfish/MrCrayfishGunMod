@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.event.RenderEvents;
+import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -37,7 +37,7 @@ public class ModelShortScope implements IOverrideModel
         GlStateManager.enableBlend();
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
         GlStateManager.disableLighting();
-        GlStateManager.bindTexture(RenderEvents.screenTextureId );
+        GlStateManager.bindTexture(GunRenderer.screenTextureId );
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
@@ -48,7 +48,7 @@ public class ModelShortScope implements IOverrideModel
             GlStateManager.translate(-size / 2, 0.325 * 0.0625, -0.5 * 0.0625);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
-            Minecraft.getMinecraft().getTextureManager().bindTexture(VIGNETTE);
+            Minecraft.getInstance().getTextureManager().bindTexture(VIGNETTE);
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             buffer.pos(0, 0, 0).tex(1.0, 1.0).endVertex();
             buffer.pos(size, 0, 0).tex(0, 1.0).endVertex();

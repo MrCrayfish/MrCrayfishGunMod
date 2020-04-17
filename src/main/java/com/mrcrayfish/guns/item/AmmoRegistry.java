@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.item;
 import com.google.common.annotations.Beta;
 import com.mrcrayfish.guns.common.ProjectileFactory;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.init.ModEntities;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -27,7 +28,7 @@ public class AmmoRegistry
         return instance;
     }
 
-    private final ProjectileFactory DEFAULT_FACTORY = EntityProjectile::new;
+    private final ProjectileFactory DEFAULT_FACTORY = (worldIn, entity, item, modifiedGun) -> new EntityProjectile(ModEntities.PROJECTILE.get(), worldIn);
 
     private final Map<ResourceLocation, AmmoItem> AMMO = new HashMap<>();
     private final Map<ResourceLocation, ProjectileFactory> FACTORIES = new HashMap<>();

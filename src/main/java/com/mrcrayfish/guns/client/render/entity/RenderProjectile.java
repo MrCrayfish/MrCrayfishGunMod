@@ -52,7 +52,7 @@ public class RenderProjectile extends Render<EntityProjectile>
 
             GlStateManager.disableLighting();
 
-            IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(entity.getItem());
+            IBakedModel model = Minecraft.getInstance().getRenderItem().getItemModelMesher().getItemModel(entity.getItem());
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);

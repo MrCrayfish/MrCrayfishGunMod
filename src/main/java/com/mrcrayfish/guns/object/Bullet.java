@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.object;
 
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.network.message.MessageBullet;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -26,18 +27,18 @@ public class Bullet
     private int trailColor;
     private double trailLengthMultiplier;
 
-    public Bullet(@Nullable EntityProjectile projectile, int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, int trailColor, double trailLengthMultiplier)
+    public Bullet(@Nullable EntityProjectile projectile, MessageBullet message)
     {
         this.projectile = projectile;
-        this.entityId = entityId;
-        this.posX = posX;
-        this.posY = posY;
-        this.posZ = posZ;
-        this.motionX = motionX;
-        this.motionY = motionY;
-        this.motionZ = motionZ;
-        this.trailColor = trailColor;
-        this.trailLengthMultiplier = trailLengthMultiplier;
+        this.entityId = message.getEntityId();
+        this.posX = message.getPosX();
+        this.posY = message.getPosY();
+        this.posZ = message.getPosZ();
+        this.motionX = message.getMotionX();
+        this.motionY = message.getMotionY();
+        this.motionZ = message.getMotionZ();
+        this.trailColor = message.getTrailColor();
+        this.trailLengthMultiplier = message.getTrailLengthMultiplier();
         this.updateHeading();
     }
 
@@ -64,7 +65,7 @@ public class Bullet
                 this.motionZ = this.projectile.motionZ;*/
             }
         }
-        else if(this.projectile.isDead)
+        else if(!this.projectile.isAlive())
         {
             this.finished = true;
         }
@@ -84,61 +85,61 @@ public class Bullet
 
     public EntityProjectile getProjectile()
     {
-        return projectile;
+        return this.projectile;
     }
 
     public double getPosX()
     {
-        return posX;
+        return this.posX;
     }
 
     public double getPosY()
     {
-        return posY;
+        return this.posY;
     }
 
     public double getPosZ()
     {
-        return posZ;
+        return this.posZ;
     }
 
     public double getMotionX()
     {
-        return motionX;
+        return this.motionX;
     }
 
     public double getMotionY()
     {
-        return motionY;
+        return this.motionY;
     }
 
     public double getMotionZ()
     {
-        return motionZ;
+        return this.motionZ;
     }
 
     public float getRotationYaw()
     {
-        return rotationYaw;
+        return this.rotationYaw;
     }
 
     public float getRotationPitch()
     {
-        return rotationPitch;
+        return this.rotationPitch;
     }
 
     public boolean isFinished()
     {
-        return finished;
+        return this.finished;
     }
 
     public int getTrailColor()
     {
-        return trailColor;
+        return this.trailColor;
     }
 
     public double getTrailLengthMultiplier()
     {
-        return trailLengthMultiplier;
+        return this.trailLengthMultiplier;
     }
 }

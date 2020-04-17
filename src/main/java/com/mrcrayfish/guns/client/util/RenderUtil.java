@@ -23,7 +23,7 @@ public class RenderUtil
 {
     public static IBakedModel getModel(Item item, int meta)
     {
-        return Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(item, 1, meta));
+        return Minecraft.getInstance().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(item, 1, meta));
     }
 
     public static void rotateZ(float xOffset, float yOffset, float rotation)
@@ -40,13 +40,13 @@ public class RenderUtil
 
     public static void renderModel(ItemStack child, ItemStack parent)
     {
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(child);
+        IBakedModel model = Minecraft.getInstance().getRenderItem().getItemModelMesher().getItemModel(child);
         renderModel(model, ItemCameraTransforms.TransformType.NONE, null, child, parent);
     }
 
     public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType)
     {
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
+        IBakedModel model = Minecraft.getInstance().getRenderItem().getItemModelMesher().getItemModel(stack);
         renderModel(model, transformType, stack);
     }
 
@@ -64,7 +64,7 @@ public class RenderUtil
     {
         GlStateManager.pushMatrix();
         {
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getInstance().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableRescaleNormal();
@@ -86,7 +86,7 @@ public class RenderUtil
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableBlend();
 
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getInstance().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         }
         GlStateManager.popMatrix();
     }
@@ -130,7 +130,7 @@ public class RenderUtil
 
     private static int getItemStackColor(ItemStack stack, ItemStack parent, int tintIndex)
     {
-        int color = Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, tintIndex);
+        int color = Minecraft.getInstance().getItemColors().colorMultiplier(stack, tintIndex);
         if(color == -1)
         {
             if(!parent.isEmpty())
@@ -143,7 +143,7 @@ public class RenderUtil
 
     public static void applyTransformType(ItemStack stack, ItemCameraTransforms.TransformType transformType)
     {
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
+        IBakedModel model = Minecraft.getInstance().getRenderItem().getItemModelMesher().getItemModel(stack);
         ItemTransformVec3f transformVec3f = model.getItemCameraTransforms().getTransform(transformType);
         GlStateManager.translate(transformVec3f.translation.getX(), transformVec3f.translation.getY(), transformVec3f.translation.getZ());
         GlStateManager.rotate(transformVec3f.rotation.getX(), 1, 0, 0);

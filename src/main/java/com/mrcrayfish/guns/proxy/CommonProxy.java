@@ -15,25 +15,9 @@ public class CommonProxy
 {
 	private NetworkGunManager manager;
 
-	public void preInit()
-	{
-
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
 	public void init() {}
 
 	public void postInit() {}
-
-	public void spawnParticle(EnumParticleTypes type, boolean ignoreRange, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {}
-
-	public void showMuzzleFlash() {}
-
-	public void playClientSound(SoundEvent sound) {}
-
-	public void playClientSound(double posX, double posY, double posZ, SoundEvent event, SoundCategory category, float volume, float pitch) {}
-
-	public void createExplosionStunGrenade(double x, double y, double z) {}
 
 	public boolean canShoot()
 	{

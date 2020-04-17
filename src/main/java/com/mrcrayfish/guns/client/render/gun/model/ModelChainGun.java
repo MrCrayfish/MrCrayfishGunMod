@@ -30,7 +30,7 @@ public class ModelChainGun implements IOverrideModel
     public void tick(EntityLivingBase entity)
     {
         lastRotation = rotation;
-        boolean shooting = Minecraft.getMinecraft().inGameHasFocus && Mouse.isButtonDown(Config.CLIENT.controls.oldControls ? 1 : 0);
+        boolean shooting = Minecraft.getInstance().inGameHasFocus && Mouse.isButtonDown(Config.CLIENT.controls.oldControls ? 1 : 0);
 
         if(ClientProxy.controllableLoaded)
         {
@@ -41,7 +41,7 @@ public class ModelChainGun implements IOverrideModel
             }
         }
 
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         ItemStack heldItem = player.getHeldItemMainhand();
         if(!GunItem.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
         {

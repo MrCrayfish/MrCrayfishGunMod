@@ -6,7 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
@@ -317,7 +317,7 @@ public abstract class EntityThrowable extends Entity implements IProjectile
 
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound)
+    public void writeEntityToNBT(CompoundNBT compound)
     {
         compound.setInteger("xTile", this.xTile);
         compound.setInteger("yTile", this.yTile);
@@ -336,7 +336,7 @@ public abstract class EntityThrowable extends Entity implements IProjectile
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound)
+    public void readEntityFromNBT(CompoundNBT compound)
     {
         this.xTile = compound.getInteger("xTile");
         this.yTile = compound.getInteger("yTile");

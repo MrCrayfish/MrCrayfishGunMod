@@ -6,7 +6,7 @@ import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageExplosionStunGrenade;
+import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -41,7 +41,7 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
     {
         double y = posY + height * 0.5;
         world.playSound(null, posX, y, posZ, ModSounds.getSound("cgm:grenade_stun_explosion"), SoundCategory.BLOCKS, 4, (1 + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
-        PacketHandler.INSTANCE.sendToAllAround(new MessageExplosionStunGrenade(posX, y, posZ), new TargetPoint(world.provider.getDimension(), posX, y, posZ, 4096));
+        PacketHandler.INSTANCE.sendToAllAround(new MessageStunGrenade(posX, y, posZ), new TargetPoint(world.provider.getDimension(), posX, y, posZ, 4096));
 
         // Calculate bounds of area where potentially effected players my be
         double diameter = Math.max(Config.SERVER.stunGrenades.deafen.criteria.radius, Config.SERVER.stunGrenades.blind.criteria.radius) * 2 + 1;

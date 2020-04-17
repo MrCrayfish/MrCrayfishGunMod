@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.event.RenderEvents;
+import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.proxy.ClientProxy;
@@ -34,31 +34,31 @@ public class ModelLongScope implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
     {
-        if(RenderEvents.shadersEnabled && isFirstPerson(transformType) && entity.equals(Minecraft.getMinecraft().player))
+        if(GunRenderer.shadersEnabled && isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
         {
-            GlStateManager.translate(0, 0, 0.275 * ClientProxy.renderEvents.normalZoomProgress);
-            GlStateManager.scale(1, 1, 0.1 + 0.9 * (1.0 - ClientProxy.renderEvents.normalZoomProgress));
+            GlStateManager.translate(0, 0, 0.275 * ClientProxy.gunRenderer.normalZoomProgress);
+            GlStateManager.scale(1, 1, 0.1 + 0.9 * (1.0 - ClientProxy.gunRenderer.normalZoomProgress));
         }
 
         RenderUtil.renderModel(stack, parent);
 
-        if(isFirstPerson(transformType) && entity.equals(Minecraft.getMinecraft().player))
+        if(isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
         {
-            if(!RenderEvents.shadersEnabled && RenderEvents.screenTextureId != -1)
+            if(!GunRenderer.shadersEnabled && GunRenderer.screenTextureId != -1)
             {
-                GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.renderEvents.normalZoomProgress * 0.5F + 0.5F);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.gunRenderer.normalZoomProgress * 0.5F + 0.5F);
                 GlStateManager.enableBlend();
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
                 GlStateManager.disableLighting();
-                GlStateManager.bindTexture(RenderEvents.screenTextureId);
+                GlStateManager.bindTexture(GunRenderer.screenTextureId);
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
                 double size = 1.2 / 16.0;
                 double crop = 0.425;
-                Minecraft mc = Minecraft.getMinecraft();
-                int kickAmount = ClientProxy.renderEvents.recoilAngle > 0 ? 50 : 0;
-                double offset = ClientProxy.renderEvents.recoilNormal * kickAmount * (1.0 / mc.displayHeight);
+                Minecraft mc = Minecraft.getInstance();
+                int kickAmount = ClientProxy.gunRenderer.recoilAngle > 0 ? 50 : 0;
+                double offset = ClientProxy.gunRenderer.recoilNormal * kickAmount * (1.0 / mc.displayHeight);
                 double texU = ((mc.displayWidth - mc.displayHeight + mc.displayHeight * crop * 2.0) / 2.0) / mc.displayWidth;
 
                 GlStateManager.pushMatrix();
@@ -73,7 +73,7 @@ public class ModelLongScope implements IOverrideModel
                     buffer.pos(size, size, 0).tex(1.0 - texU, 1.0 - crop + offset).endVertex();
                     tessellator.draw();
 
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.renderEvents.normalZoomProgress * 0.8F + 0.2F);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.gunRenderer.normalZoomProgress * 0.8F + 0.2F);
                     GlStateManager.translate(0, 0, 0.0001);
                     mc.getTextureManager().bindTexture(RETICLE);
                     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);

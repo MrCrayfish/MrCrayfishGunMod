@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
 
 /**
@@ -13,5 +14,5 @@ import net.minecraft.world.World;
 @Beta
 public interface ProjectileFactory
 {
-    EntityProjectile create(World worldIn, EntityLivingBase entity, GunItem item, Gun modifiedGun);
+    EntityProjectile create(World worldIn, LivingEntity entity, GunItem item, Gun modifiedGun);
 }
