@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -29,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(Reference.MOD_ID)
 public class GunMod
 {
+    public static boolean controllableLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
     public static final CommonProxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
@@ -36,7 +38,7 @@ public class GunMod
         @Override
         public ItemStack createIcon()
         {
-            return new ItemStack(ModItems.PISTOL);
+            return new ItemStack(ModItems.PISTOL.get());
         }
     };
 
@@ -48,6 +50,7 @@ public class GunMod
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
+        controllableLoaded = ModList.get().isLoaded("controllable");
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
@@ -58,7 +61,6 @@ public class GunMod
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.GRENADE, EntityGrenade::new);
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.MISSILE, EntityMissile::new);
         PacketHandler.init();
-        MinecraftForge.EVENT_BUS.register(new CommonEvents());
         //TODO load
     }
 

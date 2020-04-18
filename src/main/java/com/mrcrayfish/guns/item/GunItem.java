@@ -98,7 +98,7 @@ public class GunItem extends ColoredItem
         return true;
     }
 
-    @Override
+    /*@Override
     public void onUsingTick(ItemStack stack, LivingEntity entity, int count)
     {
         Gun modifiedGun = getModifiedGun(stack);
@@ -123,7 +123,7 @@ public class GunItem extends ColoredItem
                 PacketHandler.getPlayChannel().sendToServer(new MessageShoot());
             }
         }
-    }
+    }*/
 
     /*@Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, EnumHand handIn)

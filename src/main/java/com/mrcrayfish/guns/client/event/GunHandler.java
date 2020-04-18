@@ -1,12 +1,12 @@
 package com.mrcrayfish.guns.client.event;
 
-import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.AimTracker;
-import com.mrcrayfish.guns.common.CommonEvents;
+import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageAim;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.proxy.ClientProxy;
@@ -14,12 +14,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Mouse;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,62 +32,54 @@ public class GunHandler
     public static boolean aiming = false;
 
     @SubscribeEvent
-    public void onKeyPressed(MouseEvent event)
+    public static void onKeyPressed(InputEvent.RawMouseEvent event)
     {
-        if(!Minecraft.getInstance().inGameHasFocus)
+        if(!Minecraft.getInstance().isGameFocused())
             return;
 
-        if(!event.isButtonstate())
+        if(event.getAction() != GLFW.GLFW_PRESS)
             return;
 
         Minecraft mc = Minecraft.getInstance();
-        if(event.getButton() == 1 && ClientProxy.isLookingAtInteract())
+        PlayerEntity player = mc.player;
+        if(player == null)
+            return;
+
+        if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && ClientProxy.isLookingAtInteract())
         {
-            if(mc.player.getHeldItemMainhand().getItem() instanceof GunItem && !ClientProxy.isLookingAtInteractBlock())
+            if(player.getHeldItemMainhand().getItem() instanceof GunItem && !ClientHandler.isLookingAtInteractableBlock())
             {
                 event.setCanceled(true);
             }
             return;
         }
 
-        PlayerEntity player = mc.player;
-        if(player != null)
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(heldItem.getItem() instanceof GunItem)
         {
-            ItemStack heldItem = player.getHeldItemMainhand();
-            if(heldItem.getItem() instanceof GunItem)
+            int button = event.getButton();
+            if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
-                int button = event.getButton();
-                if(!Config.CLIENT.controls.oldControls)
-                {
-                    if(button == 0 || button == 1)
-                    {
-                        event.setCanceled(true);
-                    }
-
-                    if(event.isButtonstate() && button == 0)
-                    {
-                        fire(player, heldItem);
-                    }
-                }
-                else if(event.isButtonstate() && button == 1)
-                {
-                    event.setCanceled(true);
-                    fire(player, heldItem);
-                }
+                event.setCanceled(true);
+            }
+            if(event.getAction() == GLFW.GLFW_PRESS && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+            {
+                fire(player, heldItem);
             }
         }
     }
 
     @SubscribeEvent
-    public void onPostClientTick(TickEvent.ClientTickEvent event)
+    public static void onPostClientTick(TickEvent.ClientTickEvent event)
     {
         if(event.phase != TickEvent.Phase.END)
             return;
 
-        if(!Minecraft.getInstance().inGameHasFocus)
+        Minecraft mc = Minecraft.getInstance();
+        if(!mc.isGameFocused())
             return;
 
-        PlayerEntity player = Minecraft.getInstance().player;
+        PlayerEntity player = mc.player;
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
@@ -97,7 +88,7 @@ public class GunHandler
                  Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
                  if(gun.general.auto)
                  {
-                     if(Mouse.isButtonDown(Config.CLIENT.controls.oldControls ? 1 : 0))
+                     if(GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS)
                      {
                          fire(player, heldItem);
                      }
@@ -111,7 +102,7 @@ public class GunHandler
         if(!(heldItem.getItem() instanceof GunItem))
             return;
 
-        if(!GunItem.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
+        if(!GunItem.hasAmmo(heldItem) && !player.isCreative())
             return;
         
         if(player.isSpectator())
@@ -123,10 +114,35 @@ public class GunHandler
             GunItem gunItem = (GunItem) heldItem.getItem();
             Gun modifiedGun = gunItem.getModifiedGun(heldItem);
             tracker.setCooldown(heldItem.getItem(), modifiedGun.general.rate);
-            GunRenderer.getCooldownTracker(player.getUniqueID()).setCooldown(heldItem.getItem(), modifiedGun.general.rate);
-            PacketHandler.INSTANCE.sendToServer(new MessageShoot());
+            PacketHandler.getPlayChannel().sendToServer(new MessageShoot());
         }
     }
 
+    public static boolean isAiming()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(!mc.isGameFocused())
+            return false;
 
+        if(mc.player == null)
+            return false;
+
+        if(mc.player.isSpectator())
+            return false;
+
+        if(!(mc.player.inventory.getCurrentItem().getItem() instanceof GunItem))
+            return false;
+
+        boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+        if(GunMod.controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                zooming |= controller.getLTriggerValue() >= 0.5;
+            }
+        }
+
+        return zooming;
+    }
 }

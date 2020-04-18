@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -34,23 +35,17 @@ public class ModelLongScope implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
     {
-        if(GunRenderer.shadersEnabled && isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
-        {
-            GlStateManager.translate(0, 0, 0.275 * ClientProxy.gunRenderer.normalZoomProgress);
-            GlStateManager.scale(1, 1, 0.1 + 0.9 * (1.0 - ClientProxy.gunRenderer.normalZoomProgress));
-        }
-
         RenderUtil.renderModel(stack, parent);
 
         if(isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
         {
-            if(!GunRenderer.shadersEnabled && GunRenderer.screenTextureId != -1)
+            if(GunRenderer.screenTextureId != -1)
             {
                 GlStateManager.color(1.0F, 1.0F, 1.0F, (float) ClientProxy.gunRenderer.normalZoomProgress * 0.5F + 0.5F);
                 GlStateManager.enableBlend();
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
                 GlStateManager.disableLighting();
-                GlStateManager.bindTexture(GunRenderer.screenTextureId);
+                RenderSystem.bindTexture(GunRenderer.screenTextureId);
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 

@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.client.gui;
+package com.mrcrayfish.guns.client.screen;
 
 import net.minecraft.util.math.Vec3d;
 
@@ -9,7 +9,7 @@ public class DisplayProperty
 {
     private Vec3d translate = Vec3d.ZERO;
     private Vec3d rotation = Vec3d.ZERO;
-    private double scale = 1.0F;
+    private double scale;
 
     public DisplayProperty(double scale)
     {

@@ -1,34 +1,35 @@
 package com.mrcrayfish.guns.common.container;
 
+import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemDye;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 /**
  * Author: MrCrayfish
  */
-public class ContainerWorkbench extends Container
+public class WorkbenchContainer extends Container
 {
     private WorkbenchTileEntity workbench;
     private BlockPos pos;
 
-    public ContainerWorkbench(IInventory playerInventory, WorkbenchTileEntity workbench)
+    public WorkbenchContainer(int windowId, IInventory playerInventory, WorkbenchTileEntity workbench)
     {
+        super(ModContainers.WORKBENCH.get(), windowId);
         this.workbench = workbench;
         this.pos = workbench.getPos();
 
-        this.addSlotToContainer(new Slot(workbench, 0, 187, 30)
+        this.addSlot(new Slot(workbench, 0, 187, 30)
         {
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack.getItem() == Items.DYE;
+                return stack.getItem() instanceof DyeItem;
             }
 
             @Override
@@ -42,13 +43,13 @@ public class ContainerWorkbench extends Container
         {
             for(int y = 0; y < 9; y++)
             {
-                this.addSlotToContainer(new Slot(playerInventory, y + x * 9 + 9, 8 + y * 18, 120 + x * 18));
+                this.addSlot(new Slot(playerInventory, y + x * 9 + 9, 8 + y * 18, 120 + x * 18));
             }
         }
 
         for(int x = 0; x < 9; x++)
         {
-            this.addSlotToContainer(new Slot(playerInventory, x, 8 + x * 18, 178));
+            this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 178));
         }
     }
 
@@ -76,30 +77,26 @@ public class ContainerWorkbench extends Container
                     return ItemStack.EMPTY;
                 }
             }
-            else if(index > 0)
+            else
             {
-                if(slotStack.getItem() instanceof ItemDye)
+                if(slotStack.getItem() instanceof DyeItem)
                 {
                     if(!this.mergeItemStack(slotStack, 0, 1, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(index >= 1 && index < 28)
+                else if(index < 28)
                 {
                     if(!this.mergeItemStack(slotStack, 28, 36, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(index > 27 && index <= 36 && !this.mergeItemStack(slotStack, 1, 28, false))
+                else if(index <= 36 && !this.mergeItemStack(slotStack, 1, 28, false))
                 {
                     return ItemStack.EMPTY;
                 }
-            }
-            else if(!this.mergeItemStack(slotStack, 1, 36, false))
-            {
-                return ItemStack.EMPTY;
             }
 
             if(slotStack.isEmpty())

@@ -1,14 +1,19 @@
 package com.mrcrayfish.guns.client.util;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -141,19 +146,24 @@ public class RenderUtil
         return color;
     }
 
-    public static void applyTransformType(ItemStack stack, ItemCameraTransforms.TransformType transformType)
+    public static void applyTransformType(ItemStack stack, MatrixStack matrixStack, ItemCameraTransforms.TransformType transformType)
     {
-        IBakedModel model = Minecraft.getInstance().getRenderItem().getItemModelMesher().getItemModel(stack);
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
         ItemTransformVec3f transformVec3f = model.getItemCameraTransforms().getTransform(transformType);
-        GlStateManager.translate(transformVec3f.translation.getX(), transformVec3f.translation.getY(), transformVec3f.translation.getZ());
-        GlStateManager.rotate(transformVec3f.rotation.getX(), 1, 0, 0);
-        GlStateManager.rotate(transformVec3f.rotation.getY(), 0, 1, 0);
-        GlStateManager.rotate(transformVec3f.rotation.getZ(), 0, 0, 1);
-        GlStateManager.scale(transformVec3f.scale.getX(), transformVec3f.scale.getY(), transformVec3f.scale.getZ());
+        matrixStack.translate(transformVec3f.translation.getX(), transformVec3f.translation.getY(), transformVec3f.translation.getZ());
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(transformVec3f.rotation.getX()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(transformVec3f.rotation.getY()));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(transformVec3f.rotation.getZ()));
+        matrixStack.scale(transformVec3f.scale.getX(), transformVec3f.scale.getY(), transformVec3f.scale.getZ());
     }
 
     public interface Transform
     {
         void apply();
+    }
+
+    public static boolean isMouseWithin(int mouseX, int mouseY, int x, int y, int width, int height)
+    {
+        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 }

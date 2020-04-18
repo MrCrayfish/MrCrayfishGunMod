@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.common.CommonEvents;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAim;
@@ -36,7 +35,7 @@ public class AimTracker
             return;
 
         PlayerEntity player = event.player;
-        AimTracker tracker = getAimTracker(player);
+        AimTracker tracker = get(player);
         if(tracker != null)
         {
             tracker.handleAiming(player);
@@ -48,9 +47,9 @@ public class AimTracker
     }
 
     @Nullable
-    private static AimTracker getAimTracker(PlayerEntity player)
+    private static AimTracker get(PlayerEntity player)
     {
-        if(player.getDataManager().get(CommonEvents.AIMING) && !AIMING_MAP.containsKey(player.getUniqueID()))
+        if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING) && !AIMING_MAP.containsKey(player.getUniqueID()))
         {
             AIMING_MAP.put(player.getUniqueID(), new AimTracker());
         }
@@ -59,7 +58,7 @@ public class AimTracker
 
     public static float getAimProgress(PlayerEntity player, float partialTicks)
     {
-        AimTracker tracker = getAimTracker(player);
+        AimTracker tracker = get(player);
         if(tracker != null)
         {
             return tracker.getNormalProgress(partialTicks);
@@ -67,10 +66,10 @@ public class AimTracker
         return 0F;
     }
 
-    public void handleAiming(PlayerEntity player)
+    private void handleAiming(PlayerEntity player)
     {
         this.previousAim = this.currentAim;
-        if(player.getDataManager().get(CommonEvents.AIMING))
+        if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING))
         {
             if(this.currentAim < MAX_AIM)
             {
@@ -111,14 +110,14 @@ public class AimTracker
             if(!aiming)
             {
                 SyncedPlayerData.instance().set(player, ModSyncedDataKeys.AIMING, true);
-                PacketHandler.INSTANCE.sendToServer(new MessageAim(true));
+                PacketHandler.getPlayChannel().sendToServer(new MessageAim(true));
                 aiming = true;
             }
         }
         else if(aiming)
         {
-            Minecraft.getInstance().player.getDataManager().set(CommonEvents.AIMING, false);
-            PacketHandler.INSTANCE.sendToServer(new MessageAim(false));
+            SyncedPlayerData.instance().set(player, ModSyncedDataKeys.AIMING, false);
+            PacketHandler.getPlayChannel().sendToServer(new MessageAim(false));
             aiming = false;
         }
     }

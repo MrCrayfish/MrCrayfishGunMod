@@ -10,9 +10,12 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Mouse;
 
 /**
@@ -27,25 +30,30 @@ public class ModelChainGun implements IOverrideModel
     public void init() {}
 
     @Override
-    public void tick(EntityLivingBase entity)
+    public void tick(LivingEntity entity)
     {
-        lastRotation = rotation;
-        boolean shooting = Minecraft.getInstance().inGameHasFocus && Mouse.isButtonDown(Config.CLIENT.controls.oldControls ? 1 : 0);
+        this.lastRotation = this.rotation;
+
+        Minecraft mc = Minecraft.getInstance();
+        boolean shooting = mc.isGameFocused() && GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
 
         if(ClientProxy.controllableLoaded)
         {
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                shooting |= controller.getState().rightTrigger >= 0.5;
+                shooting |= controller.getRTriggerValue() >= 0.5;
             }
         }
 
         PlayerEntity player = Minecraft.getInstance().player;
-        ItemStack heldItem = player.getHeldItemMainhand();
-        if(!GunItem.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
+        if(player != null)
         {
-            shooting = false;
+            ItemStack heldItem = player.getHeldItemMainhand();
+            if(!GunItem.hasAmmo(heldItem) && !player.isCreative())
+            {
+                shooting = false;
+            }
         }
 
         if(shooting)
@@ -59,7 +67,7 @@ public class ModelChainGun implements IOverrideModel
     }
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity)
     {
         RenderUtil.renderModel(RenderUtil.getModel(ModItems.PARTS, 0), stack);
         RenderUtil.renderModel(RenderUtil.getModel(ModItems.PARTS, 1), ItemCameraTransforms.TransformType.NONE, () -> RenderUtil.rotateZ(0.5F, 0.125F, lastRotation + (rotation - lastRotation) * partialTicks), stack, ItemStack.EMPTY);

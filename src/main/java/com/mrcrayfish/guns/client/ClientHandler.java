@@ -1,17 +1,27 @@
 package com.mrcrayfish.guns.client;
 
+import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Controller;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.object.Bullet;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -29,6 +39,10 @@ public class ClientHandler
     {
         MinecraftForge.EVENT_BUS.register(GUN_RENDERER);
         MinecraftForge.EVENT_BUS.register(BULLET_RENDERER);
+        if(GunMod.controllableLoaded)
+        {
+            MinecraftForge.EVENT_BUS.register(new ControllerEvents());
+        }
     }
 
     public static GunRenderer getGunRenderer()
@@ -85,5 +99,21 @@ public class ClientHandler
     public static void showMuzzleFlash()
     {
         GUN_RENDERER.drawFlash = true;
+    }
+
+    public static boolean isLookingAtInteractableBlock()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.objectMouseOver != null && mc.world != null)
+        {
+            if(mc.objectMouseOver instanceof BlockRayTraceResult)
+            {
+                BlockRayTraceResult result = (BlockRayTraceResult) mc.objectMouseOver;
+                BlockState state = mc.world.getBlockState(result.getPos());
+                Block block = state.getBlock();
+                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE;
+            }
+        }
+        return false;
     }
 }

@@ -30,6 +30,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -343,23 +344,23 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    public void writeSpawnData(ByteBuf additionalData)
+    public void writeSpawnData(PacketBuffer buffer)
     {
-        ByteBufUtils.writeTag(additionalData, this.projectile.serializeNBT());
-        ByteBufUtils.writeTag(additionalData, this.general.serializeNBT());
-        additionalData.writeInt(this.shooterId);
-        ItemStackUtil.writeItemStackToBufIgnoreTag(additionalData, this.item);
+        buffer.writeCompoundTag(this.projectile.serializeNBT());
+        buffer.writeCompoundTag(this.general.serializeNBT());
+        buffer.writeInt(this.shooterId);
+        ItemStackUtil.writeItemStackToBufIgnoreTag(buffer, this.item);
     }
 
     @Override
-    public void readSpawnData(ByteBuf additionalData)
+    public void readSpawnData(PacketBuffer buffer)
     {
         this.projectile = new Gun.Projectile();
-        this.projectile.deserializeNBT(ByteBufUtils.readTag(additionalData));
+        this.projectile.deserializeNBT(ByteBufUtils.readTag(buffer));
         this.general = new Gun.General();
-        this.general.deserializeNBT(ByteBufUtils.readTag(additionalData));
-        this.shooterId = additionalData.readInt();
-        this.item = ItemStackUtil.readItemStackFromBufIgnoreTag(additionalData);
+        this.general.deserializeNBT(ByteBufUtils.readTag(buffer));
+        this.shooterId = buffer.readInt();
+        this.item = ItemStackUtil.readItemStackFromBufIgnoreTag(buffer);
         this.setSize(this.projectile.size, this.projectile.size);
     }
 

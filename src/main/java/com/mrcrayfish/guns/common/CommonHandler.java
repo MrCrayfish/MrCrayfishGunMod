@@ -3,10 +3,10 @@ package com.mrcrayfish.guns.common;
 import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.common.container.ContainerWorkbench;
+import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModItems;
-import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.*;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -28,18 +28,31 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class CommonHandler
 {
     private static final Predicate<LivingEntity> NOT_AGGRO_EXEMPT = entity -> !(entity instanceof PlayerEntity) && !Config.COMMON.aggroMobs.exemptEntities.get().contains(entity.getType().getRegistryName().toString());
+
+    /**
+     * A custom implementation of the cooldown tracker in order to provide the best experience for
+     * players. On servers, Minecraft's cooldown tracker is sent to the client but the latency creates
+     * an awkward experience as the cooldown applies to the item after the packet has traveled to the
+     * server then back to the client. To fix this and still apply security, we just handle the
+     * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
+     * applied on the client in {@link GunItem#onItemRightClick} and {@link GunItem#onUsingTick}.
+     */
+    private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
 
     /**
      * Fires the weapon the player is currently holding.
@@ -59,7 +72,7 @@ public class CommonHandler
                 Gun gun = item.getModifiedGun(heldItem);
                 if(gun != null)
                 {
-                    CooldownTracker tracker = player.getCooldownTracker();
+                    CooldownTracker tracker = getCooldownTracker(player.getUniqueID());
                     if(tracker.hasCooldown(heldItem.getItem()))
                     {
                         GunMod.LOGGER.warn(player.getName() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging?");
@@ -74,7 +87,7 @@ public class CommonHandler
 
                     if(!gun.general.alwaysSpread && gun.general.spread > 0.0F)
                     {
-                        SpreadHandler.getSpreadTracker(player.getUniqueID()).update(item);
+                        SpreadTracker.get(player.getUniqueID()).update(item);
                     }
 
                     boolean silenced = Gun.getAttachment(IAttachment.Type.BARREL, heldItem).getItem() == ModItems.SILENCER.get();
@@ -159,9 +172,9 @@ public class CommonHandler
     public static void craftVehicle(ServerPlayerEntity player, ResourceLocation id, BlockPos pos)
     {
         World world = player.world;
-        if(player.openContainer instanceof ContainerWorkbench)
+        if(player.openContainer instanceof WorkbenchContainer)
         {
-            ContainerWorkbench workbench = (ContainerWorkbench) player.openContainer;
+            WorkbenchContainer workbench = (WorkbenchContainer) player.openContainer;
             if(workbench.getPos().equals(pos))
             {
                 List<ItemStack> materials = WorkbenchRegistry.getMaterialsForStack(message.stack);
@@ -253,6 +266,33 @@ public class CommonHandler
         if(stack.getCount() > 0)
         {
             player.world.addEntity(new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), stack.copy()));
+        }
+    }
+
+    /**
+     * Gets the cooldown tracker for the specified player UUID.
+     *
+     * @param uuid the player's uuid
+     * @return a cooldown tracker instance
+     */
+    public static CooldownTracker getCooldownTracker(UUID uuid)
+    {
+        if(!COOLDOWN_TRACKER_MAP.containsKey(uuid))
+        {
+            COOLDOWN_TRACKER_MAP.put(uuid, new CooldownTracker());
+        }
+        return COOLDOWN_TRACKER_MAP.get(uuid);
+    }
+
+    /**
+     * Updates the cooldown tracker for each player every tick
+     */
+    @SubscribeEvent
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.START && !event.player.world.isRemote)
+        {
+            CommonHandler.getCooldownTracker(event.player.getUniqueID()).tick();
         }
     }
 }
