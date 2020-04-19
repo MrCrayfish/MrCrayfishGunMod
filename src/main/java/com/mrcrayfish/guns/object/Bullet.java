@@ -50,6 +50,8 @@ public class Bullet
 
     public void tick(World world)
     {
+        if(world == null)
+            return;
         if(this.projectile == null)
         {
             Entity entity = world.getEntityByID(this.entityId);
