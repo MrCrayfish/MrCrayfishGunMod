@@ -4,17 +4,17 @@ import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
-import com.mrcrayfish.guns.item.*;
+import com.mrcrayfish.guns.item.AmmoItem;
+import com.mrcrayfish.guns.item.AmmoRegistry;
+import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
-import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.entity.LivingEntity;
@@ -34,7 +34,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Author: MrCrayfish
@@ -172,7 +174,9 @@ public class CommonHandler
     public static void craftVehicle(ServerPlayerEntity player, ResourceLocation id, BlockPos pos)
     {
         World world = player.world;
-        if(player.openContainer instanceof WorkbenchContainer)
+
+        //TODO fix crafting with new data pack system
+        /*if(player.openContainer instanceof WorkbenchContainer)
         {
             WorkbenchContainer workbench = (WorkbenchContainer) player.openContainer;
             if(workbench.getPos().equals(pos))
@@ -195,7 +199,7 @@ public class CommonHandler
 
                     WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
 
-                    /* Gets the color based on the dye */
+                    *//* Gets the color based on the dye *//*
                     int color = -1;
                     ItemStack dyeStack = workbenchTileEntity.getInventory().get(0);
                     if(dyeStack.getItem() instanceof ItemDye)
@@ -221,7 +225,7 @@ public class CommonHandler
                     world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
                 }
             }
-        }
+        }*/
     }
 
     public static void unloadHeldGun(ServerPlayerEntity player)

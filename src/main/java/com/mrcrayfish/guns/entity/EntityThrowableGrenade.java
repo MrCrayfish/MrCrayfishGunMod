@@ -1,20 +1,17 @@
 package com.mrcrayfish.guns.entity;
 
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.world.ProjectileExplosion;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketExplosion;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * Author: MrCrayfish
@@ -24,54 +21,66 @@ public class EntityThrowableGrenade extends EntityThrowableItem
     public float rotation;
     public float prevRotation;
 
-    public EntityThrowableGrenade(World worldIn)
+    public EntityThrowableGrenade(EntityType<? extends EntityThrowableItem> entityType, World worldIn)
     {
-        super(worldIn);
+        super(entityType, worldIn);
+    }
+
+    public EntityThrowableGrenade(EntityType<? extends EntityThrowableItem> entityType, World world, PlayerEntity player)
+    {
+        super(entityType, world, player);
+        this.setShouldBounce(true);
+        this.setGravityVelocity(0.05F);
+        this.setItem(new ItemStack(ModItems.GRENADE.get()));
+        this.setMaxLife(20 * 3);
     }
 
     public EntityThrowableGrenade(World world, PlayerEntity player)
     {
-        super(world, player);
+        super(ModEntities.THROWABLE_GRENADE.get(), world, player);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
-        this.setItem(new ItemStack(ModItems.GRENADE));
+        this.setItem(new ItemStack(ModItems.GRENADE.get()));
         this.setMaxLife(20 * 3);
-        this.setSize(0.25F, 0.25F);
     }
 
     @Override
-    public void onUpdate()
+    protected void registerData()
     {
-        super.onUpdate();
-        prevRotation = rotation;
 
-        float speed = (float) Math.sqrt(Math.pow(motionX, 2) + Math.pow(motionY, 2) + Math.pow(motionZ, 2));
+    }
+
+    @Override
+    public void tick()
+    {
+        super.tick();
+        this.prevRotation = this.rotation;
+        double speed = this.getMotion().length();
         if(speed > 0.1)
         {
-            rotation += speed * 50;
+            this.rotation += speed * 50;
         }
-
-        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY + 0.25, posZ, 0, 0, 0, 10);
+        this.world.addParticle(ParticleTypes.SMOKE, true, this.getPosX(), this.getPosY() + 0.25, this.getPosZ(), 0, 0, 0);
     }
 
     @Override
     public void onDeath()
     {
-        EntityThrowableGrenade.createGrenadeExplosion(this, thrower, posX, posY, posZ, 2.0F, false, true);
+        EntityThrowableGrenade.createGrenadeExplosion(this, this.owner, this.getPosX(), this.getPosY(), this.getPosZ(), 2.0F, false, true);
     }
 
     private static void createGrenadeExplosion(EntityThrowableGrenade grenade, Entity thrower, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
     {
-        boolean canGunGrief = grenade.world.getGameRules().getBoolean("gunGriefing");
-        Explosion explosion = new ProjectileExplosion(grenade.world, thrower, grenade, grenade.getItem(), x, y, z, ModItems.GRENADE_LAUNCHER.getGun().projectile.damage, Config.SERVER.grenades.explosionRadius, canGunGrief);
+        //boolean canGunGrief = grenade.world.getGameRules().getBoolean("gunGriefing");
+        Explosion explosion = new ProjectileExplosion(grenade.world, thrower, grenade, grenade.getItem(), x, y, z, ModItems.GRENADE_LAUNCHER.get().getGun().projectile.damage, Config.COMMON.grenades.explosionRadius.get(), Explosion.Mode.NONE);
         explosion.doExplosionA();
         explosion.doExplosionB(true);
         explosion.clearAffectedBlockPositions();
 
-        if(grenade.world instanceof WorldServer)
+        if(grenade.world instanceof ServerWorld)
         {
-            WorldServer worldServer = (WorldServer) grenade.world;
-            worldServer.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, x, y, z, 0, 0.0, 0.0, 0.0, 0);
+            ServerWorld worldServer = (ServerWorld) grenade.world;
+            worldServer.spawnParticle(ParticleTypes.EXPLOSION, x, y, z, 0, 0.0, 0.0, 0.0, 0);
         }
     }
 }

@@ -1,13 +1,6 @@
 package com.mrcrayfish.guns.proxy;
 
 import com.mrcrayfish.guns.common.NetworkGunManager;
-import net.minecraft.entity.player.PlayerEntityMP;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import javax.annotation.Nullable;
 

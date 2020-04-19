@@ -90,7 +90,7 @@ public class ControllerEvents
                 event.setPitchSpeed(7.5F);
 
                 ItemStack scopeStack = Gun.getScope(heldItem);
-                if(!scopeStack.isEmpty() && scopeStack.getItem() instanceof ScopeItem)
+                if(scopeStack.getItem() instanceof ScopeItem)
                 {
                     ScopeItem scopeItem = (ScopeItem) scopeStack.getItem();
                     Scope scope = scopeItem.getScope();
@@ -131,7 +131,7 @@ public class ControllerEvents
                 }
 
                 ItemStack scopeStack = Gun.getScope(heldItem);
-                if(scopeStack != null && scopeStack.getItem() instanceof ScopeItem && GunHandler.isAiming())
+                if(scopeStack.getItem() instanceof ScopeItem && GunHandler.isAiming())
                 {
                     ScopeItem scopeItem = (ScopeItem) scopeStack.getItem();
                     Scope scope = scopeItem.getScope();

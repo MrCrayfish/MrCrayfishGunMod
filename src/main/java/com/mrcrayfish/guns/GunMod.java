@@ -4,7 +4,7 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityMissile;
-import com.mrcrayfish.guns.common.CommonEvents;
+import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.AmmoRegistry;
@@ -13,7 +13,6 @@ import com.mrcrayfish.guns.proxy.ClientProxy;
 import com.mrcrayfish.guns.proxy.CommonProxy;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
@@ -58,8 +57,8 @@ public class GunMod
         //ModCrafting.register(); //TODO convert to datapack
         //ModEntities.register();
         ModSyncedDataKeys.register();
-        AmmoRegistry.getInstance().registerProjectileFactory(ModItems.GRENADE, EntityGrenade::new);
-        AmmoRegistry.getInstance().registerProjectileFactory(ModItems.MISSILE, EntityMissile::new);
+        AmmoRegistry.getInstance().registerProjectileFactory(ModItems.GRENADE.get(), (worldIn, entity, item, modifiedGun) -> new EntityGrenade(ModEntities.GRENADE.get(), worldIn));
+        AmmoRegistry.getInstance().registerProjectileFactory(ModItems.MISSILE.get(), (worldIn, entity, item, modifiedGun) -> new EntityMissile(ModEntities.MISSILE.get(), worldIn));
         PacketHandler.init();
         //TODO load
     }

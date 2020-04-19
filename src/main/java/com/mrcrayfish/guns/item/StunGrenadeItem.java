@@ -4,7 +4,6 @@ import com.mrcrayfish.guns.entity.EntityThrowableGrenade;
 import com.mrcrayfish.guns.entity.EntityThrowableStunGrenade;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 /**

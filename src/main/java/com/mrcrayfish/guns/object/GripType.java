@@ -1,8 +1,11 @@
 package com.mrcrayfish.guns.object;
 
 import com.google.gson.annotations.SerializedName;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.guns.client.render.HeldAnimation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,7 +50,7 @@ public enum GripType
         }
 
         @Override
-        public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress)
+        public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
             player.prevRenderYawOffset = player.prevRotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
@@ -55,16 +58,16 @@ public enum GripType
         }
 
         @Override
-        public void applyHeldItemTransforms(Hand hand, float aimProgress)
+        public void applyHeldItemTransforms(Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             if(hand == Hand.MAIN_HAND)
             {
                 boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-                GlStateManager.translate(0, 0, 0.05);
+                matrixStack.translate(0, 0, 0.05);
                 float invertRealProgress = 1.0F - aimProgress;
-                GlStateManager.rotate((25F * invertRealProgress) * (right ? 1F : -1F), 0, 0, 1);
-                GlStateManager.rotate((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F), 0, 1, 0);
-                GlStateManager.rotate(25F * invertRealProgress + aimProgress * 5F, 1, 0, 0);
+                matrixStack.rotate(Vector3f.ZP.rotationDegrees((25F * invertRealProgress) * (right ? 1F : -1F)));
+                matrixStack.rotate(Vector3f.YP.rotationDegrees((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
             }
         }
     }, false),
@@ -88,7 +91,7 @@ public enum GripType
         }
 
         @Override
-        public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress)
+        public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
             player.prevRenderYawOffset = player.prevRotationYaw + 45F * (right ? 1F : -1F);
@@ -96,12 +99,12 @@ public enum GripType
         }
 
         @Override
-        public void applyHeldItemTransforms(Hand hand, float aimProgress)
+        public void applyHeldItemTransforms(Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             if(hand == Hand.OFF_HAND)
             {
-                GlStateManager.translate(0, -10 * 0.0625F, 0);
-                GlStateManager.translate(0, 0, -2 * 0.0625F);
+                matrixStack.translate(0, -10 * 0.0625F, 0);
+                matrixStack.translate(0, 0, -2 * 0.0625F);
             }
         }
     }, false);

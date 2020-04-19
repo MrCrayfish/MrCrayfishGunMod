@@ -13,34 +13,25 @@ import java.util.Map;
  */
 public class ModelOverrides
 {
-    private static final Map<Item, Map<Integer, IOverrideModel>> MODEL_MAP = new HashMap<>();
+    private static final Map<Item, IOverrideModel> MODEL_MAP = new HashMap<>();
 
     public static void register(ItemStack stack, IOverrideModel model)
     {
-        if(!MODEL_MAP.containsKey(stack.getItem()))
-        {
-            MODEL_MAP.put(stack.getItem(), new HashMap<>());
-        }
-        MODEL_MAP.get(stack.getItem()).put(stack.getMetadata(), model);
+        MODEL_MAP.putIfAbsent(stack.getItem(), model);
     }
 
     public static boolean hasModel(ItemStack stack)
     {
-        return MODEL_MAP.containsKey(stack.getItem()) && MODEL_MAP.get(stack.getItem()).containsKey(stack.getMetadata());
+        return MODEL_MAP.containsKey(stack.getItem());
     }
 
     @Nullable
     public static IOverrideModel getModel(ItemStack stack)
     {
-        Map<Integer, IOverrideModel> map = MODEL_MAP.get(stack.getItem());
-        if(map != null)
-        {
-            return map.get(stack.getMetadata());
-        }
-        return null;
+        return MODEL_MAP.get(stack.getItem());
     }
 
-    public static Map<Item, Map<Integer, IOverrideModel>> getModelMap()
+    public static Map<Item, IOverrideModel> getModelMap()
     {
         return ImmutableMap.copyOf(MODEL_MAP);
     }

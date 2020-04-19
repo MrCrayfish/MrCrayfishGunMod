@@ -1,13 +1,9 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.controllable.Controllable;
-import com.mrcrayfish.controllable.client.Controller;
-import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.entity.EntityProjectile;
-import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.object.Bullet;

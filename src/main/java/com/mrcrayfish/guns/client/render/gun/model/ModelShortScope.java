@@ -1,20 +1,12 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -27,14 +19,16 @@ public class ModelShortScope implements IOverrideModel
     public void init() {}
 
     @Override
-    public void tick(EntityLivingBase entity) {}
+    public void tick(LivingEntity entity) {}
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity)
     {
         RenderUtil.renderModel(stack, parent);
 
-        GlStateManager.enableBlend();
+        //TODO add back scope view finder
+
+        /*GlStateManager.enableBlend();
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
         GlStateManager.disableLighting();
         GlStateManager.bindTexture(GunRenderer.screenTextureId );
@@ -58,6 +52,6 @@ public class ModelShortScope implements IOverrideModel
         }
         GlStateManager.popMatrix();
 
-        GlStateManager.enableLighting();
+        GlStateManager.enableLighting();*/
     }
 }

@@ -420,7 +420,7 @@ public class GunRenderer
         {
             event.setCanceled(true);
             Gun gun = ((GunItem) heldItem.getItem()).getGun();
-            gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(hand, entity instanceof PlayerEntity ? AimTracker.getAimProgress((PlayerEntity) entity, event.getPartialTicks()) : 0.0F);
+            gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(hand, entity instanceof PlayerEntity ? AimTracker.getAimProgress((PlayerEntity) entity, event.getPartialTicks()) : 0.0F, event.getMatrixStack(), event.getRenderTypeBuffer());
             if(hand == Hand.MAIN_HAND)
             {
                 this.renderWeapon(event.getMatrixStack(), entity, heldItem, event.getTransformType(), event.getPartialTicks());
@@ -472,7 +472,7 @@ public class GunRenderer
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) heldItem.getItem()).getGun();
-            gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, Hand.MAIN_HAND, AimTracker.getAimProgress((PlayerEntity) event.getEntity(), event.getPartialRenderTick()));
+            gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, Hand.MAIN_HAND, AimTracker.getAimProgress((PlayerEntity) event.getEntity(), event.getPartialRenderTick()), event.getMatrixStack(), event.getBuffers());
         }
     }
 
@@ -576,7 +576,7 @@ public class GunRenderer
                 }
             }
 
-            RenderUtil.applyTransformType(model.isEmpty() ? stack : model, transformType);
+            RenderUtil.applyTransformType(model.isEmpty() ? stack : model, matrixStack, transformType);
 
             if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
             {

@@ -1,12 +1,5 @@
 package com.mrcrayfish.guns.init;
 
-import com.mrcrayfish.guns.common.WorkbenchRegistry;
-import com.mrcrayfish.guns.item.ScopeItem;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemStack;
-
 /**
  * Author: MrCrayfish
  */
@@ -15,7 +8,7 @@ public class ModCrafting
     @SuppressWarnings("ConstantConditions")
     public static void register()
     {
-        WorkbenchRegistry.registerRecipe(new ItemStack(ModItems.PISTOL),
+        /*WorkbenchRegistry.registerRecipe(new ItemStack(ModItems.PISTOL),
                 new ItemStack(Items.IRON_INGOT, 14));
         WorkbenchRegistry.registerRecipe(new ItemStack(ModItems.SHOTGUN),
                 new ItemStack(Items.IRON_INGOT, 24));
@@ -64,6 +57,6 @@ public class ModCrafting
                 new ItemStack(Blocks.GLASS_PANE, 3),
                 new ItemStack(Items.DYE, 2, EnumDyeColor.BLACK.getDyeDamage()));
         WorkbenchRegistry.registerRecipe(new ItemStack(ModItems.SILENCER),
-                new ItemStack(Items.IRON_INGOT, 12));
+                new ItemStack(Items.IRON_INGOT, 12));*/
     }
 }

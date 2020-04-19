@@ -1,21 +1,12 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
-import com.mrcrayfish.guns.proxy.ClientProxy;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -29,19 +20,15 @@ public class ModelMediumScope implements IOverrideModel
     public void init() {}
 
     @Override
-    public void tick(EntityLivingBase entity) {}
+    public void tick(LivingEntity entity) {}
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, EntityLivingBase entity)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity)
     {
-        if(GunRenderer.shadersEnabled && isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
-        {
-            GlStateManager.translate(0, 0, 0.15 * ClientProxy.gunRenderer.normalZoomProgress);
-            GlStateManager.scale(1, 1, 0.2 + 0.8 * (1.0 - ClientProxy.gunRenderer.normalZoomProgress));
-        }
         RenderUtil.renderModel(stack, parent);
 
-        if(isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
+        //TODO add back scope view finder
+        /*if(isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
         {
             if(!GunRenderer.shadersEnabled && GunRenderer.screenTextureId != -1)
             {
@@ -108,7 +95,7 @@ public class ModelMediumScope implements IOverrideModel
 
                 GlStateManager.enableLighting();
             }
-        }
+        }*/
     }
 
     private boolean isFirstPerson(ItemCameraTransforms.TransformType transformType)

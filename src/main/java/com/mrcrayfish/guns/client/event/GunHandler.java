@@ -45,7 +45,7 @@ public class GunHandler
         if(player == null)
             return;
 
-        if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && ClientProxy.isLookingAtInteract())
+        if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && ClientHandler.isLookingAtInteractableBlock())
         {
             if(player.getHeldItemMainhand().getItem() instanceof GunItem && !ClientHandler.isLookingAtInteractableBlock())
             {

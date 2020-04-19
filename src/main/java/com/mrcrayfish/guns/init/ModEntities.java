@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.entity.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -20,10 +20,10 @@ public class ModEntities
     public static final DeferredRegister<EntityType<?>> REGISTER = new DeferredRegister<>(ForgeRegistries.ENTITIES, Reference.MOD_ID);
 
     public static final RegistryObject<EntityType<EntityProjectile>> PROJECTILE = register("projectile", EntityProjectile::new);
-    public static final RegistryObject<EntityType<EntityProjectile>> GRENADE = register("projectile", EntityProjectile::new);
-    public static final RegistryObject<EntityType<EntityProjectile>> MISSILE = register("projectile", EntityProjectile::new);
-    public static final RegistryObject<EntityType<EntityProjectile>> THROWABLE_GRENADE = register("projectile", EntityProjectile::new);
-    public static final RegistryObject<EntityType<EntityProjectile>> THROWABLE_STUN_GRENADE = register("projectile", EntityProjectile::new);
+    public static final RegistryObject<EntityType<EntityGrenade>> GRENADE = register("grenade", EntityGrenade::new);
+    public static final RegistryObject<EntityType<EntityMissile>> MISSILE = register("missile", EntityMissile::new);
+    public static final RegistryObject<EntityType<EntityThrowableGrenade>> THROWABLE_GRENADE = register("throwable_grenade", EntityThrowableGrenade::new);
+    public static final RegistryObject<EntityType<EntityThrowableStunGrenade>> THROWABLE_STUN_GRENADE = register("throwable_stun_grenade", EntityThrowableStunGrenade::new);
 
     private static <T extends Entity> RegistryObject<EntityType<T>> register(String id, BiFunction<EntityType<T>, World, T> function)
     {

@@ -1,23 +1,11 @@
 package com.mrcrayfish.guns.recipe;
 
-import com.mrcrayfish.guns.ItemStackUtil;
-import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.item.IAttachment;
-import com.mrcrayfish.guns.object.Gun;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
 /**
  * Author: MrCrayfish
  */
-public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeAttachment
 {
-    public RecipeAttachment()
+    /*public RecipeAttachment()
     {
         this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "attachment"));
     }
@@ -107,5 +95,5 @@ public class RecipeAttachment extends net.minecraftforge.registries.IForgeRegist
     public ItemStack getRecipeOutput()
     {
         return ItemStack.EMPTY;
-    }
+    }*/
 }

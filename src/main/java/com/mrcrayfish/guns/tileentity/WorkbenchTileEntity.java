@@ -7,7 +7,6 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 
 /**

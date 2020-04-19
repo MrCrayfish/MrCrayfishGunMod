@@ -6,19 +6,16 @@ import com.mrcrayfish.guns.client.audio.SoundRinging;
 import com.mrcrayfish.guns.init.ModPotions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.*;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import paulscode.sound.SoundSystem;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -27,109 +24,120 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-@EventBusSubscriber(Side.CLIENT)
+@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class SoundEvents
 {
-    private static final Map<String, Float> SOUND_VOLUMES = new ConcurrentHashMap<>();
+    private static final Map<ISound, Float> SOUND_VOLUMES = new ConcurrentHashMap<>();
     private static boolean isDeafened;
     private static Field soundSystem, playingSounds;
-    private static SoundManager soundManager;
+    private static SoundEngine soundEngine;
     private static SoundRinging ringing;
 
     public static void initReflection()
     {
-        soundSystem = ReflectionHelper.findField(SoundManager.class, ObfuscationReflectionHelper.remapFieldNames(SoundManager.class.getName(), "field_148620_e"));
-        playingSounds = ReflectionHelper.findField(SoundManager.class, ObfuscationReflectionHelper.remapFieldNames(SoundManager.class.getName(), "field_148629_h"));
+        soundSystem = ObfuscationReflectionHelper.findField(SoundEngine.class, "field_148622_c");
+        playingSounds = ObfuscationReflectionHelper.findField(SoundEngine.class, "field_217942_m ");
     }
 
     @SubscribeEvent
-    public static void deafenPlayer(ClientTickEvent event)
+    public static void deafenPlayer(TickEvent.ClientTickEvent event)
     {
-        if (event.phase == Phase.START || Minecraft.getInstance().player == null || soundManager == null)
+        if(event.phase == TickEvent.Phase.START || Minecraft.getInstance().player == null || soundEngine == null)
+        {
             return;
-
-        // If deafened, play ringing sound if not already playing, otherwise return
-        PotionEffect effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED);
-        if (effect == null)
-        {
-            if (!isDeafened)
-                return;
         }
-        else
+
+        /* If deafened, play ringing sound if not already playing, otherwise return */
+        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED.get().getEffects().get(0).getPotion());
+        if(effect == null)
         {
-            isDeafened = true;
-            if (Config.SERVER.stunGrenades.deafen.ringVolumeSynced > 0
-                    && (ringing == null || !Minecraft.getInstance().getSoundHandler().isSoundPlaying(ringing)))
+            if(!isDeafened)
             {
-                ringing = new SoundRinging();
-                Minecraft.getInstance().getSoundHandler().playSound(ringing);
-                return; // Return after playing sound, as doing so in the tame tick that sounds are muted causes crashing in SoundManager#updateAllSounds
+                return;
             }
+        }
+
+        if(Config.SERVER.ringVolume.get() > 0 && (ringing == null || !Minecraft.getInstance().getSoundHandler().isPlaying(ringing)))
+        {
+            ringing = new SoundRinging();
+            Minecraft.getInstance().getSoundHandler().play(ringing);
+            return; // Return after playing sound, as doing so in the tame tick that sounds are muted causes crashing in SoundManager#updateAllSounds
         }
 
         // Access the sound manager's sound system and list of playing sounds
-        SoundSystem soundSystem;
-        Map<String, ISound> playingSounds;
+        Map<ISound, ChannelManager.Entry> playingSounds;
         try
         {
-            soundSystem = (SoundSystem) SoundEvents.soundSystem.get(soundManager);
-            playingSounds = (Map<String, ISound>) SoundEvents.playingSounds.get(soundManager);
+            playingSounds = (Map<ISound, ChannelManager.Entry>) SoundEvents.playingSounds.get(soundEngine);
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch(IllegalArgumentException | IllegalAccessException e)
         {
             return;
         }
 
-        if (effect != null)
+        if(effect != null)
         {
             try
             {
-                for (String id : playingSounds.keySet())
-                {
-                    ISound sound = playingSounds.get(id);
+                playingSounds.forEach((sound, entry) -> {
+                    /* Exempt tickable sounds and stun grenade explosions from per-tick muting */
+                    if(sound == null || sound instanceof ITickableSound || isStunGrenade(sound.getSound().getSoundLocation()))
+                    {
+                        return;
+                    }
 
-                    // Exempt tickable sounds and stun grenade explosions from per-tick muting
-                    if (sound == null || sound instanceof ITickableSound || isStunGrenade(sound.getSound().getSoundLocation()))
-                        continue;
+                    float volume = sound instanceof SoundMuted ? ((SoundMuted) sound).getVolumeInitial() : sound.getVolume();
+                    SOUND_VOLUMES.put(sound, volume);
 
-                    if (!SOUND_VOLUMES.containsKey(id))
-                        SOUND_VOLUMES.put(id, sound instanceof SoundMuted ? ((SoundMuted) sound).getVolumeInitial() : soundSystem.getVolume(id));
-
-                    // Reduce volume to full value when duration is above threshold
-                    // When below threshold, fade to original sound level as duration approaches 0
-                    soundSystem.setVolume(id, getMutedVolume(effect.getDuration(), SOUND_VOLUMES.get(id)));
-                }
+                    entry.runOnSoundExecutor(soundSource -> {
+                        soundSource.func_216430_b(getMutedVolume(effect.getDuration(), volume));
+                    });
+                });
             }
-            catch (ConcurrentModificationException e) {} //SoundManager#playingSounds is accessed from another thread, so it's key set iterator can throw a CME
+            catch(ConcurrentModificationException ignored)
+            {
+            }
+            //SoundManager#playingSounds is accessed from another thread, so it's key set iterator can throw a CME
             isDeafened = true;
         }
-        else if (isDeafened)
+        else if(isDeafened)
         {
             // Restore sound levels to initial values
             isDeafened = false;
-            for (Entry<String, Float> entry : SOUND_VOLUMES.entrySet())
-                soundSystem.setVolume(entry.getKey(), entry.getValue());
-
+            for(Entry<ISound, Float> entry : SOUND_VOLUMES.entrySet())
+            {
+                ChannelManager.Entry entry1 = playingSounds.get(entry.getKey());
+                if(entry1 != null)
+                {
+                    entry1.runOnSoundExecutor(soundSource -> {
+                        soundSource.func_216430_b(entry.getValue());
+                    });
+                }
+            }
             SOUND_VOLUMES.clear();
         }
+
     }
 
     @SubscribeEvent
     public static void lowerInitialVolume(PlaySoundEvent event)
     {
-        if (soundManager == null)
-            soundManager = event.getManager();
+        if(soundEngine == null)
+        {
+            soundEngine = event.getManager();
+        }
 
-        if (!isDeafened || Minecraft.getInstance().player == null || event.getSound() instanceof ITickableSound)
+        if(!isDeafened || Minecraft.getInstance().player == null || event.getSound() instanceof ITickableSound)
+        {
             return;
+        }
 
         // Exempt initial explosion from muting
         ResourceLocation loc = event.getSound().getSoundLocation();
-        PotionEffect effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED);
+        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED.get().getEffects().get(0).getPotion());
         int duration = effect != null ? effect.getDuration() : 0;
         boolean isStunGrenade = isStunGrenade(loc);
-        if (duration == 0 && isStunGrenade)
-            return;
+        if(duration == 0 && isStunGrenade) return;
 
         // Reduce volume to full value when duration is above threshold
         // When below threshold, fade to original sound level as duration approaches 0
@@ -144,8 +152,8 @@ public class SoundEvents
 
     private static float getMutedVolume(float duration, float volumeBase)
     {
-        float volumeMin = volumeBase * Config.SERVER.stunGrenades.deafen.soundPercentageSynced;
-        float percent = Math.min((duration / Config.SERVER.stunGrenades.deafen.soundFadeThresholdSynced), 1);
+        float volumeMin = (float) (volumeBase * Config.SERVER.soundPercentage.get());
+        float percent = Math.min((duration / Config.SERVER.soundFadeThreshold.get()), 1);
         return volumeMin + (1 - percent) * (volumeBase - volumeMin);
     }
 
@@ -157,82 +165,90 @@ public class SoundEvents
         public SoundMuted(ISound parent, int duration, boolean isStunGrenade)
         {
             this.parent = parent;
-            volumeInitial = MathHelper.clamp(parent.getVolume(), 0, 1);
-            volume = SoundEvents.getMutedVolume(duration, volumeInitial);
-            if (isStunGrenade)
-                volumeInitial = volume;
+            this.volumeInitial = MathHelper.clamp(parent.getVolume(), 0, 1);
+            this.volume = SoundEvents.getMutedVolume(duration, this.volumeInitial);
+            if(isStunGrenade)
+            {
+                this.volumeInitial = this.volume;
+            }
         }
 
         @Override
         public float getVolume()
         {
-            return volume;
+            return this.volume;
         }
 
         public float getVolumeInitial()
         {
-            return volumeInitial;
+            return this.volumeInitial;
         }
 
         @Override
         public ResourceLocation getSoundLocation()
         {
-            return parent.getSoundLocation();
+            return this.parent.getSoundLocation();
         }
 
         @Override
         @Nullable
         public SoundEventAccessor createAccessor(SoundHandler handler)
         {
-            return parent.createAccessor(handler);
+            return this.parent.createAccessor(handler);
         }
 
         @Override
         public Sound getSound()
         {
-            return parent.getSound();
+            return this.parent.getSound();
         }
 
         @Override
         public SoundCategory getCategory()
         {
-            return parent.getCategory();
+            return this.parent.getCategory();
         }
 
         @Override
         public boolean canRepeat()
         {
-            return parent.canRepeat();
+            return this.parent.canRepeat();
+        }
+
+        @Override
+        public boolean isGlobal()
+        {
+            return false;
         }
 
         @Override
         public int getRepeatDelay()
         {
-            return parent.getRepeatDelay();
+            return this.parent.getRepeatDelay();
         }
 
         @Override
         public float getPitch()
         {
-            return parent.getPitch();
+            return this.parent.getPitch();
         }
 
         @Override
-        public float getXPosF()
+        public float getX()
         {
-            return parent.getXPosF();
+            return this.parent.getX();
         }
 
         @Override
-        public float getYPosF()
+        public float getY()
         {
-            return parent.getYPosF();
+            return this.parent.getY();
         }
 
         @Override
-        public float getZPosF()
+        public float getZ()
         {
-            return parent.getZPosF();
+            return this.parent.getZ();
         }
 
         @Override

@@ -1,22 +1,18 @@
 package com.mrcrayfish.guns.entity;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityThrowableItem extends EntityThrowable implements IEntityAdditionalSpawnData
+public abstract class EntityThrowableItem extends ThrowableEntity implements IEntityAdditionalSpawnData
 {
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
@@ -25,19 +21,19 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     /* The max life of the entity. If -1, will stay alive forever and will need to be explicitly removed. */
     private int maxLife = 20 * 10;
 
-    public EntityThrowableItem(World worldIn)
+    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World worldIn)
     {
-        super(worldIn);
+        super(entityType, worldIn);
     }
 
-    public EntityThrowableItem(World world, PlayerEntity player)
+    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World world, PlayerEntity player)
     {
-        super(world, player);
+        super(entityType, player, world);
     }
 
-    public EntityThrowableItem(World world, double x, double y, double z)
+    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World world, double x, double y, double z)
     {
-        super(world, x, y, z);
+        super(entityType, x, y, z, world);
     }
 
     public void setItem(ItemStack item)
@@ -47,7 +43,7 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
 
     public ItemStack getItem()
     {
-        return item;
+        return this.item;
     }
 
     protected void setShouldBounce(boolean shouldBounce)
@@ -63,7 +59,7 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     @Override
     protected float getGravityVelocity()
     {
-        return gravityVelocity;
+        return this.gravityVelocity;
     }
 
     public void setMaxLife(int maxLife)
@@ -72,12 +68,12 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     }
 
     @Override
-    public void onUpdate()
+    public void tick()
     {
-        super.onUpdate();
-        if(shouldBounce && ticksExisted >= maxLife)
+        super.tick();
+        if(this.shouldBounce && this.ticksExisted >= this.maxLife)
         {
-            this.setDead();
+            this.remove();
             this.onDeath();
         }
     }
@@ -87,7 +83,8 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     @Override
     protected void onImpact(RayTraceResult result)
     {
-        switch(result.typeOfHit)
+        //TODO add this back LOL i just want to compile already
+        /*switch(result.typeOfHit)
         {
             case BLOCK:
                 if(shouldBounce)
@@ -138,7 +135,7 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
                 break;
             default:
                 break;
-        }
+        }*/
     }
 
     @Override
@@ -148,18 +145,18 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     }
 
     @Override
-    public void writeSpawnData(ByteBuf buffer)
+    public void writeSpawnData(PacketBuffer buffer)
     {
-        buffer.writeBoolean(shouldBounce);
-        buffer.writeFloat(gravityVelocity);
-        ByteBufUtils.writeItemStack(buffer, item);
+        buffer.writeBoolean(this.shouldBounce);
+        buffer.writeFloat(this.gravityVelocity);
+        buffer.writeItemStack(this.item);
     }
 
     @Override
-    public void readSpawnData(ByteBuf additionalData)
+    public void readSpawnData(PacketBuffer buffer)
     {
-        shouldBounce = additionalData.readBoolean();
-        gravityVelocity = additionalData.readFloat();
-        item = ByteBufUtils.readItemStack(additionalData);
+        this.shouldBounce = buffer.readBoolean();
+        this.gravityVelocity = buffer.readFloat();
+        this.item = buffer.readItemStack();
     }
 }

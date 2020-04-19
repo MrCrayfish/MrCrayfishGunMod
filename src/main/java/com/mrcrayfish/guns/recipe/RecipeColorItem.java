@@ -1,23 +1,11 @@
 package com.mrcrayfish.guns.recipe;
 
-import com.google.common.collect.Lists;
-import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.item.ColoredItem;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
-import java.util.List;
-
 /**
  * Author: MrCrayfish
  */
-public class RecipeColorItem extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeColorItem
 {
-    public RecipeColorItem()
+    /*public RecipeColorItem()
     {
         this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "color_weapon"));
     }
@@ -162,5 +150,5 @@ public class RecipeColorItem extends net.minecraftforge.registries.IForgeRegistr
     public boolean isDynamic()
     {
         return true;
-    }
+    }*/
 }
