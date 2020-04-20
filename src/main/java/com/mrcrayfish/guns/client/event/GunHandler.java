@@ -26,6 +26,12 @@ public class GunHandler
     @SubscribeEvent
     public static void onKeyPressed(InputEvent.RawMouseEvent event)
     {
+        if(Minecraft.getInstance().loadingGui != null)
+            return;
+
+        if(Minecraft.getInstance().currentScreen != null)
+            return;
+
         if(!Minecraft.getInstance().isGameFocused())
             return;
 
