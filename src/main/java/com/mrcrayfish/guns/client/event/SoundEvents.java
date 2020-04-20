@@ -36,7 +36,7 @@ public class SoundEvents
     public static void initReflection()
     {
         soundSystem = ObfuscationReflectionHelper.findField(SoundEngine.class, "field_148622_c");
-        playingSounds = ObfuscationReflectionHelper.findField(SoundEngine.class, "field_217942_m ");
+        playingSounds = ObfuscationReflectionHelper.findField(SoundEngine.class, "field_217942_m");
     }
 
     @SubscribeEvent
