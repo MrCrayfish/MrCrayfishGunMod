@@ -66,9 +66,8 @@ public class EntityMissile extends EntityProjectile
 
     private void createExplosion(double x, double y, double z, boolean particle)
     {
-        //boolean canGunGrief = this.world.getGameRules().getBoolean("gunGriefing"); //TODO convert to config
-
-        Explosion explosion = new ProjectileExplosion(this, x, y, z, Config.COMMON.missiles.explosionRadius.get(), Explosion.Mode.NONE); //TODO Make radius configurable
+        Explosion.Mode mode = Config.COMMON.enableGunGriefing.get() ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
+        Explosion explosion = new ProjectileExplosion(this, x, y, z, Config.COMMON.missiles.explosionRadius.get(), mode);
         explosion.doExplosionA();
         explosion.doExplosionB(true);
         explosion.clearAffectedBlockPositions();

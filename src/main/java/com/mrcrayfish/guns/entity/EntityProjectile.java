@@ -13,6 +13,9 @@ import com.mrcrayfish.guns.object.Gun.Projectile;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BreakableBlock;
+import net.minecraft.block.PaneBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -28,6 +31,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.*;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -252,12 +256,10 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             BlockState state = this.world.getBlockState(pos);
             Block block = state.getBlock();
 
-            //TODO convert to config value
-            /*boolean canGunGrief = this.world.getGameRules().getBoolean("gunGriefing");
-            if(canGunGrief && (block instanceof BreakableBlock || block instanceof PaneBlock) && state.getMaterial() == Material.GLASS)
+            if(Config.COMMON.enableGunGriefing.get() && (block instanceof BreakableBlock || block instanceof PaneBlock) && state.getMaterial() == Material.GLASS)
             {
                 this.world.destroyBlock(blockRayTraceResult.getPos(), false);
-            }*/
+            }
 
             if(!state.getMaterial().isReplaceable())
             {

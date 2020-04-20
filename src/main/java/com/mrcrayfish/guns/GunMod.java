@@ -69,7 +69,6 @@ public class GunMod
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.GRENADE.get(), (worldIn, entity, item, modifiedGun) -> new EntityGrenade(ModEntities.GRENADE.get(), worldIn));
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.MISSILE.get(), (worldIn, entity, item, modifiedGun) -> new EntityMissile(ModEntities.MISSILE.get(), worldIn));
         PacketHandler.init();
-        //TODO load
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
@@ -83,13 +82,6 @@ public class GunMod
         NetworkGunManager manager = new NetworkGunManager();
         event.getServer().getResourceManager().addReloadListener(manager);
         GunMod.manager = manager;
-
-        //TODO convert to config value
-        /*GameRules rules = event.getServer().getWorld(DimensionType.OVERWORLD).getGameRules();
-        if(!rules.getBoolean("gunGriefing"))
-        {
-            rules.addGameRule("gunGriefing", "true", GameRules.ValueType.BOOLEAN_VALUE);
-        }*/
     }
 
     @SubscribeEvent
