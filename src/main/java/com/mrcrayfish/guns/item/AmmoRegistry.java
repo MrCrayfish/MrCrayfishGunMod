@@ -28,7 +28,7 @@ public class AmmoRegistry
         return instance;
     }
 
-    private final ProjectileFactory DEFAULT_FACTORY = (worldIn, entity, item, modifiedGun) -> new EntityProjectile(ModEntities.PROJECTILE.get(), worldIn);
+    private final ProjectileFactory DEFAULT_FACTORY = (worldIn, entity, item, modifiedGun) -> new EntityProjectile(ModEntities.PROJECTILE.get(), worldIn, entity, item, modifiedGun);
 
     private final Map<ResourceLocation, AmmoItem> AMMO = new HashMap<>();
     private final Map<ResourceLocation, ProjectileFactory> FACTORIES = new HashMap<>();
