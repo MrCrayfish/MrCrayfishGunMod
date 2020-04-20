@@ -26,7 +26,7 @@ public class HandshakeHandler
     {
         Obfuscate.LOGGER.debug(CGM_HANDSHAKE, "Received gun objects from server");
         c.get().setPacketHandled(true);
-        if(!CommonHandler.getGunManager().updateRegisteredGuns(message.getRegisteredGuns()))
+        if(!CommonHandler.getGunManager().updateRegisteredGuns(message))
         {
             c.get().getNetworkManager().closeChannel(new StringTextComponent("Connection closed - [MrCrayfish's Gun Mod] failed to update gun data from server"));
             return;

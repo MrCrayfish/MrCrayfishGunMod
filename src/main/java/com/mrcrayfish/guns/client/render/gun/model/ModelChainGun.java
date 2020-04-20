@@ -4,6 +4,7 @@ import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -44,7 +45,7 @@ public class ModelChainGun implements IOverrideModel
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
-            if(!GunItem.hasAmmo(heldItem) && !player.isCreative())
+            if(!Gun.hasAmmo(heldItem) && !player.isCreative())
             {
                 shooting = false;
             }

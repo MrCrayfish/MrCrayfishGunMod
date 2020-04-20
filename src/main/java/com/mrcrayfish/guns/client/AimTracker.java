@@ -1,14 +1,19 @@
 package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAim;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -18,6 +23,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class AimTracker
 {
     private static final Map<UUID, AimTracker> AIMING_MAP = new HashMap<>();
@@ -105,7 +111,7 @@ public class AimTracker
         if(player == null)
             return;
 
-        if(GunMod.PROXY.isZooming())
+        if(ClientHandler.isAiming())
         {
             if(!aiming)
             {
@@ -120,5 +126,11 @@ public class AimTracker
             PacketHandler.getPlayChannel().sendToServer(new MessageAim(false));
             aiming = false;
         }
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    {
+        AIMING_MAP.clear();
     }
 }

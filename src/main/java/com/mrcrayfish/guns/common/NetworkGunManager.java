@@ -2,13 +2,13 @@ package com.mrcrayfish.guns.common;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.network.HandshakeMessages;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.item.Item;
@@ -27,25 +27,27 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
 public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
 {
-    private static final Type RESOURCE_LOCATION_TYPE = new TypeToken<ResourceLocation>() {}.getType();
+    private static final Type RESOURCE_LOCATION_TYPE = new TypeToken<ResourceLocation>(){}.getType();
     private static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationDeserializer());
+        builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new ResourceLocationDeserializer());
         return builder.create();
     });
-    private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
+    private static final Gun FALLBACK_GUN = Util.make(() -> {
+        Gun gun = new Gun();
+        gun.projectile.item = new ResourceLocation("cgm:basic_ammo");
+        return gun;
+    });
 
-    public NetworkGunManager()
-    {
-        //super(GSON_INSTANCE, "guns");
-    }
+    private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
     @Override
     protected Map<GunItem, Gun> prepare(IResourceManager resourceManager, IProfiler profiler)
@@ -66,7 +68,8 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
                     }
                     else
                     {
-                        GunMod.LOGGER.error("Couldn't load data file {} as it is missing or malformed", resourceLocation);
+                        GunMod.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using fallback gun data", resourceLocation);
+                        map.put((GunItem) item, FALLBACK_GUN);
                     }
                 }
                 catch(InvalidObjectException e)
@@ -84,35 +87,6 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
                 }
             }
         });
-
-
-        /*for(ResourceLocation location : resourceManager.getAllResourceLocations("guns", (p_223379_0_) -> p_223379_0_.endsWith(".json")))
-        {
-            String s = location.getPath();
-            ResourceLocation resourcelocation1 = new ResourceLocation(location.getNamespace(), s.substring(i, s.length() - JSON_EXTENSION_LENGTH));
-
-            try(IResource iresource = resourceManagerIn.getResource(location); InputStream inputstream = iresource.getInputStream(); Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8));)
-            {
-                JsonObject jsonobject = JSONUtils.fromJson(this.gson, reader, JsonObject.class);
-                if(jsonobject != null)
-                {
-                    JsonObject jsonobject1 = map.put(resourcelocation1, jsonobject);
-                    if(jsonobject1 != null)
-                    {
-                        throw new IllegalStateException("Duplicate data file ignored with ID " + resourcelocation1);
-                    }
-                }
-                else
-                {
-                    LOGGER.error("Couldn't load data file {} from {} as it's null or empty", resourcelocation1, location);
-                }
-            }
-            catch(IllegalArgumentException | IOException | JsonParseException jsonparseexception)
-            {
-                LOGGER.error("Couldn't parse data file {} from {}", resourcelocation1, location, jsonparseexception);
-            }
-        }*/
-
         return map;
     }
 
@@ -128,16 +102,26 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         this.registeredGuns = builder.build();
     }
 
+    /**
+     * Writes all registered guns into the provided packet buffer
+     *
+     * @param buffer a packet buffer instance
+     */
     public void writeRegisteredGuns(PacketBuffer buffer)
     {
         buffer.writeVarInt(this.registeredGuns.size());
-        this.registeredGuns.forEach((id, gun) ->
-        {
+        this.registeredGuns.forEach((id, gun) -> {
             buffer.writeResourceLocation(id);
             buffer.writeCompoundTag(gun.serializeNBT());
         });
     }
 
+    /**
+     * Reads all registered guns from the provided packet buffer
+     *
+     * @param buffer a packet buffer instance
+     * @return a map of registered guns from the server
+     */
     public static ImmutableMap<ResourceLocation, Gun> readRegisteredGuns(PacketBuffer buffer)
     {
         int size = buffer.readVarInt();
@@ -155,21 +139,37 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         return ImmutableMap.of();
     }
 
-    public boolean updateRegisteredGuns(ImmutableMap<ResourceLocation, Gun> map)
+    /**
+     * Updates registered guns from data provided by the server
+     *
+     * @param message an update guns message
+     * @return true if all registered guns were able to update their corresponding gun item
+     */
+    public boolean updateRegisteredGuns(HandshakeMessages.S2CUpdateGuns message)
     {
-        this.registeredGuns = map;
-        for(Map.Entry<ResourceLocation, Gun> entry : map.entrySet())
+        Map<ResourceLocation, Gun> registeredGuns = message.getRegisteredGuns();
+        if(registeredGuns != null)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(entry.getKey());
-            if(!(item instanceof GunItem))
+            this.registeredGuns = registeredGuns;
+            for(Map.Entry<ResourceLocation, Gun> entry : registeredGuns.entrySet())
             {
-                return false;
+                Item item = ForgeRegistries.ITEMS.getValue(entry.getKey());
+                if(!(item instanceof GunItem))
+                {
+                    return false;
+                }
+                ((GunItem) item).setGun(entry.getValue());
             }
-            ((GunItem) item).setGun(entry.getValue());
+            return true;
         }
-        return true;
+        return false;
     }
 
+    /**
+     * Gets a map of all the registered guns objects. Note, this is an immutable map.
+     *
+     * @return a map of registered gun objects
+     */
     public Map<ResourceLocation, Gun> getRegisteredGuns()
     {
         return this.registeredGuns;
@@ -178,11 +178,12 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     /**
      * Validates that the deserialized object's required fields are not null. This is an abstracted
      * method and can be used for validating any deserialized object.
-     * @param t the object to validate
+     *
+     * @param t   the object to validate
      * @param <T> any type
-     * @return
-     * @throws IllegalAccessException
-     * @throws InvalidObjectException
+     * @return true if the object is valid
+     * @throws IllegalAccessException if it's unable to access a field. This should never happen
+     * @throws InvalidObjectException if the object's required fields are null
      */
     private <T> boolean isValidObject(@Nonnull T t) throws IllegalAccessException, InvalidObjectException
     {
@@ -205,5 +206,18 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
             }
         }
         return true;
+    }
+
+    /**
+     * A simple deserializer for resource locations. A more simplified version than the serializer
+     * provided in {@code net.minecraft.util.ResourceLocation}
+     */
+    public static class ResourceLocationDeserializer implements JsonDeserializer<ResourceLocation>
+    {
+        @Override
+        public ResourceLocation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        {
+            return new ResourceLocation(json.getAsString());
+        }
     }
 }

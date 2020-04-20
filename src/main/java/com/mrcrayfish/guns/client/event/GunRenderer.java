@@ -3,12 +3,11 @@ package com.mrcrayfish.guns.client.event;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.AimTracker;
+import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
-import com.mrcrayfish.guns.init.ModPotions;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.*;
 import com.mrcrayfish.guns.object.GripType;
@@ -35,7 +34,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
@@ -355,7 +353,7 @@ public class GunRenderer
             if(stack.getItem() instanceof GunItem)
             {
                 Gun gun = ((GunItem) stack.getItem()).getGun();
-                return gun.modules != null && gun.modules.zoom != null && GunHandler.isAiming();
+                return gun.modules != null && gun.modules.zoom != null && ClientHandler.isAiming();
             }
         }
         return false;

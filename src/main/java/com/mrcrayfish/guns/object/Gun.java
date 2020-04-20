@@ -2,8 +2,11 @@ package com.mrcrayfish.guns.object;
 
 import com.google.gson.*;
 import com.mrcrayfish.guns.annotation.Optional;
+import com.mrcrayfish.guns.item.AmmoItem;
+import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.util.ItemStackUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.JSONUtils;
@@ -568,83 +571,32 @@ public class Gun implements INBTSerializable<CompoundNBT>
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static class ResourceLocationSerializer implements JsonSerializer<ResourceLocation>
+    public static ItemStack findAmmo(PlayerEntity player, ResourceLocation id)
     {
-        @Override
-        public JsonElement serialize(ResourceLocation src, Type typeOfSrc, JsonSerializationContext context)
+        if(player.isCreative())
         {
-            return new JsonPrimitive(src.toString());
+            AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(id);
+            return ammo != null ? new ItemStack(ammo, 64) : ItemStack.EMPTY;
         }
+        for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
+        {
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if(isAmmo(stack, id))
+            {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
-    public static class ResourceLocationDeserializer implements JsonDeserializer<ResourceLocation>
+    private static boolean isAmmo(ItemStack stack, ResourceLocation id)
     {
-        @Override
-        public ResourceLocation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            return new ResourceLocation(json.getAsString());
-        }
+        return stack != null && stack.getItem().getRegistryName().equals(id);
     }
 
-    public static class Serializer implements JsonSerializer<Gun>
+    public static boolean hasAmmo(ItemStack gunStack)
     {
-        @Override
-        public JsonElement serialize(Gun gun, Type typeOfSrc, JsonSerializationContext context)
-        {
-            JsonObject parent = new JsonObject();
-
-            JsonObject general = new JsonObject();
-            general.addProperty("Max Ammo", gun.general.maxAmmo);
-            general.addProperty("Reload Speed", gun.general.reloadSpeed);
-            general.addProperty("Projectile Count", gun.general.projectileAmount);
-            general.addProperty("Always Spread", gun.general.alwaysSpread);
-            general.addProperty("Spread", gun.general.spread);
-            parent.add("General", general);
-
-            JsonObject projectile = new JsonObject();
-            projectile.addProperty("Damage", gun.projectile.damage);
-            projectile.addProperty("Damage Falloff", gun.projectile.damageReduceOverLife);
-            projectile.addProperty("Gravity", gun.projectile.gravity);
-            projectile.addProperty("Ticks Before Removed", gun.projectile.life);
-            projectile.addProperty("Reduce Damage If Not Zoomed", gun.projectile.damageReduceIfNotZoomed);
-            projectile.addProperty("Size", gun.projectile.size);
-            projectile.addProperty("Speed", gun.projectile.speed);
-            parent.add("Projectile", projectile);
-
-            return parent;
-        }
-    }
-
-    public static class Deserializer implements JsonDeserializer<Gun>
-    {
-        private Gun base;
-
-        public Deserializer(Gun base)
-        {
-            this.base = base;
-        }
-
-        @Override
-        public Gun deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-
-            JsonObject general = JSONUtils.getJsonObject(json.getAsJsonObject(), "General");
-            this.base.general.maxAmmo = JSONUtils.getInt(general, "Max Ammo", this.base.general.maxAmmo);
-            this.base.general.reloadSpeed = JSONUtils.getInt(general, "Reload Speed", this.base.general.reloadSpeed);
-            this.base.general.projectileAmount = JSONUtils.getInt(general, "Projectile Count", this.base.general.projectileAmount);
-            this.base.general.alwaysSpread = JSONUtils.getBoolean(general, "Always Spread", this.base.general.alwaysSpread);
-            this.base.general.spread = JSONUtils.getFloat(general, "Spread", this.base.general.spread);
-
-            JsonObject projectile = JSONUtils.getJsonObject(json.getAsJsonObject(), "Projectile");
-            this.base.projectile.damage = JSONUtils.getFloat(projectile, "Damage", this.base.projectile.damage);
-            this.base.projectile.damageReduceOverLife = JSONUtils.getBoolean(projectile, "Damage Falloff", this.base.projectile.damageReduceOverLife);
-            this.base.projectile.gravity = JSONUtils.getBoolean(projectile, "Gravity", this.base.projectile.gravity);
-            this.base.projectile.life = JSONUtils.getInt(projectile, "Ticks Before Removed", this.base.projectile.life);
-            this.base.projectile.damageReduceIfNotZoomed = JSONUtils.getBoolean(projectile, "Reduce Damage If Not Zoomed", this.base.projectile.damageReduceIfNotZoomed);
-            this.base.projectile.size = JSONUtils.getFloat(projectile, "Size", this.base.projectile.size);
-            this.base.projectile.speed = JSONUtils.getFloat(projectile, "Speed", (float) this.base.projectile.speed);
-
-            return this.base;
-        }
+        CompoundNBT tag = ItemStackUtil.createTagCompound(gunStack);
+        return tag.getBoolean("IgnoreAmmo") || tag.getInt("AmmoCount") > 0;
     }
 }

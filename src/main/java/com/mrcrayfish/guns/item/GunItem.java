@@ -159,35 +159,6 @@ public class GunItem extends ColoredItem
         return new ActionResult<>(EnumActionResult.FAIL, heldItem);
     }*/
 
-    public static ItemStack findAmmo(PlayerEntity player, ResourceLocation id)
-    {
-        if(player.isCreative())
-        {
-            AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(id);
-            return ammo != null ? new ItemStack(ammo, 64) : ItemStack.EMPTY;
-        }
-        for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
-        {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-            if(isAmmo(stack, id))
-            {
-                return stack;
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
-    private static boolean isAmmo(ItemStack stack, ResourceLocation id)
-    {
-        return stack != null && stack.getItem().getRegistryName().equals(id);
-    }
-
-    public static boolean hasAmmo(ItemStack gunStack)
-    {
-        CompoundNBT tag = ItemStackUtil.createTagCompound(gunStack);
-        return tag.getBoolean("IgnoreAmmo") || tag.getInt("AmmoCount") > 0;
-    }
-
     @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> stacks)
     {

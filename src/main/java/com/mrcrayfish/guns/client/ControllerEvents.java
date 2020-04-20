@@ -84,7 +84,7 @@ public class ControllerEvents
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
-            if(heldItem.getItem() instanceof GunItem && GunHandler.isAiming())
+            if(heldItem.getItem() instanceof GunItem && ClientHandler.isAiming())
             {
                 event.setYawSpeed(10.0F);
                 event.setPitchSpeed(7.5F);
@@ -131,7 +131,7 @@ public class ControllerEvents
                 }
 
                 ItemStack scopeStack = Gun.getScope(heldItem);
-                if(scopeStack.getItem() instanceof ScopeItem && GunHandler.isAiming())
+                if(scopeStack.getItem() instanceof ScopeItem && ClientHandler.isAiming())
                 {
                     ScopeItem scopeItem = (ScopeItem) scopeStack.getItem();
                     Scope scope = scopeItem.getScope();

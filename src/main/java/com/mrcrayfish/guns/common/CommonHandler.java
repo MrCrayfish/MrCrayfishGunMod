@@ -75,7 +75,7 @@ public class CommonHandler
         {
             World world = player.world;
             ItemStack heldItem = player.getHeldItem(Hand.MAIN_HAND);
-            if(heldItem.getItem() instanceof GunItem && (GunItem.hasAmmo(heldItem) || player.isCreative()))
+            if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
                 GunItem item = (GunItem) heldItem.getItem();
                 Gun gun = item.getModifiedGun(heldItem);

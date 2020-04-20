@@ -55,7 +55,7 @@ public class ReloadTracker
 
     private boolean hasAmmo(PlayerEntity player)
     {
-        return GunItem.findAmmo(player, this.gun.projectile.item) != null;
+        return Gun.findAmmo(player, this.gun.projectile.item) != null;
     }
 
     private boolean canReload(PlayerEntity player)
@@ -66,7 +66,7 @@ public class ReloadTracker
 
     private void increaseAmmo(PlayerEntity player)
     {
-        ItemStack ammo = GunItem.findAmmo(player, this.gun.projectile.item);
+        ItemStack ammo = Gun.findAmmo(player, this.gun.projectile.item);
         if(!ammo.isEmpty())
         {
             int amount = Math.min(ammo.getCount(), this.gun.general.reloadSpeed);

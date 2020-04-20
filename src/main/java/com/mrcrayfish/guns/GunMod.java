@@ -7,14 +7,11 @@ import com.mrcrayfish.guns.entity.EntityMissile;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.proxy.ClientProxy;
-import com.mrcrayfish.guns.proxy.CommonProxy;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -31,7 +28,6 @@ public class GunMod
 {
     public static boolean controllableLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    public static final CommonProxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
     {
         @Override
@@ -79,9 +75,7 @@ public class GunMod
     @SubscribeEvent
     public void onServerStart(FMLServerAboutToStartEvent event)
     {
-        NetworkGunManager manager = new NetworkGunManager();
-        PROXY.setGunPropertiesManager(manager);
-        event.getServer().getResourceManager().addReloadListener(manager);
+        event.getServer().getResourceManager().addReloadListener(new NetworkGunManager());
 
         //TODO convert to config value
         /*GameRules rules = event.getServer().getWorld(DimensionType.OVERWORLD).getGameRules();
