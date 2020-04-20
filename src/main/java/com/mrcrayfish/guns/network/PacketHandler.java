@@ -37,7 +37,7 @@ public class PacketHandler
                 .loginIndex(HandshakeMessages.LoginIndexedMessage::getLoginIndex, HandshakeMessages.LoginIndexedMessage::setLoginIndex)
                 .decoder(HandshakeMessages.S2CUpdateGuns::decode)
                 .encoder(HandshakeMessages.S2CUpdateGuns::encode)
-                .consumer(FMLHandshakeHandler.indexFirst((handler, msg, supplier) -> HandshakeHandler.handleUpdateGuns(msg, supplier)))
+                .consumer(FMLHandshakeHandler.biConsumerFor((handler, msg, supplier) -> HandshakeHandler.handleUpdateGuns(msg, supplier)))
                 .markAsLoginPacket()
                 .add();
 
