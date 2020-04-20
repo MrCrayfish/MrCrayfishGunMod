@@ -6,7 +6,10 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.SoundEvents;
+import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
+import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.message.MessageBullet;
@@ -27,6 +30,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
@@ -60,9 +64,13 @@ public class ClientHandler
         }
         KeyBinds.register();
         SoundEvents.initReflection();
-        //RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
-        //RenderingRegistry.registerEntityRenderingHandler(EntityThrowableGrenade.class, RenderGrenade::new);
-        //RenderingRegistry.registerEntityRenderingHandler(EntityThrowableStunGrenade.class, RenderGrenade::new);
+        
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE.get(), RenderProjectile::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.GRENADE.get(), RenderProjectile::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.MISSILE.get(), RenderProjectile::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_GRENADE.get(), RenderGrenade::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_STUN_GRENADE.get(), RenderGrenade::new);
+
         IItemColor color = (stack, index) ->
         {
             if(index == 0 && stack.hasTag() && stack.getTag().contains("Color", Constants.NBT.TAG_INT))
