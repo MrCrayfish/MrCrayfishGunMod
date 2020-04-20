@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.object;
 
-import com.google.gson.*;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.AmmoItem;
 import com.mrcrayfish.guns.item.AmmoRegistry;
@@ -9,13 +8,11 @@ import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Type;
 
 public class Gun implements INBTSerializable<CompoundNBT>
 {
@@ -239,59 +236,35 @@ public class Gun implements INBTSerializable<CompoundNBT>
 
     public static class Sounds implements INBTSerializable<CompoundNBT>
     {
-        public String fire = "";
-        public String reload = "";
-        public String cock = "";
-        public String silencedFire = "silenced_fire";
-
-        public String getFire(Gun modifiedGun)
-        {
-            String fire = this.fire;
-            if(!modifiedGun.sounds.fire.equals(fire))
-            {
-                fire = modifiedGun.sounds.fire;
-            }
-            return fire;
-        }
-
-        public String getReload(Gun modifiedGun)
-        {
-            String reload = this.reload;
-            if(!modifiedGun.sounds.reload.equals(reload))
-            {
-                reload = modifiedGun.sounds.reload;
-            }
-            return reload;
-        }
-
-        public String getCock(Gun modifiedGun)
-        {
-            String cock = this.cock;
-            if(!modifiedGun.sounds.cock.equals(cock))
-            {
-                cock = modifiedGun.sounds.cock;
-            }
-            return cock;
-        }
-
-        public String getSilencedFire(Gun modifiedGun)
-        {
-            String silencedFire = this.silencedFire;
-            if(!modifiedGun.sounds.silencedFire.equals(silencedFire))
-            {
-                silencedFire = modifiedGun.sounds.silencedFire;
-            }
-            return silencedFire;
-        }
+        @Optional
+        public ResourceLocation fire;
+        @Optional
+        public ResourceLocation reload;
+        @Optional
+        public ResourceLocation cock;
+        @Optional
+        public ResourceLocation silencedFire;
 
         @Override
         public CompoundNBT serializeNBT()
         {
             CompoundNBT tag = new CompoundNBT();
-            tag.putString("Fire", fire);
-            tag.putString("Reload", reload);
-            tag.putString("Cock", cock);
-            tag.putString("SilencedFire", silencedFire);
+            if(this.fire != null)
+            {
+                tag.putString("Fire", this.fire.toString());
+            }
+            if(this.reload != null)
+            {
+                tag.putString("Reload", this.reload.toString());
+            }
+            if(this.cock != null)
+            {
+                tag.putString("Cock", this.cock.toString());
+            }
+            if(this.silencedFire != null)
+            {
+                tag.putString("SilencedFire", this.silencedFire.toString());
+            }
             return tag;
         }
 
@@ -300,29 +273,29 @@ public class Gun implements INBTSerializable<CompoundNBT>
         {
             if(tag.contains("Fire", Constants.NBT.TAG_STRING))
             {
-                this.fire = tag.getString("Fire");
+                this.fire = new ResourceLocation(tag.getString("Fire"));
             }
             if(tag.contains("Reload", Constants.NBT.TAG_STRING))
             {
-                this.reload = tag.getString("Reload");
+                this.reload = new ResourceLocation(tag.getString("Reload"));
             }
             if(tag.contains("Cock", Constants.NBT.TAG_STRING))
             {
-                this.cock = tag.getString("Cock");
+                this.cock = new ResourceLocation(tag.getString("Cock"));
             }
             if(tag.contains("SilencedFire", Constants.NBT.TAG_STRING))
             {
-                this.silencedFire = tag.getString("SilencedFire");
+                this.silencedFire = new ResourceLocation(tag.getString("SilencedFire"));
             }
         }
 
         public Sounds copy()
         {
             Sounds sounds = new Sounds();
-            sounds.fire = fire;
-            sounds.reload = reload;
-            sounds.cock = cock;
-            sounds.silencedFire = silencedFire;
+            sounds.fire = this.fire;
+            sounds.reload = this.reload;
+            sounds.cock = this.cock;
+            sounds.silencedFire = this.silencedFire;
             return sounds;
         }
     }

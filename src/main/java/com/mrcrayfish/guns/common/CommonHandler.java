@@ -134,8 +134,8 @@ public class CommonHandler
                         }
                     }
 
-                    String fireSound = silenced ? gun.sounds.silencedFire : gun.sounds.fire;
-                    SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(fireSound));
+                    ResourceLocation fireSound = silenced ? gun.sounds.silencedFire : gun.sounds.fire;
+                    SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(fireSound);
                     if(event != null)
                     {
                         world.playSound(null, player.getPosition(), event, SoundCategory.HOSTILE, silenced ? 1.0F : 5.0F, 0.8F + world.rand.nextFloat() * 0.2F);

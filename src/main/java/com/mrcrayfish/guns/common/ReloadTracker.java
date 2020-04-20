@@ -79,8 +79,7 @@ public class ReloadTracker
             ammo.shrink(amount);
         }
 
-        String reloadSound = this.gun.sounds.getReload(this.gun);
-        SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(reloadSound));
+        SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(this.gun.sounds.reload);
         if(event != null)
         {
             player.world.playSound(null, player.getPosX(), player.getPosY() + 1.0D, player.getPosZ(), event, SoundCategory.PLAYERS, 1.0F, 1.0F);
