@@ -30,7 +30,7 @@ public class CommonProxy
 	}
 
 	@Nullable
-	public NetworkGunManager getGunPropertiesManager()
+	public NetworkGunManager getNetworkGunManager()
 	{
 		return this.manager;
 	}

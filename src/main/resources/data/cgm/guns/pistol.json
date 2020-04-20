@@ -1,5 +1,4 @@
 {
-    "id": "handgun",
     "general": {
         "rate": 12,
         "gripType": "one_handed",

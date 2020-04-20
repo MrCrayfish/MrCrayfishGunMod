@@ -817,14 +817,14 @@ public class GunRenderer
     {
         if(event.getType() != ElementType.ALL) return;
 
-        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.BLINDED.get().getEffects().get(0).getPotion());
+        /*EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.BLINDED.get().getEffects().get(0).getPotion());
         if(effect != null)
         {
             // Render white screen-filling overlay at full alpha effect when duration is above threshold
             // When below threshold, fade to full transparency as duration approaches 0
             float percent = Math.min((effect.getDuration() / (float) Config.SERVER.alphaFadeThreshold.get()), 1);
             //Screen.blit(0, 0, 100, 100, ((int) (percent * Config.SERVER.alphaOverlay.get() + 0.5) << 24) | 16777215);
-        }
+        }*/
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

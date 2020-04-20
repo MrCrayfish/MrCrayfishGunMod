@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.item;
+package com.mrcrayfish.guns.common;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
@@ -8,6 +8,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.annotation.Ignored;
+import com.mrcrayfish.guns.annotation.Optional;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -97,7 +100,6 @@ public class GunRegistry
         catch(InvalidObjectException e)
         {
             e.printStackTrace();
-            throw new RuntimeException("Missing property in gun '" + gun.id + "'. Refer to exception above");
         }
 
         File gunFile = new File(configFolder, id.getPath() + ".json");
@@ -114,7 +116,7 @@ public class GunRegistry
             builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new Gun.ResourceLocationDeserializer());
             Gson gson = builder.create();
             gun = gson.fromJson(parent, GUN_TYPE);
-            gunItem.setGun(gun);
+            //gunItem.setGun(gun);
         }
         catch(IOException e)
         {
@@ -148,7 +150,7 @@ public class GunRegistry
         Field[] fields = t.getClass().getDeclaredFields();
         for(Field field : fields)
         {
-            if(field.getDeclaredAnnotation(Gun.Ignored.class) != null || field.getDeclaredAnnotation(Gun.Optional.class) != null)
+            if(field.getDeclaredAnnotation(Ignored.class) != null || field.getDeclaredAnnotation(Optional.class) != null)
                 continue;
 
             if(field.get(t) == null)

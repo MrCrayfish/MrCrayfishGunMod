@@ -1,5 +1,4 @@
 {
-    "id": "grenade_launcher",
     "general": {
         "rate": 20,
         "gripType": "two_handed",

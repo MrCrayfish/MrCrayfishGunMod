@@ -12,6 +12,6 @@ public class AmmoItem extends Item
     public AmmoItem(Item.Properties properties)
     {
         super(properties);
-        AmmoRegistry.getInstance().register(this);
+        //AmmoRegistry.getInstance().register(this);
     }
 }

@@ -26,15 +26,14 @@ import java.util.List;
 @Beta
 public class GunItem extends ColoredItem
 {
-    private Gun gun;
+    private Gun gun = new Gun();
 
     public GunItem(Item.Properties properties)
     {
         super(properties);
-        GunRegistry.getInstance().register(this);
     }
 
-    void setGun(Gun gun)
+    public void setGun(Gun gun)
     {
         this.gun = gun;
     }
@@ -67,7 +66,7 @@ public class GunItem extends ColoredItem
             }
         }
 
-        tooltip.add(new StringTextComponent(TextFormatting.GRAY + I18n.format("info.cgm.damage", TextFormatting.RESET + Float.toString(gun.projectile.getDamage(modifiedGun)) + additionalDamageText)));
+        tooltip.add(new StringTextComponent(TextFormatting.GRAY + I18n.format("info.cgm.damage", TextFormatting.RESET + Float.toString(modifiedGun.projectile.damage) + additionalDamageText)));
 
         if(tagCompound != null)
         {
@@ -78,7 +77,7 @@ public class GunItem extends ColoredItem
             else
             {
                 int ammoCount = tagCompound.getInt("AmmoCount");
-                tooltip.add(new StringTextComponent(TextFormatting.GRAY + I18n.format("info.cgm.ammo", TextFormatting.RESET + Integer.toString(ammoCount), gun.general.getMaxAmmo(modifiedGun))));
+                tooltip.add(new StringTextComponent(TextFormatting.GRAY + I18n.format("info.cgm.ammo", TextFormatting.RESET + Integer.toString(ammoCount), modifiedGun.general.maxAmmo)));
             }
         }
     }

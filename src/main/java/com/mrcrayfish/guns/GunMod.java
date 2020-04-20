@@ -4,16 +4,16 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityMissile;
-import com.mrcrayfish.guns.init.ModEntities;
-import com.mrcrayfish.guns.init.ModItems;
-import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.proxy.ClientProxy;
 import com.mrcrayfish.guns.proxy.CommonProxy;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -43,10 +43,19 @@ public class GunMod
 
     public GunMod()
     {
+        MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModBlocks.REGISTER.register(bus);
+        ModContainers.REGISTER.register(bus);
+        ModEntities.REGISTER.register(bus);
+        ModItems.REGISTER.register(bus);
+        ModPotions.REGISTER.register(bus);
+        ModSounds.REGISTER.register(bus);
+        ModTileEntities.REGISTER.register(bus);
+        ModSyncedDataKeys.register();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
         controllableLoaded = ModList.get().isLoaded("controllable");
@@ -56,7 +65,6 @@ public class GunMod
     {
         //ModCrafting.register(); //TODO convert to datapack
         //ModEntities.register();
-        ModSyncedDataKeys.register();
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.GRENADE.get(), (worldIn, entity, item, modifiedGun) -> new EntityGrenade(ModEntities.GRENADE.get(), worldIn));
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.MISSILE.get(), (worldIn, entity, item, modifiedGun) -> new EntityMissile(ModEntities.MISSILE.get(), worldIn));
         PacketHandler.init();
@@ -68,6 +76,7 @@ public class GunMod
         ClientHandler.setup();
     }
 
+    @SubscribeEvent
     public void onServerStart(FMLServerAboutToStartEvent event)
     {
         NetworkGunManager manager = new NetworkGunManager();

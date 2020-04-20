@@ -47,6 +47,9 @@ public class SoundEvents
             return;
         }
 
+        if(true)
+            return;
+
         /* If deafened, play ringing sound if not already playing, otherwise return */
         EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED.get().getEffects().get(0).getPotion());
         if(effect == null)

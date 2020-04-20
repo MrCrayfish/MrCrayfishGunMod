@@ -17,9 +17,6 @@ public class ClientProxy extends CommonProxy
 
 	public void preInit()
 	{
-		MinecraftForge.EVENT_BUS.register(new GunHandler());
-		MinecraftForge.EVENT_BUS.register(new ReloadHandler());
-
 		//RenderingRegistry.registerEntityRenderingHandler(EntityProjectile.class, RenderProjectile::new);
 		//RenderingRegistry.registerEntityRenderingHandler(EntityThrowableGrenade.class, RenderGrenade::new);
 		//RenderingRegistry.registerEntityRenderingHandler(EntityThrowableStunGrenade.class, RenderGrenade::new);

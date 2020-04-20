@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.object;
 
 import com.google.gson.*;
+import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.item.ItemStack;
@@ -11,17 +12,10 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 
 public class Gun implements INBTSerializable<CompoundNBT>
 {
-    @Ignored
-    public ServerGun serverGun;
-    public String id;
     public General general = new General();
     public Projectile projectile = new Projectile();
     public Sounds sounds = new Sounds();
@@ -50,35 +44,21 @@ public class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         public float spread;
 
-        public int getMaxAmmo(Gun modifiedGun)
-        {
-            int maxAmmo = this.maxAmmo;
-            if(modifiedGun.serverGun != null)
-            {
-                maxAmmo = modifiedGun.serverGun.maxAmmo;
-            }
-            if(modifiedGun.general.maxAmmo != maxAmmo)
-            {
-                maxAmmo = modifiedGun.general.maxAmmo;
-            }
-            return maxAmmo;
-        }
-
         @Override
         public CompoundNBT serializeNBT()
         {
             CompoundNBT tag = new CompoundNBT();
-            tag.putBoolean("Auto", auto);
-            tag.putInt("Rate", rate);
-            tag.putInt("GripType", gripType.ordinal());
-            tag.putInt("MaxAmmo", maxAmmo);
-            tag.putInt("ReloadSpeed", reloadSpeed);
-            tag.putFloat("RecoilAngle", recoilAngle);
-            tag.putFloat("RecoilKick", recoilKick);
-            tag.putFloat("RecoilDurationOffset", recoilDurationOffset);
-            tag.putInt("ProjectileAmount", projectileAmount);
-            tag.putBoolean("AlwaysSpread", alwaysSpread);
-            tag.putFloat("Spread", spread);
+            tag.putBoolean("Auto", this.auto);
+            tag.putInt("Rate", this.rate);
+            tag.putInt("GripType", this.gripType.ordinal());
+            tag.putInt("MaxAmmo", this.maxAmmo);
+            tag.putInt("ReloadSpeed", this.reloadSpeed);
+            tag.putFloat("RecoilAngle", this.recoilAngle);
+            tag.putFloat("RecoilKick", this.recoilKick);
+            tag.putFloat("RecoilDurationOffset", this.recoilDurationOffset);
+            tag.putInt("ProjectileAmount", this.projectileAmount);
+            tag.putBoolean("AlwaysSpread", this.alwaysSpread);
+            tag.putFloat("Spread", this.spread);
             return tag;
         }
 
@@ -168,20 +148,6 @@ public class Gun implements INBTSerializable<CompoundNBT>
         public int trailColor = 0xFFFFFF;
         @Optional
         public double trailLengthMultiplier = 1.0;
-
-        public float getDamage(Gun modifiedGun)
-        {
-            float damage = this.damage;
-            if(modifiedGun.serverGun != null)
-            {
-                damage = modifiedGun.serverGun.damage;
-            }
-            if(modifiedGun.projectile.damage != this.damage && modifiedGun.projectile.damage != damage)
-            {
-                damage = modifiedGun.projectile.damage;
-            }
-            return damage;
-        }
 
         @Override
         public CompoundNBT serializeNBT()
@@ -492,23 +458,10 @@ public class Gun implements INBTSerializable<CompoundNBT>
         public double scale = 1.0;
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
-    public @interface Optional
-    {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
-    public @interface Ignored
-    {
-    }
-
     @Override
     public CompoundNBT serializeNBT()
     {
         CompoundNBT tag = new CompoundNBT();
-        tag.putString("Id", id);
         tag.put("General", general.serializeNBT());
         tag.put("Projectile", projectile.serializeNBT());
         tag.put("Sounds", sounds.serializeNBT());
@@ -518,10 +471,6 @@ public class Gun implements INBTSerializable<CompoundNBT>
     @Override
     public void deserializeNBT(CompoundNBT tag)
     {
-        if(tag.contains("Id", Constants.NBT.TAG_STRING))
-        {
-            this.id = tag.getString("Id");
-        }
         if(tag.contains("General", Constants.NBT.TAG_COMPOUND))
         {
             this.general.deserializeNBT(tag.getCompound("General"));
@@ -536,22 +485,22 @@ public class Gun implements INBTSerializable<CompoundNBT>
         }
     }
 
+    public static Gun create(CompoundNBT tag)
+    {
+        Gun gun = new Gun();
+        gun.deserializeNBT(tag);
+        return gun;
+    }
+
     public Gun copy()
     {
         Gun gun = new Gun();
-        gun.serverGun = serverGun;
-        gun.id = id;
         gun.general = general.copy();
         gun.projectile = projectile.copy();
         gun.sounds = sounds.copy();
         gun.display = display.copy();
         gun.modules = modules.copy();
         return gun;
-    }
-
-    public void setServerGun(ServerGun serverGun)
-    {
-        this.serverGun = serverGun;
     }
 
     public boolean canAttachType(@Nullable IAttachment.Type type)
