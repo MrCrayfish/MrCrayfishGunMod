@@ -23,16 +23,22 @@ import org.lwjgl.glfw.GLFW;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class GunHandler
 {
+    private static boolean isInGame()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.loadingGui != null)
+            return false;
+        if(mc.currentScreen != null)
+            return false;
+        if(!mc.mouseHelper.isMouseGrabbed())
+            return false;
+        return mc.isGameFocused();
+    }
+
     @SubscribeEvent
     public static void onKeyPressed(InputEvent.RawMouseEvent event)
     {
-        if(Minecraft.getInstance().loadingGui != null)
-            return;
-
-        if(Minecraft.getInstance().currentScreen != null)
-            return;
-
-        if(!Minecraft.getInstance().isGameFocused())
+        if(!isInGame())
             return;
 
         if(event.getAction() != GLFW.GLFW_PRESS)
@@ -73,10 +79,10 @@ public class GunHandler
         if(event.phase != TickEvent.Phase.END)
             return;
 
-        Minecraft mc = Minecraft.getInstance();
-        if(!mc.isGameFocused())
+        if(!isInGame())
             return;
 
+        Minecraft mc = Minecraft.getInstance();
         PlayerEntity player = mc.player;
         if(player != null)
         {
