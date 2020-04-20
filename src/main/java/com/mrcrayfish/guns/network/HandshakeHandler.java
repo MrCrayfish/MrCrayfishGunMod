@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network;
 
-import com.mrcrayfish.guns.common.CommonHandler;
+import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.obfuscate.Obfuscate;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -26,7 +26,7 @@ public class HandshakeHandler
     {
         Obfuscate.LOGGER.debug(CGM_HANDSHAKE, "Received gun objects from server");
         c.get().setPacketHandled(true);
-        if(!CommonHandler.getGunManager().updateRegisteredGuns(message))
+        if(!NetworkGunManager.updateRegisteredGuns(message))
         {
             c.get().getNetworkManager().closeChannel(new StringTextComponent("Connection closed - [MrCrayfish's Gun Mod] failed to update gun data from server"));
             return;

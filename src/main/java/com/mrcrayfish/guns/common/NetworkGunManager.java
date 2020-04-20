@@ -19,6 +19,8 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
 
@@ -41,6 +43,10 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new ResourceLocationDeserializer());
         return builder.create();
     });
+
+    /**
+     * A fallback gun object for any weapons that haven't added a json yet.
+     */
     private static final Gun FALLBACK_GUN = Util.make(() -> {
         Gun gun = new Gun();
         gun.projectile.item = new ResourceLocation("cgm:basic_ammo");
@@ -145,12 +151,12 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
      * @param message an update guns message
      * @return true if all registered guns were able to update their corresponding gun item
      */
-    public boolean updateRegisteredGuns(HandshakeMessages.S2CUpdateGuns message)
+    @OnlyIn(Dist.CLIENT)
+    public static boolean updateRegisteredGuns(HandshakeMessages.S2CUpdateGuns message)
     {
         Map<ResourceLocation, Gun> registeredGuns = message.getRegisteredGuns();
         if(registeredGuns != null)
         {
-            this.registeredGuns = registeredGuns;
             for(Map.Entry<ResourceLocation, Gun> entry : registeredGuns.entrySet())
             {
                 Item item = ForgeRegistries.ITEMS.getValue(entry.getKey());

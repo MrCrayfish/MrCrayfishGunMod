@@ -19,9 +19,12 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nullable;
 
 @Mod(Reference.MOD_ID)
 public class GunMod
@@ -36,6 +39,8 @@ public class GunMod
             return new ItemStack(ModItems.PISTOL.get());
         }
     };
+
+    private static NetworkGunManager manager;
 
     public GunMod()
     {
@@ -75,7 +80,9 @@ public class GunMod
     @SubscribeEvent
     public void onServerStart(FMLServerAboutToStartEvent event)
     {
-        event.getServer().getResourceManager().addReloadListener(new NetworkGunManager());
+        NetworkGunManager manager = new NetworkGunManager();
+        event.getServer().getResourceManager().addReloadListener(manager);
+        GunMod.manager = manager;
 
         //TODO convert to config value
         /*GameRules rules = event.getServer().getWorld(DimensionType.OVERWORLD).getGameRules();
@@ -83,5 +90,23 @@ public class GunMod
         {
             rules.addGameRule("gunGriefing", "true", GameRules.ValueType.BOOLEAN_VALUE);
         }*/
+    }
+
+    @SubscribeEvent
+    public void onServerStart(FMLServerStoppedEvent event)
+    {
+        GunMod.manager = null;
+    }
+
+    /**
+     * Gets the network gun manager. This will be null if the client isn't running an integrated
+     * server or the client is connected to a dedicated server.
+     *
+     * @return the network gun manager
+     */
+    @Nullable
+    public static NetworkGunManager getNetworkGunManager()
+    {
+        return manager;
     }
 }

@@ -56,13 +56,6 @@ public class CommonHandler
      */
     private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
 
-    private static final NetworkGunManager MANAGER = new NetworkGunManager();
-
-    public static NetworkGunManager getGunManager()
-    {
-        return MANAGER;
-    }
-
     /**
      * Fires the weapon the player is currently holding.
      * This is only intended for use on the logical server.

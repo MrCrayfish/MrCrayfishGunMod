@@ -2,10 +2,9 @@ package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
-import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.guns.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
@@ -32,7 +31,7 @@ public class ModelChainGun implements IOverrideModel
         Minecraft mc = Minecraft.getInstance();
         boolean shooting = mc.isGameFocused() && GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
 
-        if(ClientProxy.controllableLoaded)
+        if(GunMod.controllableLoaded)
         {
             Controller controller = Controllable.getController();
             if(controller != null)

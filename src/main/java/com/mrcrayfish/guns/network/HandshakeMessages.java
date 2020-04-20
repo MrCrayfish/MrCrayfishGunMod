@@ -1,11 +1,12 @@
 package com.mrcrayfish.guns.network;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.guns.common.CommonHandler;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
 import java.util.function.IntSupplier;
@@ -59,7 +60,10 @@ public class HandshakeMessages
 
         void encode(PacketBuffer buffer)
         {
-            CommonHandler.getGunManager().writeRegisteredGuns(buffer);
+            /* This shouldn't be null as it's encoding from the logical server but
+             * it's just here to avoiding IDE warnings */
+            Validate.notNull(GunMod.getNetworkGunManager());
+            GunMod.getNetworkGunManager().writeRegisteredGuns(buffer);
         }
 
         static S2CUpdateGuns decode(PacketBuffer buffer)
