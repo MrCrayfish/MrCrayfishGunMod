@@ -1,16 +1,18 @@
-
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url "https://plugins.gradle.org/m2/" }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath "com.wynprice.cursemaven:CurseMaven:2.1.1"
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
+apply plugin: "com.wynprice.cursemaven"
 
 version = "0.15.3-1.15.2"
 group = "com.mrcrayfish"
@@ -67,7 +69,7 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.1.0'
-    compile 'obfuscate:Obfuscate-0.4.0:1.15.2:deobf'
+    compile fg.deobf('curse.maven:obfuscate:2912283')
     compileOnly 'controllable:Controllable-1.15:0.7.1:deobf'
 }
 
