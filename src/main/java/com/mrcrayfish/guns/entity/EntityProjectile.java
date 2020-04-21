@@ -11,10 +11,7 @@ import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
 import com.mrcrayfish.guns.util.ItemStackUtil;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BreakableBlock;
-import net.minecraft.block.PaneBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -127,7 +124,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
     public ItemStack getItem()
     {
-        return item;
+        return new ItemStack(Blocks.REDSTONE_BLOCK);
     }
 
     public void setDamageModifier(float damageModifier)
@@ -180,7 +177,10 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             this.onHit(result);
         }
 
-        this.move(MoverType.SELF, this.getMotion());
+        double nextPosX = this.getPosX() + this.getMotion().getX();
+        double nextPosY = this.getPosY() + this.getMotion().getY();
+        double nextPosZ = this.getPosZ() + this.getMotion().getZ();
+        this.setPosition(nextPosX, nextPosY, nextPosZ);
 
         if(this.projectile.gravity)
         {
@@ -394,6 +394,12 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             damage *= modifier;
         }
         return damage / this.general.projectileAmount;
+    }
+
+    @Override
+    public boolean isInRangeToRenderDist(double distance)
+    {
+        return true;
     }
 
     @Override
