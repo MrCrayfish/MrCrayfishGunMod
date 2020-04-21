@@ -114,17 +114,17 @@ public class Gun implements INBTSerializable<CompoundNBT>
         public General copy()
         {
             General general = new General();
-            general.auto = auto;
-            general.rate = rate;
-            general.gripType = gripType;
-            general.maxAmmo = maxAmmo;
-            general.reloadSpeed = reloadSpeed;
-            general.recoilAngle = recoilAngle;
-            general.recoilKick = recoilKick;
-            general.recoilDurationOffset = recoilDurationOffset;
-            general.projectileAmount = projectileAmount;
-            general.alwaysSpread = alwaysSpread;
-            general.spread = spread;
+            general.auto = this.auto;
+            general.rate = this.rate;
+            general.gripType = this.gripType;
+            general.maxAmmo = this.maxAmmo;
+            general.reloadSpeed = this.reloadSpeed;
+            general.recoilAngle = this.recoilAngle;
+            general.recoilKick = this.recoilKick;
+            general.recoilDurationOffset = this.recoilDurationOffset;
+            general.projectileAmount = this.projectileAmount;
+            general.alwaysSpread = this.alwaysSpread;
+            general.spread = this.spread;
             return general;
         }
     }
@@ -219,17 +219,17 @@ public class Gun implements INBTSerializable<CompoundNBT>
         public Projectile copy()
         {
             Projectile projectile = new Projectile();
-            projectile.item = item;
-            projectile.visible = visible;
-            projectile.damage = damage;
-            projectile.size = size;
-            projectile.speed = speed;
-            projectile.life = life;
-            projectile.gravity = gravity;
-            projectile.damageReduceOverLife = damageReduceOverLife;
-            projectile.damageReduceIfNotZoomed = damageReduceIfNotZoomed;
-            projectile.trailColor = trailColor;
-            projectile.trailLengthMultiplier = trailLengthMultiplier;
+            projectile.item = this.item;
+            projectile.visible = this.visible;
+            projectile.damage = this.damage;
+            projectile.size = this.size;
+            projectile.speed = this.speed;
+            projectile.life = this.life;
+            projectile.gravity = this.gravity;
+            projectile.damageReduceOverLife = this.damageReduceOverLife;
+            projectile.damageReduceIfNotZoomed = this.damageReduceIfNotZoomed;
+            projectile.trailColor = this.trailColor;
+            projectile.trailLengthMultiplier = this.trailLengthMultiplier;
             return projectile;
         }
     }
@@ -300,7 +300,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
         }
     }
 
-    public static class Display
+    public static class Display implements INBTSerializable<CompoundNBT>
     {
         @Optional
         public Flash flash;
@@ -310,11 +310,33 @@ public class Gun implements INBTSerializable<CompoundNBT>
             public Flash copy()
             {
                 Flash flash = new Flash();
-                flash.scale = scale;
-                flash.xOffset = xOffset;
-                flash.yOffset = yOffset;
-                flash.zOffset = zOffset;
+                flash.scale = this.scale;
+                flash.xOffset = this.xOffset;
+                flash.yOffset = this.yOffset;
+                flash.zOffset = this.zOffset;
                 return flash;
+            }
+        }
+
+        @Override
+        public CompoundNBT serializeNBT()
+        {
+            CompoundNBT tag = new CompoundNBT();
+            if(this.flash != null)
+            {
+                tag.put("Flash",this.flash.serializeNBT());
+            }
+            return tag;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundNBT tag)
+        {
+            if(tag.contains("Flash", Constants.NBT.TAG_COMPOUND))
+            {
+                Flash flash = new Flash();
+                flash.deserializeNBT(tag.getCompound("Flash"));
+                this.flash = flash;
             }
         }
 
@@ -329,7 +351,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
         }
     }
 
-    public static class Modules
+    public static class Modules implements INBTSerializable<CompoundNBT>
     {
         @Optional
         public Zoom zoom;
@@ -342,19 +364,31 @@ public class Gun implements INBTSerializable<CompoundNBT>
             @Optional
             public boolean smooth;
 
+            @Override
+            public CompoundNBT serializeNBT()
+            {
+                return super.serializeNBT();
+            }
+
+            @Override
+            public void deserializeNBT(CompoundNBT nbt)
+            {
+                super.deserializeNBT(nbt);
+            }
+
             public Zoom copy()
             {
                 Zoom zoom = new Zoom();
-                zoom.fovModifier = fovModifier;
-                zoom.smooth = smooth;
-                zoom.xOffset = xOffset;
-                zoom.yOffset = yOffset;
-                zoom.zOffset = zOffset;
+                zoom.fovModifier = this.fovModifier;
+                zoom.smooth = this.smooth;
+                zoom.xOffset = this.xOffset;
+                zoom.yOffset = this.yOffset;
+                zoom.zOffset = this.zOffset;
                 return zoom;
             }
         }
 
-        public static class Attachments
+        public static class Attachments implements INBTSerializable<CompoundNBT>
         {
             @Optional
             public Scope scope;
@@ -366,14 +400,32 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 @Optional
                 public boolean smooth;
 
+                @Override
+                public CompoundNBT serializeNBT()
+                {
+                    CompoundNBT tag = super.serializeNBT();
+                    tag.putBoolean("Smooth", this.smooth);
+                    return tag;
+                }
+
+                @Override
+                public void deserializeNBT(CompoundNBT tag)
+                {
+                    super.deserializeNBT(tag);
+                    if(tag.contains("Smooth", Constants.NBT.TAG_BYTE))
+                    {
+                        this.smooth = tag.getBoolean("Smooth");
+                    }
+                }
+
                 public Scope copy()
                 {
                     Scope scope = new Scope();
-                    scope.smooth = smooth;
-                    scope.scale = scale;
-                    scope.xOffset = xOffset;
-                    scope.yOffset = yOffset;
-                    scope.zOffset = zOffset;
+                    scope.smooth = this.smooth;
+                    scope.scale = this.scale;
+                    scope.xOffset = this.xOffset;
+                    scope.yOffset = this.yOffset;
+                    scope.zOffset = this.zOffset;
                     return scope;
                 }
             }
@@ -383,42 +435,101 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 public Barrel copy()
                 {
                     Barrel barrel = new Barrel();
-                    barrel.scale = scale;
-                    barrel.xOffset = xOffset;
-                    barrel.yOffset = yOffset;
-                    barrel.zOffset = zOffset;
+                    barrel.scale = this.scale;
+                    barrel.xOffset = this.xOffset;
+                    barrel.yOffset = this.yOffset;
+                    barrel.zOffset = this.zOffset;
                     return barrel;
+                }
+            }
+
+            @Override
+            public CompoundNBT serializeNBT()
+            {
+                CompoundNBT tag = new CompoundNBT();
+                if(this.scope != null)
+                {
+                    tag.put("Scope", this.scope.serializeNBT());
+                }
+                if(this.barrel != null)
+                {
+                    tag.put("Barrel", this.barrel.serializeNBT());
+                }
+                return tag;
+            }
+
+            @Override
+            public void deserializeNBT(CompoundNBT tag)
+            {
+                if(tag.contains("Scope", Constants.NBT.TAG_COMPOUND))
+                {
+                    Scope scope = new Scope();
+                    scope.deserializeNBT(tag.getCompound("Scope"));
+                    this.scope = scope;
+                }
+                if(tag.contains("Barrel", Constants.NBT.TAG_COMPOUND))
+                {
+                    Barrel barrel = new Barrel();
+                    barrel.deserializeNBT(tag.getCompound("Barrel"));
+                    this.barrel = barrel;
                 }
             }
 
             public Attachments copy()
             {
                 Attachments attachments = new Attachments();
-                if(scope != null)
+                if(this.scope != null)
                 {
-                    attachments.scope = scope.copy();
+                    attachments.scope = this.scope.copy();
                 }
-                if(barrel != null)
+                if(this.barrel != null)
                 {
-                    attachments.barrel = barrel.copy();
+                    attachments.barrel = this.barrel.copy();
                 }
                 return attachments;
+            }
+        }
+
+        @Override
+        public CompoundNBT serializeNBT()
+        {
+            CompoundNBT tag = new CompoundNBT();
+            if(this.zoom != null)
+            {
+                tag.put("Zoom", this.zoom.serializeNBT());
+            }
+            tag.put("Attachments", this.attachments.serializeNBT());
+            return tag;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundNBT tag)
+        {
+            if(tag.contains("Zoom", Constants.NBT.TAG_COMPOUND))
+            {
+                Zoom zoom = new Zoom();
+                zoom.deserializeNBT(tag.getCompound("Zoom"));
+                this.zoom = zoom;
+            }
+            if(tag.contains("Attachments", Constants.NBT.TAG_COMPOUND))
+            {
+                this.attachments.deserializeNBT(tag.getCompound("Attachments"));
             }
         }
 
         public Modules copy()
         {
             Modules modules = new Modules();
-            if(zoom != null)
+            if(this.zoom != null)
             {
-                modules.zoom = zoom.copy();
+                modules.zoom = this.zoom.copy();
             }
-            modules.attachments = attachments.copy();
+            modules.attachments = this.attachments.copy();
             return modules;
         }
     }
 
-    public static class Positioned
+    public static class Positioned implements INBTSerializable<CompoundNBT>
     {
         @Optional
         public double xOffset;
@@ -426,21 +537,68 @@ public class Gun implements INBTSerializable<CompoundNBT>
         public double yOffset;
         @Optional
         public double zOffset;
+
+        @Override
+        public CompoundNBT serializeNBT()
+        {
+            CompoundNBT tag = new CompoundNBT();
+            tag.putDouble("XOffset", this.xOffset);
+            tag.putDouble("YOffset", this.yOffset);
+            tag.putDouble("ZOffset", this.zOffset);
+            return tag;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundNBT tag)
+        {
+            if(tag.contains("XOffset", Constants.NBT.TAG_DOUBLE))
+            {
+                this.xOffset = tag.getDouble("XOffset");
+            }
+            if(tag.contains("YOffset", Constants.NBT.TAG_DOUBLE))
+            {
+                this.yOffset = tag.getDouble("YOffset");
+            }
+            if(tag.contains("ZOffset", Constants.NBT.TAG_DOUBLE))
+            {
+                this.zOffset = tag.getDouble("ZOffset");
+            }
+        }
     }
 
     public static class ScaledPositioned extends Positioned
     {
         @Optional
         public double scale = 1.0;
+
+        @Override
+        public CompoundNBT serializeNBT()
+        {
+            CompoundNBT tag = super.serializeNBT();
+            tag.putDouble("Scale", this.scale);
+            return tag;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundNBT tag)
+        {
+            super.deserializeNBT(tag);
+            if(tag.contains("Scale", Constants.NBT.TAG_DOUBLE))
+            {
+                this.scale = tag.getDouble("Scale");
+            }
+        }
     }
 
     @Override
     public CompoundNBT serializeNBT()
     {
         CompoundNBT tag = new CompoundNBT();
-        tag.put("General", general.serializeNBT());
-        tag.put("Projectile", projectile.serializeNBT());
-        tag.put("Sounds", sounds.serializeNBT());
+        tag.put("General", this.general.serializeNBT());
+        tag.put("Projectile", this.projectile.serializeNBT());
+        tag.put("Sounds", this.sounds.serializeNBT());
+        tag.put("Display", this.display.serializeNBT());
+        tag.put("Modules", this.modules.serializeNBT());
         return tag;
     }
 
@@ -459,6 +617,14 @@ public class Gun implements INBTSerializable<CompoundNBT>
         {
             this.sounds.deserializeNBT(tag.getCompound("Sounds"));
         }
+        if(tag.contains("Display", Constants.NBT.TAG_COMPOUND))
+        {
+            this.display.deserializeNBT(tag.getCompound("Display"));
+        }
+        if(tag.contains("Modules", Constants.NBT.TAG_COMPOUND))
+        {
+            this.modules.deserializeNBT(tag.getCompound("Modules"));
+        }
     }
 
     public static Gun create(CompoundNBT tag)
@@ -471,24 +637,24 @@ public class Gun implements INBTSerializable<CompoundNBT>
     public Gun copy()
     {
         Gun gun = new Gun();
-        gun.general = general.copy();
-        gun.projectile = projectile.copy();
-        gun.sounds = sounds.copy();
-        gun.display = display.copy();
-        gun.modules = modules.copy();
+        gun.general = this.general.copy();
+        gun.projectile = this.projectile.copy();
+        gun.sounds = this.sounds.copy();
+        gun.display = this.display.copy();
+        gun.modules = this.modules.copy();
         return gun;
     }
 
     public boolean canAttachType(@Nullable IAttachment.Type type)
     {
-        if(modules.attachments != null && type != null)
+        if(this.modules.attachments != null && type != null)
         {
             switch(type)
             {
                 case SCOPE:
-                    return modules.attachments.scope != null;
+                    return this.modules.attachments.scope != null;
                 case BARREL:
-                    return modules.attachments.barrel != null;
+                    return this.modules.attachments.barrel != null;
             }
         }
         return false;
@@ -497,14 +663,14 @@ public class Gun implements INBTSerializable<CompoundNBT>
     @Nullable
     public ScaledPositioned getAttachmentPosition(IAttachment.Type type)
     {
-        if(modules.attachments != null)
+        if(this.modules.attachments != null)
         {
             switch(type)
             {
                 case SCOPE:
-                    return modules.attachments.scope;
+                    return this.modules.attachments.scope;
                 case BARREL:
-                    return modules.attachments.barrel;
+                    return this.modules.attachments.barrel;
             }
         }
         return null;
