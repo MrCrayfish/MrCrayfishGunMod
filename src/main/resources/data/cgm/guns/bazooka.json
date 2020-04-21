@@ -18,9 +18,9 @@
         "damageReduceIfNotZoomed": false
     },
     "sounds": {
-        "fire": "cgm:bazooka_fire",
-        "reload": "cgm:pistol_reload",
-        "cock": "cgm:shotgun_fire"
+        "fire": "cgm:item.bazooka.fire",
+        "reload": "cgm:item.pistol.reload",
+        "cock": "cgm:item.shotgun.fire"
     },
     "display": {
         "flash": {

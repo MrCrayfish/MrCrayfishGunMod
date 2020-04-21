@@ -20,9 +20,9 @@
         "damageReduceIfNotZoomed": false
     },
     "sounds": {
-        "fire": "cgm:grenade_fire",
-        "reload": "cgm:pistol_reload",
-        "cock": "cgm:shotgun_fire"
+        "fire": "cgm:item.grenade_launcher.fire",
+        "reload": "cgm:item.pistol.reload",
+        "cock": "cgm:item.shotgun.fire"
     },
     "display": {
         "flash": {

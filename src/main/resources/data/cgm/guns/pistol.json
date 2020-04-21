@@ -10,15 +10,15 @@
         "visible": false,
         "damage": 10.0,
         "size": 0.2,
-        "speed": 10.0,
-        "life": 10,
+        "speed": 0.05,
+        "life": 1000,
         "damageReduceOverLife": true
     },
     "sounds": {
-        "fire": "cgm:pistol_fire",
-        "reload": "cgm:pistol_reload",
-        "cock": "cgm:shotgun_fire",
-        "silencedFire": "cgm:pistol_fire_silenced"
+        "fire": "cgm:item.pistol.fire",
+        "reload": "cgm:item.pistol.reload",
+        "cock": "cgm:item.shotgun.fire",
+        "silencedFire": "cgm:item.pistol.silenced_fire"
     },
     "display": {
         "flash": {

@@ -17,10 +17,10 @@
         "life": 10
     },
     "sounds": {
-        "fire": "cgm:machine_pistol_fire",
-        "reload": "cgm:pistol_reload",
-        "cock": "cgm:shotgun_fire",
-        "silencedFire": "cgm:machine_pistol_fire_silenced"
+        "fire": "cgm:item.machine_pistol.fire",
+        "reload": "cgm:item.pistol.reload",
+        "cock": "cgm:item.shotgun.fire",
+        "silencedFire": "cgm:item.machine_pistol.silenced_fire"
     },
     "display": {
         "flash": {

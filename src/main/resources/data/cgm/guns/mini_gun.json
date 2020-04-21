@@ -18,9 +18,9 @@
         "life": 10
     },
     "sounds": {
-        "fire": "cgm:chain_gun_fire",
-        "reload": "cgm:pistol_reload",
-        "cock": "cgm:shotgun_fire"
+        "fire": "cgm:item.chain_gun.fire",
+        "reload": "cgm:item.pistol.reload",
+        "cock": "cgm:item.shotgun.fire"
     },
     "display": {
         "flash": {
