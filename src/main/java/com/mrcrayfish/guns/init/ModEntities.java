@@ -27,7 +27,7 @@ public class ModEntities
 
     private static <T extends Entity> RegistryObject<EntityType<T>> register(String id, BiFunction<EntityType<T>, World, T> function)
     {
-        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).setTrackingRange(100).setUpdateInterval(1).disableSummoning().immuneToFire().setShouldReceiveVelocityUpdates(true).build(id);
+        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).size(0.25F, 0.25F).setTrackingRange(100).setUpdateInterval(1).disableSummoning().immuneToFire().setShouldReceiveVelocityUpdates(true).build(id);
         return REGISTER.register(id, () -> type);
     }
 }
