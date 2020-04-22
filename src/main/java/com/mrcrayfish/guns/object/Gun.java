@@ -367,13 +367,24 @@ public class Gun implements INBTSerializable<CompoundNBT>
             @Override
             public CompoundNBT serializeNBT()
             {
-                return super.serializeNBT();
+                CompoundNBT tag = super.serializeNBT();
+                tag.putFloat("FovModifier", this.fovModifier);
+                tag.putBoolean("Smooth", this.smooth);
+                return tag;
             }
 
             @Override
-            public void deserializeNBT(CompoundNBT nbt)
+            public void deserializeNBT(CompoundNBT tag)
             {
-                super.deserializeNBT(nbt);
+                super.deserializeNBT(tag);
+                if(tag.contains("FovModifier", Constants.NBT.TAG_FLOAT))
+                {
+                    this.fovModifier = tag.getFloat("FovModifier");
+                }
+                if(tag.contains("Smooth", Constants.NBT.TAG_BYTE))
+                {
+                    this.smooth = tag.getBoolean("Smooth");
+                }
             }
 
             public Zoom copy()
