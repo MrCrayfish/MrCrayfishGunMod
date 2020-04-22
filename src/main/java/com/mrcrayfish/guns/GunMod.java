@@ -1,12 +1,14 @@
 package com.mrcrayfish.guns;
 
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityMissile;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.network.PacketHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,6 +42,7 @@ public class GunMod
         }
     };
 
+    private static GunOptions options;
     private static NetworkGunManager manager;
 
     public GunMod()
@@ -74,6 +77,8 @@ public class GunMod
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
+        Minecraft mc = event.getMinecraftSupplier().get();
+        GunMod.options = new GunOptions(mc.gameDir);
         ClientHandler.setup();
     }
 
@@ -101,5 +106,14 @@ public class GunMod
     public static NetworkGunManager getNetworkGunManager()
     {
         return manager;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static GunOptions getOptions()
+    {
+        return options;
     }
 }

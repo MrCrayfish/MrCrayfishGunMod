@@ -3,11 +3,13 @@ package com.mrcrayfish.guns.client;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.SoundEvents;
 import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
+import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.item.ColoredItem;
@@ -20,6 +22,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.MouseSettingsScreen;
+import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -28,19 +32,27 @@ import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
+import java.lang.reflect.Field;
 import java.util.Random;
 
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ClientHandler
 {
+    private static Field mouseOptionsField;
     private static final GunRenderer GUN_RENDERER = new GunRenderer();
     private static final BulletRenderer BULLET_RENDERER = new BulletRenderer();
 
@@ -201,5 +213,28 @@ public class ClientHandler
         }
 
         return zooming;
+    }
+
+    @SubscribeEvent
+    public static void onScreenInit(GuiScreenEvent.InitGuiEvent.Post event)
+    {
+        if(event.getGui() instanceof MouseSettingsScreen)
+        {
+            MouseSettingsScreen screen = (MouseSettingsScreen) event.getGui();
+            if(mouseOptionsField == null)
+            {
+                mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "field_213045_b");
+                mouseOptionsField.setAccessible(true);
+            }
+            try
+            {
+                OptionsRowList list = (OptionsRowList) mouseOptionsField.get(screen);
+                list.addOption(GunOptions.ADS_SENSITIVITY);
+            }
+            catch(IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }

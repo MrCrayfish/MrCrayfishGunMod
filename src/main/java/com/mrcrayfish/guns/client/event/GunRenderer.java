@@ -839,6 +839,6 @@ public class GunRenderer
 
     public double applyZoomSensitivity(double sensitivity)
     {
-        return sensitivity * (1.0 - 0.25 * this.normalZoomProgress);
+        return sensitivity * (1.0 - (1.0 - GunMod.getOptions().getAdsSensitivity()) * this.normalZoomProgress);
     }
 }
