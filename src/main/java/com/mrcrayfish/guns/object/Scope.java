@@ -13,7 +13,7 @@ public class Scope
     private float yawSensitivity;
     private float pitchSensitivity;
     private boolean stable;
-    private boolean smoothCamera;
+    private double viewFinderOffset;
 
     private Scope(float additionalZoom, double centerOffset)
     {
@@ -22,7 +22,6 @@ public class Scope
     }
 
     /**
-     *
      * @return
      */
     public Scope stabilise()
@@ -32,12 +31,14 @@ public class Scope
     }
 
     /**
+     * Sets the offset distance from the camera to the view finder
      *
-     * @return
+     * @param offset the view finder offset
+     * @return this scope instance
      */
-    public Scope smoothCamera()
+    public Scope viewFinderOffset(double offset)
     {
-        this.smoothCamera = true;
+        this.viewFinderOffset = offset;
         return this;
     }
 
@@ -64,7 +65,6 @@ public class Scope
     }
 
     /**
-     *
      * @return
      */
     public float getYawSensitivity()
@@ -73,7 +73,6 @@ public class Scope
     }
 
     /**
-     *
      * @return
      */
     public float getPitchSensitivity()
@@ -84,6 +83,11 @@ public class Scope
     public boolean isStable()
     {
         return this.stable;
+    }
+
+    public double getViewFinderOffset()
+    {
+        return viewFinderOffset;
     }
 
     public static Scope create(float additionalZoom, double centerOffset)

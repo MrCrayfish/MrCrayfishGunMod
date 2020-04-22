@@ -125,7 +125,7 @@ public class ControllerEvents
 
                 GunItem gunItem = (GunItem) heldItem.getItem();
                 CompoundNBT tag = heldItem.getTag();
-                if(tag != null && tag.getInt("AmmoCount") < gunItem.getGun().general.maxAmmo)
+                if(tag != null && tag.getInt("AmmoCount") < gunItem.getModifiedGun(heldItem).general.maxAmmo)
                 {
                     event.getActions().put(Buttons.X, new Action("Reload", Action.Side.LEFT));
                 }

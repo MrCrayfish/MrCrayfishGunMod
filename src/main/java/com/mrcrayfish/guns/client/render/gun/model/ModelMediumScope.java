@@ -1,8 +1,10 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -23,9 +25,9 @@ public class ModelMediumScope implements IOverrideModel
     public void tick(LivingEntity entity) {}
 
     @Override
-    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity)
+    public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
-        RenderUtil.renderModel(stack, parent);
+        //RenderUtil.renderModel(stack, parent);
 
         //TODO add back scope view finder
         /*if(isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))

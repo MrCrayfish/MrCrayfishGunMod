@@ -96,7 +96,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
         if(gunSpread == 0F)
         {
-            return this.getVectorFromRotation(shooter.rotationPitch, shooter.getRotationYawHead());
+            return this.getVectorFromRotation(shooter.rotationPitch, shooter.rotationYaw);
         }
 
         if(!modifiedGun.general.alwaysSpread)

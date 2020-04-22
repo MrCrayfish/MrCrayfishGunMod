@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.tileentity.EndPortalTileEntityRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -15,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +74,7 @@ public class BulletRenderer
 
         matrixStack.push();
 
-        double doubleX = MathHelper.lerp(partialTicks, entity.lastTickPosX, entity.getPosX());
+        /*double doubleX = MathHelper.lerp(partialTicks, entity.lastTickPosX, entity.getPosX());
         double doubleY = MathHelper.lerp(partialTicks, entity.lastTickPosY, entity.getPosY());
         double doubleZ = MathHelper.lerp(partialTicks, entity.lastTickPosZ, entity.getPosZ());
         matrixStack.translate(-doubleX, -doubleY, -doubleZ);
@@ -79,9 +82,9 @@ public class BulletRenderer
         double bulletX = bullet.getPosX() + bullet.getMotionX() * partialTicks;
         double bulletY = bullet.getPosY() + bullet.getMotionY() * partialTicks;
         double bulletZ = bullet.getPosZ() + bullet.getMotionZ() * partialTicks;
-        matrixStack.translate(bulletX, bulletY, bulletZ);
+        matrixStack.translate(bulletX, bulletY, bulletZ);*/
 
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(bullet.getRotationYaw()));
+        /*matrixStack.rotate(Vector3f.YP.rotationDegrees(bullet.getRotationYaw()));
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-bullet.getRotationPitch() + 90));
 
         Vec3d motionVec = new Vec3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
@@ -93,7 +96,7 @@ public class BulletRenderer
 
         Matrix4f matrix4f = matrixStack.getLast().getMatrix();
         IRenderTypeBuffer.Impl renderTypeBuffer = mc.getRenderTypeBuffers().getBufferSource();
-        IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(WHITE_GRADIENT)); //TODO probably will crash
+        IVertexBuilder builder = renderTypeBuffer.getBuffer(getBulletTrail()); //TODO probably will crash
         builder.pos(matrix4f, 0, 0, -0.035F).tex(0, 0).color(red, green, blue, alpha).endVertex();
         builder.pos(matrix4f, 0, 0, 0.035F).tex(1, 0).color(red, green, blue, alpha).endVertex();
         builder.pos(matrix4f, 0, -trailLength, 0.035F).tex(1, 1).color(red, green, blue, alpha).endVertex();
@@ -111,11 +114,19 @@ public class BulletRenderer
         }
 
         matrixStack.rotate(Vector3f.YP.rotationDegrees((bullet.getProjectile().ticksExisted + partialTicks) * (float) 50));
-        matrixStack.scale(0.275F, 0.275F, 0.275F);
+        matrixStack.scale(0.275F, 0.275F, 0.275F);*/
 
         int combinedLight = WorldRenderer.getCombinedLight(entity.world, entity.getPosition());
+        IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
         mc.getItemRenderer().renderItem(bullet.getProjectile().getItem(), ItemCameraTransforms.TransformType.NONE, combinedLight, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
+        //RenderUtil.renderModel(bullet.getProjectile().getItem(), ItemCameraTransforms.TransformType.NONE, matrixStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY);
 
         matrixStack.pop();
+    }
+
+    public static RenderType getBulletTrail()
+    {
+        RenderState.TextureState textureState = new RenderState.TextureState(WHITE_GRADIENT, false, false);
+        return RenderType.makeType("bullet_trail", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder().texture(textureState).build(false));
     }
 }

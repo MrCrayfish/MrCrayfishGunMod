@@ -6,7 +6,7 @@
         "maxAmmo": 30,
         "reloadSpeed": 2,
         "recoilKick": 0.25,
-        "recoilAngle": 1.0
+        "recoilAngle": 5.0
     },
     "projectile": {
         "item": "cgm:basic_ammo",

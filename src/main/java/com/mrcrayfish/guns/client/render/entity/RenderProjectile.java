@@ -16,7 +16,6 @@ public class RenderProjectile extends EntityRenderer<EntityProjectile>
     public RenderProjectile(EntityRendererManager renderManager)
     {
         super(renderManager);
-        this.shadowSize = 0.25F;
     }
 
     @Override
@@ -28,10 +27,10 @@ public class RenderProjectile extends EntityRenderer<EntityProjectile>
     @Override
     public void render(EntityProjectile entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        if(!entity.getProjectile().visible)
+        /*if(!entity.getProjectile().visible)
         {
             return;
-        }
+        }*/
 
         matrixStack.push();
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
@@ -39,7 +38,7 @@ public class RenderProjectile extends EntityRenderer<EntityProjectile>
         matrixStack.rotate(Vector3f.XP.rotationDegrees(entity.rotationPitch));
         float distancePercent = (entity.ticksExisted + partialTicks) / (entity.getProjectile().life / 2.0F);
         double translate = -0.25 - (0.25 * distancePercent);
-        matrixStack.translate(translate, -0.1, -0.5);
+        matrixStack.translate(0, 0, 0);
         Minecraft.getInstance().getItemRenderer().renderItem(entity.getItem(), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
         matrixStack.pop();
     }

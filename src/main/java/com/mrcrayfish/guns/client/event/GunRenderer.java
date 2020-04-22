@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.client.event;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.AimTracker;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -19,6 +20,7 @@ import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
@@ -37,13 +39,17 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.lwjgl.opengl.GL11;
+
+import java.lang.reflect.Field;
 
 public class GunRenderer
 {
@@ -58,20 +64,12 @@ public class GunRenderer
     public double recoilNormal;
     public double recoilAngle;
 
-    private int startTick;
+    private int startReloadTick;
     private int reloadTimer;
     private int prevReloadTimer;
-    private boolean lastSmoothCamera = Minecraft.getInstance().gameSettings.smoothCamera;
 
-    @SubscribeEvent
-    public void onKeyPressedEvent(InputEvent.KeyInputEvent event)
-    {
-        if(Minecraft.getInstance().gameSettings.keyBindSmoothCamera.isPressed())
-        {
-            Minecraft.getInstance().gameSettings.smoothCamera = !Minecraft.getInstance().gameSettings.smoothCamera;
-            lastSmoothCamera = Minecraft.getInstance().gameSettings.smoothCamera;
-        }
-    }
+    private Field equippedProgressMainHandField;
+    private Field prevEquippedProgressMainHandField;
 
     @SubscribeEvent
     public void onFovUpdate(FOVUpdateEvent event)
@@ -89,35 +87,22 @@ public class GunRenderer
                     scope = ((ScopeItem) scopeStack.getItem()).getScope();
                 }
 
-                GunItem gun = (GunItem) heldItem.getItem();
+                GunItem gunItem = (GunItem) heldItem.getItem();
                 if(isZooming(Minecraft.getInstance().player) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
                 {
-                    mc.gameSettings.smoothCamera = gun.getGun().modules.zoom.smooth;
-                    float newFov = gun.getGun().modules.zoom.fovModifier - 0.1F;
-                    if(scope != null)
+                    Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+                    if(modifiedGun.modules.zoom != null)
                     {
-                        newFov -= scope.getAdditionalZoom();
-                        mc.gameSettings.smoothCamera = gun.getGun().modules.attachments.scope.smooth;
-                        if(scope.isSmoothCamera())
+                        float newFov = modifiedGun.modules.zoom.fovModifier;
+                        if(scope != null)
                         {
-                            mc.gameSettings.smoothCamera = true;
+                            newFov -= scope.getAdditionalZoom();
                         }
+                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (zoomProgress / (float) ZOOM_TICKS)));
                     }
-                    event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (zoomProgress / (float) ZOOM_TICKS)));
-                }
-                else
-                {
-                    mc.gameSettings.smoothCamera = this.lastSmoothCamera;
+                    return;
                 }
             }
-            else
-            {
-                mc.gameSettings.smoothCamera = this.lastSmoothCamera;
-            }
-        }
-        else
-        {
-            mc.gameSettings.smoothCamera = this.lastSmoothCamera;
         }
     }
 
@@ -173,9 +158,9 @@ public class GunRenderer
 
             if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
-                if(this.startTick == -1)
+                if(this.startReloadTick == -1)
                 {
-                    this.startTick = player.ticksExisted + 5;
+                    this.startReloadTick = player.ticksExisted + 5;
                 }
                 if(this.reloadTimer < 5)
                 {
@@ -184,9 +169,9 @@ public class GunRenderer
             }
             else
             {
-                if(this.startTick != -1)
+                if(this.startReloadTick != -1)
                 {
-                    this.startTick = -1;
+                    this.startReloadTick = -1;
                 }
                 if(this.reloadTimer > 0)
                 {
@@ -209,6 +194,27 @@ public class GunRenderer
     @SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
+        Minecraft mc = Minecraft.getInstance();
+        MatrixStack matrixStack = event.getMatrixStack();
+        if(mc.gameSettings.viewBobbing && mc.getRenderViewEntity() instanceof PlayerEntity)
+        {
+            PlayerEntity playerentity = (PlayerEntity) mc.getRenderViewEntity();
+            float deltaDistanceWalked = playerentity.distanceWalkedModified - playerentity.prevDistanceWalkedModified;
+            float distanceWalked = -(playerentity.distanceWalkedModified + deltaDistanceWalked * event.getPartialTicks());
+            float cameraYaw = MathHelper.lerp(event.getPartialTicks(), playerentity.prevCameraYaw, playerentity.cameraYaw);
+
+            /* Reverses the original bobbing rotations and translations so it can be controlled */
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-(Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(-(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
+            matrixStack.translate((double) -(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
+
+            /* The new controlled bobbing */
+            double invertZoomProgress = 1.0 - this.normalZoomProgress;
+            matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
+        }
+
         boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? event.getHand() == Hand.MAIN_HAND : event.getHand() == Hand.OFF_HAND;
         ItemStack heldItem = event.getItemStack();
 
@@ -217,7 +223,7 @@ public class GunRenderer
             ItemStack mainHandStack = Minecraft.getInstance().player.getHeldItemMainhand();
             if(mainHandStack.getItem() instanceof GunItem)
             {
-                if(((GunItem) mainHandStack.getItem()).getGun().general.gripType != GripType.ONE_HANDED)
+                if(((GunItem) mainHandStack.getItem()).getModifiedGun(mainHandStack).general.gripType != GripType.ONE_HANDED)
                 {
                     event.setCanceled(true);
                     return;
@@ -225,7 +231,10 @@ public class GunRenderer
             }
         }
 
-        if(!(heldItem.getItem() instanceof GunItem)) return;
+        if(!(heldItem.getItem() instanceof GunItem))
+        {
+            return;
+        }
 
         /* Cancel it because we are doing our own custom render */
         event.setCanceled(true);
@@ -243,7 +252,6 @@ public class GunRenderer
             scope = ((ScopeItem) scopeStack.getItem()).getScope();
         }
 
-        MatrixStack matrixStack = event.getMatrixStack();
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(heldItem);
         float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
         float scaleY = model.getItemCameraTransforms().firstperson_right.scale.getY();
@@ -253,39 +261,41 @@ public class GunRenderer
 
         matrixStack.push();
 
+        GunItem gunItem = (GunItem) heldItem.getItem();
+        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+
         if(this.normalZoomProgress > 0)
         {
-            GunItem gunItem = (GunItem) heldItem.getItem();
             if(event.getHand() == Hand.MAIN_HAND)
             {
                 double xOffset = 0.0;
                 double yOffset = 0.0;
                 double zOffset = 0.0;
 
-                Gun gun = gunItem.getGun();
-                if(gun.canAttachType(IAttachment.Type.SCOPE) && scope != null)
+                if(modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null)
                 {
-                    Gun.ScaledPositioned scaledPos = gun.modules.attachments.scope;
+                    Gun.ScaledPositioned scaledPos = modifiedGun.modules.attachments.scope;
                     xOffset -= scaledPos.xOffset * 0.0625 * scaleX;
                     yOffset -= scaledPos.yOffset * 0.0625 * scaleY - translateY + scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.scale;
-                    zOffset -= scaledPos.zOffset * 0.0625 * scaleZ - translateZ - 0.35;
+                    zOffset -= scaledPos.zOffset * 0.0625 * scaleZ - translateZ - 0.35 - 0.075;
                 }
-                else if(gun.modules.zoom != null)
+                else if(modifiedGun.modules.zoom != null)
                 {
-                    xOffset -= gun.modules.zoom.xOffset * 0.0625 * scaleX;
-                    yOffset -= gun.modules.zoom.yOffset * 0.0625 * scaleY - translateY;
-                    zOffset -= gun.modules.zoom.zOffset * 0.0625 * scaleZ - translateZ;
+                    xOffset -= modifiedGun.modules.zoom.xOffset * 0.0625 * scaleX;
+                    yOffset -= modifiedGun.modules.zoom.yOffset * 0.0625 * scaleY - translateY;
+                    zOffset -= modifiedGun.modules.zoom.zOffset * 0.0625 * scaleZ - translateZ;
                 }
                 double renderOffset = right ? -0.3415 : -0.3775;
-                matrixStack.translate((renderOffset + xOffset) * normalZoomProgress * (right ? 1F : -1F), yOffset * normalZoomProgress, zOffset * normalZoomProgress);
+                matrixStack.translate((renderOffset + xOffset) * this.normalZoomProgress * (right ? 1F : -1F), yOffset * this.normalZoomProgress, zOffset * normalZoomProgress);
             }
             else
             {
-                matrixStack.translate(0, -1 * normalZoomProgress, 0);
+                matrixStack.translate(0, -1 * this.normalZoomProgress, 0);
             }
         }
 
-        matrixStack.translate(0, -event.getEquipProgress(), 0);
+        float equipProgress = this.getEquipProgress(event.getPartialTicks());
+        matrixStack.translate(0, -equipProgress, 0);
 
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
 
@@ -297,7 +307,7 @@ public class GunRenderer
         matrixStack.translate(0.5602F - (right ? 0.0F : 0.72F), -0.55625F, -0.72F);
 
         /* Applies recoil and reload rotations */
-        this.applyRecoil(matrixStack, heldItem.getItem(), ((GunItem) heldItem.getItem()).getGun());
+        this.applyRecoil(matrixStack, heldItem.getItem(), modifiedGun);
         this.applyReload(matrixStack, event.getPartialTicks());
 
         /* Render offhand arm so it is holding the weapon. Only applies if it's a two handed weapon */
@@ -307,7 +317,7 @@ public class GunRenderer
         matrixStack.pop();
 
         /* Renders the weapon */
-        this.renderWeapon(matrixStack, Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getPartialTicks());
+        this.renderWeapon(Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getPartialTicks());
 
         matrixStack.pop();
     }
@@ -339,9 +349,9 @@ public class GunRenderer
 
         this.recoilAngle = gun.general.recoilAngle;
 
-        matrixStack.translate(0, 0, gun.general.recoilKick * 0.0625 * this.recoilNormal);
+        matrixStack.translate(0, 0, gun.general.recoilKick * 0.0625 * this.recoilNormal * (float) (1.0 - (0.9 * this.normalZoomProgress)));
         matrixStack.translate(0, 0, 0.35);
-        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) (gun.general.recoilAngle * this.recoilNormal)));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) (gun.general.recoilAngle * this.recoilNormal) * (float) (1.0 - (0.9 * this.normalZoomProgress))));
         matrixStack.translate(0, 0, -0.35);
     }
 
@@ -352,7 +362,7 @@ public class GunRenderer
             ItemStack stack = player.getHeldItemMainhand();
             if(stack.getItem() instanceof GunItem)
             {
-                Gun gun = ((GunItem) stack.getItem()).getGun();
+                Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
                 return gun.modules != null && gun.modules.zoom != null && ClientHandler.isAiming();
             }
         }
@@ -417,11 +427,11 @@ public class GunRenderer
         if(heldItem.getItem() instanceof GunItem)
         {
             event.setCanceled(true);
-            Gun gun = ((GunItem) heldItem.getItem()).getGun();
+            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(hand, entity instanceof PlayerEntity ? AimTracker.getAimProgress((PlayerEntity) entity, event.getPartialTicks()) : 0.0F, event.getMatrixStack(), event.getRenderTypeBuffer());
             if(hand == Hand.MAIN_HAND)
             {
-                this.renderWeapon(event.getMatrixStack(), entity, heldItem, event.getTransformType(), event.getPartialTicks());
+                this.renderWeapon(entity, heldItem, event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks());
             }
         }
 
@@ -430,17 +440,17 @@ public class GunRenderer
             ItemStack mainHandStack = entity.getHeldItemMainhand();
             if(!mainHandStack.isEmpty() && mainHandStack.getItem() instanceof GunItem)
             {
-                Gun mainHandGun = ((GunItem) mainHandStack.getItem()).getGun();
+                Gun mainHandGun = ((GunItem) mainHandStack.getItem()).getModifiedGun(mainHandStack);
                 if(!mainHandGun.general.gripType.canRenderOffhand())
                 {
                     event.setCanceled(true);
                 }
                 else if(heldItem.getItem() instanceof GunItem)
                 {
-                    Gun gun = ((GunItem) heldItem.getItem()).getGun();
+                    Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
                     if(gun.general.gripType.canRenderOffhand())
                     {
-                        this.renderWeapon(event.getMatrixStack(), entity, heldItem, event.getTransformType(), event.getPartialTicks());
+                        this.renderWeapon(entity, heldItem, event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks());
                     }
                 }
             }
@@ -455,7 +465,7 @@ public class GunRenderer
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
             PlayerModel model = event.getModelPlayer();
-            Gun gun = ((GunItem) heldItem.getItem()).getGun();
+            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             gun.general.gripType.getHeldAnimation().applyPlayerModelRotation(model, Hand.MAIN_HAND, AimTracker.getAimProgress((PlayerEntity) event.getEntity(), event.getPartialTicks()));
             copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
             copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
@@ -469,7 +479,7 @@ public class GunRenderer
         ItemStack heldItem = player.getHeldItemMainhand();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
-            Gun gun = ((GunItem) heldItem.getItem()).getGun();
+            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             gun.general.gripType.getHeldAnimation().applyPlayerPreRender(player, Hand.MAIN_HAND, AimTracker.getAimProgress((PlayerEntity) event.getEntity(), event.getPartialRenderTick()), event.getMatrixStack(), event.getBuffers());
         }
     }
@@ -501,10 +511,11 @@ public class GunRenderer
         ItemStack heldItem = player.getHeldItemOffhand();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
-            Gun gun = ((GunItem) heldItem.getItem()).getGun();
+            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             if(!gun.general.gripType.canRenderOffhand())
             {
                 matrixStack.push();
+
                 matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
                 if(player.isCrouching())
@@ -518,7 +529,10 @@ public class GunRenderer
                 }
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees(-45F));
                 matrixStack.scale(0.5F, 0.5F, 0.5F);
-                this.renderWeapon(matrixStack, player, heldItem, ItemCameraTransforms.TransformType.FIXED, event.getPartialTicks());
+
+                IRenderTypeBuffer buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+                this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, matrixStack, buffer, event.getLight(), event.getPartialTicks());
+
                 matrixStack.pop();
             }
             else
@@ -538,7 +552,8 @@ public class GunRenderer
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees(75F));
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(event.getModelPlayer().bipedRightLeg.rotateAngleX) / 10F)));
                 matrixStack.scale(0.5F, 0.5F, 0.5F);
-                this.renderWeapon(matrixStack, player, heldItem, ItemCameraTransforms.TransformType.FIXED, event.getPartialTicks());
+                IRenderTypeBuffer buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+                this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, matrixStack, buffer, event.getLight(), event.getPartialTicks());
                 matrixStack.pop();
             }
         }
@@ -548,17 +563,17 @@ public class GunRenderer
     public void onRenderEntityItem(RenderItemEvent.Entity.Pre event)
     {
         Minecraft mc = Minecraft.getInstance();
-        event.setCanceled(this.renderWeapon(event.getMatrixStack(), mc.player, event.getItem(), event.getTransformType(), event.getPartialTicks()));
+        event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
     }
 
     @SubscribeEvent
     public void onRenderEntityItem(RenderItemEvent.Gui.Pre event)
     {
         Minecraft mc = Minecraft.getInstance();
-        event.setCanceled(this.renderWeapon(event.getMatrixStack(), mc.player, event.getItem(), event.getTransformType(), event.getPartialTicks()));
+        event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
     }
 
-    private boolean renderWeapon(MatrixStack matrixStack, LivingEntity entity, ItemStack stack, ItemCameraTransforms.TransformType transformType, float partialTicks)
+    private boolean renderWeapon(LivingEntity entity, ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
     {
         if(stack.getItem() instanceof GunItem)
         {
@@ -581,8 +596,8 @@ public class GunRenderer
                 this.renderMuzzleFlash(matrixStack, stack);
             }
 
-            this.renderGun(entity, transformType, model.isEmpty() ? stack : model, partialTicks);
-            this.renderAttachments(matrixStack, entity, transformType, stack, partialTicks);
+            this.renderGun(entity, transformType, model.isEmpty() ? stack : model, matrixStack, renderTypeBuffer, light, partialTicks);
+            this.renderAttachments(entity, transformType, stack, matrixStack, renderTypeBuffer, light, partialTicks);
 
             matrixStack.pop();
             return true;
@@ -590,27 +605,27 @@ public class GunRenderer
         return false;
     }
 
-    private void renderGun(LivingEntity entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, float partialTicks)
+    private void renderGun(LivingEntity entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
     {
         if(ModelOverrides.hasModel(stack))
         {
             IOverrideModel model = ModelOverrides.getModel(stack);
             if(model != null)
             {
-                model.render(partialTicks, transformType, stack, ItemStack.EMPTY, entity);
+                model.render(partialTicks, transformType, stack, ItemStack.EMPTY, entity, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
             }
         }
         else
         {
-            RenderUtil.renderModel(stack);
+            RenderUtil.renderModel(stack, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
         }
     }
 
-    private void renderAttachments(MatrixStack matrixStack, LivingEntity entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, float partialTicks)
+    private void renderAttachments(LivingEntity entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
     {
         if(stack.getItem() instanceof GunItem)
         {
-            Gun gun = ((GunItem) stack.getItem()).getGun();
+            Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
             CompoundNBT gunTag = ItemStackUtil.createTagCompound(stack);
             CompoundNBT attachments = gunTag.getCompound("Attachments");
             for(String attachmentKey : attachments.keySet())
@@ -635,11 +650,11 @@ public class GunRenderer
                             IOverrideModel model = ModelOverrides.getModel(attachmentStack);
                             if(model != null)
                             {
-                                model.render(partialTicks, transformType, attachmentStack, stack, entity);
+                                model.render(partialTicks, transformType, attachmentStack, stack, entity, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
                             }
                             else
                             {
-                                RenderUtil.renderModel(attachmentStack, stack);
+                                RenderUtil.renderModel(attachmentStack, stack, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
                             }
 
                             matrixStack.pop();
@@ -739,7 +754,7 @@ public class GunRenderer
     private void renderReloadArm(MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, ItemStack stack, HandSide hand)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null || mc.player.ticksExisted < startTick || reloadTimer != 5)
+        if(mc.player == null || mc.player.ticksExisted < startReloadTick || reloadTimer != 5)
         {
             return;
         }
@@ -753,7 +768,7 @@ public class GunRenderer
 
         matrixStack.push();
 
-        float reload = ((mc.player.ticksExisted - this.startTick + mc.getRenderPartialTicks()) % 10F) / 10F;
+        float reload = ((mc.player.ticksExisted - this.startReloadTick + mc.getRenderPartialTicks()) % 10F) / 10F;
         float percent = 1.0F - reload;
         if(percent >= 0.5F)
         {
@@ -781,7 +796,7 @@ public class GunRenderer
             matrixStack.translate(-side * 5 * 0.0625, 15 * 0.0625, -1 * 0.0625);
             matrixStack.rotate(Vector3f.XP.rotationDegrees(180F));
             matrixStack.scale(0.75F, 0.75F, 0.75F);
-            RenderUtil.renderModel(new ItemStack(ammo), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND);
+            RenderUtil.renderModel(new ItemStack(ammo), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, matrixStack, buffer, light, OverlayTexture.NO_OVERLAY);
             matrixStack.pop();
         }
 
@@ -837,8 +852,72 @@ public class GunRenderer
         GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0);
     }
 
+    /**
+     * 
+     * @param sensitivity
+     * @return
+     */
     public double applyZoomSensitivity(double sensitivity)
     {
-        return sensitivity * (1.0 - (1.0 - GunMod.getOptions().getAdsSensitivity()) * this.normalZoomProgress);
+        float additionalAdsSensitivity = 1.0F;
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player != null && !mc.player.getHeldItemMainhand().isEmpty() && mc.gameSettings.thirdPersonView == 0)
+        {
+            ItemStack heldItem = mc.player.getHeldItemMainhand();
+            if(heldItem.getItem() instanceof GunItem)
+            {
+                ItemStack scopeStack = Gun.getScope(heldItem);
+                Scope scope = null;
+                if(scopeStack.getItem() instanceof ScopeItem)
+                {
+                    scope = ((ScopeItem) scopeStack.getItem()).getScope();
+                }
+                GunItem gunItem = (GunItem) heldItem.getItem();
+                if(isZooming(Minecraft.getInstance().player) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
+                {
+                    Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+                    if(modifiedGun.modules.zoom != null)
+                    {
+                        float newFov = modifiedGun.modules.zoom.fovModifier;
+                        if(scope != null)
+                        {
+                            newFov -= scope.getAdditionalZoom();
+                        }
+                        additionalAdsSensitivity = MathHelper.clamp(1.0F - (1.0F / newFov) / 10F, 0.0F, 1.0F);
+                    }
+                }
+            }
+        }
+        return sensitivity * (1.0 - (1.0 - GunMod.getOptions().getAdsSensitivity()) * this.normalZoomProgress) * additionalAdsSensitivity;
+    }
+
+    /**
+     * A temporary hack to get the equip progress until Forge fixes the issue.
+     * @return
+     */
+    private float getEquipProgress(float partialTicks)
+    {
+        if(this.equippedProgressMainHandField == null)
+        {
+            this.equippedProgressMainHandField = ObfuscationReflectionHelper.findField(FirstPersonRenderer.class, "field_187469_f");
+            this.equippedProgressMainHandField.setAccessible(true);
+        }
+        if(this.prevEquippedProgressMainHandField == null)
+        {
+            this.prevEquippedProgressMainHandField = ObfuscationReflectionHelper.findField(FirstPersonRenderer.class, "field_187470_g");
+            this.prevEquippedProgressMainHandField.setAccessible(true);
+        }
+        FirstPersonRenderer firstPersonRenderer = Minecraft.getInstance().getFirstPersonRenderer();
+        try
+        {
+            float equippedProgressMainHand = (float) this.equippedProgressMainHandField.get(firstPersonRenderer);
+            float prevEquippedProgressMainHand = (float) this.prevEquippedProgressMainHandField.get(firstPersonRenderer);
+            return 1.0F - MathHelper.lerp(partialTicks, prevEquippedProgressMainHand, equippedProgressMainHand);
+        }
+        catch(IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        return 0.0F;
     }
 }

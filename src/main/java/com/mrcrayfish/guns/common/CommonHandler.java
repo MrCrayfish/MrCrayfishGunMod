@@ -294,7 +294,7 @@ public class CommonHandler
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.START && !event.player.world.isRemote)
+        if(event.phase == TickEvent.Phase.END && !event.player.world.isRemote)
         {
             CommonHandler.getCooldownTracker(event.player.getUniqueID()).tick();
         }
