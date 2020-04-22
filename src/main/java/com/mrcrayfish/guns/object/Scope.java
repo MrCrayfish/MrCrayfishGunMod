@@ -86,11 +86,6 @@ public class Scope
         return this.stable;
     }
 
-    public boolean isSmoothCamera()
-    {
-        return smoothCamera;
-    }
-
     public static Scope create(float additionalZoom, double centerOffset)
     {
         return new Scope(additionalZoom, centerOffset);

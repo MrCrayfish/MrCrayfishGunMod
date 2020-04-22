@@ -408,31 +408,9 @@ public class Gun implements INBTSerializable<CompoundNBT>
 
             public static class Scope extends ScaledPositioned
             {
-                @Optional
-                public boolean smooth;
-
-                @Override
-                public CompoundNBT serializeNBT()
-                {
-                    CompoundNBT tag = super.serializeNBT();
-                    tag.putBoolean("Smooth", this.smooth);
-                    return tag;
-                }
-
-                @Override
-                public void deserializeNBT(CompoundNBT tag)
-                {
-                    super.deserializeNBT(tag);
-                    if(tag.contains("Smooth", Constants.NBT.TAG_BYTE))
-                    {
-                        this.smooth = tag.getBoolean("Smooth");
-                    }
-                }
-
                 public Scope copy()
                 {
                     Scope scope = new Scope();
-                    scope.smooth = this.smooth;
                     scope.scale = this.scale;
                     scope.xOffset = this.xOffset;
                     scope.yOffset = this.yOffset;

@@ -836,4 +836,9 @@ public class GunRenderer
         GlStateManager.bindTexture(screenTextureId);
         GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0);
     }
+
+    public double applyZoomSensitivity(double sensitivity)
+    {
+        return sensitivity * (1.0 - 0.25 * this.normalZoomProgress);
+    }
 }
