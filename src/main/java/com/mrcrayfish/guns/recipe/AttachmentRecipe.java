@@ -1,17 +1,30 @@
 package com.mrcrayfish.guns.recipe;
 
+import com.mrcrayfish.guns.init.ModRecipeSerializers;
+import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.util.ItemStackUtil;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+
 /**
  * Author: MrCrayfish
  */
-public class RecipeAttachment
+public class AttachmentRecipe extends SpecialRecipe
 {
-    /*public RecipeAttachment()
+    public AttachmentRecipe(ResourceLocation id)
     {
-        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "attachment"));
+        super(id);
     }
 
     @Override
-    public boolean matches(InventoryCrafting inv, World worldIn)
+    public boolean matches(CraftingInventory inv, World worldIn)
     {
         ItemStack weapon = ItemStack.EMPTY;
         ItemStack attachment = ItemStack.EMPTY;
@@ -24,23 +37,27 @@ public class RecipeAttachment
                 if(stack.getItem() instanceof GunItem)
                 {
                     if(!weapon.isEmpty())
+                    {
                         return false;
+                    }
                     weapon = stack;
                 }
 
                 if(stack.getItem() instanceof IAttachment)
                 {
                     if(!attachment.isEmpty())
+                    {
                         return false;
+                    }
                     attachment = stack;
                 }
             }
         }
 
-        if(!weapon.isEmpty()&& !attachment.isEmpty())
+        if(!weapon.isEmpty() && !attachment.isEmpty())
         {
-            IAttachment.Type type = ((IAttachment)attachment.getItem()).getType();
-            Gun gun = ((GunItem)weapon.getItem()).getGun();
+            IAttachment.Type type = ((IAttachment) attachment.getItem()).getType();
+            Gun gun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
             return gun.canAttachType(type);
         }
 
@@ -48,7 +65,7 @@ public class RecipeAttachment
     }
 
     @Override
-    public ItemStack getCraftingResult(InventoryCrafting inv)
+    public ItemStack getCraftingResult(CraftingInventory inv)
     {
         ItemStack gun = ItemStack.EMPTY;
         ItemStack attachment = ItemStack.EMPTY;
@@ -76,8 +93,8 @@ public class RecipeAttachment
 
         CompoundNBT itemTag = new CompoundNBT();
         CompoundNBT attachments = new CompoundNBT();
-        attachments.setTag(((IAttachment)attachment.getItem()).getType().getName(), attachment.writeToNBT(new CompoundNBT()));
-        itemTag.setTag("attachments", attachments);
+        attachments.put(((IAttachment)attachment.getItem()).getType().getId(), attachment.write(new CompoundNBT()));
+        itemTag.put("Attachments", attachments);
 
         CompoundNBT gunTag = ItemStackUtil.createTagCompound(gun);
         gunTag.merge(itemTag);
@@ -92,8 +109,16 @@ public class RecipeAttachment
     }
 
     @Override
+    public IRecipeSerializer<?> getSerializer()
+    {
+        return ModRecipeSerializers.ATTACHMENT.get();
+    }
+
+
+    @Override
     public ItemStack getRecipeOutput()
     {
         return ItemStack.EMPTY;
-    }*/
+    }
+
 }

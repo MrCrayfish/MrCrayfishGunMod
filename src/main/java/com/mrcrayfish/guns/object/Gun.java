@@ -707,9 +707,9 @@ public class Gun implements INBTSerializable<CompoundNBT>
         if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
         {
             CompoundNBT attachment = compound.getCompound("Attachments");
-            if(attachment.contains(type.getName(), Constants.NBT.TAG_COMPOUND))
+            if(attachment.contains(type.getId(), Constants.NBT.TAG_COMPOUND))
             {
-                return ItemStack.read(attachment.getCompound(type.getName()));
+                return ItemStack.read(attachment.getCompound(type.getId()));
             }
         }
         return ItemStack.EMPTY;
