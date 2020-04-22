@@ -14,7 +14,7 @@
         "visible": false,
         "damage": 15.0,
         "size": 1.0,
-        "speed": 10.0,
+        "speed": 15.0,
         "life": 3,
         "gravity": false,
         "damageReduceOverLife": true,

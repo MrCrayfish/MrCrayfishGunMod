@@ -13,7 +13,7 @@
         "gravity": true,
         "damage": 20.0,
         "size": 0.0625,
-        "speed": 15.0,
+        "speed": 30.0,
         "life": 10,
         "damageReduceIfNotZoomed": true
     },
