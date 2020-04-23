@@ -16,6 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -28,7 +29,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.*;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -144,37 +144,37 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         this.updateHeading();
         this.onTick();
 
-        //TODO convert to new ProjectileHelper
-        Vec3d startVec = new Vec3d(this.getPosX(), this.getPosY(), this.getPosZ());
-        Vec3d endVec = new Vec3d(this.getPosX() + this.getMotion().getX(), this.getPosY() + this.getMotion().getY(), this.getPosZ() + this.getMotion().getZ());
-        RayTraceResult result = this.world.rayTraceBlocks(new RayTraceContext(startVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-        startVec = new Vec3d(this.getPosX(), this.getPosY(), this.getPosZ());
-        endVec = new Vec3d(this.getPosX() + this.getMotion().getX(), this.getPosY() + this.getMotion().getY(), this.getPosZ() + this.getMotion().getZ());
-
-        if(result != null)
+        if(!this.world.isRemote())
         {
-            endVec = new Vec3d(result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
-        }
-
-        EntityResult entityResult = this.findEntityOnPath(startVec, endVec);
-        if(entityResult != null)
-        {
-            result = new EntityRayTraceResult(entityResult.entity, entityResult.hitVec);
-        }
-
-        if(result instanceof EntityRayTraceResult && ((EntityRayTraceResult) result).getEntity() instanceof PlayerEntity)
-        {
-            PlayerEntity player = (PlayerEntity) ((EntityRayTraceResult) result).getEntity();
-
-            if(this.shooter instanceof PlayerEntity && !((PlayerEntity) this.shooter).canAttackPlayer(player))
+            //TODO convert to new ProjectileHelper
+            Vec3d startVec = this.getPositionVec();
+            Vec3d endVec = startVec.add(this.getMotion());
+            RayTraceResult result = this.world.rayTraceBlocks(new RayTraceContext(startVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+            if(result.getType() != RayTraceResult.Type.MISS)
             {
-                result = null;
+                endVec = result.getHitVec();
             }
-        }
 
-        if(result != null && !world.isRemote)
-        {
-            this.onHit(result);
+            EntityResult entityResult = this.findEntityOnPath(startVec, endVec);
+            if(entityResult != null)
+            {
+                result = new EntityRayTraceResult(entityResult.entity, entityResult.hitVec);
+            }
+
+            if(result instanceof EntityRayTraceResult && ((EntityRayTraceResult) result).getEntity() instanceof PlayerEntity)
+            {
+                PlayerEntity player = (PlayerEntity) ((EntityRayTraceResult) result).getEntity();
+
+                if(this.shooter instanceof PlayerEntity && !((PlayerEntity) this.shooter).canAttackPlayer(player))
+                {
+                    result = null;
+                }
+            }
+
+            if(result != null)
+            {
+                this.onHit(result);
+            }
         }
 
         double nextPosX = this.getPosX() + this.getMotion().getX();
@@ -206,45 +206,45 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Nullable
-    protected EntityResult findEntityOnPath(Vec3d start, Vec3d end)
+    protected EntityResult findEntityOnPath(Vec3d startVec, Vec3d endVec)
     {
         Vec3d hitVec = null;
-        Entity foundEntity = null;
+        Entity hitEntity = null;
         List<Entity> entities = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0), PROJECTILE_TARGETS);
-        double closestDistance = 0.0D;
+        double closestDistance = Double.MAX_VALUE;
         for(Entity entity : entities)
         {
             if(!entity.equals(this.shooter))
             {
-                AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, 0.0625, 0); //Player bounding box is one pixel off from the top of the head
-                Optional<Vec3d> hitPos = boundingBox.rayTrace(start, end);
-                if(!hitPos.isPresent())
+                double expandHeight = entity instanceof PlayerEntity ? 0.0625 : 0.0;
+                AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, expandHeight, 0);
+                Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
+                Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.growBoundingBoxAmount.get(), 0, Config.COMMON.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
+                if(!hitPos.isPresent() && grownHitPos.isPresent())
                 {
-                    boundingBox = entity.getBoundingBox().grow(Config.COMMON.growBoundingBoxAmount.get(), 0.0625, Config.COMMON.growBoundingBoxAmount.get());
-                    hitPos = boundingBox.rayTrace(start, end);
-                    if(!hitPos.isPresent())
+                    RayTraceResult raytraceresult = this.world.rayTraceBlocks(new RayTraceContext(startVec, grownHitPos.get(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+                    if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
                     {
                         continue;
                     }
-
-                    Vec3d entityVec = new Vec3d(entity.getPosX(), hitPos.get().y, entity.getPosZ());
-                    RayTraceResult raytraceresult = world.rayTraceBlocks(new RayTraceContext(hitPos.get(), entityVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-                    if(raytraceresult.getType() == RayTraceResult.Type.MISS)
-                    {
-                        continue;
-                    }
+                    hitPos = grownHitPos;
                 }
 
-                double distanceToHit = start.squareDistanceTo(hitPos.get());
-                if(distanceToHit < closestDistance || closestDistance == 0.0)
+                if(!hitPos.isPresent())
+                {
+                    continue;
+                }
+
+                double distanceToHit = startVec.distanceTo(hitPos.get());
+                if(distanceToHit < closestDistance)
                 {
                     hitVec = hitPos.get();
-                    foundEntity = entity;
+                    hitEntity = entity;
                     closestDistance = distanceToHit;
                 }
             }
         }
-        return foundEntity != null ? new EntityResult(foundEntity, hitVec) : null;
+        return hitEntity != null ? new EntityResult(hitEntity, hitVec) : null;
     }
 
     private void onHit(RayTraceResult result)
