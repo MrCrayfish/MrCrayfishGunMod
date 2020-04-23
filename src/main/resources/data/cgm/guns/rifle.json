@@ -3,9 +3,10 @@
         "rate": 40,
         "gripType": "two_handed",
         "maxAmmo": 1,
-        "recoilAngle": 5.0,
+        "recoilAngle": 10.0,
         "recoilKick": 1.0,
-        "recoilDurationOffset": 0.25
+        "recoilDurationOffset": 0.25,
+        "recoilAdsReduction": 0.9
     },
     "projectile": {
         "item": "cgm:advanced_ammo",

@@ -3,7 +3,8 @@
         "rate": 12,
         "gripType": "one_handed",
         "maxAmmo": 15,
-        "recoilAngle": 15.0
+        "recoilAngle": 15.0,
+        "recoilAdsReduction": 0.1
     },
     "projectile": {
         "item": "cgm:basic_ammo",
