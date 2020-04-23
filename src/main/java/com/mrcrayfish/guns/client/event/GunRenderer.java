@@ -349,9 +349,9 @@ public class GunRenderer
 
         this.recoilAngle = gun.general.recoilAngle;
 
-        matrixStack.translate(0, 0, gun.general.recoilKick * 0.0625 * this.recoilNormal * (float) (1.0 - (0.9 * this.normalZoomProgress)));
+        matrixStack.translate(0, 0, gun.general.recoilKick * 0.0625 * this.recoilNormal * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress)));
         matrixStack.translate(0, 0, 0.35);
-        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) (gun.general.recoilAngle * this.recoilNormal) * (float) (1.0 - (0.9 * this.normalZoomProgress))));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) (gun.general.recoilAngle * this.recoilNormal) * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress))));
         matrixStack.translate(0, 0, -0.35);
     }
 
