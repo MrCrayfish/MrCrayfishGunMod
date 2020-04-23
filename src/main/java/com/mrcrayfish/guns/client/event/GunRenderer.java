@@ -853,7 +853,7 @@ public class GunRenderer
     }
 
     /**
-     * 
+     *
      * @param sensitivity
      * @return
      */

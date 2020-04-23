@@ -11,6 +11,8 @@ import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.LongScopeModel;
+import com.mrcrayfish.guns.client.render.gun.model.MediumScopeModel;
+import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
 import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModEntities;
@@ -103,9 +105,9 @@ public class ClientHandler
             }
         });
 
-		//ModelOverrides.register(new ItemStack(ModItems.MINI_GUN), new ModelChainGun());
-		//ModelOverrides.register(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.SMALL.ordinal()), new ModelShortScope());
-		//ModelOverrides.register(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.MEDIUM.ordinal()), new ModelMediumScope());
+		//ModelOverrides.register(new ItemStack(ModItems.MINI_GUN), new MiniGunModel());
+		ModelOverrides.register(new ItemStack(ModItems.SHORT_SCOPE.get()), new ShortScopeModel());
+		ModelOverrides.register(new ItemStack(ModItems.MEDIUM_SCOPE.get()), new MediumScopeModel());
 		ModelOverrides.register(new ItemStack(ModItems.LONG_SCOPE.get()), new LongScopeModel());
 
 		/*WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.PISTOL), new DisplayProperty(0.0F, 0.55F, -0.25F, 0.0F, 0.0F, 0.0F, 3.0F));
