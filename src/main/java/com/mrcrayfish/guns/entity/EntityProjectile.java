@@ -14,6 +14,7 @@ import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
+import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
@@ -297,7 +298,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         if(Config.COMMON.enableHeadShots.get() && entity instanceof PlayerEntity)
         {
             AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, 0.0625, 0);
-            if(boundingBox.maxY - y <= 8.0 * 0.0625)
+            if(boundingBox.maxY - y <= 8.0 * 0.0625 && boundingBox.grow(0.001).contains(new Vec3d(x, y, z)))
             {
                 headShot = true;
                 damage *= Config.COMMON.headShotDamageMultiplier.get();
@@ -307,11 +308,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
         entity.attackEntityFrom(source, damage);
 
-        if(entity instanceof PlayerEntity && shooter instanceof ServerPlayerEntity)
+        if(entity instanceof PlayerEntity && this.shooter instanceof ServerPlayerEntity)
         {
             SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
-            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 3.0F));
+            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }
     }
 
