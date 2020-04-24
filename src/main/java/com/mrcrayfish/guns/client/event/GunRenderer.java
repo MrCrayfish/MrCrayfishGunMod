@@ -427,6 +427,17 @@ public class GunRenderer
         if(heldItem.getItem() instanceof GunItem)
         {
             event.setCanceled(true);
+
+            if(heldItem.getTag() != null)
+            {
+                CompoundNBT compound = heldItem.getTag();
+                if(compound.contains("Scale", Constants.NBT.TAG_FLOAT))
+                {
+                    float scale = compound.getFloat("Scale");
+                    event.getMatrixStack().scale(scale, scale, scale);
+                }
+            }
+
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             gun.general.gripType.getHeldAnimation().applyHeldItemTransforms(hand, entity instanceof PlayerEntity ? AimTracker.getAimProgress((PlayerEntity) entity, event.getPartialTicks()) : 0.0F, event.getMatrixStack(), event.getRenderTypeBuffer());
             if(hand == Hand.MAIN_HAND)
