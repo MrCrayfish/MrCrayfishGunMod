@@ -414,7 +414,8 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"translation": [0, 6, -7]
+			"translation": [0, 6, -7.5],
+			"scale": [1.1, 1.1, 1.1]
 		},
 		"firstperson_righthand": {
 			"translation": [-3.5, 8.5, 0],
