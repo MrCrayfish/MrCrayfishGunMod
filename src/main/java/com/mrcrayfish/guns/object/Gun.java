@@ -153,7 +153,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         public boolean damageReduceIfNotZoomed;
         @Optional
-        public int trailColor = 0xFFFFFF;
+        public int trailColor = 0xFFD289;
         @Optional
         public double trailLengthMultiplier = 1.0;
 

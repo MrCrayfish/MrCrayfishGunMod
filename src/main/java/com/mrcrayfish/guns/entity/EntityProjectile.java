@@ -386,6 +386,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         return this.shooter;
     }
 
+    public int getShooterId()
+    {
+        return shooterId;
+    }
+
     public float getDamage()
     {
         float damage = (this.projectile.damage + this.additionalDamage) * this.damageModifier;

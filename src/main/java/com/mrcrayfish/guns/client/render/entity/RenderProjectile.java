@@ -27,10 +27,10 @@ public class RenderProjectile extends EntityRenderer<EntityProjectile>
     @Override
     public void render(EntityProjectile entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        /*if(!entity.getProjectile().visible)
+        if(!entity.getProjectile().visible)
         {
             return;
-        }*/
+        }
 
         matrixStack.push();
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
