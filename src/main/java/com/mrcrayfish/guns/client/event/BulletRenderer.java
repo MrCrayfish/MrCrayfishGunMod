@@ -108,7 +108,7 @@ public class BulletRenderer
         Matrix4f matrix4f = matrixStack.getLast().getMatrix();
         IRenderTypeBuffer.Impl renderTypeBuffer = mc.getRenderTypeBuffers().getBufferSource();
 
-        if(bullet.getProjectile().getShooterId() != mc.player.getEntityId())
+        if(bullet.getProjectile().getShooterId() != entity.getEntityId())
         {
             RenderType bulletType = getBulletTrail();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType); //TODO probably will crash
@@ -134,7 +134,7 @@ public class BulletRenderer
         matrixStack.scale(0.275F, 0.275F, 0.275F);
 
         int combinedLight = WorldRenderer.getCombinedLight(entity.world, entity.getPosition());
-        ItemStack stack = new ItemStack(Blocks.REDSTONE_BLOCK);
+        ItemStack stack = bullet.getProjectile().getItem();
         RenderType renderType = RenderTypeLookup.getRenderType(stack);
         RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, matrixStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY);
         Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(renderType);

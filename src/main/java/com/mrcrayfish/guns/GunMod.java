@@ -70,8 +70,10 @@ public class GunMod
     {
         //ModCrafting.register(); //TODO convert to datapack
         //ModEntities.register();
+        AmmoRegistry.getInstance().setup();
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.GRENADE.get(), (worldIn, entity, item, modifiedGun) -> new EntityGrenade(ModEntities.GRENADE.get(), worldIn, entity, item, modifiedGun));
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.MISSILE.get(), (worldIn, entity, item, modifiedGun) -> new EntityMissile(ModEntities.MISSILE.get(), worldIn, entity, item, modifiedGun));
+
         PacketHandler.init();
     }
 

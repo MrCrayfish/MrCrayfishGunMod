@@ -125,7 +125,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
     public ItemStack getItem()
     {
-        return new ItemStack(Blocks.REDSTONE_BLOCK);
+        return this.item;
     }
 
     public void setDamageModifier(float damageModifier)

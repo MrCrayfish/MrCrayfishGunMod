@@ -7,9 +7,7 @@ import com.mrcrayfish.guns.init.ModEntities;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
@@ -30,28 +28,42 @@ public class AmmoRegistry
 
     private final ProjectileFactory DEFAULT_FACTORY = (worldIn, entity, item, modifiedGun) -> new EntityProjectile(ModEntities.PROJECTILE.get(), worldIn, entity, item, modifiedGun);
 
-    private final Map<ResourceLocation, AmmoItem> AMMO = new HashMap<>();
-    private final Map<ResourceLocation, ProjectileFactory> FACTORIES = new HashMap<>();
+    private boolean setup = false;
+    private final List<AmmoItem> registeredAmmo = new ArrayList<>();
+    private final Map<ResourceLocation, AmmoItem> ammoMap = new HashMap<>();
+    private final Map<ResourceLocation, ProjectileFactory> ammoFactories = new HashMap<>();
 
     void register(AmmoItem ammo)
     {
-        Objects.requireNonNull(ammo.getRegistryName());
-        AMMO.put(ammo.getRegistryName(), ammo);
+        this.registeredAmmo.add(ammo);
+    }
+
+    public void setup()
+    {
+        if(!this.setup)
+        {
+            this.registeredAmmo.forEach(ammoItem ->
+            {
+                Objects.requireNonNull(ammoItem.getRegistryName());
+                this.ammoMap.put(ammoItem.getRegistryName(), ammoItem);
+            });
+            this.setup = true;
+        }
     }
 
     public void registerProjectileFactory(AmmoItem ammo, ProjectileFactory factory)
     {
-        FACTORIES.put(ammo.getRegistryName(), factory);
+        this.ammoFactories.put(ammo.getRegistryName(), factory);
     }
 
     @Nullable
     public AmmoItem getAmmo(ResourceLocation id)
     {
-        return AMMO.get(id);
+        return this.ammoMap.get(id);
     }
 
     public ProjectileFactory getFactory(ResourceLocation id)
     {
-        return FACTORIES.getOrDefault(id, DEFAULT_FACTORY);
+        return this.ammoFactories.getOrDefault(id, DEFAULT_FACTORY);
     }
 }
