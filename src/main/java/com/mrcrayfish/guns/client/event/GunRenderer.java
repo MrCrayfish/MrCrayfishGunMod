@@ -256,8 +256,9 @@ public class GunRenderer
         float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
         float scaleY = model.getItemCameraTransforms().firstperson_right.scale.getY();
         float scaleZ = model.getItemCameraTransforms().firstperson_right.scale.getZ();
-        float translateY = model.getItemCameraTransforms().firstperson_right.translation.getY() * scaleY;
-        float translateZ = model.getItemCameraTransforms().firstperson_right.translation.getZ() * scaleZ;
+        float translateX = model.getItemCameraTransforms().firstperson_right.translation.getX();
+        float translateY = model.getItemCameraTransforms().firstperson_right.translation.getY();
+        float translateZ = model.getItemCameraTransforms().firstperson_right.translation.getZ();
 
         matrixStack.push();
 
@@ -275,18 +276,25 @@ public class GunRenderer
                 if(modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null)
                 {
                     Gun.ScaledPositioned scaledPos = modifiedGun.modules.attachments.scope;
-                    xOffset -= scaledPos.xOffset * 0.0625 * scaleX;
-                    yOffset -= scaledPos.yOffset * 0.0625 * scaleY - translateY + scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.scale;
-                    zOffset -= scaledPos.zOffset * 0.0625 * scaleZ - translateZ - 0.35 - 0.075;
+                    xOffset = -translateX + scaledPos.xOffset  * 0.0625 * scaleX;
+                    yOffset = -translateY + (8 - scaledPos.yOffset) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.scale;
+                    zOffset = -translateZ + scaledPos.zOffset  * 0.0625 * scaleZ;
                 }
                 else if(modifiedGun.modules.zoom != null)
                 {
-                    xOffset -= modifiedGun.modules.zoom.xOffset * 0.0625 * scaleX;
-                    yOffset -= modifiedGun.modules.zoom.yOffset * 0.0625 * scaleY - translateY;
-                    zOffset -= modifiedGun.modules.zoom.zOffset * 0.0625 * scaleZ - translateZ;
+                    xOffset = -translateX + modifiedGun.modules.zoom.xOffset * 0.0625 * scaleX;
+                    yOffset = -translateY + (8 - modifiedGun.modules.zoom.yOffset) * 0.0625 * scaleY;
+                    zOffset = -translateZ + modifiedGun.modules.zoom.zOffset * 0.0625 * scaleZ;
                 }
-                double renderOffset = right ? -0.3415 : -0.3775;
-                matrixStack.translate((renderOffset + xOffset) * this.normalZoomProgress * (right ? 1F : -1F), yOffset * this.normalZoomProgress, zOffset * normalZoomProgress);
+
+                /* Controls the direction of the following translations, changes depending on the main hand. */
+                float side = right ? 1.0F : -1.0F;
+
+                /* Reverses the original first person translations */
+                matrixStack.translate(-0.56 * side * this.normalZoomProgress, 0.52 * this.normalZoomProgress, 0);
+
+                /* Reverses the first person translations of the item in order to position it in the center of the screen */
+                matrixStack.translate(xOffset * side * this.normalZoomProgress, yOffset * this.normalZoomProgress, zOffset * normalZoomProgress);
             }
             else
             {
@@ -295,7 +303,7 @@ public class GunRenderer
         }
 
         float equipProgress = this.getEquipProgress(event.getPartialTicks());
-        matrixStack.translate(0, -equipProgress, 0);
+        matrixStack.translate(0, equipProgress * -0.6F, 0);
 
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
 
@@ -304,7 +312,7 @@ public class GunRenderer
         this.renderReloadArm(matrixStack, event.getBuffers(), event.getLight(), heldItem, hand);
 
         /* Translate the item position based on the hand side */
-        matrixStack.translate(0.5602F - (right ? 0.0F : 0.72F), -0.55625F, -0.72F);
+        matrixStack.translate(0.56, -0.52, -0.72);
 
         /* Applies recoil and reload rotations */
         this.applyRecoil(matrixStack, heldItem.getItem(), modifiedGun);
@@ -312,7 +320,7 @@ public class GunRenderer
 
         /* Render offhand arm so it is holding the weapon. Only applies if it's a two handed weapon */
         matrixStack.push();
-        matrixStack.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.56F, 0.72F);
+        matrixStack.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.52F, 0.72F);
         this.renderHeldArm(matrixStack, event.getBuffers(), event.getLight(), Minecraft.getInstance().player, heldItem, hand, event.getPartialTicks());
         matrixStack.pop();
 
@@ -723,14 +731,14 @@ public class GunRenderer
             matrixStack.translate(0, -reloadProgress * 2, 0);
 
             int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
-            matrixStack.translate(6.5 * side * 0.0625, -0.55, -0.5625);
+            matrixStack.translate(6 * side * 0.0625, -0.585, -0.5);
 
             if(Minecraft.getInstance().player.getSkinType().equals("slim") && hand.opposite() == HandSide.LEFT)
             {
                 matrixStack.translate(0.03125F * -side, 0, 0);
             }
 
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(90F));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
             matrixStack.rotate(Vector3f.YP.rotationDegrees(15F * -side));
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(15F * -side));
             matrixStack.rotate(Vector3f.XP.rotationDegrees(-35F));
