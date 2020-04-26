@@ -98,6 +98,11 @@ public class MediumScopeModel implements IOverrideModel
                     RenderSystem.alphaFunc(516, 0.0F);
 
                     int reticleGlowColor = RenderUtil.getItemStackColor(stack, parent, 0);
+                    CompoundNBT tag = stack.getTag();
+                    if(tag != null && tag.contains("ReticleColor", Constants.NBT.TAG_INT))
+                    {
+                        reticleGlowColor = tag.getInt("ReticleColor");
+                    }
 
                     float red = ((reticleGlowColor >> 16) & 0xFF) / 255F;
                     float green = ((reticleGlowColor >> 8) & 0xFF) / 255F;
