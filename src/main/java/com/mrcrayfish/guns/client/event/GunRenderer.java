@@ -264,9 +264,9 @@ public class GunRenderer
                 if(modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null)
                 {
                     Gun.ScaledPositioned scaledPos = modifiedGun.modules.attachments.scope;
-                    xOffset = -translateX + scaledPos.xOffset  * 0.0625 * scaleX;
+                    xOffset = -translateX + scaledPos.xOffset * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.yOffset) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.scale;
-                    zOffset = -translateZ + scaledPos.zOffset * 0.0625 * scaleZ;
+                    zOffset = -translateZ - scaledPos.zOffset * 0.0625 * scaleZ + 0.72 - scope.getViewFinderOffset() * scaleZ;
                 }
                 else if(modifiedGun.modules.zoom != null)
                 {

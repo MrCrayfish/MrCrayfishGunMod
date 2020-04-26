@@ -85,6 +85,7 @@ public class Scope
         return this.stable;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public double getViewFinderOffset()
     {
         return viewFinderOffset;
