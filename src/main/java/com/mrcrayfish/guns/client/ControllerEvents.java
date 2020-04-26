@@ -6,8 +6,11 @@ import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
+import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.ScopeItem;
@@ -86,21 +89,14 @@ public class ControllerEvents
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem && ClientHandler.isAiming())
             {
-                event.setYawSpeed(10.0F);
-                event.setPitchSpeed(7.5F);
+                event.setYawSpeed(10.0F * (float) GunMod.getOptions().getAdsSensitivity());
+                event.setPitchSpeed(7.5F * (float) GunMod.getOptions().getAdsSensitivity());
 
                 Scope scope = Gun.getScope(heldItem);
-                if(scope != null)
+                if(scope != null && scope.isStable() && event.getController().getButtonsStates().getState(Buttons.RIGHT_THUMB_STICK))
                 {
-                    float yawSensitivity = scope.getYawSensitivity();
-                    float pitchSensitivity = scope.getPitchSensitivity();
-                    if(scope.isStable() && event.getController().getButtonsStates().getState(Buttons.RIGHT_THUMB_STICK))
-                    {
-                        yawSensitivity /= 2.0F;
-                        pitchSensitivity /= 2.0F;
-                    }
-                    event.setYawSpeed(yawSensitivity);
-                    event.setPitchSpeed(pitchSensitivity);
+                    event.setYawSpeed(event.getYawSpeed() / 2.0F);
+                    event.setPitchSpeed(event.getPitchSpeed() / 2.0F);
                 }
             }
         }
