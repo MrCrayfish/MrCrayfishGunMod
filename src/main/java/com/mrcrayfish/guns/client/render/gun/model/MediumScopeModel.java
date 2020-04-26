@@ -24,7 +24,8 @@ import org.lwjgl.opengl.GL11;
  */
 public class MediumScopeModel implements IOverrideModel
 {
-    private static final ResourceLocation RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/blocks/sniper_reticle.png");
+    private static final ResourceLocation HOLO_RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/effect/holo_reticle.png");
+    private static final ResourceLocation HOLO_RETICLE_GLOW = new ResourceLocation(Reference.MOD_ID, "textures/effect/holo_reticle_glow.png");
     private static final ResourceLocation VIGNETTE = new ResourceLocation(Reference.MOD_ID, "textures/effect/scope_vignette.png");
 
     @Override
@@ -48,64 +49,85 @@ public class MediumScopeModel implements IOverrideModel
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-            float scopeSize = 2.0F;
+            //TODO clean this up because it's spaghetti code
+            float scopeSize = 1.325F;
             float size = scopeSize / 16.0F;
             float offset = 0.58F / 16.0F;
-            float crop = 0.4F;
+            float crop = 0.42F;
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
-            int kickAmount = ClientHandler.getGunRenderer().recoilAngle > 0 ? 50 : 0;
-            float texOffset = (float) (ClientHandler.getGunRenderer().recoilNormal * kickAmount * (1.0 / window.getHeight()));
             float texU = ((window.getWidth() - window.getHeight() + window.getHeight() * crop * 2.0F) / 2.0F) / window.getWidth();
-            float texScaleX = (1.0F - texU * 2) / scopeSize;
-            float texScaleY = (1.0F - crop * 2) / scopeSize;
 
             RenderSystem.pushMatrix();
             {
                 RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
-                RenderSystem.translated(-size / 2, 1.1 * 0.0625, 1.5 * 0.0625);
-                float color = (float) ClientHandler.getGunRenderer().normalZoomProgress * 0.8F + 0.2F;
+
+                //Temporary hack until I clean up the rendering code
+                //RenderSystem.translated(0, 0, 0);
+                //RenderSystem.scalef(0.75F, 0.75F, 0.75F);
+
+                RenderSystem.translated(-size / 2, 0.06, 1.5 * 0.0625);
+                float color = (float) ClientHandler.getGunRenderer().normalZoomProgress * 0.6F + 0.4F;
                 RenderSystem.color4f(color, color, color, 1.0F);
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
-                buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
-                buffer.pos(offset, 0, 0).tex(texU + 0.58F * texScaleX, crop + texOffset).endVertex();
-                buffer.pos(size - offset, 0, 0).tex(1.0F - texU - 0.58F * texScaleX, crop + texOffset).endVertex();
-                buffer.pos(size, offset, 0).tex(1.0F - texU, crop + texOffset + 0.58F * texScaleY).endVertex();
-                buffer.pos(size, size - offset, 0).tex(1.0F - texU, 1.0F - crop + texOffset - 0.58F * texScaleY).endVertex();
-                buffer.pos(size - offset, size, 0).tex(1.0F - texU - 0.58F * texScaleX, 1.0F - crop + texOffset).endVertex();
-                buffer.pos(offset, size, 0).tex(texU + 0.58F * texScaleX, 1.0F - crop + texOffset).endVertex();
-                buffer.pos(0, size - offset, 0).tex(texU, 1.0F - crop + texOffset - 0.58F * texScaleY).endVertex();
-                buffer.pos(0, offset, 0).tex(texU, crop + texOffset + 0.58F * texScaleY).endVertex();
-                tessellator.draw();
-
-                RenderSystem.color4f(1.0F, 1.0F, 1.0F, (float) ClientHandler.getGunRenderer().normalZoomProgress * 0.8F + 0.2F);
-                RenderSystem.translated(0, 0, 0.0001);
-                mc.getTextureManager().bindTexture(RETICLE);
-                buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
-                buffer.pos(offset, 0, 0).tex(0.58F / 2, 1.0F).endVertex();
-                buffer.pos(size - offset, 0, 0).tex(1.0F - 0.58F / 2.0F, 1.0F).endVertex();
-                buffer.pos(size, offset, 0).tex(1.0F, 1.0F - 0.58F / 2.0F).endVertex();
-                buffer.pos(size, size - offset, 0).tex(1.0F, 0.58F / 2.0F).endVertex();
-                buffer.pos(size - offset, size, 0).tex(1.0F - 0.58F / 2.0F, 0.0F).endVertex();
-                buffer.pos(offset, size, 0).tex(0.58F / 2.0F, 0.0F).endVertex();
-                buffer.pos(0, size - offset, 0).tex(0.0F, 0.58F / 2.0F).endVertex();
-                buffer.pos(0, offset, 0).tex(0.0F, 1.0F - 0.58F / 2.0F).endVertex();
+                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                buffer.pos(0, size, 0).tex(texU, 1.0F - crop).endVertex();
+                buffer.pos(0, 0, 0).tex(texU, crop).endVertex();
+                buffer.pos(size, 0, 0).tex(1.0F - texU, crop).endVertex();
+                buffer.pos(size, size, 0).tex(1.0F - texU, 1.0F - crop).endVertex();
                 tessellator.draw();
 
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 RenderSystem.translated(0, 0, 0.0001);
                 mc.getTextureManager().bindTexture(VIGNETTE);
-                buffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_TEX);
-                buffer.pos(offset, 0, 0).tex(0.58F / 2, 1.0F).endVertex();
-                buffer.pos(size - offset, 0, 0).tex(1.0F - 0.58F / 2.0F, 1.0F).endVertex();
-                buffer.pos(size, offset, 0).tex(1.0F, 1.0F - 0.58F / 2.0F).endVertex();
-                buffer.pos(size, size - offset, 0).tex(1.0F, 0.58F / 2.0F).endVertex();
-                buffer.pos(size - offset, size, 0).tex(1.0F - 0.58F / 2.0F, 0.0F).endVertex();
-                buffer.pos(offset, size, 0).tex(0.58F / 2.0F, 0.0F).endVertex();
-                buffer.pos(0, size - offset, 0).tex(0.0F, 0.58F / 2.0F).endVertex();
-                buffer.pos(0, offset, 0).tex(0.0F, 1.0F - 0.58F / 2.0F).endVertex();
+                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                buffer.pos(0, size, 0).tex(0, 1).endVertex();
+                buffer.pos(0, 0, 0).tex(0, 0).endVertex();
+                buffer.pos(size, 0, 0).tex(1, 0).endVertex();
+                buffer.pos(size, size, 0).tex(1, 1).endVertex();
                 tessellator.draw();
+
+                RenderSystem.pushMatrix();
+                double invertProgress = (1.0 - ClientHandler.getGunRenderer().normalZoomProgress);
+                RenderSystem.translated(-0.04 * invertProgress, 0.01 * invertProgress, 0);
+                double scale = 8.0;
+                RenderSystem.translated(size / 2, size / 2, 0);
+                RenderSystem.translated(-(size / scale) / 2, -(size / scale) / 2, 0);
+                //RenderSystem.translated((size / 4) * (4 - (1.0 / scale)), (size / 4) * (4 - (1.0 / scale)), 0);
+                RenderSystem.translated(0, 0, 0.0001);
+                RenderSystem.alphaFunc(516, 0.0F);
+
+                int reticleGlowColor = 0xFF0000;
+                float red = ((reticleGlowColor >> 16) & 0xFF) / 255F;
+                float green = ((reticleGlowColor >>  8) & 0xFF) / 255F;
+                float blue = ((reticleGlowColor >>  0) & 0xFF) / 255F;
+                float alpha = (float) (1.0F * ClientHandler.getGunRenderer().normalZoomProgress);
+
+                mc.getTextureManager().bindTexture(HOLO_RETICLE_GLOW);
+                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+                buffer.pos(0, size / scale, 0).color(red, green, blue, alpha).tex(0.0F, 0.9375F).lightmap(15728880).endVertex();
+                buffer.pos(0, 0, 0).color(red, green, blue, alpha).tex(0.0F, 0.0F).lightmap(15728880).endVertex();
+                buffer.pos(size / scale, 0, 0).color(red, green, blue, alpha).tex(0.9375F, 0.0F).lightmap(15728880).endVertex();
+                buffer.pos(size / scale, size / scale, 0).color(red, green, blue, alpha).tex(0.9375F, 0.9375F).lightmap(15728880).endVertex();
+                tessellator.draw();
+
+                reticleGlowColor = 0xFFFFFF;
+                red = ((reticleGlowColor >> 16) & 0xFF) / 255F;
+                green = ((reticleGlowColor >>  8) & 0xFF) / 255F;
+                blue = ((reticleGlowColor >>  0) & 0xFF) / 255F;
+                alpha = (float) (0.75F * ClientHandler.getGunRenderer().normalZoomProgress);
+
+                mc.getTextureManager().bindTexture(HOLO_RETICLE);
+                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+                buffer.pos(0, size / scale, 0).color(red, green, blue, alpha).tex(0.0F, 0.9375F).lightmap(15728880).endVertex();
+                buffer.pos(0, 0, 0).color(red, green, blue, alpha).tex(0.0F, 0.0F).lightmap(15728880).endVertex();
+                buffer.pos(size / scale, 0, 0).color(red, green, blue, alpha).tex(0.9375F, 0.0F).lightmap(15728880).endVertex();
+                buffer.pos(size / scale, size / scale, 0).color(red, green, blue, alpha).tex(0.9375F, 0.9375F).lightmap(15728880).endVertex();
+                tessellator.draw();
+
+                RenderSystem.defaultAlphaFunc();
+                RenderSystem.popMatrix();
             }
             RenderSystem.popMatrix();
 
