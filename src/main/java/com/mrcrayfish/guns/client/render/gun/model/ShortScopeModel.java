@@ -42,26 +42,28 @@ public class ShortScopeModel implements IOverrideModel
             RenderSystem.enableDepthTest();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.bindTexture(GunRenderer.screenTextureId);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            RenderSystem.alphaFunc(516, 0.0F);
+            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
             RenderSystem.pushMatrix();
             {
+                RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
                 double size = 1.4 / 16.0;
-                RenderSystem.translated(-size / 2, 0.325 * 0.0625, -0.5 * 0.0625);
+                RenderSystem.translated(-size / 2, 0.85 * 0.0625, -0.5 * 0.0625);
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
                 Minecraft.getInstance().getTextureManager().bindTexture(VIGNETTE);
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                buffer.pos(0, 0, 0).tex(1.0F, 1.0F).endVertex();
-                buffer.pos(size, 0, 0).tex(0, 1.0F).endVertex();
-                buffer.pos(size, size, 0).tex(0, 0).endVertex();
-                buffer.pos(0, size, 0).tex(1.0F, 0).endVertex();
+                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+                buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 0.5F).tex(1.0F, 1.0F).lightmap(light).endVertex();
+                buffer.pos(size, 0, 0).color(1.0F, 1.0F, 1.0F, 0.5F).tex(0, 1.0F).lightmap(light).endVertex();
+                buffer.pos(size, size, 0).color(1.0F, 1.0F, 1.0F, 0.5F).tex(0, 0).lightmap(light).endVertex();
+                buffer.pos(0, size, 0).color(1.0F, 1.0F, 1.0F, 0.5F).tex(1.0F, 0).lightmap(light).endVertex();
                 tessellator.draw();
             }
             RenderSystem.popMatrix();
 
+            RenderSystem.defaultAlphaFunc();
             RenderSystem.disableBlend();
             RenderSystem.disableDepthTest();
         }
