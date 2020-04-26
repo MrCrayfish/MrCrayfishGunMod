@@ -684,6 +684,13 @@ public class GunRenderer
             matrixStack.push();
 
             Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
+            if(modifiedGun.display.flash == null)
+            {
+                this.drawFlash = false;
+                matrixStack.pop();
+                return;
+            }
+
             matrixStack.translate(modifiedGun.display.flash.xOffset * 0.0625, modifiedGun.display.flash.yOffset * 0.0625, modifiedGun.display.flash.zOffset * 0.0625);
 
             if(!Gun.getAttachment(IAttachment.Type.BARREL, weapon).isEmpty())
@@ -704,7 +711,8 @@ public class GunRenderer
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 
-                double size = 0.4 + 0.1 * this.random.nextDouble();
+                double partialSize = modifiedGun.display.flash.size / 5.0;
+                double size = modifiedGun.display.flash.size - partialSize + partialSize * this.random.nextDouble();
                 RenderSystem.rotatef(360F * this.random.nextFloat(), 0, 0, 1);
                 RenderSystem.rotatef(180F * this.random.nextInt(2), 1, 0, 0);
                 RenderSystem.translated(-size / 2, -size / 2, 0);

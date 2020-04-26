@@ -314,12 +314,32 @@ public class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         public Flash flash;
 
-        public static class Flash extends ScaledPositioned
+        public static class Flash extends Positioned
         {
+            public double size = 0.5;
+
+            @Override
+            public CompoundNBT serializeNBT()
+            {
+                CompoundNBT tag = super.serializeNBT();
+                tag.putDouble("Size", this.size);
+                return tag;
+            }
+
+            @Override
+            public void deserializeNBT(CompoundNBT tag)
+            {
+                super.deserializeNBT(tag);
+                if(tag.contains("Size", Constants.NBT.TAG_DOUBLE))
+                {
+                    this.size = tag.getDouble("Size");
+                }
+            }
+
             public Flash copy()
             {
                 Flash flash = new Flash();
-                flash.scale = this.scale;
+                flash.size = this.size;
                 flash.xOffset = this.xOffset;
                 flash.yOffset = this.yOffset;
                 flash.zOffset = this.zOffset;
@@ -333,7 +353,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
             CompoundNBT tag = new CompoundNBT();
             if(this.flash != null)
             {
-                tag.put("Flash",this.flash.serializeNBT());
+                tag.put("Flash", this.flash.serializeNBT());
             }
             return tag;
         }
