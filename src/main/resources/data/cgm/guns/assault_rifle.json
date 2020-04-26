@@ -33,12 +33,12 @@
         "zoom": {
             "fovModifier": 0.6,
             "yOffset": 5.2,
-            "zOffset": -3.2
+            "zOffset": 3.2
         },
         "attachments": {
             "scope": {
-                "yOffset": 4.32,
-                "zOffset": 4
+                "yOffset": 4.4,
+                "zOffset": 3.2
             },
             "barrel": {
                 "yOffset": 3.5,
