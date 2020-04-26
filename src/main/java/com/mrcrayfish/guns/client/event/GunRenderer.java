@@ -2,8 +2,10 @@ package com.mrcrayfish.guns.client.event;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.AimTracker;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -20,10 +22,7 @@ import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.FirstPersonRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -31,6 +30,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -39,6 +39,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -50,14 +51,16 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 
 public class GunRenderer
 {
+    private static final ResourceLocation MUZZLE_FLASH = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
     private static final double ZOOM_TICKS = 4;
-
     public static int screenTextureId = -1;
 
-    public boolean drawFlash = false;
+    private Random random = new Random();
+    private boolean drawFlash = false;
     private int zoomProgress;
     private int lastZoomProgress;
     public double normalZoomProgress;
@@ -676,27 +679,54 @@ public class GunRenderer
 
     private void renderMuzzleFlash(MatrixStack matrixStack, ItemStack weapon)
     {
-        Gun gun = ((GunItem) weapon.getItem()).getGun();
         if(this.drawFlash)
         {
-            //TODO reimplement muzzle flash
-            /*IBakedModel flashModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(flash);
             matrixStack.push();
-            matrixStack.translate(gun.display.flash.xOffset * 0.0625, gun.display.flash.yOffset * 0.0625, gun.display.flash.zOffset * 0.0625);
+
+            Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
+            matrixStack.translate(modifiedGun.display.flash.xOffset * 0.0625, modifiedGun.display.flash.yOffset * 0.0625, modifiedGun.display.flash.zOffset * 0.0625);
 
             if(!Gun.getAttachment(IAttachment.Type.BARREL, weapon).isEmpty())
             {
-                Gun.ScaledPositioned positioned = gun.getAttachmentPosition(IAttachment.Type.BARREL);
+                Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
                 if(positioned != null)
                 {
-                    matrixStack.translate(0, 0, (gun.display.flash.zOffset - positioned.zOffset) * 0.0625 - positioned.scale);
+                    matrixStack.translate(0, 0, (modifiedGun.display.flash.zOffset - positioned.zOffset) * 0.0625 - positioned.scale);
                     matrixStack.scale(0.5F, 0.5F, 0.0F);
                 }
             }
 
-            RenderUtil.renderModel(flashModel, weapon);
+            RenderSystem.pushMatrix();
+            {
+                RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
 
-            matrixStack.pop();*/
+                RenderSystem.enableDepthTest();
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+
+                double size = 0.4 + 0.1 * this.random.nextDouble();
+                RenderSystem.rotatef(360F * this.random.nextFloat(), 0, 0, 1);
+                RenderSystem.rotatef(180F * this.random.nextInt(2), 1, 0, 0);
+                RenderSystem.translated(-size / 2, -size / 2, 0);
+
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder buffer = tessellator.getBuffer();
+                Minecraft.getInstance().getTextureManager().bindTexture(MUZZLE_FLASH);
+                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+                buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
+                buffer.pos(size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
+                buffer.pos(size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();
+                buffer.pos(0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
+                tessellator.draw();
+
+                RenderSystem.disableBlend();
+                RenderSystem.disableDepthTest();
+            }
+            RenderSystem.popMatrix();
+
+            matrixStack.pop();
+
+            this.drawFlash = false;
         }
     }
 
@@ -923,5 +953,10 @@ public class GunRenderer
             e.printStackTrace();
         }
         return 0.0F;
+    }
+
+    public void showMuzzleFlash()
+    {
+        this.drawFlash = true;
     }
 }

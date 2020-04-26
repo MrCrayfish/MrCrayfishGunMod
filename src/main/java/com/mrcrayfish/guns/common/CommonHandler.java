@@ -13,7 +13,6 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
-import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
@@ -139,11 +138,6 @@ public class CommonHandler
                     if(event != null)
                     {
                         world.playSound(null, player.getPosition(), event, SoundCategory.HOSTILE, silenced ? 1.0F : 5.0F, 0.8F + world.rand.nextFloat() * 0.2F);
-                    }
-
-                    if(gun.display.flash != null)
-                    {
-                        PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> player), new MessageMuzzleFlash());
                     }
 
                     if(!player.isCreative())

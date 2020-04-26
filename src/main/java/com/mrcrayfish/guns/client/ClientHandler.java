@@ -172,11 +172,6 @@ public class ClientHandler
         return manager.addParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
 
-    public static void showMuzzleFlash()
-    {
-        GUN_RENDERER.drawFlash = true;
-    }
-
     public static boolean isLookingAtInteractableBlock()
     {
         Minecraft mc = Minecraft.getInstance();
