@@ -22,7 +22,7 @@ public class GunOptions
 {
     private static final DecimalFormat FORMAT = new DecimalFormat("0.0#");
 
-    public static final SliderPercentageOption ADS_SENSITIVITY = new GunSliderPercentageOption("cgm.options.adsSensitivity", 0.0, 2.0, 0.05F, gameSettings -> {
+    public static final SliderPercentageOption ADS_SENSITIVITY = new GunSliderPercentageOption("cgm.options.adsSensitivity", 0.0, 2.0, 0.01F, gameSettings -> {
         return GunMod.getOptions().adsSensitivity;
     }, (gameSettings, value) -> {
         GunMod.getOptions().adsSensitivity = MathHelper.clamp(value, 0.0, 2.0);
