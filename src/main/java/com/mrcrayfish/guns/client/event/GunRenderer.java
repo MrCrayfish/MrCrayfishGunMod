@@ -80,27 +80,20 @@ public class GunRenderer
             ItemStack heldItem = mc.player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem)
             {
-                ItemStack scopeStack = Gun.getScope(heldItem);
-                Scope scope = null;
-                if(scopeStack.getItem() instanceof ScopeItem)
-                {
-                    scope = ((ScopeItem) scopeStack.getItem()).getScope();
-                }
-
                 GunItem gunItem = (GunItem) heldItem.getItem();
-                if(isZooming(Minecraft.getInstance().player) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
+                if(this.isZooming(Minecraft.getInstance().player) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
                 {
                     Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                     if(modifiedGun.modules.zoom != null)
                     {
                         float newFov = modifiedGun.modules.zoom.fovModifier;
+                        Scope scope = Gun.getScope(heldItem);
                         if(scope != null)
                         {
                             newFov -= scope.getAdditionalZoom();
                         }
                         event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (zoomProgress / (float) ZOOM_TICKS)));
                     }
-                    return;
                 }
             }
         }
@@ -208,7 +201,7 @@ public class GunRenderer
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(-(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
             matrixStack.translate((double) -(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
 
-            /* The new controlled bobbing */
+            /* The new controlled bo if(scopeStack.getItem() instanceof ScopeItem)bbing */
             double invertZoomProgress = 1.0 - this.normalZoomProgress;
             matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
@@ -245,13 +238,6 @@ public class GunRenderer
             return;
         }
 
-        ItemStack scopeStack = Gun.getScope(heldItem);
-        Scope scope = null;
-        if(scopeStack.getItem() instanceof ScopeItem)
-        {
-            scope = ((ScopeItem) scopeStack.getItem()).getScope();
-        }
-
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(heldItem);
         float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
         float scaleY = model.getItemCameraTransforms().firstperson_right.scale.getY();
@@ -265,14 +251,16 @@ public class GunRenderer
         GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
 
-        if(this.normalZoomProgress > 0)
+        if(this.normalZoomProgress > 0 && modifiedGun.canAimDownSight())
         {
             if(event.getHand() == Hand.MAIN_HAND)
             {
                 double xOffset = 0.0;
                 double yOffset = 0.0;
                 double zOffset = 0.0;
+                Scope scope = Gun.getScope(heldItem);
 
+                /* Creates the required offsets to position the scope into the middle of the screen. */
                 if(modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null)
                 {
                     Gun.ScaledPositioned scaledPos = modifiedGun.modules.attachments.scope;
@@ -298,10 +286,12 @@ public class GunRenderer
             }
             else
             {
+                /* Makes the off hand item move out of view */
                 matrixStack.translate(0, -1 * this.normalZoomProgress, 0);
             }
         }
 
+        /* Applies equip progress animation translations */
         float equipProgress = this.getEquipProgress(event.getPartialTicks());
         matrixStack.translate(0, equipProgress * -0.6F, 0);
 
@@ -885,19 +875,14 @@ public class GunRenderer
             ItemStack heldItem = mc.player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem)
             {
-                ItemStack scopeStack = Gun.getScope(heldItem);
-                Scope scope = null;
-                if(scopeStack.getItem() instanceof ScopeItem)
-                {
-                    scope = ((ScopeItem) scopeStack.getItem()).getScope();
-                }
                 GunItem gunItem = (GunItem) heldItem.getItem();
-                if(isZooming(Minecraft.getInstance().player) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
+                if(this.isZooming(Minecraft.getInstance().player) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
                 {
                     Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                     if(modifiedGun.modules.zoom != null)
                     {
                         float newFov = modifiedGun.modules.zoom.fovModifier;
+                        Scope scope = Gun.getScope(heldItem);
                         if(scope != null)
                         {
                             newFov -= scope.getAdditionalZoom();

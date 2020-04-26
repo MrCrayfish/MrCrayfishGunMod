@@ -89,11 +89,9 @@ public class ControllerEvents
                 event.setYawSpeed(10.0F);
                 event.setPitchSpeed(7.5F);
 
-                ItemStack scopeStack = Gun.getScope(heldItem);
-                if(scopeStack.getItem() instanceof ScopeItem)
+                Scope scope = Gun.getScope(heldItem);
+                if(scope != null)
                 {
-                    ScopeItem scopeItem = (ScopeItem) scopeStack.getItem();
-                    Scope scope = scopeItem.getScope();
                     float yawSensitivity = scope.getYawSensitivity();
                     float pitchSensitivity = scope.getPitchSensitivity();
                     if(scope.isStable() && event.getController().getButtonsStates().getState(Buttons.RIGHT_THUMB_STICK))
@@ -130,7 +128,7 @@ public class ControllerEvents
                     event.getActions().put(Buttons.X, new Action("Reload", Action.Side.LEFT));
                 }
 
-                ItemStack scopeStack = Gun.getScope(heldItem);
+                ItemStack scopeStack = Gun.getScopeStack(heldItem);
                 if(scopeStack.getItem() instanceof ScopeItem && ClientHandler.isAiming())
                 {
                     ScopeItem scopeItem = (ScopeItem) scopeStack.getItem();

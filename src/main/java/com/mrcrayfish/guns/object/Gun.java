@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.AmmoItem;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -673,7 +674,12 @@ public class Gun implements INBTSerializable<CompoundNBT>
         return null;
     }
 
-    public static ItemStack getScope(ItemStack gun)
+    public boolean canAimDownSight()
+    {
+        return this.canAttachType(IAttachment.Type.SCOPE) || this.modules.zoom != null;
+    }
+
+    public static ItemStack getScopeStack(ItemStack gun)
     {
         CompoundNBT compound = gun.getTag();
         if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
@@ -685,6 +691,27 @@ public class Gun implements INBTSerializable<CompoundNBT>
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    @Nullable
+    public static Scope getScope(ItemStack gun)
+    {
+        CompoundNBT compound = gun.getTag();
+        if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
+        {
+            CompoundNBT attachment = compound.getCompound("Attachments");
+            if(attachment.contains("Scope", Constants.NBT.TAG_COMPOUND))
+            {
+                ItemStack scopeStack = ItemStack.read(attachment.getCompound("Scope"));
+                Scope scope = null;
+                if(scopeStack.getItem() instanceof ScopeItem)
+                {
+                    scope = ((ScopeItem) scopeStack.getItem()).getScope();
+                }
+                return scope;
+            }
+        }
+        return null;
     }
 
     public static ItemStack getAttachment(IAttachment.Type type, ItemStack gun)
