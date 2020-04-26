@@ -141,7 +141,7 @@ public class RenderUtil
         }
     }
 
-    private static int getItemStackColor(ItemStack stack, ItemStack parent, int tintIndex)
+    public static int getItemStackColor(ItemStack stack, ItemStack parent, int tintIndex)
     {
         int color = Minecraft.getInstance().getItemColors().getColor(stack, tintIndex);
         if(color == -1)

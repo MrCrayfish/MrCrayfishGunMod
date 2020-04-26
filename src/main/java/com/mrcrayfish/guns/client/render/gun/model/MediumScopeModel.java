@@ -16,7 +16,9 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -52,7 +54,6 @@ public class MediumScopeModel implements IOverrideModel
             //TODO clean this up because it's spaghetti code
             float scopeSize = 1.325F;
             float size = scopeSize / 16.0F;
-            float offset = 0.58F / 16.0F;
             float crop = 0.42F;
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
@@ -62,12 +63,8 @@ public class MediumScopeModel implements IOverrideModel
             {
                 RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
 
-                //Temporary hack until I clean up the rendering code
-                //RenderSystem.translated(0, 0, 0);
-                //RenderSystem.scalef(0.75F, 0.75F, 0.75F);
-
                 RenderSystem.translated(-size / 2, 0.06, 1.5 * 0.0625);
-                float color = (float) ClientHandler.getGunRenderer().normalZoomProgress * 0.6F + 0.4F;
+                float color = (float) ClientHandler.getGunRenderer().normalZoomProgress * 0.8F + 0.2F;
                 RenderSystem.color4f(color, color, color, 1.0F);
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
@@ -89,44 +86,44 @@ public class MediumScopeModel implements IOverrideModel
                 tessellator.draw();
 
                 RenderSystem.pushMatrix();
-                double invertProgress = (1.0 - ClientHandler.getGunRenderer().normalZoomProgress);
-                RenderSystem.translated(-0.04 * invertProgress, 0.01 * invertProgress, 0);
-                double scale = 8.0;
-                RenderSystem.translated(size / 2, size / 2, 0);
-                RenderSystem.translated(-(size / scale) / 2, -(size / scale) / 2, 0);
-                //RenderSystem.translated((size / 4) * (4 - (1.0 / scale)), (size / 4) * (4 - (1.0 / scale)), 0);
-                RenderSystem.translated(0, 0, 0.0001);
-                RenderSystem.alphaFunc(516, 0.0F);
+                {
+                    double invertProgress = (1.0 - ClientHandler.getGunRenderer().normalZoomProgress);
+                    RenderSystem.translated(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
-                int reticleGlowColor = 0xFF0000;
-                float red = ((reticleGlowColor >> 16) & 0xFF) / 255F;
-                float green = ((reticleGlowColor >>  8) & 0xFF) / 255F;
-                float blue = ((reticleGlowColor >>  0) & 0xFF) / 255F;
-                float alpha = (float) (1.0F * ClientHandler.getGunRenderer().normalZoomProgress);
+                    double scale = 8.0;
+                    RenderSystem.translated(size / 2, size / 2, 0);
+                    RenderSystem.translated(-(size / scale) / 2, -(size / scale) / 2, 0);
+                    RenderSystem.translated(0, 0, 0.0001);
 
-                mc.getTextureManager().bindTexture(HOLO_RETICLE_GLOW);
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-                buffer.pos(0, size / scale, 0).color(red, green, blue, alpha).tex(0.0F, 0.9375F).lightmap(15728880).endVertex();
-                buffer.pos(0, 0, 0).color(red, green, blue, alpha).tex(0.0F, 0.0F).lightmap(15728880).endVertex();
-                buffer.pos(size / scale, 0, 0).color(red, green, blue, alpha).tex(0.9375F, 0.0F).lightmap(15728880).endVertex();
-                buffer.pos(size / scale, size / scale, 0).color(red, green, blue, alpha).tex(0.9375F, 0.9375F).lightmap(15728880).endVertex();
-                tessellator.draw();
+                    RenderSystem.alphaFunc(516, 0.0F);
 
-                reticleGlowColor = 0xFFFFFF;
-                red = ((reticleGlowColor >> 16) & 0xFF) / 255F;
-                green = ((reticleGlowColor >>  8) & 0xFF) / 255F;
-                blue = ((reticleGlowColor >>  0) & 0xFF) / 255F;
-                alpha = (float) (0.75F * ClientHandler.getGunRenderer().normalZoomProgress);
+                    int reticleGlowColor = RenderUtil.getItemStackColor(stack, parent, 0);
 
-                mc.getTextureManager().bindTexture(HOLO_RETICLE);
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-                buffer.pos(0, size / scale, 0).color(red, green, blue, alpha).tex(0.0F, 0.9375F).lightmap(15728880).endVertex();
-                buffer.pos(0, 0, 0).color(red, green, blue, alpha).tex(0.0F, 0.0F).lightmap(15728880).endVertex();
-                buffer.pos(size / scale, 0, 0).color(red, green, blue, alpha).tex(0.9375F, 0.0F).lightmap(15728880).endVertex();
-                buffer.pos(size / scale, size / scale, 0).color(red, green, blue, alpha).tex(0.9375F, 0.9375F).lightmap(15728880).endVertex();
-                tessellator.draw();
+                    float red = ((reticleGlowColor >> 16) & 0xFF) / 255F;
+                    float green = ((reticleGlowColor >> 8) & 0xFF) / 255F;
+                    float blue = ((reticleGlowColor >> 0) & 0xFF) / 255F;
+                    float alpha = (float) (1.0F * ClientHandler.getGunRenderer().normalZoomProgress);
 
-                RenderSystem.defaultAlphaFunc();
+                    mc.getTextureManager().bindTexture(HOLO_RETICLE_GLOW);
+                    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+                    buffer.pos(0, size / scale, 0).color(red, green, blue, alpha).tex(0.0F, 0.9375F).lightmap(15728880).endVertex();
+                    buffer.pos(0, 0, 0).color(red, green, blue, alpha).tex(0.0F, 0.0F).lightmap(15728880).endVertex();
+                    buffer.pos(size / scale, 0, 0).color(red, green, blue, alpha).tex(0.9375F, 0.0F).lightmap(15728880).endVertex();
+                    buffer.pos(size / scale, size / scale, 0).color(red, green, blue, alpha).tex(0.9375F, 0.9375F).lightmap(15728880).endVertex();
+                    tessellator.draw();
+
+                    alpha = (float) (0.75F * ClientHandler.getGunRenderer().normalZoomProgress);
+
+                    mc.getTextureManager().bindTexture(HOLO_RETICLE);
+                    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+                    buffer.pos(0, size / scale, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0.0F, 0.9375F).lightmap(15728880).endVertex();
+                    buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0.0F, 0.0F).lightmap(15728880).endVertex();
+                    buffer.pos(size / scale, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0.9375F, 0.0F).lightmap(15728880).endVertex();
+                    buffer.pos(size / scale, size / scale, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0.9375F, 0.9375F).lightmap(15728880).endVertex();
+                    tessellator.draw();
+
+                    RenderSystem.defaultAlphaFunc();
+                }
                 RenderSystem.popMatrix();
             }
             RenderSystem.popMatrix();
