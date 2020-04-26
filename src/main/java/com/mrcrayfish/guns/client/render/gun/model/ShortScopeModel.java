@@ -55,10 +55,10 @@ public class ShortScopeModel implements IOverrideModel
                 BufferBuilder buffer = tessellator.getBuffer();
                 Minecraft.getInstance().getTextureManager().bindTexture(VIGNETTE);
                 buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-                buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 0.5F).tex(1.0F, 1.0F).lightmap(light).endVertex();
-                buffer.pos(size, 0, 0).color(1.0F, 1.0F, 1.0F, 0.5F).tex(0, 1.0F).lightmap(light).endVertex();
-                buffer.pos(size, size, 0).color(1.0F, 1.0F, 1.0F, 0.5F).tex(0, 0).lightmap(light).endVertex();
-                buffer.pos(0, size, 0).color(1.0F, 1.0F, 1.0F, 0.5F).tex(1.0F, 0).lightmap(light).endVertex();
+                buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(light).endVertex();
+                buffer.pos(size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(light).endVertex();
+                buffer.pos(size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(light).endVertex();
+                buffer.pos(0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(light).endVertex();
                 tessellator.draw();
             }
             RenderSystem.popMatrix();
