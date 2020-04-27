@@ -14,7 +14,7 @@ Adds weapons into Minecraft
 [[dependencies.cgm]]
     modId="forge"
     mandatory=true
-    versionRange="[31,)"
+    versionRange="[31.1.19,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
