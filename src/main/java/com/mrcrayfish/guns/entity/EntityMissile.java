@@ -66,7 +66,7 @@ public class EntityMissile extends EntityProjectile
 
     private void createExplosion(double x, double y, double z, boolean particle)
     {
-        Explosion.Mode mode = Config.COMMON.enableGunGriefing.get() ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
+        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
         Explosion explosion = new ProjectileExplosion(this, x, y, z, Config.COMMON.missiles.explosionRadius.get(), mode);
         explosion.doExplosionA();
         explosion.doExplosionB(true);

@@ -1,3 +1,4 @@
 {
-    "Sensitivity Hook": "transformers/sensitivity.js"
+    "Sensitivity Hook": "transformers/sensitivity.js",
+    "Knockback Hook": "transformers/knockback.js"
 }

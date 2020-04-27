@@ -66,6 +66,7 @@ public class Config
      */
     public static class Common
     {
+        public final Gameplay gameplay;
         public final Network network;
         public final AggroMobs aggroMobs;
         public final Missiles missiles;
@@ -73,28 +74,44 @@ public class Config
         public final StunGrenades stunGrenades;
         public final ProjectileSpread projectileSpread;
 
-        public final ForgeConfigSpec.BooleanValue enableGunGriefing;
-        public final ForgeConfigSpec.DoubleValue growBoundingBoxAmount;
-        public final ForgeConfigSpec.BooleanValue enableHeadShots;
-        public final ForgeConfigSpec.DoubleValue headShotDamageMultiplier;
-        public final ForgeConfigSpec.BooleanValue ignoreLeaves;
-
         public Common(ForgeConfigSpec.Builder builder)
         {
             builder.push("common");
             {
+                this.gameplay = new Gameplay(builder);
                 this.network = new Network(builder);
                 this.aggroMobs = new AggroMobs(builder);
                 this.missiles = new Missiles(builder);
                 this.grenades = new Grenades(builder);
                 this.stunGrenades = new StunGrenades(builder);
                 this.projectileSpread = new ProjectileSpread(builder);
+            }
+            builder.pop();
+        }
+    }
 
+    /**
+     * Gameplay related config options
+     */
+    public static class Gameplay
+    {
+        public final ForgeConfigSpec.BooleanValue enableGunGriefing;
+        public final ForgeConfigSpec.DoubleValue growBoundingBoxAmount;
+        public final ForgeConfigSpec.BooleanValue enableHeadShots;
+        public final ForgeConfigSpec.DoubleValue headShotDamageMultiplier;
+        public final ForgeConfigSpec.BooleanValue ignoreLeaves;
+        public final ForgeConfigSpec.BooleanValue enableKnockback;
+
+        public Gameplay(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Properties relating to gameplay").push("gameplay");
+            {
                 this.enableGunGriefing = builder.comment("If enable, allows guns to shoot out glass and remove blocks on explosions").define("enableGunGriefing", true);
                 this.growBoundingBoxAmount = builder.comment("The extra amount to expand an entity's bounding box when checking for projectile collision. Setting this value higher will make it easier to hit players").defineInRange("growBoundingBoxAmount", 0.3, 0.0, 1.0);
                 this.enableHeadShots = builder.comment("Enables the check for head shots for players. Projectiles that hit the head of a player will have increased damage.").define("enableHeadShots", true);
                 this.headShotDamageMultiplier = builder.comment("The value to multiply the damage by if projectile hit the players head").defineInRange("headShotDamageMultiplier", 1.0, 1.0, Double.MAX_VALUE);
                 this.ignoreLeaves = builder.comment("If true, projectiles will ignore leaves when checking for collision").define("ignoreLeaves", false);
+                this.enableKnockback = builder.comment("If true, projectiles will cause knockback when an entity is hit. By default this is set to true to match the behaviour of Minecraft.").define("enableKnockback", true);
             }
             builder.pop();
         }

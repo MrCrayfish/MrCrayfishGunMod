@@ -41,7 +41,7 @@ import java.util.function.Function;
 public class EntityProjectile extends Entity implements IEntityAdditionalSpawnData
 {
     private static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && !input.isSpectator() && input.canBeCollidedWith();
-    private static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
+    private static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
 
     protected int shooterId;
     protected LivingEntity shooter;
@@ -220,7 +220,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
                 AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, expandHeight, 0);
                 Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
-                Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.growBoundingBoxAmount.get(), 0, Config.COMMON.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
+                Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
                 if(!hitPos.isPresent() && grownHitPos.isPresent())
                 {
                     RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos.get(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
@@ -257,7 +257,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             BlockState state = this.world.getBlockState(pos);
             Block block = state.getBlock();
 
-            if(Config.COMMON.enableGunGriefing.get() && (block instanceof BreakableBlock || block instanceof PaneBlock) && state.getMaterial() == Material.GLASS)
+            if(Config.COMMON.gameplay.enableGunGriefing.get() && (block instanceof BreakableBlock || block instanceof PaneBlock) && state.getMaterial() == Material.GLASS)
             {
                 this.world.destroyBlock(blockRayTraceResult.getPos(), false);
             }
@@ -295,13 +295,13 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     {
         boolean headShot = false;
         float damage = this.getDamage();
-        if(Config.COMMON.enableHeadShots.get() && entity instanceof PlayerEntity)
+        if(Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof PlayerEntity)
         {
             AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, !entity.isCrouching() ? 0.0625 : 0, 0);
             if(boundingBox.maxY - y <= 8.0 * 0.0625 && boundingBox.grow(0.001).contains(new Vec3d(x, y, z)))
             {
                 headShot = true;
-                damage *= Config.COMMON.headShotDamageMultiplier.get();
+                damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
             }
         }
 
