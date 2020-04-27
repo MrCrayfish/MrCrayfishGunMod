@@ -217,7 +217,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         {
             if(!entity.equals(this.shooter))
             {
-                double expandHeight = entity instanceof PlayerEntity ? 0.0625 : 0.0;
+                double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
                 AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, expandHeight, 0);
                 Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
                 Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.growBoundingBoxAmount.get(), 0, Config.COMMON.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
@@ -297,7 +297,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         float damage = this.getDamage();
         if(Config.COMMON.enableHeadShots.get() && entity instanceof PlayerEntity)
         {
-            AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, 0.0625, 0);
+            AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, !entity.isCrouching() ? 0.0625 : 0, 0);
             if(boundingBox.maxY - y <= 8.0 * 0.0625 && boundingBox.grow(0.001).contains(new Vec3d(x, y, z)))
             {
                 headShot = true;
