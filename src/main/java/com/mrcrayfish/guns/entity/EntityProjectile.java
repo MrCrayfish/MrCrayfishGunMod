@@ -14,10 +14,9 @@ import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
-import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -25,11 +24,9 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -38,10 +35,13 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class EntityProjectile extends Entity implements IEntityAdditionalSpawnData
 {
     private static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && !input.isSpectator() && input.canBeCollidedWith();
+    private static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
 
     protected int shooterId;
     protected LivingEntity shooter;
@@ -150,7 +150,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             //TODO convert to new ProjectileHelper
             Vec3d startVec = this.getPositionVec();
             Vec3d endVec = startVec.add(this.getMotion());
-            RayTraceResult result = this.world.rayTraceBlocks(new RayTraceContext(startVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+            RayTraceResult result = rayTraceBlocks(this.world, new RayTraceContext(startVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
             if(result.getType() != RayTraceResult.Type.MISS)
             {
                 endVec = result.getHitVec();
@@ -185,7 +185,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
         if(this.projectile.gravity)
         {
-            this.setMotion(this.getMotion().add(0, -0.05,0));
+            this.setMotion(this.getMotion().add(0, -0.05, 0));
         }
 
         if(this.ticksExisted >= this.projectile.life)
@@ -223,7 +223,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.growBoundingBoxAmount.get(), 0, Config.COMMON.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
                 if(!hitPos.isPresent() && grownHitPos.isPresent())
                 {
-                    RayTraceResult raytraceresult = this.world.rayTraceBlocks(new RayTraceContext(startVec, grownHitPos.get(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+                    RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos.get(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
                     if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
                     {
                         continue;
@@ -318,7 +318,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
     protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
     {
-        ((ServerWorld)this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state), x, y, z, (int) this.projectile.damage, 0.0, 0.0, 0.0, 0.05);
+        ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state), x, y, z, (int) this.projectile.damage, 0.0, 0.0, 0.0, 0.05);
     }
 
     @Override
@@ -412,5 +412,113 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     public IPacket<?> createSpawnPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    /**
+     * A custom implementation of {@link net.minecraft.world.IWorldReader#rayTraceBlocks(RayTraceContext)}
+     * that allows you to pass a predicate to ignore certain blocks when checking for collisions.
+     *
+     * @param world     the world to perform the ray trace
+     * @param context   the ray trace context
+     * @param predicate the block state predicate
+     * @return a result of the raytrace
+     */
+    private static BlockRayTraceResult rayTraceBlocks(World world, RayTraceContext context, Predicate<BlockState> predicate)
+    {
+        return func_217300_a(context, (rayTraceContext, blockPos) -> {
+            BlockState blockState = world.getBlockState(blockPos);
+            if(predicate.test(blockState)) return null;
+            IFluidState fluidState = world.getFluidState(blockPos);
+            Vec3d startVec = rayTraceContext.func_222253_b();
+            Vec3d endVec = rayTraceContext.func_222250_a();
+            VoxelShape blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
+            BlockRayTraceResult blockResult = world.rayTraceBlocks(startVec, endVec, blockPos, blockShape, blockState);
+            VoxelShape fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
+            BlockRayTraceResult fluidResult = fluidShape.rayTrace(startVec, endVec, blockPos);
+            double blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.func_222253_b().squareDistanceTo(blockResult.getHitVec());
+            double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.func_222253_b().squareDistanceTo(fluidResult.getHitVec());
+            return blockDistance <= fluidDistance ? blockResult : fluidResult;
+        }, (rayTraceContext) -> {
+            Vec3d vec3d = rayTraceContext.func_222253_b().subtract(rayTraceContext.func_222250_a());
+            return BlockRayTraceResult.createMiss(rayTraceContext.func_222250_a(), Direction.getFacingFromVector(vec3d.x, vec3d.y, vec3d.z), new BlockPos(rayTraceContext.func_222250_a()));
+        });
+    }
+
+    private static <T> T func_217300_a(RayTraceContext context, BiFunction<RayTraceContext, BlockPos, T> hitFunction, Function<RayTraceContext, T> p_217300_2_)
+    {
+        Vec3d startVec = context.func_222253_b();
+        Vec3d endVec = context.func_222250_a();
+        if(startVec.equals(endVec))
+        {
+            return p_217300_2_.apply(context);
+        }
+        else
+        {
+            double d0 = MathHelper.lerp(-1.0E-7D, endVec.x, startVec.x);
+            double d1 = MathHelper.lerp(-1.0E-7D, endVec.y, startVec.y);
+            double d2 = MathHelper.lerp(-1.0E-7D, endVec.z, startVec.z);
+            double d3 = MathHelper.lerp(-1.0E-7D, startVec.x, endVec.x);
+            double d4 = MathHelper.lerp(-1.0E-7D, startVec.y, endVec.y);
+            double d5 = MathHelper.lerp(-1.0E-7D, startVec.z, endVec.z);
+            int i = MathHelper.floor(d3);
+            int j = MathHelper.floor(d4);
+            int k = MathHelper.floor(d5);
+            BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(i, j, k);
+            T t = hitFunction.apply(context, blockpos$mutable);
+            if(t != null)
+            {
+                return t;
+            }
+            else
+            {
+                double d6 = d0 - d3;
+                double d7 = d1 - d4;
+                double d8 = d2 - d5;
+                int l = MathHelper.signum(d6);
+                int i1 = MathHelper.signum(d7);
+                int j1 = MathHelper.signum(d8);
+                double d9 = l == 0 ? Double.MAX_VALUE : (double) l / d6;
+                double d10 = i1 == 0 ? Double.MAX_VALUE : (double) i1 / d7;
+                double d11 = j1 == 0 ? Double.MAX_VALUE : (double) j1 / d8;
+                double d12 = d9 * (l > 0 ? 1.0D - MathHelper.frac(d3) : MathHelper.frac(d3));
+                double d13 = d10 * (i1 > 0 ? 1.0D - MathHelper.frac(d4) : MathHelper.frac(d4));
+                double d14 = d11 * (j1 > 0 ? 1.0D - MathHelper.frac(d5) : MathHelper.frac(d5));
+
+                while(d12 <= 1.0D || d13 <= 1.0D || d14 <= 1.0D)
+                {
+                    if(d12 < d13)
+                    {
+                        if(d12 < d14)
+                        {
+                            i += l;
+                            d12 += d9;
+                        }
+                        else
+                        {
+                            k += j1;
+                            d14 += d11;
+                        }
+                    }
+                    else if(d13 < d14)
+                    {
+                        j += i1;
+                        d13 += d10;
+                    }
+                    else
+                    {
+                        k += j1;
+                        d14 += d11;
+                    }
+
+                    T t1 = hitFunction.apply(context, blockpos$mutable.setPos(i, j, k));
+                    if(t1 != null)
+                    {
+                        return t1;
+                    }
+                }
+
+                return p_217300_2_.apply(context);
+            }
+        }
     }
 }

@@ -77,6 +77,7 @@ public class Config
         public final ForgeConfigSpec.DoubleValue growBoundingBoxAmount;
         public final ForgeConfigSpec.BooleanValue enableHeadShots;
         public final ForgeConfigSpec.DoubleValue headShotDamageMultiplier;
+        public final ForgeConfigSpec.BooleanValue ignoreLeaves;
 
         public Common(ForgeConfigSpec.Builder builder)
         {
@@ -93,6 +94,7 @@ public class Config
                 this.growBoundingBoxAmount = builder.comment("The extra amount to expand an entity's bounding box when checking for projectile collision. Setting this value higher will make it easier to hit players").defineInRange("growBoundingBoxAmount", 0.3, 0.0, 1.0);
                 this.enableHeadShots = builder.comment("Enables the check for head shots for players. Projectiles that hit the head of a player will have increased damage.").define("enableHeadShots", true);
                 this.headShotDamageMultiplier = builder.comment("The value to multiply the damage by if projectile hit the players head").defineInRange("headShotDamageMultiplier", 1.0, 1.0, Double.MAX_VALUE);
+                this.ignoreLeaves = builder.comment("If true, projectiles will ignore leaves when checking for collision").define("ignoreLeaves", false);
             }
             builder.pop();
         }
