@@ -11,8 +11,6 @@ import net.minecraft.item.ItemStack;
  */
 public interface IOverrideModel
 {
-    void init();
-
     void tick(LivingEntity entity);
 
     void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay);

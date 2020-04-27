@@ -127,8 +127,6 @@ public class ClientHandler
 		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.MEDIUM.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
 		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.LONG.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
 		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SILENCER), new DisplayProperty(0.0F, 0.25F, 0.5F, 0.0F, 0.0F, 0.0F, 1.5F));*/
-
-        //ModelOverrides.getModelMap().forEach((item, map) -> map.values().forEach(IOverrideModel::init));
     }
 
     public static void handleMessageBullet(MessageBullet message)

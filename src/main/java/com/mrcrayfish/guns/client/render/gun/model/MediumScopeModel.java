@@ -31,9 +31,6 @@ public class MediumScopeModel implements IOverrideModel
     private static final ResourceLocation VIGNETTE = new ResourceLocation(Reference.MOD_ID, "textures/effect/scope_vignette.png");
 
     @Override
-    public void init() {}
-
-    @Override
     public void tick(LivingEntity entity) {}
 
     @Override
