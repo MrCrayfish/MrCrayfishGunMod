@@ -17,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * Author: MrCrayfish
  */
-public class ModelChainGun implements IOverrideModel
+public class MiniGunModel implements IOverrideModel
 {
     private int lastRotation;
     private int rotation;
