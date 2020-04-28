@@ -27,8 +27,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -53,7 +51,7 @@ public class CommonHandler
      * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
      * applied on the client in {@link GunItem#onItemRightClick} and {@link GunItem#onUsingTick}.
      */
-    private static final Map<UUID, CooldownTracker> COOLDOWN_TRACKER_MAP = new HashMap<>();
+    private static final Map<UUID, ShootTracker> SHOOT_TRACKER_MAP = new HashMap<>();
 
     /**
      * Fires the weapon the player is currently holding.
@@ -70,33 +68,33 @@ public class CommonHandler
             if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
                 GunItem item = (GunItem) heldItem.getItem();
-                Gun gun = item.getModifiedGun(heldItem);
-                if(gun != null)
+                Gun modifiedGun = item.getModifiedGun(heldItem);
+                if(modifiedGun != null)
                 {
-                    CooldownTracker tracker = getCooldownTracker(player.getUniqueID());
-                    if(tracker.getCooldown(heldItem.getItem(), 0.0F) > 0.5)
+                    ShootTracker tracker = getShootTracker(player.getUniqueID());
+                    if(tracker.hasCooldown(item))
                     {
-                        GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining: " + tracker.getCooldown(heldItem.getItem(), 0F));
+                        GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
                         return;
                     }
-                    tracker.setCooldown(heldItem.getItem(), gun.general.rate);
+                    tracker.putCooldown(item, modifiedGun);
 
                     if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
                     {
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                     }
 
-                    if(!gun.general.alwaysSpread && gun.general.spread > 0.0F)
+                    if(!modifiedGun.general.alwaysSpread && modifiedGun.general.spread > 0.0F)
                     {
                         SpreadTracker.get(player.getUniqueID()).update(item);
                     }
 
                     boolean silenced = Gun.getAttachment(IAttachment.Type.BARREL, heldItem).getItem() == ModItems.SILENCER.get();
 
-                    for(int i = 0; i < gun.general.projectileAmount; i++)
+                    for(int i = 0; i < modifiedGun.general.projectileAmount; i++)
                     {
-                        ProjectileFactory factory = AmmoRegistry.getInstance().getFactory(gun.projectile.item);
-                        EntityProjectile bullet = factory.create(world, player, item, gun);
+                        ProjectileFactory factory = AmmoRegistry.getInstance().getFactory(modifiedGun.projectile.item);
+                        EntityProjectile bullet = factory.create(world, player, item, modifiedGun);
                         bullet.setWeapon(heldItem);
                         bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                         if(silenced)
@@ -105,9 +103,9 @@ public class CommonHandler
                         }
                         world.addEntity(bullet);
 
-                        if(!gun.projectile.visible)
+                        if(!modifiedGun.projectile.visible)
                         {
-                            MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.getPosX(), bullet.getPosY(), bullet.getPosZ(), bullet.getMotion().getX(), bullet.getMotion().getY(), bullet.getMotion().getZ(), gun.projectile.trailColor, gun.projectile.trailLengthMultiplier);
+                            MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.getPosX(), bullet.getPosY(), bullet.getPosZ(), bullet.getMotion().getX(), bullet.getMotion().getY(), bullet.getMotion().getZ(), modifiedGun.projectile.trailColor, modifiedGun.projectile.trailLengthMultiplier);
                             PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimension().getType())), messageBullet);
                         }
                     }
@@ -133,7 +131,7 @@ public class CommonHandler
                         }
                     }
 
-                    ResourceLocation fireSound = silenced ? gun.sounds.silencedFire : gun.sounds.fire;
+                    ResourceLocation fireSound = silenced ? modifiedGun.sounds.silencedFire : modifiedGun.sounds.fire;
                     SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(fireSound);
                     if(event != null)
                     {
@@ -273,24 +271,12 @@ public class CommonHandler
      * @param uuid the player's uuid
      * @return a cooldown tracker instance
      */
-    public static CooldownTracker getCooldownTracker(UUID uuid)
+    public static ShootTracker getShootTracker(UUID uuid)
     {
-        if(!COOLDOWN_TRACKER_MAP.containsKey(uuid))
+        if(!SHOOT_TRACKER_MAP.containsKey(uuid))
         {
-            COOLDOWN_TRACKER_MAP.put(uuid, new CooldownTracker());
+            SHOOT_TRACKER_MAP.put(uuid, new ShootTracker());
         }
-        return COOLDOWN_TRACKER_MAP.get(uuid);
-    }
-
-    /**
-     * Updates the cooldown tracker for each player every tick
-     */
-    @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event)
-    {
-        if(event.phase == TickEvent.Phase.END && !event.player.world.isRemote)
-        {
-            CommonHandler.getCooldownTracker(event.player.getUniqueID()).tick();
-        }
+        return SHOOT_TRACKER_MAP.get(uuid);
     }
 }
