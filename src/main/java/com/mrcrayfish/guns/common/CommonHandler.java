@@ -74,9 +74,9 @@ public class CommonHandler
                 if(gun != null)
                 {
                     CooldownTracker tracker = getCooldownTracker(player.getUniqueID());
-                    if(tracker.hasCooldown(heldItem.getItem()))
+                    if(tracker.getCooldown(heldItem.getItem(), 0.0F) > 0.5)
                     {
-                        GunMod.LOGGER.warn(player.getName() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging?");
+                        GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining: " + tracker.getCooldown(heldItem.getItem(), 0F));
                         return;
                     }
                     tracker.setCooldown(heldItem.getItem(), gun.general.rate);
