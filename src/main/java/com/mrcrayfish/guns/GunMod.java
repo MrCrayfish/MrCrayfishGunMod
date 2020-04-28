@@ -9,8 +9,13 @@ import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.network.PacketHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,6 +36,7 @@ import javax.annotation.Nullable;
 @Mod(Reference.MOD_ID)
 public class GunMod
 {
+    public static final ResourceLocation BULLET_HOLE_TEXTURE = new ResourceLocation(Reference.MOD_ID, "particle/bullet_hole");
     public static boolean controllableLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
     public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
@@ -52,10 +58,12 @@ public class GunMod
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        bus.register(this);
         ModBlocks.REGISTER.register(bus);
         ModContainers.REGISTER.register(bus);
         ModEntities.REGISTER.register(bus);
         ModItems.REGISTER.register(bus);
+        ModParticleTypes.REGISTER.register(bus);
         ModPotions.REGISTER.register(bus);
         ModRecipeSerializers.REGISTER.register(bus);
         ModSounds.REGISTER.register(bus);
@@ -82,6 +90,16 @@ public class GunMod
         Minecraft mc = event.getMinecraftSupplier().get();
         GunMod.options = new GunOptions(mc.gameDir);
         ClientHandler.setup();
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public void onTextureStitch(TextureStitchEvent.Pre event)
+    {
+        if(event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+        {
+            event.addSprite(BULLET_HOLE_TEXTURE);
+        }
     }
 
     @SubscribeEvent

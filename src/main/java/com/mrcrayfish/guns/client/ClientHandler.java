@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.SoundEvents;
+import com.mrcrayfish.guns.client.particle.BulletHoleParticle;
 import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
@@ -17,11 +18,13 @@ import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
+import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.object.Bullet;
+import com.mrcrayfish.guns.particles.BulletHoleData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -29,17 +32,25 @@ import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.MouseSettingsScreen;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -49,6 +60,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Random;
 
@@ -109,6 +121,16 @@ public class ClientHandler
 		ModelOverrides.register(new ItemStack(ModItems.SHORT_SCOPE.get()), new ShortScopeModel());
 		ModelOverrides.register(new ItemStack(ModItems.MEDIUM_SCOPE.get()), new MediumScopeModel());
 		ModelOverrides.register(new ItemStack(ModItems.LONG_SCOPE.get()), new LongScopeModel());
+
+        Minecraft.getInstance().particles.registerFactory(ModParticleTypes.BULLET_HOLE.get(), new IParticleFactory<BulletHoleData>()
+        {
+            @Nullable
+            @Override
+            public Particle makeParticle(BulletHoleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+            {
+                return new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection());
+            }
+        });
 
 		/*WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.PISTOL), new DisplayProperty(0.0F, 0.55F, -0.25F, 0.0F, 0.0F, 0.0F, 3.0F));
 		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SHOTGUN), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));

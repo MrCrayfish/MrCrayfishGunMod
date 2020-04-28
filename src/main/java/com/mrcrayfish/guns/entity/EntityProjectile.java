@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.entity;
 import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.SpreadTracker;
+import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.AmmoItem;
 import com.mrcrayfish.guns.item.AmmoRegistry;
@@ -10,6 +11,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
+import com.mrcrayfish.guns.particles.BulletHoleData;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -271,6 +273,12 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             {
                 ((IDamageable) block).onBlockDamaged(this.world, state, pos, (int) Math.ceil(getDamage() / 2.0) + 1);
             }
+
+            Vec3d hitVec = blockRayTraceResult.getHitVec();
+            double holeX = hitVec.getX() + 0.005 * blockRayTraceResult.getFace().getXOffset();
+            double holeY = hitVec.getY() + 0.005 * blockRayTraceResult.getFace().getYOffset();
+            double holeZ = hitVec.getZ() + 0.005 * blockRayTraceResult.getFace().getZOffset();
+            ((ServerWorld) this.world).spawnParticle(new BulletHoleData(ModParticleTypes.BULLET_HOLE.get(), blockRayTraceResult.getFace()), holeX, holeY, holeZ, 1, 0, 0, 0, 0);
 
             this.onHitBlock(state, pos, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
 
