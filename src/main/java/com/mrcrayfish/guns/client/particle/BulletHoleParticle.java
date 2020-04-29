@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.ClientHandler;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
@@ -40,6 +41,28 @@ public class BulletHoleParticle extends SpriteTexturedParticle
         this.particleGravity = 0.0F;
         this.particleScale = 0.05F;
 
+        /* Expire the particle straight away if the block is air */
+        BlockState state = world.getBlockState(pos);
+        if(world.getBlockState(pos).isAir(world, pos))
+        {
+            this.setExpired();
+        }
+
+        int color = this.getBlockColor(state, world, pos, direction);
+        this.particleRed = ((float)(color >> 16 & 255) / 255.0F) / 3.0F;
+        this.particleGreen = ((float)(color >> 8 & 255) / 255.0F) / 3.0F;
+        this.particleBlue = ((float)(color & 255) / 255.0F) / 3.0F;
+        this.particleAlpha = 0.9F;
+    }
+
+    private int getBlockColor(BlockState state, World world, BlockPos pos, Direction direction)
+    {
+        //Add an exception for grass blocks
+        if(state.getBlock() == Blocks.GRASS_BLOCK)
+        {
+            return Integer.MAX_VALUE;
+        }
+        return Minecraft.getInstance().getBlockColors().getColor(state, world, pos, 0);
     }
 
     @Override
@@ -91,14 +114,9 @@ public class BulletHoleParticle extends SpriteTexturedParticle
     public void tick()
     {
         super.tick();
-        Minecraft minecraft = Minecraft.getInstance();
-        World world = minecraft.world;
-        if(world != null)
+        if(this.world.getBlockState(this.pos).isAir(this.world, this.pos))
         {
-            if(world.getBlockState(this.pos).isAir(world, this.pos))
-            {
-                this.setExpired();
-            }
+            this.setExpired();
         }
     }
 
@@ -125,7 +143,7 @@ public class BulletHoleParticle extends SpriteTexturedParticle
         float f8 = this.getMaxU();
         float f5 = this.getMinV();
         float f6 = this.getMaxV();
-        int j = 0;
+        int j = this.getBrightnessForRender(partialTicks);
         buffer.pos((double) points[0].getX(), (double) points[0].getY(), (double) points[0].getZ()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
         buffer.pos((double) points[1].getX(), (double) points[1].getY(), (double) points[1].getZ()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
         buffer.pos((double) points[2].getX(), (double) points[2].getY(), (double) points[2].getZ()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
