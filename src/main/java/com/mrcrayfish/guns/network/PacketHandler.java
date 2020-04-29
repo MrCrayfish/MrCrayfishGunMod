@@ -55,8 +55,17 @@ public class PacketHandler
         registerPlayMessage(MessageStunGrenade.class, MessageStunGrenade::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageCraft.class, MessageCraft::new, LogicalSide.SERVER);
         registerPlayMessage(MessageBullet.class, MessageBullet::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageBulletHole.class, MessageBulletHole::new, LogicalSide.CLIENT);
     }
 
+    /**
+     * Register an {@link IMessage} to the play network channel.
+     *
+     * @param clazz the class of the message
+     * @param messageSupplier a supplier to create an instance of the message
+     * @param side the logical side this message is to be handled on
+     * @param <T> inferred by first parameter, class must implement {@link IMessage}
+     */
     private static <T extends IMessage> void registerPlayMessage(Class<T> clazz, Supplier<T> messageSupplier, LogicalSide side)
     {
         playChannel.registerMessage(nextMessageId++, clazz, IMessage::encode, buffer -> {
@@ -70,11 +79,17 @@ public class PacketHandler
         });
     }
 
+    /**
+     * Gets the handshake network channel for MrCrayfish's Gun Mod
+     */
     public static SimpleChannel getHandshakeChannel()
     {
         return handshakeChannel;
     }
 
+    /**
+     * Gets the play network channel for MrCrayfish's Gun Mod
+     */
     public static SimpleChannel getPlayChannel()
     {
         return playChannel;

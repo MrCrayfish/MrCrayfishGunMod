@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -21,16 +22,33 @@ import net.minecraft.world.World;
 public class BulletHoleParticle extends SpriteTexturedParticle
 {
     private Direction direction;
+    private BlockPos pos;
 
-    public BulletHoleParticle(World world, double x, double y, double z, Direction direction)
+    public BulletHoleParticle(World world, double x, double y, double z, Direction direction, BlockPos pos)
     {
         super(world, x, y, z);
         this.setSprite(Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(GunMod.BULLET_HOLE_TEXTURE));
         this.direction = direction;
+        this.pos = pos;
         this.maxAge = 200;
         this.canCollide = false;
         this.particleGravity = 0.0F;
         this.particleScale = 0.04F;
+    }
+
+    @Override
+    public void tick()
+    {
+        super.tick();
+        Minecraft minecraft = Minecraft.getInstance();
+        World world = minecraft.world;
+        if(world != null)
+        {
+            if(world.getBlockState(this.pos).isAir(world, this.pos))
+            {
+                this.setExpired();
+            }
+        }
     }
 
     @Override

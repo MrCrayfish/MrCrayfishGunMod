@@ -6,6 +6,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -23,22 +24,30 @@ public class BulletHoleData implements IParticleData
             {
                 direction = Direction.NORTH;
             }
-            return new BulletHoleData(particleType, direction);
+            reader.expect(' ');
+            int x = reader.readInt();
+            reader.expect(' ');
+            int y = reader.readInt();
+            reader.expect(' ');
+            int z = reader.readInt();
+            return new BulletHoleData(particleType, direction, new BlockPos(x, y, z));
         }
 
         public BulletHoleData read(ParticleType<BulletHoleData> particleType, PacketBuffer buffer)
         {
-            return new BulletHoleData(particleType, buffer.readEnumValue(Direction.class));
+            return new BulletHoleData(particleType, buffer.readEnumValue(Direction.class), buffer.readBlockPos());
         }
     };
 
     private final ParticleType<BulletHoleData> particleType;
     private final Direction direction;
+    private final BlockPos pos;
 
-    public BulletHoleData(ParticleType<BulletHoleData> particleType, Direction direction)
+    public BulletHoleData(ParticleType<BulletHoleData> particleType, Direction direction, BlockPos pos)
     {
         this.particleType = particleType;
         this.direction = direction;
+        this.pos = pos;
     }
 
     @Override
@@ -49,13 +58,19 @@ public class BulletHoleData implements IParticleData
 
     public Direction getDirection()
     {
-        return direction;
+        return this.direction;
+    }
+
+    public BlockPos getPos()
+    {
+        return this.pos;
     }
 
     @Override
     public void write(PacketBuffer buffer)
     {
         buffer.writeEnumValue(this.direction);
+        buffer.writeBlockPos(this.pos);
     }
 
     @Override

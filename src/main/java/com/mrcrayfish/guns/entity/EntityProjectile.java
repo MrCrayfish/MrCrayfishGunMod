@@ -3,19 +3,27 @@ package com.mrcrayfish.guns.entity;
 import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.SpreadTracker;
-import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.AmmoItem;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
-import com.mrcrayfish.guns.particles.BulletHoleData;
 import com.mrcrayfish.guns.util.ItemStackUtil;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BreakableBlock;
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.PaneBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.IFluidState;
@@ -26,13 +34,25 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -255,6 +275,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         if(result instanceof BlockRayTraceResult)
         {
             BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) result;
+            if(blockRayTraceResult.getType() == RayTraceResult.Type.MISS)
+            {
+                return;
+            }
+
             BlockPos pos = blockRayTraceResult.getPos();
             BlockState state = this.world.getBlockState(pos);
             Block block = state.getBlock();
@@ -278,7 +303,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             double holeX = hitVec.getX() + 0.005 * blockRayTraceResult.getFace().getXOffset();
             double holeY = hitVec.getY() + 0.005 * blockRayTraceResult.getFace().getYOffset();
             double holeZ = hitVec.getZ() + 0.005 * blockRayTraceResult.getFace().getZOffset();
-            ((ServerWorld) this.world).spawnParticle(new BulletHoleData(ModParticleTypes.BULLET_HOLE.get(), blockRayTraceResult.getFace()), holeX, holeY, holeZ, 1, 0, 0, 0, 0);
+            Direction direction = blockRayTraceResult.getFace();
+            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this.shooter), new MessageBulletHole(holeX, holeY, holeZ, direction, pos));
 
             this.onHitBlock(state, pos, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
 

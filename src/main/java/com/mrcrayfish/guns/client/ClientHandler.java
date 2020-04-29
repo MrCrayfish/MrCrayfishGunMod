@@ -22,6 +22,7 @@ import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.message.MessageBullet;
+import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.object.Bullet;
 import com.mrcrayfish.guns.particles.BulletHoleData;
@@ -128,7 +129,7 @@ public class ClientHandler
             @Override
             public Particle makeParticle(BulletHoleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
             {
-                return new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection());
+                return new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos());
             }
         });
 
@@ -159,6 +160,16 @@ public class ClientHandler
             Entity entity = world.getEntityByID(message.getEntityId());
             EntityProjectile projectile = (EntityProjectile) entity; //TODO test if this works. entity could be null but does java still cast?
             BULLET_RENDERER.addBullet(new Bullet(projectile, message));
+        }
+    }
+
+    public static void handleMessageBulletHole(MessageBulletHole message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        World world = mc.world;
+        if(world != null)
+        {
+            world.addParticle(new BulletHoleData(ModParticleTypes.BULLET_HOLE.get(), message.getDirection(), message.getPos()), true, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
         }
     }
 
