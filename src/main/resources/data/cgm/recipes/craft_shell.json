@@ -1,0 +1,21 @@
+{
+    "type": "cgm:workbench",
+    "result": {
+        "item": "cgm:shell",
+        "count": 24
+    },
+    "materials": [
+        {
+            "item": "minecraft:iron_nugget",
+            "count": 4
+        },
+        {
+            "item": "minecraft:gold_nugget",
+            "count": 2
+        },
+        {
+            "item": "minecraft:gunpowder",
+            "count": 1
+        }
+    ]
+}

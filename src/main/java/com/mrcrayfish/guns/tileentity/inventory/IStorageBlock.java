@@ -3,13 +3,14 @@ package com.mrcrayfish.guns.tileentity.inventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 /**
  * Author: MrCrayfish
  */
-public interface IStorageBlock extends IInventory
+public interface IStorageBlock extends IInventory, INamedContainerProvider
 {
     NonNullList<ItemStack> getInventory();
 

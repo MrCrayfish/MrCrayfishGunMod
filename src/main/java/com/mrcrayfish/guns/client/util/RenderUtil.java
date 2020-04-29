@@ -23,6 +23,11 @@ public class RenderUtil
         return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(new ItemStack(item));
     }
 
+    public static IBakedModel getModel(ItemStack item)
+    {
+        return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(item);
+    }
+
     public static void rotateZ(float xOffset, float yOffset, float rotation)
     {
         /*GlStateManager.translate(xOffset, yOffset, 0);

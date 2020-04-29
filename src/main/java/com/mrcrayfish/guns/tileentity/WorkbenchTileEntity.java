@@ -1,13 +1,20 @@
 package com.mrcrayfish.guns.tileentity;
 
+import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.init.ModTileEntities;
 import com.mrcrayfish.guns.tileentity.inventory.IStorageBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -24,14 +31,8 @@ public class WorkbenchTileEntity extends SyncedTileEntity implements IStorageBlo
     @Override
     public NonNullList<ItemStack> getInventory()
     {
-        return inventory;
+        return this.inventory;
     }
-
-    /*@Override
-    public ITextComponent getName()
-    {
-        return "cgm.container.workbench";
-    }*/
 
     @Override
     public CompoundNBT write(CompoundNBT compound)
@@ -57,5 +58,18 @@ public class WorkbenchTileEntity extends SyncedTileEntity implements IStorageBlo
     public boolean isUsableByPlayer(PlayerEntity player)
     {
         return this.world.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5, this.pos.getY() + 0.5, this.pos.getZ() + 0.5) <= 64.0;
+    }
+
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        return new TranslationTextComponent("container.cgm.workbench");
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity)
+    {
+        return new WorkbenchContainer(windowId, playerInventory, this);
     }
 }

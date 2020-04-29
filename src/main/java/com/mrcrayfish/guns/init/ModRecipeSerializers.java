@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.crafting.WorkbenchRecipeSerializer;
 import com.mrcrayfish.guns.recipe.AttachmentRecipe;
 import com.mrcrayfish.guns.recipe.DyeItemRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -18,4 +19,5 @@ public class ModRecipeSerializers
 
     public static final RegistryObject<SpecialRecipeSerializer<AttachmentRecipe>> ATTACHMENT = REGISTER.register("attachment", () -> new SpecialRecipeSerializer<>(AttachmentRecipe::new));
     public static final RegistryObject<SpecialRecipeSerializer<DyeItemRecipe>> DYE_ITEM = REGISTER.register("dye_item", () -> new SpecialRecipeSerializer<>(DyeItemRecipe::new));
+    public static final RegistryObject<WorkbenchRecipeSerializer> WORKBENCH = REGISTER.register("workbench", WorkbenchRecipeSerializer::new);
 }

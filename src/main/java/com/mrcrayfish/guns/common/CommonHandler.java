@@ -4,22 +4,29 @@ import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.common.container.WorkbenchContainer;
+import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
+import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.AmmoItem;
 import com.mrcrayfish.guns.item.AmmoRegistry;
+import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
+import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
@@ -32,6 +39,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -168,19 +176,25 @@ public class CommonHandler
         World world = player.world;
 
         //TODO fix crafting with new data pack system
-        /*if(player.openContainer instanceof WorkbenchContainer)
+        if(player.openContainer instanceof WorkbenchContainer)
         {
             WorkbenchContainer workbench = (WorkbenchContainer) player.openContainer;
             if(workbench.getPos().equals(pos))
             {
-                List<ItemStack> materials = WorkbenchRegistry.getMaterialsForStack(message.stack);
+                WorkbenchRecipe recipe = WorkbenchRecipes.getRecipeById(world, id);
+                if(recipe == null)
+                {
+                    return;
+                }
+
+                List<ItemStack> materials = recipe.getMaterials();
                 if(materials != null)
                 {
                     for(ItemStack stack : materials)
                     {
                         if(!InventoryUtil.hasItemStack(player, stack))
                         {
-                            return null;
+                            return;
                         }
                     }
 
@@ -191,33 +205,26 @@ public class CommonHandler
 
                     WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
 
-                    *//* Gets the color based on the dye *//*
+                    /* Gets the color based on the dye */
                     int color = -1;
                     ItemStack dyeStack = workbenchTileEntity.getInventory().get(0);
-                    if(dyeStack.getItem() instanceof ItemDye)
+                    if(dyeStack.getItem() instanceof DyeItem)
                     {
-                        Optional<EnumDyeColor> optional = DyeUtils.colorFromStack(dyeStack);
-                        if(optional.isPresent())
-                        {
-                            float[] colorComponentValues = optional.get().getColorComponentValues();
-                            int red = (int) (colorComponentValues[0] * 255F);
-                            int green = (int) (colorComponentValues[1] * 255F);
-                            int blue = (int) (colorComponentValues[2] * 255F);
-                            color = ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF));
-                            workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
-                        }
+                        DyeItem dyeItem = (DyeItem) dyeStack.getItem();
+                        color = dyeItem.getDyeColor().getColorValue();
+                        workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
                     }
 
-                    ItemStack stack = message.stack.copy();
-                    if(finalColor != -1 && stack.getItem() instanceof ColoredItem)
+                    ItemStack stack = recipe.getItem();
+                    if(stack.getItem() instanceof ColoredItem)
                     {
                         ColoredItem colored = (ColoredItem) stack.getItem();
-                        colored.setColor(stack, finalColor);
+                        colored.setColor(stack, color);
                     }
-                    world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
+                    world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack));
                 }
             }
-        }*/
+        }
     }
 
     public static void unloadHeldGun(ServerPlayerEntity player)

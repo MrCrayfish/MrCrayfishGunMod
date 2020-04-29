@@ -14,8 +14,11 @@ import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.LongScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.MediumScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
+import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
 import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.init.ModBlocks;
+import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModParticleTypes;
@@ -31,11 +34,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.MouseSettingsScreen;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.Entity;
@@ -95,6 +101,8 @@ public class ClientHandler
         }
         KeyBinds.register();
         SoundEvents.initReflection();
+
+        RenderTypeLookup.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.getCutout());
         
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE.get(), RenderProjectile::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.GRENADE.get(), RenderProjectile::new);
@@ -133,23 +141,7 @@ public class ClientHandler
             }
         });
 
-		/*WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.PISTOL), new DisplayProperty(0.0F, 0.55F, -0.25F, 0.0F, 0.0F, 0.0F, 3.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SHOTGUN), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.RIFLE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.GRENADE_LAUNCHER), new DisplayProperty(0.0F, 0.55F, -0.1F, 0.0F, 0.0F, 0.0F, 3.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.BAZOOKA), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.5F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.MINI_GUN), new DisplayProperty(0.0F, 0.55F, 0.1F, 0.0F, 0.0F, 0.0F, 2.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.ASSAULT_RIFLE), new DisplayProperty(0.0F, 0.55F, -0.15F, 0.0F, 0.0F, 0.0F, 3.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.BASIC_AMMO), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.ADVANCED_AMMO), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SHELL), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 1.5F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.GRENADE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.MISSILE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 2.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.STUN_GRENADE), new DisplayProperty(0.0F, 0.55F, 0.0F, 0.0F, 0.0F, 0.0F, 3.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.SMALL.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.MEDIUM.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SCOPES, 1, ScopeItem.Type.LONG.ordinal()), new DisplayProperty(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 4.0F));
-		WorkbenchScreen.addDisplayProperty(new ItemStack(ModItems.SILENCER), new DisplayProperty(0.0F, 0.25F, 0.5F, 0.0F, 0.0F, 0.0F, 1.5F));*/
+        ScreenManager.registerFactory(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
     }
 
     public static void handleMessageBullet(MessageBullet message)
