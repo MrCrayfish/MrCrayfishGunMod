@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -18,6 +19,13 @@ import java.util.Random;
 
 public class RenderUtil
 {
+    public static void scissor(int x, int y, int width, int height)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        int scale = (int) mc.getMainWindow().getGuiScaleFactor();
+        GL11.glScissor(x * scale, mc.getMainWindow().getHeight() - y * scale - height * scale, Math.max(0, width * scale), Math.max(0, height * scale));
+    }
+
     public static IBakedModel getModel(Item item)
     {
         return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(new ItemStack(item));

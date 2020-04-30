@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -63,6 +65,11 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
         minecraft.fontRenderer.drawString(this.title.getFormattedText(), 8, 6, 4210752);
         minecraft.fontRenderer.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8, this.ySize - 96 + 2, 4210752);
 
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        int left = (this.width - this.xSize) / 2;
+        int top = (this.height - this.ySize) / 2;
+        RenderUtil.scissor(left + 26, top + 17, 142, 70);
+
         RenderSystem.pushMatrix();
 
         RenderSystem.translatef(96, 50, 100);
@@ -86,6 +93,8 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
         RenderSystem.disableRescaleNormal();
 
         RenderSystem.popMatrix();
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
     @Override
