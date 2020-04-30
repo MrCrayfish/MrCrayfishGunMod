@@ -120,6 +120,7 @@ public class Config
         public final ForgeConfigSpec.DoubleValue headShotDamageMultiplier;
         public final ForgeConfigSpec.BooleanValue ignoreLeaves;
         public final ForgeConfigSpec.BooleanValue enableKnockback;
+        public final ForgeConfigSpec.BooleanValue improvedHitboxes;
 
         public Gameplay(ForgeConfigSpec.Builder builder)
         {
@@ -131,6 +132,7 @@ public class Config
                 this.headShotDamageMultiplier = builder.comment("The value to multiply the damage by if projectile hit the players head").defineInRange("headShotDamageMultiplier", 1.0, 1.0, Double.MAX_VALUE);
                 this.ignoreLeaves = builder.comment("If true, projectiles will ignore leaves when checking for collision").define("ignoreLeaves", false);
                 this.enableKnockback = builder.comment("If true, projectiles will cause knockback when an entity is hit. By default this is set to true to match the behaviour of Minecraft.").define("enableKnockback", true);
+                this.improvedHitboxes = builder.comment("If true, improves the accuracy of weapons by considering the ping of the player. This has no affect on singleplayer. This will add a little overhead if enabled.").define("improvedHitboxes", false);
             }
             builder.pop();
         }

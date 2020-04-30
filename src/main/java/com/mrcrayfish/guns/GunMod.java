@@ -2,6 +2,7 @@ package com.mrcrayfish.guns;
 
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.settings.GunOptions;
+import com.mrcrayfish.guns.common.BoundingBoxTracker;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityMissile;
@@ -76,13 +77,15 @@ public class GunMod
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
-        //ModCrafting.register(); //TODO convert to datapack
-        //ModEntities.register();
         AmmoRegistry.getInstance().setup();
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.GRENADE.get(), (worldIn, entity, item, modifiedGun) -> new EntityGrenade(ModEntities.GRENADE.get(), worldIn, entity, item, modifiedGun));
         AmmoRegistry.getInstance().registerProjectileFactory(ModItems.MISSILE.get(), (worldIn, entity, item, modifiedGun) -> new EntityMissile(ModEntities.MISSILE.get(), worldIn, entity, item, modifiedGun));
-
         PacketHandler.init();
+
+        if(Config.COMMON.gameplay.improvedHitboxes.get())
+        {
+            MinecraftForge.EVENT_BUS.register(new BoundingBoxTracker());
+        }
     }
 
     private void onClientSetup(FMLClientSetupEvent event)

@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.common.BoundingBoxTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.AmmoItem;
@@ -240,7 +241,13 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             if(!entity.equals(this.shooter))
             {
                 double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
-                AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, expandHeight, 0);
+                AxisAlignedBB boundingBox = entity.getBoundingBox();
+                if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity)
+                {
+                    int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
+                    boundingBox = BoundingBoxTracker.getBoundingBox(entity, ping);
+                }
+                boundingBox = boundingBox.expand(0, expandHeight, 0);
                 Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
                 Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
                 if(!hitPos.isPresent() && grownHitPos.isPresent())
