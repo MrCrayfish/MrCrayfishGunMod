@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
@@ -26,15 +27,18 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -227,6 +231,10 @@ public class CommonHandler
         }
     }
 
+    /**
+     *
+     * @param player
+     */
     public static void unloadHeldGun(ServerPlayerEntity player)
     {
         ItemStack stack = player.getHeldItemMainhand();
@@ -263,12 +271,30 @@ public class CommonHandler
         }
     }
 
+    /**
+     *
+     * @param player
+     * @param stack
+     */
     private static void spawnAmmo(ServerPlayerEntity player, ItemStack stack)
     {
         player.inventory.addItemStackToInventory(stack);
         if(stack.getCount() > 0)
         {
             player.world.addEntity(new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), stack.copy()));
+        }
+    }
+
+    /**
+     *
+     * @param player
+     */
+    public static void openAttachmentsScreen(ServerPlayerEntity player)
+    {
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(heldItem.getItem() instanceof GunItem)
+        {
+            NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, playerInventory, player1) -> new AttachmentContainer(windowId, playerInventory, heldItem), new TranslationTextComponent("container.cgm.attachments")));
         }
     }
 

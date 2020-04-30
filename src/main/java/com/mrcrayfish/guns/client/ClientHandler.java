@@ -25,6 +25,8 @@ import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageAttachments;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
@@ -57,6 +59,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -263,6 +266,19 @@ public class ClientHandler
             catch(IllegalAccessException e)
             {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onKeyPressed(InputEvent.KeyInputEvent event)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player != null && mc.currentScreen == null)
+        {
+            if(KeyBinds.KEY_ATTACHMENTS.isPressed())
+            {
+                PacketHandler.getPlayChannel().sendToServer(new MessageAttachments());
             }
         }
     }

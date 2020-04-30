@@ -56,6 +56,7 @@ public class PacketHandler
         registerPlayMessage(MessageCraft.class, MessageCraft::new, LogicalSide.SERVER);
         registerPlayMessage(MessageBullet.class, MessageBullet::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageBulletHole.class, MessageBulletHole::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageAttachments.class, MessageAttachments::new, LogicalSide.SERVER);
     }
 
     /**

@@ -77,13 +77,6 @@ public class BlockWorkbench extends BlockRotatedObject
     {
         if(!world.isRemote())
         {
-            ItemStack heldItem = playerEntity.getHeldItem(hand);
-            if(heldItem.getItem() instanceof GunItem)
-            {
-                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SimpleNamedContainerProvider((windowId, playerInventory, player) -> new AttachmentContainer(windowId, playerInventory, heldItem), new TranslationTextComponent("container.cgm.attachments")));
-                return ActionResultType.SUCCESS;
-            }
-
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof INamedContainerProvider)
             {
