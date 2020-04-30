@@ -36,9 +36,9 @@ public class AttachmentSlot extends Slot
     @Override
     public void onSlotChanged()
     {
-        if(this.container.isLoaded() && this.getHasStack())
+        if(this.container.isLoaded())
         {
-            this.player.world.playSound(null, this.player.getPosX(), this.player.getPosY() + 1.0, this.player.getPosZ(), ModSounds.UI_WEAPON_ATTACH.get(), SoundCategory.PLAYERS, 0.5F, 1.0F);
+            this.player.world.playSound(null, this.player.getPosX(), this.player.getPosY() + 1.0, this.player.getPosZ(), ModSounds.UI_WEAPON_ATTACH.get(), SoundCategory.PLAYERS, 0.5F, this.getHasStack() ? 1.0F : 0.75F);
         }
     }
 
