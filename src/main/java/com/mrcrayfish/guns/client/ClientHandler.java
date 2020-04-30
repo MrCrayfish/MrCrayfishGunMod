@@ -228,6 +228,9 @@ public class ClientHandler
         if(!(mc.player.inventory.getCurrentItem().getItem() instanceof GunItem))
             return false;
 
+        if(mc.currentScreen != null)
+            return false;
+
         boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
         if(GunMod.controllableLoaded)
         {
