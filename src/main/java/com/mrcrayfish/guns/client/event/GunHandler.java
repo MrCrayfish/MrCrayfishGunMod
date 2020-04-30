@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client.event;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.item.GunItem;
@@ -23,6 +24,9 @@ import org.lwjgl.glfw.GLFW;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class GunHandler
 {
+    private static float recoil;
+    private static float remainingRecoil;
+
     private static boolean isInGame()
     {
         Minecraft mc = Minecraft.getInstance();
@@ -122,6 +126,35 @@ public class GunHandler
             if(modifiedGun.display.flash != null)
             {
                 ClientHandler.getGunRenderer().showMuzzleFlash();
+            }
+            if(Config.SERVER.enableCameraRecoil.get())
+            {
+                recoil = (float) (modifiedGun.general.recoilAngle * (1.0 - (modifiedGun.general.recoilAdsReduction * ClientHandler.getGunRenderer().normalZoomProgress)));
+                remainingRecoil = recoil;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderTick(TickEvent.RenderTickEvent event)
+    {
+        if(!Config.SERVER.enableCameraRecoil.get())
+        {
+            return;
+        }
+        if(event.phase == TickEvent.Phase.END && recoil > 0)
+        {
+            Minecraft mc = Minecraft.getInstance();
+            if(mc.player != null)
+            {
+                float recoilAmount = recoil * mc.getTickLength();
+                mc.player.rotationPitch -= recoilAmount;
+                remainingRecoil -= recoilAmount;
+                if(remainingRecoil <= 0)
+                {
+                    recoil = 0;
+                    remainingRecoil = 0;
+                }
             }
         }
     }

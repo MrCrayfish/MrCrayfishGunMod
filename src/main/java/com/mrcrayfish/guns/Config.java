@@ -323,6 +323,7 @@ public class Config
         public final ForgeConfigSpec.DoubleValue soundPercentage;
         public final ForgeConfigSpec.IntValue soundFadeThreshold;
         public final ForgeConfigSpec.DoubleValue ringVolume;
+        public final ForgeConfigSpec.BooleanValue enableCameraRecoil;
 
         public Server(ForgeConfigSpec.Builder builder)
         {
@@ -337,6 +338,8 @@ public class Config
                     this.ringVolume = builder.comment("Volume of the ringing sound when deafened will play at this volume, before eventually fading to 0.").defineInRange("ringVolume", 1.0, 0.0, 1.0);
                 }
                 builder.pop();
+
+                this.enableCameraRecoil = builder.comment("If true, enables camera recoil when firing a weapon").define("enableCameraRecoil", false);
             }
             builder.pop();
         }
