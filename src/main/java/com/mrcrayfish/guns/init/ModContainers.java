@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import net.minecraft.inventory.container.Container;
@@ -21,6 +22,8 @@ public class ModContainers
         WorkbenchTileEntity workstation = (WorkbenchTileEntity) playerInventory.player.world.getTileEntity(data.readBlockPos());
         return new WorkbenchContainer(windowId, playerInventory, workstation);
     });
+
+    public static final RegistryObject<ContainerType<AttachmentContainer>> ATTACHMENTS = register("attachments", AttachmentContainer::new);
 
     private static <T extends Container> RegistryObject<ContainerType<T>> register(String id, ContainerType.IFactory<T> factory)
     {

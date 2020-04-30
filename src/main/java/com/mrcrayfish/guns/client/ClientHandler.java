@@ -14,6 +14,7 @@ import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.LongScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.MediumScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
+import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
 import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.entity.EntityProjectile;
@@ -142,6 +143,7 @@ public class ClientHandler
         });
 
         ScreenManager.registerFactory(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
+        ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
     }
 
     public static void handleMessageBullet(MessageBullet message)
@@ -205,7 +207,7 @@ public class ClientHandler
                 BlockRayTraceResult result = (BlockRayTraceResult) mc.objectMouseOver;
                 BlockState state = mc.world.getBlockState(result.getPos());
                 Block block = state.getBlock();
-                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE;
+                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get();
             }
         }
         return false;

@@ -1,12 +1,19 @@
 package com.mrcrayfish.guns.block;
 
+import com.mrcrayfish.guns.common.container.AttachmentContainer;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import com.mrcrayfish.guns.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerProvider;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -15,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -69,6 +77,13 @@ public class BlockWorkbench extends BlockRotatedObject
     {
         if(!world.isRemote())
         {
+            ItemStack heldItem = playerEntity.getHeldItem(hand);
+            if(heldItem.getItem() instanceof GunItem)
+            {
+                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SimpleNamedContainerProvider((windowId, playerInventory, player) -> new AttachmentContainer(windowId, playerInventory, heldItem), new TranslationTextComponent("container.cgm.attachments")));
+                return ActionResultType.SUCCESS;
+            }
+
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof INamedContainerProvider)
             {
