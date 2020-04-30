@@ -41,5 +41,6 @@
     "subtitle.cgm.reload": "Reloading",
     "cgm.options.adsSensitivity": "ADS Sensitivity",
     "cgm.options.adsSensitivity.format": "ADS Sensitivity: %s",
-    "container.cgm.attachments": "Modify Attachments"
+    "container.cgm.attachments": "Modify Attachments",
+    "container.cgm.attachments.window_help": "Click to move and rotate"
 }
