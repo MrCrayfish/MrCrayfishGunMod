@@ -83,7 +83,7 @@ public class ReloadHandler
                 if(stack.getItem() instanceof GunItem)
                 {
                     CompoundNBT tag = stack.getTag();
-                    if(tag != null && tag.contains("IgnoreAmmo", Constants.NBT.TAG_BYTE))
+                    if(tag != null && !tag.contains("IgnoreAmmo", Constants.NBT.TAG_BYTE))
                     {
                         Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
                         if(tag.getInt("AmmoCount") >= gun.general.maxAmmo)
