@@ -15,6 +15,7 @@ public class Config
     {
         public final Sounds sounds;
         public final Display display;
+        public final Particle particle;
 
         public Client(ForgeConfigSpec.Builder builder)
         {
@@ -22,6 +23,7 @@ public class Config
             {
                 this.sounds = new Sounds(builder);
                 this.display = new Display(builder);
+                this.particle = new Particle(builder);
             }
             builder.pop();
         }
@@ -56,6 +58,23 @@ public class Config
             builder.comment("Configuration for display related options").push("display");
             {
                 this.workbenchAnimation = builder.comment("If true, an animation is performed while cycling items in the Workbench").define("workbenchAnimcation", true);
+            }
+            builder.pop();
+        }
+    }
+
+    /**
+     * Particle related config options
+     */
+    public static class Particle
+    {
+        public final ForgeConfigSpec.IntValue bulletHoleLife;
+
+        public Particle(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Properties relating to particles").push("particle");
+            {
+                this.bulletHoleLife = builder.comment("The duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLife", 200, 0, Integer.MAX_VALUE);
             }
             builder.pop();
         }

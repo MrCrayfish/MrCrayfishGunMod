@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.particle;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.ClientHandler;
 import net.minecraft.block.BlockState;
@@ -36,7 +37,7 @@ public class BulletHoleParticle extends SpriteTexturedParticle
         this.setSprite(this.getSprite(pos));
         this.direction = direction;
         this.pos = pos;
-        this.maxAge = 200;
+        this.maxAge = Config.CLIENT.particle.bulletHoleLife.get();
         this.canCollide = false;
         this.particleGravity = 0.0F;
         this.particleScale = 0.05F;
