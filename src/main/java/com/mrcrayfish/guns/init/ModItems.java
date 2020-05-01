@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.init;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.*;
+import com.mrcrayfish.guns.object.Barrel;
 import com.mrcrayfish.guns.object.Scope;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
@@ -32,5 +33,5 @@ public class ModItems
     public static final RegistryObject<Item> SHORT_SCOPE = REGISTER.register("short_scope", () -> new ScopeItem(Scope.create(0.1F, 1.55F).viewFinderOffset(0.3), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
     public static final RegistryObject<Item> MEDIUM_SCOPE = REGISTER.register("medium_scope", () -> new ScopeItem(Scope.create(0.25F, 1.625F).viewFinderOffset(0.3), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
     public static final RegistryObject<Item> LONG_SCOPE = REGISTER.register("long_scope", () -> new ScopeItem(Scope.create(0.35F, 1.59).viewFinderOffset(0.5), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
-    public static final RegistryObject<Item> SILENCER = REGISTER.register("silencer", () -> new AttachmentItem(new Item.Properties().group(GunMod.GROUP), IAttachment.Type.BARREL));
+    public static final RegistryObject<Item> SILENCER = REGISTER.register("silencer", () -> new BarrelItem(Barrel.create(8.0F), new Item.Properties().group(GunMod.GROUP)));
 }

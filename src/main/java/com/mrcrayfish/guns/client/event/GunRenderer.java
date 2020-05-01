@@ -13,6 +13,7 @@ import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.*;
+import com.mrcrayfish.guns.object.Barrel;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Scope;
@@ -691,14 +692,22 @@ public class GunRenderer
                 return;
             }
 
-            matrixStack.translate(modifiedGun.display.flash.xOffset * 0.0625, modifiedGun.display.flash.yOffset * 0.0625, modifiedGun.display.flash.zOffset * 0.0625);
 
-            if(!Gun.getAttachment(IAttachment.Type.BARREL, weapon).isEmpty())
+            Gun.Positioned muzzleFlash = modifiedGun.display.flash;
+            double displayX = muzzleFlash.xOffset * 0.0625;
+            double displayY = muzzleFlash.yOffset * 0.0625;
+            double displayZ = muzzleFlash.zOffset * 0.0625;
+            matrixStack.translate(displayX, displayY, displayZ);
+            matrixStack.translate(0, -0.5, 0);
+
+            ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
+            if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof BarrelItem)
             {
+                Barrel barrel = ((BarrelItem) barrelStack.getItem()).getBarrel();
                 Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
                 if(positioned != null)
                 {
-                    matrixStack.translate(0, 0, (modifiedGun.display.flash.zOffset - positioned.zOffset) * 0.0625 - positioned.scale);
+                    matrixStack.translate(0, 0, -barrel.getLength() * 0.0625 * positioned.scale);
                     matrixStack.scale(0.5F, 0.5F, 0.0F);
                 }
             }
