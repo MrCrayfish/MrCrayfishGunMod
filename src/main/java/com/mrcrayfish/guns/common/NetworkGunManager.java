@@ -9,6 +9,7 @@ import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.HandshakeMessages;
+import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.item.Item;
@@ -152,7 +153,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
      * @return true if all registered guns were able to update their corresponding gun item
      */
     @OnlyIn(Dist.CLIENT)
-    public static boolean updateRegisteredGuns(HandshakeMessages.S2CUpdateGuns message)
+    public static boolean updateRegisteredGuns(IGunProvider message)
     {
         Map<ResourceLocation, Gun> registeredGuns = message.getRegisteredGuns();
         if(registeredGuns != null)
@@ -225,5 +226,10 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         {
             return new ResourceLocation(json.getAsString());
         }
+    }
+
+    public interface IGunProvider
+    {
+        ImmutableMap<ResourceLocation, Gun> getRegisteredGuns();
     }
 }

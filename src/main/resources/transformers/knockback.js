@@ -69,5 +69,5 @@ function getRelativeNode(node, n) {
 }
 
 function log(s) {
-    print("[cgm-transformer] " + s);
+    print("[MrCrayfish's Gun Mod] " + s);
 }

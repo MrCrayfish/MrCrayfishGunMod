@@ -47,7 +47,7 @@ public class HandshakeMessages
         }
     }
 
-    public static class S2CUpdateGuns extends LoginIndexedMessage
+    public static class S2CUpdateGuns extends LoginIndexedMessage implements NetworkGunManager.IGunProvider
     {
         private ImmutableMap<ResourceLocation, Gun> registeredGuns;
 
@@ -72,6 +72,7 @@ public class HandshakeMessages
         }
 
         @Nullable
+        @Override
         public ImmutableMap<ResourceLocation, Gun> getRegisteredGuns()
         {
             return this.registeredGuns;

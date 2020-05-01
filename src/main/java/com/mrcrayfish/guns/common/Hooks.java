@@ -1,8 +1,12 @@
 package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.entity.DamageSourceProjectile;
+import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * Author: MrCrayfish
@@ -28,5 +32,15 @@ public class Hooks
             return Config.COMMON.gameplay.enableKnockback.get();
         }
         return true;
+    }
+
+    @SuppressWarnings("unused")
+    public static void onReload()
+    {
+        NetworkGunManager manager = GunMod.getNetworkGunManager();
+        if(manager != null)
+        {
+            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new MessageUpdateGuns());
+        }
     }
 }
