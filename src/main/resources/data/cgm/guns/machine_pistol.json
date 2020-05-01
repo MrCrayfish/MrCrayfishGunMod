@@ -26,8 +26,8 @@
     },
     "display": {
         "flash": {
-            "yOffset": -4.2,
-            "zOffset": 0.5,
+            "yOffset": 3.6,
+            "zOffset": 1.8,
             "scale": 0.25
         }
     },
@@ -39,13 +39,13 @@
         },
         "attachments": {
             "scope": {
-                "yOffset": 4.32,
+                "yOffset": 4.4,
                 "zOffset": 5
             },
             "barrel": {
-                "yOffset": 3.5,
-                "zOffset": 1.0,
-                "scale": 0.4
+                "yOffset": 3.6,
+                "zOffset": 2.2,
+                "scale": 0.5
             }
         }
     }
