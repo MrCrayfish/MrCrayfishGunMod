@@ -93,7 +93,12 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         Vec3d dir = this.getDirection(shooter, item, modifiedGun);
         this.setMotion(dir.x * this.projectile.speed, dir.y * this.projectile.speed, dir.z * this.projectile.speed);
         this.updateHeading();
-        this.setPosition(shooter.getPosX(), shooter.getPosY() + shooter.getEyeHeight(), shooter.getPosZ());
+        
+        /* Spawn the projectile half way between the previous and current position */
+        double posX = shooter.lastTickPosX + (shooter.getPosX() - shooter.lastTickPosX) / 2.0;
+        double posY = shooter.lastTickPosY + (shooter.getPosY() - shooter.lastTickPosY) / 2.0 + shooter.getEyeHeight();
+        double posZ = shooter.lastTickPosZ + (shooter.getPosZ() - shooter.lastTickPosZ) / 2.0;
+        this.setPosition(posX, posY, posZ);
 
         AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
         if(ammo != null)
