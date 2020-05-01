@@ -2,8 +2,8 @@
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"texture": "cgm:items/assault_rifle",
-		"particle": "cgm:items/assault_rifle"
+		"particle": "cgm:items/assault_rifle",
+		"texture": "cgm:items/assault_rifle"
 	},
 	"elements": [
 		{
@@ -422,16 +422,16 @@
 			"scale": [0.8, 0.8, 0.8]
 		},
 		"ground": {
-			"translation": [0, 5, -4.5]
+			"translation": [0, 5, -3.25]
 		},
 		"gui": {
 			"rotation": [30, 225, 0],
-			"translation": [1.5, 2.5, 0],
-			"scale": [0.8, 0.8, 0.8]
+			"translation": [2, 2.5, 0],
+			"scale": [0.9, 0.9, 0.9]
 		},
 		"fixed": {
 			"rotation": [0, 90, 0],
-			"translation": [-7, 10, 0],
+			"translation": [-6.25, 12, -2],
 			"scale": [2, 2, 2]
 		}
 	},

@@ -93,7 +93,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         Vec3d dir = this.getDirection(shooter, item, modifiedGun);
         this.setMotion(dir.x * this.projectile.speed, dir.y * this.projectile.speed, dir.z * this.projectile.speed);
         this.updateHeading();
-        
+
         /* Spawn the projectile half way between the previous and current position */
         double posX = shooter.lastTickPosX + (shooter.getPosX() - shooter.lastTickPosX) / 2.0;
         double posY = shooter.lastTickPosY + (shooter.getPosY() - shooter.lastTickPosY) / 2.0 + shooter.getEyeHeight();
@@ -250,7 +250,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
                 if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity)
                 {
                     int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-                    boundingBox = BoundingBoxTracker.getBoundingBox(entity, ping);
+                    boundingBox = BoundingBoxTracker.getBoundingBox(entity, ping); //TODO this is actually the last position
                 }
                 boundingBox = boundingBox.expand(0, expandHeight, 0);
                 Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
