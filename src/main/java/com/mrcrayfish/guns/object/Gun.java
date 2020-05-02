@@ -246,12 +246,16 @@ public class Gun implements INBTSerializable<CompoundNBT>
     public static class Sounds implements INBTSerializable<CompoundNBT>
     {
         @Optional
+        @Nullable
         public ResourceLocation fire;
         @Optional
+        @Nullable
         public ResourceLocation reload;
         @Optional
+        @Nullable
         public ResourceLocation cock;
         @Optional
+        @Nullable
         public ResourceLocation silencedFire;
 
         @Override
@@ -312,6 +316,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
     public static class Display implements INBTSerializable<CompoundNBT>
     {
         @Optional
+        @Nullable
         public Flash flash;
 
         public static class Flash extends Positioned
@@ -383,6 +388,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
     public static class Modules implements INBTSerializable<CompoundNBT>
     {
         @Optional
+        @Nullable
         public Zoom zoom;
         public Attachments attachments = new Attachments();
 
@@ -431,8 +437,10 @@ public class Gun implements INBTSerializable<CompoundNBT>
         public static class Attachments implements INBTSerializable<CompoundNBT>
         {
             @Optional
+            @Nullable
             public Scope scope;
             @Optional
+            @Nullable
             public Barrel barrel;
 
             public static class Scope extends ScaledPositioned

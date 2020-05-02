@@ -28,6 +28,7 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -54,6 +55,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -100,7 +102,11 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         double posZ = shooter.lastTickPosZ + (shooter.getPosZ() - shooter.lastTickPosZ) / 2.0;
         this.setPosition(posX, posY, posZ);
 
-        AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
+        Item ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
+        if(ammo == null)
+        {
+            ammo = ForgeRegistries.ITEMS.getValue(this.projectile.item);
+        }
         if(ammo != null)
         {
             this.item = new ItemStack(ammo);
@@ -247,7 +253,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             {
                 double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
                 AxisAlignedBB boundingBox = entity.getBoundingBox();
-                if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity)
+                if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
                 {
                     int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
                     boundingBox = BoundingBoxTracker.getBoundingBox(entity, ping); //TODO this is actually the last position
@@ -316,7 +322,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             double holeY = hitVec.getY() + 0.005 * blockRayTraceResult.getFace().getYOffset();
             double holeZ = hitVec.getZ() + 0.005 * blockRayTraceResult.getFace().getZOffset();
             Direction direction = blockRayTraceResult.getFace();
-            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this.shooter), new MessageBulletHole(holeX, holeY, holeZ, direction, pos));
+            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.world.getChunkAt(blockRayTraceResult.getPos())), new MessageBulletHole(holeX, holeY, holeZ, direction, pos));
 
             this.onHitBlock(state, pos, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
 

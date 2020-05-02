@@ -7,9 +7,11 @@ import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
+import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.HandshakeMessages;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
+import com.mrcrayfish.guns.object.CustomGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.item.Item;
@@ -48,7 +50,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     /**
      * A fallback gun object for any weapons that haven't added a json yet.
      */
-    private static final Gun FALLBACK_GUN = Util.make(() -> {
+    static final Gun FALLBACK_GUN = Util.make(() -> {
         Gun gun = new Gun();
         gun.projectile.item = new ResourceLocation("cgm:basic_ammo");
         return gun;
@@ -69,7 +71,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
                 try(IResource resource = resourceManager.getResource(resourceLocation); InputStream is = resource.getInputStream(); Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)))
                 {
                     Gun gun = JSONUtils.fromJson(GSON_INSTANCE, reader, Gun.class);
-                    if(gun != null && this.isValidObject(gun))
+                    if(gun != null && Validator.isValidObject(gun))
                     {
                         map.put((GunItem) item, gun);
                     }
@@ -183,43 +185,10 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     }
 
     /**
-     * Validates that the deserialized object's required fields are not null. This is an abstracted
-     * method and can be used for validating any deserialized object.
-     *
-     * @param t   the object to validate
-     * @param <T> any type
-     * @return true if the object is valid
-     * @throws IllegalAccessException if it's unable to access a field. This should never happen
-     * @throws InvalidObjectException if the object's required fields are null
-     */
-    private <T> boolean isValidObject(@Nonnull T t) throws IllegalAccessException, InvalidObjectException
-    {
-        Field[] fields = t.getClass().getDeclaredFields();
-        for(Field field : fields)
-        {
-            if(field.getDeclaredAnnotation(Ignored.class) != null || field.getDeclaredAnnotation(Optional.class) != null)
-            {
-                continue;
-            }
-
-            if(field.get(t) == null)
-            {
-                throw new InvalidObjectException("Missing required property: " + field.getName());
-            }
-
-            if(!field.getType().isPrimitive() && field.getType() != String.class && !field.getType().isEnum())
-            {
-                return isValidObject(field.get(t));
-            }
-        }
-        return true;
-    }
-
-    /**
      * A simple deserializer for resource locations. A more simplified version than the serializer
      * provided in {@code net.minecraft.util.ResourceLocation}
      */
-    public static class ResourceLocationDeserializer implements JsonDeserializer<ResourceLocation>
+    private static class ResourceLocationDeserializer implements JsonDeserializer<ResourceLocation>
     {
         @Override
         public ResourceLocation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
@@ -231,5 +200,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     public interface IGunProvider
     {
         ImmutableMap<ResourceLocation, Gun> getRegisteredGuns();
+
+        ImmutableMap<ResourceLocation, CustomGun> getCustomGuns();
     }
 }

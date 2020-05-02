@@ -242,7 +242,16 @@ public class GunRenderer
             return;
         }
 
-        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(heldItem);
+        ItemStack overrideModel = ItemStack.EMPTY;
+        if(heldItem.getTag() != null)
+        {
+            if(heldItem.getTag().contains("Model", Constants.NBT.TAG_COMPOUND))
+            {
+                overrideModel = ItemStack.read(heldItem.getTag().getCompound("Model"));
+            }
+        }
+
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(overrideModel.isEmpty() ? heldItem : overrideModel);
         float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
         float scaleY = model.getItemCameraTransforms().firstperson_right.scale.getY();
         float scaleZ = model.getItemCameraTransforms().firstperson_right.scale.getZ();
@@ -317,6 +326,16 @@ public class GunRenderer
         matrixStack.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.52F, 0.72F);
         this.renderHeldArm(matrixStack, event.getBuffers(), event.getLight(), Minecraft.getInstance().player, heldItem, hand, event.getPartialTicks());
         matrixStack.pop();
+
+        if(this.normalZoomProgress > 0 && modifiedGun.canAimDownSight())
+        {
+            float rotationX = model.getItemCameraTransforms().firstperson_right.rotation.getX();
+            float rotationY = model.getItemCameraTransforms().firstperson_right.rotation.getY();
+            float rotationZ = model.getItemCameraTransforms().firstperson_right.rotation.getZ();
+            matrixStack.rotate(Vector3f.XP.rotationDegrees((float) (-rotationX * this.normalZoomProgress)));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (-rotationY * this.normalZoomProgress)));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (-rotationZ * this.normalZoomProgress)));
+        }
 
         /* Renders the weapon */
         this.renderWeapon(Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getPartialTicks());
@@ -598,7 +617,7 @@ public class GunRenderer
                 if(stack.getTag().contains("Model", Constants.NBT.TAG_COMPOUND))
                 {
                     model = ItemStack.read(stack.getTag().getCompound("Model"));
-                    model.setTag(stack.getTag().copy());
+                    ItemStackUtil.createTagCompound(model).merge(stack.getTag().copy());
                 }
             }
 
@@ -758,8 +777,8 @@ public class GunRenderer
     {
         matrixStack.push();
 
-        Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-        if(gun.general.gripType == GripType.TWO_HANDED)
+        Gun modifiedGun = ((GunItem) stack.getItem()).getModifiedGun(stack);
+        if(modifiedGun.general.gripType == GripType.TWO_HANDED)
         {
             matrixStack.translate(0, 0, -1);
             matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
@@ -784,7 +803,7 @@ public class GunRenderer
             IVertexBuilder builder = buffer.getBuffer(RenderType.getEntitySolid(player.getLocationSkin()));
             this.renderArm(matrixStack, builder, light, hand.opposite());
         }
-        else if(gun.general.gripType == GripType.ONE_HANDED)
+        else if(modifiedGun.general.gripType == GripType.ONE_HANDED)
         {
             matrixStack.translate(0, 0, -1);
             matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));

@@ -1,8 +1,10 @@
 package com.mrcrayfish.guns;
 
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.common.BoundingBoxTracker;
+import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityMissile;
@@ -13,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,10 +50,18 @@ public class GunMod
         {
             return new ItemStack(ModItems.PISTOL.get());
         }
+
+        @Override
+        public void fill(NonNullList<ItemStack> items)
+        {
+            super.fill(items);
+            CustomGunManager.fill(items);
+        }
     };
 
     private static GunOptions options;
-    private static NetworkGunManager manager;
+    private static NetworkGunManager networkGunManager;
+    private static CustomGunLoader customGunLoader;
 
     public GunMod()
     {
@@ -108,15 +119,19 @@ public class GunMod
     @SubscribeEvent
     public void onServerStart(FMLServerAboutToStartEvent event)
     {
-        NetworkGunManager manager = new NetworkGunManager();
-        event.getServer().getResourceManager().addReloadListener(manager);
-        GunMod.manager = manager;
+        NetworkGunManager networkGunManager = new NetworkGunManager();
+        event.getServer().getResourceManager().addReloadListener(networkGunManager);
+        GunMod.networkGunManager = networkGunManager;
+
+        CustomGunLoader customGunLoader = new CustomGunLoader();
+        event.getServer().getResourceManager().addReloadListener(customGunLoader);
+        GunMod.customGunLoader = customGunLoader;
     }
 
     @SubscribeEvent
     public void onServerStart(FMLServerStoppedEvent event)
     {
-        GunMod.manager = null;
+        GunMod.networkGunManager = null;
     }
 
     /**
@@ -128,7 +143,17 @@ public class GunMod
     @Nullable
     public static NetworkGunManager getNetworkGunManager()
     {
-        return manager;
+        return networkGunManager;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Nullable
+    public static CustomGunLoader getCustomGunLoader()
+    {
+        return customGunLoader;
     }
 
     /**

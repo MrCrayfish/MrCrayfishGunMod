@@ -14,7 +14,7 @@ public class ModItems
 {
     public static final DeferredRegister<Item> REGISTER = new DeferredRegister<>(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
-    public static final RegistryObject<Item> PISTOL = REGISTER.register("pistol", () -> new GunItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<GunItem> PISTOL = REGISTER.register("pistol", () -> new GunItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
     public static final RegistryObject<Item> SHOTGUN = REGISTER.register("shotgun", () -> new GunItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
     public static final RegistryObject<Item> RIFLE = REGISTER.register("rifle", () -> new GunItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
     public static final RegistryObject<GunItem> GRENADE_LAUNCHER = REGISTER.register("grenade_launcher", () -> new GunItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));

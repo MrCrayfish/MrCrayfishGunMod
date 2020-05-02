@@ -2,7 +2,9 @@ package com.mrcrayfish.guns.network;
 
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.NetworkGunManager;
+import com.mrcrayfish.guns.object.CustomGun;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -50,13 +52,9 @@ public class HandshakeMessages
     public static class S2CUpdateGuns extends LoginIndexedMessage implements NetworkGunManager.IGunProvider
     {
         private ImmutableMap<ResourceLocation, Gun> registeredGuns;
+        private ImmutableMap<ResourceLocation, CustomGun> customGuns;
 
         public S2CUpdateGuns() {}
-
-        private S2CUpdateGuns(ImmutableMap<ResourceLocation, Gun> registeredGuns)
-        {
-            this.registeredGuns = registeredGuns;
-        }
 
         void encode(PacketBuffer buffer)
         {
@@ -64,11 +62,16 @@ public class HandshakeMessages
              * it's just here to avoiding IDE warnings */
             Validate.notNull(GunMod.getNetworkGunManager());
             GunMod.getNetworkGunManager().writeRegisteredGuns(buffer);
+            Validate.notNull(GunMod.getCustomGunLoader());
+            GunMod.getCustomGunLoader().writeCustomGuns(buffer);
         }
 
         static S2CUpdateGuns decode(PacketBuffer buffer)
         {
-            return new S2CUpdateGuns(NetworkGunManager.readRegisteredGuns(buffer));
+            S2CUpdateGuns message = new S2CUpdateGuns();
+            message.registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
+            message.customGuns = CustomGunLoader.readCustomGuns(buffer);
+            return message;
         }
 
         @Nullable
@@ -76,6 +79,13 @@ public class HandshakeMessages
         public ImmutableMap<ResourceLocation, Gun> getRegisteredGuns()
         {
             return this.registeredGuns;
+        }
+
+        @Override
+        @Nullable
+        public ImmutableMap<ResourceLocation, CustomGun> getCustomGuns()
+        {
+            return this.customGuns;
         }
     }
 }

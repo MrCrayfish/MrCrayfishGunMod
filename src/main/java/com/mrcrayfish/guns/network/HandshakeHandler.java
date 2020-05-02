@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.network;
 
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.common.NetworkGunManager;
-import com.mrcrayfish.obfuscate.Obfuscate;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.Marker;
@@ -21,19 +21,27 @@ public class HandshakeHandler
 
     static void handleAcknowledge(HandshakeMessages.C2SAcknowledge message, Supplier<NetworkEvent.Context> c)
     {
-        Obfuscate.LOGGER.debug(CGM_HANDSHAKE, "Received acknowledgement from client");
+        GunMod.LOGGER.debug(CGM_HANDSHAKE, "Received acknowledgement from client");
         c.get().setPacketHandled(true);
     }
 
     static void handleUpdateGuns(HandshakeMessages.S2CUpdateGuns message, Supplier<NetworkEvent.Context> c)
     {
-        Obfuscate.LOGGER.debug(CGM_HANDSHAKE, "Received gun data from server");
+        GunMod.LOGGER.debug(CGM_HANDSHAKE, "Received gun data from server");
 
         AtomicBoolean updatedRegisteredGuns = new AtomicBoolean(false);
         CountDownLatch block = new CountDownLatch(1);
         c.get().enqueueWork(() ->
         {
-            updatedRegisteredGuns.set(NetworkGunManager.updateRegisteredGuns(message));
+            updatedRegisteredGuns.set(true);
+            if(!NetworkGunManager.updateRegisteredGuns(message))
+            {
+                updatedRegisteredGuns.set(false);
+            }
+            if(!CustomGunManager.updateCustomGuns(message))
+            {
+                updatedRegisteredGuns.set(false);
+            }
             block.countDown();
         });
 

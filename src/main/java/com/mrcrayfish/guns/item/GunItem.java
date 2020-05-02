@@ -180,14 +180,16 @@ public class GunItem extends ColoredItem
     public boolean showDurabilityBar(ItemStack stack)
     {
         CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
-        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt("AmmoCount") != this.gun.general.maxAmmo;
+        Gun modifiedGun = this.getModifiedGun(stack);
+        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt("AmmoCount") != modifiedGun.general.maxAmmo;
     }
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
         CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
-        return 1.0 - (tagCompound.getInt("AmmoCount") / (double) this.gun.general.maxAmmo);
+        Gun modifiedGun = this.getModifiedGun(stack);
+        return 1.0 - (tagCompound.getInt("AmmoCount") / (double) modifiedGun.general.maxAmmo);
     }
 
     @Override
@@ -201,9 +203,16 @@ public class GunItem extends ColoredItem
         CompoundNBT tagCompound = stack.getTag();
         if(tagCompound != null && tagCompound.contains("Gun", Constants.NBT.TAG_COMPOUND))
         {
-            Gun gunCopy = this.gun.copy();
-            gunCopy.deserializeNBT(tagCompound.getCompound("Gun"));
-            return gunCopy;
+            if(tagCompound.getBoolean("Custom"))
+            {
+                return Gun.create(tagCompound.getCompound("Gun"));
+            }
+            else
+            {
+                Gun gunCopy = this.gun.copy();
+                gunCopy.deserializeNBT(tagCompound.getCompound("Gun"));
+                return gunCopy;
+            }
         }
         return this.gun;
     }
