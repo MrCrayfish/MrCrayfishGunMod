@@ -396,15 +396,12 @@ public class Gun implements INBTSerializable<CompoundNBT>
         {
             @Optional
             public float fovModifier;
-            @Optional
-            public boolean smooth;
 
             @Override
             public CompoundNBT serializeNBT()
             {
                 CompoundNBT tag = super.serializeNBT();
                 tag.putFloat("FovModifier", this.fovModifier);
-                tag.putBoolean("Smooth", this.smooth);
                 return tag;
             }
 
@@ -416,17 +413,12 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 {
                     this.fovModifier = tag.getFloat("FovModifier");
                 }
-                if(tag.contains("Smooth", Constants.NBT.TAG_BYTE))
-                {
-                    this.smooth = tag.getBoolean("Smooth");
-                }
             }
 
             public Zoom copy()
             {
                 Zoom zoom = new Zoom();
                 zoom.fovModifier = this.fovModifier;
-                zoom.smooth = this.smooth;
                 zoom.xOffset = this.xOffset;
                 zoom.yOffset = this.yOffset;
                 zoom.zOffset = this.zOffset;
