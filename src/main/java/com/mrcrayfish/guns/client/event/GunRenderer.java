@@ -21,8 +21,11 @@ import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -383,22 +386,33 @@ public class GunRenderer
     @SubscribeEvent
     public void onTick(TickEvent.RenderTickEvent event)
     {
-        if(event.phase.equals(TickEvent.Phase.START)) return;
+        if(event.phase.equals(TickEvent.Phase.START))
+        {
+            return;
+        }
 
         Minecraft mc = Minecraft.getInstance();
-        if(!mc.isGameFocused()) return;
+        if(!mc.isGameFocused())
+        {
+            return;
+        }
 
         PlayerEntity player = mc.player;
-        if(player == null) return;
+        if(player == null)
+        {
+            return;
+        }
 
-        if(Minecraft.getInstance().gameSettings.thirdPersonView != 0) return;
+        if(Minecraft.getInstance().gameSettings.thirdPersonView != 0)
+        {
+            return;
+        }
 
         ItemStack heldItem = player.getHeldItem(Hand.MAIN_HAND);
-        if(heldItem.isEmpty() || !(heldItem.getItem() instanceof GunItem)) return;
-
-
-        //TODO reimplement sword cooldown
-        /*ScaledResolution scaledResolution = new ScaledResolution(mc);
+        if(heldItem.isEmpty() || !(heldItem.getItem() instanceof GunItem))
+        {
+            return;
+        }
 
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
@@ -409,23 +423,27 @@ public class GunRenderer
                 if(coolDown > 0.0F)
                 {
                     double scale = 3;
-                    int i = (int) ((scaledResolution.getScaledHeight() / 2 - 7 - 60) / scale);
-                    int j = (int) Math.ceil((scaledResolution.getScaledWidth() / 2 - 8 * scale) / scale);
+                    MainWindow window = mc.getMainWindow();
+                    int i = (int) ((window.getScaledHeight() / 2 - 7 - 60) / scale);
+                    int j = (int) Math.ceil((window.getScaledWidth() / 2 - 8 * scale) / scale);
 
-                    GlStateManager.enableAlpha();
-                    mc.getTextureManager().bindTexture(Gui.ICONS);
+                    RenderSystem.enableBlend();
+                    RenderSystem.defaultBlendFunc();
+                    mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
 
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
                     {
-                        GlStateManager.scale(scale, scale, scale);
+                        RenderSystem.scaled(scale, scale, scale);
                         int progress = (int) Math.ceil((coolDown + 0.05) * 17.0F) - 1;
-                        GuiScreen.drawModalRectWithCustomSizedTexture(j, i, 36, 94, 16, 4, 256, 256);
-                        GuiScreen.drawModalRectWithCustomSizedTexture(j, i, 52, 94, progress, 4, 256, 256);
+                        Screen.blit(j, i, 36, 94, 16, 4, 256, 256);
+                        Screen.blit(j, i, 52, 94, progress, 4, 256, 256);
                     }
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
+
+                    RenderSystem.disableBlend();
                 }
             }
-        }*/
+        }
     }
 
     @SubscribeEvent
