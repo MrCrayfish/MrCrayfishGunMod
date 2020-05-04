@@ -327,16 +327,6 @@ public class GunRenderer
         this.renderHeldArm(matrixStack, event.getBuffers(), event.getLight(), Minecraft.getInstance().player, heldItem, hand, event.getPartialTicks());
         matrixStack.pop();
 
-        if(this.normalZoomProgress > 0 && modifiedGun.canAimDownSight())
-        {
-            float rotationX = model.getItemCameraTransforms().firstperson_right.rotation.getX();
-            float rotationY = model.getItemCameraTransforms().firstperson_right.rotation.getY();
-            float rotationZ = model.getItemCameraTransforms().firstperson_right.rotation.getZ();
-            matrixStack.rotate(Vector3f.XP.rotationDegrees((float) (-rotationX * this.normalZoomProgress)));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (-rotationY * this.normalZoomProgress)));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (-rotationZ * this.normalZoomProgress)));
-        }
-
         /* Renders the weapon */
         this.renderWeapon(Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getPartialTicks());
 
