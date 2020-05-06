@@ -44,7 +44,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
     private List<MaterialItem> materials;
     private List<MaterialItem> filteredMaterials;
-    private static int currentIndex = 0; //TODO reset to zero when exiting a server
+    private static int currentIndex = 0;
     private static int previousIndex = 0;
     private static int oldRecipesSize = 0;
     private static boolean showRemaining = false;

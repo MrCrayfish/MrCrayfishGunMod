@@ -111,7 +111,7 @@ public class BulletRenderer
         if(bullet.getProjectile().getShooterId() != entity.getEntityId())
         {
             RenderType bulletType = getBulletTrail();
-            IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType); //TODO probably will crash
+            IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
             builder.pos(matrix4f, 0, 0, -0.035F).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, 0, 0, 0.035F).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, 0, -trailLength, 0.035F).color(red, green, blue, alpha).endVertex();

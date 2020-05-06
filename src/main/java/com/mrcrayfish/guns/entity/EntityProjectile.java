@@ -181,7 +181,6 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 
         if(!this.world.isRemote())
         {
-            //TODO convert to new ProjectileHelper
             Vec3d startVec = this.getPositionVec();
             Vec3d endVec = startVec.add(this.getMotion());
             RayTraceResult result = rayTraceBlocks(this.world, new RayTraceContext(startVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);

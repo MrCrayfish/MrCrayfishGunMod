@@ -179,7 +179,6 @@ public class CommonHandler
     {
         World world = player.world;
 
-        //TODO fix crafting with new data pack system
         if(player.openContainer instanceof WorkbenchContainer)
         {
             WorkbenchContainer workbench = (WorkbenchContainer) player.openContainer;

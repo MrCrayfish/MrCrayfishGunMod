@@ -36,7 +36,6 @@ public class LongScopeModel implements IOverrideModel
     {
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
-        //TODO add back scope view finder
         if(isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
         {
             if(GunRenderer.screenTextureId != -1)

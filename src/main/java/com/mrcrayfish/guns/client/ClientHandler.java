@@ -155,7 +155,7 @@ public class ClientHandler
         if(world != null)
         {
             Entity entity = world.getEntityByID(message.getEntityId());
-            EntityProjectile projectile = (EntityProjectile) entity; //TODO test if this works. entity could be null but does java still cast?
+            EntityProjectile projectile = (EntityProjectile) entity;
             BULLET_RENDERER.addBullet(new Bullet(projectile, message));
         }
     }

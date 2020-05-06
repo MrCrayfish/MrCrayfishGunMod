@@ -83,12 +83,6 @@ public class GunItem extends ColoredItem
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) //TODO might not need
-    {
-        return 72000;
-    }
-
-    @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity)
     {
         return true;
