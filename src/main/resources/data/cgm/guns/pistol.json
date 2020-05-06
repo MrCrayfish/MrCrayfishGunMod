@@ -1,9 +1,10 @@
 {
     "general": {
-        "rate": 12,
+        "rate": 6,
         "gripType": "one_handed",
         "maxAmmo": 15,
-        "recoilAngle": 15.0,
+        "reloadSpeed": 5,
+        "recoilAngle": 10.0,
         "recoilAdsReduction": 0.1
     },
     "projectile": {
@@ -11,9 +12,8 @@
         "visible": false,
         "damage": 10.0,
         "size": 0.2,
-        "speed": 20.0,
-        "life": 1000,
-        "damageReduceOverLife": true
+        "speed": 30.0,
+        "life": 1000
     },
     "sounds": {
         "fire": "cgm:item.pistol.fire",
