@@ -719,7 +719,6 @@ public class GunRenderer
                 return;
             }
 
-
             Gun.Positioned muzzleFlash = modifiedGun.display.flash;
             double displayX = muzzleFlash.xOffset * 0.0625;
             double displayY = muzzleFlash.yOffset * 0.0625;
@@ -735,9 +734,10 @@ public class GunRenderer
                 if(positioned != null)
                 {
                     matrixStack.translate(0, 0, -barrel.getLength() * 0.0625 * positioned.scale);
-                    matrixStack.scale(0.5F, 0.5F, 0.0F);
                 }
             }
+
+            matrixStack.scale(0.5F, 0.5F, 0.0F);
 
             RenderSystem.pushMatrix();
             {
