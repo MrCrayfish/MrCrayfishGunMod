@@ -1,10 +1,18 @@
 package com.mrcrayfish.guns.entity;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -84,50 +92,60 @@ public abstract class EntityThrowableItem extends ThrowableEntity implements IEn
     protected void onImpact(RayTraceResult result)
     {
         //TODO add this back LOL i just want to compile already
-        /*switch(result.typeOfHit)
+        switch(result.getType())
         {
             case BLOCK:
-                if(shouldBounce)
+                BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
+                if(this.shouldBounce)
                 {
-                    IBlockState state = world.getBlockState(result.getBlockPos());
-                    SoundEvent event = state.getBlock().getSoundType().getStepSound();
-                    double speed = Math.sqrt(Math.pow(this.motionX, 2) + Math.pow(this.motionY, 2) + Math.pow(this.motionZ, 2));
+                    BlockPos resultPos = blockResult.getPos();
+                    BlockState state = this.world.getBlockState(resultPos);
+                    SoundEvent event = state.getBlock().getSoundType(state, this.world, resultPos, this).getStepSound();
+                    double speed = this.getMotion().length();
                     if(speed > 0.1)
                     {
-                        world.playSound(null, result.hitVec.x, result.hitVec.y, result.hitVec.z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
+                        this.world.playSound(null, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
                     }
-                    EnumFacing facing = result.sideHit;
-                    switch(facing.getAxis())
+                    Direction direction = blockResult.getFace();
+                    switch(direction.getAxis())
                     {
                         case X:
-                            this.motionX = -this.motionX * 0.5;
+                            this.setMotion(this.getMotion().mul(-0.5, 0.75, 0.75));
+                            /*this.motionX = -this.motionX * 0.5;
                             this.motionY *= 0.75;
-                            this.motionZ *= 0.75;
+                            this.motionZ *= 0.75;*/
                             break;
                         case Y:
-                            this.motionX *= 0.75;
+                            this.setMotion(this.getMotion().mul(0.75, -0.25, 0.75));
+                            if(this.getMotion().getY() < this.getGravityVelocity())
+                            {
+                                this.setMotion(this.getMotion().mul(1, 0, 1));
+                            }
+                            /*this.motionX *= 0.75;
                             this.motionY = -this.motionY * 0.25;
                             if(this.motionY < this.getGravityVelocity())
                             {
                                 this.motionY = 0F;
                             }
-                            this.motionZ *= 0.75;
+                            this.motionZ *= 0.75;*/
                             break;
                         case Z:
-                            this.motionX *= 0.75;
+                            this.setMotion(this.getMotion().mul(0.75, 0.75, -0.5));
+                            /*this.motionX *= 0.75;
                             this.motionY *= 0.75;
-                            this.motionZ = -this.motionZ * 0.5;
+                            this.motionZ = -this.motionZ * 0.5;*/
                             break;
                     }
                 }
                 else
                 {
-                    this.setDead();
+                    this.remove();
                     this.onDeath();
                 }
                 break;
             case ENTITY:
-                Entity entity = result.entityHit;
+                EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
+                Entity entity = entityResult.getEntity();
                 if(entity != null)
                 {
 
@@ -135,7 +153,7 @@ public abstract class EntityThrowableItem extends ThrowableEntity implements IEn
                 break;
             default:
                 break;
-        }*/
+        }
     }
 
     @Override
