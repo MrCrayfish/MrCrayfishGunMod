@@ -48,8 +48,8 @@ public class AttachmentContainer extends Container
         this.weapon = playerInventory.getCurrentItem();
         this.playerInventory = playerInventory;
 
-        this.addSlot(new AttachmentSlot(this, this.weaponInventory, IAttachment.Type.SCOPE, playerInventory.player, 0, 8, 17));
-        this.addSlot(new AttachmentSlot(this, this.weaponInventory, IAttachment.Type.BARREL, playerInventory.player, 1, 8, 35));
+        this.addSlot(new AttachmentSlot(this, this.weaponInventory, this.weapon, IAttachment.Type.SCOPE, playerInventory.player, 0, 8, 17));
+        this.addSlot(new AttachmentSlot(this, this.weaponInventory, this.weapon, IAttachment.Type.BARREL, playerInventory.player, 1, 8, 35));
 
         for(int i = 0; i < 3; i++)
         {

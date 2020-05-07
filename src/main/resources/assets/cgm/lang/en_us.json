@@ -42,5 +42,8 @@
     "cgm.options.adsSensitivity": "ADS Sensitivity",
     "cgm.options.adsSensitivity.format": "ADS Sensitivity: %s",
     "container.cgm.attachments": "Modify Attachments",
-    "container.cgm.attachments.window_help": "Click to move and rotate"
+    "container.cgm.attachments.window_help": "Click to move and rotate",
+    "slot.cgm.attachment.not_applicable": "\u00a7cNot applicable",
+    "slot.cgm.attachment.scope": "Scope",
+    "slot.cgm.attachment.barrel": "Barrel"
 }

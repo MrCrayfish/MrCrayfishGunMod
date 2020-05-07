@@ -18,8 +18,12 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Author: MrCrayfish
@@ -66,6 +70,32 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
         this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
+
+        int startX = (this.width - this.xSize) / 2;
+        int startY = (this.height - this.ySize) / 2;
+        if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16, 18, 18))
+        {
+            if(!this.container.getSlot(0).isEnabled())
+            {
+                this.renderTooltip(Arrays.asList(I18n.format("slot.cgm.attachment.scope"), I18n.format("slot.cgm.attachment.not_applicable")), mouseX, mouseY, this.minecraft.fontRenderer);
+            }
+            else if(this.weaponInventory.getStackInSlot(0).isEmpty())
+            {
+                this.renderTooltip(Collections.singletonList(I18n.format("slot.cgm.attachment.scope")), mouseX, mouseY, this.minecraft.fontRenderer);
+            }
+        }
+
+        if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 34, 18, 18))
+        {
+            if(!this.container.getSlot(1).isEnabled())
+            {
+                this.renderTooltip(Arrays.asList(I18n.format("slot.cgm.attachment.barrel"), I18n.format("slot.cgm.attachment.not_applicable")), mouseX, mouseY, this.minecraft.fontRenderer);
+            }
+            else if(this.weaponInventory.getStackInSlot(1).isEmpty())
+            {
+                this.renderTooltip(Collections.singletonList(I18n.format("slot.cgm.attachment.barrel")), mouseX, mouseY, this.minecraft.fontRenderer);
+            }
+        }
     }
 
     @Override
@@ -132,12 +162,20 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
         int top = (this.height - this.ySize) / 2;
         this.blit(left, top, 0, 0, this.xSize, this.ySize);
 
-        if(this.weaponInventory.getStackInSlot(0).isEmpty())
+        if(!this.container.getSlot(0).isEnabled())
+        {
+            this.blit(left + 8, top + 17, 176, 32, 16, 16);
+        }
+        else if(this.weaponInventory.getStackInSlot(0).isEmpty())
         {
             this.blit(left + 8, top + 17, 176, 0, 16, 16);
         }
 
-        if(this.weaponInventory.getStackInSlot(1).isEmpty())
+        if(!this.container.getSlot(1).isEnabled())
+        {
+            this.blit(left + 8, top + 35, 176, 32, 16, 16);
+        }
+        else if(this.weaponInventory.getStackInSlot(1).isEmpty())
         {
             this.blit(left + 8, top + 35, 176, 16, 16, 16);
         }
