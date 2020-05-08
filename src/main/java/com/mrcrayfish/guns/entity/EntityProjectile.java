@@ -4,8 +4,8 @@ import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
+import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.interfaces.IDamageable;
-import com.mrcrayfish.guns.item.AmmoItem;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -365,6 +365,10 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
             shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }
+
+        /* Spawn blood particle */
+        ServerWorld serverWorld = (ServerWorld) this.world;
+        serverWorld.spawnParticle(ModParticleTypes.BLOOD.get(), x, y, z, 10, 0, 0, 0, 1);
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)

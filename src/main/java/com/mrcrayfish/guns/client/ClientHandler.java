@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.SoundEvents;
+import com.mrcrayfish.guns.client.particle.BloodParticle;
 import com.mrcrayfish.guns.client.particle.BulletHoleParticle;
 import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
@@ -50,6 +51,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.particles.ParticleTypes;
@@ -135,13 +137,24 @@ public class ClientHandler
 		ModelOverrides.register(new ItemStack(ModItems.MEDIUM_SCOPE.get()), new MediumScopeModel());
 		ModelOverrides.register(new ItemStack(ModItems.LONG_SCOPE.get()), new LongScopeModel());
 
-        Minecraft.getInstance().particles.registerFactory(ModParticleTypes.BULLET_HOLE.get(), new IParticleFactory<BulletHoleData>()
+
+		ParticleManager particleManager = Minecraft.getInstance().particles;
+        particleManager.registerFactory(ModParticleTypes.BULLET_HOLE.get(), new IParticleFactory<BulletHoleData>()
         {
             @Nullable
             @Override
             public Particle makeParticle(BulletHoleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
             {
                 return new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos());
+            }
+        });
+        particleManager.registerFactory(ModParticleTypes.BLOOD.get(), new IParticleFactory<BasicParticleType>()
+        {
+            @Nullable
+            @Override
+            public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+            {
+                return new BloodParticle(worldIn, x, y, z);
             }
         });
 
