@@ -9,6 +9,7 @@ import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
@@ -366,9 +367,9 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
             shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }
 
-        /* Spawn blood particle */
-        ServerWorld serverWorld = (ServerWorld) this.world;
-        serverWorld.spawnParticle(ModParticleTypes.BLOOD.get(), x, y, z, 10, 0, 0, 0, 1);
+        /* Send blood particle to tracking clients. */
+        //TODO maybe make clients send settings to server to prevent sending unnecessary packets
+        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(x, y, z));
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)

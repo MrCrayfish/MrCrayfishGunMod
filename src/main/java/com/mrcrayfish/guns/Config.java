@@ -69,12 +69,14 @@ public class Config
     public static class Particle
     {
         public final ForgeConfigSpec.IntValue bulletHoleLife;
+        public final ForgeConfigSpec.BooleanValue enableBlood;
 
         public Particle(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Properties relating to particles").push("particle");
             {
                 this.bulletHoleLife = builder.comment("The duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLife", 200, 0, Integer.MAX_VALUE);
+                this.enableBlood = builder.comment("If true, blood will will spawn from entities that are hit from a projectile").define("enableBlood", false);
             }
             builder.pop();
         }

@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
@@ -28,6 +29,7 @@ import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
+import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
@@ -160,6 +162,22 @@ public class ClientHandler
 
         ScreenManager.registerFactory(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
         ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
+    }
+
+    public static void handleMessageBlood(MessageBlood message)
+    {
+        if(!Config.CLIENT.particle.enableBlood.get())
+        {
+            return;
+        }
+        World world = Minecraft.getInstance().world;
+        if(world != null)
+        {
+            for(int i = 0; i < 10; i++)
+            {
+                world.addParticle(ModParticleTypes.BLOOD.get(), true, message.getX(), message.getY(), message.getZ(), 0.5, 0, 0.5);
+            }
+        }
     }
 
     public static void handleMessageBullet(MessageBullet message)
