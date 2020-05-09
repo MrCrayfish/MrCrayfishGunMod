@@ -138,12 +138,6 @@ public class GunRenderer
         this.prevReloadTimer = this.reloadTimer;
 
         PlayerEntity player = Minecraft.getInstance().player;
-        if(isZooming(player) && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
-        {
-            Minecraft.getInstance().player.prevCameraYaw = 0.0075F;
-            Minecraft.getInstance().player.cameraYaw = 0.0075F;
-        }
-
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
