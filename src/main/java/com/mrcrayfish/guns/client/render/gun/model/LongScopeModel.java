@@ -48,7 +48,7 @@ public class LongScopeModel implements IOverrideModel
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
                 GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-                float size = 1.2F / 16.0F;
+                float size = 1.1F / 16.0F;
                 float crop = 0.4F;
                 Minecraft mc = Minecraft.getInstance();
                 MainWindow window = mc.getMainWindow();
@@ -59,7 +59,7 @@ public class LongScopeModel implements IOverrideModel
                 RenderSystem.pushMatrix();
                 {
                     RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
-                    RenderSystem.translated(-size / 2, 0.9 * 0.0625, 2.2 * 0.0625);
+                    RenderSystem.translated(-size / 2, 0.85 * 0.0625, 2.45 * 0.0625);
                     float color = (float) ClientHandler.getGunRenderer().normalZoomProgress * 0.8F + 0.2F;
                     RenderSystem.color4f(color, color, color, 1.0F);
                     Tessellator tessellator = Tessellator.getInstance();
