@@ -51,7 +51,7 @@ public class MediumScopeModel implements IOverrideModel
             //TODO clean this up because it's spaghetti code
             float scopeSize = 1.325F;
             float size = scopeSize / 16.0F;
-            float crop = 0.42F;
+            float crop = 0.4F;
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
             float texU = ((window.getWidth() - window.getHeight() + window.getHeight() * crop * 2.0F) / 2.0F) / window.getWidth();
