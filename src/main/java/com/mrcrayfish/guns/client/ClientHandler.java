@@ -103,21 +103,40 @@ public class ClientHandler
     {
         MinecraftForge.EVENT_BUS.register(GUN_RENDERER);
         MinecraftForge.EVENT_BUS.register(BULLET_RENDERER);
+
+        /* Only register controller events if Controllable is loaded otherwise it will crash */
         if(GunMod.controllableLoaded)
         {
             MinecraftForge.EVENT_BUS.register(new ControllerEvents());
         }
+
         KeyBinds.register();
         SoundEvents.initReflection();
 
+        setupRenderLayers();
+        registerEntityRenders();
+        registerColors();
+        registerModelOverrides();
+        registerParticleFactories();
+        registerScreenFactories();
+    }
+
+    private static void setupRenderLayers()
+    {
         RenderTypeLookup.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.getCutout());
-        
+    }
+
+    private static void registerEntityRenders()
+    {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE.get(), RenderProjectile::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.GRENADE.get(), RenderProjectile::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.MISSILE.get(), RenderProjectile::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_GRENADE.get(), RenderGrenade::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_STUN_GRENADE.get(), RenderGrenade::new);
+    }
 
+    private static void registerColors()
+    {
         IItemColor color = (stack, index) ->
         {
             if(index == 0 && stack.hasTag() && stack.getTag().contains("Color", Constants.NBT.TAG_INT))
@@ -133,14 +152,19 @@ public class ClientHandler
                 Minecraft.getInstance().getItemColors().register(color, item);
             }
         });
+    }
 
-		//ModelOverrides.register(new ItemStack(ModItems.MINI_GUN), new MiniGunModel());
-		ModelOverrides.register(new ItemStack(ModItems.SHORT_SCOPE.get()), new ShortScopeModel());
-		ModelOverrides.register(new ItemStack(ModItems.MEDIUM_SCOPE.get()), new MediumScopeModel());
-		ModelOverrides.register(new ItemStack(ModItems.LONG_SCOPE.get()), new LongScopeModel());
+    private static void registerModelOverrides()
+    {
+        //ModelOverrides.register(new ItemStack(ModItems.MINI_GUN), new MiniGunModel());
+        ModelOverrides.register(new ItemStack(ModItems.SHORT_SCOPE.get()), new ShortScopeModel());
+        ModelOverrides.register(new ItemStack(ModItems.MEDIUM_SCOPE.get()), new MediumScopeModel());
+        ModelOverrides.register(new ItemStack(ModItems.LONG_SCOPE.get()), new LongScopeModel());
+    }
 
-
-		ParticleManager particleManager = Minecraft.getInstance().particles;
+    private static void registerParticleFactories()
+    {
+        ParticleManager particleManager = Minecraft.getInstance().particles;
         particleManager.registerFactory(ModParticleTypes.BULLET_HOLE.get(), new IParticleFactory<BulletHoleData>()
         {
             @Nullable
@@ -159,7 +183,10 @@ public class ClientHandler
                 return new BloodParticle(worldIn, x, y, z);
             }
         });
+    }
 
+    private static void registerScreenFactories()
+    {
         ScreenManager.registerFactory(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
         ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
     }
