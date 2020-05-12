@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.audio;
 
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.init.ModPotions;
+import com.mrcrayfish.guns.init.ModEffects;
 import com.mrcrayfish.guns.init.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
@@ -26,7 +26,7 @@ public class SoundRinging extends TickableSound
         PlayerEntity player = Minecraft.getInstance().player;
         if(player != null && player.isAlive())
         {
-            EffectInstance effect = player.getActivePotionEffect(ModPotions.DEAFENED.get().getEffects().get(0).getPotion());
+            EffectInstance effect = player.getActivePotionEffect(ModEffects.DEAFENED.get());
             if(effect != null)
             {
                 this.x = (float) player.getPosX();

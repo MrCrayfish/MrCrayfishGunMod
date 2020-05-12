@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Pose;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -55,7 +57,7 @@ public class RenderGrenade extends EntityRenderer<EntityThrowableGrenade>
         }
 
         /* */
-        matrixStack.translate(-0.5, 0, -0.5);
+        matrixStack.translate(0.0, 0.5, 0.0);
 
         Minecraft.getInstance().getItemRenderer().renderItem(entity.getItem(), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
 

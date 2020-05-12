@@ -94,7 +94,11 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
 
                 // Duration further attenuated by angle
                 durationBlinded *= 1 - (angle * (1 - criteria.angleAttenuationMax.get())) / angleMax;
-                player.addPotionEffect(new EffectInstance(potion.getEffects().get(0).getPotion(), durationBlinded, 0, false, false));
+
+                for(EffectInstance instance : potion.getEffects())
+                {
+                    player.addPotionEffect(new EffectInstance(instance.getPotion(), durationBlinded, 0, false, false));
+                }
             }
         }
     }

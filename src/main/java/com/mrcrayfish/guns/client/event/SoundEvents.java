@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.client.event;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.audio.SoundRinging;
-import com.mrcrayfish.guns.init.ModPotions;
+import com.mrcrayfish.guns.init.ModEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.*;
 import net.minecraft.potion.EffectInstance;
@@ -47,11 +47,8 @@ public class SoundEvents
             return;
         }
 
-        if(true)
-            return;
-
         /* If deafened, play ringing sound if not already playing, otherwise return */
-        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED.get().getEffects().get(0).getPotion());
+        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModEffects.DEAFENED.get());
         if(effect == null)
         {
             if(!isDeafened)
@@ -137,7 +134,7 @@ public class SoundEvents
 
         // Exempt initial explosion from muting
         ResourceLocation loc = event.getSound().getSoundLocation();
-        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.DEAFENED.get().getEffects().get(0).getPotion());
+        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModEffects.DEAFENED.get());
         int duration = effect != null ? effect.getDuration() : 0;
         boolean isStunGrenade = isStunGrenade(loc);
         if(duration == 0 && isStunGrenade) return;

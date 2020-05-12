@@ -10,8 +10,8 @@
    "item.shotgun.silenced_fire":        { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/shotgun/silenced_fire" }]},
    "item.rifle.silenced_fire":          { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/rifle/silenced_fire" }]},
    "item.pistol.reload":                { "subtitle": "subtitle.cgm.reload",         "sounds": [{ "name": "cgm:item/pistol/reload" }]},
-   "entity.grenade_stun.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/stun_grenade/explosion" }]},
-   "entity.grenade_stun.ring":          { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:entity/stun_grenade/ring", "stream": true }]},
+   "entity.stun_grenade.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/stun_grenade/explosion" }]},
+   "entity.stun_grenade.ring":          { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:entity/stun_grenade/ring", "stream": true }]},
    "item.machine_pistol.fire":          { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/machine_pistol/fire" }]},
    "item.machine_pistol.silenced_fire": { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/machine_pistol/silenced_fire" }]},
    "ui.weapon.attach":                  { "subtitle": "subtitle.cgm.attach",         "sounds": [{ "name": "cgm:ui/weapon/attach" }]}

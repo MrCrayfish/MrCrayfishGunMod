@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 /**
  * Author: MrCrayfish
@@ -111,9 +113,6 @@ public abstract class EntityThrowableItem extends ThrowableEntity implements IEn
                     {
                         case X:
                             this.setMotion(this.getMotion().mul(-0.5, 0.75, 0.75));
-                            /*this.motionX = -this.motionX * 0.5;
-                            this.motionY *= 0.75;
-                            this.motionZ *= 0.75;*/
                             break;
                         case Y:
                             this.setMotion(this.getMotion().mul(0.75, -0.25, 0.75));
@@ -121,19 +120,9 @@ public abstract class EntityThrowableItem extends ThrowableEntity implements IEn
                             {
                                 this.setMotion(this.getMotion().mul(1, 0, 1));
                             }
-                            /*this.motionX *= 0.75;
-                            this.motionY = -this.motionY * 0.25;
-                            if(this.motionY < this.getGravityVelocity())
-                            {
-                                this.motionY = 0F;
-                            }
-                            this.motionZ *= 0.75;*/
                             break;
                         case Z:
                             this.setMotion(this.getMotion().mul(0.75, 0.75, -0.5));
-                            /*this.motionX *= 0.75;
-                            this.motionY *= 0.75;
-                            this.motionZ = -this.motionZ * 0.5;*/
                             break;
                     }
                 }
@@ -176,5 +165,11 @@ public abstract class EntityThrowableItem extends ThrowableEntity implements IEn
         this.shouldBounce = buffer.readBoolean();
         this.gravityVelocity = buffer.readFloat();
         this.item = buffer.readItemStack();
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket()
+    {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

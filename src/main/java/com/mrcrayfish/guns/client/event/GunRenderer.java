@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.AimTracker;
@@ -11,6 +12,7 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
+import com.mrcrayfish.guns.init.ModEffects;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.*;
 import com.mrcrayfish.guns.object.Barrel;
@@ -40,6 +42,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
@@ -903,18 +906,27 @@ public class GunRenderer
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
-    public void blindPlayer(RenderGameOverlayEvent.Pre event)
+    public void blindPlayer(TickEvent.RenderTickEvent event)
     {
-        if(event.getType() != ElementType.ALL) return;
+        if(event.phase != TickEvent.Phase.END)
+        {
+            return;
+        }
 
-        /*EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModPotions.BLINDED.get().getEffects().get(0).getPotion());
+        if(Minecraft.getInstance().player == null)
+        {
+            return;
+        }
+
+        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModEffects.BLINDED.get());
         if(effect != null)
         {
             // Render white screen-filling overlay at full alpha effect when duration is above threshold
             // When below threshold, fade to full transparency as duration approaches 0
             float percent = Math.min((effect.getDuration() / (float) Config.SERVER.alphaFadeThreshold.get()), 1);
-            //Screen.blit(0, 0, 100, 100, ((int) (percent * Config.SERVER.alphaOverlay.get() + 0.5) << 24) | 16777215);
-        }*/
+            MainWindow window = Minecraft.getInstance().getMainWindow();
+            Screen.fill(0, 0, window.getWidth(), window.getHeight(), ((int) (percent * Config.SERVER.alphaOverlay.get() + 0.5) << 24) | 16777215);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
