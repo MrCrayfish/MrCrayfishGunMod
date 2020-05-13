@@ -9,7 +9,6 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.TickEvent;
@@ -53,9 +52,9 @@ public class ReloadTracker
         return tag.getInt("AmmoCount") >= this.gun.general.maxAmmo;
     }
 
-    private boolean hasAmmo(PlayerEntity player)
+    private boolean hasNoAmmo(PlayerEntity player)
     {
-        return Gun.findAmmo(player, this.gun.projectile.item) != null;
+        return Gun.findAmmo(player, this.gun.projectile.item).isEmpty();
     }
 
     private boolean canReload(PlayerEntity player)
@@ -104,7 +103,7 @@ public class ReloadTracker
                     RELOAD_TRACKER_MAP.put(player.getUniqueID(), new ReloadTracker(player));
                 }
                 ReloadTracker tracker = RELOAD_TRACKER_MAP.get(player.getUniqueID());
-                if(!tracker.isSameWeapon(player) || tracker.isWeaponFull() || !tracker.hasAmmo(player))
+                if(!tracker.isSameWeapon(player) || tracker.isWeaponFull() || tracker.hasNoAmmo(player))
                 {
                     RELOAD_TRACKER_MAP.remove(player.getUniqueID());
                     SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
@@ -113,7 +112,7 @@ public class ReloadTracker
                 if(tracker.canReload(player))
                 {
                     tracker.increaseAmmo(player);
-                    if(tracker.isWeaponFull() || !tracker.hasAmmo(player))
+                    if(tracker.isWeaponFull() || tracker.hasNoAmmo(player))
                     {
                         RELOAD_TRACKER_MAP.remove(player.getUniqueID());
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
