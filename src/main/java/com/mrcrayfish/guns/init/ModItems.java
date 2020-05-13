@@ -24,7 +24,7 @@ public class ModItems
     public static final RegistryObject<Item> MACHINE_PISTOL = REGISTER.register("machine_pistol", () -> new GunItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
     public static final RegistryObject<Item> BASIC_BULLET = REGISTER.register("basic_bullet", () -> new AmmoItem(new Item.Properties().group(GunMod.GROUP)));
-    public static final RegistryObject<Item> ADVANCED_AMMO = REGISTER.register("advanced_ammo", () -> new AmmoItem(new Item.Properties().group(GunMod.GROUP)));
+    public static final RegistryObject<Item> ADVANCED_AMMO = REGISTER.register("advanced_bullet", () -> new AmmoItem(new Item.Properties().group(GunMod.GROUP)));
     public static final RegistryObject<Item> SHELL = REGISTER.register("shell", () -> new AmmoItem(new Item.Properties().group(GunMod.GROUP)));
     public static final RegistryObject<AmmoItem> MISSILE = REGISTER.register("missile", () -> new AmmoItem(new Item.Properties().group(GunMod.GROUP)));
     public static final RegistryObject<AmmoItem> GRENADE = REGISTER.register("grenade", () -> new GrenadeItem(new Item.Properties().group(GunMod.GROUP)));
