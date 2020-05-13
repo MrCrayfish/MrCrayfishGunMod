@@ -10,7 +10,7 @@
         "spread": 3.0
     },
     "projectile": {
-        "item": "cgm:basic_ammo",
+        "item": "cgm:basic_bullet",
         "visible": false,
         "damage": 4.0,
         "size": 0.2,

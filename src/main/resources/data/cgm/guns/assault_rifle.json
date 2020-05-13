@@ -10,7 +10,7 @@
         "recoilAdsReduction": 0.85
     },
     "projectile": {
-        "item": "cgm:basic_ammo",
+        "item": "cgm:basic_bullet",
         "visible": false,
         "damage": 7.0,
         "size": 0.2,
