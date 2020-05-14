@@ -1,7 +1,7 @@
 {
     "type": "cgm:workbench",
     "result": {
-        "item": "cgm:advanced_ammo",
+        "item": "cgm:advanced_bullet",
         "count": 16
     },
     "materials": [
