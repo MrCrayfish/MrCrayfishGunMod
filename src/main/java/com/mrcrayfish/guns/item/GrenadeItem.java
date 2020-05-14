@@ -38,7 +38,7 @@ public class GrenadeItem extends AmmoItem
     {
         ItemStack stack = playerIn.getHeldItem(handIn);
         playerIn.setActiveHand(handIn);
-        return new ActionResult<>(ActionResultType.SUCCESS, stack);
+        return ActionResult.resultConsume(stack);
     }
 
     @Override
