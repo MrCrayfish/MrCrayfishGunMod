@@ -1,16 +1,17 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.event.CommonEvents;
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageReload implements IMessage, IMessageHandler<MessageReload, IMessage>
+public class MessageReload implements IMessage
 {
     private boolean reload;
 
@@ -22,24 +23,28 @@ public class MessageReload implements IMessage, IMessageHandler<MessageReload, I
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(PacketBuffer buffer)
     {
-        buf.writeBoolean(reload);
+        buffer.writeBoolean(this.reload);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public void decode(PacketBuffer buffer)
     {
-        reload = buf.readBoolean();
+        this.reload = buffer.readBoolean();
     }
 
     @Override
-    public IMessage onMessage(MessageReload message, MessageContext ctx)
+    public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        supplier.get().enqueueWork(() ->
         {
-            ctx.getServerHandler().player.getDataManager().set(CommonEvents.RELOADING, message.reload);
+            ServerPlayerEntity player = supplier.get().getSender();
+            if(player != null && !player.isSpectator())
+            {
+                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, this.reload);
+            }
         });
-        return null;
+        supplier.get().setPacketHandled(true);
     }
 }

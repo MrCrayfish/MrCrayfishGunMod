@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+
+[[mods]]
+modId="cgm"
+version="${file.jarVersion}"
+displayName="MrCrayfish's Gun Mod"
+displayURL="https://mrcrayfish.com/"
+authors="MrCrayfish"
+description='''
+Adds weapons into Minecraft
+'''
+
+[[dependencies.cgm]]
+    modId="forge"
+    mandatory=true
+    versionRange="[31.1.19,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.cgm]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.2]"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.cgm]]
+    modId="obfuscate"
+    mandatory=true
+    versionRange="[0.4.2,)"
+    ordering="NONE"
+    side="BOTH"

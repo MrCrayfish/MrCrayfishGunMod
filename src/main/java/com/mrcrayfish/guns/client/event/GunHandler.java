@@ -1,108 +1,102 @@
 package com.mrcrayfish.guns.client.event;
 
-import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.MrCrayfishGunMod;
-import com.mrcrayfish.guns.client.AimTracker;
-import com.mrcrayfish.guns.event.CommonEvents;
-import com.mrcrayfish.guns.item.ItemGun;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageAim;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Mouse;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class GunHandler
 {
-    private static final Map<UUID, AimTracker> AIMING_MAP = new HashMap<>();
-    public static boolean aiming = false;
+    private static float recoil;
+    private static float remainingRecoil;
+
+    private static boolean isInGame()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.loadingGui != null)
+            return false;
+        if(mc.currentScreen != null)
+            return false;
+        if(!mc.mouseHelper.isMouseGrabbed())
+            return false;
+        return mc.isGameFocused();
+    }
 
     @SubscribeEvent
-    public void onKeyPressed(MouseEvent event)
+    public static void onKeyPressed(InputEvent.RawMouseEvent event)
     {
-        if(!Minecraft.getMinecraft().inGameHasFocus)
+        if(!isInGame())
             return;
 
-        if(!event.isButtonstate())
+        if(event.getAction() != GLFW.GLFW_PRESS)
             return;
 
-        Minecraft mc = Minecraft.getMinecraft();
-        if(mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
+        Minecraft mc = Minecraft.getInstance();
+        PlayerEntity player = mc.player;
+        if(player == null)
+            return;
+
+        if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && ClientHandler.isLookingAtInteractableBlock())
         {
-            IBlockState state = mc.world.getBlockState(mc.objectMouseOver.getBlockPos());
-            Block block = state.getBlock();
-            if(block instanceof BlockContainer || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE)
+            if(player.getHeldItemMainhand().getItem() instanceof GunItem && !ClientHandler.isLookingAtInteractableBlock())
             {
-                return;
+                event.setCanceled(true);
             }
+            return;
         }
 
-        EntityPlayer player = mc.player;
-        if(player != null)
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(heldItem.getItem() instanceof GunItem)
         {
-            ItemStack heldItem = player.getHeldItemMainhand();
-            if(heldItem.getItem() instanceof ItemGun)
+            int button = event.getButton();
+            if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
-                int button = event.getButton();
-                if(!GunConfig.CLIENT.controls.oldControls)
-                {
-                    if(button == 0 || button == 1)
-                    {
-                        event.setCanceled(true);
-                    }
-
-                    if(event.isButtonstate() && button == 0)
-                    {
-                        fire(player, heldItem);
-                    }
-                }
-                else if(event.isButtonstate() && button == 1)
-                {
-                    event.setCanceled(true);
-                    fire(player, heldItem);
-                }
+                event.setCanceled(true);
+            }
+            if(event.getAction() == GLFW.GLFW_PRESS && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+            {
+                fire(player, heldItem);
             }
         }
     }
 
     @SubscribeEvent
-    public void onPostClientTick(TickEvent.ClientTickEvent event)
+    public static void onPostClientTick(TickEvent.ClientTickEvent event)
     {
         if(event.phase != TickEvent.Phase.END)
             return;
 
-        if(!Minecraft.getMinecraft().inGameHasFocus)
+        if(!isInGame())
             return;
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        Minecraft mc = Minecraft.getInstance();
+        PlayerEntity player = mc.player;
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
-            if(heldItem.getItem() instanceof ItemGun)
+            if(heldItem.getItem() instanceof GunItem)
             {
-                 Gun gun = ((ItemGun) heldItem.getItem()).getModifiedGun(heldItem);
+                 Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
                  if(gun.general.auto)
                  {
-                     if(Mouse.isButtonDown(GunConfig.CLIENT.controls.oldControls ? 1 : 0))
+                     if(GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS)
                      {
                          fire(player, heldItem);
                      }
@@ -111,77 +105,57 @@ public class GunHandler
         }
     }
 
-    public static void fire(EntityPlayer player, ItemStack heldItem)
+    public static void fire(PlayerEntity player, ItemStack heldItem)
     {
-        if(!(heldItem.getItem() instanceof ItemGun))
+        if(!(heldItem.getItem() instanceof GunItem))
             return;
 
-        if(!ItemGun.hasAmmo(heldItem) && !player.capabilities.isCreativeMode)
+        if(!Gun.hasAmmo(heldItem) && !player.isCreative())
+            return;
+        
+        if(player.isSpectator())
             return;
 
         CooldownTracker tracker = player.getCooldownTracker();
         if(!tracker.hasCooldown(heldItem.getItem()))
         {
-            ItemGun itemGun = (ItemGun) heldItem.getItem();
-            Gun modifiedGun = itemGun.getModifiedGun(heldItem);
+            GunItem gunItem = (GunItem) heldItem.getItem();
+            Gun modifiedGun = gunItem.getModifiedGun(heldItem);
             tracker.setCooldown(heldItem.getItem(), modifiedGun.general.rate);
-            RenderEvents.getCooldownTracker(player.getUniqueID()).setCooldown(heldItem.getItem(), modifiedGun.general.rate);
-            PacketHandler.INSTANCE.sendToServer(new MessageShoot());
-        }
-    }
-
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event)
-    {
-        if(MrCrayfishGunMod.proxy.isZooming())
-        {
-            if(!aiming)
+            PacketHandler.getPlayChannel().sendToServer(new MessageShoot());
+            if(modifiedGun.display.flash != null)
             {
-                Minecraft.getMinecraft().player.getDataManager().set(CommonEvents.AIMING, true);
-                PacketHandler.INSTANCE.sendToServer(new MessageAim(true));
-                aiming = true;
+                ClientHandler.getGunRenderer().showMuzzleFlash();
             }
-        }
-        else if(aiming)
-        {
-            Minecraft.getMinecraft().player.getDataManager().set(CommonEvents.AIMING, false);
-            PacketHandler.INSTANCE.sendToServer(new MessageAim(false));
-            aiming = false;
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event)
-    {
-        EntityPlayer player = event.player;
-        AimTracker tracker = getAimTracker(player);
-        if(tracker != null)
-        {
-            tracker.handleAiming(player);
-            if(!tracker.isAiming())
+            if(Config.SERVER.enableCameraRecoil.get())
             {
-                AIMING_MAP.remove(player.getUniqueID());
+                recoil = (float) (modifiedGun.general.recoilAngle * (1.0 - (modifiedGun.general.recoilAdsReduction * ClientHandler.getGunRenderer().normalZoomProgress)));
+                remainingRecoil = recoil;
             }
         }
     }
 
-    @Nullable
-    private static AimTracker getAimTracker(EntityPlayer player)
+    @SubscribeEvent
+    public static void onRenderTick(TickEvent.RenderTickEvent event)
     {
-        if(player.getDataManager().get(CommonEvents.AIMING) && !AIMING_MAP.containsKey(player.getUniqueID()))
+        if(!Config.SERVER.enableCameraRecoil.get())
         {
-            AIMING_MAP.put(player.getUniqueID(), new AimTracker());
+            return;
         }
-        return AIMING_MAP.get(player.getUniqueID());
-    }
-
-    public static float getAimProgress(EntityPlayer player, float partialTicks)
-    {
-        AimTracker tracker = getAimTracker(player);
-        if(tracker != null)
+        if(event.phase == TickEvent.Phase.END && recoil > 0)
         {
-            return tracker.getNormalProgress(partialTicks);
+            Minecraft mc = Minecraft.getInstance();
+            if(mc.player != null)
+            {
+                float recoilAmount = recoil * mc.getTickLength();
+                mc.player.rotationPitch -= recoilAmount;
+                remainingRecoil -= recoilAmount;
+                if(remainingRecoil <= 0)
+                {
+                    recoil = 0;
+                    remainingRecoil = 0;
+                }
+            }
         }
-        return 0F;
     }
 }

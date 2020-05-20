@@ -1,0 +1,91 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
+	"textures": {
+		"0": "cgm:items/grenade",
+		"particle": "cgm:items/grenade"
+	},
+	"elements": [
+		{
+			"name": "Base",
+			"from": [6, 0, 6],
+			"to": [10, 5, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 7, 7.5]},
+			"faces": {
+				"north": {"uv": [4, 0, 0, 5], "texture": "#0"},
+				"east": {"uv": [0, 0, 4, 5], "texture": "#0"},
+				"south": {"uv": [4, 0, 0, 5], "texture": "#0"},
+				"west": {"uv": [0, 0, 4, 5], "texture": "#0"},
+				"up": {"uv": [4, 0, 8, 4], "texture": "#0"},
+				"down": {"uv": [4, 4, 8, 8], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Top",
+			"from": [7, 5, 7],
+			"to": [9, 7, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.6, 8, 8.4]},
+			"faces": {
+				"north": {"uv": [10, 0, 8, 2], "texture": "#0"},
+				"east": {"uv": [8, 0, 10, 2], "texture": "#0"},
+				"south": {"uv": [10, 0, 8, 2], "texture": "#0"},
+				"west": {"uv": [8, 0, 10, 2], "texture": "#0"},
+				"up": {"uv": [8, 2, 10, 4], "texture": "#0"},
+				"down": {"uv": [0, 0, 1.2, 1.2], "texture": "#missing"}
+			}
+		},
+		{
+			"name": "Handle Top",
+			"from": [7.5, 5.5, 9],
+			"to": [8.5, 6.5, 11.3],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [8.1, 6.5, 9]},
+			"faces": {
+				"east": {"uv": [10, 0, 11, 2], "texture": "#0"},
+				"west": {"uv": [10, 0, 11, 2], "texture": "#0"},
+				"up": {"uv": [10, 0, 11, 2], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Handle Bottom",
+			"from": [7.5, 1.11983, 10.12492],
+			"to": [8.5, 5.61983, 11.12492],
+			"rotation": {"angle": 0, "axis": "y", "origin": [15.5, 12.61983, 18.12492]},
+			"faces": {
+				"east": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"south": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"west": {"uv": [10, 0, 11, 4], "texture": "#0"}
+			}
+		},
+		{
+			"from": [8, 4, 7],
+			"to": [9, 6, 9],
+			"rotation": {"angle": 45, "axis": "z", "origin": [9, 6, 8]},
+			"faces": {
+				"east": {"uv": [11, 0, 14, 3], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 5]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"translation": [0, 6, 0],
+			"scale": [-1, 1, 1]
+		},
+		"ground": {
+			"translation": [0, 5, 0]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"translation": [0, 6, 0],
+			"scale": [1.5, 1.5, 1.5]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [-0.75, 9.5, -4],
+			"scale": [2, 2, 2]
+		}
+	}
+}

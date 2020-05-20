@@ -1,0 +1,17 @@
+{
+    "type": "cgm:workbench",
+    "result": {
+        "item": "cgm:grenade",
+        "count": 2
+    },
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 4
+        },
+        {
+            "item": "minecraft:gunpowder",
+            "count": 8
+        }
+    ]
+}

@@ -1,15 +1,16 @@
 package com.mrcrayfish.guns.tileentity.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 /**
  * Author: MrCrayfish
  */
-public interface IStorageBlock extends IInventory
+public interface IStorageBlock extends IInventory, INamedContainerProvider
 {
     NonNullList<ItemStack> getInventory();
 
@@ -82,16 +83,16 @@ public interface IStorageBlock extends IInventory
     }
 
     @Override
-    default boolean isUsableByPlayer(EntityPlayer player)
+    default boolean isUsableByPlayer(PlayerEntity player)
     {
         return false;
     }
 
     @Override
-    default void openInventory(EntityPlayer player) {}
+    default void openInventory(PlayerEntity player) {}
 
     @Override
-    default void closeInventory(EntityPlayer player) {}
+    default void closeInventory(PlayerEntity player) {}
 
     @Override
     default boolean isItemValidForSlot(int index, ItemStack stack)
@@ -100,30 +101,8 @@ public interface IStorageBlock extends IInventory
     }
 
     @Override
-    default int getField(int id)
-    {
-        return 0;
-    }
-
-    @Override
-    default void setField(int id, int value) {}
-
-    @Override
-    default int getFieldCount()
-    {
-        return 0;
-    }
-
-    @Override
     default void clear()
     {
         this.getInventory().clear();
     }
-
-    @Override
-    default boolean hasCustomName()
-    {
-        return false;
-    }
-
 }

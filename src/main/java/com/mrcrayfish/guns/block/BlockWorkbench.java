@@ -1,66 +1,101 @@
 package com.mrcrayfish.guns.block;
 
-import com.mrcrayfish.guns.MrCrayfishGunMod;
-import com.mrcrayfish.guns.tileentity.TileEntityWorkbench;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.guns.common.container.AttachmentContainer;
+import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
+import com.mrcrayfish.guns.util.VoxelShapeHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerProvider;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
 public class BlockWorkbench extends BlockRotatedObject
 {
-    public BlockWorkbench()
+    private final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
+
+    public BlockWorkbench(Block.Properties properties)
     {
-        super(Material.IRON, "workbench");
-        this.setHardness(1.0F);
+        super(properties);
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer()
+    private VoxelShape getShape(BlockState state)
     {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
-    public boolean isTopSolid(IBlockState state)
-    {
-        return true;
-    }
-
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
-    {
-        if(!worldIn.isRemote)
+        if(SHAPES.containsKey(state))
         {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityWorkbench)
+            return SHAPES.get(state);
+        }
+        Direction direction = state.get(DIRECTION);
+        List<VoxelShape> shapes = new ArrayList<>();
+        shapes.add(Block.makeCuboidShape(0, 1, 0, 16, 16, 16));
+        shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 16, 0, 16, 17.5, 2), Direction.SOUTH))[direction.getHorizontalIndex()]);
+        VoxelShape shape = VoxelShapeHelper.combineAll(shapes);
+        SHAPES.put(state, shape);
+        return shape;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
+    {
+        return this.getShape(state);
+    }
+
+    @Override
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
+    {
+        return this.getShape(state);
+    }
+
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    {
+        if(!world.isRemote())
+        {
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if(tileEntity instanceof INamedContainerProvider)
             {
-                playerIn.openGui(MrCrayfishGunMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
             }
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state)
+    public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new TileEntityWorkbench();
+        return new WorkbenchTileEntity();
     }
 }
