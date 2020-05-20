@@ -1,25 +1,28 @@
 package com.mrcrayfish.guns.entity;
 
-import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.item.ItemAmmo;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityThrowableItem extends EntityThrowable implements IEntityAdditionalSpawnData
+public abstract class EntityThrowableItem extends ThrowableEntity implements IEntityAdditionalSpawnData
 {
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
@@ -28,19 +31,19 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     /* The max life of the entity. If -1, will stay alive forever and will need to be explicitly removed. */
     private int maxLife = 20 * 10;
 
-    public EntityThrowableItem(World worldIn)
+    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World worldIn)
     {
-        super(worldIn);
+        super(entityType, worldIn);
     }
 
-    public EntityThrowableItem(World world, EntityPlayer player)
+    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World world, PlayerEntity player)
     {
-        super(world, player);
+        super(entityType, player, world);
     }
 
-    public EntityThrowableItem(World world, double x, double y, double z)
+    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World world, double x, double y, double z)
     {
-        super(world, x, y, z);
+        super(entityType, x, y, z, world);
     }
 
     public void setItem(ItemStack item)
@@ -50,7 +53,7 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
 
     public ItemStack getItem()
     {
-        return item;
+        return this.item;
     }
 
     protected void setShouldBounce(boolean shouldBounce)
@@ -66,7 +69,7 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     @Override
     protected float getGravityVelocity()
     {
-        return gravityVelocity;
+        return this.gravityVelocity;
     }
 
     public void setMaxLife(int maxLife)
@@ -75,12 +78,12 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     }
 
     @Override
-    public void onUpdate()
+    public void tick()
     {
-        super.onUpdate();
-        if(shouldBounce && ticksExisted >= maxLife)
+        super.tick();
+        if(this.shouldBounce && this.ticksExisted >= this.maxLife)
         {
-            this.setDead();
+            this.remove();
             this.onDeath();
         }
     }
@@ -90,50 +93,48 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     @Override
     protected void onImpact(RayTraceResult result)
     {
-        switch(result.typeOfHit)
+        //TODO add this back LOL i just want to compile already
+        switch(result.getType())
         {
             case BLOCK:
-                if(shouldBounce)
+                BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
+                if(this.shouldBounce)
                 {
-                    IBlockState state = world.getBlockState(result.getBlockPos());
-                    SoundEvent event = state.getBlock().getSoundType().getStepSound();
-                    double speed = Math.sqrt(Math.pow(this.motionX, 2) + Math.pow(this.motionY, 2) + Math.pow(this.motionZ, 2));
+                    BlockPos resultPos = blockResult.getPos();
+                    BlockState state = this.world.getBlockState(resultPos);
+                    SoundEvent event = state.getBlock().getSoundType(state, this.world, resultPos, this).getStepSound();
+                    double speed = this.getMotion().length();
                     if(speed > 0.1)
                     {
-                        world.playSound(null, result.hitVec.x, result.hitVec.y, result.hitVec.z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
+                        this.world.playSound(null, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
                     }
-                    EnumFacing facing = result.sideHit;
-                    switch(facing.getAxis())
+                    Direction direction = blockResult.getFace();
+                    switch(direction.getAxis())
                     {
                         case X:
-                            this.motionX = -this.motionX * 0.5;
-                            this.motionY *= 0.75;
-                            this.motionZ *= 0.75;
+                            this.setMotion(this.getMotion().mul(-0.5, 0.75, 0.75));
                             break;
                         case Y:
-                            this.motionX *= 0.75;
-                            this.motionY = -this.motionY * 0.25;
-                            if(this.motionY < this.getGravityVelocity())
+                            this.setMotion(this.getMotion().mul(0.75, -0.25, 0.75));
+                            if(this.getMotion().getY() < this.getGravityVelocity())
                             {
-                                this.motionY = 0F;
+                                this.setMotion(this.getMotion().mul(1, 0, 1));
                             }
-                            this.motionZ *= 0.75;
                             break;
                         case Z:
-                            this.motionX *= 0.75;
-                            this.motionY *= 0.75;
-                            this.motionZ = -this.motionZ * 0.5;
+                            this.setMotion(this.getMotion().mul(0.75, 0.75, -0.5));
                             break;
                     }
                 }
                 else
                 {
-                    this.setDead();
+                    this.remove();
                     this.onDeath();
                 }
                 break;
             case ENTITY:
-                Entity entity = result.entityHit;
+                EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
+                Entity entity = entityResult.getEntity();
                 if(entity != null)
                 {
 
@@ -151,18 +152,24 @@ public abstract class EntityThrowableItem extends EntityThrowable implements IEn
     }
 
     @Override
-    public void writeSpawnData(ByteBuf buffer)
+    public void writeSpawnData(PacketBuffer buffer)
     {
-        buffer.writeBoolean(shouldBounce);
-        buffer.writeFloat(gravityVelocity);
-        ByteBufUtils.writeItemStack(buffer, item);
+        buffer.writeBoolean(this.shouldBounce);
+        buffer.writeFloat(this.gravityVelocity);
+        buffer.writeItemStack(this.item);
     }
 
     @Override
-    public void readSpawnData(ByteBuf additionalData)
+    public void readSpawnData(PacketBuffer buffer)
     {
-        shouldBounce = additionalData.readBoolean();
-        gravityVelocity = additionalData.readFloat();
-        item = ByteBufUtils.readItemStack(additionalData);
+        this.shouldBounce = buffer.readBoolean();
+        this.gravityVelocity = buffer.readFloat();
+        this.item = buffer.readItemStack();
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket()
+    {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

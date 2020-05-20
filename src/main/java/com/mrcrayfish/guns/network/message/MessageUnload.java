@@ -1,73 +1,34 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.init.ModGuns;
-import com.mrcrayfish.guns.item.ItemAmmo;
-import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.object.Gun;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import com.mrcrayfish.guns.common.CommonHandler;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageUnload implements IMessage, IMessageHandler<MessageUnload, IMessage>
+public class MessageUnload implements IMessage
 {
     @Override
-    public void toBytes(ByteBuf buf) {}
+    public void encode(PacketBuffer buffer) {}
 
     @Override
-    public void fromBytes(ByteBuf buf) {}
+    public void decode(PacketBuffer buffer) {}
 
     @Override
-    public IMessage onMessage(MessageUnload message, MessageContext ctx)
+    public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        supplier.get().enqueueWork(() ->
         {
-            EntityPlayer player = ctx.getServerHandler().player;
-            ItemStack stack = player.inventory.getCurrentItem();
-            if(stack.getItem() instanceof ItemGun)
+            ServerPlayerEntity player = supplier.get().getSender();
+            if(player != null && !player.isSpectator())
             {
-                NBTTagCompound tag = stack.getTagCompound();
-                if(tag != null && tag.hasKey("AmmoCount", Constants.NBT.TAG_INT))
-                {
-                    int count = tag.getInteger("AmmoCount");
-                    tag.setInteger("AmmoCount", 0);
-
-                    ItemGun itemGun = (ItemGun) stack.getItem();
-                    Gun gun = itemGun.getModifiedGun(stack);
-                    ItemAmmo.Type ammoType = gun.projectile.type;
-
-                    int stacks = count / 64;
-                    for(int i = 0; i < stacks; i++)
-                    {
-                        spawnAmmo(player, new ItemStack(ModGuns.AMMO, 64, ammoType.ordinal()));
-                    }
-
-                    int remaining = count % 64;
-                    if(remaining > 0)
-                    {
-                        spawnAmmo(player, new ItemStack(ModGuns.AMMO, count, ammoType.ordinal()));
-                    }
-                }
+                CommonHandler.unloadHeldGun(player);
             }
         });
-        return null;
-    }
-
-    private void spawnAmmo(EntityPlayer player, ItemStack stack)
-    {
-        player.inventory.addItemStackToInventory(stack);
-        if(stack.getCount() > 0)
-        {
-            player.world.spawnEntity(new EntityItem(player.world, player.posX, player.posY, player.posZ, stack.copy()));
-        }
+        supplier.get().setPacketHandled(true);
     }
 }

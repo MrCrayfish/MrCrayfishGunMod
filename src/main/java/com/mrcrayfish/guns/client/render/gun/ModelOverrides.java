@@ -1,10 +1,9 @@
 package com.mrcrayfish.guns.client.render.gun;
 
-import com.mrcrayfish.guns.client.render.gun.model.ModelStandard;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,26 +13,26 @@ import java.util.Map;
  */
 public class ModelOverrides
 {
-    private static final Map<ResourceLocation, IGunModel> MODEL_MAP = new HashMap<>();
+    private static final Map<Item, IOverrideModel> MODEL_MAP = new HashMap<>();
 
-    public static void register(@Nonnull ResourceLocation resource)
+    public static void register(ItemStack stack, IOverrideModel model)
     {
-        register(resource, new ModelStandard(resource));
+        MODEL_MAP.putIfAbsent(stack.getItem(), model);
     }
 
-    public static void register(@Nonnull ResourceLocation resource, @Nonnull IGunModel model)
+    public static boolean hasModel(ItemStack stack)
     {
-        MODEL_MAP.put(resource, model);
-    }
-
-    public static boolean hasModel(Item item)
-    {
-        return MODEL_MAP.containsKey(Item.REGISTRY.getNameForObject(item));
+        return MODEL_MAP.containsKey(stack.getItem());
     }
 
     @Nullable
-    public static IGunModel getModel(Item item)
+    public static IOverrideModel getModel(ItemStack stack)
     {
-        return MODEL_MAP.get(Item.REGISTRY.getNameForObject(item));
+        return MODEL_MAP.get(stack.getItem());
+    }
+
+    public static Map<Item, IOverrideModel> getModelMap()
+    {
+        return ImmutableMap.copyOf(MODEL_MAP);
     }
 }

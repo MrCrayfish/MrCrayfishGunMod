@@ -1,41 +1,41 @@
 package com.mrcrayfish.guns.init;
 
+import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.block.BlockWorkbench;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import javax.annotation.Nullable;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
 public class ModBlocks
 {
-    public static final Block WORKBENCH;
+    public static final DeferredRegister<Block> REGISTER = new DeferredRegister<>(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 
-    static
+    public static final RegistryObject<Block> WORKBENCH = register("workbench", () -> new BlockWorkbench(Block.Properties.create(Material.IRON).hardnessAndResistance(1.5F)));
+
+    private static <T extends Block> RegistryObject<T> register(String id, Supplier<T> blockSupplier)
     {
-        WORKBENCH = new BlockWorkbench();
+        return register(id, blockSupplier, block1 -> new BlockItem(block1, new Item.Properties().group(GunMod.GROUP)));
     }
 
-    public static void register()
+    private static <T extends Block> RegistryObject<T> register(String id, Supplier<T> blockSupplier, @Nullable Function<T, BlockItem> supplier)
     {
-        registerBlock(WORKBENCH);
-    }
-
-    private static void registerBlock(Block block)
-    {
-        registerBlock(block, new ItemBlock(block));
-    }
-
-    private static void registerBlock(Block block, ItemBlock item)
-    {
-        if(block.getRegistryName() == null)
-            throw new IllegalArgumentException("A block being registered does not have a registry name and could be successfully registered.");
-
-        RegistrationHandler.Blocks.add(block);
-        if(item != null)
+        T block = blockSupplier.get();
+        if(supplier != null)
         {
-            item.setRegistryName(block.getRegistryName());
-            RegistrationHandler.Items.add(item);
+            ModItems.REGISTER.register(id, () -> supplier.apply(block));
         }
+        return ModBlocks.REGISTER.register(id, () -> block);
     }
 }

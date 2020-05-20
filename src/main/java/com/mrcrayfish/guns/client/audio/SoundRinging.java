@@ -1,41 +1,40 @@
 package com.mrcrayfish.guns.client.audio;
 
-import com.mrcrayfish.guns.GunConfig;
-import com.mrcrayfish.guns.init.ModPotions;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.init.ModEffects;
 import com.mrcrayfish.guns.init.ModSounds;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.MovingSound;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.client.audio.TickableSound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.SoundCategory;
 
-public class SoundRinging extends MovingSound
+public class SoundRinging extends TickableSound
 {
     public SoundRinging()
     {
-        super(ModSounds.getSound("grenade_stun_ring"), SoundCategory.MASTER);
-        repeat = true;
-        attenuationType = AttenuationType.NONE;
-        update();
+        super(ModSounds.ENTITY_STUN_GRENADE_RING.get(), SoundCategory.MASTER);
+        this.repeat = true;
+        this.attenuationType = AttenuationType.NONE;
+        this.tick();
     }
 
     @Override
-    public void update()
+    public void tick()
     {
-        donePlaying = true;
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if (player != null && !player.isDead)
+        this.donePlaying = true;
+        PlayerEntity player = Minecraft.getInstance().player;
+        if(player != null && player.isAlive())
         {
-            PotionEffect effect = player.getActivePotionEffect(ModPotions.DEAFENED);
-            if (effect != null)
+            EffectInstance effect = player.getActivePotionEffect(ModEffects.DEAFENED.get());
+            if(effect != null)
             {
-                xPosF = (float) player.posX;
-                yPosF = (float) player.posY;
-                zPosF = (float) player.posZ;
-                float percent = Math.min((effect.getDuration() / (float) GunConfig.SERVER.stunGrenades.deafen.soundFadeThresholdSynced), 1);
-                volume = percent * GunConfig.SERVER.stunGrenades.deafen.ringVolumeSynced;
-                donePlaying = false;
+                this.x = (float) player.getPosX();
+                this.y = (float) player.getPosY();
+                this.z = (float) player.getPosZ();
+                float percent = Math.min((effect.getDuration() / (float) Config.SERVER.soundFadeThreshold.get()), 1);
+                this.volume = (float) (percent * Config.SERVER.ringVolume.get());
+                this.donePlaying = false;
             }
         }
     }

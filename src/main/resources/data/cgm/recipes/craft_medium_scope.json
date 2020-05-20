@@ -1,0 +1,20 @@
+{
+    "type": "cgm:workbench",
+    "result": {
+        "item": "cgm:medium_scope"
+    },
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 4
+        },
+        {
+            "item": "minecraft:glass_pane",
+            "count": 1
+        },
+        {
+            "item": "minecraft:redstone",
+            "count": 4
+        }
+    ]
+}

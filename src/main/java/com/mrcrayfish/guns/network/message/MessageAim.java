@@ -1,44 +1,44 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.event.CommonEvents;
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageAim implements IMessage, IMessageHandler<MessageAim, IMessage>
+import java.util.function.Supplier;
+
+public class MessageAim implements IMessage
 {
 	private boolean aiming;
 
-	public MessageAim()
-	{
-	}
+	public MessageAim() {}
 
 	public MessageAim(boolean aiming)
 	{
 		this.aiming = aiming;
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(PacketBuffer buffer)
 	{
-		buf.writeBoolean(aiming);
+		buffer.writeBoolean(this.aiming);
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
+	public void decode(PacketBuffer buffer)
 	{
-		this.aiming = buf.readBoolean();
+		this.aiming = buffer.readBoolean();
 	}
 
-	@Override
-	public IMessage onMessage(MessageAim message, MessageContext ctx)
+	public void handle(Supplier<NetworkEvent.Context> supplier)
 	{
-	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-	    {
-	        ctx.getServerHandler().player.getDataManager().set(CommonEvents.AIMING, message.aiming);
-	    });
-		return null;
+		supplier.get().enqueueWork(() ->
+		{
+			ServerPlayerEntity player = supplier.get().getSender();
+			if(player != null && !player.isSpectator())
+			{
+				SyncedPlayerData.instance().set(player, ModSyncedDataKeys.AIMING, this.aiming);
+			}
+		});
+		supplier.get().setPacketHandled(true);
 	}
 }

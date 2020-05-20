@@ -1,0 +1,117 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
+	"textures": {
+		"0": "cgm:items/stun_grenade",
+		"particle": "cgm:items/stun_grenade"
+	},
+	"elements": [
+		{
+			"name": "Base Top",
+			"from": [6.5, 4, 6.5],
+			"to": [9.5, 5, 9.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 11, 8]},
+			"faces": {
+				"north": {"uv": [3, 0, 0, 1], "texture": "#0"},
+				"east": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"south": {"uv": [3, 0, 0, 1], "texture": "#0"},
+				"west": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"up": {"uv": [3, 0, 6, 3], "texture": "#0"},
+				"down": {"uv": [3, 0, 6, 3], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Base Bottom",
+			"from": [6.5, 0, 6.5],
+			"to": [9.5, 1, 9.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
+			"faces": {
+				"north": {"uv": [3, 4, 0, 5], "texture": "#0"},
+				"east": {"uv": [0, 4, 3, 5], "texture": "#0"},
+				"south": {"uv": [3, 4, 0, 5], "texture": "#0"},
+				"west": {"uv": [0, 4, 3, 5], "texture": "#0"},
+				"up": {"uv": [3, 0, 6, 3], "texture": "#0"},
+				"down": {"uv": [3, 0, 6, 3], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Base Middle",
+			"from": [6.9, 1, 6.9],
+			"to": [9.1, 4, 9.1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8.3, 8, 8.3]},
+			"faces": {
+				"north": {"uv": [2, 1, 0, 4], "texture": "#0"},
+				"east": {"uv": [0, 1, 2, 4], "texture": "#0"},
+				"south": {"uv": [2, 1, 0, 4], "texture": "#0"},
+				"west": {"uv": [0, 1, 2, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Top",
+			"from": [7, 5, 7],
+			"to": [9, 7, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.6, 8, 8.4]},
+			"faces": {
+				"north": {"uv": [10, 0, 8, 2], "texture": "#0"},
+				"east": {"uv": [8, 0, 10, 2], "texture": "#0"},
+				"south": {"uv": [10, 0, 8, 2], "texture": "#0"},
+				"west": {"uv": [8, 0, 10, 2], "texture": "#0"},
+				"up": {"uv": [8, 2, 10, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Handle Top",
+			"from": [7.5, 5.5, 9],
+			"to": [8.5, 6.5, 10.7],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [8.1, 6.5, 9]},
+			"faces": {
+				"east": {"uv": [10, 0, 11, 2], "texture": "#0"},
+				"west": {"uv": [10, 0, 11, 2], "texture": "#0"},
+				"up": {"uv": [10, 0, 11, 2], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Handle Bottom",
+			"from": [7.5, 1.34944, 9.5706],
+			"to": [8.5, 5.84944, 10.5706],
+			"rotation": {"angle": 0, "axis": "y", "origin": [15.5, 12.84944, 17.5706]},
+			"faces": {
+				"east": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"south": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"west": {"uv": [10, 0, 11, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Pin",
+			"from": [8, 4, 7],
+			"to": [9, 6, 9],
+			"rotation": {"angle": 45, "axis": "z", "origin": [9, 6, 8]},
+			"faces": {
+				"east": {"uv": [11, 0, 14, 3], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 5]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"translation": [0, 6, 0],
+			"scale": [-1, 1, 1]
+		},
+		"ground": {
+			"translation": [0, 5, 0]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"translation": [0, 6, 0],
+			"scale": [1.5, 1.5, 1.5]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [-0.75, 9.5, -4],
+			"scale": [2, 2, 2]
+		}
+	}
+}

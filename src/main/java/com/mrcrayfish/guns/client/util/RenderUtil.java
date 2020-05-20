@@ -1,144 +1,190 @@
 package com.mrcrayfish.guns.client.util;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Items;
+import net.minecraft.util.Direction;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 public class RenderUtil
 {
-    public static IBakedModel getModel(ResourceLocation resource, int meta)
+    public static void scissor(int x, int y, int width, int height)
     {
-        return Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(new ItemStack(Item.getByNameOrId(resource.toString()), 1, meta));
+        Minecraft mc = Minecraft.getInstance();
+        int scale = (int) mc.getMainWindow().getGuiScaleFactor();
+        GL11.glScissor(x * scale, mc.getMainWindow().getHeight() - y * scale - height * scale, Math.max(0, width * scale), Math.max(0, height * scale));
+    }
+
+    public static IBakedModel getModel(Item item)
+    {
+        return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(new ItemStack(item));
+    }
+
+    public static IBakedModel getModel(ItemStack item)
+    {
+        return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(item);
     }
 
     public static void rotateZ(float xOffset, float yOffset, float rotation)
     {
-        GlStateManager.translate(xOffset, yOffset, 0);
+        /*GlStateManager.translate(xOffset, yOffset, 0);
         GlStateManager.rotate(rotation, 0, 0, -1);
-        GlStateManager.translate(-xOffset, -yOffset, 0);
+        GlStateManager.translate(-xOffset, -yOffset, 0);*/
     }
 
-    public static void renderModel(ItemStack stack)
+    public static void renderModel(ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
     {
-        renderModel(stack, ItemCameraTransforms.TransformType.NONE);
+        renderModel(stack, ItemCameraTransforms.TransformType.NONE, matrixStack, buffer, light, overlay);
     }
 
-    public static void renderModel(ItemStack child, ItemStack parent)
+    public static void renderModel(ItemStack child, ItemStack parent, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
     {
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(child);
-        renderModel(model, ItemCameraTransforms.TransformType.NONE, parent);
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(child);
+        renderModel(model, ItemCameraTransforms.TransformType.NONE, null, child, parent, matrixStack, buffer, light, overlay);
     }
 
-    public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType)
+    public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
     {
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
-        renderModel(model, transformType, stack);
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
+        renderModel(model, transformType, stack, matrixStack, buffer, light, overlay);
     }
 
-    public static void renderModel(IBakedModel model, ItemStack stack)
+    public static void renderModel(IBakedModel model, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
     {
-        renderModel(model, ItemCameraTransforms.TransformType.NONE, stack);
+        renderModel(model, ItemCameraTransforms.TransformType.NONE, stack, matrixStack, buffer, light, overlay);
     }
 
-    public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, ItemStack stack)
+    public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
     {
-        renderModel(model, transformType, null, stack);
+        renderModel(model, transformType, null, stack, ItemStack.EMPTY, matrixStack, buffer, light, overlay);
     }
 
-    public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, @Nullable Transform transform, ItemStack stack)
+    public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, @Nullable Transform transform, ItemStack stack, ItemStack parent, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
     {
-        GlStateManager.pushMatrix();
+        if(!stack.isEmpty())
         {
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            matrixStack.push();
 
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.enableRescaleNormal();
-            GlStateManager.alphaFunc(516, 0.1F);
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.pushMatrix();
-
-            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, transformType, false);
-
-            GlStateManager.pushMatrix();
+            boolean isGui = transformType == ItemCameraTransforms.TransformType.GUI;
+            boolean tridentFlag = isGui || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
+            if(stack.getItem() == Items.TRIDENT && tridentFlag)
             {
-                RenderUtil.renderModel(model, transform, stack);
+                model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
             }
-            GlStateManager.popMatrix();
 
-            GlStateManager.cullFace(GlStateManager.CullFace.BACK);
-            GlStateManager.popMatrix();
-            GlStateManager.disableRescaleNormal();
-            GlStateManager.disableBlend();
-
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        }
-        GlStateManager.popMatrix();
-    }
-
-    private static void renderModel(IBakedModel model, @Nullable Transform transform, ItemStack stack)
-    {
-        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-        if(transform != null) transform.apply();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, DefaultVertexFormats.ITEM);
-        for(EnumFacing enumfacing : EnumFacing.values())
-        {
-            renderQuads(buffer, model.getQuads(null, enumfacing, 0L), stack);
-        }
-        renderQuads(buffer, model.getQuads(null, null, 0L), stack);
-        tessellator.draw();
-    }
-
-    private static void renderQuads(BufferBuilder buffer, List<BakedQuad> quads, ItemStack stack)
-    {
-        int i = 0;
-        for (int j = quads.size(); i < j; ++i)
-        {
-            BakedQuad bakedquad = quads.get(i);
-            int color = -1;
-            if (bakedquad.hasTintIndex())
+            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, false);
+            matrixStack.translate(-0.5, -0.5, -0.5);
+            if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || tridentFlag))
             {
-                color = Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, bakedquad.getTintIndex());
-
-                if (EntityRenderer.anaglyphEnable)
+                RenderType renderType = RenderTypeLookup.getRenderType(stack);
+                if(isGui && Objects.equals(renderType, Atlases.getTranslucentBlockType()))
                 {
-                    color = TextureUtil.anaglyphColor(color);
+                    renderType = Atlases.getTranslucentCullBlockType();
                 }
-
-                color = color | -16777216;
+                IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(buffer, renderType, true, stack.hasEffect());
+                renderModel(model, stack, parent, transform, matrixStack, vertexBuilder, light, overlay);
             }
-            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(buffer, quads.get(i), color);
+            else
+            {
+                stack.getItem().getItemStackTileEntityRenderer().render(stack, matrixStack, buffer, light, overlay);
+            }
+
+            matrixStack.pop();
         }
     }
 
-    public static void applyTransformType(ItemStack stack, ItemCameraTransforms.TransformType transformType)
+    /**
+     *
+     * @param model
+     * @param stack
+     * @param parent
+     * @param transform
+     * @param matrixStack
+     * @param buffer
+     * @param light
+     * @param overlay
+     */
+    private static void renderModel(IBakedModel model, ItemStack stack, ItemStack parent, @Nullable Transform transform, MatrixStack matrixStack, IVertexBuilder buffer, int light, int overlay)
     {
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
+        Random random = new Random();
+        for(Direction direction : Direction.values())
+        {
+            random.setSeed(42l);
+            renderQuads(matrixStack, buffer, model.getQuads(null, direction, random), stack, parent, light, overlay);
+        }
+        random.setSeed(42L);
+        renderQuads(matrixStack, buffer, model.getQuads(null, null, random), stack, parent, light, overlay);
+    }
+
+    /**
+     *
+     * @param matrixStack
+     * @param buffer
+     * @param quads
+     * @param stack
+     * @param parent
+     * @param light
+     * @param overlay
+     */
+    private static void renderQuads(MatrixStack matrixStack, IVertexBuilder buffer, List<BakedQuad> quads, ItemStack stack, ItemStack parent, int light, int overlay)
+    {
+        MatrixStack.Entry entry = matrixStack.getLast();
+        for(BakedQuad quad : quads)
+        {
+            int color = -1;
+            if(quad.hasTintIndex())
+            {
+                color = getItemStackColor(stack, parent, quad.getTintIndex());
+            }
+            float red = (float) (color >> 16 & 255) / 255.0F;
+            float green = (float) (color >> 8 & 255) / 255.0F;
+            float blue = (float) (color & 255) / 255.0F;
+            buffer.addVertexData(entry, quad, red, green, blue, light, overlay, true);
+        }
+    }
+
+    public static int getItemStackColor(ItemStack stack, ItemStack parent, int tintIndex)
+    {
+        int color = Minecraft.getInstance().getItemColors().getColor(stack, tintIndex);
+        if(color == -1)
+        {
+            if(!parent.isEmpty())
+            {
+                return getItemStackColor(parent, ItemStack.EMPTY, tintIndex);
+            }
+        }
+        return color;
+    }
+
+    public static void applyTransformType(ItemStack stack, MatrixStack matrixStack, ItemCameraTransforms.TransformType transformType)
+    {
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
         ItemTransformVec3f transformVec3f = model.getItemCameraTransforms().getTransform(transformType);
-        GlStateManager.translate(transformVec3f.translation.getX(), transformVec3f.translation.getY(), transformVec3f.translation.getZ());
-        GlStateManager.rotate(transformVec3f.rotation.getX(), 1, 0, 0);
-        GlStateManager.rotate(transformVec3f.rotation.getY(), 0, 1, 0);
-        GlStateManager.rotate(transformVec3f.rotation.getZ(), 0, 0, 1);
-        GlStateManager.scale(transformVec3f.scale.getX(), transformVec3f.scale.getY(), transformVec3f.scale.getZ());
+        matrixStack.translate(transformVec3f.translation.getX(), transformVec3f.translation.getY(), transformVec3f.translation.getZ());
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(transformVec3f.rotation.getX()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(transformVec3f.rotation.getY()));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(transformVec3f.rotation.getZ()));
+        matrixStack.scale(transformVec3f.scale.getX(), transformVec3f.scale.getY(), transformVec3f.scale.getZ());
     }
 
     public interface Transform
     {
         void apply();
+    }
+
+    public static boolean isMouseWithin(int mouseX, int mouseY, int x, int y, int width, int height)
+    {
+        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 }

@@ -1,21 +1,31 @@
 package com.mrcrayfish.guns.item;
 
+import com.google.common.annotations.Beta;
+
 import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
+@Beta
 public interface IAttachment
 {
     Type getType();
 
     enum Type
     {
-        SCOPE, BARREL;
+        SCOPE("Scope"), BARREL("Barrel");
 
-        public String getName()
+        private String id;
+
+        Type(String id)
         {
-            return name().toLowerCase();
+            this.id = id;
+        }
+
+        public String getId()
+        {
+            return this.id;
         }
 
         @Nullable
@@ -23,7 +33,7 @@ public interface IAttachment
         {
             for(Type type : values())
             {
-                if(type.getName().equals(s))
+                if(type.id.equalsIgnoreCase(s))
                 {
                     return type;
                 }

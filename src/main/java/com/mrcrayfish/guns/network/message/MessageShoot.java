@@ -1,56 +1,34 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.item.ItemGun;
-import com.mrcrayfish.guns.object.Gun;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import com.mrcrayfish.guns.common.CommonHandler;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageShoot implements IMessage, IMessageHandler<MessageShoot, IMessage>
+public class MessageShoot implements IMessage
 {
     @Override
-    public void toBytes(ByteBuf buf) {}
+    public void encode(PacketBuffer buffer) {}
 
     @Override
-    public void fromBytes(ByteBuf buf) {}
+    public void decode(PacketBuffer buffer) {}
 
     @Override
-    public IMessage onMessage(MessageShoot message, MessageContext ctx)
+    public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        supplier.get().enqueueWork(() ->
         {
-            EntityPlayer player = ctx.getServerHandler().player;
-            World world = player.world;
-            ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
-            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemGun && (ItemGun.hasAmmo(heldItem) || player.capabilities.isCreativeMode))
+            ServerPlayerEntity player = supplier.get().getSender();
+            if(player != null)
             {
-                ItemGun item = (ItemGun) heldItem.getItem();
-                Gun gun = item.getModifiedGun(heldItem);
-                if(gun != null)
-                {
-                    CooldownTracker tracker = player.getCooldownTracker();
-                    if(!tracker.hasCooldown(heldItem.getItem()))
-                    {
-                        tracker.setCooldown(heldItem.getItem(), gun.general.rate);
-                        ItemGun.fire(world, player, heldItem);
-                    }
-                }
-            }
-            else
-            {
-                world.playSound(null, player.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
+                CommonHandler.fireHeldGun(player);
             }
         });
-        return null;
+        supplier.get().setPacketHandled(true);
     }
 }

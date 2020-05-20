@@ -1,0 +1,40 @@
+{
+    "general": {
+        "rate": 80,
+        "gripType": "two_handed",
+        "maxAmmo": 1,
+        "recoilAngle": 10.0,
+        "recoilDurationOffset": 0.25
+    },
+    "projectile": {
+        "item": "cgm:missile",
+        "visible": true,
+        "auto": false,
+        "damage": 25.0,
+        "size": 0.2,
+        "speed": 3.0,
+        "life": 100,
+        "damageReduceOverLife": false,
+        "damageReduceIfNotZoomed": false
+    },
+    "sounds": {
+        "fire": "cgm:item.bazooka.fire",
+        "reload": "cgm:item.pistol.reload",
+        "cock": "cgm:item.shotgun.fire"
+    },
+    "display": {
+        "flash": {
+            "yOffset": -3.8,
+            "zOffset": -8.0
+        }
+    },
+    "modules": {
+        "zoom": {
+            "fovModifier": 0.4,
+            "smooth": true,
+            "xOffset": -3.6,
+            "yOffset": 4.2,
+            "zOffset": 0
+        }
+    }
+}

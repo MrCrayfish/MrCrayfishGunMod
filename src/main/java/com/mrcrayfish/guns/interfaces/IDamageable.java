@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.interfaces;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -9,5 +9,5 @@ import net.minecraft.world.World;
  */
 public interface IDamageable
 {
-    void onBlockDamaged(World world, IBlockState state, BlockPos pos, int damage);
+    void onBlockDamaged(World world, BlockState state, BlockPos pos, int damage);
 }
