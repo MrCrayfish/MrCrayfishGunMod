@@ -112,7 +112,8 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
         if(distance <= criteria.radius.get() && angleMax > 0 && angle <= angleMax)
         {
             // Verify that light can pass through all blocks obstructing the entity's line of sight to the grenade
-            if(potion != ModPotions.BLINDED.get() || rayTraceOpaqueBlocks(this.world, eyes, grenade, false, false, false) == null)
+            if(potion != ModPotions.BLINDED.get() || !Config.COMMON.stunGrenades.blind.criteria.raytraceOpaqueBlocks.get()
+                    || rayTraceOpaqueBlocks(this.world, eyes, grenade, false, false, false) == null)
             {
                 // Duration attenuated by distance
                 int durationBlinded = (int) Math.round(criteria.durationMax.get() - (criteria.durationMax.get() - criteria.durationMin.get()) * (distance / criteria.radius.get()));
