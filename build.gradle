@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath "com.wynprice.cursemaven:CurseMaven:2.1.1"
+        classpath "com.wynprice.cursemaven:CurseMaven:2.1.4"
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -21,7 +21,7 @@ archivesBaseName = "gun-mod"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200416-1.15.1'
+    mappings channel: 'snapshot', version: '20200514-1.15.1'
 
     runs {
         client {
@@ -68,9 +68,9 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.19'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
     compile fg.deobf('curse.maven:obfuscate:2946425')
-    compileOnly 'controllable:Controllable-1.15:0.7.1:deobf'
+    compile fg.deobf('curse.maven:controllable:2880167')
 }
 
 jar {
