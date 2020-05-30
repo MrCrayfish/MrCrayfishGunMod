@@ -413,6 +413,11 @@ public class GunRenderer
 
         if(player.isHandActive() && player.getActiveHand() == Hand.MAIN_HAND && heldItem.getItem() instanceof GrenadeItem)
         {
+            if(!((GrenadeItem) heldItem.getItem()).shouldRenderIndicator())
+            {
+                return;
+            }
+
             int duration = player.getItemInUseMaxCount();
             if(duration >= 10)
             {

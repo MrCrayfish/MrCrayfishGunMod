@@ -21,4 +21,10 @@ public class StunGrenadeItem extends GrenadeItem
     {
         return new EntityThrowableStunGrenade(world, player, this.maxCookTime);
     }
+
+    @Override
+    public boolean shouldRenderIndicator()
+    {
+        return false;
+    }
 }

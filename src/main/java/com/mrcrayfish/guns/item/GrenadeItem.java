@@ -99,4 +99,9 @@ public class GrenadeItem extends AmmoItem
     {
         return new EntityThrowableGrenade(world, player, timeLeft);
     }
+
+    public boolean shouldRenderIndicator()
+    {
+        return true;
+    }
 }
