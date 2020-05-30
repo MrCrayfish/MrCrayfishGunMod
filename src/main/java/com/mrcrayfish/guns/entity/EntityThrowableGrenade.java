@@ -35,13 +35,13 @@ public class EntityThrowableGrenade extends EntityThrowableItem
         this.setMaxLife(20 * 3);
     }
 
-    public EntityThrowableGrenade(World world, PlayerEntity player)
+    public EntityThrowableGrenade(World world, PlayerEntity player, int timeLeft)
     {
         super(ModEntities.THROWABLE_GRENADE.get(), world, player);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
         this.setItem(new ItemStack(ModItems.GRENADE.get()));
-        this.setMaxLife(20 * 3);
+        this.setMaxLife(timeLeft);
     }
 
     @Override
@@ -71,7 +71,6 @@ public class EntityThrowableGrenade extends EntityThrowableItem
 
     private static void createGrenadeExplosion(EntityThrowableGrenade grenade, Entity thrower, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
     {
-        //boolean canGunGrief = grenade.world.getGameRules().getBoolean("gunGriefing");
         Explosion explosion = new ProjectileExplosion(grenade.world, thrower, grenade, grenade.getItem(), x, y, z, ModItems.GRENADE_LAUNCHER.get().getGun().projectile.damage, Config.COMMON.grenades.explosionRadius.get(), Explosion.Mode.NONE);
         explosion.doExplosionA();
         explosion.doExplosionB(true);

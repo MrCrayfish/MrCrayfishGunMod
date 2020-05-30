@@ -16,9 +16,12 @@ import net.minecraft.world.World;
  */
 public class GrenadeItem extends AmmoItem
 {
-    public GrenadeItem(Item.Properties properties)
+    protected int maxCookTime;
+
+    public GrenadeItem(Item.Properties properties, int maxCookTime)
     {
         super(properties);
+        this.maxCookTime = maxCookTime;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class GrenadeItem extends AmmoItem
     @Override
     public int getUseDuration(ItemStack stack)
     {
-        return 72000;
+        return this.maxCookTime;
     }
 
     @Override
@@ -39,6 +42,22 @@ public class GrenadeItem extends AmmoItem
         ItemStack stack = playerIn.getHeldItem(handIn);
         playerIn.setActiveHand(handIn);
         return ActionResult.resultConsume(stack);
+    }
+
+    @Override
+    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
+    {
+        if(entityLiving instanceof PlayerEntity)
+        {
+            if(!((PlayerEntity) entityLiving).isCreative())
+            {
+                stack.shrink(1);
+            }
+        }
+        PlayerEntity player = (PlayerEntity) entityLiving;
+        EntityThrowableGrenade grenade = this.create(worldIn, player, 0);
+        grenade.onDeath();
+        return stack;
     }
 
     @Override
@@ -54,15 +73,19 @@ public class GrenadeItem extends AmmoItem
         if(!worldIn.isRemote && entityLiving instanceof PlayerEntity)
         {
             int duration = this.getUseDuration(stack) - timeLeft;
-            PlayerEntity player = (PlayerEntity) entityLiving;
-            EntityThrowableGrenade grenade = this.create(worldIn, player);
-            grenade.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
-            worldIn.addEntity(grenade);
+            if(duration >= 10)
+            {
+                System.out.println(this.maxCookTime - duration);
+                PlayerEntity player = (PlayerEntity) entityLiving;
+                EntityThrowableGrenade grenade = this.create(worldIn, player, this.maxCookTime - duration);
+                grenade.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+                worldIn.addEntity(grenade);
+            }
         }
     }
 
-    public EntityThrowableGrenade create(World world, PlayerEntity player)
+    public EntityThrowableGrenade create(World world, PlayerEntity player, int timeLeft)
     {
-        return new EntityThrowableGrenade(world, player);
+        return new EntityThrowableGrenade(world, player, timeLeft);
     }
 }
