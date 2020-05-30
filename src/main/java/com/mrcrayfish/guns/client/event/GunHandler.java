@@ -122,7 +122,7 @@ public class GunHandler
             GunItem gunItem = (GunItem) heldItem.getItem();
             Gun modifiedGun = gunItem.getModifiedGun(heldItem);
             tracker.setCooldown(heldItem.getItem(), modifiedGun.general.rate);
-            PacketHandler.getPlayChannel().sendToServer(new MessageShoot());
+            PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player));
             if(modifiedGun.display.flash != null)
             {
                 ClientHandler.getGunRenderer().showMuzzleFlash();
