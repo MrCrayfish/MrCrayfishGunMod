@@ -27,8 +27,8 @@ public class ModItems
     public static final RegistryObject<Item> ADVANCED_AMMO = REGISTER.register("advanced_bullet", () -> new AmmoItem(new Item.Properties().group(GunMod.GROUP)));
     public static final RegistryObject<Item> SHELL = REGISTER.register("shell", () -> new AmmoItem(new Item.Properties().group(GunMod.GROUP)));
     public static final RegistryObject<AmmoItem> MISSILE = REGISTER.register("missile", () -> new AmmoItem(new Item.Properties().group(GunMod.GROUP)));
-    public static final RegistryObject<AmmoItem> GRENADE = REGISTER.register("grenade", () -> new GrenadeItem(new Item.Properties().group(GunMod.GROUP)));
-    public static final RegistryObject<Item> STUN_GRENADE = REGISTER.register("stun_grenade", () -> new StunGrenadeItem(new Item.Properties().group(GunMod.GROUP)));
+    public static final RegistryObject<AmmoItem> GRENADE = REGISTER.register("grenade", () -> new GrenadeItem(new Item.Properties().group(GunMod.GROUP), 20 * 4));
+    public static final RegistryObject<Item> STUN_GRENADE = REGISTER.register("stun_grenade", () -> new StunGrenadeItem(new Item.Properties().group(GunMod.GROUP), 20 * 4));
 
     public static final RegistryObject<Item> SHORT_SCOPE = REGISTER.register("short_scope", () -> new ScopeItem(Scope.create(0.1F, 1.55F).viewFinderOffset(0.3), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
     public static final RegistryObject<Item> MEDIUM_SCOPE = REGISTER.register("medium_scope", () -> new ScopeItem(Scope.create(0.25F, 1.625F).viewFinderOffset(0.3), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));

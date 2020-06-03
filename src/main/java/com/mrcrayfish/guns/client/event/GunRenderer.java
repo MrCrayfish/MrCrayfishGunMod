@@ -406,12 +406,49 @@ public class GunRenderer
         }
 
         ItemStack heldItem = player.getHeldItem(Hand.MAIN_HAND);
-        if(heldItem.isEmpty() || !(heldItem.getItem() instanceof GunItem))
+        if(heldItem.isEmpty())
         {
             return;
         }
 
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
+        if(player.isHandActive() && player.getActiveHand() == Hand.MAIN_HAND && heldItem.getItem() instanceof GrenadeItem)
+        {
+            if(!((GrenadeItem) heldItem.getItem()).shouldRenderIndicator())
+            {
+                return;
+            }
+
+            int duration = player.getItemInUseMaxCount();
+            if(duration >= 10)
+            {
+                float cookTime = 1.0F - ((float) (duration - 10) / (float) (player.getActiveItemStack().getUseDuration() - 10));
+                if(cookTime > 0.0F)
+                {
+                    double scale = 3;
+                    MainWindow window = mc.getMainWindow();
+                    int i = (int) ((window.getScaledHeight() / 2 - 7 - 60) / scale);
+                    int j = (int) Math.ceil((window.getScaledWidth() / 2 - 8 * scale) / scale);
+
+                    RenderSystem.enableBlend();
+                    RenderSystem.defaultBlendFunc();
+                    mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+
+                    RenderSystem.pushMatrix();
+                    {
+                        RenderSystem.scaled(scale, scale, scale);
+                        int progress = (int) Math.ceil((cookTime) * 17.0F) - 1;
+                        Screen.blit(j, i, 36, 94, 16, 4, 256, 256);
+                        Screen.blit(j, i, 52, 94, progress, 4, 256, 256);
+                    }
+                    RenderSystem.popMatrix();
+
+                    RenderSystem.disableBlend();
+                }
+            }
+            return;
+        }
+
+        if(heldItem.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) heldItem.getItem()).getGun();
             if(!gun.general.auto)

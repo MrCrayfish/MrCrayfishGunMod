@@ -18,6 +18,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
+import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import com.mrcrayfish.guns.util.InventoryUtil;
@@ -71,7 +72,7 @@ public class CommonHandler
      *
      * @param player the player for who's weapon to fire
      */
-    public static void fireHeldGun(ServerPlayerEntity player)
+    public static void fireHeldGun(MessageShoot message, ServerPlayerEntity player)
     {
         if(!player.isSpectator())
         {
@@ -83,6 +84,10 @@ public class CommonHandler
                 Gun modifiedGun = item.getModifiedGun(heldItem);
                 if(modifiedGun != null)
                 {
+                    /* Updates the yaw and pitch with the clients current yaw and pitch */
+                    player.rotationYaw = message.getRotationYaw();
+                    player.rotationPitch = message.getRotationPitch();
+
                     ShootTracker tracker = getShootTracker(player.getUniqueID());
                     if(tracker.hasCooldown(item))
                     {

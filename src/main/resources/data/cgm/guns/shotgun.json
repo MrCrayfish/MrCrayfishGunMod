@@ -15,8 +15,8 @@
         "visible": false,
         "damage": 15.0,
         "size": 1.0,
-        "speed": 10.0,
-        "life": 3,
+        "speed": 15.0,
+        "life": 4,
         "gravity": false,
         "damageReduceIfNotZoomed": false
     },
@@ -28,15 +28,15 @@
     },
     "display": {
         "flash": {
-            "yOffset": -4.2,
-            "zOffset": -9.0
+            "yOffset": 4.3,
+            "zOffset": -4.2
         }
     },
     "modules": {
         "zoom": {
             "fovModifier": 0.7,
-            "yOffset": 4.9,
-            "zOffset": -1.0
+            "yOffset": 5.1,
+            "zOffset": 3.2
         },
         "attachments": {
             "scope": {
