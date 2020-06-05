@@ -338,8 +338,8 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"translation": [0, 6, -7.5],
-			"scale": [1.1, 1.1, 1.1]
+			"translation": [0, 7, -7.5],
+			"scale": [1.2, 1.2, 1.2]
 		},
 		"firstperson_righthand": {
 			"translation": [-3.5, 8.5, 0],
