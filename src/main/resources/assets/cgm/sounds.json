@@ -12,6 +12,8 @@
    "item.pistol.reload":                { "subtitle": "subtitle.cgm.reload",         "sounds": [{ "name": "cgm:item/pistol/reload" }]},
    "item.machine_pistol.fire":          { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/machine_pistol/fire" }]},
    "item.machine_pistol.silenced_fire": { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/machine_pistol/silenced_fire" }]},
+   "item.heavy_rifle.fire":             { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/heavy_rifle/fire" }]},
+   "item.heavy_rifle.silenced_fire":    { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/heavy_rifle/silenced_fire" }]},
    "item.grenade.pin":                  { "subtitle": "subtitle.cgm.grenade.pin",    "sounds": [{ "name": "cgm:item/grenade/pin" }]},
    "entity.stun_grenade.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/stun_grenade/explosion" }]},
    "entity.stun_grenade.ring":          { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:entity/stun_grenade/ring", "stream": true }]},
