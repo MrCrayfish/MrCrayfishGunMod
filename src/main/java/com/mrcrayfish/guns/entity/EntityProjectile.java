@@ -375,6 +375,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
     {
         ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state), x, y, z, (int) this.projectile.damage, 0.0, 0.0, 0.0, 0.05);
+        this.world.playSound(null, x, y, z, state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F);
     }
 
     @Override
