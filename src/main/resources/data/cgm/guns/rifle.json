@@ -26,26 +26,26 @@
     },
     "display": {
         "flash": {
-            "yOffset": -3.8,
-            "zOffset": -13
+            "yOffset": 3.8365,
+            "zOffset": -10.2
         }
     },
     "modules": {
         "zoom": {
             "fovModifier": 0.6,
-            "yOffset": 5.1,
-            "zOffset": 2.0
+            "yOffset": 4.6223,
+            "zOffset": 6.0
         },
         "attachments": {
             "scope": {
                 "smooth": true,
-                "yOffset": 4.4,
-                "zOffset": 4.0
+                "yOffset": 4.3,
+                "zOffset": 3.3
             },
             "barrel": {
-                "yOffset": 4.2,
-                "zOffset": -13,
-                "scale": 0.35
+                "yOffset": 3.8365,
+                "zOffset": -10.2,
+                "scale": 0.45
             }
         }
     }
