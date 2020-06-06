@@ -49,7 +49,6 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -67,7 +66,11 @@ public class GunRenderer
     public static int screenTextureId = -1;
 
     private Random random = new Random();
-    private boolean drawFlash = false;
+    private boolean hasDrawnMuzzleFlash = false;
+    private boolean drawMuzzleFlash = false;
+    private double muzzleFlashSize;
+    private float muzzleFlashRoll;
+    private int muzzleFlashYaw;
     private int zoomProgress;
     private int lastZoomProgress;
     public double normalZoomProgress;
@@ -112,9 +115,14 @@ public class GunRenderer
     @SubscribeEvent
     public void onPreClientTick(TickEvent.ClientTickEvent event)
     {
-        if(event.phase != TickEvent.Phase.START) return;
+        if(event.phase != TickEvent.Phase.START)
+            return;
 
         this.lastZoomProgress = this.zoomProgress;
+        if(this.hasDrawnMuzzleFlash)
+        {
+            this.drawMuzzleFlash = false;
+        }
 
         PlayerEntity player = Minecraft.getInstance().player;
         if(isZooming(player) && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
@@ -741,17 +749,19 @@ public class GunRenderer
 
     private void renderMuzzleFlash(MatrixStack matrixStack, ItemStack weapon)
     {
-        if(this.drawFlash)
+        if(this.drawMuzzleFlash)
         {
             matrixStack.push();
 
             Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
             if(modifiedGun.display.flash == null)
             {
-                this.drawFlash = false;
+                this.drawMuzzleFlash = false;
                 matrixStack.pop();
                 return;
             }
+
+            this.hasDrawnMuzzleFlash = true;
 
             Gun.Positioned muzzleFlash = modifiedGun.display.flash;
             double displayX = muzzleFlash.xOffset * 0.0625;
@@ -782,9 +792,9 @@ public class GunRenderer
                 RenderSystem.defaultBlendFunc();
 
                 double partialSize = modifiedGun.display.flash.size / 5.0;
-                double size = modifiedGun.display.flash.size - partialSize + partialSize * this.random.nextDouble();
-                RenderSystem.rotatef(360F * this.random.nextFloat(), 0, 0, 1);
-                RenderSystem.rotatef(180F * this.random.nextInt(2), 1, 0, 0);
+                double size = modifiedGun.display.flash.size - partialSize + partialSize * this.muzzleFlashSize;
+                RenderSystem.rotatef(360F * this.muzzleFlashRoll, 0, 0, 1);
+                RenderSystem.rotatef(180F * this.muzzleFlashYaw, 1, 0, 0);
                 RenderSystem.translated(-size / 2, -size / 2, 0);
 
                 Tessellator tessellator = Tessellator.getInstance();
@@ -803,8 +813,6 @@ public class GunRenderer
             RenderSystem.popMatrix();
 
             matrixStack.pop();
-
-            this.drawFlash = false;
         }
     }
 
@@ -1044,6 +1052,10 @@ public class GunRenderer
 
     public void showMuzzleFlash()
     {
-        this.drawFlash = true;
+        this.drawMuzzleFlash = true;
+        this.muzzleFlashSize = this.random.nextDouble();
+        this.muzzleFlashRoll = this.random.nextFloat();
+        this.muzzleFlashYaw = this.random.nextInt(2);
+        this.hasDrawnMuzzleFlash = false;
     }
 }
