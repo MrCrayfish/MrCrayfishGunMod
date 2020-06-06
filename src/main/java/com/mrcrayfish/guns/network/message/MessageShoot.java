@@ -54,11 +54,11 @@ public class MessageShoot implements IMessage
 
     public float getRotationYaw()
     {
-        return rotationYaw;
+        return this.rotationYaw;
     }
 
     public float getRotationPitch()
     {
-        return rotationPitch;
+        return this.rotationPitch;
     }
 }
