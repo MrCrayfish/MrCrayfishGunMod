@@ -1,12 +1,12 @@
 {
     "type": "cgm:workbench",
     "result": {
-        "item": "cgm:rifle"
+        "item": "cgm:heavy_rifle"
     },
     "materials": [
         {
             "item": "minecraft:iron_ingot",
-            "count": 24
+            "count": 36
         }
     ]
 }
