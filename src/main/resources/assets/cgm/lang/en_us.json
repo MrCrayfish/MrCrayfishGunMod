@@ -24,7 +24,7 @@
     "item.minecraft.potion.effect.deafening": "Potion of Deafening",
     "item.minecraft.lingering_potion.effect.blinding": "Lingering Potion of Blinding",
     "item.minecraft.lingering_potion.effect.deafening": "Lingering Potion of Deafening",
-    "itemGroup.tabCGM": "MrCrayfish's Gun Mod",
+    "itemGroup.cgm": "MrCrayfish's Gun Mod",
     "death.attack.cgm.bullet.killed": "%1$s was taken down by %2$s",
     "death.attack.cgm.bullet.eliminated": "%1$s was eliminated by %2$s",
     "death.attack.cgm.bullet.executed": "%1$s was executed by %2$s",
