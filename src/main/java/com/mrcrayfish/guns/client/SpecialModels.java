@@ -17,7 +17,8 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public enum SpecialModels
 {
-    ;
+    MINI_GUN_BASE("mini_gun_base"),
+    MINI_GUN_BARRELS("mini_gun_barrels");
 
     /**
      * The location of an item model in the [MOD_ID]/models/special/[NAME] folder

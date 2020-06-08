@@ -15,6 +15,7 @@ import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.LongScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.MediumScopeModel;
+import com.mrcrayfish.guns.client.render.gun.model.MiniGunModel;
 import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
 import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
@@ -156,7 +157,7 @@ public class ClientHandler
 
     private static void registerModelOverrides()
     {
-        //ModelOverrides.register(new ItemStack(ModItems.MINI_GUN), new MiniGunModel());
+        ModelOverrides.register(new ItemStack(ModItems.MINI_GUN.get()), new MiniGunModel());
         ModelOverrides.register(new ItemStack(ModItems.SHORT_SCOPE.get()), new ShortScopeModel());
         ModelOverrides.register(new ItemStack(ModItems.MEDIUM_SCOPE.get()), new MediumScopeModel());
         ModelOverrides.register(new ItemStack(ModItems.LONG_SCOPE.get()), new LongScopeModel());

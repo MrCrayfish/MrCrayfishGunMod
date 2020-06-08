@@ -36,11 +36,11 @@ public class RenderUtil
         return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(item);
     }
 
-    public static void rotateZ(float xOffset, float yOffset, float rotation)
+    public static void rotateZ(MatrixStack matrixStack, float xOffset, float yOffset, float rotation)
     {
-        /*GlStateManager.translate(xOffset, yOffset, 0);
-        GlStateManager.rotate(rotation, 0, 0, -1);
-        GlStateManager.translate(-xOffset, -yOffset, 0);*/
+        matrixStack.translate(xOffset, yOffset, 0);
+        matrixStack.rotate(Vector3f.ZN.rotationDegrees(rotation));
+        matrixStack.translate(-xOffset, -yOffset, 0);
     }
 
     public static void renderModel(ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
@@ -117,6 +117,10 @@ public class RenderUtil
      */
     private static void renderModel(IBakedModel model, ItemStack stack, ItemStack parent, @Nullable Transform transform, MatrixStack matrixStack, IVertexBuilder buffer, int light, int overlay)
     {
+        if(transform != null)
+        {
+            transform.apply();
+        }
         Random random = new Random();
         for(Direction direction : Direction.values())
         {

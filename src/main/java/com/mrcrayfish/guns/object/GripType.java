@@ -85,8 +85,8 @@ public enum GripType
             mainArm.rotateAngleY = (float) Math.toRadians(-45F) * (right ? 1F : -1F);
             mainArm.rotateAngleZ = (float) Math.toRadians(0F);
 
-            secondaryArm.rotateAngleX = (float) Math.toRadians(-60F);
-            secondaryArm.rotateAngleY = (float) Math.toRadians(15F) * (right ? 1F : -1F);
+            secondaryArm.rotateAngleX = (float) Math.toRadians(-45F);
+            secondaryArm.rotateAngleY = (float) Math.toRadians(30F) * (right ? 1F : -1F);
             secondaryArm.rotateAngleZ = (float) Math.toRadians(0F);
         }
 
