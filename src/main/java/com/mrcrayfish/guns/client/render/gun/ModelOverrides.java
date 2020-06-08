@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.client.render.gun;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -18,6 +19,9 @@ public class ModelOverrides
     public static void register(ItemStack stack, IOverrideModel model)
     {
         MODEL_MAP.putIfAbsent(stack.getItem(), model);
+        /* Register model overrides as an event for ease. Doesn't create an extra overhead because
+         * Forge will just ignore it if it contains no events */
+        MinecraftForge.EVENT_BUS.register(model);
     }
 
     public static boolean hasModel(ItemStack stack)

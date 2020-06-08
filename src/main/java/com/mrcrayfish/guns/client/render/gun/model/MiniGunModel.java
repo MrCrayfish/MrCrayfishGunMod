@@ -23,7 +23,7 @@ public class MiniGunModel implements IOverrideModel
     private int rotation;
 
     @Override
-    public void tick(LivingEntity entity)
+    public void tick(PlayerEntity entity)
     {
         this.lastRotation = this.rotation;
 

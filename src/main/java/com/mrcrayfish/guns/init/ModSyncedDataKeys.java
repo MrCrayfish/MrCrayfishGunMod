@@ -17,6 +17,12 @@ public class ModSyncedDataKeys
             .resetOnDeath()
             .build();
 
+    public static final SyncedDataKey<Boolean> SHOOTING = SyncedDataKey.builder(Serializers.BOOLEAN)
+            .id(new ResourceLocation(Reference.MOD_ID, "shooting"))
+            .defaultValueSupplier(() -> false)
+            .resetOnDeath()
+            .build();
+
     public static final SyncedDataKey<Boolean> RELOADING = SyncedDataKey.builder(Serializers.BOOLEAN)
             .id(new ResourceLocation(Reference.MOD_ID, "reloading"))
             .defaultValueSupplier(() -> false)
@@ -26,6 +32,7 @@ public class ModSyncedDataKeys
     public static void register()
     {
         SyncedPlayerData.instance().registerKey(AIMING);
+        SyncedPlayerData.instance().registerKey(SHOOTING);
         SyncedPlayerData.instance().registerKey(RELOADING);
     }
 }
