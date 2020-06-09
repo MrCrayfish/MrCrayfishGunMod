@@ -2,7 +2,7 @@
     "general": {
         "auto": true,
         "rate": 2,
-        "gripType": "one_handed",
+        "gripType": "cgm:one_handed",
         "maxAmmo": 40,
         "reloadSpeed": 5,
         "recoilAngle": 4.0,
