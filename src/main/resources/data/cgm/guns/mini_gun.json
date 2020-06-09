@@ -2,7 +2,7 @@
     "general": {
         "auto": true,
         "rate": 2,
-        "gripType": "cgm:chain_gun",
+        "gripType": "cgm:mini_gun",
         "maxAmmo": 100,
         "reloadSpeed": 4,
         "recoilAngle": 1.0,
