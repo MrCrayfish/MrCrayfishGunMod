@@ -12,6 +12,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.HandshakeMessages;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
 import com.mrcrayfish.guns.object.CustomGun;
+import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.item.Item;
@@ -41,9 +42,11 @@ import java.util.Map;
 public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
 {
     private static final Type RESOURCE_LOCATION_TYPE = new TypeToken<ResourceLocation>(){}.getType();
+    private static final Type GRIP_TYPE_TYPE = new TypeToken<GripType>(){}.getType();
     private static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new ResourceLocationDeserializer());
+        builder.registerTypeAdapter(GRIP_TYPE_TYPE, new GripTypeDeserializer());
         return builder.create();
     });
 
@@ -194,6 +197,18 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         public ResourceLocation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             return new ResourceLocation(json.getAsString());
+        }
+    }
+
+    /**
+     * A deserializer for {@link GripType}
+     */
+    private static class GripTypeDeserializer implements JsonDeserializer<GripType>
+    {
+        @Override
+        public GripType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        {
+            return GripType.getType(ResourceLocation.tryCreate(json.getAsString()));
         }
     }
 

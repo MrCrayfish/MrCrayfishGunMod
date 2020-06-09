@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.object;
 
-import com.google.gson.annotations.SerializedName;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.HeldAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -11,18 +11,25 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
-public enum GripType
+public class GripType
 {
-    @SerializedName("one_handed")
-    ONE_HANDED(new HeldAnimation()
+    /**
+     * A grip type designed for weapons that are held with only one hand, like a pistol
+     */
+    public static final GripType ONE_HANDED = new GripType(new ResourceLocation(Reference.MOD_ID, "one_handed"), new HeldAnimation()
     {
         @Override
+        @OnlyIn(Dist.CLIENT)
         public void applyPlayerModelRotation(PlayerModel model, Hand hand, float aimProgress)
         {
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
@@ -30,11 +37,15 @@ public enum GripType
             copyModelAngles(model.bipedHead, arm);
             arm.rotateAngleX += Math.toRadians(-70F);
         }
-    }, true),
-    @SerializedName("two_handed")
-    TWO_HANDED(new HeldAnimation()
+    }, true);
+
+    /**
+     * A grip type designed for weapons that are held with two hands, like an assault rifle
+     */
+    public static final GripType TWO_HANDED = new GripType(new ResourceLocation(Reference.MOD_ID, "two_handed"), new HeldAnimation()
     {
         @Override
+        @OnlyIn(Dist.CLIENT)
         public void applyPlayerModelRotation(PlayerModel model, Hand hand, float aimProgress)
         {
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
@@ -50,6 +61,7 @@ public enum GripType
         }
 
         @Override
+        @OnlyIn(Dist.CLIENT)
         public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
@@ -58,6 +70,7 @@ public enum GripType
         }
 
         @Override
+        @OnlyIn(Dist.CLIENT)
         public void applyHeldItemTransforms(Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             if(hand == Hand.MAIN_HAND)
@@ -70,11 +83,16 @@ public enum GripType
                 matrixStack.rotate(Vector3f.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
             }
         }
-    }, false),
-    @SerializedName("chain_gun")
-    CHAIN_GUN(new HeldAnimation()
+    }, false);
+
+    /**
+     * A custom grip type designed for the mini gun simply due it's nature of being a completely
+     * unique way to hold the weapon
+     */
+    public static final GripType MINI_GUN = new GripType(new ResourceLocation(Reference.MOD_ID, "mini_gun"), new HeldAnimation()
     {
         @Override
+        @OnlyIn(Dist.CLIENT)
         public void applyPlayerModelRotation(PlayerModel model, Hand hand, float aimProgress)
         {
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
@@ -91,6 +109,7 @@ public enum GripType
         }
 
         @Override
+        @OnlyIn(Dist.CLIENT)
         public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
@@ -99,6 +118,7 @@ public enum GripType
         }
 
         @Override
+        @OnlyIn(Dist.CLIENT)
         public void applyHeldItemTransforms(Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             if(hand == Hand.OFF_HAND)
@@ -109,25 +129,89 @@ public enum GripType
         }
     }, false);
 
+    /**
+     * The grip type map.
+     */
+    private static Map<ResourceLocation, GripType> gripTypeMap = new HashMap<>();
+
+    static
+    {
+        /* Registers the standard grip types when the class is loaded */
+        registerType(ONE_HANDED);
+        registerType(TWO_HANDED);
+        registerType(MINI_GUN);
+    }
+
+    /**
+     * Registers a new grip type. If the id already exists, the grip type will simply be ignored.
+     *
+     * @param type the instance of the grip type
+     */
+    public static void registerType(GripType type)
+    {
+        gripTypeMap.putIfAbsent(type.getId(), type);
+    }
+
+    /**
+     * Gets the grip type associated the the id. If the grip type does not exist, it will default to
+     * one handed.
+     *
+     * @param id the id of the grip type
+     * @return returns an instance of the grip type or ONE_HANDED if it doesn't exist
+     */
+    public static GripType getType(ResourceLocation id)
+    {
+        return gripTypeMap.getOrDefault(id, ONE_HANDED);
+    }
+
+    private final ResourceLocation id;
     private final HeldAnimation heldAnimation;
     private final boolean renderOffhand;
 
-    GripType(HeldAnimation heldAnimation, boolean renderOffhand)
+    /**
+     * Creates a new grip type.
+     *
+     * @param id the id of the grip type
+     * @param heldAnimation the animation functions to apply to the held weapon
+     * @param renderOffhand if this grip type allows the weapon to be rendered in the off hand
+     */
+    public GripType(ResourceLocation id, HeldAnimation heldAnimation, boolean renderOffhand)
     {
+        this.id = id;
         this.heldAnimation = heldAnimation;
         this.renderOffhand = renderOffhand;
     }
 
+    /**
+     * Gets the id of the grip type
+     */
+    public ResourceLocation getId()
+    {
+        return this.id;
+    }
+
+    /**
+     * Gets the held animation instance. Used for rendering
+     */
     public HeldAnimation getHeldAnimation()
     {
-        return heldAnimation;
+        return this.heldAnimation;
     }
 
+    /**
+     * Determines if this grip type will allow the weapon to be rendered in the off hand
+     */
     public boolean canRenderOffhand()
     {
-        return renderOffhand;
+        return this.renderOffhand;
     }
 
+    /**
+     * Copies the rotations from one {@link ModelRenderer} instance to another
+     *
+     * @param source the model renderer to grab the rotations from
+     * @param dest   the model renderer to apply the rotations to
+     */
     @OnlyIn(Dist.CLIENT)
     private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
     {

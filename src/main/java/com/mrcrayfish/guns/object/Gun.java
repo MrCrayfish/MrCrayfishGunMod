@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.object;
 
+import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ScopeItem;
@@ -28,6 +29,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         public boolean auto = false;
         public int rate;
+        @Ignored
         public GripType gripType = GripType.ONE_HANDED;
         public int maxAmmo;
         @Optional
@@ -53,7 +55,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
             CompoundNBT tag = new CompoundNBT();
             tag.putBoolean("Auto", this.auto);
             tag.putInt("Rate", this.rate);
-            tag.putInt("GripType", this.gripType.ordinal());
+            tag.putString("GripType", this.gripType.getId().toString());
             tag.putInt("MaxAmmo", this.maxAmmo);
             tag.putInt("ReloadSpeed", this.reloadSpeed);
             tag.putFloat("RecoilAngle", this.recoilAngle);
@@ -77,9 +79,9 @@ public class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.rate = tag.getInt("Rate");
             }
-            if(tag.contains("GripType", Constants.NBT.TAG_INT))
+            if(tag.contains("GripType", Constants.NBT.TAG_STRING))
             {
-                this.gripType = GripType.values()[tag.getInt("GripType")];
+                this.gripType = GripType.getType(ResourceLocation.tryCreate(tag.getString("GripType")));
             }
             if(tag.contains("MaxAmmo", Constants.NBT.TAG_INT))
             {
