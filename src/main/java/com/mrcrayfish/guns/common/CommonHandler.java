@@ -260,13 +260,14 @@ public class CommonHandler
                     return;
                 }
 
-                int stacks = count / 64;
+                int maxStackSize = ammo.getMaxStackSize();
+                int stacks = count / maxStackSize;
                 for(int i = 0; i < stacks; i++)
                 {
-                    spawnAmmo(player, new ItemStack(ammo, 64));
+                    spawnAmmo(player, new ItemStack(ammo, maxStackSize));
                 }
 
-                int remaining = count % 64;
+                int remaining = count % maxStackSize;
                 if(remaining > 0)
                 {
                     spawnAmmo(player, new ItemStack(ammo, count));
