@@ -9,7 +9,7 @@ import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.entity.EntityGrenade;
 import com.mrcrayfish.guns.entity.EntityMissile;
 import com.mrcrayfish.guns.init.*;
-import com.mrcrayfish.guns.item.AmmoRegistry;
+import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.network.PacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.container.PlayerContainer;
@@ -89,9 +89,8 @@ public class GunMod
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
-        AmmoRegistry.getInstance().setup();
-        AmmoRegistry.getInstance().registerProjectileFactory(ModItems.GRENADE.get(), (worldIn, entity, item, modifiedGun) -> new EntityGrenade(ModEntities.GRENADE.get(), worldIn, entity, item, modifiedGun));
-        AmmoRegistry.getInstance().registerProjectileFactory(ModItems.MISSILE.get(), (worldIn, entity, item, modifiedGun) -> new EntityMissile(ModEntities.MISSILE.get(), worldIn, entity, item, modifiedGun));
+        ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, item, modifiedGun) -> new EntityGrenade(ModEntities.GRENADE.get(), worldIn, entity, item, modifiedGun));
+        ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, item, modifiedGun) -> new EntityMissile(ModEntities.MISSILE.get(), worldIn, entity, item, modifiedGun));
         PacketHandler.init();
 
         if(Config.COMMON.gameplay.improvedHitboxes.get())

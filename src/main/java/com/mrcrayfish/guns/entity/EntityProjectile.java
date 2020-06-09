@@ -4,9 +4,7 @@ import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
-import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.interfaces.IDamageable;
-import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
@@ -103,11 +101,7 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
         double posZ = shooter.lastTickPosZ + (shooter.getPosZ() - shooter.lastTickPosZ) / 2.0;
         this.setPosition(posX, posY, posZ);
 
-        Item ammo = AmmoRegistry.getInstance().getAmmo(this.projectile.item);
-        if(ammo == null)
-        {
-            ammo = ForgeRegistries.ITEMS.getValue(this.projectile.item);
-        }
+        Item ammo = ForgeRegistries.ITEMS.getValue(this.projectile.item);
         if(ammo != null)
         {
             this.item = new ItemStack(ammo);

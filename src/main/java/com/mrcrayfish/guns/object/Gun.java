@@ -1,17 +1,17 @@
 package com.mrcrayfish.guns.object;
 
 import com.mrcrayfish.guns.annotation.Optional;
-import com.mrcrayfish.guns.item.AmmoItem;
-import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
@@ -758,8 +758,8 @@ public class Gun implements INBTSerializable<CompoundNBT>
     {
         if(player.isCreative())
         {
-            AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(id);
-            return ammo != null ? new ItemStack(ammo, 64) : ItemStack.EMPTY;
+            Item item = ForgeRegistries.ITEMS.getValue(id);
+            return item != null ? new ItemStack(item, item.getMaxStackSize()) : ItemStack.EMPTY;
         }
         for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
         {

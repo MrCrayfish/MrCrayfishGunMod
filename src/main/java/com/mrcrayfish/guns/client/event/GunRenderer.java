@@ -54,6 +54,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
@@ -885,8 +886,8 @@ public class GunRenderer
         }
 
         Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-        AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(gun.projectile.item);
-        if(ammo == null)
+        Item item = ForgeRegistries.ITEMS.getValue(gun.projectile.item);
+        if(item == null)
         {
             return;
         }
@@ -921,7 +922,7 @@ public class GunRenderer
             matrixStack.translate(-side * 5 * 0.0625, 15 * 0.0625, -1 * 0.0625);
             matrixStack.rotate(Vector3f.XP.rotationDegrees(180F));
             matrixStack.scale(0.75F, 0.75F, 0.75F);
-            RenderUtil.renderModel(new ItemStack(ammo), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, matrixStack, buffer, light, OverlayTexture.NO_OVERLAY);
+            RenderUtil.renderModel(new ItemStack(item), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, matrixStack, buffer, light, OverlayTexture.NO_OVERLAY);
             matrixStack.pop();
         }
 

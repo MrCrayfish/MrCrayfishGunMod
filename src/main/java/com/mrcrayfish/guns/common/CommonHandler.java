@@ -11,8 +11,6 @@ import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.EntityProjectile;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
-import com.mrcrayfish.guns.item.AmmoItem;
-import com.mrcrayfish.guns.item.AmmoRegistry;
 import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
@@ -30,9 +28,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -110,7 +113,7 @@ public class CommonHandler
 
                     for(int i = 0; i < modifiedGun.general.projectileAmount; i++)
                     {
-                        ProjectileFactory factory = AmmoRegistry.getInstance().getFactory(modifiedGun.projectile.item);
+                        ProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.projectile.item);
                         EntityProjectile bullet = factory.create(world, player, item, modifiedGun);
                         bullet.setWeapon(heldItem);
                         bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
@@ -254,23 +257,23 @@ public class CommonHandler
                 Gun gun = gunItem.getModifiedGun(stack);
                 ResourceLocation id = gun.projectile.item;
 
-                AmmoItem ammo = AmmoRegistry.getInstance().getAmmo(id);
-                if(ammo == null)
+                Item item = ForgeRegistries.ITEMS.getValue(id);
+                if(item == null)
                 {
                     return;
                 }
 
-                int maxStackSize = ammo.getMaxStackSize();
+                int maxStackSize = item.getMaxStackSize();
                 int stacks = count / maxStackSize;
                 for(int i = 0; i < stacks; i++)
                 {
-                    spawnAmmo(player, new ItemStack(ammo, maxStackSize));
+                    spawnAmmo(player, new ItemStack(item, maxStackSize));
                 }
 
                 int remaining = count % maxStackSize;
                 if(remaining > 0)
                 {
-                    spawnAmmo(player, new ItemStack(ammo, count));
+                    spawnAmmo(player, new ItemStack(item, count));
                 }
             }
         }
