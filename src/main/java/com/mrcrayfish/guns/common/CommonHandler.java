@@ -16,6 +16,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
+import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
@@ -155,7 +156,14 @@ public class CommonHandler
                     SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(fireSound);
                     if(event != null)
                     {
-                        world.playSound(null, player.getPosition(), event, SoundCategory.HOSTILE, silenced ? 1.0F : 5.0F, 0.8F + world.rand.nextFloat() * 0.2F);
+                        double posX = player.prevPosX;
+                        double posY = player.prevPosY + player.getEyeHeight();
+                        double posZ = player.prevPosZ;
+                        float volume = silenced ? 0.75F : 1.0F;
+                        float pitch = 0.8F + world.rand.nextFloat() * 0.2F;
+                        MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, false);
+                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), Config.SERVER.gunShotMaxDistance.get(), player.world.getDimension().getType())), messageSound);
+                        PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> player), new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, true));
                     }
 
                     if(!player.isCreative())

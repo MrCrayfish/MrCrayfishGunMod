@@ -5,6 +5,7 @@ import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.audio.SoundGunShot;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.SoundEvents;
@@ -33,6 +34,7 @@ import com.mrcrayfish.guns.network.message.MessageAttachments;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageBulletHole;
+import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.object.Bullet;
 import com.mrcrayfish.guns.particles.BulletHoleData;
@@ -41,6 +43,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.MouseSettingsScreen;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
@@ -59,6 +63,8 @@ import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -190,6 +196,22 @@ public class ClientHandler
     {
         ScreenManager.registerFactory(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
         ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
+    }
+
+    public static void handleMessageGunSound(MessageGunSound message)
+    {
+        SoundEvent soundEvent = ForgeRegistries.SOUND_EVENTS.getValue(message.getId());
+        if(soundEvent != null)
+        {
+            if(message.isShooter())
+            {
+                Minecraft.getInstance().getSoundHandler().play(new SimpleSound(soundEvent.getName(), SoundCategory.PLAYERS, message.getVolume(), message.getPitch(), false, 0, ISound.AttenuationType.NONE, 0, 0, 0, true));
+            }
+            else
+            {
+                Minecraft.getInstance().getSoundHandler().play(new SoundGunShot(soundEvent, SoundCategory.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch()));
+            }
+        }
     }
 
     public static void handleMessageBlood(MessageBlood message)

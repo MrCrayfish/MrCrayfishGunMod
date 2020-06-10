@@ -60,6 +60,7 @@ public class PacketHandler
         registerPlayMessage(MessageUpdateGuns.class, MessageUpdateGuns::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageBlood.class, MessageBlood::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageShooting.class, MessageShooting::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageGunSound.class, MessageGunSound::new, LogicalSide.CLIENT);
     }
 
     /**

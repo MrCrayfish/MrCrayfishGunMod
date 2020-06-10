@@ -41,12 +41,10 @@ import java.util.Map;
  */
 public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
 {
-    private static final Type RESOURCE_LOCATION_TYPE = new TypeToken<ResourceLocation>(){}.getType();
-    private static final Type GRIP_TYPE_TYPE = new TypeToken<GripType>(){}.getType();
     private static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(RESOURCE_LOCATION_TYPE, new ResourceLocationDeserializer());
-        builder.registerTypeAdapter(GRIP_TYPE_TYPE, new GripTypeDeserializer());
+        builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
+        builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
         return builder.create();
     });
 
@@ -185,31 +183,6 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     public Map<ResourceLocation, Gun> getRegisteredGuns()
     {
         return this.registeredGuns;
-    }
-
-    /**
-     * A simple deserializer for resource locations. A more simplified version than the serializer
-     * provided in {@code net.minecraft.util.ResourceLocation}
-     */
-    private static class ResourceLocationDeserializer implements JsonDeserializer<ResourceLocation>
-    {
-        @Override
-        public ResourceLocation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            return new ResourceLocation(json.getAsString());
-        }
-    }
-
-    /**
-     * A deserializer for {@link GripType}
-     */
-    private static class GripTypeDeserializer implements JsonDeserializer<GripType>
-    {
-        @Override
-        public GripType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            return GripType.getType(ResourceLocation.tryCreate(json.getAsString()));
-        }
     }
 
     public interface IGunProvider

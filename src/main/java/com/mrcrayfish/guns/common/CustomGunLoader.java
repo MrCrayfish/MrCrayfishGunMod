@@ -11,6 +11,7 @@ import com.google.gson.JsonParseException;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.object.CustomGun;
+import com.mrcrayfish.guns.object.GripType;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -32,8 +33,9 @@ public class CustomGunLoader extends JsonReloadListener
 {
     private static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(ResourceLocation.class, new ResourceLocationDeserializer());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackDeserializer());
+        builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
+        builder.registerTypeAdapter(ItemStack.class, JsonDeserializers.ITEM_STACK);
+        builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
         return builder.create();
     });
 
@@ -111,27 +113,5 @@ public class CustomGunLoader extends JsonReloadListener
             return builder.build();
         }
         return ImmutableMap.of();
-    }
-
-    public static class ItemStackDeserializer implements JsonDeserializer<ItemStack>
-    {
-        @Override
-        public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            return CraftingHelper.getItemStack(json.getAsJsonObject(), true);
-        }
-    }
-
-    /**
-     * A simple deserializer for resource locations. A more simplified version than the serializer
-     * provided in {@code net.minecraft.util.ResourceLocation}
-     */
-    public static class ResourceLocationDeserializer implements JsonDeserializer<ResourceLocation>
-    {
-        @Override
-        public ResourceLocation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            return new ResourceLocation(json.getAsString());
-        }
     }
 }
