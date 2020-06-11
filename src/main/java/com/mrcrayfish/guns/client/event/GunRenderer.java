@@ -668,7 +668,6 @@ public class GunRenderer
                 if(stack.getTag().contains("Model", Constants.NBT.TAG_COMPOUND))
                 {
                     model = ItemStack.read(stack.getTag().getCompound("Model"));
-                    ItemStackUtil.createTagCompound(model).merge(stack.getTag().copy());
                 }
             }
 
