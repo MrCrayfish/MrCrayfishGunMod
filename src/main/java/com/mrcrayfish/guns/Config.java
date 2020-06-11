@@ -241,12 +241,14 @@ public class Config
     public static class Blind
     {
         public final EffectCriteria criteria;
+        public final ForgeConfigSpec.BooleanValue blindMobs;
 
         public Blind(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Blinding properties of stun grenades").push("blind");
             {
                 this.criteria = new EffectCriteria(builder, 15, 220, 10, 170, 0.75, true);
+                this.blindMobs = builder.comment("If true, hostile mobs will be unable to target entities while they are blinded by a stun grenade.").define("blindMobs", true);
             }
             builder.pop();
         }
@@ -258,12 +260,14 @@ public class Config
     public static class Deafen
     {
         public final EffectCriteria criteria;
+        public final ForgeConfigSpec.BooleanValue panicMobs;
 
         public Deafen(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Deafening properties of stun grenades").push("deafen");
             {
                 this.criteria = new EffectCriteria(builder, 15, 280, 100, 360, 0.75, false);
+                this.panicMobs = builder.comment("If true, peaceful mobs will panic upon being deafened by a stun grenade.").define("panicMobs", true);
             }
             builder.pop();
         }

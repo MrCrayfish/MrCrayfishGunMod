@@ -11,8 +11,9 @@ import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Potion;
@@ -21,10 +22,14 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
+@Mod.EventBusSubscriber
 public class EntityThrowableStunGrenade extends EntityThrowableGrenade
 {
     public EntityThrowableStunGrenade(EntityType<? extends EntityThrowableGrenade> entityType, World world)
@@ -45,11 +50,23 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
         this.setMaxLife(maxCookTime);
     }
 
+    @SubscribeEvent
+    public static void blindMobs(LivingSetAttackTargetEvent event)
+    {
+        if (Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getTarget() != null && event.getEntityLiving() instanceof MobEntity
+                && ModPotions.BLINDED.get().getEffects().stream().anyMatch(effect -> event.getEntityLiving().isPotionActive(effect.getPotion())))
+            ((MobEntity) event.getEntityLiving()).setAttackTarget(null);
+    }
+
     @Override
     public void onDeath()
     {
         double y = this.getPosY() + this.getType().getSize().height * 0.5;
         world.playSound(null, this.getPosX(), y, this.getPosZ(), ModSounds.ENTITY_STUN_GRENADE_EXPLOSION.get(), SoundCategory.BLOCKS, 4, (1 + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+        if(world.isRemote)
+        {
+            return;
+        }
         PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(this.getPosX(), y, this.getPosZ(), 64, this.world.getDimension().getType())), new MessageStunGrenade(this.getPosX(), y, this.getPosZ()));
 
         // Calculate bounds of area where potentially effected players my be
@@ -65,30 +82,39 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
         Vec3d grenade = new Vec3d(this.getPosX(), y, this.getPosZ());
         Vec3d eyes, directionGrenade;
         double distance;
-        for(ServerPlayerEntity player : world.getEntitiesWithinAABB(ServerPlayerEntity.class, new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ)))
+        for(LivingEntity entity : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ)))
         {
-            if(player.isImmuneToExplosions()) continue;
+            if(entity.isImmuneToExplosions()) continue;
 
-            eyes = player.getEyePosition(1.0F);
+            eyes = entity.getEyePosition(1.0F);
             directionGrenade = grenade.subtract(eyes);
             distance = directionGrenade.length();
 
             // Calculate angle between eye-gaze line and eye-grenade line
-            double angle = Math.toDegrees(Math.acos(player.getLook(1.0F).dotProduct(directionGrenade.normalize())));
+            double angle = Math.toDegrees(Math.acos(entity.getLook(1.0F).dotProduct(directionGrenade.normalize())));
 
             // Apply effects as determined by their criteria
-            this.calculateAndApplyEffect(ModPotions.DEAFENED.get(), Config.COMMON.stunGrenades.deafen.criteria, player, grenade, eyes, distance, angle);
-            this.calculateAndApplyEffect(ModPotions.BLINDED.get(), Config.COMMON.stunGrenades.blind.criteria, player, grenade, eyes, distance, angle);
+            if(this.calculateAndApplyEffect(ModPotions.DEAFENED.get(), Config.COMMON.stunGrenades.deafen.criteria, entity, grenade, eyes, distance, angle)
+                && Config.COMMON.stunGrenades.deafen.panicMobs.get())
+            {
+                entity.setRevengeTarget(entity);
+            }
+            if(this.calculateAndApplyEffect(ModPotions.BLINDED.get(), Config.COMMON.stunGrenades.blind.criteria, entity, grenade, eyes, distance, angle)
+                && Config.COMMON.stunGrenades.blind.blindMobs.get() && entity instanceof MobEntity)
+            {
+                ((MobEntity) entity).setAttackTarget(null);
+            }
         }
     }
 
-    private void calculateAndApplyEffect(Potion potion, EffectCriteria criteria, ServerPlayerEntity player, Vec3d grenade, Vec3d eyes, double distance, double angle)
+    private boolean calculateAndApplyEffect(Potion potion, EffectCriteria criteria, LivingEntity entity, Vec3d grenade, Vec3d eyes, double distance, double angle)
     {
         double angleMax = criteria.angleEffect.get() * 0.5;
         if(distance <= criteria.radius.get() && angleMax > 0 && angle <= angleMax)
         {
-            // Verify that light can pass through all blocks obstructing the player's line of sight to the grenade
-            if(potion != ModPotions.BLINDED.get() || rayTraceOpaqueBlocks(this.world, eyes, grenade, false, false, false) == null)
+            // Verify that light can pass through all blocks obstructing the entity's line of sight to the grenade
+            if(potion != ModPotions.BLINDED.get() || !Config.COMMON.stunGrenades.blind.criteria.raytraceOpaqueBlocks.get()
+                    || rayTraceOpaqueBlocks(this.world, eyes, grenade, false, false, false) == null)
             {
                 // Duration attenuated by distance
                 int durationBlinded = (int) Math.round(criteria.durationMax.get() - (criteria.durationMax.get() - criteria.durationMin.get()) * (distance / criteria.radius.get()));
@@ -98,10 +124,12 @@ public class EntityThrowableStunGrenade extends EntityThrowableGrenade
 
                 for(EffectInstance instance : potion.getEffects())
                 {
-                    player.addPotionEffect(new EffectInstance(instance.getPotion(), durationBlinded, 0, false, false));
+                    entity.addPotionEffect(new EffectInstance(instance.getPotion(), durationBlinded, 0, false, false));
                 }
+                return !(entity instanceof PlayerEntity);
             }
         }
+        return false;
     }
 
     @Nullable
