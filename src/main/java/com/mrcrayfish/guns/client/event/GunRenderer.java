@@ -422,7 +422,7 @@ public class GunRenderer
 
         if(player.isHandActive() && player.getActiveHand() == Hand.MAIN_HAND && heldItem.getItem() instanceof GrenadeItem)
         {
-            if(!((GrenadeItem) heldItem.getItem()).shouldRenderIndicator())
+            if(!((GrenadeItem) heldItem.getItem()).canCook())
             {
                 return;
             }

@@ -59,16 +59,19 @@ public class GrenadeItem extends Item
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
     {
-        if(entityLiving instanceof PlayerEntity)
+        if(this.canCook())
         {
-            if(!((PlayerEntity) entityLiving).isCreative())
+            if(entityLiving instanceof PlayerEntity)
             {
-                stack.shrink(1);
+                if(!((PlayerEntity) entityLiving).isCreative())
+                {
+                    stack.shrink(1);
+                }
             }
+            PlayerEntity player = (PlayerEntity) entityLiving;
+            EntityThrowableGrenade grenade = this.create(worldIn, player, 0);
+            grenade.onDeath();
         }
-        PlayerEntity player = (PlayerEntity) entityLiving;
-        EntityThrowableGrenade grenade = this.create(worldIn, player, 0);
-        grenade.onDeath();
         return stack;
     }
 
@@ -100,7 +103,7 @@ public class GrenadeItem extends Item
         return new EntityThrowableGrenade(world, player, timeLeft);
     }
 
-    public boolean shouldRenderIndicator()
+    public boolean canCook()
     {
         return true;
     }
