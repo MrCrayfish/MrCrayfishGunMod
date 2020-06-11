@@ -14,6 +14,7 @@ import com.mrcrayfish.guns.client.particle.BulletHoleParticle;
 import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
 import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
+import com.mrcrayfish.guns.client.render.gun.model.BazookaModel;
 import com.mrcrayfish.guns.client.render.gun.model.LongScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.MediumScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.MiniGunModel;
@@ -167,6 +168,7 @@ public class ClientHandler
         ModelOverrides.register(new ItemStack(ModItems.SHORT_SCOPE.get()), new ShortScopeModel());
         ModelOverrides.register(new ItemStack(ModItems.MEDIUM_SCOPE.get()), new MediumScopeModel());
         ModelOverrides.register(new ItemStack(ModItems.LONG_SCOPE.get()), new LongScopeModel());
+        ModelOverrides.register(new ItemStack(ModItems.BAZOOKA.get()), new BazookaModel());
     }
 
     private static void registerParticleFactories()
