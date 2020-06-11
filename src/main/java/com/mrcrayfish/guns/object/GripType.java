@@ -130,6 +130,36 @@ public class GripType
     }, false);
 
     /**
+     * A custom grip type designed for the bazooka.
+     */
+    public static final GripType BAZOOKA = new GripType(new ResourceLocation(Reference.MOD_ID, "bazooka"), new HeldAnimation()
+    {
+        @Override
+        public void applyPlayerModelRotation(PlayerModel model, Hand hand, float aimProgress)
+        {
+            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+            ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
+            ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
+
+            mainArm.rotateAngleX = (float) Math.toRadians(-90F);
+            mainArm.rotateAngleY = (float) Math.toRadians(-35F) * (right ? 1F : -1F);
+            mainArm.rotateAngleZ = (float) Math.toRadians(0F);
+
+            secondaryArm.rotateAngleX = (float) Math.toRadians(-91F);
+            secondaryArm.rotateAngleY = (float) Math.toRadians(45F) * (right ? 1F : -1F);
+            secondaryArm.rotateAngleZ = (float) Math.toRadians(0F);
+        }
+
+        @Override
+        public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
+        {
+            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+            player.prevRenderYawOffset = player.prevRotationYaw + 35F * (right ? 1F : -1F);
+            player.renderYawOffset = player.rotationYaw + 35F * (right ? 1F : -1F);
+        }
+    }, false);
+
+    /**
      * The grip type map.
      */
     private static Map<ResourceLocation, GripType> gripTypeMap = new HashMap<>();
@@ -140,6 +170,7 @@ public class GripType
         registerType(ONE_HANDED);
         registerType(TWO_HANDED);
         registerType(MINI_GUN);
+        registerType(BAZOOKA);
     }
 
     /**
