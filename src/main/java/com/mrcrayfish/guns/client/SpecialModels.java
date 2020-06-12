@@ -18,7 +18,9 @@ import net.minecraftforge.fml.common.Mod;
 public enum SpecialModels
 {
     MINI_GUN_BASE("mini_gun_base"),
-    MINI_GUN_BARRELS("mini_gun_barrels");
+    MINI_GUN_BARRELS("mini_gun_barrels"),
+    GRENADE_LAUNCHER_BASE("grenade_launcher_base"),
+    GRENADE_LAUNCHER_CYLINDER("grenade_launcher_cylinder");
 
     /**
      * The location of an item model in the [MOD_ID]/models/special/[NAME] folder
