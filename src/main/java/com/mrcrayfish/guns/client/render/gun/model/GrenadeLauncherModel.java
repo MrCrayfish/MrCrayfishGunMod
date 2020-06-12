@@ -24,6 +24,7 @@ public class GrenadeLauncherModel implements IOverrideModel
         
         if(entity.equals(Minecraft.getInstance().player))
         {
+            matrixStack.push();
             matrixStack.translate(0, -5.8 * 0.0625, 0);
             CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
             float cooldown = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
@@ -31,7 +32,7 @@ public class GrenadeLauncherModel implements IOverrideModel
             matrixStack.rotate(Vector3f.ZN.rotationDegrees(45F * cooldown));
             matrixStack.translate(0, 5.8 * 0.0625, 0);
             RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_CYLINDER.getModel(), stack, matrixStack, renderTypeBuffer, light, overlay);
-
+            matrixStack.pop();
         }
     }
 
