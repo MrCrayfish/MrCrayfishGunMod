@@ -35,6 +35,9 @@ public class GrenadeLauncherModel implements IOverrideModel
         }
     }
 
+    /**
+     * Easing function based on code from https://easings.net/#easeInOutBack
+     */
     private double easeInOutBack(double x)
     {
         double c1 = 1.70158;
