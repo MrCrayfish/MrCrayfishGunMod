@@ -28,8 +28,11 @@ public class ModSounds
 	public static final RegistryObject<SoundEvent> ITEM_HEAVY_RIFLE_FIRE = register("item.heavy_rifle.fire");
 	public static final RegistryObject<SoundEvent> ITEM_HEAVY_RIFLE_SILENCED_FIRE = register("item.heavy_rifle.silenced_fire");
 	public static final RegistryObject<SoundEvent> ITEM_GRENADE_PIN = register("item.grenade.pin");
-	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_EXPLOSION = register("entity.stun_grenade.explosion");
-	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_RING = register("entity.stun_grenade.ring");
+	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_EXPLOSION = register("entity.grenade.stun.explosion");
+	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_RING = register("entity.grenade.stun.ring");
+	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_HIT_GLASS = register("entity.grenade.hit_glass");
+	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_HIT_STONE = register("entity.grenade.hit_stone");
+	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_HIT_WOOD = register("entity.grenade.hit_wood");
 	public static final RegistryObject<SoundEvent> UI_WEAPON_ATTACH = register("ui.weapon.attach");
 
 	private static RegistryObject<SoundEvent> register(String key)

@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.entity;
 
+import com.mrcrayfish.guns.init.ModSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -11,6 +12,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -106,7 +108,25 @@ public abstract class EntityThrowableItem extends ThrowableEntity implements IEn
                     double speed = this.getMotion().length();
                     if(speed > 0.1)
                     {
-                        this.world.playSound(null, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
+                        float pitch = 1.4F + 0.2F * rand.nextFloat();
+                        boolean hitStone = event == SoundEvents.BLOCK_STONE_STEP;
+                        if(hitStone || event == SoundEvents.BLOCK_METAL_STEP || event == SoundEvents.BLOCK_ANVIL_STEP)
+                        {
+                            event = ModSounds.ENTITY_STUN_GRENADE_HIT_STONE.get();
+                            if(!hitStone)
+                            {
+                                pitch += 0.5F;
+                            }
+                        }
+                        else if(event == SoundEvents.BLOCK_GLASS_STEP)
+                        {
+                            event = ModSounds.ENTITY_STUN_GRENADE_HIT_GLASS.get();
+                        }
+                        else if(event == SoundEvents.BLOCK_WOOD_STEP || event == SoundEvents.BLOCK_LADDER_STEP)
+                        {
+                            event = ModSounds.ENTITY_STUN_GRENADE_HIT_WOOD.get();
+                        }
+                        this.world.playSound(null, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, event, SoundCategory.AMBIENT, (float) Math.min(1, speed), pitch);
                     }
                     Direction direction = blockResult.getFace();
                     switch(direction.getAxis())

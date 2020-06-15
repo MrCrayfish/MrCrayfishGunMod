@@ -15,8 +15,11 @@
    "item.heavy_rifle.fire":             { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/heavy_rifle/fire" }]},
    "item.heavy_rifle.silenced_fire":    { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/heavy_rifle/silenced_fire" }]},
    "item.grenade.pin":                  { "subtitle": "subtitle.cgm.grenade.pin",    "sounds": [{ "name": "cgm:item/grenade/pin" }]},
-   "entity.stun_grenade.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/stun_grenade/explosion" }]},
-   "entity.stun_grenade.ring":          { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:entity/stun_grenade/ring", "stream": true }]},
+   "entity.grenade.stun.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/grenade/stun/explosion" }]},
+   "entity.grenade.stun.ring":          { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:entity/grenade/stun/ring", "stream": true }]},
+   "entity.grenade.hit_glass":          { "subtitle": "subtitle.cgm.grenade.hit",    "sounds": [{ "name": "cgm:entity/grenade/hit_glass" }]},
+   "entity.grenade.hit_stone":          { "subtitle": "subtitle.cgm.grenade.hit",    "sounds": [{ "name": "cgm:entity/grenade/hit_stone" }]},
+   "entity.grenade.hit_wood":           { "subtitle": "subtitle.cgm.grenade.hit",    "sounds": [{ "name": "cgm:entity/grenade/hit_wood" }]},
    "ui.weapon.attach":                  { "subtitle": "subtitle.cgm.attach",         "sounds": [{ "name": "cgm:ui/weapon/attach" }]}
 
 }
