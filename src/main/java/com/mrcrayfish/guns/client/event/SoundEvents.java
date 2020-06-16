@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.client.event;
 
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.audio.SoundRinging;
+import com.mrcrayfish.guns.client.audio.StunRingingSound;
 import com.mrcrayfish.guns.init.ModEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.*;
@@ -31,7 +31,7 @@ public class SoundEvents
     private static boolean isDeafened;
     private static Field soundSystem, playingSounds;
     private static SoundEngine soundEngine;
-    private static SoundRinging ringing;
+    private static StunRingingSound ringing;
 
     public static void initReflection()
     {
@@ -59,7 +59,7 @@ public class SoundEvents
 
         if(Config.SERVER.ringVolume.get() > 0 && (ringing == null || !Minecraft.getInstance().getSoundHandler().isPlaying(ringing)))
         {
-            ringing = new SoundRinging();
+            ringing = new StunRingingSound();
             Minecraft.getInstance().getSoundHandler().play(ringing);
             return; // Return after playing sound, as doing so in the tame tick that sounds are muted causes crashing in SoundManager#updateAllSounds
         }

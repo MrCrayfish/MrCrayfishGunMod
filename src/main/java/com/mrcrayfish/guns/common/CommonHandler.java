@@ -8,7 +8,7 @@ import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
-import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.ColoredItem;
@@ -115,7 +115,7 @@ public class CommonHandler
                     for(int i = 0; i < modifiedGun.general.projectileAmount; i++)
                     {
                         ProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.projectile.item);
-                        EntityProjectile bullet = factory.create(world, player, item, modifiedGun);
+                        ProjectileEntity bullet = factory.create(world, player, item, modifiedGun);
                         bullet.setWeapon(heldItem);
                         bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                         if(silenced)

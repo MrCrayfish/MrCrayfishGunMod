@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.world;
 
 import com.google.common.collect.Sets;
-import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.entity.ProjectileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.ProtectionEnchantment;
 import net.minecraft.entity.Entity;
@@ -32,7 +32,7 @@ public class ProjectileExplosion extends Explosion
     private final double x, y, z;
     private double radius;
 
-    public ProjectileExplosion(EntityProjectile projectile, double x, double y, double z, double radius, Explosion.Mode mode)
+    public ProjectileExplosion(ProjectileEntity projectile, double x, double y, double z, double radius, Explosion.Mode mode)
     {
         super(projectile.world, projectile.getShooter(), x, y, z, (float) (radius * 2), false, mode);
         this.world = projectile.world;

@@ -9,9 +9,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.SoundCategory;
 
-public class SoundRinging extends TickableSound
+public class StunRingingSound extends TickableSound
 {
-    public SoundRinging()
+    public StunRingingSound()
     {
         super(ModSounds.ENTITY_STUN_GRENADE_RING.get(), SoundCategory.MASTER);
         this.repeat = true;

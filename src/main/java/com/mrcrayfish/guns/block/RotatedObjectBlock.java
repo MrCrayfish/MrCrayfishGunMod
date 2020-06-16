@@ -15,11 +15,11 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class BlockRotatedObject extends HorizontalBlock
+public abstract class RotatedObjectBlock extends HorizontalBlock
 {
     public static final DirectionProperty DIRECTION = HorizontalBlock.HORIZONTAL_FACING;
 
-    public BlockRotatedObject(Block.Properties properties)
+    public RotatedObjectBlock(Block.Properties properties)
     {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));

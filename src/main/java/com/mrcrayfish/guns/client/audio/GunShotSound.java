@@ -10,9 +10,9 @@ import net.minecraft.util.SoundEvent;
 /**
  * Author: MrCrayfish
  */
-public class SoundGunShot extends LocatableSound
+public class GunShotSound extends LocatableSound
 {
-    public SoundGunShot(SoundEvent soundIn, SoundCategory categoryIn, float x, float y, float z, float volume, float pitch)
+    public GunShotSound(SoundEvent soundIn, SoundCategory categoryIn, float x, float y, float z, float volume, float pitch)
     {
         super(soundIn, categoryIn);
         this.x = x;

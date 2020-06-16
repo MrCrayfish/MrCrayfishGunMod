@@ -16,17 +16,17 @@ import net.minecraft.world.server.ServerWorld;
 /**
  * Author: MrCrayfish
  */
-public class EntityThrowableGrenade extends EntityThrowableItem
+public class ThrowableGrenadeEntity extends ThrowableItemEntity
 {
     public float rotation;
     public float prevRotation;
 
-    public EntityThrowableGrenade(EntityType<? extends EntityThrowableItem> entityType, World worldIn)
+    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, World worldIn)
     {
         super(entityType, worldIn);
     }
 
-    public EntityThrowableGrenade(EntityType<? extends EntityThrowableItem> entityType, World world, PlayerEntity player)
+    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, PlayerEntity player)
     {
         super(entityType, world, player);
         this.setShouldBounce(true);
@@ -35,7 +35,7 @@ public class EntityThrowableGrenade extends EntityThrowableItem
         this.setMaxLife(20 * 3);
     }
 
-    public EntityThrowableGrenade(World world, PlayerEntity player, int timeLeft)
+    public ThrowableGrenadeEntity(World world, PlayerEntity player, int timeLeft)
     {
         super(ModEntities.THROWABLE_GRENADE.get(), world, player);
         this.setShouldBounce(true);
@@ -66,10 +66,10 @@ public class EntityThrowableGrenade extends EntityThrowableItem
     @Override
     public void onDeath()
     {
-        EntityThrowableGrenade.createGrenadeExplosion(this, this.owner, this.getPosX(), this.getPosY(), this.getPosZ(), 2.0F, false, true);
+        ThrowableGrenadeEntity.createGrenadeExplosion(this, this.owner, this.getPosX(), this.getPosY(), this.getPosZ(), 2.0F, false, true);
     }
 
-    private static void createGrenadeExplosion(EntityThrowableGrenade grenade, Entity thrower, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
+    private static void createGrenadeExplosion(ThrowableGrenadeEntity grenade, Entity thrower, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
     {
         Explosion explosion = new ProjectileExplosion(grenade.world, thrower, grenade, grenade.getItem(), x, y, z, ModItems.GRENADE_LAUNCHER.get().getGun().projectile.damage, Config.COMMON.grenades.explosionRadius.get(), Explosion.Mode.NONE);
         explosion.doExplosionA();

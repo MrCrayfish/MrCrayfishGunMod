@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.entity.EntityThrowableGrenade;
+import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
 import com.mrcrayfish.guns.init.ModSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
@@ -69,7 +68,7 @@ public class GrenadeItem extends Item
                 }
             }
             PlayerEntity player = (PlayerEntity) entityLiving;
-            EntityThrowableGrenade grenade = this.create(worldIn, player, 0);
+            ThrowableGrenadeEntity grenade = this.create(worldIn, player, 0);
             grenade.onDeath();
         }
         return stack;
@@ -91,16 +90,16 @@ public class GrenadeItem extends Item
             if(duration >= 10)
             {
                 PlayerEntity player = (PlayerEntity) entityLiving;
-                EntityThrowableGrenade grenade = this.create(worldIn, player, this.maxCookTime - duration);
+                ThrowableGrenadeEntity grenade = this.create(worldIn, player, this.maxCookTime - duration);
                 grenade.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
                 worldIn.addEntity(grenade);
             }
         }
     }
 
-    public EntityThrowableGrenade create(World world, PlayerEntity player, int timeLeft)
+    public ThrowableGrenadeEntity create(World world, PlayerEntity player, int timeLeft)
     {
-        return new EntityThrowableGrenade(world, player, timeLeft);
+        return new ThrowableGrenadeEntity(world, player, timeLeft);
     }
 
     public boolean canCook()

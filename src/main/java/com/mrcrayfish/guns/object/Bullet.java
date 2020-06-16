@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.object;
 
-import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
  */
 public class Bullet
 {
-    private EntityProjectile projectile;
+    private ProjectileEntity projectile;
     private int entityId;
     private double posX;
     private double posY;
@@ -27,7 +27,7 @@ public class Bullet
     private int trailColor;
     private double trailLengthMultiplier;
 
-    public Bullet(@Nullable EntityProjectile projectile, MessageBullet message)
+    public Bullet(@Nullable ProjectileEntity projectile, MessageBullet message)
     {
         this.projectile = projectile;
         this.entityId = message.getEntityId();
@@ -54,9 +54,9 @@ public class Bullet
         if(this.projectile == null)
         {
             Entity entity = world.getEntityByID(this.entityId);
-            if(entity instanceof EntityProjectile)
+            if(entity instanceof ProjectileEntity)
             {
-                this.projectile = (EntityProjectile) entity;
+                this.projectile = (ProjectileEntity) entity;
                 /*this.posX = this.projectile.posX;
                 this.posY = this.projectile.posY;
                 this.posZ = this.projectile.posZ;
@@ -83,7 +83,7 @@ public class Bullet
         }
     }
 
-    public EntityProjectile getProjectile()
+    public ProjectileEntity getProjectile()
     {
         return this.projectile;
     }

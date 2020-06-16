@@ -19,11 +19,11 @@ public class ModEntities
 {
     public static final DeferredRegister<EntityType<?>> REGISTER = new DeferredRegister<>(ForgeRegistries.ENTITIES, Reference.MOD_ID);
 
-    public static final RegistryObject<EntityType<EntityProjectile>> PROJECTILE = register("projectile", EntityProjectile::new);
-    public static final RegistryObject<EntityType<EntityGrenade>> GRENADE = register("grenade", EntityGrenade::new);
-    public static final RegistryObject<EntityType<EntityMissile>> MISSILE = register("missile", EntityMissile::new);
-    public static final RegistryObject<EntityType<EntityThrowableGrenade>> THROWABLE_GRENADE = register("throwable_grenade", EntityThrowableGrenade::new);
-    public static final RegistryObject<EntityType<EntityThrowableStunGrenade>> THROWABLE_STUN_GRENADE = register("throwable_stun_grenade", EntityThrowableStunGrenade::new);
+    public static final RegistryObject<EntityType<ProjectileEntity>> PROJECTILE = register("projectile", ProjectileEntity::new);
+    public static final RegistryObject<EntityType<GrenadeEntity>> GRENADE = register("grenade", GrenadeEntity::new);
+    public static final RegistryObject<EntityType<MissileEntity>> MISSILE = register("missile", MissileEntity::new);
+    public static final RegistryObject<EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = register("throwable_grenade", ThrowableGrenadeEntity::new);
+    public static final RegistryObject<EntityType<ThrowableStunGrenadeEntity>> THROWABLE_STUN_GRENADE = register("throwable_stun_grenade", ThrowableStunGrenadeEntity::new);
 
     private static <T extends Entity> RegistryObject<EntityType<T>> register(String id, BiFunction<EntityType<T>, World, T> function)
     {

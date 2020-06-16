@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.client.render.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.entity.EntityThrowableGrenade;
-import com.mrcrayfish.guns.entity.EntityThrowableStunGrenade;
+import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
+import com.mrcrayfish.guns.entity.ThrowableStunGrenadeEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
@@ -11,8 +11,6 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Pose;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -20,22 +18,22 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderGrenade extends EntityRenderer<EntityThrowableGrenade>
+public class ThrowableGrenadeRenderer extends EntityRenderer<ThrowableGrenadeEntity>
 {
-    public RenderGrenade(EntityRendererManager renderManager)
+    public ThrowableGrenadeRenderer(EntityRendererManager renderManager)
     {
         super(renderManager);
     }
 
     @Nullable
     @Override
-    public ResourceLocation getEntityTexture(EntityThrowableGrenade entity)
+    public ResourceLocation getEntityTexture(ThrowableGrenadeEntity entity)
     {
         return null;
     }
 
     @Override
-    public void render(EntityThrowableGrenade entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    public void render(ThrowableGrenadeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         matrixStack.push();
 
@@ -49,7 +47,7 @@ public class RenderGrenade extends EntityRenderer<EntityThrowableGrenade>
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-rotation));
         matrixStack.translate(0, -0.15, 0);
 
-        if(entity instanceof EntityThrowableStunGrenade)
+        if(entity instanceof ThrowableStunGrenadeEntity)
         {
             matrixStack.translate(0, entity.getSize(Pose.STANDING).height / 2, 0);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90F));

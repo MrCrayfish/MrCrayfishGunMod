@@ -30,20 +30,20 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber
-public class EntityThrowableStunGrenade extends EntityThrowableGrenade
+public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
 {
-    public EntityThrowableStunGrenade(EntityType<? extends EntityThrowableGrenade> entityType, World world)
+    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, World world)
     {
         super(entityType, world);
     }
 
-    public EntityThrowableStunGrenade(EntityType<? extends EntityThrowableGrenade> entityType,World world, PlayerEntity player)
+    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, World world, PlayerEntity player)
     {
         super(entityType, world, player);
         this.setItem(new ItemStack(ModItems.STUN_GRENADE.get()));
     }
 
-    public EntityThrowableStunGrenade(World world, PlayerEntity player, int maxCookTime)
+    public ThrowableStunGrenadeEntity(World world, PlayerEntity player, int maxCookTime)
     {
         super(ModEntities.THROWABLE_STUN_GRENADE.get(), world, player);
         this.setItem(new ItemStack(ModItems.STUN_GRENADE.get()));

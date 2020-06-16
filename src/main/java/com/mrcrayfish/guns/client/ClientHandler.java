@@ -5,14 +5,14 @@ import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.audio.SoundGunShot;
+import com.mrcrayfish.guns.client.audio.GunShotSound;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.SoundEvents;
 import com.mrcrayfish.guns.client.particle.BloodParticle;
 import com.mrcrayfish.guns.client.particle.BulletHoleParticle;
-import com.mrcrayfish.guns.client.render.entity.RenderGrenade;
-import com.mrcrayfish.guns.client.render.entity.RenderProjectile;
+import com.mrcrayfish.guns.client.render.entity.ThrowableGrenadeRenderer;
+import com.mrcrayfish.guns.client.render.entity.ProjectileRenderer;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.BazookaModel;
 import com.mrcrayfish.guns.client.render.gun.model.GrenadeLauncherModel;
@@ -23,7 +23,7 @@ import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
 import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
 import com.mrcrayfish.guns.client.settings.GunOptions;
-import com.mrcrayfish.guns.entity.EntityProjectile;
+import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModEntities;
@@ -50,31 +50,22 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.MouseSettingsScreen;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
-import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.Entity;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -84,7 +75,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Random;
 
@@ -137,11 +127,11 @@ public class ClientHandler
 
     private static void registerEntityRenders()
     {
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE.get(), RenderProjectile::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.GRENADE.get(), RenderProjectile::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.MISSILE.get(), RenderProjectile::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_GRENADE.get(), RenderGrenade::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_STUN_GRENADE.get(), RenderGrenade::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE.get(), ProjectileRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.GRENADE.get(), ProjectileRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.MISSILE.get(), ProjectileRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
     }
 
     private static void registerColors()
@@ -197,7 +187,7 @@ public class ClientHandler
             }
             else
             {
-                Minecraft.getInstance().getSoundHandler().play(new SoundGunShot(soundEvent, SoundCategory.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch()));
+                Minecraft.getInstance().getSoundHandler().play(new GunShotSound(soundEvent, SoundCategory.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch()));
             }
         }
     }
@@ -224,7 +214,7 @@ public class ClientHandler
         if(world != null)
         {
             Entity entity = world.getEntityByID(message.getEntityId());
-            EntityProjectile projectile = (EntityProjectile) entity;
+            ProjectileEntity projectile = (ProjectileEntity) entity;
             BULLET_RENDERER.addBullet(new Bullet(projectile, message));
         }
     }

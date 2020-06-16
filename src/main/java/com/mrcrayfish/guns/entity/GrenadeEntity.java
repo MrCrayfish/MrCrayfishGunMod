@@ -17,14 +17,14 @@ import net.minecraft.world.server.ServerWorld;
 /**
  * Author: MrCrayfish
  */
-public class EntityGrenade extends EntityProjectile
+public class GrenadeEntity extends ProjectileEntity
 {
-    public EntityGrenade(EntityType<? extends EntityProjectile> entityType, World worldIn)
+    public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, World worldIn)
     {
         super(entityType, worldIn);
     }
 
-    public EntityGrenade(EntityType<? extends EntityProjectile> entityType, World worldIn, LivingEntity shooter, GunItem item, Gun modifiedGun)
+    public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, World worldIn, LivingEntity shooter, GunItem item, Gun modifiedGun)
     {
         super(entityType, worldIn, shooter, item, modifiedGun);
     }

@@ -22,7 +22,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityThrowableItem extends ThrowableEntity implements IEntityAdditionalSpawnData
+public abstract class ThrowableItemEntity extends ThrowableEntity implements IEntityAdditionalSpawnData
 {
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
@@ -31,17 +31,17 @@ public abstract class EntityThrowableItem extends ThrowableEntity implements IEn
     /* The max life of the entity. If -1, will stay alive forever and will need to be explicitly removed. */
     private int maxLife = 20 * 10;
 
-    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World worldIn)
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, World worldIn)
     {
         super(entityType, worldIn);
     }
 
-    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World world, PlayerEntity player)
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, PlayerEntity player)
     {
         super(entityType, player, world);
     }
 
-    public EntityThrowableItem(EntityType<? extends EntityThrowableItem> entityType, World world, double x, double y, double z)
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, double x, double y, double z)
     {
         super(entityType, x, y, z, world);
     }

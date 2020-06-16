@@ -62,7 +62,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class EntityProjectile extends Entity implements IEntityAdditionalSpawnData
+public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData
 {
     private static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && !input.isSpectator() && input.canBeCollidedWith();
     private static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
@@ -77,12 +77,12 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
     protected float additionalDamage = 0.0F;
     protected EntitySize entitySize;
 
-    public EntityProjectile(EntityType<? extends Entity> entityType, World worldIn)
+    public ProjectileEntity(EntityType<? extends Entity> entityType, World worldIn)
     {
         super(entityType, worldIn);
     }
 
-    public EntityProjectile(EntityType<? extends Entity> entityType, World worldIn, LivingEntity shooter, GunItem item, Gun modifiedGun)
+    public ProjectileEntity(EntityType<? extends Entity> entityType, World worldIn, LivingEntity shooter, GunItem item, Gun modifiedGun)
     {
         this(entityType, worldIn);
         this.shooterId = shooter.getEntityId();
