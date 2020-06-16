@@ -1,15 +1,16 @@
 {
    "item.shotgun.fire":                 { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/shotgun/fire" }]},
+   "item.shotgun.silenced_fire":        { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/shotgun/silenced_fire" }]},
    "item.rifle.fire":                   { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/rifle/fire" }]},
+   "item.rifle.silenced_fire":          { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/rifle/silenced_fire" }]},
    "item.pistol.fire":                  { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/pistol/fire" }]},
+   "item.pistol.silenced_fire":         { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/pistol/silenced_fire" }]},
+   "item.pistol.reload":                { "subtitle": "subtitle.cgm.reload",         "sounds": [{ "name": "cgm:item/pistol/reload" }]},
    "item.assault_rifle.fire":           { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/assault_rifle/fire" }]},
+   "item.assault_rifle.silenced_fire":  { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/assault_rifle/silenced_fire" }]},
    "item.grenade_launcher.fire":        { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/grenade_launcher/fire" }]},
    "item.bazooka.fire":                 { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/bazooka/fire", "stream": true }]},
    "item.mini_gun.fire":                { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/mini_gun/fire" }]},
-   "item.pistol.silenced_fire":         { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/pistol/silenced_fire" }]},
-   "item.shotgun.silenced_fire":        { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/shotgun/silenced_fire" }]},
-   "item.rifle.silenced_fire":          { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/rifle/silenced_fire" }]},
-   "item.pistol.reload":                { "subtitle": "subtitle.cgm.reload",         "sounds": [{ "name": "cgm:item/pistol/reload" }]},
    "item.machine_pistol.fire":          { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/machine_pistol/fire" }]},
    "item.machine_pistol.silenced_fire": { "subtitle": "subtitle.cgm.fire.silenced",  "sounds": [{ "name": "cgm:item/machine_pistol/silenced_fire" }]},
    "item.heavy_rifle.fire":             { "subtitle": "subtitle.cgm.fire",           "sounds": [{ "name": "cgm:item/heavy_rifle/fire" }]},
@@ -18,5 +19,4 @@
    "entity.stun_grenade.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/stun_grenade/explosion" }]},
    "entity.stun_grenade.ring":          { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:entity/stun_grenade/ring", "stream": true }]},
    "ui.weapon.attach":                  { "subtitle": "subtitle.cgm.attach",         "sounds": [{ "name": "cgm:ui/weapon/attach" }]}
-
 }

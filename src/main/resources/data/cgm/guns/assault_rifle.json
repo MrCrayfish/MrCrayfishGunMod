@@ -21,7 +21,7 @@
         "fire": "cgm:item.assault_rifle.fire",
         "reload": "cgm:item.pistol.reload",
         "cock": "cgm:item.shotgun.fire",
-        "silencedFire": "cgm:item.rifle.silenced_fire"
+        "silencedFire": "cgm:item.assault_rifle.silenced_fire"
     },
     "display": {
         "flash": {
