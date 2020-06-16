@@ -176,24 +176,8 @@ public class ClientHandler
     private static void registerParticleFactories()
     {
         ParticleManager particleManager = Minecraft.getInstance().particles;
-        particleManager.registerFactory(ModParticleTypes.BULLET_HOLE.get(), new IParticleFactory<BulletHoleData>()
-        {
-            @Nullable
-            @Override
-            public Particle makeParticle(BulletHoleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
-            {
-                return new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos());
-            }
-        });
-        particleManager.registerFactory(ModParticleTypes.BLOOD.get(), new IParticleFactory<BasicParticleType>()
-        {
-            @Nullable
-            @Override
-            public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
-            {
-                return new BloodParticle(worldIn, x, y, z);
-            }
-        });
+        particleManager.registerFactory(ModParticleTypes.BULLET_HOLE.get(), (typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed) -> new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos()));
+        particleManager.registerFactory(ModParticleTypes.BLOOD.get(), (typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed) -> new BloodParticle(worldIn, x, y, z));
     }
 
     private static void registerScreenFactories()
