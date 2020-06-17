@@ -68,14 +68,18 @@ public class Config
      */
     public static class Particle
     {
-        public final ForgeConfigSpec.IntValue bulletHoleLife;
+        public final ForgeConfigSpec.IntValue bulletHoleLifeMin;
+        public final ForgeConfigSpec.IntValue bulletHoleLifeMax;
+        public final ForgeConfigSpec.DoubleValue bulletHoleFadeThreshold;
         public final ForgeConfigSpec.BooleanValue enableBlood;
 
         public Particle(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Properties relating to particles").push("particle");
             {
-                this.bulletHoleLife = builder.comment("The duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLife", 200, 0, Integer.MAX_VALUE);
+                this.bulletHoleLifeMin = builder.comment("The minimum duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLifeMin", 150, 0, Integer.MAX_VALUE);
+                this.bulletHoleLifeMax = builder.comment("The maximum duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLifeMax", 200, 0, Integer.MAX_VALUE);
+                this.bulletHoleFadeThreshold = builder.comment("The percentage of the maximum life that must pass before particles begin fading away. 0 makes the particles always fade and 1 removes facing completely").defineInRange("bulletHoleFadeThreshold", 0.98, 0, 1.0);
                 this.enableBlood = builder.comment("If true, blood will will spawn from entities that are hit from a projectile").define("enableBlood", false);
             }
             builder.pop();
