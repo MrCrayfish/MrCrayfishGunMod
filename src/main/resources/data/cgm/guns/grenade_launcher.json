@@ -13,7 +13,7 @@
         "auto": false,
         "damage": 15.0,
         "size": 0.2,
-        "speed": 1,
+        "speed": 1.5,
         "life": 50,
         "gravity": true,
         "damageReduceOverLife": false,
