@@ -13,6 +13,7 @@ import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageAttachments;
 import com.mrcrayfish.guns.network.message.MessageUnload;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Scope;
@@ -71,6 +72,16 @@ public class ControllerEvents
                         if(event.getState())
                         {
                             reloadCounter = 0;
+                        }
+                    }
+                    break;
+                case Buttons.DPAD_LEFT:
+                    if(heldItem.getItem() instanceof GunItem && Minecraft.getInstance().currentScreen == null)
+                    {
+                        event.setCanceled(true);
+                        if(event.getState())
+                        {
+                            PacketHandler.getPlayChannel().sendToServer(new MessageAttachments());
                         }
                     }
                     break;
