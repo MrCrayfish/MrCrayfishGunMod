@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -72,10 +73,10 @@ public class MissileEntity extends ProjectileEntity
         explosion.doExplosionB(true);
         explosion.clearAffectedBlockPositions();
 
-        if(particle)
+        if(particle && this.shooter instanceof ServerPlayerEntity)
         {
             ServerWorld worldServer = (ServerWorld) this.world;
-            worldServer.spawnParticle(ParticleTypes.EXPLOSION, x, y, z, 1, 0.0, 0.0, 0.0, 0.0); //TODO test
+            worldServer.spawnParticle((ServerPlayerEntity) this.shooter, ParticleTypes.EXPLOSION_EMITTER, true, x, y, z, 1, 0.0, 0.0, 0.0, 0.0); //TODO test
         }
     }
 }
