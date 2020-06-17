@@ -11,6 +11,7 @@ import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
@@ -79,7 +80,7 @@ public class BulletHoleParticle extends SpriteTexturedParticle
             BlockState state = world.getBlockState(pos);
             return Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getTexture(state);
         }
-        return Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(GunMod.BULLET_HOLE_TEXTURE);
+        return Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(MissingTextureSprite.getLocation());
     }
 
     @Override

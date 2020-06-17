@@ -40,7 +40,6 @@ import javax.annotation.Nullable;
 @Mod(Reference.MOD_ID)
 public class GunMod
 {
-    public static final ResourceLocation BULLET_HOLE_TEXTURE = new ResourceLocation(Reference.MOD_ID, "particle/bullet_hole");
     public static boolean controllableLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
     public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
@@ -104,16 +103,6 @@ public class GunMod
         Minecraft mc = event.getMinecraftSupplier().get();
         GunMod.options = new GunOptions(mc.gameDir);
         ClientHandler.setup();
-    }
-
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
-    public void onTextureStitch(TextureStitchEvent.Pre event)
-    {
-        if(event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
-        {
-            event.addSprite(BULLET_HOLE_TEXTURE);
-        }
     }
 
     @SubscribeEvent

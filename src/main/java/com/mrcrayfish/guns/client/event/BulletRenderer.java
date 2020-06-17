@@ -34,7 +34,6 @@ import java.util.List;
  */
 public class BulletRenderer
 {
-    private static final ResourceLocation WHITE_GRADIENT = new ResourceLocation(Reference.MOD_ID, "textures/effect/white_gradient.png");
     private static final RenderState.AlphaState DEFAULT_ALPHA = new RenderState.AlphaState(0.0F);
     private static final RenderState.CullState CULL_DISABLED = new RenderState.CullState(false);
     private static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
