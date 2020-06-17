@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
@@ -16,7 +15,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;

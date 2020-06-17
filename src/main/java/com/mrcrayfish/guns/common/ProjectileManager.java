@@ -6,7 +6,8 @@ import com.mrcrayfish.guns.init.ModEntities;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish

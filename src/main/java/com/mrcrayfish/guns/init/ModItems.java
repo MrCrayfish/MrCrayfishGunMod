@@ -2,7 +2,11 @@ package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.item.*;
+import com.mrcrayfish.guns.item.BarrelItem;
+import com.mrcrayfish.guns.item.GrenadeItem;
+import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.item.ScopeItem;
+import com.mrcrayfish.guns.item.StunGrenadeItem;
 import com.mrcrayfish.guns.object.Barrel;
 import com.mrcrayfish.guns.object.Scope;
 import net.minecraft.item.Item;

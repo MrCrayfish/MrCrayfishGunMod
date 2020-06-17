@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.client.particle;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.client.ClientHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;

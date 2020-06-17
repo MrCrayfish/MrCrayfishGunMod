@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -11,7 +10,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 

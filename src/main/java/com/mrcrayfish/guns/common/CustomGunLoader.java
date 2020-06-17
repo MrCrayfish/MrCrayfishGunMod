@@ -3,11 +3,7 @@ package com.mrcrayfish.guns.common;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.object.CustomGun;
@@ -19,10 +15,8 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraftforge.common.crafting.CraftingHelper;
 
 import java.io.InvalidObjectException;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 

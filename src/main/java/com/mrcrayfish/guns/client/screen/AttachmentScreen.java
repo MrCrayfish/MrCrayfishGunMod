@@ -14,11 +14,8 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 

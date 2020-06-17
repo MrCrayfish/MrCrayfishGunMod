@@ -1,7 +1,11 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.entity.*;
+import com.mrcrayfish.guns.entity.GrenadeEntity;
+import com.mrcrayfish.guns.entity.MissileEntity;
+import com.mrcrayfish.guns.entity.ProjectileEntity;
+import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
+import com.mrcrayfish.guns.entity.ThrowableStunGrenadeEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;

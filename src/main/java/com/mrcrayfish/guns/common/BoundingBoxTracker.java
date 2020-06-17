@@ -8,7 +8,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
