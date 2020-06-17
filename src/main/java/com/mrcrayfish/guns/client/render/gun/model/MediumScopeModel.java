@@ -46,7 +46,6 @@ public class MediumScopeModel implements IOverrideModel
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-            //TODO clean this up because it's spaghetti code
             float scopeSize = 1.325F;
             float size = scopeSize / 16.0F;
             float crop = 0.4F;

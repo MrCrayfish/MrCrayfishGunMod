@@ -93,7 +93,6 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     @Override
     protected void onImpact(RayTraceResult result)
     {
-        //TODO add this back LOL i just want to compile already
         switch(result.getType())
         {
             case BLOCK:

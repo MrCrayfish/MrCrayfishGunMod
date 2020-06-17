@@ -76,7 +76,7 @@ public class MissileEntity extends ProjectileEntity
         if(particle && this.shooter instanceof ServerPlayerEntity)
         {
             ServerWorld worldServer = (ServerWorld) this.world;
-            worldServer.spawnParticle((ServerPlayerEntity) this.shooter, ParticleTypes.EXPLOSION_EMITTER, true, x, y, z, 1, 0.0, 0.0, 0.0, 0.0); //TODO test
+            worldServer.spawnParticle((ServerPlayerEntity) this.shooter, ParticleTypes.EXPLOSION_EMITTER, true, x, y, z, 1, 0.0, 0.0, 0.0, 0.0);
         }
     }
 }
