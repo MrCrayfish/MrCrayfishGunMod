@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public enum SpecialModels
 {
+    FLAME("flame"),
     MINI_GUN_BASE("mini_gun_base"),
     MINI_GUN_BARRELS("mini_gun_barrels"),
     GRENADE_LAUNCHER_BASE("grenade_launcher_base"),
