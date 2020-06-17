@@ -10,8 +10,7 @@
     "type": "minecraft:crafting_shaped",
     "key": {
         "C": {
-            "item": "minecraft:concrete",
-            "data": 8
+            "item": "minecraft:light_gray_concrete"
         },
         "I": {
             "item": "minecraft:iron_ingot"
