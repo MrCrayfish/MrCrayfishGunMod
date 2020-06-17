@@ -24,8 +24,8 @@ import net.minecraft.world.World;
  */
 public class BulletHoleParticle extends SpriteTexturedParticle
 {
-    private Direction direction;
-    private BlockPos pos;
+    private final Direction direction;
+    private final BlockPos pos;
     private int uOffset;
     private int vOffset;
     private float textureDensity;
@@ -36,32 +36,28 @@ public class BulletHoleParticle extends SpriteTexturedParticle
         this.setSprite(this.getSprite(pos));
         this.direction = direction;
         this.pos = pos;
-        this.maxAge = Config.CLIENT.particle.bulletHoleLife.get();
+        this.maxAge = (int) (Config.CLIENT.particle.bulletHoleLifeMin.get() + world.rand.nextFloat() * (Config.CLIENT.particle.bulletHoleLifeMax.get() - Config.CLIENT.particle.bulletHoleLifeMin.get()));
         this.canCollide = false;
         this.particleGravity = 0.0F;
         this.particleScale = 0.05F;
 
         /* Expire the particle straight away if the block is air */
         BlockState state = world.getBlockState(pos);
-        if(world.getBlockState(pos).isAir(world, pos))
-        {
+        if (world.getBlockState(pos).isAir(world, pos))
             this.setExpired();
-        }
 
         int color = this.getBlockColor(state, world, pos, direction);
-        this.particleRed = ((float)(color >> 16 & 255) / 255.0F) / 3.0F;
-        this.particleGreen = ((float)(color >> 8 & 255) / 255.0F) / 3.0F;
-        this.particleBlue = ((float)(color & 255) / 255.0F) / 3.0F;
+        this.particleRed = ((float) (color >> 16 & 255) / 255.0F) / 3.0F;
+        this.particleGreen = ((float) (color >> 8 & 255) / 255.0F) / 3.0F;
+        this.particleBlue = ((float) (color & 255) / 255.0F) / 3.0F;
         this.particleAlpha = 0.9F;
     }
 
     private int getBlockColor(BlockState state, World world, BlockPos pos, Direction direction)
     {
         //Add an exception for grass blocks
-        if(state.getBlock() == Blocks.GRASS_BLOCK)
-        {
+        if (state.getBlock() == Blocks.GRASS_BLOCK)
             return Integer.MAX_VALUE;
-        }
         return Minecraft.getInstance().getBlockColors().getColor(state, world, pos, 0);
     }
 
@@ -78,7 +74,7 @@ public class BulletHoleParticle extends SpriteTexturedParticle
     {
         Minecraft minecraft = Minecraft.getInstance();
         World world = minecraft.world;
-        if(world != null)
+        if (world != null)
         {
             BlockState state = world.getBlockState(pos);
             return Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getTexture(state);
@@ -114,7 +110,7 @@ public class BulletHoleParticle extends SpriteTexturedParticle
     public void tick()
     {
         super.tick();
-        if(this.world.getBlockState(this.pos).isAir(this.world, this.pos))
+        if (this.world.getBlockState(this.pos).isAir(this.world, this.pos))
         {
             this.setExpired();
         }
@@ -131,7 +127,7 @@ public class BulletHoleParticle extends SpriteTexturedParticle
         Vector3f[] points = new Vector3f[]{new Vector3f(-1.0F, 0.0F, -1.0F), new Vector3f(-1.0F, 0.0F, 1.0F), new Vector3f(1.0F, 0.0F, 1.0F), new Vector3f(1.0F, 0.0F, -1.0F)};
         float scale = this.getScale(partialTicks);
 
-        for(int i = 0; i < 4; ++i)
+        for (int i = 0; i < 4; ++i)
         {
             Vector3f vector3f = points[i];
             vector3f.transform(quaternion);
@@ -144,10 +140,11 @@ public class BulletHoleParticle extends SpriteTexturedParticle
         float f5 = this.getMinV();
         float f6 = this.getMaxV();
         int j = this.getBrightnessForRender(partialTicks);
-        buffer.pos((double) points[0].getX(), (double) points[0].getY(), (double) points[0].getZ()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos((double) points[1].getX(), (double) points[1].getY(), (double) points[1].getZ()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos((double) points[2].getX(), (double) points[2].getY(), (double) points[2].getZ()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
-        buffer.pos((double) points[3].getX(), (double) points[3].getY(), (double) points[3].getZ()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        float fade = Config.CLIENT.particle.bulletHoleFadeThreshold.get() >= 1.0f ? 1.0f : 1.0f - (Math.max((float) this.age - (float) this.maxAge * Config.CLIENT.particle.bulletHoleFadeThreshold.get().floatValue(), 0) / ((float) this.maxAge - (float) this.maxAge * Config.CLIENT.particle.bulletHoleFadeThreshold.get().floatValue()));
+        buffer.pos(points[0].getX(), points[0].getY(), points[0].getZ()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha * fade).lightmap(j).endVertex();
+        buffer.pos(points[1].getX(), points[1].getY(), points[1].getZ()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha * fade).lightmap(j).endVertex();
+        buffer.pos(points[2].getX(), points[2].getY(), points[2].getZ()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha * fade).lightmap(j).endVertex();
+        buffer.pos(points[3].getX(), points[3].getY(), points[3].getZ()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha * fade).lightmap(j).endVertex();
     }
 
     @Override
