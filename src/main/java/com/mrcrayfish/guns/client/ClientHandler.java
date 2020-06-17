@@ -11,6 +11,7 @@ import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.SoundEvents;
 import com.mrcrayfish.guns.client.particle.BloodParticle;
 import com.mrcrayfish.guns.client.particle.BulletHoleParticle;
+import com.mrcrayfish.guns.client.render.entity.GrenadeRenderer;
 import com.mrcrayfish.guns.client.render.entity.ThrowableGrenadeRenderer;
 import com.mrcrayfish.guns.client.render.entity.ProjectileRenderer;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
@@ -128,7 +129,7 @@ public class ClientHandler
     private static void registerEntityRenders()
     {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE.get(), ProjectileRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.GRENADE.get(), ProjectileRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.GRENADE.get(), GrenadeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.MISSILE.get(), ProjectileRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
