@@ -14,8 +14,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -46,6 +48,12 @@ public class GunItem extends ColoredItem
     {
         Gun modifiedGun = this.getModifiedGun(stack);
 
+        Item ammo = ForgeRegistries.ITEMS.getValue(modifiedGun.projectile.item);
+        if(ammo != null)
+        {
+            tooltip.add(new TranslationTextComponent("info.cgm.ammo_type", I18n.format(ammo.getTranslationKey())));
+        }
+
         String additionalDamageText = "";
         CompoundNBT tagCompound = stack.getTag();
         if(tagCompound != null)
@@ -70,14 +78,16 @@ public class GunItem extends ColoredItem
         {
             if(tagCompound.getBoolean("IgnoreAmmo"))
             {
-                tooltip.add(new StringTextComponent(TextFormatting.AQUA + I18n.format("info.cgm.ignore_ammo")));
+                tooltip.add(new TranslationTextComponent("info.cgm.ignore_ammo"));
             }
             else
             {
                 int ammoCount = tagCompound.getInt("AmmoCount");
-                tooltip.add(new StringTextComponent(TextFormatting.GRAY + I18n.format("info.cgm.ammo", TextFormatting.RESET + Integer.toString(ammoCount), modifiedGun.general.maxAmmo)));
+                tooltip.add(new TranslationTextComponent("info.cgm.ammo", Integer.toString(ammoCount), modifiedGun.general.maxAmmo));
             }
         }
+
+        tooltip.add(new TranslationTextComponent("info.cgm.attachment_help"));
     }
 
     @Override
