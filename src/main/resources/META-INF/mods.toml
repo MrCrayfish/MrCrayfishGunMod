@@ -3,7 +3,7 @@ loaderVersion="[31,)"
 
 [[mods]]
 modId="cgm"
-version="${file.jarVersion}"
+version="0.16.0"
 displayName="MrCrayfish's Gun Mod"
 displayURL="https://mrcrayfish.com/"
 authors="MrCrayfish"
