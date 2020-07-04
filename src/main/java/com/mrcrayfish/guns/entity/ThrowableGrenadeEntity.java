@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.world.ProjectileExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
@@ -26,18 +27,18 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
         super(entityType, worldIn);
     }
 
-    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, PlayerEntity player)
+    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, LivingEntity entity)
     {
-        super(entityType, world, player);
+        super(entityType, world, entity);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
         this.setItem(new ItemStack(ModItems.GRENADE.get()));
         this.setMaxLife(20 * 3);
     }
 
-    public ThrowableGrenadeEntity(World world, PlayerEntity player, int timeLeft)
+    public ThrowableGrenadeEntity(World world, LivingEntity entity, int timeLeft)
     {
-        super(ModEntities.THROWABLE_GRENADE.get(), world, player);
+        super(ModEntities.THROWABLE_GRENADE.get(), world, entity);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
         this.setItem(new ItemStack(ModItems.GRENADE.get()));
