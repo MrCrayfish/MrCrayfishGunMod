@@ -9,7 +9,7 @@
         "recoilAdsReduction": 0.9
     },
     "projectile": {
-        "item": "cgm:advanced_ammo",
+        "item": "cgm:advanced_bullet",
         "visible": false,
         "gravity": true,
         "damage": 20.0,
