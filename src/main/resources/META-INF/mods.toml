@@ -5,6 +5,7 @@ loaderVersion="[31,)"
 modId="cgm"
 version="0.16.1"
 displayName="MrCrayfish's Gun Mod"
+updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/cgm/update.json"
 displayURL="https://mrcrayfish.com/"
 authors="MrCrayfish"
 description='''
