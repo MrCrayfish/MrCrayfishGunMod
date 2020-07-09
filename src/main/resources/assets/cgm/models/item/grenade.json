@@ -1,5 +1,5 @@
 {
-	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
 	"textures": {
 		"0": "cgm:items/grenade",
 		"particle": "cgm:items/grenade"
@@ -29,30 +29,31 @@
 				"east": {"uv": [8, 0, 10, 2], "texture": "#0"},
 				"south": {"uv": [10, 0, 8, 2], "texture": "#0"},
 				"west": {"uv": [8, 0, 10, 2], "texture": "#0"},
-				"up": {"uv": [8, 2, 10, 4], "texture": "#0"},
-				"down": {"uv": [0, 0, 1.2, 1.2], "texture": "#missing"}
+				"up": {"uv": [8, 2, 10, 4], "texture": "#0"}
 			}
 		},
 		{
 			"name": "Handle Top",
-			"from": [7.5, 5.5, 9],
-			"to": [8.5, 6.5, 11.3],
-			"rotation": {"angle": 22.5, "axis": "x", "origin": [8.1, 6.5, 9]},
+			"from": [7.5, 5.5, 4.7],
+			"to": [8.5, 6.5, 7],
+			"rotation": {"angle": -22.5, "axis": "x", "origin": [8, 6.5, 7]},
 			"faces": {
 				"east": {"uv": [10, 0, 11, 2], "texture": "#0"},
 				"west": {"uv": [10, 0, 11, 2], "texture": "#0"},
-				"up": {"uv": [10, 0, 11, 2], "texture": "#0"}
+				"up": {"uv": [10, 0, 11, 2], "texture": "#0"},
+				"down": {"uv": [10, 0, 11, 2], "texture": "#0"}
 			}
 		},
 		{
 			"name": "Handle Bottom",
-			"from": [7.5, 1.11983, 10.12492],
-			"to": [8.5, 5.61983, 11.12492],
-			"rotation": {"angle": 0, "axis": "y", "origin": [15.5, 12.61983, 18.12492]},
+			"from": [7.5, 1.11983, 4.87508],
+			"to": [8.5, 5.61983, 5.87508],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8.00003, 7.75016]},
 			"faces": {
+				"north": {"uv": [10, 0, 11, 4], "texture": "#0"},
 				"east": {"uv": [10, 0, 11, 4], "texture": "#0"},
-				"south": {"uv": [10, 0, 11, 4], "texture": "#0"},
-				"west": {"uv": [10, 0, 11, 4], "texture": "#0"}
+				"west": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"down": {"uv": [10, 3, 11, 4], "texture": "#0"}
 			}
 		},
 		{
@@ -70,15 +71,18 @@
 			"translation": [0, 2.5, 5]
 		},
 		"firstperson_righthand": {
+			"rotation": [0, 225, 0],
+			"translation": [0, 6, 0]
+		},
+		"firstperson_lefthand": {
 			"rotation": [0, 45, 0],
-			"translation": [0, 6, 0],
-			"scale": [-1, 1, 1]
+			"translation": [0, 6, 0]
 		},
 		"ground": {
 			"translation": [0, 5, 0]
 		},
 		"gui": {
-			"rotation": [30, 225, 0],
+			"rotation": [30, 315, 0],
 			"translation": [0, 6, 0],
 			"scale": [1.5, 1.5, 1.5]
 		},
