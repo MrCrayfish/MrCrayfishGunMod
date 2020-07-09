@@ -14,10 +14,7 @@ import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.init.ModEffects;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
-import com.mrcrayfish.guns.item.BarrelItem;
-import com.mrcrayfish.guns.item.GrenadeItem;
-import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.item.*;
 import com.mrcrayfish.guns.object.Barrel;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
@@ -783,9 +780,9 @@ public class GunRenderer
             matrixStack.translate(0, -0.5, 0);
 
             ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
-            if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof BarrelItem)
+            if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
             {
-                Barrel barrel = ((BarrelItem) barrelStack.getItem()).getBarrel();
+                Barrel barrel = ((IBarrel) barrelStack.getItem()).getBarrel();
                 Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
                 if(positioned != null)
                 {

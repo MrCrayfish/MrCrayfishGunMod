@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.common.container.slot;
 
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.init.ModSounds;
-import com.mrcrayfish.guns.item.AttachmentItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.object.Gun;
