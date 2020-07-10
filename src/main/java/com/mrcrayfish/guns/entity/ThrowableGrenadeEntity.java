@@ -3,11 +3,12 @@ package com.mrcrayfish.guns.entity;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
-import com.mrcrayfish.guns.world.ProjectileExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SExplosionPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -47,7 +48,6 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
     @Override
     protected void registerData()
     {
-
     }
 
     @Override
@@ -56,11 +56,11 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
         super.tick();
         this.prevRotation = this.rotation;
         double speed = this.getMotion().length();
-        if(speed > 0.1)
+        if (speed > 0.1)
         {
             this.rotation += speed * 50;
         }
-        if(this.world.isRemote)
+        if (this.world.isRemote)
         {
             this.world.addParticle(ParticleTypes.SMOKE, true, this.getPosX(), this.getPosY() + 0.25, this.getPosZ(), 0, 0, 0);
         }
@@ -69,20 +69,6 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
     @Override
     public void onDeath()
     {
-        ThrowableGrenadeEntity.createGrenadeExplosion(this, this.owner, this.getPosX(), this.getPosY(), this.getPosZ(), 2.0F, false, true);
-    }
-
-    private static void createGrenadeExplosion(ThrowableGrenadeEntity grenade, Entity thrower, double x, double y, double z, float strength, boolean isFlaming, boolean isSmoking)
-    {
-        Explosion explosion = new ProjectileExplosion(grenade.world, thrower, grenade, grenade.getItem(), x, y, z, ModItems.GRENADE_LAUNCHER.get().getGun().projectile.damage, Config.COMMON.grenades.explosionRadius.get(), Explosion.Mode.NONE);
-        explosion.doExplosionA();
-        explosion.doExplosionB(true);
-        explosion.clearAffectedBlockPositions();
-
-        if(grenade.world instanceof ServerWorld)
-        {
-            ServerWorld worldServer = (ServerWorld) grenade.world;
-            worldServer.spawnParticle(ParticleTypes.EXPLOSION, x, y, z, 0, 0.0, 0.0, 0.0, 0);
-        }
+        GrenadeEntity.createExplosion(this, Config.COMMON.grenades.explosionRadius.get().floatValue());
     }
 }

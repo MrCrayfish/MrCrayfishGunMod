@@ -3,17 +3,14 @@ package com.mrcrayfish.guns.entity;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.guns.world.ProjectileExplosion;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 /**
  * Author: MrCrayfish
@@ -33,13 +30,13 @@ public class MissileEntity extends ProjectileEntity
     @Override
     protected void onTick()
     {
-        if(this.world.isRemote)
+        if (this.world.isRemote)
         {
-            for(int i = 5; i > 0; i--)
+            for (int i = 5; i > 0; i--)
             {
                 this.world.addParticle(ParticleTypes.CLOUD, true, this.getPosX() - (this.getMotion().getX() / i), this.getPosY() - (this.getMotion().getY() / i), this.getPosZ() - (this.getMotion().getZ() / i), 0, 0, 0);
             }
-            if(this.world.rand.nextInt(2) == 0)
+            if (this.world.rand.nextInt(2) == 0)
             {
                 this.world.addParticle(ParticleTypes.SMOKE, true, this.getPosX(), this.getPosY(), this.getPosZ(), 0, 0, 0);
                 this.world.addParticle(ParticleTypes.FLAME, true, this.getPosX(), this.getPosY(), this.getPosZ(), 0, 0, 0);
@@ -50,33 +47,28 @@ public class MissileEntity extends ProjectileEntity
     @Override
     protected void onHitEntity(Entity entity, double x, double y, double z)
     {
-        this.createExplosion(x, y, z, true);
+        createExplosion(this);
     }
 
     @Override
     protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
     {
-        this.createExplosion(x, y, z, true);
+        createExplosion(this);
     }
 
     @Override
     public void onExpired()
     {
-        this.createExplosion(this.getPosX(), this.getPosY(), this.getPosZ(), this.world instanceof ServerWorld);
+        createExplosion(this);
     }
 
-    private void createExplosion(double x, double y, double z, boolean particle)
+    private static void createExplosion(MissileEntity entity)
     {
-        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
-        Explosion explosion = new ProjectileExplosion(this, x, y, z, Config.COMMON.missiles.explosionRadius.get(), mode);
-        explosion.doExplosionA();
-        explosion.doExplosionB(true);
-        explosion.clearAffectedBlockPositions();
+        World world = entity.world;
+        if (world.isRemote())
+            return;
 
-        if(particle && this.shooter instanceof ServerPlayerEntity)
-        {
-            ServerWorld worldServer = (ServerWorld) this.world;
-            worldServer.spawnParticle((ServerPlayerEntity) this.shooter, ParticleTypes.EXPLOSION_EMITTER, true, x, y, z, 1, 0.0, 0.0, 0.0, 0.0);
-        }
+        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
+        world.createExplosion(entity, entity.getPosX(), entity.getPosY(), entity.getPosZ(), Config.COMMON.missiles.explosionRadius.get().floatValue(), false, mode);
     }
 }

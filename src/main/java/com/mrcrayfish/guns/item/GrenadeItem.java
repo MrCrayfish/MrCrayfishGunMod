@@ -40,8 +40,11 @@ public class GrenadeItem extends Item
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count)
     {
+        if (!this.canCook())
+            return;
+
         int duration = this.getUseDuration(stack) - count;
-        if(duration == 10)
+        if (duration == 10)
         {
             player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
         }
@@ -58,11 +61,11 @@ public class GrenadeItem extends Item
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
     {
-        if(this.canCook())
+        if (this.canCook() && !worldIn.isRemote())
         {
-            if(entityLiving instanceof PlayerEntity)
+            if (entityLiving instanceof PlayerEntity)
             {
-                if(!((PlayerEntity) entityLiving).isCreative())
+                if (!((PlayerEntity) entityLiving).isCreative())
                 {
                     stack.shrink(1);
                 }
@@ -77,22 +80,27 @@ public class GrenadeItem extends Item
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft)
     {
-        if(entityLiving instanceof PlayerEntity)
+        if (entityLiving instanceof PlayerEntity)
         {
-            if(!((PlayerEntity) entityLiving).isCreative())
+            if (!((PlayerEntity) entityLiving).isCreative())
             {
                 stack.shrink(1);
             }
         }
-        if(!worldIn.isRemote && entityLiving instanceof PlayerEntity)
+        if (entityLiving instanceof PlayerEntity)
         {
             int duration = this.getUseDuration(stack) - timeLeft;
-            if(duration >= 10)
+            if (duration >= 10)
             {
                 PlayerEntity player = (PlayerEntity) entityLiving;
-                ThrowableGrenadeEntity grenade = this.create(worldIn, player, this.maxCookTime - duration);
-                grenade.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
-                worldIn.addEntity(grenade);
+                if (!worldIn.isRemote)
+                {
+                    ThrowableGrenadeEntity grenade = this.create(worldIn, player, this.maxCookTime - duration);
+                    grenade.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+                    worldIn.addEntity(grenade);
+                }
+                if (!this.canCook())
+                    player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
             }
         }
     }

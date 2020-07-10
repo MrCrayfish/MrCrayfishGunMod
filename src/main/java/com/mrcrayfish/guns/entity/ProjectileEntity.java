@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SExplosionPacket;
 import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -49,6 +50,7 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -569,6 +571,32 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 }
 
                 return p_217300_2_.apply(context);
+            }
+        }
+    }
+
+    /**
+     * Creates a projectile explosion for the specified entity.
+     *
+     * @param entity The entity to explode
+     * @param radius The amount of radius the entity should deal
+     */
+    public static void createExplosion(Entity entity, float radius)
+    {
+        World world = entity.world;
+        if (world.isRemote())
+            return;
+
+        Explosion explosion = new Explosion(world, entity, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, Explosion.Mode.NONE);
+        explosion.doExplosionA();
+        explosion.doExplosionB(true);
+        explosion.clearAffectedBlockPositions();
+
+        for (ServerPlayerEntity serverplayerentity : ((ServerWorld) world).getPlayers())
+        {
+            if (serverplayerentity.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ()) < 4096.0D)
+            {
+                serverplayerentity.connection.sendPacket(new SExplosionPacket(entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius / 5f, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(serverplayerentity)));
             }
         }
     }
