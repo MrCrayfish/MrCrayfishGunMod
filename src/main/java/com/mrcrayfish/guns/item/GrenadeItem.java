@@ -40,8 +40,7 @@ public class GrenadeItem extends Item
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count)
     {
-        if(!this.canCook())
-            return;
+        if(!this.canCook()) return;
 
         int duration = this.getUseDuration(stack) - count;
         if(duration == 10)
@@ -61,11 +60,11 @@ public class GrenadeItem extends Item
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
     {
-        if (this.canCook() && !worldIn.isRemote())
+        if(this.canCook() && !worldIn.isRemote())
         {
-            if (entityLiving instanceof PlayerEntity)
+            if(entityLiving instanceof PlayerEntity)
             {
-                if (!((PlayerEntity) entityLiving).isCreative())
+                if(!((PlayerEntity) entityLiving).isCreative())
                 {
                     stack.shrink(1);
                 }
@@ -79,9 +78,9 @@ public class GrenadeItem extends Item
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft)
     {
-        if (entityLiving instanceof PlayerEntity)
+        if(entityLiving instanceof PlayerEntity)
         {
-            if (!((PlayerEntity) entityLiving).isCreative())
+            if(!((PlayerEntity) entityLiving).isCreative())
             {
                 stack.shrink(1);
             }

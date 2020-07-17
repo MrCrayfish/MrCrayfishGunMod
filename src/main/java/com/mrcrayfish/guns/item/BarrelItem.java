@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.object.Barrel;
-import com.mrcrayfish.guns.object.Scope;
 import net.minecraft.item.Item;
 
 /**

@@ -3,17 +3,11 @@ package com.mrcrayfish.guns.entity;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SExplosionPacket;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 /**
  * Author: MrCrayfish

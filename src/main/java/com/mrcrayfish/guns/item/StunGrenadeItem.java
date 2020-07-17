@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.item;
 import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
 import com.mrcrayfish.guns.entity.ThrowableStunGrenadeEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
 

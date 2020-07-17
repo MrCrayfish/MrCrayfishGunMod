@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.util.ResourceLocation;
 
 public class ProjectileRenderer extends EntityRenderer<ProjectileEntity>

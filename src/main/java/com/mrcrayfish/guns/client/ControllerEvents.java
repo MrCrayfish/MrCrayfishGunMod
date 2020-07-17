@@ -12,7 +12,6 @@ import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IScope;
-import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
 import com.mrcrayfish.guns.network.message.MessageUnload;

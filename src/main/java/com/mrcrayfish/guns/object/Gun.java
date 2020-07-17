@@ -4,7 +4,6 @@ import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.IScope;
-import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
