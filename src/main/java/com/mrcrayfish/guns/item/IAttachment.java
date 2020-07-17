@@ -15,7 +15,9 @@ public interface IAttachment
     enum Type
     {
         SCOPE("scope", "Scope"),
-        BARREL("barrel", "Barrel");
+        BARREL("barrel", "Barrel"),
+        STOCK("stock", "Stock"),
+        UNDER_BARREL("under_barrel", "Under_Barrel");
 
         private String translationKey;
         private String tagKey;
