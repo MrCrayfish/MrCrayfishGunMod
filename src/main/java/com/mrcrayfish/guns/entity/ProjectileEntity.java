@@ -6,12 +6,14 @@ import com.mrcrayfish.guns.common.BoundingBoxTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
+import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -71,11 +73,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     protected int shooterId;
     protected LivingEntity shooter;
+    protected Gun modifiedGun;
     protected Gun.General general;
     protected Gun.Projectile projectile;
     private ItemStack weapon = ItemStack.EMPTY;
     private ItemStack item = ItemStack.EMPTY;
-    protected float damageModifier = 1.0F;
     protected float additionalDamage = 0.0F;
     protected EntitySize entitySize;
 
@@ -89,6 +91,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this(entityType, worldIn);
         this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
+        this.modifiedGun = modifiedGun;
         this.general = modifiedGun.general;
         this.projectile = modifiedGun.projectile;
         this.entitySize = new EntitySize(this.projectile.size, this.projectile.size, false);
@@ -157,11 +160,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public ItemStack getItem()
     {
         return this.item;
-    }
-
-    public void setDamageModifier(float damageModifier)
-    {
-        this.damageModifier = damageModifier;
     }
 
     public void setAdditionalDamage(float additionalDamage)
@@ -446,13 +444,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public float getDamage()
     {
-        float damage = (this.projectile.damage + this.additionalDamage) * this.damageModifier;
+        float initialDamage = (this.projectile.damage + this.additionalDamage);
         if(this.projectile.damageReduceOverLife)
         {
             float modifier = ((float) this.projectile.life - (float) (this.ticksExisted - 1)) / (float) this.projectile.life;
-            damage *= modifier;
+            initialDamage *= modifier;
         }
-        return damage / this.general.projectileAmount;
+        float damage = initialDamage / this.general.projectileAmount;
+        return GunModifierHelper.getModifiedDamage(this.weapon, this.modifiedGun, damage);
     }
 
     @Override

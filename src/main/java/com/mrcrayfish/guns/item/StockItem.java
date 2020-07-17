@@ -17,7 +17,7 @@ public class StockItem extends Item implements IStock
     }
 
     @Override
-    public Stock getStock()
+    public Stock getProperties()
     {
         return this.stock;
     }

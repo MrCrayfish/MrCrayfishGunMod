@@ -9,10 +9,8 @@ import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
-import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
@@ -20,6 +18,7 @@ import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
+import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
@@ -110,7 +109,7 @@ public class CommonHandler
                         SpreadTracker.get(player.getUniqueID()).update(item);
                     }
 
-                    boolean silenced = Gun.getAttachment(IAttachment.Type.BARREL, heldItem).getItem() == ModItems.SILENCER.get();
+                    boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
 
                     for(int i = 0; i < modifiedGun.general.projectileAmount; i++)
                     {
@@ -118,10 +117,6 @@ public class CommonHandler
                         ProjectileEntity bullet = factory.create(world, player, item, modifiedGun);
                         bullet.setWeapon(heldItem);
                         bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
-                        if(silenced)
-                        {
-                            bullet.setDamageModifier(0.75F);
-                        }
                         world.addEntity(bullet);
 
                         if(!modifiedGun.projectile.visible)
@@ -133,7 +128,7 @@ public class CommonHandler
 
                     if(Config.COMMON.aggroMobs.enabled.get())
                     {
-                        double radius = silenced ? Config.COMMON.aggroMobs.rangeSilenced.get() : Config.COMMON.aggroMobs.rangeUnsilenced.get();
+                        double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.COMMON.aggroMobs.range.get());
                         double x = player.getPosX();
                         double y = player.getPosY() + 0.5;
                         double z = player.getPosZ();
@@ -161,8 +156,9 @@ public class CommonHandler
                         double posZ = player.prevPosZ;
                         float volume = silenced ? 0.75F : 1.0F;
                         float pitch = 0.8F + world.rand.nextFloat() * 0.2F;
+                        double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, false);
-                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), Config.SERVER.gunShotMaxDistance.get(), player.world.getDimension().getType())), messageSound);
+                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), radius, player.world.getDimension().getType())), messageSound);
                         PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> player), new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, true));
                     }
 

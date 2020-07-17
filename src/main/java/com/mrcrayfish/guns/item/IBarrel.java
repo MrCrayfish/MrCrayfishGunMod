@@ -7,16 +7,11 @@ import com.mrcrayfish.guns.object.Barrel;
  * Author: Ocelot
  */
 @Beta
-public interface IBarrel extends IAttachment
+public interface IBarrel extends IAttachment<Barrel>
 {
     @Override
     default Type getType()
     {
         return Type.BARREL;
     }
-
-    /**
-     * @return The additional barrel information about this item
-     */
-    Barrel getBarrel();
 }

@@ -17,7 +17,7 @@ public class BarrelItem extends Item implements IBarrel, IColored
     }
 
     @Override
-    public Barrel getBarrel()
+    public Barrel getProperties()
     {
         return this.barrel;
     }

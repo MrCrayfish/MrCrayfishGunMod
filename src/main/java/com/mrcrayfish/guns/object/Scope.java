@@ -1,20 +1,22 @@
 package com.mrcrayfish.guns.object;
 
+import com.mrcrayfish.guns.interfaces.IGunModifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Author: MrCrayfish
  */
-public class Scope
+public class Scope extends Attachment
 {
     private float additionalZoom;
     private double centerOffset;
     private boolean stable;
     private double viewFinderOffset;
 
-    private Scope(float additionalZoom, double centerOffset)
+    private Scope(float additionalZoom, double centerOffset, IGunModifier modifier)
     {
+        super(modifier);
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
     }
@@ -75,6 +77,11 @@ public class Scope
 
     public static Scope create(float additionalZoom, double centerOffset)
     {
-        return new Scope(additionalZoom, centerOffset);
+        return new Scope(additionalZoom, centerOffset, IGunModifier.DEFAULT);
+    }
+
+    public static Scope create(float additionalZoom, double centerOffset, IGunModifier modifier)
+    {
+        return new Scope(additionalZoom, centerOffset, modifier);
     }
 }

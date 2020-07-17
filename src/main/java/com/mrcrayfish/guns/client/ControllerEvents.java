@@ -137,7 +137,7 @@ public class ControllerEvents
                 if(scopeStack.getItem() instanceof IScope && ClientHandler.isAiming())
                 {
                     IScope iscope = (IScope) scopeStack.getItem();
-                    Scope scope = iscope.getScope();
+                    Scope scope = iscope.getProperties();
                     if(scope.isStable())
                     {
                         event.getActions().put(Buttons.RIGHT_THUMB_STICK, new Action("Hold Breath", Action.Side.RIGHT));

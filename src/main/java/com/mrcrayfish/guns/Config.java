@@ -168,8 +168,7 @@ public class Config
     {
         public final ForgeConfigSpec.BooleanValue enabled;
         public final ForgeConfigSpec.BooleanValue angerHostileMobs;
-        public final ForgeConfigSpec.DoubleValue rangeSilenced;
-        public final ForgeConfigSpec.DoubleValue rangeUnsilenced;
+        public final ForgeConfigSpec.DoubleValue range;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> exemptEntities;
 
         public AggroMobs(ForgeConfigSpec.Builder builder)
@@ -178,8 +177,7 @@ public class Config
             {
                 this.enabled = builder.comment("If true, nearby mobs are angered and/or scared by the firing of guns.").define("enabled", true);
                 this.angerHostileMobs = builder.comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.").define("angerHostileMobs", true);
-                this.rangeSilenced = builder.comment("Any mobs within a sphere of this radius will aggro on the shooter of a silenced gun.").defineInRange("silencedRange", 5.0, 0.0, Double.MAX_VALUE);
-                this.rangeUnsilenced = builder.comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.").defineInRange("unsilencedRange", 20.0, 0.0, Double.MAX_VALUE);
+                this.range = builder.comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.").defineInRange("unsilencedRange", 20.0, 0.0, Double.MAX_VALUE);
                 this.exemptEntities = builder.comment("Any mobs of defined will not aggro on shooters").defineList("exemptClasses", Collections.singletonList("minecraft:villager"), o -> true);
             }
             builder.pop();

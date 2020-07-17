@@ -387,7 +387,7 @@ public class GunRenderer
         ItemStack stockStack = Gun.getAttachment(IAttachment.Type.STOCK, item);
         if(!stockStack.isEmpty() && stockStack.getItem() instanceof IStock)
         {
-            Stock stock = ((IStock) stockStack.getItem()).getStock();
+            Stock stock = ((IStock) stockStack.getItem()).getProperties();
             recoilReduction = MathHelper.clamp(stock.getRecoilReduction(), 0.0F, 1.0F);
         }
         recoilReduction = 1.0F - recoilReduction;
@@ -798,7 +798,7 @@ public class GunRenderer
             ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
             if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
             {
-                Barrel barrel = ((IBarrel) barrelStack.getItem()).getBarrel();
+                Barrel barrel = ((IBarrel) barrelStack.getItem()).getProperties();
                 Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
                 if(positioned != null)
                 {

@@ -762,7 +762,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 Scope scope = null;
                 if(scopeStack.getItem() instanceof IScope)
                 {
-                    scope = ((IScope) scopeStack.getItem()).getScope();
+                    scope = ((IScope) scopeStack.getItem()).getProperties();
                 }
                 return scope;
             }

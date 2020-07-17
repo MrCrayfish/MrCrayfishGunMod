@@ -17,7 +17,7 @@ public class ScopeItem extends Item implements IScope, IColored
     }
 
     @Override
-    public Scope getScope()
+    public Scope getProperties()
     {
         return this.scope;
     }
