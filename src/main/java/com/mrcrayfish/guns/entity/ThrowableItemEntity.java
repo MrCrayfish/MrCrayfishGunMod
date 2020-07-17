@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.entity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
@@ -36,7 +37,7 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
         super(entityType, worldIn);
     }
 
-    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, PlayerEntity player)
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, LivingEntity player)
     {
         super(entityType, player, world);
     }

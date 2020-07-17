@@ -11,6 +11,7 @@ import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.item.IScope;
 import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
@@ -134,10 +135,10 @@ public class ControllerEvents
                 }
 
                 ItemStack scopeStack = Gun.getScopeStack(heldItem);
-                if(scopeStack.getItem() instanceof ScopeItem && ClientHandler.isAiming())
+                if(scopeStack.getItem() instanceof IScope && ClientHandler.isAiming())
                 {
-                    ScopeItem scopeItem = (ScopeItem) scopeStack.getItem();
-                    Scope scope = scopeItem.getScope();
+                    IScope iscope = (IScope) scopeStack.getItem();
+                    Scope scope = iscope.getScope();
                     if(scope.isStable())
                     {
                         event.getActions().put(Buttons.RIGHT_THUMB_STICK, new Action("Hold Breath", Action.Side.RIGHT));

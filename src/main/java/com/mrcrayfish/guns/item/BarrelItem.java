@@ -1,22 +1,25 @@
 package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.object.Barrel;
+import com.mrcrayfish.guns.object.Scope;
+import net.minecraft.item.Item;
 
 /**
  * Author: MrCrayfish
  */
-public class BarrelItem extends AttachmentItem
+public class BarrelItem extends ColoredItem implements IBarrel
 {
-    private Barrel barrel;
+    private final Barrel barrel;
 
-    public BarrelItem(Barrel barrel, Properties properties)
+    public BarrelItem(Barrel barrel, Item.Properties properties)
     {
-        super(properties, Type.BARREL);
+        super(properties);
         this.barrel = barrel;
     }
 
+    @Override
     public Barrel getBarrel()
     {
-        return barrel;
+        return this.barrel;
     }
 }

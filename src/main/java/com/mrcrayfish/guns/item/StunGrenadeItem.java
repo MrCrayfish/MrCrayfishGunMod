@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
 import com.mrcrayfish.guns.entity.ThrowableStunGrenadeEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
@@ -17,9 +18,9 @@ public class StunGrenadeItem extends GrenadeItem
     }
 
     @Override
-    public ThrowableGrenadeEntity create(World world, PlayerEntity player, int timeLeft)
+    public ThrowableGrenadeEntity create(World world, LivingEntity entity, int timeLeft)
     {
-        return new ThrowableStunGrenadeEntity(world, player, 20 * 2);
+        return new ThrowableStunGrenadeEntity(world, entity, 20 * 2);
     }
 
     @Override
