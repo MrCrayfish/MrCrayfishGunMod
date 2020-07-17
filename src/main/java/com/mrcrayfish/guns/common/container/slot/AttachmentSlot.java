@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.common.container.slot;
 
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.init.ModSounds;
-import com.mrcrayfish.guns.item.AttachmentItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.object.Gun;
@@ -52,7 +51,7 @@ public class AttachmentSlot extends Slot
         }
         GunItem item = (GunItem) this.weapon.getItem();
         Gun modifiedGun = item.getModifiedGun(this.weapon);
-        return stack.getItem() instanceof AttachmentItem && ((AttachmentItem) stack.getItem()).getType() == this.type && modifiedGun.canAttachType(this.type);
+        return stack.getItem() instanceof IAttachment && ((IAttachment) stack.getItem()).getType() == this.type && modifiedGun.canAttachType(this.type);
     }
 
     @Override

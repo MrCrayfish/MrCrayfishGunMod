@@ -40,11 +40,11 @@ public class GrenadeItem extends Item
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count)
     {
-        if (!this.canCook())
+        if(!this.canCook())
             return;
 
         int duration = this.getUseDuration(stack) - count;
-        if (duration == 10)
+        if(duration == 10)
         {
             player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
         }
@@ -70,8 +70,7 @@ public class GrenadeItem extends Item
                     stack.shrink(1);
                 }
             }
-            PlayerEntity player = (PlayerEntity) entityLiving;
-            ThrowableGrenadeEntity grenade = this.create(worldIn, player, 0);
+            ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, 0);
             grenade.onDeath();
         }
         return stack;
@@ -87,27 +86,21 @@ public class GrenadeItem extends Item
                 stack.shrink(1);
             }
         }
-        if (entityLiving instanceof PlayerEntity)
+        if(!worldIn.isRemote())
         {
             int duration = this.getUseDuration(stack) - timeLeft;
-            if (duration >= 10)
+            if(duration >= 10)
             {
-                PlayerEntity player = (PlayerEntity) entityLiving;
-                if (!worldIn.isRemote)
-                {
-                    ThrowableGrenadeEntity grenade = this.create(worldIn, player, this.maxCookTime - duration);
-                    grenade.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
-                    worldIn.addEntity(grenade);
-                }
-                if (!this.canCook())
-                    player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+                ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
+                grenade.shoot(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+                worldIn.addEntity(grenade);
             }
         }
     }
 
-    public ThrowableGrenadeEntity create(World world, PlayerEntity player, int timeLeft)
+    public ThrowableGrenadeEntity create(World world, LivingEntity entity, int timeLeft)
     {
-        return new ThrowableGrenadeEntity(world, player, timeLeft);
+        return new ThrowableGrenadeEntity(world, entity, timeLeft);
     }
 
     public boolean canCook()
