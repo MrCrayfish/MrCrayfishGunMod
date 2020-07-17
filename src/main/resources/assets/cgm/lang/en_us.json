@@ -54,5 +54,7 @@
     "container.cgm.attachments.window_help": "Click to move and rotate",
     "slot.cgm.attachment.not_applicable": "\u00a7cNot applicable",
     "slot.cgm.attachment.scope": "Scope",
-    "slot.cgm.attachment.barrel": "Barrel"
+    "slot.cgm.attachment.barrel": "Barrel",
+    "slot.cgm.attachment.stock": "Stock",
+    "slot.cgm.attachment.under_barrel": "Under Barrel"
 }

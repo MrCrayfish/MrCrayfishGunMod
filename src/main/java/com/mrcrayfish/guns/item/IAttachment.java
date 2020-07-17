@@ -14,26 +14,34 @@ public interface IAttachment
 
     enum Type
     {
-        SCOPE("Scope"), BARREL("Barrel");
+        SCOPE("scope", "Scope"),
+        BARREL("barrel", "Barrel");
 
-        private String id;
+        private String translationKey;
+        private String tagKey;
 
-        Type(String id)
+        Type(String translationKey, String tagKey)
         {
-            this.id = id;
+            this.translationKey = translationKey;
+            this.tagKey = tagKey;
         }
 
-        public String getId()
+        public String getTranslationKey()
         {
-            return this.id;
+            return this.translationKey;
+        }
+
+        public String getTagKey()
+        {
+            return this.tagKey;
         }
 
         @Nullable
-        public static Type getType(String s)
+        public static Type byTagKey(String s)
         {
             for(Type type : values())
             {
-                if(type.id.equalsIgnoreCase(s))
+                if(type.tagKey.equalsIgnoreCase(s))
                 {
                     return type;
                 }

@@ -724,7 +724,7 @@ public class GunRenderer
             CompoundNBT attachments = gunTag.getCompound("Attachments");
             for(String attachmentKey : attachments.keySet())
             {
-                IAttachment.Type type = IAttachment.Type.getType(attachmentKey);
+                IAttachment.Type type = IAttachment.Type.byTagKey(attachmentKey);
                 if(gun.canAttachType(type))
                 {
                     ItemStack attachmentStack = Gun.getAttachment(type, stack);

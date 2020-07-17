@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.item.IAttachment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -70,27 +71,20 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
 
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
-        if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16, 18, 18))
-        {
-            if(!this.container.getSlot(0).isEnabled())
-            {
-                this.renderTooltip(Arrays.asList(I18n.format("slot.cgm.attachment.scope"), I18n.format("slot.cgm.attachment.not_applicable")), mouseX, mouseY, this.minecraft.fontRenderer);
-            }
-            else if(this.weaponInventory.getStackInSlot(0).isEmpty())
-            {
-                this.renderTooltip(Collections.singletonList(I18n.format("slot.cgm.attachment.scope")), mouseX, mouseY, this.minecraft.fontRenderer);
-            }
-        }
 
-        if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 34, 18, 18))
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
         {
-            if(!this.container.getSlot(1).isEnabled())
+            if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16 + i * 18, 18, 18))
             {
-                this.renderTooltip(Arrays.asList(I18n.format("slot.cgm.attachment.barrel"), I18n.format("slot.cgm.attachment.not_applicable")), mouseX, mouseY, this.minecraft.fontRenderer);
-            }
-            else if(this.weaponInventory.getStackInSlot(1).isEmpty())
-            {
-                this.renderTooltip(Collections.singletonList(I18n.format("slot.cgm.attachment.barrel")), mouseX, mouseY, this.minecraft.fontRenderer);
+                IAttachment.Type type = IAttachment.Type.values()[i];
+                if(!this.container.getSlot(i).isEnabled())
+                {
+                    this.renderTooltip(Arrays.asList(I18n.format("slot.cgm.attachment." + type.getTranslationKey()), I18n.format("slot.cgm.attachment.not_applicable")), mouseX, mouseY, this.minecraft.fontRenderer);
+                }
+                else if(this.weaponInventory.getStackInSlot(i).isEmpty())
+                {
+                    this.renderTooltip(Collections.singletonList(I18n.format("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY, this.minecraft.fontRenderer);
+                }
             }
         }
     }
@@ -159,22 +153,18 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
         int top = (this.height - this.ySize) / 2;
         this.blit(left, top, 0, 0, this.xSize, this.ySize);
 
-        if(!this.container.getSlot(0).isEnabled())
+        /* Draws the icons for each attachment slot. If not applicable
+         * for the weapon, it will draw a cross instead. */
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
         {
-            this.blit(left + 8, top + 17, 176, 32, 16, 16);
-        }
-        else if(this.weaponInventory.getStackInSlot(0).isEmpty())
-        {
-            this.blit(left + 8, top + 17, 176, 0, 16, 16);
-        }
-
-        if(!this.container.getSlot(1).isEnabled())
-        {
-            this.blit(left + 8, top + 35, 176, 32, 16, 16);
-        }
-        else if(this.weaponInventory.getStackInSlot(1).isEmpty())
-        {
-            this.blit(left + 8, top + 35, 176, 16, 16, 16);
+            if(!this.container.getSlot(i).isEnabled())
+            {
+                this.blit(left + 8, top + 17 + i * 18, 176, 0, 16, 16);
+            }
+            else if(this.weaponInventory.getStackInSlot(i).isEmpty())
+            {
+                this.blit(left + 8, top + 17 + i * 18, 176, 16 + i * 16, 16, 16);
+            }
         }
     }
 
