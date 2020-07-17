@@ -1,8 +1,8 @@
 {
     "general": {
-        "rate": 40,
+        "rate": 10,
         "gripType": "cgm:two_handed",
-        "maxAmmo": 1,
+        "maxAmmo": 8,
         "recoilAngle": 10.0,
         "recoilKick": 1.0,
         "recoilDurationOffset": 0.25,
@@ -12,7 +12,7 @@
         "item": "cgm:advanced_bullet",
         "visible": false,
         "gravity": true,
-        "damage": 20.0,
+        "damage": 8.0,
         "size": 0.0625,
         "speed": 30.0,
         "life": 10,
