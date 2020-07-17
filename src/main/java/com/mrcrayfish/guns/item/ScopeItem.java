@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 /**
  * Author: MrCrayfish
  */
-public class ScopeItem extends ColoredItem implements IScope
+public class ScopeItem extends Item implements IScope, IColored
 {
     private final Scope scope;
 

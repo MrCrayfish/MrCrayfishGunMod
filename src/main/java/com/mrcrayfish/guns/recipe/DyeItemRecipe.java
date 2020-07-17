@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.recipe;
 
 import com.mrcrayfish.guns.init.ModRecipeSerializers;
-import com.mrcrayfish.guns.item.ColoredItem;
+import com.mrcrayfish.guns.item.IColored;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
@@ -35,7 +35,7 @@ public class DyeItemRecipe extends SpecialRecipe
             ItemStack stack = inventory.getStackInSlot(i);
             if(!stack.isEmpty())
             {
-                if(stack.getItem() instanceof ColoredItem)
+                if(stack.getItem() instanceof IColored)
                 {
                     if(!item.isEmpty())
                     {
@@ -68,7 +68,7 @@ public class DyeItemRecipe extends SpecialRecipe
             ItemStack stack = inventory.getStackInSlot(i);
             if(!stack.isEmpty())
             {
-                if(stack.getItem() instanceof ColoredItem)
+                if(stack.getItem() instanceof IColored)
                 {
                     if(!item.isEmpty())
                     {
@@ -87,7 +87,7 @@ public class DyeItemRecipe extends SpecialRecipe
             }
         }
 
-        return !item.isEmpty() && !dyes.isEmpty() ? ColoredItem.dye(item, dyes) : ItemStack.EMPTY;
+        return !item.isEmpty() && !dyes.isEmpty() ? IColored.dye(item, dyes) : ItemStack.EMPTY;
     }
 
     @Override

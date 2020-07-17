@@ -24,7 +24,7 @@ import java.awt.*;
 import java.util.List;
 
 @Beta
-public class GunItem extends ColoredItem
+public class GunItem extends Item implements IColored
 {
     private Gun gun = new Gun();
 

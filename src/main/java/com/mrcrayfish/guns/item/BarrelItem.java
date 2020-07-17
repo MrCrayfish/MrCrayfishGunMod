@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 /**
  * Author: MrCrayfish
  */
-public class BarrelItem extends ColoredItem implements IBarrel
+public class BarrelItem extends Item implements IBarrel, IColored
 {
     private final Barrel barrel;
 

@@ -11,9 +11,9 @@ import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
-import com.mrcrayfish.guns.item.ColoredItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
@@ -235,9 +235,9 @@ public class CommonHandler
                     }
 
                     ItemStack stack = recipe.getItem();
-                    if(stack.getItem() instanceof ColoredItem)
+                    if(stack.getItem() instanceof IColored)
                     {
-                        ColoredItem colored = (ColoredItem) stack.getItem();
+                        IColored colored = (IColored) stack.getItem();
                         colored.setColor(stack, color);
                     }
                     world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack));

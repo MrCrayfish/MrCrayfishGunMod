@@ -8,7 +8,7 @@ import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
-import com.mrcrayfish.guns.item.ColoredItem;
+import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageCraft;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
@@ -139,9 +139,9 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         WorkbenchRecipe recipe = this.recipes.get(currentIndex);
         ItemStack item = recipe.getItem();
-        if(item.getItem() instanceof ColoredItem)
+        if(item.getItem() instanceof IColored)
         {
-            ColoredItem colored = (ColoredItem) item.getItem();
+            IColored colored = (IColored) item.getItem();
             if(!this.workbench.getStackInSlot(0).isEmpty())
             {
                 ItemStack dyeStack = this.workbench.getStackInSlot(0);
