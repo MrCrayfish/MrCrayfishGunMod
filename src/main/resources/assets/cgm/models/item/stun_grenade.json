@@ -1,5 +1,6 @@
 {
-	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
+	"parent": "cgm:item/grenade",
 	"textures": {
 		"0": "cgm:items/stun_grenade",
 		"particle": "cgm:items/stun_grenade"
@@ -60,24 +61,27 @@
 		},
 		{
 			"name": "Handle Top",
-			"from": [7.5, 5.5, 9],
-			"to": [8.5, 6.5, 10.7],
-			"rotation": {"angle": 22.5, "axis": "x", "origin": [8.1, 6.5, 9]},
+			"from": [7.5, 5.5, 5.3],
+			"to": [8.5, 6.5, 7],
+			"rotation": {"angle": -22.5, "axis": "x", "origin": [8.1, 6.5, 7]},
 			"faces": {
 				"east": {"uv": [10, 0, 11, 2], "texture": "#0"},
 				"west": {"uv": [10, 0, 11, 2], "texture": "#0"},
-				"up": {"uv": [10, 0, 11, 2], "texture": "#0"}
+				"up": {"uv": [10, 0, 11, 2], "texture": "#0"},
+				"down": {"uv": [10, 0, 11, 2], "texture": "#0"}
 			}
 		},
 		{
 			"name": "Handle Bottom",
-			"from": [7.5, 1.34944, 9.5706],
-			"to": [8.5, 5.84944, 10.5706],
-			"rotation": {"angle": 0, "axis": "y", "origin": [15.5, 12.84944, 17.5706]},
+			"from": [7.5, 1.34944, 5.4294],
+			"to": [8.5, 5.84944, 6.4294],
+			"rotation": {"angle": 0, "axis": "y", "origin": [15.5, 12.84944, 13.4294]},
 			"faces": {
+				"north": {"uv": [10, 0, 11, 4], "texture": "#0"},
 				"east": {"uv": [10, 0, 11, 4], "texture": "#0"},
 				"south": {"uv": [10, 0, 11, 4], "texture": "#0"},
-				"west": {"uv": [10, 0, 11, 4], "texture": "#0"}
+				"west": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"down": {"uv": [10, 3, 11, 4], "texture": "#0"}
 			}
 		},
 		{
@@ -89,29 +93,5 @@
 				"east": {"uv": [11, 0, 14, 3], "texture": "#0"}
 			}
 		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [75, 45, 0],
-			"translation": [0, 2.5, 5]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, 45, 0],
-			"translation": [0, 6, 0],
-			"scale": [-1, 1, 1]
-		},
-		"ground": {
-			"translation": [0, 5, 0]
-		},
-		"gui": {
-			"rotation": [30, 225, 0],
-			"translation": [0, 6, 0],
-			"scale": [1.5, 1.5, 1.5]
-		},
-		"fixed": {
-			"rotation": [0, 90, 0],
-			"translation": [-0.75, 9.5, -4],
-			"scale": [2, 2, 2]
-		}
-	}
+	]
 }
