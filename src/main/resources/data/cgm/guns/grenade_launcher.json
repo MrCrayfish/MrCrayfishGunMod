@@ -41,6 +41,10 @@
             "scope": {
                 "yOffset": 5.2,
                 "zOffset": 2.7
+            },
+            "stock": {
+                "yOffset": 3.5,
+                "zOffset": 8.2
             }
         }
     }

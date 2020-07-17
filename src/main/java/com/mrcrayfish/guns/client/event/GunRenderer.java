@@ -18,10 +18,12 @@ import com.mrcrayfish.guns.item.GrenadeItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.IBarrel;
+import com.mrcrayfish.guns.item.IStock;
 import com.mrcrayfish.guns.object.Barrel;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Scope;
+import com.mrcrayfish.guns.object.Stock;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
@@ -339,7 +341,7 @@ public class GunRenderer
         matrixStack.translate(0.56, -0.52, -0.72);
 
         /* Applies recoil and reload rotations */
-        this.applyRecoil(matrixStack, heldItem.getItem(), modifiedGun);
+        this.applyRecoil(matrixStack, heldItem, modifiedGun);
         this.applyReload(matrixStack, event.getPartialTicks());
 
         /* Render offhand arm so it is holding the weapon. Only applies if it's a two handed weapon */
@@ -362,10 +364,10 @@ public class GunRenderer
         matrixStack.rotate(Vector3f.XP.rotationDegrees(45F * reloadProgress));
     }
 
-    private void applyRecoil(MatrixStack matrixStack, Item item, Gun gun)
+    private void applyRecoil(MatrixStack matrixStack, ItemStack item, Gun gun)
     {
         CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldown = tracker.getCooldown(item, Minecraft.getInstance().getRenderPartialTicks());
+        float cooldown = tracker.getCooldown(item.getItem(), Minecraft.getInstance().getRenderPartialTicks());
         cooldown = cooldown >= gun.general.recoilDurationOffset ? (cooldown - gun.general.recoilDurationOffset) / (1.0F - gun.general.recoilDurationOffset) : 0.0F;
 
         if(cooldown >= 0.8)
@@ -381,9 +383,20 @@ public class GunRenderer
 
         this.recoilAngle = gun.general.recoilAngle;
 
-        matrixStack.translate(0, 0, gun.general.recoilKick * 0.0625 * this.recoilNormal * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress)));
+        float recoilReduction = 0.0F;
+        ItemStack stockStack = Gun.getAttachment(IAttachment.Type.STOCK, item);
+        if(!stockStack.isEmpty() && stockStack.getItem() instanceof IStock)
+        {
+            Stock stock = ((IStock) stockStack.getItem()).getStock();
+            recoilReduction = MathHelper.clamp(stock.getRecoilReduction(), 0.0F, 1.0F);
+        }
+        recoilReduction = 1.0F - recoilReduction;
+
+        double kick = gun.general.recoilKick * 0.0625 * this.recoilNormal * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress));
+        float recoil = (float) (gun.general.recoilAngle * this.recoilNormal) * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress));
+        matrixStack.translate(0, 0, kick * recoilReduction);
         matrixStack.translate(0, 0, 0.35);
-        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) (gun.general.recoilAngle * this.recoilNormal) * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress))));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(recoil * recoilReduction));
         matrixStack.translate(0, 0, -0.35);
     }
 
@@ -722,9 +735,9 @@ public class GunRenderer
             Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
             CompoundNBT gunTag = ItemStackUtil.createTagCompound(stack);
             CompoundNBT attachments = gunTag.getCompound("Attachments");
-            for(String attachmentKey : attachments.keySet())
+            for(String tagKey : attachments.keySet())
             {
-                IAttachment.Type type = IAttachment.Type.byTagKey(attachmentKey);
+                IAttachment.Type type = IAttachment.Type.byTagKey(tagKey);
                 if(gun.canAttachType(type))
                 {
                     ItemStack attachmentStack = Gun.getAttachment(type, stack);

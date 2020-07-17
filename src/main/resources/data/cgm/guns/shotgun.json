@@ -47,6 +47,10 @@
                 "yOffset": 3.6506,
                 "zOffset": -3.8,
                 "scale": 0.5
+            },
+            "stock": {
+                "yOffset": 3.6506,
+                "zOffset": 8.4
             }
         }
     }

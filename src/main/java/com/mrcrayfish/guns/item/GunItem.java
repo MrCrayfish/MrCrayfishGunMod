@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.item;
 
 import com.google.common.annotations.Beta;
+import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.resources.I18n;
@@ -87,7 +88,7 @@ public class GunItem extends Item implements IColored
             }
         }
 
-        tooltip.add(new TranslationTextComponent("info.cgm.attachment_help"));
+        tooltip.add(new TranslationTextComponent("info.cgm.attachment_help", KeyBinds.KEY_ATTACHMENTS.getLocalizedName().toUpperCase()));
     }
 
     @Override

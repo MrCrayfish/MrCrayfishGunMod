@@ -34,7 +34,7 @@
     "info.cgm.ignore_ammo": "§bInfinite Ammo",
     "info.cgm.ammo": "§7Ammo:§r %s/%s",
     "info.cgm.ammo_type": "§7Ammo Type:§r %s",
-    "info.cgm.attachment_help": "§ePress Z in-game for Attachments",
+    "info.cgm.attachment_help": "§ePress %s in-game for Attachments",
     "key.categories.gun": "MrCrayfish's Gun Mod",
     "key.cgm.reload": "Reload",
     "key.cgm.unload": "Unload",

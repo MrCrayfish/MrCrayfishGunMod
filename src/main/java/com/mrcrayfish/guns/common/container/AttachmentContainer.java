@@ -14,6 +14,8 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
+import java.util.Arrays;
+
 /**
  * Author: MrCrayfish
  */
@@ -35,10 +37,14 @@ public class AttachmentContainer extends Container
     public AttachmentContainer(int windowId, PlayerInventory playerInventory, ItemStack stack)
     {
         this(windowId, playerInventory);
-        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        ItemStack[] attachments = new ItemStack[IAttachment.Type.values().length];
+        for(int i = 0; i < attachments.length; i++)
         {
-            ItemStack attachment = Gun.getAttachment(IAttachment.Type.values()[i], stack);
-            this.weaponInventory.setInventorySlotContents(i, attachment);
+            attachments[i] = Gun.getAttachment(IAttachment.Type.values()[i], stack);
+        }
+        for(int i = 0; i < attachments.length; i++)
+        {
+            this.weaponInventory.setInventorySlotContents(i, attachments[i]);
         }
         this.loaded = true;
     }
@@ -100,7 +106,7 @@ public class AttachmentContainer extends Container
 
         for(int i = 0; i < this.getWeaponInventory().getSizeInventory(); i++)
         {
-            ItemStack attachment = this.getWeaponInventory().getStackInSlot(i);
+            ItemStack attachment = this.getSlot(i).getStack();
             if(attachment.getItem() instanceof IAttachment)
             {
                 attachments.put(((IAttachment) attachment.getItem()).getType().getTagKey(), attachment.write(new CompoundNBT()));
