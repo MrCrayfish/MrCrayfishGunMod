@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -22,9 +23,9 @@ public class MissileEntity extends ProjectileEntity
         super(entityType, worldIn);
     }
 
-    public MissileEntity(EntityType<? extends ProjectileEntity> entityType, World worldIn, LivingEntity shooter, GunItem item, Gun modifiedGun)
+    public MissileEntity(EntityType<? extends ProjectileEntity> entityType, World worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
     {
-        super(entityType, worldIn, shooter, item, modifiedGun);
+        super(entityType, worldIn, shooter, weapon, item, modifiedGun);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class GunModifiers
         }
 
         @Override
-        public double modifySilencedFireSoundRadius(double radius)
+        public double modifyFireSoundRadius(double radius)
         {
             return radius * 0.25;
         }
@@ -27,6 +27,24 @@ public class GunModifiers
         public float modifyProjectileDamage(ItemStack stack, Gun modifiedGun, float damage)
         {
             return damage * 0.75F;
+        }
+    };
+
+    public static final IGunModifier RECOIL_REDUCTION = new IGunModifier()
+    {
+        @Override
+        public float recoilModifier()
+        {
+            return 0.75F;
+        }
+    };
+
+    public static final IGunModifier IMPROVED_RECOIL_REDUCTION = new IGunModifier()
+    {
+        @Override
+        public float recoilModifier()
+        {
+            return 0.5F;
         }
     };
 }

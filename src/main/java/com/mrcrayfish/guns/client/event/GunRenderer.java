@@ -24,6 +24,7 @@ import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Scope;
 import com.mrcrayfish.guns.object.Stock;
+import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
@@ -383,18 +384,11 @@ public class GunRenderer
 
         this.recoilAngle = gun.general.recoilAngle;
 
-        float recoilReduction = 0.0F;
-        ItemStack stockStack = Gun.getAttachment(IAttachment.Type.STOCK, item);
-        if(!stockStack.isEmpty() && stockStack.getItem() instanceof IStock)
-        {
-            Stock stock = ((IStock) stockStack.getItem()).getProperties();
-            recoilReduction = MathHelper.clamp(stock.getRecoilReduction(), 0.0F, 1.0F);
-        }
-        recoilReduction = 1.0F - recoilReduction;
-
+        float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
+        float recoilReduction = 1.0F - GunModifierHelper.getRecoilReduction(item);
         double kick = gun.general.recoilKick * 0.0625 * this.recoilNormal * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress));
         float recoil = (float) (gun.general.recoilAngle * this.recoilNormal) * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress));
-        matrixStack.translate(0, 0, kick * recoilReduction);
+        matrixStack.translate(0, 0, kick * kickReduction);
         matrixStack.translate(0, 0, 0.35);
         matrixStack.rotate(Vector3f.XP.rotationDegrees(recoil * recoilReduction));
         matrixStack.translate(0, 0, -0.35);
@@ -818,6 +812,7 @@ public class GunRenderer
 
                 double partialSize = modifiedGun.display.flash.size / 5.0;
                 double size = modifiedGun.display.flash.size - partialSize + partialSize * this.muzzleFlashSize;
+                size = GunModifierHelper.getMuzzleFlashSize(weapon, size);
                 RenderSystem.rotatef(360F * this.muzzleFlashRoll, 0, 0, 1);
                 RenderSystem.rotatef(180F * this.muzzleFlashYaw, 1, 0, 0);
                 RenderSystem.translated(-size / 2, -size / 2, 0);

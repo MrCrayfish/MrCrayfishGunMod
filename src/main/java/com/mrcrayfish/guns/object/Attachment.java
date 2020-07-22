@@ -7,14 +7,14 @@ import com.mrcrayfish.guns.interfaces.IGunModifier;
  */
 public abstract class Attachment
 {
-    private final IGunModifier modifier;
+    private final IGunModifier[] modifier;
 
-    public Attachment(IGunModifier modifier)
+    public Attachment(IGunModifier ... modifier)
     {
         this.modifier = modifier;
     }
 
-    public IGunModifier getModifier()
+    public IGunModifier[] getModifier()
     {
         return this.modifier;
     }

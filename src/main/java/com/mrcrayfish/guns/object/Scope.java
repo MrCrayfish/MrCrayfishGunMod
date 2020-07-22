@@ -14,20 +14,11 @@ public class Scope extends Attachment
     private boolean stable;
     private double viewFinderOffset;
 
-    private Scope(float additionalZoom, double centerOffset, IGunModifier modifier)
+    private Scope(float additionalZoom, double centerOffset, IGunModifier ... modifier)
     {
         super(modifier);
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
-    }
-
-    /**
-     * @return
-     */
-    public Scope stabilise()
-    {
-        this.stable = true;
-        return this;
     }
 
     /**
@@ -36,6 +27,7 @@ public class Scope extends Attachment
      * @param offset the view finder offset
      * @return this scope instance
      */
+    @OnlyIn(Dist.CLIENT)
     public Scope viewFinderOffset(double offset)
     {
         this.viewFinderOffset = offset;
@@ -47,6 +39,7 @@ public class Scope extends Attachment
      *
      * @return the scopes additional zoom
      */
+    @OnlyIn(Dist.CLIENT)
     public float getAdditionalZoom()
     {
         return this.additionalZoom;
@@ -64,6 +57,10 @@ public class Scope extends Attachment
         return this.centerOffset;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isStable()
     {
         return this.stable;
@@ -72,15 +69,10 @@ public class Scope extends Attachment
     @OnlyIn(Dist.CLIENT)
     public double getViewFinderOffset()
     {
-        return viewFinderOffset;
+        return this.viewFinderOffset;
     }
 
-    public static Scope create(float additionalZoom, double centerOffset)
-    {
-        return new Scope(additionalZoom, centerOffset, IGunModifier.DEFAULT);
-    }
-
-    public static Scope create(float additionalZoom, double centerOffset, IGunModifier modifier)
+    public static Scope create(float additionalZoom, double centerOffset, IGunModifier ... modifier)
     {
         return new Scope(additionalZoom, centerOffset, modifier);
     }

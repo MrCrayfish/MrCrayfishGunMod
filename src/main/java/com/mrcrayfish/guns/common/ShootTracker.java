@@ -27,6 +27,7 @@ public class ShootTracker
      */
     public void putCooldown(GunItem item, Gun modifiedGun)
     {
+        //TODO make enchantment to increase fire rate
         this.cooldownMap.put(item, Pair.of(Util.milliTime(), modifiedGun.general.rate * 50));
     }
 

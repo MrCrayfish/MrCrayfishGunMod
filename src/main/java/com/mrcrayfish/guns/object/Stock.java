@@ -7,21 +7,13 @@ import com.mrcrayfish.guns.interfaces.IGunModifier;
  */
 public class Stock extends Attachment
 {
-    private final float recoilReduction;
-
-    private Stock(float recoilReduction, IGunModifier modifier)
+    private Stock(IGunModifier ... modifier)
     {
         super(modifier);
-        this.recoilReduction = recoilReduction;
     }
 
-    public float getRecoilReduction()
+    public static Stock create(IGunModifier ... modifier)
     {
-        return this.recoilReduction;
-    }
-
-    public static Stock create(float recoilReduction, IGunModifier modifier)
-    {
-        return new Stock(recoilReduction, modifier);
+        return new Stock(modifier);
     }
 }

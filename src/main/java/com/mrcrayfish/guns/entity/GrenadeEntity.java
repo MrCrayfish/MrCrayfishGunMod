@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -19,9 +20,9 @@ public class GrenadeEntity extends ProjectileEntity
         super(entityType, world);
     }
 
-    public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, World world, LivingEntity shooter, GunItem item, Gun modifiedGun)
+    public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, World world, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
     {
-        super(entityType, world, shooter, item, modifiedGun);
+        super(entityType, world, shooter, weapon, item, modifiedGun);
     }
 
     @Override

@@ -80,13 +80,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     private ItemStack item = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
     protected EntitySize entitySize;
+    protected double modifiedGravity;
+    protected int life;
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, World worldIn)
     {
         super(entityType, worldIn);
     }
 
-    public ProjectileEntity(EntityType<? extends Entity> entityType, World worldIn, LivingEntity shooter, GunItem item, Gun modifiedGun)
+    public ProjectileEntity(EntityType<? extends Entity> entityType, World worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
     {
         this(entityType, worldIn);
         this.shooterId = shooter.getEntityId();
@@ -95,9 +97,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.general = modifiedGun.general;
         this.projectile = modifiedGun.projectile;
         this.entitySize = new EntitySize(this.projectile.size, this.projectile.size, false);
+        this.modifiedGravity = GunModifierHelper.getModifiedProjectileGravity(weapon, -0.05);
+        this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.life);
 
-        Vec3d dir = this.getDirection(shooter, item, modifiedGun);
-        this.setMotion(dir.x * this.projectile.speed, dir.y * this.projectile.speed, dir.z * this.projectile.speed);
+        Vec3d dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.speed);
+        this.setMotion(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
 
         /* Spawn the projectile half way between the previous and current position */
@@ -125,9 +130,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return this.entitySize;
     }
 
-    private Vec3d getDirection(LivingEntity shooter, GunItem item, Gun modifiedGun)
+    private Vec3d getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
     {
-        float gunSpread = modifiedGun.general.spread;
+        float gunSpread = GunModifierHelper.getModifiedSpread(weapon, modifiedGun.general.spread);
 
         if(gunSpread == 0F)
         {
@@ -213,10 +218,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if(this.projectile.gravity)
         {
-            this.setMotion(this.getMotion().add(0, -0.05, 0));
+            this.setMotion(this.getMotion().add(0, this.modifiedGravity, 0));
         }
 
-        if(this.ticksExisted >= this.projectile.life)
+        if(this.ticksExisted >= this.life)
         {
             if(this.isAlive())
             {
@@ -379,6 +384,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.projectile.deserializeNBT(compound.getCompound("Projectile"));
         this.general = new Gun.General();
         this.general.deserializeNBT(compound.getCompound("General"));
+        this.modifiedGravity = compound.getDouble("ModifiedGravity");
+        this.life = compound.getInt("MaxLife");
     }
 
     @Override
@@ -386,6 +393,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     {
         compound.put("Projectile", this.projectile.serializeNBT());
         compound.put("General", this.general.serializeNBT());
+        compound.putDouble("ModifiedGravity", this.modifiedGravity);
+        compound.putInt("MaxLife", this.life);
     }
 
     @Override
@@ -395,6 +404,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         buffer.writeCompoundTag(this.general.serializeNBT());
         buffer.writeInt(this.shooterId);
         ItemStackUtil.writeItemStackToBufIgnoreTag(buffer, this.item);
+        buffer.writeDouble(this.modifiedGravity);
+        buffer.writeVarInt(this.life);
     }
 
     @Override
@@ -406,6 +417,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.general.deserializeNBT(buffer.readCompoundTag());
         this.shooterId = buffer.readInt();
         this.item = ItemStackUtil.readItemStackFromBufIgnoreTag(buffer);
+        this.modifiedGravity = buffer.readDouble();
+        this.life = buffer.readVarInt();
         this.entitySize = new EntitySize(this.projectile.size, this.projectile.size, false);
     }
 

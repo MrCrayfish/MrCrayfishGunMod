@@ -68,6 +68,7 @@ public class ReloadTracker
         ItemStack ammo = Gun.findAmmo(player, this.gun.projectile.item);
         if(!ammo.isEmpty())
         {
+            //TODO add enchantment that doubles the speed
             int amount = Math.min(ammo.getCount(), this.gun.general.reloadSpeed);
             CompoundNBT tag = this.stack.getTag();
             if(tag != null)

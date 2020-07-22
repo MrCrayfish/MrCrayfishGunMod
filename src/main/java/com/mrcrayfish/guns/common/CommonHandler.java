@@ -114,7 +114,7 @@ public class CommonHandler
                     for(int i = 0; i < modifiedGun.general.projectileAmount; i++)
                     {
                         ProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.projectile.item);
-                        ProjectileEntity bullet = factory.create(world, player, item, modifiedGun);
+                        ProjectileEntity bullet = factory.create(world, player, heldItem, item, modifiedGun);
                         bullet.setWeapon(heldItem);
                         bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                         world.addEntity(bullet);
@@ -154,7 +154,7 @@ public class CommonHandler
                         double posX = player.prevPosX;
                         double posY = player.prevPosY + player.getEyeHeight();
                         double posZ = player.prevPosZ;
-                        float volume = silenced ? 0.75F : 1.0F;
+                        float volume = GunModifierHelper.getFireSoundVolume(heldItem);
                         float pitch = 0.8F + world.rand.nextFloat() * 0.2F;
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, false);

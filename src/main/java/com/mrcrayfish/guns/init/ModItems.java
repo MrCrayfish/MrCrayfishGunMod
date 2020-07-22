@@ -48,6 +48,6 @@ public class ModItems
     public static final RegistryObject<Item> SILENCER = REGISTER.register("silencer", () -> new BarrelItem(Barrel.create(8.0F, GunModifiers.REDUCED_DAMAGE_AND_SOUND), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
     /* Stock Attachments */
-    public static final RegistryObject<Item> BASIC_STOCK = REGISTER.register("basic_stock", () -> new StockItem(Stock.create(0.25F, IGunModifier.DEFAULT), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
-    public static final RegistryObject<Item> ADVANCED_STOCK = REGISTER.register("tactical_stock", () -> new StockItem(Stock.create(0.5F, IGunModifier.DEFAULT), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> BASIC_STOCK = REGISTER.register("basic_stock", () -> new StockItem(Stock.create(GunModifiers.RECOIL_REDUCTION), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> ADVANCED_STOCK = REGISTER.register("tactical_stock", () -> new StockItem(Stock.create(GunModifiers.IMPROVED_RECOIL_REDUCTION), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 }

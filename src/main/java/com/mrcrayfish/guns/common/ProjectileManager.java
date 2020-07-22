@@ -26,7 +26,7 @@ public class ProjectileManager
         return instance;
     }
 
-    private final ProjectileFactory DEFAULT_FACTORY = (worldIn, entity, item, modifiedGun) -> new ProjectileEntity(ModEntities.PROJECTILE.get(), worldIn, entity, item, modifiedGun);
+    private final ProjectileFactory DEFAULT_FACTORY = (worldIn, entity, weapon, item, modifiedGun) -> new ProjectileEntity(ModEntities.PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
     private final Map<ResourceLocation, ProjectileFactory> projectileFactoryMap = new HashMap<>();
 
     public void registerFactory(Item ammo, ProjectileFactory factory)

@@ -83,8 +83,8 @@ public class GunMod
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
-        ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, item, modifiedGun));
-        ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, item, modifiedGun));
+        ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
+        ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
         PacketHandler.init();
 
         if(Config.COMMON.gameplay.improvedHitboxes.get())
