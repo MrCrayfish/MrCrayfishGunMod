@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 
-version = "0.16.1-1.15.2"
+version = "0.16.2-1.15.2"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
