@@ -25,11 +25,11 @@ public abstract class RotatedObjectBlock extends HorizontalBlock
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));
     }
 
-    /*@Override
-    public boolean isNormalCube(BlockState state, IBlockReader reader, BlockPos pos)
+    @Override
+    public boolean isTransparent(BlockState state)
     {
-        return false;
-    }*/
+        return true;
+    }
 
     @Nullable
     @Override
