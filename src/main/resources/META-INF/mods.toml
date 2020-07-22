@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[31,)"
+loaderVersion="[32,)"
 
 [[mods]]
 modId="cgm"
@@ -15,18 +15,24 @@ Adds weapons into Minecraft
 [[dependencies.cgm]]
     modId="forge"
     mandatory=true
-    versionRange="[31.1.19,)"
+    versionRange="[32,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.1,1.17)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="obfuscate"
     mandatory=true
-    versionRange="[0.4.2,)"
-    ordering="NONE"
+    versionRange="[0.4.3,)"
+    ordering="AFTER"
     side="BOTH"
+[[dependencies.cgm]]
+    modId="controllable"
+    mandatory=false
+    versionRange="[0.8.1,)"
+    ordering="AFTER"
+    side="CLIENT"

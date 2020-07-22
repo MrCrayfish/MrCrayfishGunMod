@@ -2,7 +2,12 @@ package com.mrcrayfish.guns.particles;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mrcrayfish.guns.init.ModParticleTypes;
+import net.minecraft.block.BlockState;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.Direction;
@@ -14,46 +19,46 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class BulletHoleData implements IParticleData
 {
+    public static final Codec<BulletHoleData> CODEC = RecordCodecBuilder.create((builder) -> {
+        return builder.group(Codec.INT.fieldOf("dir").forGetter((data) -> {
+            return data.direction.ordinal();
+        }), Codec.LONG.fieldOf("pos").forGetter((p_239806_0_) -> {
+            return p_239806_0_.pos.toLong();
+        })).apply(builder, BulletHoleData::new);
+    });
+
     public static final IParticleData.IDeserializer<BulletHoleData> DESERIALIZER = new IParticleData.IDeserializer<BulletHoleData>()
     {
+        @Override
         public BulletHoleData deserialize(ParticleType<BulletHoleData> particleType, StringReader reader) throws CommandSyntaxException
         {
             reader.expect(' ');
-            Direction direction = Direction.byName(reader.readString());
-            if(direction == null)
-            {
-                direction = Direction.NORTH;
-            }
+            int dir = reader.readInt();
             reader.expect(' ');
-            int x = reader.readInt();
-            reader.expect(' ');
-            int y = reader.readInt();
-            reader.expect(' ');
-            int z = reader.readInt();
-            return new BulletHoleData(particleType, direction, new BlockPos(x, y, z));
+            long pos = reader.readLong();
+            return new BulletHoleData(dir, pos);
         }
 
+        @Override
         public BulletHoleData read(ParticleType<BulletHoleData> particleType, PacketBuffer buffer)
         {
-            return new BulletHoleData(particleType, buffer.readEnumValue(Direction.class), buffer.readBlockPos());
+            return new BulletHoleData(buffer.readInt(), buffer.readLong());
         }
     };
 
-    private final ParticleType<BulletHoleData> particleType;
     private final Direction direction;
     private final BlockPos pos;
 
-    public BulletHoleData(ParticleType<BulletHoleData> particleType, Direction direction, BlockPos pos)
+    public BulletHoleData(int dir, long pos)
     {
-        this.particleType = particleType;
-        this.direction = direction;
-        this.pos = pos;
+        this.direction = Direction.values()[dir];
+        this.pos = BlockPos.fromLong(pos);
     }
 
-    @Override
-    public ParticleType<?> getType()
+    public BulletHoleData(Direction dir, BlockPos pos)
     {
-        return this.particleType;
+        this.direction = dir;
+        this.pos = pos;
     }
 
     public Direction getDirection()
@@ -67,6 +72,12 @@ public class BulletHoleData implements IParticleData
     }
 
     @Override
+    public ParticleType<?> getType()
+    {
+        return ModParticleTypes.BULLET_HOLE.get();
+    }
+
+    @Override
     public void write(PacketBuffer buffer)
     {
         buffer.writeEnumValue(this.direction);
@@ -76,6 +87,11 @@ public class BulletHoleData implements IParticleData
     @Override
     public String getParameters()
     {
-        return ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()) + " " + this.direction.getName();
+        return ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()) + " " + this.direction.getName2();
+    }
+
+    public static Codec<BulletHoleData> codec(ParticleType<BulletHoleData> type)
+    {
+        return CODEC;
     }
 }

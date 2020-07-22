@@ -1,14 +1,14 @@
 package com.mrcrayfish.guns.client.screen;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Author: MrCrayfish
  */
 public class DisplayProperty
 {
-    private Vec3d translate = Vec3d.ZERO;
-    private Vec3d rotation = Vec3d.ZERO;
+    private Vector3d translate = Vector3d.ZERO;
+    private Vector3d rotation = Vector3d.ZERO;
     private double scale;
 
     public DisplayProperty(double scale)
@@ -18,23 +18,23 @@ public class DisplayProperty
 
     public DisplayProperty(double x, double y, double z, double scale)
     {
-        this.translate = new Vec3d(x, y, z);
+        this.translate = new Vector3d(x, y, z);
         this.scale = scale;
     }
 
     public DisplayProperty(double x, double y, double z, double rotX, double rotY, double rotZ, double scale)
     {
-        this.translate = new Vec3d(x, y, z);
-        this.rotation = new Vec3d(rotX, rotY, rotZ);
+        this.translate = new Vector3d(x, y, z);
+        this.rotation = new Vector3d(rotX, rotY, rotZ);
         this.scale = scale;
     }
 
-    public Vec3d getTranslate()
+    public Vector3d getTranslate()
     {
         return translate;
     }
 
-    public Vec3d getRotation()
+    public Vector3d getRotation()
     {
         return rotation;
     }
@@ -76,8 +76,8 @@ public class DisplayProperty
 
     public void update(double x, double y, double z, double rotX, double rotY, double rotZ, double scale)
     {
-        this.translate = new Vec3d(x, y, z);
-        this.rotation = new Vec3d(rotX, rotY, rotZ);
+        this.translate = new Vector3d(x, y, z);
+        this.rotation = new Vector3d(rotX, rotY, rotZ);
         this.scale = scale;
     }
 }

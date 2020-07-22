@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
  */
 public class ModEntities
 {
-    public static final DeferredRegister<EntityType<?>> REGISTER = new DeferredRegister<>(ForgeRegistries.ENTITIES, Reference.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
 
     public static final RegistryObject<EntityType<ProjectileEntity>> PROJECTILE = register("projectile", ProjectileEntity::new);
     public static final RegistryObject<EntityType<GrenadeEntity>> GRENADE = register("grenade", GrenadeEntity::new);

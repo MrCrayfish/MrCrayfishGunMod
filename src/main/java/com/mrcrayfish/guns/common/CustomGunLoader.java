@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.common;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.annotation.Validator;
@@ -41,7 +42,7 @@ public class CustomGunLoader extends JsonReloadListener
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonObject> objects, IResourceManager manager, IProfiler profiler)
+    protected void apply(Map<ResourceLocation, JsonElement> objects, IResourceManager manager, IProfiler profiler)
     {
         ImmutableMap.Builder<ResourceLocation, CustomGun> builder = ImmutableMap.builder();
         objects.forEach((resourceLocation, object) ->

@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  */
 public class ModBlocks
 {
-    public static final DeferredRegister<Block> REGISTER = new DeferredRegister<>(ForgeRegistries.BLOCKS, Reference.MOD_ID);
+    public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 
     public static final RegistryObject<Block> WORKBENCH = register("workbench", () -> new WorkbenchBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1.5F)));
 

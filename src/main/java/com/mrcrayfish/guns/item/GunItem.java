@@ -88,7 +88,7 @@ public class GunItem extends Item implements IColored
             }
         }
 
-        tooltip.add(new TranslationTextComponent("info.cgm.attachment_help", KeyBinds.KEY_ATTACHMENTS.getLocalizedName().toUpperCase()));
+        tooltip.add(new TranslationTextComponent("info.cgm.attachment_help", I18n.format(KeyBinds.KEY_ATTACHMENTS.getTranslationKey())));
     }
 
     @Override

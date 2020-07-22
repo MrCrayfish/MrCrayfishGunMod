@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  */
 public class ModTileEntities
 {
-    public static final DeferredRegister<TileEntityType<?>> REGISTER = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
+    public static final DeferredRegister<TileEntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
 
     public static final RegistryObject<TileEntityType<WorkbenchTileEntity>> WORKBENCH = register("workbench", WorkbenchTileEntity::new, () -> new Block[]{ModBlocks.WORKBENCH.get()});
 

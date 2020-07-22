@@ -122,7 +122,7 @@ public class CommonHandler
                         if(!modifiedGun.projectile.visible)
                         {
                             MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.getPosX(), bullet.getPosY(), bullet.getPosZ(), bullet.getMotion().getX(), bullet.getMotion().getY(), bullet.getMotion().getZ(), modifiedGun.projectile.trailColor, modifiedGun.projectile.trailLengthMultiplier);
-                            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimension().getType())), messageBullet);
+                            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.func_234923_W_())), messageBullet);
                         }
                     }
 
@@ -158,7 +158,7 @@ public class CommonHandler
                         float pitch = 0.8F + world.rand.nextFloat() * 0.2F;
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, false);
-                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), radius, player.world.getDimension().getType())), messageSound);
+                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), radius, player.world.func_234923_W_())), messageSound);
                         PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> player), new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, true));
                     }
 
@@ -174,7 +174,7 @@ public class CommonHandler
             }
             else
             {
-                world.playSound(null, player.getPosition(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
+                world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
             }
         }
     }

@@ -7,18 +7,19 @@ import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.object.Bullet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -86,7 +87,7 @@ public class BulletRenderer
 
         matrixStack.push();
 
-        Vec3d view = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
+        Vector3d view = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
         double bulletX = bullet.getPosX() + bullet.getMotionX() * partialTicks;
         double bulletY = bullet.getPosY() + bullet.getMotionY() * partialTicks;
         double bulletZ = bullet.getPosZ() + bullet.getMotionZ() * partialTicks;
@@ -95,7 +96,7 @@ public class BulletRenderer
         matrixStack.rotate(Vector3f.YP.rotationDegrees(bullet.getRotationYaw()));
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-bullet.getRotationPitch() + 90));
 
-        Vec3d motionVec = new Vec3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
+        Vector3d motionVec = new Vector3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
         float trailLength = (float) ((motionVec.length() / 3.0F) * bullet.getTrailLengthMultiplier());
         float red = (float)(bullet.getTrailColor() >> 16 & 255) / 255.0F;
         float green = (float)(bullet.getTrailColor() >> 8 & 255) / 255.0F;
@@ -130,9 +131,9 @@ public class BulletRenderer
         matrixStack.rotate(Vector3f.YP.rotationDegrees((bullet.getProjectile().ticksExisted + partialTicks) * (float) 50));
         matrixStack.scale(0.275F, 0.275F, 0.275F);
 
-        int combinedLight = WorldRenderer.getCombinedLight(entity.world, entity.getPosition());
+        int combinedLight = WorldRenderer.getCombinedLight(entity.world, new BlockPos(entity.getPositionVec()));
         ItemStack stack = bullet.getProjectile().getItem();
-        RenderType renderType = RenderTypeLookup.getRenderType(stack);
+        RenderType renderType = RenderTypeLookup.func_239219_a_(stack, false);
         RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, matrixStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY);
         Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(renderType);
 

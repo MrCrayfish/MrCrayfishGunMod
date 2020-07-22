@@ -1,18 +1,15 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url "https://plugins.gradle.org/m2/" }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath "com.wynprice.cursemaven:CurseMaven:2.1.4"
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
-apply plugin: "com.wynprice.cursemaven"
 
 version = "0.16.1-1.15.2"
 group = "com.mrcrayfish"
@@ -21,7 +18,7 @@ archivesBaseName = "gun-mod"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    mappings channel: 'snapshot', version: '20200707-1.16.1'
 
     runs {
         client {
@@ -29,7 +26,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                examplemod {
+                cgm {
                     source sourceSets.main
                 }
             }
@@ -40,7 +37,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                modid {
+                cgm {
                     source sourceSets.main
                 }
             }
@@ -52,7 +49,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
             mods {
-                modid {
+                cgm {
                     source sourceSets.main
                 }
             }
@@ -62,15 +59,14 @@ minecraft {
 
 repositories {
     maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+        url = "https://www.cursemaven.com"
     }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
-    compile fg.deobf('curse.maven:obfuscate:2946425')
-    compile fg.deobf('curse.maven:controllable:2880167')
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.61'
+    compile fg.deobf('curse.maven:obfuscate:3000205')
+    compile fg.deobf('curse.maven:controllable:3008760')
 }
 
 jar {

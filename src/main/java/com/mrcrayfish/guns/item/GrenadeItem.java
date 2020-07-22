@@ -91,7 +91,7 @@ public class GrenadeItem extends Item
             if(duration >= 10)
             {
                 ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
-                grenade.shoot(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+                grenade.func_234612_a_(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
                 worldIn.addEntity(grenade);
             }
         }

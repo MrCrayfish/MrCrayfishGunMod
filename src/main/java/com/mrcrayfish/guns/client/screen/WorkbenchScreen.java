@@ -28,6 +28,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -81,7 +83,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         super.init();
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
-        this.addButton(new Button(startX, startY, 15, 20, "<", button ->
+        this.addButton(new Button(startX, startY, 15, 20, new StringTextComponent("<"), button ->
         {
             if(currentIndex - 1 < 0)
             {
@@ -92,7 +94,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 this.loadItem(currentIndex - 1);
             }
         }));
-        this.addButton(new Button(startX + 161, startY, 15, 20, ">", button ->
+        this.addButton(new Button(startX + 161, startY, 15, 20, new StringTextComponent(">"), button ->
         {
             if(currentIndex + 1 >= this.recipes.size())
             {
@@ -103,14 +105,14 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 this.loadItem(currentIndex + 1);
             }
         }));
-        this.btnCraft = this.addButton(new Button(startX + 186, startY + 6, 97, 20, "Assemble", button ->
+        this.btnCraft = this.addButton(new Button(startX + 186, startY + 6, 97, 20, new TranslationTextComponent("gui.cgm.assemble"), button ->
         {
             WorkbenchRecipe recipe = this.recipes.get(currentIndex);
             ResourceLocation registryName = recipe.getId();
             PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getPos()));
         }));
         this.btnCraft.active = false;
-        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 186, startY + 90, "Show Remaining"));
+        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 186, startY + 90, new TranslationTextComponent("gui.cgm.show_remaining")));
         this.checkBoxMaterials.setToggled(WorkbenchScreen.showRemaining);
         this.loadItem(currentIndex);
     }
@@ -223,11 +225,11 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.func_230459_a_(matrixStack, mouseX, mouseY);
 
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
@@ -240,14 +242,20 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 MaterialItem materialItem = this.filteredMaterials.get(i);
                 if(!materialItem.getStack().isEmpty())
                 {
-                    this.renderTooltip(materialItem.getStack(), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, materialItem.getStack(), mouseX, mouseY);
                 }
             }
         }
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+    protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY)
+    {
+        super.func_230451_b_(matrixStack, mouseX, mouseY);
+    }
+
+    @Override
+    protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         /* Fixes partial ticks to use percentage from 0 to 1 */
         partialTicks = Minecraft.getInstance().getRenderPartialTicks();
@@ -258,16 +266,16 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         RenderSystem.enableBlend();
 
         this.minecraft.getTextureManager().bindTexture(GUI);
-        this.blit(startX, startY + 80, 0, 134, 176, 122);
-        this.blit(startX + 180, startY, 176, 54, 6, 208);
-        this.blit(startX + 186, startY, 182, 54, 57, 208);
-        this.blit(startX + 186 + 57, startY, 220, 54, 23, 208);
-        this.blit(startX + 186 + 57 + 23, startY, 220, 54, 3, 208);
-        this.blit(startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
+        this.blit(matrixStack, startX, startY + 80, 0, 134, 176, 122);
+        this.blit(matrixStack, startX + 180, startY, 176, 54, 6, 208);
+        this.blit(matrixStack, startX + 186, startY, 182, 54, 57, 208);
+        this.blit(matrixStack, startX + 186 + 57, startY, 220, 54, 23, 208);
+        this.blit(matrixStack, startX + 186 + 57 + 23, startY, 220, 54, 3, 208);
+        this.blit(matrixStack, startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
 
         if(this.workbench.getStackInSlot(0).isEmpty())
         {
-            this.blit(startX + 187, startY + 30, 80, 0, 16, 16);
+            this.blit(matrixStack, startX + 187, startY + 30, 80, 0, 16, 16);
         }
 
         WorkbenchRecipe recipe = this.recipes.get(currentIndex);
@@ -278,7 +286,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             builder.append(" x ");
             builder.append(currentItem.getCount());
         }
-        this.drawCenteredString(this.font, builder.toString(), startX + 88, startY + 6, Color.WHITE.getRGB());
+        this.drawCenteredString(matrixStack, this.font, builder.toString(), startX + 88, startY + 6, Color.WHITE.getRGB());
 
         RenderSystem.pushMatrix();
         {
@@ -294,7 +302,6 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            MatrixStack matrixStack = new MatrixStack();
             IRenderTypeBuffer.Impl buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
             Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.GROUND, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
             buffer.finish();
@@ -315,27 +322,27 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             if(stack.isEmpty())
             {
                 RenderHelper.disableStandardItemLighting();
-                this.blit(startX + 186, startY + i * 19 + 6 + 95, 0, 19, 80, 19);
+                this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 95, 0, 19, 80, 19);
             }
             else
             {
                 RenderHelper.disableStandardItemLighting();
                 if(materialItem.isEnabled())
                 {
-                    this.blit(startX + 186, startY + i * 19 + 6 + 95, 0, 0, 80, 19);
+                    this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 95, 0, 0, 80, 19);
                 }
                 else
                 {
-                    this.blit(startX + 186, startY + i * 19 + 6 + 95, 0, 38, 80, 19);
+                    this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 95, 0, 38, 80, 19);
                 }
 
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 String name = stack.getDisplayName().getUnformattedComponentText();
                 if(this.font.getStringWidth(name) > 55)
                 {
-                    name = this.font.trimStringToWidth(name, 50).trim() + "...";
+                    name = this.font.func_238412_a_(name, 50).trim() + "...";
                 }
-                this.font.drawString(name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 95, Color.WHITE.getRGB());
+                this.font.drawString(matrixStack, name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 95, Color.WHITE.getRGB());
 
                 Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 95);
 
@@ -362,11 +369,11 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         return materials;
     }
 
-    @Override
+    /*@Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8, 109, 4210752);
-    }
+    }*/
 
     public static class MaterialItem
     {

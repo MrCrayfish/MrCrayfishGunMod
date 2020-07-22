@@ -227,7 +227,7 @@ public class ClientHandler
         World world = mc.world;
         if(world != null)
         {
-            world.addParticle(new BulletHoleData(ModParticleTypes.BULLET_HOLE.get(), message.getDirection(), message.getPos()), true, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
+            world.addParticle(new BulletHoleData(message.getDirection(), message.getPos()), true, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
         }
     }
 

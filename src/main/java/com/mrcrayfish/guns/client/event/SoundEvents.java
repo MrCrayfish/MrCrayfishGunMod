@@ -240,19 +240,19 @@ public class SoundEvents
         }
 
         @Override
-        public float getX()
+        public double getX()
         {
             return this.parent.getX();
         }
 
         @Override
-        public float getY()
+        public double getY()
         {
             return this.parent.getY();
         }
 
         @Override
-        public float getZ()
+        public double getZ()
         {
             return this.parent.getZ();
         }

@@ -6,7 +6,6 @@ import com.mrcrayfish.guns.common.BoundingBoxTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBulletHole;
@@ -28,7 +27,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -50,8 +49,8 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -100,7 +99,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.modifiedGravity = GunModifierHelper.getModifiedProjectileGravity(weapon, -0.05);
         this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.life);
 
-        Vec3d dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        Vector3d dir = this.getDirection(shooter, weapon, item, modifiedGun);
         double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.speed);
         this.setMotion(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
@@ -130,7 +129,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return this.entitySize;
     }
 
-    private Vec3d getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
+    private Vector3d getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
     {
         float gunSpread = GunModifierHelper.getModifiedSpread(weapon, modifiedGun.general.spread);
 
@@ -181,8 +180,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if(!this.world.isRemote())
         {
-            Vec3d startVec = this.getPositionVec();
-            Vec3d endVec = startVec.add(this.getMotion());
+            Vector3d startVec = this.getPositionVec();
+            Vector3d endVec = startVec.add(this.getMotion());
             RayTraceResult result = rayTraceBlocks(this.world, new RayTraceContext(startVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
             if(result.getType() != RayTraceResult.Type.MISS)
             {
@@ -240,9 +239,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Nullable
-    protected EntityResult findEntityOnPath(Vec3d startVec, Vec3d endVec)
+    protected EntityResult findEntityOnPath(Vector3d startVec, Vector3d endVec)
     {
-        Vec3d hitVec = null;
+        Vector3d hitVec = null;
         Entity hitEntity = null;
         List<Entity> entities = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0), PROJECTILE_TARGETS);
         double closestDistance = Double.MAX_VALUE;
@@ -258,8 +257,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                     boundingBox = BoundingBoxTracker.getBoundingBox(entity, ping); //TODO this is actually the last position
                 }
                 boundingBox = boundingBox.expand(0, expandHeight, 0);
-                Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
-                Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
+                Optional<Vector3d> hitPos = boundingBox.rayTrace(startVec, endVec);
+                Optional<Vector3d> grownHitPos = boundingBox.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
                 if(!hitPos.isPresent() && grownHitPos.isPresent())
                 {
                     RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos.get(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
@@ -316,7 +315,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 ((IDamageable) block).onBlockDamaged(this.world, state, pos, (int) Math.ceil(getDamage() / 2.0) + 1);
             }
 
-            Vec3d hitVec = blockRayTraceResult.getHitVec();
+            Vector3d hitVec = blockRayTraceResult.getHitVec();
             double holeX = hitVec.getX() + 0.005 * blockRayTraceResult.getFace().getXOffset();
             double holeY = hitVec.getY() + 0.005 * blockRayTraceResult.getFace().getYOffset();
             double holeZ = hitVec.getZ() + 0.005 * blockRayTraceResult.getFace().getZOffset();
@@ -349,7 +348,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof PlayerEntity)
         {
             AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, !entity.isCrouching() ? 0.0625 : 0, 0);
-            if(boundingBox.maxY - y <= 8.0 * 0.0625 && boundingBox.grow(0.001).contains(new Vec3d(x, y, z)))
+            if(boundingBox.maxY - y <= 8.0 * 0.0625 && boundingBox.grow(0.001).contains(new Vector3d(x, y, z)))
             {
                 headShot = true;
                 damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
@@ -363,7 +362,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
-            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
+            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vector3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }
 
         /* Send blood particle to tracking clients. */
@@ -436,13 +435,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return projectile;
     }
 
-    private Vec3d getVectorFromRotation(float pitch, float yaw)
+    private Vector3d getVectorFromRotation(float pitch, float yaw)
     {
         float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = -MathHelper.cos(-pitch * 0.017453292F);
         float f3 = MathHelper.sin(-pitch * 0.017453292F);
-        return new Vec3d((double) (f1 * f2), (double) f3, (double) (f * f2));
+        return new Vector3d((double) (f1 * f2), (double) f3, (double) (f * f2));
     }
 
     public LivingEntity getShooter()
@@ -493,9 +492,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return func_217300_a(context, (rayTraceContext, blockPos) -> {
             BlockState blockState = world.getBlockState(blockPos);
             if(predicate.test(blockState)) return null;
-            IFluidState fluidState = world.getFluidState(blockPos);
-            Vec3d startVec = rayTraceContext.func_222253_b();
-            Vec3d endVec = rayTraceContext.func_222250_a();
+            FluidState fluidState = world.getFluidState(blockPos);
+            Vector3d startVec = rayTraceContext.func_222253_b();
+            Vector3d endVec = rayTraceContext.func_222250_a();
             VoxelShape blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
             BlockRayTraceResult blockResult = world.rayTraceBlocks(startVec, endVec, blockPos, blockShape, blockState);
             VoxelShape fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
@@ -504,15 +503,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.func_222253_b().squareDistanceTo(fluidResult.getHitVec());
             return blockDistance <= fluidDistance ? blockResult : fluidResult;
         }, (rayTraceContext) -> {
-            Vec3d vec3d = rayTraceContext.func_222253_b().subtract(rayTraceContext.func_222250_a());
-            return BlockRayTraceResult.createMiss(rayTraceContext.func_222250_a(), Direction.getFacingFromVector(vec3d.x, vec3d.y, vec3d.z), new BlockPos(rayTraceContext.func_222250_a()));
+            Vector3d Vector3d = rayTraceContext.func_222253_b().subtract(rayTraceContext.func_222250_a());
+            return BlockRayTraceResult.createMiss(rayTraceContext.func_222250_a(), Direction.getFacingFromVector(Vector3d.x, Vector3d.y, Vector3d.z), new BlockPos(rayTraceContext.func_222250_a()));
         });
     }
 
     private static <T> T func_217300_a(RayTraceContext context, BiFunction<RayTraceContext, BlockPos, T> hitFunction, Function<RayTraceContext, T> p_217300_2_)
     {
-        Vec3d startVec = context.func_222253_b();
-        Vec3d endVec = context.func_222250_a();
+        Vector3d startVec = context.func_222253_b();
+        Vector3d endVec = context.func_222250_a();
         if(startVec.equals(endVec))
         {
             return p_217300_2_.apply(context);

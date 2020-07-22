@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.tileentity;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.init.ModTileEntities;
 import com.mrcrayfish.guns.tileentity.inventory.IStorageBlock;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -42,9 +43,9 @@ public class WorkbenchTileEntity extends SyncedTileEntity implements IStorageBlo
     }
 
     @Override
-    public void read(CompoundNBT compound)
+    public void read(BlockState state, CompoundNBT compound)
     {
-        super.read(compound);
+        super.read(state, compound);
         ItemStackHelper.loadAllItems(compound, this.inventory);
     }
 

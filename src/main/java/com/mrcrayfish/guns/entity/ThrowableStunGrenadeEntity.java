@@ -24,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
@@ -72,7 +72,7 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
         {
             return;
         }
-        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(this.getPosX(), y, this.getPosZ(), 64, this.world.getDimension().getType())), new MessageStunGrenade(this.getPosX(), y, this.getPosZ()));
+        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(this.getPosX(), y, this.getPosZ(), 64, this.world.func_234923_W_())), new MessageStunGrenade(this.getPosX(), y, this.getPosZ()));
 
         // Calculate bounds of area where potentially effected players my be
         double diameter = Math.max(Config.COMMON.stunGrenades.deafen.criteria.radius.get(), Config.COMMON.stunGrenades.blind.criteria.radius.get()) * 2 + 1;
@@ -84,8 +84,8 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
         int maxZ = MathHelper.floor(this.getPosZ() + diameter);
 
         // Affect all non-spectating players in range of the blast
-        Vec3d grenade = new Vec3d(this.getPosX(), y, this.getPosZ());
-        Vec3d eyes, directionGrenade;
+        Vector3d grenade = new Vector3d(this.getPosX(), y, this.getPosZ());
+        Vector3d eyes, directionGrenade;
         double distance;
         for(LivingEntity entity : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ)))
         {
@@ -112,7 +112,7 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
         }
     }
 
-    private boolean calculateAndApplyEffect(Potion potion, EffectCriteria criteria, LivingEntity entity, Vec3d grenade, Vec3d eyes, double distance, double angle)
+    private boolean calculateAndApplyEffect(Potion potion, EffectCriteria criteria, LivingEntity entity, Vector3d grenade, Vector3d eyes, double distance, double angle)
     {
         double angleMax = criteria.angleEffect.get() * 0.5;
         if(distance <= criteria.radius.get() && angleMax > 0 && angle <= angleMax)
@@ -138,7 +138,7 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
     }
 
     @Nullable
-    public RayTraceResult rayTraceOpaqueBlocks(World world, Vec3d start, Vec3d end, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
+    public RayTraceResult rayTraceOpaqueBlocks(World world, Vector3d start, Vector3d end, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
     {
         if(!Double.isNaN(start.x) && !Double.isNaN(start.y) && !Double.isNaN(start.z))
         {
@@ -247,17 +247,17 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
                     if(d3 < d4 && d3 < d5)
                     {
                         direction = endX > startX ? Direction.WEST : Direction.EAST;
-                        start = new Vec3d(d0, start.y + d7 * d3, start.z + d8 * d3);
+                        start = new Vector3d(d0, start.y + d7 * d3, start.z + d8 * d3);
                     }
                     else if(d4 < d5)
                     {
                         direction = endY > startY ? Direction.DOWN : Direction.UP;
-                        start = new Vec3d(start.x + d6 * d4, d1, start.z + d8 * d4);
+                        start = new Vector3d(start.x + d6 * d4, d1, start.z + d8 * d4);
                     }
                     else
                     {
                         direction = endZ > startZ ? Direction.NORTH : Direction.SOUTH;
-                        start = new Vec3d(start.x + d6 * d5, start.y + d7 * d5, d2);
+                        start = new Vector3d(start.x + d6 * d5, start.y + d7 * d5, d2);
                     }
 
                     startX = MathHelper.floor(start.x) - (direction == Direction.EAST ? 1 : 0);

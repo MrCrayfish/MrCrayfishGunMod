@@ -7,6 +7,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.SliderPercentageOption;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -33,7 +34,7 @@ public class GunOptions
         GunMod.getOptions().adsSensitivity = MathHelper.clamp(value, 0.0, 2.0);
     }, (gameSettings, option) -> {
         double adsSensitivity = GunMod.getOptions().adsSensitivity;
-        return I18n.format("cgm.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
+        return new TranslationTextComponent("cgm.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
     });
 
     public static final Splitter COLON_SPLITTER = Splitter.on(':');

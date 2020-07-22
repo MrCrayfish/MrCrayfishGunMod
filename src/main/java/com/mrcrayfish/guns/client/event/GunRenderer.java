@@ -39,7 +39,7 @@ import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -465,8 +465,9 @@ public class GunRenderer
                     {
                         RenderSystem.scaled(scale, scale, scale);
                         int progress = (int) Math.ceil((cookTime) * 17.0F) - 1;
-                        Screen.blit(j, i, 36, 94, 16, 4, 256, 256);
-                        Screen.blit(j, i, 52, 94, progress, 4, 256, 256);
+                        MatrixStack matrixStack = new MatrixStack();
+                        Screen.blit(matrixStack, j, i, 36, 94, 16, 4, 256, 256);
+                        Screen.blit(matrixStack, j, i, 52, 94, progress, 4, 256, 256);
                     }
                     RenderSystem.popMatrix();
 
@@ -497,8 +498,9 @@ public class GunRenderer
                     {
                         RenderSystem.scaled(scale, scale, scale);
                         int progress = (int) Math.ceil((coolDown + 0.05) * 17.0F) - 1;
-                        Screen.blit(j, i, 36, 94, 16, 4, 256, 256);
-                        Screen.blit(j, i, 52, 94, progress, 4, 256, 256);
+                        MatrixStack matrixStack = new MatrixStack();
+                        Screen.blit(matrixStack, j, i, 36, 94, 16, 4, 256, 256);
+                        Screen.blit(matrixStack, j, i, 52, 94, progress, 4, 256, 256);
                     }
                     RenderSystem.popMatrix();
 
@@ -990,7 +992,8 @@ public class GunRenderer
             // When below threshold, fade to full transparency as duration approaches 0
             float percent = Math.min((effect.getDuration() / (float) Config.SERVER.alphaFadeThreshold.get()), 1);
             MainWindow window = Minecraft.getInstance().getMainWindow();
-            Screen.fill(0, 0, window.getWidth(), window.getHeight(), ((int) (percent * Config.SERVER.alphaOverlay.get() + 0.5) << 24) | 16777215);
+            MatrixStack matrixStack = new MatrixStack();
+            Screen.fill(matrixStack, 0, 0, window.getWidth(), window.getHeight(), ((int) (percent * Config.SERVER.alphaOverlay.get() + 0.5) << 24) | 16777215);
         }
     }
 

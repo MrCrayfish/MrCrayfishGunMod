@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.object;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Author: MrCrayfish
@@ -9,9 +9,9 @@ import net.minecraft.util.math.Vec3d;
 public class EntityResult
 {
     public Entity entity;
-    public Vec3d hitVec;
+    public Vector3d hitVec;
 
-    public EntityResult(Entity entity, Vec3d hitVec)
+    public EntityResult(Entity entity, Vector3d hitVec)
     {
         this.entity = entity;
         this.hitVec = hitVec;

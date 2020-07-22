@@ -58,5 +58,7 @@
     "slot.cgm.attachment.scope": "Scope",
     "slot.cgm.attachment.barrel": "Barrel",
     "slot.cgm.attachment.stock": "Stock",
-    "slot.cgm.attachment.under_barrel": "Under Barrel"
+    "slot.cgm.attachment.under_barrel": "Under Barrel",
+    "gui.cgm.assemble": "Assemble",
+    "gui.cgm.show_remaining": "Show Remaining"
 }

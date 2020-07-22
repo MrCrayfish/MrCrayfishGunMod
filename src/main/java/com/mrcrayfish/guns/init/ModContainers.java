@@ -16,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModContainers
 {
-    public static final DeferredRegister<ContainerType<?>> REGISTER = new DeferredRegister<>(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
+    public static final DeferredRegister<ContainerType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
 
     public static final RegistryObject<ContainerType<WorkbenchContainer>> WORKBENCH = register("workbench", (IContainerFactory<WorkbenchContainer>) (windowId, playerInventory, data) -> {
         WorkbenchTileEntity workstation = (WorkbenchTileEntity) playerInventory.player.world.getTileEntity(data.readBlockPos());

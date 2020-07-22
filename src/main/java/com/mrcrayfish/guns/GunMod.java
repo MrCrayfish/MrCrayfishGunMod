@@ -16,6 +16,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -101,21 +102,21 @@ public class GunMod
     }
 
     @SubscribeEvent
-    public void onServerStart(FMLServerAboutToStartEvent event)
-    {
-        NetworkGunManager networkGunManager = new NetworkGunManager();
-        event.getServer().getResourceManager().addReloadListener(networkGunManager);
-        GunMod.networkGunManager = networkGunManager;
-
-        CustomGunLoader customGunLoader = new CustomGunLoader();
-        event.getServer().getResourceManager().addReloadListener(customGunLoader);
-        GunMod.customGunLoader = customGunLoader;
-    }
-
-    @SubscribeEvent
     public void onServerStart(FMLServerStoppedEvent event)
     {
         GunMod.networkGunManager = null;
+    }
+
+    @SubscribeEvent
+    public void addReloadListenerEvent(AddReloadListenerEvent event)
+    {
+        NetworkGunManager networkGunManager = new NetworkGunManager();
+        event.addListener(networkGunManager);
+        GunMod.networkGunManager = networkGunManager;
+
+        CustomGunLoader customGunLoader = new CustomGunLoader();
+        event.addListener(customGunLoader);
+        GunMod.customGunLoader = customGunLoader;
     }
 
     /**

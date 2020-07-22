@@ -22,7 +22,6 @@ public class StunRingingSound extends TickableSound
     @Override
     public void tick()
     {
-        this.donePlaying = true;
         PlayerEntity player = Minecraft.getInstance().player;
         if(player != null && player.isAlive())
         {
@@ -34,8 +33,11 @@ public class StunRingingSound extends TickableSound
                 this.z = (float) player.getPosZ();
                 float percent = Math.min((effect.getDuration() / (float) Config.SERVER.soundFadeThreshold.get()), 1);
                 this.volume = (float) (percent * Config.SERVER.ringVolume.get());
-                this.donePlaying = false;
+                return;
             }
         }
+
+        //Stops playing the sound
+        this.func_239509_o_();
     }
 }

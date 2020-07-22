@@ -2,22 +2,26 @@ package com.mrcrayfish.guns.client.util;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.block.Block;
+import net.minecraft.block.BreakableBlock;
+import net.minecraft.block.StainedGlassPaneBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -83,6 +87,81 @@ public class RenderUtil
         if(!stack.isEmpty())
         {
             matrixStack.push();
+            boolean flag = transformType == ItemCameraTransforms.TransformType.GUI || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
+            if(stack.getItem() == Items.TRIDENT && flag)
+            {
+                model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
+            }
+
+            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, false);
+            matrixStack.translate(-0.5D, -0.5D, -0.5D);
+            if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || flag))
+            {
+                boolean flag1;
+                if(transformType != ItemCameraTransforms.TransformType.GUI && !transformType.func_241716_a_() && stack.getItem() instanceof BlockItem)
+                {
+                    Block block = ((BlockItem) stack.getItem()).getBlock();
+                    flag1 = !(block instanceof BreakableBlock) && !(block instanceof StainedGlassPaneBlock);
+                }
+                else
+                {
+                    flag1 = true;
+                }
+                if(model.isLayered())
+                {
+                    net.minecraftforge.client.ForgeHooksClient.drawItemLayered(Minecraft.getInstance().getItemRenderer(), model, stack, matrixStack, buffer, light, overlay, flag1);
+                }
+                else
+                {
+                    RenderType rendertype = RenderTypeLookup.func_239219_a_(stack, flag1);
+                    IVertexBuilder builder;
+                    if(stack.getItem() == Items.COMPASS && stack.hasEffect())
+                    {
+                        matrixStack.push();
+                        MatrixStack.Entry entry = matrixStack.getLast();
+                        if(transformType == ItemCameraTransforms.TransformType.GUI)
+                        {
+                            entry.getMatrix().mul(0.5F);
+                        }
+                        else if(transformType.func_241716_a_())
+                        {
+                            entry.getMatrix().mul(0.75F);
+                        }
+
+                        if(flag1)
+                        {
+                            builder = ItemRenderer.func_241732_b_(buffer, rendertype, entry);
+                        }
+                        else
+                        {
+                            builder = ItemRenderer.func_241731_a_(buffer, rendertype, entry);
+                        }
+
+                        matrixStack.pop();
+                    }
+                    else if(flag1)
+                    {
+                        builder = ItemRenderer.func_239391_c_(buffer, rendertype, true, stack.hasEffect());
+                    }
+                    else
+                    {
+                        builder = ItemRenderer.getBuffer(buffer, rendertype, true, stack.hasEffect());
+                    }
+
+                    renderModel(model, stack, parent, transform, matrixStack, builder, light, overlay);
+                }
+            }
+            else
+            {
+                stack.getItem().getItemStackTileEntityRenderer().func_239207_a_(stack, transformType, matrixStack, buffer, light, overlay);
+            }
+
+            matrixStack.pop();
+        }
+
+        /*if(!stack.isEmpty())
+        {
+            matrixStack.push();
 
             boolean isGui = transformType == ItemCameraTransforms.TransformType.GUI;
             boolean tridentFlag = isGui || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
@@ -109,7 +188,7 @@ public class RenderUtil
             }
 
             matrixStack.pop();
-        }
+        }*/
     }
 
     /**

@@ -6,13 +6,13 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class BloodParticle extends Particle
 {
-    public BloodParticle(World world, double x, double y, double z)
+    public BloodParticle(ClientWorld world, double x, double y, double z)
     {
         super(world, x, y, z, 0.1, 0.1, 0.1);
         this.particleRed = 0.541F;
@@ -32,7 +32,7 @@ public class BloodParticle extends Particle
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
     {
-        Vec3d view = renderInfo.getProjectedView();
+        Vector3d view = renderInfo.getProjectedView();
         float posX = (float) (MathHelper.lerp((double) partialTicks, this.prevPosX, this.posX) - view.getX());
         float posY = (float) (MathHelper.lerp((double) partialTicks, this.prevPosY, this.posY) - view.getY());
         float posZ = (float) (MathHelper.lerp((double) partialTicks, this.prevPosZ, this.posZ) - view.getZ());
