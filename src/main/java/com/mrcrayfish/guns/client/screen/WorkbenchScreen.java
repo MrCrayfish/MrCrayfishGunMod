@@ -29,6 +29,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.awt.*;
@@ -236,7 +237,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         for(int i = 0; i < this.filteredMaterials.size(); i++)
         {
             int itemX = startX + 186;
-            int itemY = startY + i * 19 + 6 + 57;
+            int itemY = startY + i * 19 + 6 + 95;
             if(RenderUtil.isMouseWithin(mouseX, mouseY, itemX, itemY, 80, 19))
             {
                 MaterialItem materialItem = this.filteredMaterials.get(i);
@@ -251,7 +252,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
     @Override
     protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        super.func_230451_b_(matrixStack, mouseX, mouseY);
+        this.font.func_238422_b_(matrixStack, this.playerInventory.getDisplayName(), (float)this.field_238744_r_, (float)this.field_238745_s_ + 37, 4210752);
     }
 
     @Override
@@ -280,9 +281,11 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         WorkbenchRecipe recipe = this.recipes.get(currentIndex);
         ItemStack currentItem = recipe.getItem();
-        StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getUnformattedComponentText());
+        StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getString());
         if(currentItem.getCount() > 1)
         {
+            builder.append(TextFormatting.GOLD);
+            builder.append(TextFormatting.BOLD);
             builder.append(" x ");
             builder.append(currentItem.getCount());
         }
@@ -337,11 +340,12 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 }
 
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                String name = stack.getDisplayName().getUnformattedComponentText();
+                String name = stack.getDisplayName().getString();
                 if(this.font.getStringWidth(name) > 55)
                 {
                     name = this.font.func_238412_a_(name, 50).trim() + "...";
                 }
+
                 this.font.drawString(matrixStack, name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 95, Color.WHITE.getRGB());
 
                 Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 95);
