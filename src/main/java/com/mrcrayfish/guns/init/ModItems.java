@@ -45,7 +45,7 @@ public class ModItems
     public static final RegistryObject<Item> LONG_SCOPE = REGISTER.register("long_scope", () -> new ScopeItem(Scope.create(0.4F, 1.4F).viewFinderOffset(0.275), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
     /* Barrel Attachments */
-    public static final RegistryObject<Item> SILENCER = REGISTER.register("silencer", () -> new BarrelItem(Barrel.create(8.0F, GunModifiers.REDUCED_DAMAGE_AND_SOUND), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> SILENCER = REGISTER.register("silencer", () -> new BarrelItem(Barrel.create(8.0F, GunModifiers.SILENCED, GunModifiers.REDUCED_DAMAGE), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
     /* Stock Attachments */
     public static final RegistryObject<Item> BASIC_STOCK = REGISTER.register("basic_stock", () -> new StockItem(Stock.create(GunModifiers.RECOIL_REDUCTION), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));

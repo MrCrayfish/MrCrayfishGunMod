@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
  */
 public class GunModifiers
 {
-    public static final IGunModifier REDUCED_DAMAGE_AND_SOUND = new IGunModifier()
+    public static final IGunModifier SILENCED = new IGunModifier()
     {
         @Override
         public boolean silencedFire()
@@ -22,7 +22,10 @@ public class GunModifiers
         {
             return radius * 0.25;
         }
+    };
 
+    public static final IGunModifier REDUCED_DAMAGE = new IGunModifier()
+    {
         @Override
         public float modifyProjectileDamage(ItemStack stack, Gun modifiedGun, float damage)
         {
