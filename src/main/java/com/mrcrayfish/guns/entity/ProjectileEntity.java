@@ -19,7 +19,9 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.BreakableBlock;
+import net.minecraft.block.FireBlock;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.material.Material;
@@ -390,6 +392,17 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             this.onHitBlock(state, pos, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
 
+            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
+            if(level > 0 && state.isSolidSide(this.world, pos, blockRayTraceResult.getFace()))
+            {
+                BlockPos offsetPos = pos.offset(blockRayTraceResult.getFace());
+                BlockState offsetState = this.world.getBlockState(offsetPos);
+                if(offsetState.isAir(this.world, offsetPos))
+                {
+                    BlockState fireState = ((FireBlock) Blocks.FIRE).getStateForPlacement(this.world, offsetPos);
+                    this.world.setBlockState(offsetPos, fireState, 11);
+                }
+            }
             return;
         }
 
