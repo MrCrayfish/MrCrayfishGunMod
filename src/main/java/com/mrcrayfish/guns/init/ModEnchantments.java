@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.enchantment.CollateralEnchantment;
 import com.mrcrayfish.guns.enchantment.OverCapacityEnchantment;
 import com.mrcrayfish.guns.enchantment.LightweightEnchantment;
 import com.mrcrayfish.guns.enchantment.QuickHandsEnchantment;
+import com.mrcrayfish.guns.enchantment.ReclaimEnchantment;
 import com.mrcrayfish.guns.enchantment.TriggerFingerEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.fml.RegistryObject;
@@ -23,12 +24,11 @@ public class ModEnchantments
     public static final RegistryObject<Enchantment> LIGHTWEIGHT = REGISTER.register("lightweight", LightweightEnchantment::new);
     public static final RegistryObject<Enchantment> COLLATERAL = REGISTER.register("collateral", CollateralEnchantment::new);
     public static final RegistryObject<Enchantment> OVER_CAPACITY = REGISTER.register("over_capacity", OverCapacityEnchantment::new);
+    public static final RegistryObject<Enchantment> RECLAIM = REGISTER.register("reclaim", ReclaimEnchantment::new);
     //Explosive
     //Critical (3 levels) - gives a chance for a projectile to do extra damage
     //Projectile Accelerator (2 levels) - increases the speed of a projectile
     //Fire Starter (1 level) - sets the target block or entity on fire
     //Gravity Impulse (3 levels) - nearby entities will get knocked away from the target location
     //Inifinty eqiv
-    //More ammo capacity
-
 }

@@ -9,6 +9,7 @@ import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
+import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IColored;
@@ -22,6 +23,7 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,6 +40,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -167,7 +170,11 @@ public class CommonHandler
                         CompoundNBT tag = ItemStackUtil.createTagCompound(heldItem);
                         if(!tag.getBoolean("IgnoreAmmo"))
                         {
-                            tag.putInt("AmmoCount", Math.max(0, tag.getInt("AmmoCount") - 1));
+                            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RECLAIM.get(), heldItem);
+                            if(level == 0 || player.world.rand.nextInt(4 - MathHelper.clamp(level, 1, 2)) != 0)
+                            {
+                                tag.putInt("AmmoCount", Math.max(0, tag.getInt("AmmoCount") - 1));
+                            }
                         }
                     }
                 }

@@ -63,5 +63,6 @@
     "enchantment.cgm.trigger_finger": "§9Trigger Finger",
     "enchantment.cgm.lightweight": "§9Lightweight",
     "enchantment.cgm.collateral": "§9Collateral",
-    "enchantment.cgm.over_capacity": "§9Over Capacity"
+    "enchantment.cgm.over_capacity": "§9Over Capacity",
+    "enchantment.cgm.reclaim": "§9Reclaim"
 }
