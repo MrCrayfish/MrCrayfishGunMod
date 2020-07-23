@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.enchantment.CollateralEnchantment;
+import com.mrcrayfish.guns.enchantment.OverCapacityEnchantment;
 import com.mrcrayfish.guns.enchantment.LightweightEnchantment;
 import com.mrcrayfish.guns.enchantment.QuickHandsEnchantment;
 import com.mrcrayfish.guns.enchantment.TriggerFingerEnchantment;
@@ -21,7 +22,7 @@ public class ModEnchantments
     public static final RegistryObject<Enchantment> TRIGGER_FINGER = REGISTER.register("trigger_finger", TriggerFingerEnchantment::new);
     public static final RegistryObject<Enchantment> LIGHTWEIGHT = REGISTER.register("lightweight", LightweightEnchantment::new);
     public static final RegistryObject<Enchantment> COLLATERAL = REGISTER.register("collateral", CollateralEnchantment::new);
-    //Collateral
+    public static final RegistryObject<Enchantment> OVER_CAPACITY = REGISTER.register("over_capacity", OverCapacityEnchantment::new);
     //Explosive
     //Critical (3 levels) - gives a chance for a projectile to do extra damage
     //Projectile Accelerator (2 levels) - increases the speed of a projectile

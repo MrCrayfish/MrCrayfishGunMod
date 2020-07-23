@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -87,7 +88,7 @@ public class GunItem extends Item implements IColored
             else
             {
                 int ammoCount = tagCompound.getInt("AmmoCount");
-                tooltip.add(new TranslationTextComponent("info.cgm.ammo", Integer.toString(ammoCount), modifiedGun.general.maxAmmo));
+                tooltip.add(new TranslationTextComponent("info.cgm.ammo", Integer.toString(ammoCount), GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)));
             }
         }
 
@@ -122,7 +123,7 @@ public class GunItem extends Item implements IColored
     {
         CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
         Gun modifiedGun = this.getModifiedGun(stack);
-        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt("AmmoCount") != modifiedGun.general.maxAmmo;
+        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt("AmmoCount") != GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun);
     }
 
     @Override
@@ -130,7 +131,7 @@ public class GunItem extends Item implements IColored
     {
         CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
         Gun modifiedGun = this.getModifiedGun(stack);
-        return 1.0 - (tagCompound.getInt("AmmoCount") / (double) modifiedGun.general.maxAmmo);
+        return 1.0 - (tagCompound.getInt("AmmoCount") / (double) GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun));
     }
 
     @Override

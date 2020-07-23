@@ -53,7 +53,7 @@ public class ReloadTracker
     private boolean isWeaponFull()
     {
         CompoundNBT tag = ItemStackUtil.createTagCompound(this.stack);
-        return tag.getInt("AmmoCount") >= this.gun.general.maxAmmo;
+        return tag.getInt("AmmoCount") >= GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
     }
 
     private boolean hasNoAmmo(PlayerEntity player)
@@ -73,12 +73,12 @@ public class ReloadTracker
         ItemStack ammo = Gun.findAmmo(player, this.gun.projectile.item);
         if(!ammo.isEmpty())
         {
-            //TODO add enchantment that doubles the speed
             int amount = Math.min(ammo.getCount(), this.gun.general.reloadSpeed);
             CompoundNBT tag = this.stack.getTag();
             if(tag != null)
             {
-                amount = Math.min(amount, this.gun.general.maxAmmo - tag.getInt("AmmoCount"));
+                int maxAmmo = GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
+                amount = Math.min(amount, maxAmmo - tag.getInt("AmmoCount"));
                 tag.putInt("AmmoCount", tag.getInt("AmmoCount") + amount);
             }
             ammo.shrink(amount);
