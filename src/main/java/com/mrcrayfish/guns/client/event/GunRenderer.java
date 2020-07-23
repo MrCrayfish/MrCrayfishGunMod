@@ -23,6 +23,7 @@ import com.mrcrayfish.guns.object.Barrel;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Scope;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
@@ -915,13 +916,7 @@ public class GunRenderer
 
         matrixStack.push();
 
-        float interval = 10F;
-        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
-        if(enchantments.containsKey(ModEnchantments.QUICK_HANDS.get()))
-        {
-            interval *= 0.5F;
-        }
-
+        float interval = GunEnchantmentHelper.getReloadInterval(stack);
         float reload = ((mc.player.ticksExisted - this.startReloadTick + mc.getRenderPartialTicks()) % interval) / interval;
         float percent = 1.0F - reload;
         if(percent >= 0.5F)

@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.enchantment.Enchantment;
@@ -63,12 +64,7 @@ public class ReloadTracker
     private boolean canReload(PlayerEntity player)
     {
         int deltaTicks = player.ticksExisted - this.startTick;
-        int interval = 10;
-        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(this.stack);
-        if(enchantments.containsKey(ModEnchantments.QUICK_HANDS.get()))
-        {
-            interval /= 2;
-        }
+        int interval = GunEnchantmentHelper.getReloadInterval(this.stack);
         return deltaTicks > 0 && deltaTicks % interval == 0;
     }
 
