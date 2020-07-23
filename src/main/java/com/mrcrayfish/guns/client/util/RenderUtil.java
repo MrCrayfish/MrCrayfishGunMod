@@ -100,7 +100,7 @@ public class RenderUtil
                 {
                     renderType = Atlases.getTranslucentCullBlockType();
                 }
-                IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(buffer, renderType, true, parent.isEmpty() ? stack.hasEffect() : parent.hasEffect());
+                IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(buffer, renderType, true, stack.hasEffect() || parent.hasEffect());
                 renderModel(model, stack, parent, transform, matrixStack, vertexBuilder, light, overlay);
             }
             else
