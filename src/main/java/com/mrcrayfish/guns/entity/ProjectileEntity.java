@@ -417,6 +417,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     {
         boolean headShot = false;
         float damage = this.getDamage();
+        float newDamage = GunEnchantmentHelper.getPuncturingDamage(this.weapon, this.rand, damage);
+        boolean critical = damage != newDamage;
+        damage = newDamage;
+
         if(Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof PlayerEntity)
         {
             AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, !entity.isCrouching() ? 0.0625 : 0, 0);
@@ -433,6 +437,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(entity instanceof PlayerEntity && this.shooter instanceof ServerPlayerEntity)
         {
             SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
+            if(critical)
+            {
+                event = SoundEvents.ENTITY_ITEM_BREAK; //TODO change
+            }
+            ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
+            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
+        }
+        else if(critical)
+        {
+            SoundEvent event = SoundEvents.ENTITY_ITEM_BREAK;
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
             shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }

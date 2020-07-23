@@ -6,6 +6,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.Random;
+
 /**
  * Author: MrCrayfish
  */
@@ -59,5 +61,16 @@ public class GunEnchantmentHelper
             return 0.1 * level;
         }
         return 0.0;
+    }
+
+    public static float getPuncturingDamage(ItemStack weapon, Random rand, float damage)
+    {
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.PUNCTURING.get(), weapon);
+        if(rand.nextInt(5) == 0)
+        {
+            float modifier = 0.05F * level;
+            return damage + damage * modifier;
+        }
+        return damage;
     }
 }

@@ -65,5 +65,6 @@
     "enchantment.cgm.collateral": "§9Collateral",
     "enchantment.cgm.over_capacity": "§9Over Capacity",
     "enchantment.cgm.reclaimed": "§9Reclaimed",
-    "enchantment.cgm.accelerator": "§9Accelerator"
+    "enchantment.cgm.accelerator": "§9Accelerator",
+    "enchantment.cgm.puncturing": "§9Puncturing"
 }

@@ -21,6 +21,8 @@ public class ModEnchantments
     public static final RegistryObject<Enchantment> OVER_CAPACITY = REGISTER.register("over_capacity", OverCapacityEnchantment::new);
     public static final RegistryObject<Enchantment> RECLAIMED = REGISTER.register("reclaimed", ReclaimedEnchantment::new);
     public static final RegistryObject<Enchantment> ACCELERATOR = REGISTER.register("accelerator", AcceleratorEnchantment::new);
+    public static final RegistryObject<Enchantment> PUNCTURING = REGISTER.register("puncturing", PuncturingEnchantment::new);
+
     //Explosive
     //Critical (3 levels) - gives a chance for a projectile to do extra damage
     //Projectile Accelerator (2 levels) - increases the speed of a projectile
