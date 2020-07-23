@@ -1,11 +1,14 @@
 package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -60,7 +63,13 @@ public class ReloadTracker
     private boolean canReload(PlayerEntity player)
     {
         int deltaTicks = player.ticksExisted - this.startTick;
-        return deltaTicks > 0 && deltaTicks % 10 == 0;
+        int interval = 10;
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(this.stack);
+        if(enchantments.containsKey(ModEnchantments.QUICK_HANDS.get()))
+        {
+            interval /= 2;
+        }
+        return deltaTicks > 0 && deltaTicks % interval == 0;
     }
 
     private void increaseAmmo(PlayerEntity player)

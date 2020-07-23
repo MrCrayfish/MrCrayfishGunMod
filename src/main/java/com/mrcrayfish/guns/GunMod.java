@@ -10,8 +10,10 @@ import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -37,6 +39,7 @@ public class GunMod
 {
     public static boolean controllableLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+    public static final EnchantmentType ENCHANTMENT_TYPE_GUN = EnchantmentType.create(Reference.MOD_ID + ":gun", item -> item.getItem() instanceof GunItem);
     public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
     {
         @Override
@@ -51,7 +54,7 @@ public class GunMod
             super.fill(items);
             CustomGunManager.fill(items);
         }
-    };
+    }.setRelevantEnchantmentTypes(ENCHANTMENT_TYPE_GUN);
 
     private static GunOptions options;
     private static NetworkGunManager networkGunManager;
@@ -68,6 +71,7 @@ public class GunMod
         ModBlocks.REGISTER.register(bus);
         ModContainers.REGISTER.register(bus);
         ModEffects.REGISTER.register(bus);
+        ModEnchantments.REGISTER.register(bus);
         ModEntities.REGISTER.register(bus);
         ModItems.REGISTER.register(bus);
         ModParticleTypes.REGISTER.register(bus);
@@ -131,7 +135,6 @@ public class GunMod
     }
 
     /**
-     *
      * @return
      */
     @Nullable
@@ -141,7 +144,6 @@ public class GunMod
     }
 
     /**
-     *
      * @return
      */
     public static GunOptions getOptions()

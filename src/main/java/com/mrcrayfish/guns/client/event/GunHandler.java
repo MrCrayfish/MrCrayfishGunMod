@@ -211,6 +211,7 @@ public class GunHandler
                 float startProgress = progressRecoil / recoil;
                 progressRecoil += recoilAmount;
                 float endProgress = progressRecoil / recoil;
+
                 if(startProgress < 0.2F)
                 {
                     mc.player.rotationPitch -= ((endProgress - startProgress) / 0.2F) * recoil;
