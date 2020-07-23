@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
+import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
@@ -21,6 +22,7 @@ import net.minecraft.block.BreakableBlock;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -61,6 +63,8 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -189,23 +193,42 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 endVec = result.getHitVec();
             }
 
-            EntityResult entityResult = this.findEntityOnPath(startVec, endVec);
-            if(entityResult != null)
+            List<EntityResult> hitEntities = null;
+            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.COLLATERAL.get(), this.weapon);
+            if(level == 0)
             {
-                result = new EntityRayTraceResult(entityResult.entity, entityResult.hitVec);
-            }
-
-            if(result instanceof EntityRayTraceResult && ((EntityRayTraceResult) result).getEntity() instanceof PlayerEntity)
-            {
-                PlayerEntity player = (PlayerEntity) ((EntityRayTraceResult) result).getEntity();
-
-                if(this.shooter instanceof PlayerEntity && !((PlayerEntity) this.shooter).canAttackPlayer(player))
+                EntityResult entityResult = this.findEntityOnPath(startVec, endVec);
+                if(entityResult != null)
                 {
-                    result = null;
+                    hitEntities = Collections.singletonList(entityResult);
                 }
             }
+            else
+            {
+                hitEntities = this.findEntitiesOnPath(startVec, endVec);
+            }
 
-            if(result != null)
+            if(hitEntities != null && hitEntities.size() > 0)
+            {
+                for(EntityResult entityResult : hitEntities)
+                {
+                    result = new EntityRayTraceResult(entityResult.entity, entityResult.hitVec);
+                    if(((EntityRayTraceResult) result).getEntity() instanceof PlayerEntity)
+                    {
+                        PlayerEntity player = (PlayerEntity) ((EntityRayTraceResult) result).getEntity();
+
+                        if(this.shooter instanceof PlayerEntity && !((PlayerEntity) this.shooter).canAttackPlayer(player))
+                        {
+                            result = null;
+                        }
+                    }
+                    if(result != null)
+                    {
+                        this.onHit(result);
+                    }
+                }
+            }
+            else
             {
                 this.onHit(result);
             }
@@ -287,6 +310,46 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return hitEntity != null ? new EntityResult(hitEntity, hitVec) : null;
     }
 
+    @Nullable
+    protected List<EntityResult> findEntitiesOnPath(Vec3d startVec, Vec3d endVec)
+    {
+        List<EntityResult> hitEntities = new ArrayList<>();
+        List<Entity> entities = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0), PROJECTILE_TARGETS);
+        for(Entity entity : entities)
+        {
+            if(!entity.equals(this.shooter))
+            {
+                double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
+                AxisAlignedBB boundingBox = entity.getBoundingBox();
+                if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
+                {
+                    int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
+                    boundingBox = BoundingBoxTracker.getBoundingBox(entity, ping); //TODO this is actually the last position
+                }
+                boundingBox = boundingBox.expand(0, expandHeight, 0);
+                Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
+                Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
+                if(!hitPos.isPresent() && grownHitPos.isPresent())
+                {
+                    RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos.get(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
+                    if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
+                    {
+                        continue;
+                    }
+                    hitPos = grownHitPos;
+                }
+
+                if(!hitPos.isPresent())
+                {
+                    continue;
+                }
+
+                hitEntities.add(new EntityResult(entity, hitPos.get()));
+            }
+        }
+        return hitEntities;
+    }
+
     private void onHit(RayTraceResult result)
     {
         if(result instanceof BlockRayTraceResult)
@@ -337,7 +400,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 return;
             }
             this.onHitEntity(entity, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
-            this.remove();
+
+            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
+            if(level == 0)
+            {
+                this.remove();
+            }
+
             entity.hurtResistantTime = 0;
         }
     }
