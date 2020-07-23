@@ -58,9 +58,9 @@ public class GunEnchantmentHelper
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ACCELERATOR.get(), weapon);
         if(level > 0)
         {
-            return 0.1 * level;
+            return 1.0 + 0.15 * level;
         }
-        return 0.0;
+        return 1.0;
     }
 
     public static float getPuncturingDamage(ItemStack weapon, Random rand, float damage)
