@@ -64,5 +64,6 @@
     "enchantment.cgm.lightweight": "§9Lightweight",
     "enchantment.cgm.collateral": "§9Collateral",
     "enchantment.cgm.over_capacity": "§9Over Capacity",
-    "enchantment.cgm.reclaim": "§9Reclaim"
+    "enchantment.cgm.reclaimed": "§9Reclaimed",
+    "enchantment.cgm.accelerator": "§9Accelerator"
 }

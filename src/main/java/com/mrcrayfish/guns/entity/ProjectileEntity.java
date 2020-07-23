@@ -14,6 +14,7 @@ import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.block.Block;
@@ -105,7 +106,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.life);
 
         Vec3d dir = this.getDirection(shooter, weapon, item, modifiedGun);
-        double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.speed);
+        double speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon, modifiedGun);
+        double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.speed * speedModifier);
         this.setMotion(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
 

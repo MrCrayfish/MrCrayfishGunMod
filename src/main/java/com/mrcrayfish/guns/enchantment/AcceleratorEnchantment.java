@@ -6,11 +6,11 @@ import net.minecraft.inventory.EquipmentSlotType;
 /**
  * Author: MrCrayfish
  */
-public class ReclaimEnchantment extends Enchantment
+public class AcceleratorEnchantment extends Enchantment
 {
-    public ReclaimEnchantment()
+    public AcceleratorEnchantment()
     {
-        super(Enchantment.Rarity.VERY_RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
     }
 
     @Override
@@ -22,18 +22,18 @@ public class ReclaimEnchantment extends Enchantment
     @Override
     public int getMaxLevel()
     {
-        return 2;
+        return 3;
     }
 
     @Override
     public int getMinEnchantability(int level)
     {
-        return 20;
+        return 15;
     }
 
     @Override
     public int getMaxEnchantability(int level)
     {
-        return 50;
+        return this.getMinEnchantability(level) + 30;
     }
 }

@@ -170,7 +170,7 @@ public class CommonHandler
                         CompoundNBT tag = ItemStackUtil.createTagCompound(heldItem);
                         if(!tag.getBoolean("IgnoreAmmo"))
                         {
-                            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RECLAIM.get(), heldItem);
+                            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
                             if(level == 0 || player.world.rand.nextInt(4 - MathHelper.clamp(level, 1, 2)) != 0)
                             {
                                 tag.putInt("AmmoCount", Math.max(0, tag.getInt("AmmoCount") - 1));
