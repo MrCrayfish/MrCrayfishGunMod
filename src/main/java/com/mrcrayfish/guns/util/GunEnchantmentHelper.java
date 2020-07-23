@@ -17,8 +17,8 @@ public class GunEnchantmentHelper
     public static int getReloadInterval(ItemStack weapon)
     {
         int interval = 10;
-        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(weapon);
-        if(enchantments.containsKey(ModEnchantments.QUICK_HANDS.get()))
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.QUICK_HANDS.get(), weapon);
+        if(level > 0)
         {
             interval /= 2;
         }
@@ -28,10 +28,9 @@ public class GunEnchantmentHelper
     public static int getRate(ItemStack weapon, Gun modifiedGun)
     {
         int rate = modifiedGun.general.rate;
-        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(weapon);
-        if(enchantments.containsKey(ModEnchantments.TRIGGER_FINGER.get()))
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.TRIGGER_FINGER.get(), weapon);
+        if(level > 0)
         {
-            float level = enchantments.get(ModEnchantments.TRIGGER_FINGER.get());
             float newRate = rate * (0.25F * level);
             rate -= MathHelper.clamp(newRate, 0, rate);
         }
