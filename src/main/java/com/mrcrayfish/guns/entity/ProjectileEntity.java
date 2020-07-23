@@ -73,7 +73,7 @@ import java.util.function.Function;
 
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData
 {
-    private static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && !input.isSpectator() && input.canBeCollidedWith();
+    private static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isAlive() && !input.isSpectator() && input.canBeCollidedWith();
     private static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
 
     protected int shooterId;
