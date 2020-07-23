@@ -125,7 +125,7 @@ public class GunModifierHelper
         return 1.0F - kickReduction;
     }
 
-    public static float getRecoilReduction(ItemStack weapon)
+    public static float getRecoilModifier(ItemStack weapon)
     {
         float recoilReduction = 1.0F;
         for(int i = 0; i < IAttachment.Type.values().length; i++)

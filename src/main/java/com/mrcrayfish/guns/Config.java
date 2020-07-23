@@ -354,7 +354,7 @@ public class Config
                 }
                 builder.pop();
 
-                this.enableCameraRecoil = builder.comment("If true, enables camera recoil when firing a weapon").define("enableCameraRecoil", false);
+                this.enableCameraRecoil = builder.comment("If true, enables camera recoil when firing a weapon").define("enableCameraRecoil", true);
             }
             builder.pop();
         }

@@ -18,12 +18,10 @@ import com.mrcrayfish.guns.item.GrenadeItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.IBarrel;
-import com.mrcrayfish.guns.item.IStock;
 import com.mrcrayfish.guns.object.Barrel;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Scope;
-import com.mrcrayfish.guns.object.Stock;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
@@ -385,7 +383,7 @@ public class GunRenderer
         this.recoilAngle = gun.general.recoilAngle;
 
         float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
-        float recoilReduction = 1.0F - GunModifierHelper.getRecoilReduction(item);
+        float recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(item);
         double kick = gun.general.recoilKick * 0.0625 * this.recoilNormal * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress));
         float recoil = (float) (gun.general.recoilAngle * this.recoilNormal) * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress));
         matrixStack.translate(0, 0, kick * kickReduction);
