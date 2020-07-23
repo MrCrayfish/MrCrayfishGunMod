@@ -2,12 +2,9 @@ package com.mrcrayfish.guns.util;
 
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.object.Gun;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-
-import java.util.Map;
 
 /**
  * Author: MrCrayfish
@@ -35,5 +32,11 @@ public class GunEnchantmentHelper
             rate -= MathHelper.clamp(newRate, 0, rate);
         }
         return rate;
+    }
+
+    public static double getAimDownSightSpeed(ItemStack weapon)
+    {
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.LIGHTWEIGHT.get(), weapon);
+        return level > 0 ? 1.5 : 1.0;
     }
 }

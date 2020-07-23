@@ -90,8 +90,8 @@ public class GunRenderer
     private double muzzleFlashSize;
     private float muzzleFlashRoll;
     private int muzzleFlashYaw;
-    private int zoomProgress;
-    private int lastZoomProgress;
+    private double zoomProgress;
+    private double lastZoomProgress;
     public double normalZoomProgress;
     public double recoilNormal;
     public double recoilAngle;
@@ -124,7 +124,7 @@ public class GunRenderer
                         {
                             newFov -= scope.getAdditionalZoom();
                         }
-                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (zoomProgress / (float) ZOOM_TICKS)));
+                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - ((float) zoomProgress / (float) ZOOM_TICKS)));
                     }
                 }
             }
@@ -144,18 +144,31 @@ public class GunRenderer
         }
 
         PlayerEntity player = Minecraft.getInstance().player;
+        if(player == null)
+        {
+            return;
+        }
+
         if(isZooming(player) && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
         {
             if(this.zoomProgress < ZOOM_TICKS)
             {
-                this.zoomProgress++;
+                this.zoomProgress += GunEnchantmentHelper.getAimDownSightSpeed(player.getHeldItem(Hand.MAIN_HAND));
+                if(this.zoomProgress > ZOOM_TICKS)
+                {
+                    this.zoomProgress = (int) ZOOM_TICKS;
+                }
             }
         }
         else
         {
             if(this.zoomProgress > 0)
             {
-                this.zoomProgress--;
+                this.zoomProgress -= GunEnchantmentHelper.getAimDownSightSpeed(player.getHeldItem(Hand.MAIN_HAND));
+                if(this.zoomProgress < 0)
+                {
+                    this.zoomProgress = 0;
+                }
             }
         }
     }

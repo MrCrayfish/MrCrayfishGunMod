@@ -4,9 +4,12 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAim;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
@@ -42,7 +45,7 @@ public class AimTracker
         AimTracker tracker = get(player);
         if(tracker != null)
         {
-            tracker.handleAiming(player);
+            tracker.handleAiming(player, player.getHeldItem(Hand.MAIN_HAND));
             if(!tracker.isAiming())
             {
                 AIMING_MAP.remove(player.getUniqueID());
@@ -70,21 +73,29 @@ public class AimTracker
         return 0F;
     }
 
-    private void handleAiming(PlayerEntity player)
+    private void handleAiming(PlayerEntity player, ItemStack heldItem)
     {
         this.previousAim = this.currentAim;
         if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING))
         {
             if(this.currentAim < MAX_AIM)
             {
-                this.currentAim++;
+                this.currentAim += GunEnchantmentHelper.getAimDownSightSpeed(heldItem);
+                if(this.currentAim > MAX_AIM)
+                {
+                    this.currentAim = (int) MAX_AIM;
+                }
             }
         }
         else
         {
             if(this.currentAim > 0)
             {
-                this.currentAim--;
+                this.currentAim -= GunEnchantmentHelper.getAimDownSightSpeed(heldItem);
+                if(this.currentAim < 0)
+                {
+                    this.currentAim = 0;
+                }
             }
         }
     }
