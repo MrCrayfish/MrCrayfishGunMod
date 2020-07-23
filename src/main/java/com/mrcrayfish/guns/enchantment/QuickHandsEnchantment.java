@@ -11,7 +11,7 @@ public class QuickHandsEnchantment extends Enchantment
 {
     public QuickHandsEnchantment()
     {
-        super(Rarity.RARE, GunMod.ENCHANTMENT_TYPE_GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
     }
 
     @Override

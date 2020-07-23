@@ -3,7 +3,9 @@ package com.mrcrayfish.guns.common;
 import com.google.common.collect.Maps;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -25,10 +27,10 @@ public class ShootTracker
      * @param item        a gun item
      * @param modifiedGun the modified gun instance of the specified gun
      */
-    public void putCooldown(GunItem item, Gun modifiedGun)
+    public void putCooldown(ItemStack weapon, GunItem item, Gun modifiedGun)
     {
-        //TODO make enchantment to increase fire rate
-        this.cooldownMap.put(item, Pair.of(Util.milliTime(), modifiedGun.general.rate * 50));
+        int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
+        this.cooldownMap.put(item, Pair.of(Util.milliTime(), rate * 50));
     }
 
     /**

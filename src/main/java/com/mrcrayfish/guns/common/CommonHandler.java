@@ -97,7 +97,7 @@ public class CommonHandler
                         GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
                         return;
                     }
-                    tracker.putCooldown(item, modifiedGun);
+                    tracker.putCooldown(heldItem, item, modifiedGun);
 
                     if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
                     {

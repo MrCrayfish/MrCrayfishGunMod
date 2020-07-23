@@ -6,13 +6,17 @@ import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.network.message.MessageShooting;
 import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -23,6 +27,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Map;
+
 /**
  * Author: MrCrayfish
  */
@@ -31,7 +37,6 @@ public class GunHandler
 {
     private static float recoil;
     private static float progressRecoil;
-    private static float rate;
     private static boolean shooting;
 
     private static boolean isInGame()
@@ -179,7 +184,9 @@ public class GunHandler
         {
             GunItem gunItem = (GunItem) heldItem.getItem();
             Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-            tracker.setCooldown(heldItem.getItem(), modifiedGun.general.rate);
+
+            int rate = GunEnchantmentHelper.getRate(heldItem, modifiedGun);
+            tracker.setCooldown(heldItem.getItem(), rate);
             PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player));
             if(modifiedGun.display.flash != null)
             {
@@ -190,7 +197,6 @@ public class GunHandler
                 float recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(heldItem);
                 recoil = modifiedGun.general.recoilAngle * recoilModifier;
                 progressRecoil = 0F;
-                rate = modifiedGun.general.rate;
             }
         }
     }

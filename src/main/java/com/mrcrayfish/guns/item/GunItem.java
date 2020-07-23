@@ -2,10 +2,13 @@ package com.mrcrayfish.guns.item;
 
 import com.google.common.annotations.Beta;
 import com.mrcrayfish.guns.client.KeyBinds;
+import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
+import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -153,5 +156,16 @@ public class GunItem extends Item implements IColored
             }
         }
         return this.gun;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
+    {
+        if(enchantment.type == EnchantmentTypes.SEMI_AUTO_GUN)
+        {
+            Gun modifiedGun = this.getModifiedGun(stack);
+            return !modifiedGun.general.auto;
+        }
+        return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 }

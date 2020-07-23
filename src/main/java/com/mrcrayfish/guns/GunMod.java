@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.common.BoundingBoxTracker;
 import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
+import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
@@ -39,7 +40,6 @@ public class GunMod
 {
     public static boolean controllableLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    public static final EnchantmentType ENCHANTMENT_TYPE_GUN = EnchantmentType.create(Reference.MOD_ID + ":gun", item -> item.getItem() instanceof GunItem);
     public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
     {
         @Override
@@ -54,7 +54,7 @@ public class GunMod
             super.fill(items);
             CustomGunManager.fill(items);
         }
-    }.setRelevantEnchantmentTypes(ENCHANTMENT_TYPE_GUN);
+    }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
     private static GunOptions options;
     private static NetworkGunManager networkGunManager;
