@@ -1,16 +1,15 @@
 package com.mrcrayfish.guns.enchantment;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 
 /**
  * Author: MrCrayfish
  */
-public class PuncturingEnchantment extends Enchantment
+public class PuncturingEnchantment extends GunEnchantment
 {
     public PuncturingEnchantment()
     {
-        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND}, Type.PROJECTILE);
     }
 
     @Override

@@ -1,16 +1,15 @@
 package com.mrcrayfish.guns.enchantment;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 
 /**
  * Author: MrCrayfish
  */
-public class OverCapacityEnchantment extends Enchantment
+public class OverCapacityEnchantment extends GunEnchantment
 {
     public OverCapacityEnchantment()
     {
-        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND}, Type.WEAPON);
     }
 
     @Override

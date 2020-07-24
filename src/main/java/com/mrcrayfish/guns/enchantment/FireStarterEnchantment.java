@@ -1,16 +1,15 @@
 package com.mrcrayfish.guns.enchantment;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 
 /**
  * Author: MrCrayfish
  */
-public class FireStarterEnchantment extends Enchantment
+public class FireStarterEnchantment extends GunEnchantment
 {
     public FireStarterEnchantment()
     {
-        super(Enchantment.Rarity.VERY_RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+        super(Rarity.VERY_RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND}, Type.PROJECTILE);
     }
 
     @Override

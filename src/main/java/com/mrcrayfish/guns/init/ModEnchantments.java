@@ -23,7 +23,5 @@ public class ModEnchantments
     public static final RegistryObject<Enchantment> ACCELERATOR = REGISTER.register("accelerator", AcceleratorEnchantment::new);
     public static final RegistryObject<Enchantment> PUNCTURING = REGISTER.register("puncturing", PuncturingEnchantment::new);
     public static final RegistryObject<Enchantment> FIRE_STARTER = REGISTER.register("fire_starter", FireStarterEnchantment::new);
-    //Explosive
-    //Fire Starter (1 level) - sets the target block or entity on fire
     //Gravity Impulse (3 levels) - nearby entities will get knocked away from the target location
 }

@@ -1,17 +1,15 @@
 package com.mrcrayfish.guns.enchantment;
 
-import com.mrcrayfish.guns.GunMod;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 
 /**
  * Author: MrCrayfish
  */
-public class QuickHandsEnchantment extends Enchantment
+public class QuickHandsEnchantment extends GunEnchantment
 {
     public QuickHandsEnchantment()
     {
-        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND}, Type.AMMO);
     }
 
     @Override

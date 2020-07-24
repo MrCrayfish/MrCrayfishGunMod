@@ -6,11 +6,11 @@ import net.minecraft.inventory.EquipmentSlotType;
 /**
  * Author: MrCrayfish
  */
-public class LightweightEnchantment extends Enchantment
+public class LightweightEnchantment extends GunEnchantment
 {
     public LightweightEnchantment()
     {
-        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+        super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND}, Type.WEAPON);
     }
 
     @Override
