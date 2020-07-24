@@ -151,7 +151,7 @@ public class GunRenderer
             {
                 ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
                 double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
-                speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, speed);
+                speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
                 this.zoomProgress += speed;
                 if(this.zoomProgress > ZOOM_TICKS)
                 {
@@ -165,7 +165,7 @@ public class GunRenderer
             {
                 ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
                 double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
-                speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, speed);
+                speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
                 this.zoomProgress -= speed;
                 if(this.zoomProgress < 0)
                 {
