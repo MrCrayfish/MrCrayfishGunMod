@@ -195,4 +195,17 @@ public class GunModifierHelper
         }
         return finalDamage;
     }
+
+    public static double getModifiedAimDownSightSpeed(ItemStack weapon, double speed)
+    {
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                speed = modifier.modifyAimDownSightSpeed(speed);
+            }
+        }
+        return MathHelper.clamp(speed, 0.01, Double.MAX_VALUE);
+    }
 }

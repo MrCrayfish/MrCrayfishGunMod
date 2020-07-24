@@ -72,4 +72,9 @@ public interface IGunModifier
     {
         return size;
     }
+
+    default double modifyAimDownSightSpeed(double speed)
+    {
+        return speed;
+    }
 }
