@@ -41,7 +41,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         public float recoilDurationOffset;
         @Optional
-        public float recoilAdsReduction = 0.9F;
+        public float recoilAdsReduction = 0.2F;
         @Optional
         public int projectileAmount = 1;
         @Optional
