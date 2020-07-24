@@ -67,5 +67,14 @@
     "enchantment.cgm.reclaimed": "§9Reclaimed",
     "enchantment.cgm.accelerator": "§9Accelerator",
     "enchantment.cgm.puncturing": "§9Puncturing",
-    "enchantment.cgm.fire_starter": "§9Fire Starter"
+    "enchantment.cgm.fire_starter": "§9Fire Starter",
+    "enchantment.cgm.quick_hands.desc": "Increases the speed of reloading weapons",
+    "enchantment.cgm.trigger_finger.desc": "Increases the speed you can fire weapons",
+    "enchantment.cgm.lightweight.desc": "Reduces the weight of a weapon to increase ADS speed",
+    "enchantment.cgm.collateral.desc": "Makes fired bullets travel through multiple entities",
+    "enchantment.cgm.over_capacity.desc": "Increases the ammo capacity of a weapon",
+    "enchantment.cgm.reclaimed.desc": "Creates a chance that a bullet won't be consumed upon firing a weapon",
+    "enchantment.cgm.accelerator.desc": "Increases the speed of fired bullets",
+    "enchantment.cgm.puncturing.desc": "Creates a chance that a bullet will deal critical damage",
+    "enchantment.cgm.fire_starter.desc": "Fired bullets will set blocks and entities on fire upon impact"
 }
