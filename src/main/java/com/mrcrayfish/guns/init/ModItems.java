@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.init;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.GunModifiers;
-import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.BarrelItem;
 import com.mrcrayfish.guns.item.GrenadeItem;
 import com.mrcrayfish.guns.item.GunItem;
@@ -48,6 +47,6 @@ public class ModItems
     public static final RegistryObject<Item> SILENCER = REGISTER.register("silencer", () -> new BarrelItem(Barrel.create(8.0F, GunModifiers.SILENCED, GunModifiers.REDUCED_DAMAGE), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
     /* Stock Attachments */
-    public static final RegistryObject<Item> BASIC_STOCK = REGISTER.register("basic_stock", () -> new StockItem(Stock.create(GunModifiers.RECOIL_REDUCTION), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
-    public static final RegistryObject<Item> ADVANCED_STOCK = REGISTER.register("tactical_stock", () -> new StockItem(Stock.create(GunModifiers.IMPROVED_RECOIL_REDUCTION), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> BASIC_STOCK = REGISTER.register("basic_stock", () -> new StockItem(Stock.create(GunModifiers.BETTER_CONTROL), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> ADVANCED_STOCK = REGISTER.register("tactical_stock", () -> new StockItem(Stock.create(GunModifiers.STABILISED), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 }
