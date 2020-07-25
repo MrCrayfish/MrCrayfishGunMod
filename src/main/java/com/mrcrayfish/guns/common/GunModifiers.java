@@ -38,13 +38,13 @@ public class GunModifiers
         @Override
         public float recoilModifier()
         {
-            return 0.35F;
+            return 0.3F;
         }
 
         @Override
         public float kickModifier()
         {
-            return 0.85F;
+            return 0.8F;
         }
 
         @Override
@@ -65,25 +65,52 @@ public class GunModifiers
         @Override
         public float recoilModifier()
         {
-            return 0.6F;
+            return 0.45F;
         }
 
         @Override
         public float kickModifier()
         {
-            return 0.6F;
+            return 0.3F;
         }
 
         @Override
         public float modifyProjectileSpread(float spread)
         {
-            return spread * 0.6F;
+            return spread * 0.3F;
         }
 
         @Override
         public double modifyAimDownSightSpeed(double speed)
         {
-            return speed * 0.7F;
+            return speed * 0.6F;
+        }
+    };
+
+    public static final IGunModifier SUPER_STABILISED = new IGunModifier()
+    {
+        @Override
+        public float recoilModifier()
+        {
+            return 0.1F;
+        }
+
+        @Override
+        public float kickModifier()
+        {
+            return 0.1F;
+        }
+
+        @Override
+        public float modifyProjectileSpread(float spread)
+        {
+            return spread * 0.15F;
+        }
+
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 0.4F;
         }
     };
 }
