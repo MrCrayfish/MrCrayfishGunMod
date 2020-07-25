@@ -114,6 +114,27 @@
 			}
 		}
 	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 1.75, 1.5]
+		},
+		"firstperson_righthand": {
+			"translation": [2.25, 2.75, 0]
+		},
+		"ground": {
+			"translation": [0, 1, 0]
+		},
+		"gui": {
+			"rotation": [30, 135, 0],
+			"translation": [-0.25, 3.75, 0],
+			"scale": [2, 2, 2]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [0, 4, -1.25],
+			"scale": [2, 2, 2]
+		}
+	},
 	"groups": [0, 1, 2, 3,
 		{
 			"name": "octagon",
