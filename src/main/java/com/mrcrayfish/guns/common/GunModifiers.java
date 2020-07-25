@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.common;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Author: MrCrayfish
@@ -33,6 +34,24 @@ public class GunModifiers
         }
     };
 
+    public static final IGunModifier SLOW_ADS = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 0.95F;
+        }
+    };
+
+    public static final IGunModifier SLOWER_ADS = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 0.9F;
+        }
+    };
+
     public static final IGunModifier BETTER_CONTROL = new IGunModifier()
     {
         @Override
@@ -56,7 +75,7 @@ public class GunModifiers
         @Override
         public double modifyAimDownSightSpeed(double speed)
         {
-            return speed * 0.9F;
+            return speed * 0.95F;
         }
     };
 
@@ -65,7 +84,7 @@ public class GunModifiers
         @Override
         public float recoilModifier()
         {
-            return 0.45F;
+            return 0.4F;
         }
 
         @Override
@@ -83,7 +102,7 @@ public class GunModifiers
         @Override
         public double modifyAimDownSightSpeed(double speed)
         {
-            return speed * 0.6F;
+            return speed * 0.9F;
         }
     };
 
@@ -110,7 +129,13 @@ public class GunModifiers
         @Override
         public double modifyAimDownSightSpeed(double speed)
         {
-            return speed * 0.4F;
+            return speed * 0.7F;
+        }
+
+        @Override
+        public int modifyFireRate(int rate)
+        {
+            return MathHelper.clamp((int) (rate * 1.25), rate + 1, Integer.MAX_VALUE);
         }
     };
 }
