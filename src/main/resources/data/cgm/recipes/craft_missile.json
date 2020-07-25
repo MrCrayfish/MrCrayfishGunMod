@@ -1,7 +1,7 @@
 {
     "type": "cgm:workbench",
     "result": {
-        "item": "cgm:grenade",
+        "item": "cgm:missile",
         "count": 2
     },
     "materials": [
