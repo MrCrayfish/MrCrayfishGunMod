@@ -181,7 +181,7 @@ public class GunModifierHelper
             IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
             for(IGunModifier modifier : modifiers)
             {
-                float newDamage = modifier.modifyProjectileDamage(weapon, modifiedGun, damage);
+                float newDamage = modifier.modifyProjectileDamage(damage);
                 finalDamage += (newDamage - damage);
             }
         }

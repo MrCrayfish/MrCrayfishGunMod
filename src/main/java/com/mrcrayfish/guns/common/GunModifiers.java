@@ -28,7 +28,7 @@ public class GunModifiers
     public static final IGunModifier REDUCED_DAMAGE = new IGunModifier()
     {
         @Override
-        public float modifyProjectileDamage(ItemStack stack, Gun modifiedGun, float damage)
+        public float modifyProjectileDamage(float damage)
         {
             return damage * 0.75F;
         }
