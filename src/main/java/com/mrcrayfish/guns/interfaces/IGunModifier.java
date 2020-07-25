@@ -50,7 +50,7 @@ public interface IGunModifier
 
     default double modifyProjectileGravity(double gravity)
     {
-        return 1.0;
+        return gravity;
     }
 
     default int modifyProjectileLife(int life)
