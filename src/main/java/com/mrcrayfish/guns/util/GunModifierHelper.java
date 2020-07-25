@@ -208,4 +208,17 @@ public class GunModifierHelper
         }
         return MathHelper.clamp(speed, 0.01, Double.MAX_VALUE);
     }
+
+    public static int getModifiedRate(ItemStack weapon, int rate)
+    {
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                rate = modifier.modifyFireRate(rate);
+            }
+        }
+        return MathHelper.clamp(rate, 0, Integer.MAX_VALUE);
+    }
 }

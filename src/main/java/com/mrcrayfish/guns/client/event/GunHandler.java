@@ -186,6 +186,7 @@ public class GunHandler
             Gun modifiedGun = gunItem.getModifiedGun(heldItem);
 
             int rate = GunEnchantmentHelper.getRate(heldItem, modifiedGun);
+            rate = GunModifierHelper.getModifiedRate(heldItem, rate);
             tracker.setCooldown(heldItem.getItem(), rate);
             PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player));
             if(modifiedGun.display.flash != null)

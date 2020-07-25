@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
+import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
@@ -30,6 +31,7 @@ public class ShootTracker
     public void putCooldown(ItemStack weapon, GunItem item, Gun modifiedGun)
     {
         int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
+        rate = GunModifierHelper.getModifiedRate(weapon, rate);
         this.cooldownMap.put(item, Pair.of(Util.milliTime(), rate * 50));
     }
 

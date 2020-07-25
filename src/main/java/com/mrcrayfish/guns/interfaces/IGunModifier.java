@@ -77,4 +77,9 @@ public interface IGunModifier
     {
         return speed;
     }
+
+    default int modifyFireRate(int rate)
+    {
+        return rate;
+    }
 }
