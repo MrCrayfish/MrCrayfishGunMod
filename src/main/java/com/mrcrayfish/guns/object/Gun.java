@@ -439,6 +439,9 @@ public class Gun implements INBTSerializable<CompoundNBT>
             @Optional
             @Nullable
             public Stock stock;
+            @Optional
+            @Nullable
+            public UnderBarrel underBarrel;
 
             public static class Scope extends ScaledPositioned
             {
@@ -479,6 +482,19 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 }
             }
 
+            public static class UnderBarrel extends ScaledPositioned
+            {
+                public UnderBarrel copy()
+                {
+                    UnderBarrel underBarrel = new UnderBarrel();
+                    underBarrel.scale = this.scale;
+                    underBarrel.xOffset = this.xOffset;
+                    underBarrel.yOffset = this.yOffset;
+                    underBarrel.zOffset = this.zOffset;
+                    return underBarrel;
+                }
+            }
+
             @Override
             public CompoundNBT serializeNBT()
             {
@@ -494,6 +510,10 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 if(this.stock != null)
                 {
                     tag.put("Stock", this.stock.serializeNBT());
+                }
+                if(this.underBarrel != null)
+                {
+                    tag.put("UnderBarrel", this.underBarrel.serializeNBT());
                 }
                 return tag;
             }
@@ -519,6 +539,12 @@ public class Gun implements INBTSerializable<CompoundNBT>
                     stock.deserializeNBT(tag.getCompound("Stock"));
                     this.stock = stock;
                 }
+                if(tag.contains("UnderBarrel", Constants.NBT.TAG_COMPOUND))
+                {
+                    UnderBarrel underBarrel = new UnderBarrel();
+                    underBarrel.deserializeNBT(tag.getCompound("UnderBarrel"));
+                    this.underBarrel = underBarrel;
+                }
             }
 
             public Attachments copy()
@@ -535,6 +561,10 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 if(this.stock != null)
                 {
                     attachments.stock = this.stock.copy();
+                }
+                if(this.underBarrel != null)
+                {
+                    attachments.underBarrel = this.underBarrel.copy();
                 }
                 return attachments;
             }
@@ -707,6 +737,8 @@ public class Gun implements INBTSerializable<CompoundNBT>
                     return this.modules.attachments.barrel != null;
                 case STOCK:
                     return this.modules.attachments.stock != null;
+                case UNDER_BARREL:
+                    return this.modules.attachments.underBarrel != null;
             }
         }
         return false;
@@ -725,6 +757,8 @@ public class Gun implements INBTSerializable<CompoundNBT>
                     return this.modules.attachments.barrel;
                 case STOCK:
                     return this.modules.attachments.stock;
+                case UNDER_BARREL:
+                    return this.modules.attachments.underBarrel;
             }
         }
         return null;

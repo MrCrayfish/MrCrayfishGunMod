@@ -138,4 +138,25 @@ public class GunModifiers
             return MathHelper.clamp((int) (rate * 1.25), rate + 1, Integer.MAX_VALUE);
         }
     };
+
+    public static final IGunModifier REDUCED_RECOIL = new IGunModifier()
+    {
+        @Override
+        public float recoilModifier()
+        {
+            return 0.5F;
+        }
+
+        @Override
+        public float kickModifier()
+        {
+            return 0.5F;
+        }
+
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 0.95F;
+        }
+    };
 }

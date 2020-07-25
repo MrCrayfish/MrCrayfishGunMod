@@ -1,0 +1,124 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
+	"textures": {
+		"0": "cgm:items/specialised_grip",
+		"particle": "cgm:items/specialised_grip"
+	},
+	"elements": [
+		{
+			"from": [7.4, 7.64, 6.8],
+			"to": [8.6, 7.97, 9.2],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7.64, 8]},
+			"faces": {
+				"north": {"uv": [11, 0, 13, 1], "texture": "#0"},
+				"east": {"uv": [7, 0, 11, 1], "texture": "#0"},
+				"south": {"uv": [5, 0, 7, 1], "texture": "#0"},
+				"west": {"uv": [7, 0, 11, 1], "texture": "#0"},
+				"up": {"uv": [7, 0, 11, 1], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [0, 0, 1, 2], "texture": "#missing"}
+			}
+		},
+		{
+			"from": [7.4, 7.04, 7.4],
+			"to": [8.6, 7.64, 8.6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7.64, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 0.5], "texture": "#missing"},
+				"east": {"uv": [8, 1, 10, 2], "texture": "#0"},
+				"south": {"uv": [0, 0, 1, 0.5], "texture": "#missing"},
+				"west": {"uv": [8, 1, 10, 2], "texture": "#0"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"down": {"uv": [8, 2, 10, 4], "texture": "#0"}
+			}
+		},
+		{
+			"from": [7.4, 7.04, 8.17574],
+			"to": [8.6, 7.88853, 8.6],
+			"rotation": {"angle": 45, "axis": "x", "origin": [8, 7.04, 8.6]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 0.70711], "rotation": 180, "texture": "#missing"},
+				"east": {"uv": [7, 1, 8, 2], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [5, 1, 7, 2], "texture": "#0"},
+				"west": {"uv": [10, 1, 11, 2], "rotation": 270, "texture": "#0"},
+				"up": {"uv": [0, 0, 1, 0.375], "texture": "#missing"},
+				"down": {"uv": [0, 0, 1, 0.375], "rotation": 180, "texture": "#missing"}
+			}
+		},
+		{
+			"from": [7.4, 7.04, 7.4],
+			"to": [8.6, 7.88853, 7.82426],
+			"rotation": {"angle": -45, "axis": "x", "origin": [8, 7.04, 7.4]},
+			"faces": {
+				"north": {"uv": [1, 0, 2, 0.70711], "texture": "#0"},
+				"east": {"uv": [11, 1, 13, 2], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [1, 0, 2, 0.70711], "rotation": 180, "texture": "#missing"},
+				"west": {"uv": [7, 1, 8, 2], "rotation": 270, "texture": "#0"},
+				"up": {"uv": [0, 0.5, 1, 0.875], "texture": "#missing"},
+				"down": {"uv": [0, 0.5, 1, 0.875], "rotation": 180, "texture": "#missing"}
+			}
+		},
+		{
+			"name": "octagon",
+			"from": [7.75147, 4.04, 7.4],
+			"to": [8.24853, 7.04, 8.6],
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 5.54, 8]},
+			"faces": {
+				"north": {"uv": [1, 0, 2, 6], "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"south": {"uv": [3, 0, 4, 6], "texture": "#0"},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"down": {"uv": [1, 5, 2, 6], "texture": "#0"}
+			}
+		},
+		{
+			"name": "octagon",
+			"from": [7.75147, 4.04, 7.4],
+			"to": [8.24853, 7.04, 8.6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 5.54, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 6], "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"south": {"uv": [4, 0, 5, 6], "texture": "#0"},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"down": {"uv": [0, 5, 1, 6], "texture": "#0"}
+			}
+		},
+		{
+			"name": "octagon",
+			"from": [7.4, 4.04, 7.75147],
+			"to": [8.6, 7.04, 8.24853],
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 5.54, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"east": {"uv": [1, 0, 2, 6], "texture": "#0"},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"west": {"uv": [3, 0, 4, 6], "texture": "#0"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"down": {"uv": [3, 5, 4, 6], "texture": "#0"}
+			}
+		},
+		{
+			"name": "octagon",
+			"from": [7.4, 4.04, 7.75147],
+			"to": [8.6, 7.04, 8.24853],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 5.54, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"east": {"uv": [2, 0, 3, 6], "texture": "#0"},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"west": {"uv": [2, 0, 3, 6], "texture": "#0"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"down": {"uv": [2, 5, 3, 6], "texture": "#0"}
+			}
+		}
+	],
+	"groups": [0, 1, 2, 3,
+		{
+			"name": "octagon",
+			"origin": [8, 8, 8],
+			"children": [4, 5, 6, 7]
+		}
+	]
+}
