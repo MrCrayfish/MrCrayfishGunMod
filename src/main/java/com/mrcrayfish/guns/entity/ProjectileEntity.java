@@ -2,12 +2,12 @@ package com.mrcrayfish.guns.entity;
 
 import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.common.BoundingBoxTracker;
+import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.interfaces.IDamageable;
+import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBulletHole;
@@ -228,13 +228,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                     }
                     if(result != null)
                     {
-                        this.onHit(result);
+                        this.onHit(result, startVec, endVec);
                     }
                 }
             }
             else
             {
-                this.onHit(result);
+                this.onHit(result, startVec, endVec);
             }
         }
 
@@ -282,7 +282,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
                 {
                     int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-                    boundingBox = BoundingBoxTracker.getBoundingBox(entity, ping); //TODO this is actually the last position
+                    boundingBox = BoundingBoxManager.getBoundingBox(entity, ping); //TODO this is actually the last position
                 }
                 boundingBox = boundingBox.expand(0, expandHeight, 0);
                 Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
@@ -328,7 +328,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
                 {
                     int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-                    boundingBox = BoundingBoxTracker.getBoundingBox(entity, ping); //TODO this is actually the last position
+                    boundingBox = BoundingBoxManager.getBoundingBox(entity, ping); //TODO this is actually the last position
                 }
                 boundingBox = boundingBox.expand(0, expandHeight, 0);
                 Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
@@ -354,7 +354,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return hitEntities;
     }
 
-    private void onHit(RayTraceResult result)
+    private void onHit(RayTraceResult result, Vec3d startVec, Vec3d endVec)
     {
         if(result instanceof BlockRayTraceResult)
         {
@@ -414,7 +414,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             {
                 return;
             }
-            this.onHitEntity(entity, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
+            this.onHitEntity(entity, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, startVec, endVec);
 
             int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
             if(level == 0)
@@ -426,7 +426,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void onHitEntity(Entity entity, double x, double y, double z)
+    @SuppressWarnings("unchecked")
+    protected void onHitEntity(Entity entity, double x, double y, double z, Vec3d startVec, Vec3d endVec)
     {
         boolean headShot = false;
         float damage = this.getDamage();
@@ -434,13 +435,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         boolean critical = damage != newDamage;
         damage = newDamage;
 
-        if(Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof PlayerEntity)
+        if(Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof LivingEntity)
         {
-            AxisAlignedBB boundingBox = entity.getBoundingBox().expand(0, !entity.isCrouching() ? 0.0625 : 0, 0);
-            if(boundingBox.maxY - y <= 8.0 * 0.0625 && boundingBox.grow(0.001).contains(new Vec3d(x, y, z)))
+            IHeadshotBox<LivingEntity> headshotBox = (IHeadshotBox<LivingEntity>) BoundingBoxManager.getHeadshotBoxes(entity.getType());
+            if(headshotBox != null)
             {
-                headShot = true;
-                damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
+                AxisAlignedBB box = headshotBox.getHeadshotBox((LivingEntity)entity);
+                box = box.offset(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+                if(box.rayTrace(startVec, endVec).isPresent())
+                {
+                    headShot = true;
+                    damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
+                }
             }
         }
 
@@ -457,9 +463,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
             shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }
-        else if(critical)
+        else if(critical || headShot)
         {
-            SoundEvent event = SoundEvents.ENTITY_ITEM_BREAK;
+            SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_ITEM_BREAK;
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
             shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }

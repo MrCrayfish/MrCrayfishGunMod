@@ -3,7 +3,7 @@ package com.mrcrayfish.guns;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.settings.GunOptions;
-import com.mrcrayfish.guns.common.BoundingBoxTracker;
+import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
@@ -11,11 +11,9 @@ import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
-import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -96,7 +94,7 @@ public class GunMod
 
         if(Config.COMMON.gameplay.improvedHitboxes.get())
         {
-            MinecraftForge.EVENT_BUS.register(new BoundingBoxTracker());
+            MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
         }
     }
 

@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -26,7 +27,7 @@ public class GrenadeEntity extends ProjectileEntity
     }
 
     @Override
-    protected void onHitEntity(Entity entity, double x, double y, double z)
+    protected void onHitEntity(Entity entity, double x, double y, double z, Vec3d startVec, Vec3d endVec)
     {
         createExplosion(this, this.getDamage() / 5f);
     }
