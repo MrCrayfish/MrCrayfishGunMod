@@ -66,6 +66,7 @@ public class BoundingBoxManager
         headshotBoxes.putIfAbsent(type, headshotBox);
     }
 
+    @Nullable
     @SuppressWarnings("unchecked")
     public static <T extends Entity> IHeadshotBox<T> getHeadshotBoxes(EntityType<T> type)
     {

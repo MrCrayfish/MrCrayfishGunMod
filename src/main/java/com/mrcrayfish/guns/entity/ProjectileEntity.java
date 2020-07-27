@@ -14,6 +14,8 @@ import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
+import com.mrcrayfish.guns.object.HitResult;
+import com.mrcrayfish.guns.util.ExtendedEntityRayTraceResult;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
@@ -216,7 +218,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             {
                 for(EntityResult entityResult : hitEntities)
                 {
-                    result = new EntityRayTraceResult(entityResult.entity, entityResult.hitVec);
+                    result = new ExtendedEntityRayTraceResult(entityResult);
                     if(((EntityRayTraceResult) result).getEntity() instanceof PlayerEntity)
                     {
                         PlayerEntity player = (PlayerEntity) ((EntityRayTraceResult) result).getEntity();
@@ -271,32 +273,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     {
         Vec3d hitVec = null;
         Entity hitEntity = null;
+        boolean headshot = false;
         List<Entity> entities = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0), PROJECTILE_TARGETS);
         double closestDistance = Double.MAX_VALUE;
         for(Entity entity : entities)
         {
             if(!entity.equals(this.shooter))
             {
-                double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
-                AxisAlignedBB boundingBox = entity.getBoundingBox();
-                if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
-                {
-                    int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-                    boundingBox = BoundingBoxManager.getBoundingBox(entity, ping); //TODO this is actually the last position
-                }
-                boundingBox = boundingBox.expand(0, expandHeight, 0);
-                Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
-                Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
-                if(!hitPos.isPresent() && grownHitPos.isPresent())
-                {
-                    RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos.get(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
-                    if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
-                    {
-                        continue;
-                    }
-                    hitPos = grownHitPos;
-                }
-
+                HitResult result = this.getHitResult(entity, startVec, endVec);
+                Optional<Vec3d> hitPos = result.getHitPos();
                 if(!hitPos.isPresent())
                 {
                     continue;
@@ -308,10 +293,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                     hitVec = hitPos.get();
                     hitEntity = entity;
                     closestDistance = distanceToHit;
+                    headshot = result.isHeadshot();
                 }
             }
         }
-        return hitEntity != null ? new EntityResult(hitEntity, hitVec) : null;
+        return hitEntity != null ? new EntityResult(hitEntity, hitVec, headshot) : null;
     }
 
     @Nullable
@@ -323,35 +309,68 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             if(!entity.equals(this.shooter))
             {
-                double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
-                AxisAlignedBB boundingBox = entity.getBoundingBox();
-                if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
-                {
-                    int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-                    boundingBox = BoundingBoxManager.getBoundingBox(entity, ping); //TODO this is actually the last position
-                }
-                boundingBox = boundingBox.expand(0, expandHeight, 0);
-                Optional<Vec3d> hitPos = boundingBox.rayTrace(startVec, endVec);
-                Optional<Vec3d> grownHitPos = boundingBox.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).rayTrace(startVec, endVec);
-                if(!hitPos.isPresent() && grownHitPos.isPresent())
-                {
-                    RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos.get(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
-                    if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
-                    {
-                        continue;
-                    }
-                    hitPos = grownHitPos;
-                }
-
+                HitResult result = this.getHitResult(entity, startVec, endVec);
+                Optional<Vec3d> hitPos = result.getHitPos();
                 if(!hitPos.isPresent())
                 {
                     continue;
                 }
-
-                hitEntities.add(new EntityResult(entity, hitPos.get()));
+                hitEntities.add(new EntityResult(entity, hitPos.get(), result.isHeadshot()));
             }
         }
         return hitEntities;
+    }
+
+    @SuppressWarnings("unchecked")
+    private HitResult getHitResult(Entity entity, Vec3d startVec, Vec3d endVec)
+    {
+        double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
+        AxisAlignedBB boundingBox = entity.getBoundingBox();
+        if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
+        {
+            int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
+            boundingBox = BoundingBoxManager.getBoundingBox(entity, ping); //TODO this is actually the last position
+        }
+        boundingBox = boundingBox.expand(0, expandHeight, 0);
+
+        Vec3d hitPos = boundingBox.rayTrace(startVec, endVec).orElse(null);
+        Vec3d grownHitPos = boundingBox.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).rayTrace(startVec, endVec).orElse(null);
+        if(hitPos == null && grownHitPos != null)
+        {
+            RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
+            if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
+            {
+                return new HitResult(null, false);
+            }
+            hitPos = grownHitPos;
+        }
+
+        /* Check for headshot */
+        boolean headshot = false;
+        if(Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof LivingEntity)
+        {
+            IHeadshotBox<LivingEntity> headshotBox = (IHeadshotBox<LivingEntity>) BoundingBoxManager.getHeadshotBoxes(entity.getType());
+            if(headshotBox != null)
+            {
+                AxisAlignedBB box = headshotBox.getHeadshotBox((LivingEntity) entity);
+                if(box != null)
+                {
+                    box = box.offset(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+                    Optional<Vec3d> headshotHitPos = box.rayTrace(startVec, endVec);
+                    if(!headshotHitPos.isPresent())
+                    {
+                        box = box.grow(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get());
+                        headshotHitPos = box.rayTrace(startVec, endVec);
+                    }
+                    if(headshotHitPos.isPresent() && (hitPos == null || headshotHitPos.get().distanceTo(hitPos) < 0.5))
+                    {
+                        hitPos = headshotHitPos.get();
+                        headshot = true;
+                    }
+                }
+            }
+        }
+        return new HitResult(hitPos, headshot);
     }
 
     private void onHit(RayTraceResult result, Vec3d startVec, Vec3d endVec)
@@ -406,15 +425,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return;
         }
 
-        if(result instanceof EntityRayTraceResult)
+        if(result instanceof ExtendedEntityRayTraceResult)
         {
-            EntityRayTraceResult entityRayTraceResult = (EntityRayTraceResult) result;
+            ExtendedEntityRayTraceResult entityRayTraceResult = (ExtendedEntityRayTraceResult) result;
             Entity entity = entityRayTraceResult.getEntity();
             if(entity.getEntityId() == this.shooterId)
             {
                 return;
             }
-            this.onHitEntity(entity, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, startVec, endVec);
+            this.onHitEntity(entity, result.getHitVec(), startVec, endVec, entityRayTraceResult.isHeadshot());
 
             int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
             if(level == 0)
@@ -427,27 +446,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @SuppressWarnings("unchecked")
-    protected void onHitEntity(Entity entity, double x, double y, double z, Vec3d startVec, Vec3d endVec)
+    protected void onHitEntity(Entity entity, Vec3d hitVec, Vec3d startVec, Vec3d endVec, boolean headshot)
     {
-        boolean headShot = false;
         float damage = this.getDamage();
         float newDamage = GunEnchantmentHelper.getPuncturingDamage(this.weapon, this.rand, damage);
         boolean critical = damage != newDamage;
         damage = newDamage;
 
-        if(Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof LivingEntity)
+        if(headshot)
         {
-            IHeadshotBox<LivingEntity> headshotBox = (IHeadshotBox<LivingEntity>) BoundingBoxManager.getHeadshotBoxes(entity.getType());
-            if(headshotBox != null)
-            {
-                AxisAlignedBB box = headshotBox.getHeadshotBox((LivingEntity)entity);
-                box = box.offset(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-                if(box.rayTrace(startVec, endVec).isPresent())
-                {
-                    headShot = true;
-                    damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
-                }
-            }
+            damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
         }
 
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
@@ -455,7 +463,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if(entity instanceof PlayerEntity && this.shooter instanceof ServerPlayerEntity)
         {
-            SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
+            SoundEvent event = headshot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
             if(critical)
             {
                 event = SoundEvents.ENTITY_ITEM_BREAK; //TODO change
@@ -463,16 +471,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
             shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }
-        else if(critical || headShot)
+        else if(critical || headshot)
         {
-            SoundEvent event = headShot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_ITEM_BREAK;
+            SoundEvent event = headshot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_ITEM_BREAK;
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
             shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }
 
         /* Send blood particle to tracking clients. */
         //TODO maybe make clients send settings to server to prevent sending unnecessary packets
-        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(x, y, z));
+        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(hitVec.x, hitVec.y, hitVec.z));
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)

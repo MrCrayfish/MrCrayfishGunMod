@@ -10,10 +10,12 @@ public class EntityResult
 {
     public Entity entity;
     public Vec3d hitVec;
+    public boolean headshot;
 
-    public EntityResult(Entity entity, Vec3d hitVec)
+    public EntityResult(Entity entity, Vec3d hitVec, boolean headshot)
     {
         this.entity = entity;
         this.hitVec = hitVec;
+        this.headshot = headshot;
     }
 }

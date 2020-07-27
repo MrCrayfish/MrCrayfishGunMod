@@ -47,7 +47,7 @@ public class MissileEntity extends ProjectileEntity
     }
 
     @Override
-    protected void onHitEntity(Entity entity, double x, double y, double z, Vec3d startVec, Vec3d endVec)
+    protected void onHitEntity(Entity entity, Vec3d hitVec, Vec3d startVec, Vec3d endVec, boolean headshot)
     {
         createExplosion(this);
     }
