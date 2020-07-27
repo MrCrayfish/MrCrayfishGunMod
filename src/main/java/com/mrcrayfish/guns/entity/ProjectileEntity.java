@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.init.ModEnchantments;
+import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import com.mrcrayfish.guns.item.GunItem;
@@ -19,6 +20,7 @@ import com.mrcrayfish.guns.util.ExtendedEntityRayTraceResult;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -149,9 +151,17 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return this.getVectorFromRotation(shooter.rotationPitch, shooter.rotationYaw);
         }
 
-        if(!modifiedGun.general.alwaysSpread)
+        if(shooter instanceof PlayerEntity)
         {
-            gunSpread *= SpreadTracker.get(shooter.getUniqueID()).getSpread(item);
+            if(!modifiedGun.general.alwaysSpread)
+            {
+                gunSpread *= SpreadTracker.get(shooter.getUniqueID()).getSpread(item);
+            }
+
+            if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
+            {
+                gunSpread *= 0.5F;
+            }
         }
 
         return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.getRotationYawHead() - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
