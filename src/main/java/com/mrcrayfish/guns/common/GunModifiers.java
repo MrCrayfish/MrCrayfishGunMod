@@ -69,7 +69,7 @@ public class GunModifiers
         @Override
         public float modifyProjectileSpread(float spread)
         {
-            return spread * 0.8F;
+            return spread * 0.75F;
         }
 
         @Override
@@ -96,7 +96,7 @@ public class GunModifiers
         @Override
         public float modifyProjectileSpread(float spread)
         {
-            return spread * 0.3F;
+            return spread * 0.5F;
         }
 
         @Override
@@ -123,7 +123,7 @@ public class GunModifiers
         @Override
         public float modifyProjectileSpread(float spread)
         {
-            return spread * 0.15F;
+            return spread * 0.25F;
         }
 
         @Override
@@ -157,6 +157,12 @@ public class GunModifiers
         public double modifyAimDownSightSpeed(double speed)
         {
             return speed * 0.95F;
+        }
+
+        @Override
+        public float modifyProjectileSpread(float spread)
+        {
+            return spread * 0.5F;
         }
     };
 }
