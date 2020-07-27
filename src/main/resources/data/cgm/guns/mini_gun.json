@@ -7,7 +7,7 @@
         "reloadSpeed": 4,
         "recoilAngle": 1.0,
         "alwaysSpread": true,
-        "spread": 3.0
+        "spread": 5.0
     },
     "projectile": {
         "item": "cgm:basic_bullet",

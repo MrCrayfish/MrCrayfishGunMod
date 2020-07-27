@@ -5,7 +5,9 @@
         "maxAmmo": 15,
         "reloadSpeed": 5,
         "recoilAngle": 10.0,
-        "recoilAdsReduction": 0.85
+        "recoilAdsReduction": 0.85,
+        "alwaysSpread": true,
+        "spread": 1.0
     },
     "projectile": {
         "item": "cgm:basic_bullet",

@@ -6,13 +6,15 @@
         "recoilAngle": 10.0,
         "recoilKick": 1.0,
         "recoilDurationOffset": 0.5,
-        "recoilAdsReduction": 0.9
+        "recoilAdsReduction": 0.9,
+        "alwaysSpread": true,
+        "spread": 1.0
     },
     "projectile": {
         "item": "cgm:advanced_bullet",
         "visible": false,
         "gravity": true,
-        "damage": 16.0,
+        "damage": 18.0,
         "size": 0.0625,
         "speed": 50.0,
         "life": 10,
