@@ -116,7 +116,7 @@ public class CommonHandler
 
                     if(!modifiedGun.general.alwaysSpread && modifiedGun.general.spread > 0.0F)
                     {
-                        SpreadTracker.get(player.getUniqueID()).update(item);
+                        SpreadTracker.get(player.getUniqueID()).update(player, item);
                     }
 
                     boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
