@@ -61,6 +61,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
     private WorkbenchTileEntity workbench;
     private Button btnCraft;
     private CheckBox checkBoxMaterials;
+    private ItemStack displayStack;
 
     public WorkbenchScreen(WorkbenchContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
@@ -219,11 +220,14 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         }
 
         this.btnCraft.active = canCraft;
+        this.updateColor();
+    }
 
+    private void updateColor()
+    {
         if(this.currentTab != null)
         {
-            WorkbenchRecipe recipe = this.currentTab.getRecipes().get(this.currentTab.getCurrentIndex());
-            ItemStack item = recipe.getItem();
+            ItemStack item = this.displayStack;
             if(item.getItem() instanceof IColored)
             {
                 IColored colored = (IColored) item.getItem();
@@ -277,6 +281,8 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
     private void loadItem(int index)
     {
         WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
+        this.displayStack = recipe.getItem().copy();
+        this.updateColor();
 
         this.materials.clear();
 
@@ -385,8 +391,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             this.blit(startX + 174, startY + 18, 165, 199, 16, 16);
         }
 
-        WorkbenchRecipe recipe = this.currentTab.getRecipes().get(this.currentTab.getCurrentIndex());
-        ItemStack currentItem = recipe.getItem();
+        ItemStack currentItem = this.displayStack;
         StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getUnformattedComponentText());
         if(currentItem.getCount() > 1)
         {
