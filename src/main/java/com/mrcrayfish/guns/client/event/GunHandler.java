@@ -98,7 +98,7 @@ public class GunHandler
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
-            if(heldItem.getItem() instanceof GunItem && Gun.hasAmmo(heldItem))
+            if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
                 boolean shooting = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
                 if(GunMod.controllableLoaded)
