@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.item;
 
-import com.google.common.annotations.Beta;
 import com.mrcrayfish.guns.object.Attachment;
 
 import javax.annotation.Nullable;
@@ -8,7 +7,6 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-@Beta
 public interface IAttachment<T extends Attachment>
 {
     Type getType();

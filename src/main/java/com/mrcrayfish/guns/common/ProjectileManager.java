@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.common;
 
-import com.google.common.annotations.Beta;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.init.ModEntities;
 import net.minecraft.item.Item;
@@ -12,7 +11,6 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-@Beta
 public class ProjectileManager
 {
     private static ProjectileManager instance = null;

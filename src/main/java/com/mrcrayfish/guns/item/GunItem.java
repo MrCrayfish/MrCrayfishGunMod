@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.item;
 
-import com.google.common.annotations.Beta;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.object.Gun;
@@ -27,7 +26,6 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 
-@Beta
 public class GunItem extends Item implements IColored
 {
     private Gun gun = new Gun();
