@@ -26,7 +26,9 @@ public class WorkbenchContainer extends Container
         this.workbench = workbench;
         this.pos = workbench.getPos();
 
-        this.addSlot(new Slot(workbench, 0, 174, 18)
+        int offset = WorkbenchRecipes.isEmpty(workbench.getWorld()) ? 0 : 28;
+
+        this.addSlot(new Slot(workbench, 0, 174, 18 + offset)
         {
             @Override
             public boolean isItemValid(ItemStack stack)
@@ -40,8 +42,6 @@ public class WorkbenchContainer extends Container
                 return 1;
             }
         });
-
-        int offset = WorkbenchRecipes.isEmpty(workbench.getWorld()) ? 0 : 28;
 
         for(int y = 0; y < 3; y++)
         {
