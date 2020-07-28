@@ -12,6 +12,11 @@ import java.util.stream.Collectors;
  */
 public class WorkbenchRecipes
 {
+    public static boolean isEmpty(World world)
+    {
+        return world.getRecipeManager().getRecipes().stream().noneMatch(recipe -> recipe.getType() == RecipeType.WORKBENCH);
+    }
+
     public static NonNullList<WorkbenchRecipe> getAll(World world)
     {
         return world.getRecipeManager().getRecipes().stream()

@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.common;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -31,7 +32,9 @@ import java.io.InputStreamReader;
 import java.io.InvalidObjectException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +57,8 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         gun.projectile.item = new ResourceLocation("cgm:basic_ammo");
         return gun;
     });
+
+    private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
@@ -156,6 +161,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     @OnlyIn(Dist.CLIENT)
     public static boolean updateRegisteredGuns(IGunProvider message)
     {
+        clientRegisteredGuns.clear();
         Map<ResourceLocation, Gun> registeredGuns = message.getRegisteredGuns();
         if(registeredGuns != null)
         {
@@ -167,6 +173,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
                     return false;
                 }
                 ((GunItem) item).setGun(entry.getValue());
+                clientRegisteredGuns.add((GunItem) item);
             }
             return true;
         }
@@ -181,6 +188,16 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     public Map<ResourceLocation, Gun> getRegisteredGuns()
     {
         return this.registeredGuns;
+    }
+
+    /**
+     * Gets a list of all the guns registered on the client side. Note, this is an immutable list.
+     *
+     * @return a map of guns registered on the client
+     */
+    public static List<GunItem> getClientRegisteredGuns()
+    {
+        return ImmutableList.copyOf(clientRegisteredGuns);
     }
 
     public interface IGunProvider

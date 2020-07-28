@@ -51,13 +51,11 @@ public class Config
      */
     public static class Display
     {
-        public final ForgeConfigSpec.BooleanValue workbenchAnimation;
-
         public Display(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for display related options").push("display");
             {
-                this.workbenchAnimation = builder.comment("If true, an animation is performed while cycling items in the Workbench").define("workbenchAnimcation", true);
+
             }
             builder.pop();
         }
