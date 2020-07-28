@@ -1,8 +1,5 @@
 package com.mrcrayfish.guns.interfaces;
 
-import com.mrcrayfish.guns.object.Gun;
-import net.minecraft.item.ItemStack;
-
 /**
  * Author: MrCrayfish
  */

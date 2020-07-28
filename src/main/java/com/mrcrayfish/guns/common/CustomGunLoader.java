@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.object.CustomGun;

@@ -5,7 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,7 +33,7 @@ public class BoundingBoxManager
             double scale = 30.0 / 32.0;
             if(entity.isSwimming())
             {
-                Vec3d pos = Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(0.8);
+                Vector3d pos = Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(0.8);
                 headBox = headBox.offset(pos);
             }
             else
@@ -54,7 +54,7 @@ public class BoundingBoxManager
             return headBox;
         });
 
-        registerHeadshotBox(EntityType.ZOMBIE_PIGMAN, (entity) -> {
+        registerHeadshotBox(EntityType.ZOMBIFIED_PIGLIN, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
             headBox = headBox.offset(0, 24 * 0.0625, 0);
             if(entity.isChild())
@@ -100,7 +100,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.SPIDER, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
             headBox = headBox.offset(0, 5 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(7 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(7 * 0.0625));
             return headBox;
         });
 
@@ -174,7 +174,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.SHEEP, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-3.75 * 0.0625, 0, -3.75 * 0.0625, 3.75 * 0.0625, 8 * 0.0625, 3.75 * 0.0625);
             headBox = headBox.offset(0, 15 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(9.5 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(9.5 * 0.0625));
             return headBox;
         });
 
@@ -183,7 +183,7 @@ public class BoundingBoxManager
             if(entity.isChild()) return null;
             AxisAlignedBB headBox = new AxisAlignedBB(-2 * 0.0625, 0, -2 * 0.0625, 2 * 0.0625, 6 * 0.0625, 2 * 0.0625);
             headBox = headBox.offset(0, 9 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(5 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(5 * 0.0625));
             return headBox;
         });
 
@@ -191,7 +191,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.COW, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-3.75 * 0.0625, 0, -3.75 * 0.0625, 3.75 * 0.0625, 8 * 0.0625, 3.75 * 0.0625);
             headBox = headBox.offset(0, 16 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10.5 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10.5 * 0.0625));
             return headBox;
         });
 
@@ -199,7 +199,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.MOOSHROOM, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-3.75 * 0.0625, 0, -3.75 * 0.0625, 3.75 * 0.0625, 8 * 0.0625, 3.75 * 0.0625);
             headBox = headBox.offset(0, 16 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10.5 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10.5 * 0.0625));
             return headBox;
         });
 
@@ -207,7 +207,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.PIG, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
             headBox = headBox.offset(0, 8 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10 * 0.0625));
             return headBox;
         });
 
@@ -215,7 +215,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.HORSE, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-5 * 0.0625, 0, -5 * 0.0625, 5 * 0.0625, 10 * 0.0625, 5 * 0.0625);
             headBox = headBox.offset(0, 26 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(16 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(16 * 0.0625));
             return headBox;
         });
 
@@ -223,7 +223,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.SKELETON_HORSE, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-5 * 0.0625, 0, -5 * 0.0625, 5 * 0.0625, 10 * 0.0625, 5 * 0.0625);
             headBox = headBox.offset(0, 26 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(16 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(16 * 0.0625));
             return headBox;
         });
 
@@ -231,7 +231,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.DONKEY, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-3.75 * 0.0625, 0, -3.75 * 0.0625, 3.75 * 0.0625, 8 * 0.0625, 3.75 * 0.0625);
             headBox = headBox.offset(0, 20 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(13 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(13 * 0.0625));
             return headBox;
         });
 
@@ -239,7 +239,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.MULE, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-3.75 * 0.0625, 0, -3.75 * 0.0625, 3.75 * 0.0625, 8 * 0.0625, 3.75 * 0.0625);
             headBox = headBox.offset(0, 21 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(14 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(14 * 0.0625));
             return headBox;
         });
 
@@ -247,7 +247,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.LLAMA, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
             headBox = headBox.offset(0, 26 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10 * 0.0625));
             return headBox;
         });
 
@@ -255,7 +255,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.TRADER_LLAMA, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
             headBox = headBox.offset(0, 26 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10 * 0.0625));
             return headBox;
         });
 
@@ -263,7 +263,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.POLAR_BEAR, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-4.5 * 0.0625, 0, -4.5 * 0.0625, 4.5 * 0.0625, 9 * 0.0625, 4.5 * 0.0625);
             headBox = headBox.offset(0, 12 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(20 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(20 * 0.0625));
             return headBox;
         });
 
@@ -278,7 +278,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.TURTLE, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-3 * 0.0625, 0, -3 * 0.0625, 3 * 0.0625, 5 * 0.0625, 3 * 0.0625);
             headBox = headBox.offset(0, 1 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(10 * 0.0625));
             return headBox;
         });
 
@@ -286,7 +286,7 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.IRON_GOLEM, (entity) -> {
             AxisAlignedBB headBox = new AxisAlignedBB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 10 * 0.0625, 4 * 0.0625);
             headBox = headBox.offset(0, 33 * 0.0625, 0);
-            headBox = headBox.offset(Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(3.5 * 0.0625));
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(3.5 * 0.0625));
             return headBox;
         });
     }

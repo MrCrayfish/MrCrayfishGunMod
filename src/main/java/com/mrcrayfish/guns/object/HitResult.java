@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.object;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -10,16 +10,16 @@ import java.util.Optional;
  */
 public class HitResult
 {
-    private Vec3d hitPos;
+    private Vector3d hitPos;
     private boolean headshot;
 
-    public HitResult(@Nullable Vec3d hitPos, boolean headshot)
+    public HitResult(@Nullable Vector3d hitPos, boolean headshot)
     {
         this.hitPos = hitPos;
         this.headshot = headshot;
     }
 
-    public Optional<Vec3d> getHitPos()
+    public Optional<Vector3d> getHitPos()
     {
         return Optional.ofNullable(this.hitPos);
     }

@@ -14,8 +14,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
-import java.util.Arrays;
-
 /**
  * Author: MrCrayfish
  */

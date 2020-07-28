@@ -25,9 +25,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.DyeItem;
@@ -37,10 +35,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.opengl.GL11;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -177,7 +175,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 this.loadItem(index - 1);
             }
         }));
-        this.addButton(new Button(startX + 153, startY + 18, 15, 20, new StringTextComponent(">", button ->
+        this.addButton(new Button(startX + 153, startY + 18, 15, 20, new StringTextComponent(">"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             if(index + 1 >= this.currentTab.getRecipes().size())
@@ -197,7 +195,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getPos()));
         }));
         this.btnCraft.active = false;
-        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 172, startY + 51, I18n.format("gui.cgm.workbench.show_remaining")));
+        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 172, startY + 51, new TranslationTextComponent("gui.cgm.workbench.show_remaining")));
         this.checkBoxMaterials.setToggled(WorkbenchScreen.showRemaining);
         this.loadItem(this.currentTab.getCurrentIndex());
     }
@@ -317,7 +315,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         {
             if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY, 28, 28))
             {
-                this.renderTooltip(I18n.format(this.tabs.get(i).getTabKey()), mouseX, mouseY);
+                this.renderTooltip(matrixStack, new TranslationTextComponent(this.tabs.get(i).getTabKey()), mouseX, mouseY);
                 return;
             }
         }
@@ -336,7 +334,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 MaterialItem materialItem = this.filteredMaterials.get(i);
                 if(!materialItem.getStack().isEmpty())
                 {
-                    this.renderTooltip(materialItem.getStack(), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, materialItem.getStack(), mouseX, mouseY);
                     return;
                 }
             }
@@ -344,14 +342,16 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 8, startY + 38, 160, 48))
         {
-            this.renderTooltip(this.displayStack, mouseX, mouseY);
+            this.renderTooltip(matrixStack, this.displayStack, mouseX, mouseY);
         }
     }
 
     @Override
     protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        this.font.func_238422_b_(matrixStack, this.playerInventory.getDisplayName(), (float)this.field_238744_r_, (float)this.field_238745_s_ + 37, 4210752);
+        int offset = this.tabs.isEmpty() ? 0 : 28;
+        this.font.func_238422_b_(matrixStack, this.title, (float)this.field_238744_r_ + 8, (float)this.field_238745_s_ + 6 + offset, 4210752);
+        this.font.func_238422_b_(matrixStack, this.playerInventory.getDisplayName(), (float)this.field_238744_r_ + 8, (float)this.field_238745_s_ + 91 + offset, 4210752);
     }
 
     @Override
@@ -376,17 +376,17 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             if(tab != this.currentTab)
             {
                 this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-                this.blit(startX + 28 * i, startY - 28, 80, 184, 28, 32);
+                this.blit(matrixStack, startX + 28 * i, startY - 28, 80, 184, 28, 32);
                 Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(tab.getIcon(), startX + 28 * i + 6, startY - 28 + 8);
                 Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, tab.getIcon(), startX + 28 * i + 6, startY - 28 + 8, null);
             }
         }
 
         this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-        this.blit(startX, startY, 0, 0, 173, 184);
-        blit(startX + 173, startY, 78, 184, 173, 0, 1, 184, 256, 256);
-        this.blit(startX + 251, startY, 174, 0, 24, 184);
-        this.blit(startX + 172, startY + 16, 198, 0, 20, 20);
+        this.blit(matrixStack, startX, startY, 0, 0, 173, 184);
+        blit(matrixStack, startX + 173, startY, 78, 184, 173, 0, 1, 184, 256, 256);
+        this.blit(matrixStack, startX + 251, startY, 174, 0, 24, 184);
+        this.blit(matrixStack, startX + 172, startY + 16, 198, 0, 20, 20);
 
         /* Draw selected tab */
         if(this.currentTab != null)
@@ -394,7 +394,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             int i = this.tabs.indexOf(this.currentTab);
             int u = i == 0 ? 80 : 108;
             this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-            this.blit(startX + 28 * i, startY - 28, u, 214, 28, 32);
+            this.blit(matrixStack, startX + 28 * i, startY - 28, u, 214, 28, 32);
             Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(this.currentTab.getIcon(), startX + 28 * i + 6, startY - 28 + 8);
             Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, this.currentTab.getIcon(), startX + 28 * i + 6, startY - 28 + 8, null);
         }
@@ -403,7 +403,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         if(this.workbench.getStackInSlot(0).isEmpty())
         {
-            this.blit(startX + 174, startY + 18, 165, 199, 16, 16);
+            this.blit(matrixStack, startX + 174, startY + 18, 165, 199, 16, 16);
         }
 
         ItemStack currentItem = this.displayStack;
@@ -415,7 +415,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             builder.append(" x ");
             builder.append(currentItem.getCount());
         }
-        this.drawCenteredString(this.font, builder.toString(), startX + 88, startY + 22, Color.WHITE.getRGB());
+        this.drawCenteredString(matrixStack, this.font, builder.toString(), startX + 88, startY + 22, Color.WHITE.getRGB());
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         RenderUtil.scissor(startX + 8, startY + 17, 160, 70);
@@ -458,11 +458,11 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 RenderHelper.disableStandardItemLighting();
                 if(materialItem.isEnabled())
                 {
-                    this.blit(startX + 172, startY + i * 19 + 63, 0, 184, 80, 19);
+                    this.blit(matrixStack, startX + 172, startY + i * 19 + 63, 0, 184, 80, 19);
                 }
                 else
                 {
-                    this.blit(startX + 172, startY + i * 19 + 63, 0, 222, 80, 19);
+                    this.blit(matrixStack, startX + 172, startY + i * 19 + 63, 0, 222, 80, 19);
                 }
 
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -471,7 +471,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 {
                     name = this.font.func_238412_a_(name, 50).trim() + "...";
                 }
-                this.font.drawString(name, startX + 172 + 22, startY + i * 19 + 6 + 63, Color.WHITE.getRGB());
+                this.font.drawString(matrixStack, name, startX + 172 + 22, startY + i * 19 + 6 + 63, Color.WHITE.getRGB());
 
                 Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, startX + 172 + 2, startY + i * 19 + 1 + 63);
 
@@ -496,14 +496,6 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             materials.set(i, filteredMaterials.get(i));
         }
         return materials;
-    }
-
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-        int offset = this.tabs.isEmpty() ? 0 : 28;
-        this.font.drawString(this.title.getFormattedText(), 8, 6 + offset, 4210752);
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8, 91 + offset, 4210752);
     }
 
     public static class MaterialItem

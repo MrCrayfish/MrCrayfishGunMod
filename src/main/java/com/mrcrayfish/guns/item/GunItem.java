@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.item;
 import com.google.common.annotations.Beta;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
-import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;

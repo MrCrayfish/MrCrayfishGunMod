@@ -3,17 +3,11 @@ package com.mrcrayfish.guns.init;
 import com.mojang.serialization.Codec;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.particles.BulletHoleData;
-import net.minecraft.block.BlockState;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
