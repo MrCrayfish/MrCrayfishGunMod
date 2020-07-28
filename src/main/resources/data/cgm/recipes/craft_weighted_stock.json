@@ -1,0 +1,15 @@
+{
+    "type": "cgm:workbench",
+    "result": {
+        "item": "cgm:weighted_stock"
+    },
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 12
+        },
+        {
+            "item": "minecraft:gray_wool"
+        }
+    ]
+}

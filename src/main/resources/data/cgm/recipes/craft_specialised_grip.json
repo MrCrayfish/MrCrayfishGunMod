@@ -1,0 +1,15 @@
+{
+    "type": "cgm:workbench",
+    "result": {
+        "item": "cgm:specialised_grip"
+    },
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 8
+        },
+        {
+            "item": "minecraft:gray_wool"
+        }
+    ]
+}
