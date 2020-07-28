@@ -334,8 +334,14 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 if(!materialItem.getStack().isEmpty())
                 {
                     this.renderTooltip(materialItem.getStack(), mouseX, mouseY);
+                    return;
                 }
             }
+        }
+
+        if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 8, startY + 38, 160, 48))
+        {
+            this.renderTooltip(this.displayStack, mouseX, mouseY);
         }
     }
 
