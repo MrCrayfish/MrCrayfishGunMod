@@ -139,11 +139,11 @@ public class RenderUtil
                     }
                     else if(flag1)
                     {
-                        builder = ItemRenderer.func_239391_c_(buffer, rendertype, true, stack.hasEffect());
+                        builder = ItemRenderer.func_239391_c_(buffer, rendertype, true, stack.hasEffect() || parent.hasEffect());
                     }
                     else
                     {
-                        builder = ItemRenderer.getBuffer(buffer, rendertype, true, stack.hasEffect());
+                        builder = ItemRenderer.getBuffer(buffer, rendertype, true, stack.hasEffect() || parent.hasEffect());
                     }
 
                     renderModel(model, stack, parent, transform, matrixStack, builder, light, overlay);
