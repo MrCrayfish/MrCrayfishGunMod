@@ -8,12 +8,13 @@
         "recoilAngle": 4.0,
         "recoilKick": 0.25,
         "recoilAdsReduction": 0.95,
-        "spread": 3.0
+        "alwaysSpread": true,
+        "spread": 6.0
     },
     "projectile": {
         "item": "cgm:basic_bullet",
         "visible": false,
-        "damage": 5.0,
+        "damage": 3.0,
         "size": 0.2,
         "speed": 25.0,
         "life": 10

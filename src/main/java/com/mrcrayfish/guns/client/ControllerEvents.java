@@ -17,6 +17,7 @@ import com.mrcrayfish.guns.network.message.MessageAttachments;
 import com.mrcrayfish.guns.network.message.MessageUnload;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Scope;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -127,8 +128,9 @@ public class ControllerEvents
                 event.getActions().put(Buttons.RIGHT_TRIGGER, new Action("Shoot", Action.Side.RIGHT));
 
                 GunItem gunItem = (GunItem) heldItem.getItem();
+                Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                 CompoundNBT tag = heldItem.getTag();
-                if(tag != null && tag.getInt("AmmoCount") < gunItem.getModifiedGun(heldItem).general.maxAmmo)
+                if(tag != null && tag.getInt("AmmoCount") < GunEnchantmentHelper.getAmmoCapacity(heldItem, modifiedGun))
                 {
                     event.getActions().put(Buttons.X, new Action("Reload", Action.Side.LEFT));
                 }

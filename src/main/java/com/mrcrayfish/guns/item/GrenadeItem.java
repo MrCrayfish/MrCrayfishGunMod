@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class GrenadeItem extends Item
+public class GrenadeItem extends AmmoItem
 {
     protected int maxCookTime;
 

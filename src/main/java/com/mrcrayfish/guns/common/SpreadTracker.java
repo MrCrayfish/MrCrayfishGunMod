@@ -2,7 +2,10 @@ package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,7 +28,7 @@ public class SpreadTracker
 
     private final Map<GunItem, Pair<MutableLong, MutableInt>> SPREAD_TRACKER_MAP = new HashMap<>();
 
-    public void update(GunItem item)
+    public void update(PlayerEntity player, GunItem item)
     {
         Pair<MutableLong, MutableInt> entry = SPREAD_TRACKER_MAP.computeIfAbsent(item, gun -> Pair.of(new MutableLong(-1), new MutableInt()));
         MutableLong lastFire = entry.getLeft();
@@ -38,6 +41,12 @@ public class SpreadTracker
                 if(spreadCount.getValue() < Config.COMMON.projectileSpread.maxCount.get())
                 {
                     spreadCount.increment();
+
+                    /* Increases the spread count quicker if the player is not aiming down sight */
+                    if(spreadCount.getValue() < Config.COMMON.projectileSpread.maxCount.get() && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING))
+                    {
+                        spreadCount.increment();
+                    }
                 }
             }
             else

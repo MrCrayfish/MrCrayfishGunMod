@@ -13,6 +13,11 @@ import java.util.List;
  */
 public interface IColored
 {
+    default boolean canColor()
+    {
+        return true;
+    }
+
     default boolean hasColor(ItemStack stack)
     {
         CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);

@@ -125,7 +125,7 @@ public class GunModifierHelper
         return 1.0F - kickReduction;
     }
 
-    public static float getRecoilReduction(ItemStack weapon)
+    public static float getRecoilModifier(ItemStack weapon)
     {
         float recoilReduction = 1.0F;
         for(int i = 0; i < IAttachment.Type.values().length; i++)
@@ -181,7 +181,7 @@ public class GunModifierHelper
             IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
             for(IGunModifier modifier : modifiers)
             {
-                float newDamage = modifier.modifyProjectileDamage(weapon, modifiedGun, damage);
+                float newDamage = modifier.modifyProjectileDamage(damage);
                 finalDamage += (newDamage - damage);
             }
         }
@@ -194,5 +194,31 @@ public class GunModifierHelper
             }
         }
         return finalDamage;
+    }
+
+    public static double getModifiedAimDownSightSpeed(ItemStack weapon, double speed)
+    {
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                speed = modifier.modifyAimDownSightSpeed(speed);
+            }
+        }
+        return MathHelper.clamp(speed, 0.01, Double.MAX_VALUE);
+    }
+
+    public static int getModifiedRate(ItemStack weapon, int rate)
+    {
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                rate = modifier.modifyFireRate(rate);
+            }
+        }
+        return MathHelper.clamp(rate, 0, Integer.MAX_VALUE);
     }
 }

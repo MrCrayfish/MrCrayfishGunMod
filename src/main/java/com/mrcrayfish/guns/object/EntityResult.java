@@ -9,11 +9,13 @@ import net.minecraft.util.math.vector.Vector3d;
 public class EntityResult
 {
     public Entity entity;
-    public Vector3d hitVec;
+    public Vec3d hitVec;
+    public boolean headshot;
 
-    public EntityResult(Entity entity, Vector3d hitVec)
+    public EntityResult(Entity entity, Vector3d hitVec, boolean headshot)
     {
         this.entity = entity;
         this.hitVec = hitVec;
+        this.headshot = headshot;
     }
 }

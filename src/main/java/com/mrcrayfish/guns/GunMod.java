@@ -3,14 +3,16 @@ package com.mrcrayfish.guns;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.settings.GunOptions;
-import com.mrcrayfish.guns.common.BoundingBoxTracker;
+import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
+import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -43,7 +45,9 @@ public class GunMod
         @Override
         public ItemStack createIcon()
         {
-            return new ItemStack(ModItems.PISTOL.get());
+            ItemStack stack = new ItemStack(ModItems.PISTOL.get());
+            ItemStackUtil.createTagCompound(stack).putInt("AmmoCount", ModItems.PISTOL.get().getGun().general.maxAmmo);
+            return stack;
         }
 
         @Override
@@ -52,7 +56,7 @@ public class GunMod
             super.fill(items);
             CustomGunManager.fill(items);
         }
-    };
+    }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
     private static GunOptions options;
     private static NetworkGunManager networkGunManager;
@@ -69,6 +73,7 @@ public class GunMod
         ModBlocks.REGISTER.register(bus);
         ModContainers.REGISTER.register(bus);
         ModEffects.REGISTER.register(bus);
+        ModEnchantments.REGISTER.register(bus);
         ModEntities.REGISTER.register(bus);
         ModItems.REGISTER.register(bus);
         ModParticleTypes.REGISTER.register(bus);
@@ -90,7 +95,7 @@ public class GunMod
 
         if(Config.COMMON.gameplay.improvedHitboxes.get())
         {
-            MinecraftForge.EVENT_BUS.register(new BoundingBoxTracker());
+            MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
         }
     }
 
@@ -132,7 +137,6 @@ public class GunMod
     }
 
     /**
-     *
      * @return
      */
     @Nullable
@@ -142,7 +146,6 @@ public class GunMod
     }
 
     /**
-     *
      * @return
      */
     public static GunOptions getOptions()

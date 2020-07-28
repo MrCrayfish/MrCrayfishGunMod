@@ -18,12 +18,11 @@ import com.mrcrayfish.guns.item.GrenadeItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.IBarrel;
-import com.mrcrayfish.guns.item.IStock;
 import com.mrcrayfish.guns.object.Barrel;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Scope;
-import com.mrcrayfish.guns.object.Stock;
+import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
@@ -87,8 +86,8 @@ public class GunRenderer
     private double muzzleFlashSize;
     private float muzzleFlashRoll;
     private int muzzleFlashYaw;
-    private int zoomProgress;
-    private int lastZoomProgress;
+    private double zoomProgress;
+    private double lastZoomProgress;
     public double normalZoomProgress;
     public double recoilNormal;
     public double recoilAngle;
@@ -121,7 +120,7 @@ public class GunRenderer
                         {
                             newFov -= scope.getAdditionalZoom();
                         }
-                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (zoomProgress / (float) ZOOM_TICKS)));
+                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - ((float) zoomProgress / (float) ZOOM_TICKS)));
                     }
                 }
             }
@@ -141,18 +140,37 @@ public class GunRenderer
         }
 
         PlayerEntity player = Minecraft.getInstance().player;
+        if(player == null)
+        {
+            return;
+        }
+
         if(isZooming(player) && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
         {
             if(this.zoomProgress < ZOOM_TICKS)
             {
-                this.zoomProgress++;
+                ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
+                double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
+                speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
+                this.zoomProgress += speed;
+                if(this.zoomProgress > ZOOM_TICKS)
+                {
+                    this.zoomProgress = (int) ZOOM_TICKS;
+                }
             }
         }
         else
         {
             if(this.zoomProgress > 0)
             {
-                this.zoomProgress--;
+                ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
+                double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
+                speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
+                this.zoomProgress -= speed;
+                if(this.zoomProgress < 0)
+                {
+                    this.zoomProgress = 0;
+                }
             }
         }
     }
@@ -385,7 +403,7 @@ public class GunRenderer
         this.recoilAngle = gun.general.recoilAngle;
 
         float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
-        float recoilReduction = 1.0F - GunModifierHelper.getRecoilReduction(item);
+        float recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(item);
         double kick = gun.general.recoilKick * 0.0625 * this.recoilNormal * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress));
         float recoil = (float) (gun.general.recoilAngle * this.recoilNormal) * (float) (1.0 - (gun.general.recoilAdsReduction * this.normalZoomProgress));
         matrixStack.translate(0, 0, kick * kickReduction);
@@ -915,7 +933,8 @@ public class GunRenderer
 
         matrixStack.push();
 
-        float reload = ((mc.player.ticksExisted - this.startReloadTick + mc.getRenderPartialTicks()) % 10F) / 10F;
+        float interval = GunEnchantmentHelper.getReloadInterval(stack);
+        float reload = ((mc.player.ticksExisted - this.startReloadTick + mc.getRenderPartialTicks()) % interval) / interval;
         float percent = 1.0F - reload;
         if(percent >= 0.5F)
         {

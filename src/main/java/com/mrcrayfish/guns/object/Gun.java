@@ -41,7 +41,7 @@ public class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         public float recoilDurationOffset;
         @Optional
-        public float recoilAdsReduction = 0.9F;
+        public float recoilAdsReduction = 0.2F;
         @Optional
         public int projectileAmount = 1;
         @Optional
@@ -154,8 +154,6 @@ public class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         public boolean damageReduceOverLife;
         @Optional
-        public boolean damageReduceIfNotZoomed;
-        @Optional
         public int trailColor = 0xFFD289;
         @Optional
         public double trailLengthMultiplier = 1.0;
@@ -172,7 +170,6 @@ public class Gun implements INBTSerializable<CompoundNBT>
             tag.putInt("Life", this.life);
             tag.putBoolean("Gravity", this.gravity);
             tag.putBoolean("DamageReduceOverLife", this.damageReduceOverLife);
-            tag.putBoolean("DamageReduceIfNotZoomed", this.damageReduceIfNotZoomed);
             tag.putInt("TrailColor", this.trailColor);
             tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
             return tag;
@@ -213,10 +210,6 @@ public class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.damageReduceOverLife = tag.getBoolean("DamageReduceOverLife");
             }
-            if(tag.contains("DamageReduceIfNotZoomed", Constants.NBT.TAG_BYTE))
-            {
-                this.damageReduceIfNotZoomed = tag.getBoolean("DamageReduceIfNotZoomed");
-            }
             if(tag.contains("TrailColor", Constants.NBT.TAG_INT))
             {
                 this.trailColor = tag.getInt("TrailColor");
@@ -238,7 +231,6 @@ public class Gun implements INBTSerializable<CompoundNBT>
             projectile.life = this.life;
             projectile.gravity = this.gravity;
             projectile.damageReduceOverLife = this.damageReduceOverLife;
-            projectile.damageReduceIfNotZoomed = this.damageReduceIfNotZoomed;
             projectile.trailColor = this.trailColor;
             projectile.trailLengthMultiplier = this.trailLengthMultiplier;
             return projectile;
@@ -439,6 +431,9 @@ public class Gun implements INBTSerializable<CompoundNBT>
             @Optional
             @Nullable
             public Stock stock;
+            @Optional
+            @Nullable
+            public UnderBarrel underBarrel;
 
             public static class Scope extends ScaledPositioned
             {
@@ -479,6 +474,19 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 }
             }
 
+            public static class UnderBarrel extends ScaledPositioned
+            {
+                public UnderBarrel copy()
+                {
+                    UnderBarrel underBarrel = new UnderBarrel();
+                    underBarrel.scale = this.scale;
+                    underBarrel.xOffset = this.xOffset;
+                    underBarrel.yOffset = this.yOffset;
+                    underBarrel.zOffset = this.zOffset;
+                    return underBarrel;
+                }
+            }
+
             @Override
             public CompoundNBT serializeNBT()
             {
@@ -494,6 +502,10 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 if(this.stock != null)
                 {
                     tag.put("Stock", this.stock.serializeNBT());
+                }
+                if(this.underBarrel != null)
+                {
+                    tag.put("UnderBarrel", this.underBarrel.serializeNBT());
                 }
                 return tag;
             }
@@ -519,6 +531,12 @@ public class Gun implements INBTSerializable<CompoundNBT>
                     stock.deserializeNBT(tag.getCompound("Stock"));
                     this.stock = stock;
                 }
+                if(tag.contains("UnderBarrel", Constants.NBT.TAG_COMPOUND))
+                {
+                    UnderBarrel underBarrel = new UnderBarrel();
+                    underBarrel.deserializeNBT(tag.getCompound("UnderBarrel"));
+                    this.underBarrel = underBarrel;
+                }
             }
 
             public Attachments copy()
@@ -535,6 +553,10 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 if(this.stock != null)
                 {
                     attachments.stock = this.stock.copy();
+                }
+                if(this.underBarrel != null)
+                {
+                    attachments.underBarrel = this.underBarrel.copy();
                 }
                 return attachments;
             }
@@ -707,6 +729,8 @@ public class Gun implements INBTSerializable<CompoundNBT>
                     return this.modules.attachments.barrel != null;
                 case STOCK:
                     return this.modules.attachments.stock != null;
+                case UNDER_BARREL:
+                    return this.modules.attachments.underBarrel != null;
             }
         }
         return false;
@@ -725,6 +749,8 @@ public class Gun implements INBTSerializable<CompoundNBT>
                     return this.modules.attachments.barrel;
                 case STOCK:
                     return this.modules.attachments.stock;
+                case UNDER_BARREL:
+                    return this.modules.attachments.underBarrel;
             }
         }
         return null;

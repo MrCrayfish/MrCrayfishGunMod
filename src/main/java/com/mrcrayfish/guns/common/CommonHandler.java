@@ -9,8 +9,11 @@ import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
+import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
@@ -22,6 +25,8 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,14 +43,19 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +107,7 @@ public class CommonHandler
                         GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
                         return;
                     }
-                    tracker.putCooldown(item, modifiedGun);
+                    tracker.putCooldown(heldItem, item, modifiedGun);
 
                     if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
                     {
@@ -106,7 +116,7 @@ public class CommonHandler
 
                     if(!modifiedGun.general.alwaysSpread && modifiedGun.general.spread > 0.0F)
                     {
-                        SpreadTracker.get(player.getUniqueID()).update(item);
+                        SpreadTracker.get(player.getUniqueID()).update(player, item);
                     }
 
                     boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
@@ -167,7 +177,11 @@ public class CommonHandler
                         CompoundNBT tag = ItemStackUtil.createTagCompound(heldItem);
                         if(!tag.getBoolean("IgnoreAmmo"))
                         {
-                            tag.putInt("AmmoCount", Math.max(0, tag.getInt("AmmoCount") - 1));
+                            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
+                            if(level == 0 || player.world.rand.nextInt(4 - MathHelper.clamp(level, 1, 2)) != 0)
+                            {
+                                tag.putInt("AmmoCount", Math.max(0, tag.getInt("AmmoCount") - 1));
+                            }
                         }
                     }
                 }
@@ -187,7 +201,7 @@ public class CommonHandler
      * @param id     the id of an item which is registered as a valid workstation recipe
      * @param pos    the block position of the workstation the player is using
      */
-    public static void craftVehicle(ServerPlayerEntity player, ResourceLocation id, BlockPos pos)
+    public static void craftItem(ServerPlayerEntity player, ResourceLocation id, BlockPos pos)
     {
         World world = player.world;
 
@@ -221,21 +235,21 @@ public class CommonHandler
                     WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
 
                     /* Gets the color based on the dye */
-                    int color = -1;
+                    ItemStack stack = recipe.getItem();
                     ItemStack dyeStack = workbenchTileEntity.getInventory().get(0);
                     if(dyeStack.getItem() instanceof DyeItem)
                     {
                         DyeItem dyeItem = (DyeItem) dyeStack.getItem();
-                        color = dyeItem.getDyeColor().getColorValue();
-                        workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
+                        int color = dyeItem.getDyeColor().getColorValue();
+
+                        if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor())
+                        {
+                            IColored colored = (IColored) stack.getItem();
+                            colored.setColor(stack, color);
+                            workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
+                        }
                     }
 
-                    ItemStack stack = recipe.getItem();
-                    if(stack.getItem() instanceof IColored)
-                    {
-                        IColored colored = (IColored) stack.getItem();
-                        colored.setColor(stack, color);
-                    }
                     world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack));
                 }
             }

@@ -28,7 +28,7 @@ public interface IGunModifier
         return 0.0F;
     }
 
-    default float modifyProjectileDamage(ItemStack stack, Gun modifiedGun, float damage)
+    default float modifyProjectileDamage(float damage)
     {
         return damage;
     }
@@ -50,7 +50,7 @@ public interface IGunModifier
 
     default double modifyProjectileGravity(double gravity)
     {
-        return 1.0;
+        return gravity;
     }
 
     default int modifyProjectileLife(int life)
@@ -71,5 +71,15 @@ public interface IGunModifier
     default double modifyMuzzleFlashSize(double size)
     {
         return size;
+    }
+
+    default double modifyAimDownSightSpeed(double speed)
+    {
+        return speed;
+    }
+
+    default int modifyFireRate(int rate)
+    {
+        return rate;
     }
 }
