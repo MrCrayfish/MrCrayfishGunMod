@@ -187,7 +187,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 this.loadItem(index + 1);
             }
         }));
-        this.btnCraft = this.addButton(new Button(startX + 186, startY + 6, 97, 20, new TranslationTextComponent("gui.cgm.workbench.assemble"), button ->
+        this.btnCraft = this.addButton(new Button(startX + 195, startY + 16, 74, 20, new TranslationTextComponent("gui.cgm.workbench.assemble"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
@@ -350,8 +350,8 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
     protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY)
     {
         int offset = this.tabs.isEmpty() ? 0 : 28;
-        this.font.func_238422_b_(matrixStack, this.title, (float)this.field_238744_r_ + 8, (float)this.field_238745_s_ + 6 + offset, 4210752);
-        this.font.func_238422_b_(matrixStack, this.playerInventory.getDisplayName(), (float)this.field_238744_r_ + 8, (float)this.field_238745_s_ + 91 + offset, 4210752);
+        this.font.func_238422_b_(matrixStack, this.title, (float)this.field_238744_r_, (float)this.field_238745_s_ - 66 + offset, 4210752);
+        this.font.func_238422_b_(matrixStack, this.playerInventory.getDisplayName(), (float)this.field_238744_r_, (float)this.field_238745_s_ + 19 + offset, 4210752);
     }
 
     @Override
@@ -407,7 +407,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         }
 
         ItemStack currentItem = this.displayStack;
-        StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getUnformattedComponentText());
+        StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getString());
         if(currentItem.getCount() > 1)
         {
             builder.append(TextFormatting.GOLD);
