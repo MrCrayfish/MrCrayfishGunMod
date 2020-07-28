@@ -201,7 +201,7 @@ public class CommonHandler
      * @param id     the id of an item which is registered as a valid workstation recipe
      * @param pos    the block position of the workstation the player is using
      */
-    public static void craftVehicle(ServerPlayerEntity player, ResourceLocation id, BlockPos pos)
+    public static void craftItem(ServerPlayerEntity player, ResourceLocation id, BlockPos pos)
     {
         World world = player.world;
 
@@ -235,21 +235,21 @@ public class CommonHandler
                     WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
 
                     /* Gets the color based on the dye */
-                    int color = -1;
+                    ItemStack stack = recipe.getItem();
                     ItemStack dyeStack = workbenchTileEntity.getInventory().get(0);
                     if(dyeStack.getItem() instanceof DyeItem)
                     {
                         DyeItem dyeItem = (DyeItem) dyeStack.getItem();
-                        color = dyeItem.getDyeColor().getColorValue();
-                        workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
+                        int color = dyeItem.getDyeColor().getColorValue();
+
+                        if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor())
+                        {
+                            IColored colored = (IColored) stack.getItem();
+                            colored.setColor(stack, color);
+                            workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
+                        }
                     }
 
-                    ItemStack stack = recipe.getItem();
-                    if(stack.getItem() instanceof IColored)
-                    {
-                        IColored colored = (IColored) stack.getItem();
-                        colored.setColor(stack, color);
-                    }
                     world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack));
                 }
             }

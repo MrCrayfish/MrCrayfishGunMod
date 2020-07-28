@@ -155,7 +155,7 @@ public class ClientHandler
         };
         ForgeRegistries.ITEMS.forEach(item ->
         {
-            if(item instanceof IColored)
+            if(item instanceof IColored && ((IColored) item).canColor())
             {
                 Minecraft.getInstance().getItemColors().register(color, item);
             }

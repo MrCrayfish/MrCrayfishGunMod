@@ -228,7 +228,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         if(this.currentTab != null)
         {
             ItemStack item = this.displayStack;
-            if(item.getItem() instanceof IColored)
+            if(item.getItem() instanceof IColored && ((IColored) item.getItem()).canColor())
             {
                 IColored colored = (IColored) item.getItem();
                 if(!this.workbench.getStackInSlot(0).isEmpty())

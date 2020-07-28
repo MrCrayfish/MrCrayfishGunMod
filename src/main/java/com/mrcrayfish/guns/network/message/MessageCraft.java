@@ -47,7 +47,7 @@ public class MessageCraft implements IMessage
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                CommonHandler.craftVehicle(player, this.id, this.pos);
+                CommonHandler.craftItem(player, this.id, this.pos);
             }
         });
         supplier.get().setPacketHandled(true);
