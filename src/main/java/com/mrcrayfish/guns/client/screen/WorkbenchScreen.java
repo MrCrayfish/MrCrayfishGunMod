@@ -320,7 +320,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         for(int i = 0; i < this.filteredMaterials.size(); i++)
         {
-            int itemX = startX + 186;
+            int itemX = startX + 172;
             int itemY = startY + i * 19 + 63;
             if(RenderUtil.isMouseWithin(mouseX, mouseY, itemX, itemY, 80, 19))
             {
