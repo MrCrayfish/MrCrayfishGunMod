@@ -7,6 +7,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -47,6 +49,7 @@ public abstract class Attachment
     }
 
     /* Determines the perks of attachments and caches them */
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void addInformationEvent(ItemTooltipEvent event)
     {
