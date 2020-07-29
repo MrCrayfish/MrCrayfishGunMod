@@ -93,6 +93,7 @@ public class GrenadeItem extends AmmoItem
                 ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
                 grenade.func_234612_a_(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
                 worldIn.addEntity(grenade);
+                this.onThrown(worldIn, grenade);
             }
         }
     }
@@ -105,5 +106,10 @@ public class GrenadeItem extends AmmoItem
     public boolean canCook()
     {
         return true;
+    }
+
+    protected void onThrown(World world, ThrowableGrenadeEntity entity)
+    {
+
     }
 }

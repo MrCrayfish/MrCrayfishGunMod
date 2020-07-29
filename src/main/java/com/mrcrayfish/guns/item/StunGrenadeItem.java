@@ -2,8 +2,10 @@ package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
 import com.mrcrayfish.guns.entity.ThrowableStunGrenadeEntity;
+import com.mrcrayfish.guns.init.ModSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 /**
@@ -26,5 +28,11 @@ public class StunGrenadeItem extends GrenadeItem
     public boolean canCook()
     {
         return false;
+    }
+
+    @Override
+    protected void onThrown(World world, ThrowableGrenadeEntity entity)
+    {
+        world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
     }
 }
