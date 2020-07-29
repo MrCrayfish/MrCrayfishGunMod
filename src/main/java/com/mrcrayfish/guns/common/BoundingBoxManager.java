@@ -289,6 +289,41 @@ public class BoundingBoxManager
             headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(3.5 * 0.0625));
             return headBox;
         });
+
+        /* Phantom */
+        registerHeadshotBox(EntityType.PHANTOM, (entity) -> {
+            AxisAlignedBB headBox = new AxisAlignedBB(-3 * 0.0625, 0, -3 * 0.0625, 3 * 0.0625, 3 * 0.0625, 3 * 0.0625);
+            headBox = headBox.offset(0, 1.5 * 0.0625, 0);
+            headBox = headBox.offset(Vector3d.fromPitchYaw(-entity.rotationPitch, entity.renderYawOffset).normalize().scale(6.5 * 0.0625));
+            return headBox;
+        });
+
+        /* Hoglin */
+        registerHeadshotBox(EntityType.HOGLIN, (entity) -> {
+            AxisAlignedBB headBox = new AxisAlignedBB(-7 * 0.0625, 0, -7 * 0.0625, 7 * 0.0625, 16 * 0.0625, 7 * 0.0625);
+            headBox = headBox.offset(0, 7 * 0.0625, 0);
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(19 * 0.0625));
+            return headBox;
+        });
+
+        /* Zoglin */
+        registerHeadshotBox(EntityType.ZOGLIN, (entity) -> {
+            AxisAlignedBB headBox = new AxisAlignedBB(-7 * 0.0625, 0, -7 * 0.0625, 7 * 0.0625, 16 * 0.0625, 7 * 0.0625);
+            headBox = headBox.offset(0, 7 * 0.0625, 0);
+            headBox = headBox.offset(Vector3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(19 * 0.0625));
+            return headBox;
+        });
+
+        /* Piglin */
+        registerHeadshotBox(EntityType.PIGLIN, (entity) -> {
+            AxisAlignedBB headBox = new AxisAlignedBB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
+            headBox = headBox.offset(0, 24 * 0.0625, 0);
+            if(entity.isChild())
+            {
+                return new AxisAlignedBB(headBox.minX * 0.75, headBox.minY * 0.5, headBox.minZ * 0.75, headBox.maxX * 0.75, headBox.maxY * 0.55, headBox.maxZ * 0.75);
+            }
+            return headBox;
+        });
     }
 
     public static <T extends Entity> void registerHeadshotBox(EntityType<T> type, IHeadshotBox<T> headshotBox)
