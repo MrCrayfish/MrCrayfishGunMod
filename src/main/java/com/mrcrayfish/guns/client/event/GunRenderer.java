@@ -30,6 +30,7 @@ import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
@@ -38,6 +39,7 @@ import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -890,8 +892,7 @@ public class GunRenderer
             matrixStack.rotate(Vector3f.XP.rotationDegrees(-35F));
             matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-            IVertexBuilder builder = buffer.getBuffer(RenderType.getEntitySolid(player.getLocationSkin()));
-            this.renderArm(matrixStack, builder, light, hand.opposite());
+            this.renderArm(player, matrixStack, buffer, light, hand.opposite());
         }
         else if(modifiedGun.general.gripType == GripType.ONE_HANDED)
         {
@@ -909,8 +910,7 @@ public class GunRenderer
             matrixStack.rotate(Vector3f.XP.rotationDegrees(75F));
             matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-            IVertexBuilder builder = buffer.getBuffer(RenderType.getEntitySolid(player.getLocationSkin()));
-            this.renderArm(matrixStack, builder, light, hand);
+            this.renderArm(player, matrixStack, buffer, light, hand);
         }
 
         matrixStack.pop();
@@ -953,8 +953,7 @@ public class GunRenderer
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-75F * percent));
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-        IVertexBuilder builder = buffer.getBuffer(RenderType.getEntitySolid(mc.player.getLocationSkin()));
-        this.renderArm(matrixStack, builder, light, hand.opposite());
+        this.renderArm(mc.player, matrixStack, buffer, light, hand.opposite());
 
         if(reload < 0.5F)
         {
@@ -969,25 +968,20 @@ public class GunRenderer
         matrixStack.pop();
     }
 
-    private void renderArm(MatrixStack matrixStack, IVertexBuilder builder, int light, HandSide hand)
+    private void renderArm(ClientPlayerEntity player, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, HandSide hand)
     {
-        ClientPlayerEntity clientPlayerEntity = Minecraft.getInstance().player;
-        Minecraft.getInstance().getTextureManager().bindTexture(clientPlayerEntity.getLocationSkin());
-        PlayerRenderer renderPlayer = (PlayerRenderer) Minecraft.getInstance().getRenderManager().getRenderer(clientPlayerEntity);
+        Minecraft mc = Minecraft.getInstance();
+        EntityRendererManager renderManager = mc.getRenderManager();
 
-        if(hand == HandSide.RIGHT)
+        mc.getTextureManager().bindTexture(player.getLocationSkin());
+        PlayerRenderer playerrenderer = (PlayerRenderer) renderManager.<AbstractClientPlayerEntity>getRenderer(player);
+        if (hand == HandSide.RIGHT)
         {
-            renderPlayer.getEntityModel().bipedRightArm.rotateAngleX = 0F;
-            renderPlayer.getEntityModel().bipedRightArm.rotateAngleY = 0F;
-            renderPlayer.getEntityModel().bipedRightArm.rotateAngleZ = 0F;
-            renderPlayer.getEntityModel().bipedRightArm.render(matrixStack, builder, light, OverlayTexture.NO_OVERLAY);
+            playerrenderer.renderRightArm(matrixStack, buffer, combinedLight, player);
         }
         else
         {
-            renderPlayer.getEntityModel().bipedLeftArm.rotateAngleX = 0F;
-            renderPlayer.getEntityModel().bipedLeftArm.rotateAngleY = 0F;
-            renderPlayer.getEntityModel().bipedLeftArm.rotateAngleZ = 0F;
-            renderPlayer.getEntityModel().bipedLeftArm.render(matrixStack, builder, light, OverlayTexture.NO_OVERLAY);
+            playerrenderer.renderLeftArm(matrixStack, buffer, combinedLight, player);
         }
     }
 
