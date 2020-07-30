@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
+import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -66,6 +67,8 @@ public class GunItem extends Item implements IColored
             if(tagCompound.contains("AdditionalDamage", Constants.NBT.TAG_FLOAT))
             {
                 float additionalDamage = tagCompound.getFloat("AdditionalDamage");
+                additionalDamage += GunModifierHelper.getAdditionalDamage(stack);
+
                 if(additionalDamage > 0)
                 {
                     additionalDamageText = TextFormatting.GREEN + " +" + tagCompound.getFloat("AdditionalDamage");

@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.util;
 
 import com.mrcrayfish.guns.interfaces.IGunModifier;
-import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -19,7 +19,7 @@ public class GunModifierHelper
         if(!stack.isEmpty() && stack.getItem() instanceof IAttachment)
         {
             IAttachment attachment = (IAttachment) stack.getItem();
-            return attachment.getProperties().getModifier();
+            return attachment.getProperties().getModifiers();
         }
         return EMPTY;
     }
@@ -171,6 +171,20 @@ public class GunModifierHelper
             }
         }
         return MathHelper.clamp(minRadius, 0.0, Double.MAX_VALUE);
+    }
+
+    public static float getAdditionalDamage(ItemStack weapon)
+    {
+        float additionalDamage = 0.0F;
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                additionalDamage += modifier.additionalDamage();
+            }
+        }
+        return additionalDamage;
     }
 
     public static float getModifiedDamage(ItemStack weapon, Gun modifiedGun, float damage)
