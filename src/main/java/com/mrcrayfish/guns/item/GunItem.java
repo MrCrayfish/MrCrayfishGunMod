@@ -71,11 +71,11 @@ public class GunItem extends Item implements IColored
 
                 if(additionalDamage > 0)
                 {
-                    additionalDamageText = TextFormatting.GREEN + " +" + tagCompound.getFloat("AdditionalDamage");
+                    additionalDamageText = TextFormatting.GREEN + " +" + additionalDamage;
                 }
                 else if(additionalDamage < 0)
                 {
-                    additionalDamageText = TextFormatting.RED + " " + tagCompound.getFloat("AdditionalDamage");
+                    additionalDamageText = TextFormatting.RED + " " + additionalDamage;
                 }
             }
         }
