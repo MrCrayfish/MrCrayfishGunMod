@@ -27,7 +27,6 @@ public class Scope extends Attachment
      * @param offset the view finder offset
      * @return this scope instance
      */
-    @OnlyIn(Dist.CLIENT)
     public Scope viewFinderOffset(double offset)
     {
         this.viewFinderOffset = offset;
