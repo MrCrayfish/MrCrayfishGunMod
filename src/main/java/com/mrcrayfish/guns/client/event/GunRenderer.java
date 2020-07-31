@@ -584,9 +584,13 @@ public class GunRenderer
     {
         PlayerEntity player = event.getPlayer();
         ItemStack heldItem = player.getHeldItemMainhand();
+
+        if(Minecraft.getInstance().getRenderViewEntity() == player && Minecraft.getInstance().gameSettings.thirdPersonView == 0)
+            return;
+
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
-            PlayerModel model = event.getModelPlayer();
+            PlayerModel<?> model = event.getModelPlayer();
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             gun.general.gripType.getHeldAnimation().applyPlayerModelRotation(model, Hand.MAIN_HAND, AimTracker.getAimProgress((PlayerEntity) event.getEntity(), event.getPartialTicks()));
             copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
