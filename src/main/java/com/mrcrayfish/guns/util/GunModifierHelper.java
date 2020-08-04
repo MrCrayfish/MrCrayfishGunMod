@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.util;
 
 import com.mrcrayfish.guns.interfaces.IGunModifier;
-import com.mrcrayfish.guns.item.attachment.IAttachment;
+import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -19,7 +19,7 @@ public class GunModifierHelper
         if(!stack.isEmpty() && stack.getItem() instanceof IAttachment)
         {
             IAttachment attachment = (IAttachment) stack.getItem();
-            return attachment.getProperties().getModifiers();
+            return attachment.getProperties().getModifier();
         }
         return EMPTY;
     }
