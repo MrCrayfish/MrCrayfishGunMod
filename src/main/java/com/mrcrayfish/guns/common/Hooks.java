@@ -33,14 +33,4 @@ public class Hooks
         }
         return true;
     }
-
-    @SuppressWarnings("unused")
-    public static void onReload()
-    {
-        NetworkGunManager manager = GunMod.getNetworkGunManager();
-        if(manager != null)
-        {
-            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new MessageUpdateGuns());
-        }
-    }
 }

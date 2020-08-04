@@ -1,5 +1,4 @@
 {
     "Sensitivity Hook": "transformers/sensitivity.js",
-    "Knockback Hook": "transformers/knockback.js",
-    "Reload Hook": "transformers/reload.js"
+    "Knockback Hook": "transformers/knockback.js"
 }

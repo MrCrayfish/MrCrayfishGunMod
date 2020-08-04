@@ -8,6 +8,8 @@ import com.google.gson.GsonBuilder;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
 import com.mrcrayfish.guns.object.CustomGun;
 import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
@@ -22,15 +24,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.InvalidObjectException;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,6 +112,9 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
             item.setGun(gun);
         });
         this.registeredGuns = builder.build();
+
+        if (EffectiveSide.get().isServer())
+            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new MessageUpdateGuns());
     }
 
     /**
