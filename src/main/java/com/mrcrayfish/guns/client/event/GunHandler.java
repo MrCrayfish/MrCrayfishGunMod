@@ -154,7 +154,7 @@ public class GunHandler
                 if(GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS)
                 {
                     Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-                    if(gun.general.auto)
+                    if(gun.getGeneral().isAuto())
                     {
                         fire(player, heldItem);
                     }
@@ -184,14 +184,14 @@ public class GunHandler
             rate = GunModifierHelper.getModifiedRate(heldItem, rate);
             tracker.setCooldown(heldItem.getItem(), rate);
             PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player));
-            if(modifiedGun.display.flash != null)
+            if(modifiedGun.getDisplay().getFlash() != null)
             {
                 ClientHandler.getGunRenderer().showMuzzleFlash();
             }
             if(Config.SERVER.enableCameraRecoil.get())
             {
                 float recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(heldItem);
-                recoil = modifiedGun.general.recoilAngle * recoilModifier;
+                recoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;
                 progressRecoil = 0F;
             }
         }

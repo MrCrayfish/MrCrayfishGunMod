@@ -1,9 +1,13 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.object.Scope;
+import com.mrcrayfish.guns.item.attachment.IScope;
+import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 /**
+ * A basic scope attachment item implementation with color support
+ *
  * Author: MrCrayfish
  */
 public class ScopeItem extends Item implements IScope, IColored
@@ -32,7 +36,7 @@ public class ScopeItem extends Item implements IScope, IColored
     }
 
     @Override
-    public boolean canColor()
+    public boolean canColor(ItemStack stack)
     {
         return this.colored;
     }

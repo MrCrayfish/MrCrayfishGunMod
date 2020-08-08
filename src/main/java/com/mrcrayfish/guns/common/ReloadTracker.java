@@ -55,7 +55,7 @@ public class ReloadTracker
 
     private boolean hasNoAmmo(PlayerEntity player)
     {
-        return Gun.findAmmo(player, this.gun.projectile.item).isEmpty();
+        return Gun.findAmmo(player, this.gun.getProjectile().getItem()).isEmpty();
     }
 
     private boolean canReload(PlayerEntity player)
@@ -67,10 +67,10 @@ public class ReloadTracker
 
     private void increaseAmmo(PlayerEntity player)
     {
-        ItemStack ammo = Gun.findAmmo(player, this.gun.projectile.item);
+        ItemStack ammo = Gun.findAmmo(player, this.gun.getProjectile().getItem());
         if(!ammo.isEmpty())
         {
-            int amount = Math.min(ammo.getCount(), this.gun.general.reloadSpeed);
+            int amount = Math.min(ammo.getCount(), this.gun.getGeneral().getReloadSpeed());
             CompoundNBT tag = this.stack.getTag();
             if(tag != null)
             {
@@ -81,7 +81,7 @@ public class ReloadTracker
             ammo.shrink(amount);
         }
 
-        SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(this.gun.sounds.reload);
+        SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(this.gun.getSounds().getReload());
         if(event != null)
         {
             player.world.playSound(null, player.getPosX(), player.getPosY() + 1.0D, player.getPosZ(), event, SoundCategory.PLAYERS, 1.0F, 1.0F);

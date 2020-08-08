@@ -1,9 +1,11 @@
 package com.mrcrayfish.guns.object;
 
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
-import com.mrcrayfish.guns.item.IAttachment;
-import com.mrcrayfish.guns.item.IScope;
+import com.mrcrayfish.guns.item.attachment.IAttachment;
+import com.mrcrayfish.guns.item.attachment.IScope;
+import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -16,38 +18,63 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
-public class Gun implements INBTSerializable<CompoundNBT>
+public final class Gun implements INBTSerializable<CompoundNBT>
 {
-    public General general = new General();
-    public Projectile projectile = new Projectile();
-    public Sounds sounds = new Sounds();
-    public Display display = new Display();
-    public Modules modules = new Modules();
+    private General general = new General();
+    private Projectile projectile = new Projectile();
+    private Sounds sounds = new Sounds();
+    private Display display = new Display();
+    private Modules modules = new Modules();
+
+    public General getGeneral()
+    {
+        return this.general;
+    }
+
+    public Projectile getProjectile()
+    {
+        return this.projectile;
+    }
+
+    public Sounds getSounds()
+    {
+        return this.sounds;
+    }
+
+    public Display getDisplay()
+    {
+        return this.display;
+    }
+
+    public Modules getModules()
+    {
+        return this.modules;
+    }
 
     public static class General implements INBTSerializable<CompoundNBT>
     {
         @Optional
-        public boolean auto = false;
-        public int rate;
+        private boolean auto = false;
+        private int rate;
         @Ignored
-        public GripType gripType = GripType.ONE_HANDED;
-        public int maxAmmo;
+        private GripType gripType = GripType.ONE_HANDED;
+        private int maxAmmo;
         @Optional
-        public int reloadSpeed = 1;
+        private int reloadSpeed = 1;
         @Optional
-        public float recoilAngle;
+        private float recoilAngle;
         @Optional
-        public float recoilKick;
+        private float recoilKick;
         @Optional
-        public float recoilDurationOffset;
+        private float recoilDurationOffset;
         @Optional
-        public float recoilAdsReduction = 0.2F;
+        private float recoilAdsReduction = 0.2F;
         @Optional
-        public int projectileAmount = 1;
+        private int projectileAmount = 1;
         @Optional
-        public boolean alwaysSpread;
+        private boolean alwaysSpread;
         @Optional
-        public float spread;
+        private float spread;
 
         @Override
         public CompoundNBT serializeNBT()
@@ -121,6 +148,9 @@ public class Gun implements INBTSerializable<CompoundNBT>
             }
         }
 
+        /**
+         * @return A copy of the general instance
+         */
         public General copy()
         {
             General general = new General();
@@ -138,25 +168,122 @@ public class Gun implements INBTSerializable<CompoundNBT>
             general.spread = this.spread;
             return general;
         }
+
+        /**
+         * @return If this gun is automatic or not
+         */
+        public boolean isAuto()
+        {
+            return this.auto;
+        }
+
+        /**
+         * @return The fire rate of this weapon in ticks
+         */
+        public int getRate()
+        {
+            return this.rate;
+        }
+
+        /**
+         * @return The type of grip this weapon uses
+         */
+        public GripType getGripType()
+        {
+            return this.gripType;
+        }
+
+        /**
+         * @return The maximum amount of ammo this weapon can hold
+         */
+        public int getMaxAmmo()
+        {
+            return this.maxAmmo;
+        }
+
+        /**
+         * @return The reload speed of this weapon in ticks
+         */
+        public int getReloadSpeed()
+        {
+            return this.reloadSpeed;
+        }
+
+        /**
+         * @return The amount of recoil this gun produces upon firing in degrees
+         */
+        public float getRecoilAngle()
+        {
+            return this.recoilAngle;
+        }
+
+        /**
+         * @return The amount of kick this gun produces upon firing
+         */
+        public float getRecoilKick()
+        {
+            return this.recoilKick;
+        }
+
+        /**
+         * @return The duration offset for recoil. This reduces the duration of recoil animation
+         */
+        public float getRecoilDurationOffset()
+        {
+            return this.recoilDurationOffset;
+        }
+
+        /**
+         * @return The amount of reduction applied when aiming down this weapon's sight
+         */
+        public float getRecoilAdsReduction()
+        {
+            return this.recoilAdsReduction;
+        }
+
+        /**
+         * @return The amount of projectiles this weapon fires
+         */
+        public int getProjectileAmount()
+        {
+            return this.projectileAmount;
+        }
+
+        /**
+         * @return If this weapon should always spread it's projectiles according to {@link #getSpread()}
+         */
+        public boolean isAlwaysSpread()
+        {
+            return this.alwaysSpread;
+        }
+
+        /**
+         * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
+         * the fired projectile.
+         */
+        public float getSpread()
+        {
+            return this.spread;
+        }
     }
 
     public static class Projectile implements INBTSerializable<CompoundNBT>
     {
-        public ResourceLocation item;
+        private ResourceLocation item = new ResourceLocation(Reference.MOD_ID, "basic_ammo");
         @Optional
-        public boolean visible;
-        public float damage;
-        public float size;
-        public double speed;
-        public int life;
+        private boolean visible;
+        private float damage;
+        private float size;
+        private double speed;
+        private int life;
         @Optional
-        public boolean gravity;
+        private boolean gravity;
         @Optional
-        public boolean damageReduceOverLife;
+        private boolean damageReduceOverLife;
         @Optional
-        public int trailColor = 0xFFD289;
+        private int trailColor = 0xFFD289;
         @Optional
-        public double trailLengthMultiplier = 1.0;
+        private double trailLengthMultiplier = 1.0;
 
         @Override
         public CompoundNBT serializeNBT()
@@ -235,22 +362,102 @@ public class Gun implements INBTSerializable<CompoundNBT>
             projectile.trailLengthMultiplier = this.trailLengthMultiplier;
             return projectile;
         }
+
+        /**
+         * @return The registry id of the ammo item
+         */
+        public ResourceLocation getItem()
+        {
+            return this.item;
+        }
+
+        /**
+         * @return If this projectile should be visible when rendering
+         */
+        public boolean isVisible()
+        {
+            return this.visible;
+        }
+
+        /**
+         * @return The damage caused by this projectile
+         */
+        public float getDamage()
+        {
+            return this.damage;
+        }
+
+        /**
+         * @return The size of the projectile entity bounding box
+         */
+        public float getSize()
+        {
+            return this.size;
+        }
+
+        /**
+         * @return The speed the projectile moves every tick
+         */
+        public double getSpeed()
+        {
+            return this.speed;
+        }
+
+        /**
+         * @return The amount of ticks before this projectile is removed
+         */
+        public int getLife()
+        {
+            return this.life;
+        }
+
+        /**
+         * @return If gravity should be applied to the projectile
+         */
+        public boolean isGravity()
+        {
+            return this.gravity;
+        }
+
+        /**
+         * @return If the damage should reduce the further the projectile travels
+         */
+        public boolean isDamageReduceOverLife()
+        {
+            return this.damageReduceOverLife;
+        }
+
+        /**
+         * @return The color of the projectile trail in rgba integer format
+         */
+        public int getTrailColor()
+        {
+            return this.trailColor;
+        }
+
+        /**
+         * @return The multiplier to change the length of the projectile trail
+         */
+        public double getTrailLengthMultiplier()
+        {
+            return this.trailLengthMultiplier;
+        }
     }
 
     public static class Sounds implements INBTSerializable<CompoundNBT>
     {
         @Optional
         @Nullable
-        public ResourceLocation fire;
+        private ResourceLocation fire;
         @Optional
         @Nullable
-        public ResourceLocation reload;
+        private ResourceLocation reload;
         @Optional
         @Nullable
-        public ResourceLocation cock;
+        private ResourceLocation cock;
         @Optional
         @Nullable
-        public ResourceLocation silencedFire;
+        private ResourceLocation silencedFire;
 
         @Override
         public CompoundNBT serializeNBT()
@@ -305,17 +512,59 @@ public class Gun implements INBTSerializable<CompoundNBT>
             sounds.silencedFire = this.silencedFire;
             return sounds;
         }
+
+        /**
+         * @return The registry id of the sound event when firing this weapon
+         */
+        @Nullable
+        public ResourceLocation getFire()
+        {
+            return this.fire;
+        }
+
+        /**
+         * @return The registry iid of the sound event when reloading this weapon
+         */
+        @Nullable
+        public ResourceLocation getReload()
+        {
+            return this.reload;
+        }
+
+        /**
+         * @return The registry iid of the sound event when cocking this weapon
+         */
+        @Nullable
+        public ResourceLocation getCock()
+        {
+            return this.cock;
+        }
+
+        /**
+         * @return The registry iid of the sound event when silenced firing this weapon
+         */
+        @Nullable
+        public ResourceLocation getSilencedFire()
+        {
+            return this.silencedFire;
+        }
     }
 
     public static class Display implements INBTSerializable<CompoundNBT>
     {
         @Optional
         @Nullable
-        public Flash flash;
+        private Flash flash;
+
+        @Nullable
+        public Flash getFlash()
+        {
+            return this.flash;
+        }
 
         public static class Flash extends Positioned
         {
-            public double size = 0.5;
+            private double size = 0.5;
 
             @Override
             public CompoundNBT serializeNBT()
@@ -343,6 +592,14 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 flash.yOffset = this.yOffset;
                 flash.zOffset = this.zOffset;
                 return flash;
+            }
+
+            /**
+             * @return The size/scale of the muzzle flash render
+             */
+            public double getSize()
+            {
+                return this.size;
             }
         }
 
@@ -383,13 +640,24 @@ public class Gun implements INBTSerializable<CompoundNBT>
     {
         @Optional
         @Nullable
-        public Zoom zoom;
-        public Attachments attachments = new Attachments();
+        private Zoom zoom;
+        private Attachments attachments = new Attachments();
+
+        @Nullable
+        public Zoom getZoom()
+        {
+            return this.zoom;
+        }
+
+        public Attachments getAttachments()
+        {
+            return this.attachments;
+        }
 
         public static class Zoom extends Positioned
         {
             @Optional
-            public float fovModifier;
+            private float fovModifier;
 
             @Override
             public CompoundNBT serializeNBT()
@@ -418,22 +686,51 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 zoom.zOffset = this.zOffset;
                 return zoom;
             }
+
+            public float getFovModifier()
+            {
+                return this.fovModifier;
+            }
         }
 
         public static class Attachments implements INBTSerializable<CompoundNBT>
         {
             @Optional
             @Nullable
-            public Scope scope;
+            private Scope scope;
             @Optional
             @Nullable
-            public Barrel barrel;
+            private Barrel barrel;
             @Optional
             @Nullable
-            public Stock stock;
+            private Stock stock;
             @Optional
             @Nullable
-            public UnderBarrel underBarrel;
+            private UnderBarrel underBarrel;
+
+            @Nullable
+            public Scope getScope()
+            {
+                return this.scope;
+            }
+
+            @Nullable
+            public Barrel getBarrel()
+            {
+                return this.barrel;
+            }
+
+            @Nullable
+            public Stock getStock()
+            {
+                return this.stock;
+            }
+
+            @Nullable
+            public UnderBarrel getUnderBarrel()
+            {
+                return this.underBarrel;
+            }
 
             public static class Scope extends ScaledPositioned
             {
@@ -604,11 +901,11 @@ public class Gun implements INBTSerializable<CompoundNBT>
     public static class Positioned implements INBTSerializable<CompoundNBT>
     {
         @Optional
-        public double xOffset;
+        protected double xOffset;
         @Optional
-        public double yOffset;
+        protected double yOffset;
         @Optional
-        public double zOffset;
+        protected double zOffset;
 
         @Override
         public CompoundNBT serializeNBT()
@@ -636,12 +933,27 @@ public class Gun implements INBTSerializable<CompoundNBT>
                 this.zOffset = tag.getDouble("ZOffset");
             }
         }
+
+        public double getXOffset()
+        {
+            return this.xOffset;
+        }
+
+        public double getYOffset()
+        {
+            return this.yOffset;
+        }
+
+        public double getZOffset()
+        {
+            return this.zOffset;
+        }
     }
 
     public static class ScaledPositioned extends Positioned
     {
         @Optional
-        public double scale = 1.0;
+        protected double scale = 1.0;
 
         @Override
         public CompoundNBT serializeNBT()
@@ -659,6 +971,11 @@ public class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.scale = tag.getDouble("Scale");
             }
+        }
+
+        public double getScale()
+        {
+            return this.scale;
         }
     }
 

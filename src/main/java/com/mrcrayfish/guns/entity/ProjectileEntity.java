@@ -104,15 +104,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.shooterId = shooter.getEntityId();
         this.shooter = shooter;
         this.modifiedGun = modifiedGun;
-        this.general = modifiedGun.general;
-        this.projectile = modifiedGun.projectile;
-        this.entitySize = new EntitySize(this.projectile.size, this.projectile.size, false);
+        this.general = modifiedGun.getGeneral();
+        this.projectile = modifiedGun.getProjectile();
+        this.entitySize = new EntitySize(this.projectile.getSize(), this.projectile.getSize(), false);
         this.modifiedGravity = GunModifierHelper.getModifiedProjectileGravity(weapon, -0.05);
-        this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.life);
+        this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.getLife());
 
         Vector3d dir = this.getDirection(shooter, weapon, item, modifiedGun);
         double speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon, modifiedGun);
-        double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.speed * speedModifier);
+        double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.getSpeed() * speedModifier);
         this.setMotion(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
 
@@ -122,7 +122,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         double posZ = shooter.lastTickPosZ + (shooter.getPosZ() - shooter.lastTickPosZ) / 2.0;
         this.setPosition(posX, posY, posZ);
 
-        Item ammo = ForgeRegistries.ITEMS.getValue(this.projectile.item);
+        Item ammo = ForgeRegistries.ITEMS.getValue(this.projectile.getItem());
         if(ammo != null)
         {
             this.item = new ItemStack(ammo);
@@ -143,7 +143,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     private Vector3d getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
     {
-        float gunSpread = GunModifierHelper.getModifiedSpread(weapon, modifiedGun.general.spread);
+        float gunSpread = GunModifierHelper.getModifiedSpread(weapon, modifiedGun.getGeneral().getSpread());
 
         if(gunSpread == 0F)
         {
@@ -152,7 +152,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if(shooter instanceof PlayerEntity)
         {
-            if(!modifiedGun.general.alwaysSpread)
+            if(!modifiedGun.getGeneral().isAlwaysSpread())
             {
                 gunSpread *= SpreadTracker.get(shooter.getUniqueID()).getSpread(item);
             }
@@ -254,7 +254,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         double nextPosZ = this.getPosZ() + this.getMotion().getZ();
         this.setPosition(nextPosX, nextPosY, nextPosZ);
 
-        if(this.projectile.gravity)
+        if(this.projectile.isGravity())
         {
             this.setMotion(this.getMotion().add(0, this.modifiedGravity, 0));
         }
@@ -494,7 +494,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
     {
-        ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state), x, y, z, (int) this.projectile.damage, 0.0, 0.0, 0.0, 0.05);
+        ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state), x, y, z, (int) this.projectile.getDamage(), 0.0, 0.0, 0.0, 0.05);
         this.world.playSound(null, x, y, z, state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F);
     }
 
@@ -540,7 +540,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.item = ItemStackUtil.readItemStackFromBufIgnoreTag(buffer);
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
-        this.entitySize = new EntitySize(this.projectile.size, this.projectile.size, false);
+        this.entitySize = new EntitySize(this.projectile.getSize(), this.projectile.getSize(), false);
     }
 
     public void updateHeading()
@@ -578,13 +578,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public float getDamage()
     {
-        float initialDamage = (this.projectile.damage + this.additionalDamage);
-        if(this.projectile.damageReduceOverLife)
+        float initialDamage = (this.projectile.getDamage() + this.additionalDamage);
+        if(this.projectile.isDamageReduceOverLife())
         {
-            float modifier = ((float) this.projectile.life - (float) (this.ticksExisted - 1)) / (float) this.projectile.life;
+            float modifier = ((float) this.projectile.getLife() - (float) (this.ticksExisted - 1)) / (float) this.projectile.getLife();
             initialDamage *= modifier;
         }
-        float damage = initialDamage / this.general.projectileAmount;
+        float damage = initialDamage / this.general.getProjectileAmount();
         return GunModifierHelper.getModifiedDamage(this.weapon, this.modifiedGun, damage);
     }
 

@@ -1,14 +1,19 @@
-package com.mrcrayfish.guns.item;
+package com.mrcrayfish.guns.item.attachment;
 
-import com.mrcrayfish.guns.object.Attachment;
+import com.mrcrayfish.guns.item.attachment.impl.Attachment;
 
 import javax.annotation.Nullable;
 
 /**
+ * The base attachment interface
+ * <p>
  * Author: MrCrayfish
  */
 public interface IAttachment<T extends Attachment>
 {
+    /**
+     * @return The type of this attachment
+     */
     Type getType();
 
     /**

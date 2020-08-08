@@ -1,12 +1,14 @@
-package com.mrcrayfish.guns.object;
+package com.mrcrayfish.guns.item.attachment.impl;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
-import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.item.attachment.IAttachment;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,22 +17,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The base attachment object
+ *
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public abstract class Attachment
 {
-    private final IGunModifier[] modifier;
+    private final IGunModifier[] modifiers;
     private List<ITextComponent> perks = null;
 
-    public Attachment(IGunModifier ... modifier)
+    Attachment(IGunModifier... modifiers)
     {
-        this.modifier = modifier;
+        this.modifiers = modifiers;
     }
 
-    public IGunModifier[] getModifier()
+    public IGunModifier[] getModifiers()
     {
-        return this.modifier;
+        return this.modifiers;
     }
 
     void setPerks(List<ITextComponent> perks)
@@ -41,12 +45,13 @@ public abstract class Attachment
         }
     }
 
-    public List<ITextComponent> getPerks()
+    List<ITextComponent> getPerks()
     {
         return this.perks;
     }
 
     /* Determines the perks of attachments and caches them */
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void addInformationEvent(ItemTooltipEvent event)
     {
@@ -62,7 +67,7 @@ public abstract class Attachment
                 return;
             }
 
-            IGunModifier[] modifiers = attachment.getProperties().getModifier();
+            IGunModifier[] modifiers = attachment.getProperties().getModifiers();
             List<ITextComponent> positivePerks = new ArrayList<>();
             List<ITextComponent> negativePerks = new ArrayList<>();
 

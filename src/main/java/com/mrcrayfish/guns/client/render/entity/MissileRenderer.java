@@ -32,7 +32,7 @@ public class MissileRenderer extends EntityRenderer<MissileEntity>
     @Override
     public void render(MissileEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        if(!entity.getProjectile().visible || entity.ticksExisted <= 1)
+        if(!entity.getProjectile().isVisible() || entity.ticksExisted <= 1)
         {
             return;
         }

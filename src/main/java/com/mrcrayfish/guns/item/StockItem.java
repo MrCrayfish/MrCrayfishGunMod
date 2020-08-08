@@ -1,9 +1,13 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.object.Stock;
+import com.mrcrayfish.guns.item.attachment.IStock;
+import com.mrcrayfish.guns.item.attachment.impl.Stock;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 /**
+ * A basic stock attachment item implementation with color support
+ *
  * Author: MrCrayfish
  */
 public class StockItem extends Item implements IStock, IColored
@@ -32,7 +36,7 @@ public class StockItem extends Item implements IStock, IColored
     }
 
     @Override
-    public boolean canColor()
+    public boolean canColor(ItemStack stack)
     {
         return this.colored;
     }

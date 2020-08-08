@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.object.headshot;
 
+import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 
