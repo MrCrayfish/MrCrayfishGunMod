@@ -132,7 +132,7 @@ public class RenderUtil
         Random random = new Random();
         for(Direction direction : Direction.values())
         {
-            random.setSeed(42l);
+            random.setSeed(42L);
             renderQuads(matrixStack, buffer, model.getQuads(null, direction, random), stack, parent, light, overlay);
         }
         random.setSeed(42L);
