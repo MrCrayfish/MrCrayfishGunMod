@@ -8,7 +8,6 @@ import com.mrcrayfish.guns.object.headshot.NoChildRotatedHeadshotBox;
 import com.mrcrayfish.guns.object.headshot.RotatedHeadshotBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
