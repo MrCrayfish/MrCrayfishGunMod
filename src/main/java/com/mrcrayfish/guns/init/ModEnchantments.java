@@ -1,7 +1,15 @@
 package com.mrcrayfish.guns.init;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.enchantment.*;
+import com.mrcrayfish.guns.enchantment.AcceleratorEnchantment;
+import com.mrcrayfish.guns.enchantment.CollateralEnchantment;
+import com.mrcrayfish.guns.enchantment.FireStarterEnchantment;
+import com.mrcrayfish.guns.enchantment.LightweightEnchantment;
+import com.mrcrayfish.guns.enchantment.OverCapacityEnchantment;
+import com.mrcrayfish.guns.enchantment.PuncturingEnchantment;
+import com.mrcrayfish.guns.enchantment.QuickHandsEnchantment;
+import com.mrcrayfish.guns.enchantment.ReclaimedEnchantment;
+import com.mrcrayfish.guns.enchantment.TriggerFingerEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;

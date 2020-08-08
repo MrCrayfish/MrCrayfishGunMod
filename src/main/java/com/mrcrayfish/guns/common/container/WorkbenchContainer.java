@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.common.container;
 
-import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
