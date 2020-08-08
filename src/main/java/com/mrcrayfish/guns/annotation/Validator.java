@@ -28,6 +28,8 @@ public class Validator
             {
                 continue;
             }
+            
+            field.setAccessible(true);
 
             if(field.get(t) == null)
             {

@@ -6,7 +6,6 @@ import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
-import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageShoot;
@@ -15,8 +14,6 @@ import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -26,8 +23,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.Map;
 
 /**
  * Author: MrCrayfish
@@ -159,7 +154,7 @@ public class GunHandler
                 if(GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS)
                 {
                     Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-                    if(gun.general.auto)
+                    if(gun.getGeneral().isAuto())
                     {
                         fire(player, heldItem);
                     }
@@ -189,14 +184,14 @@ public class GunHandler
             rate = GunModifierHelper.getModifiedRate(heldItem, rate);
             tracker.setCooldown(heldItem.getItem(), rate);
             PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player));
-            if(modifiedGun.display.flash != null)
+            if(modifiedGun.getDisplay().getFlash() != null)
             {
                 ClientHandler.getGunRenderer().showMuzzleFlash();
             }
             if(Config.SERVER.enableCameraRecoil.get())
             {
                 float recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(heldItem);
-                recoil = modifiedGun.general.recoilAngle * recoilModifier;
+                recoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;
                 progressRecoil = 0F;
             }
         }

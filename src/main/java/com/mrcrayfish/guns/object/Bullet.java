@@ -75,7 +75,7 @@ public class Bullet
             this.posY += this.motionY;
             this.posZ += this.motionZ;
 
-            if(this.projectile.getProjectile().gravity)
+            if(this.projectile.getProjectile().isGravity())
             {
                 this.motionY -= 0.05;
                 this.updateHeading();

@@ -11,9 +11,7 @@ import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
-import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.item.IAttachment;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
@@ -25,7 +23,6 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -44,18 +41,14 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,24 +107,24 @@ public class CommonHandler
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                     }
 
-                    if(!modifiedGun.general.alwaysSpread && modifiedGun.general.spread > 0.0F)
+                    if(!modifiedGun.getGeneral().isAlwaysSpread() && modifiedGun.getGeneral().getSpread() > 0.0F)
                     {
                         SpreadTracker.get(player.getUniqueID()).update(player, item);
                     }
 
                     boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
 
-                    for(int i = 0; i < modifiedGun.general.projectileAmount; i++)
+                    for(int i = 0; i < modifiedGun.getGeneral().getProjectileAmount(); i++)
                     {
-                        ProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.projectile.item);
+                        ProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.getProjectile().getItem());
                         ProjectileEntity bullet = factory.create(world, player, heldItem, item, modifiedGun);
                         bullet.setWeapon(heldItem);
                         bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                         world.addEntity(bullet);
 
-                        if(!modifiedGun.projectile.visible)
+                        if(!modifiedGun.getProjectile().isVisible())
                         {
-                            MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.getPosX(), bullet.getPosY(), bullet.getPosZ(), bullet.getMotion().getX(), bullet.getMotion().getY(), bullet.getMotion().getZ(), modifiedGun.projectile.trailColor, modifiedGun.projectile.trailLengthMultiplier);
+                            MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.getPosX(), bullet.getPosY(), bullet.getPosZ(), bullet.getMotion().getX(), bullet.getMotion().getY(), bullet.getMotion().getZ(), modifiedGun.getProjectile().getTrailColor(), modifiedGun.getProjectile().getTrailLengthMultiplier());
                             PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimension().getType())), messageBullet);
                         }
                     }
@@ -157,7 +150,7 @@ public class CommonHandler
                         }
                     }
 
-                    ResourceLocation fireSound = silenced ? modifiedGun.sounds.silencedFire : modifiedGun.sounds.fire;
+                    ResourceLocation fireSound = silenced ? modifiedGun.getSounds().getSilencedFire() : modifiedGun.getSounds().getFire();
                     SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(fireSound);
                     if(event != null)
                     {
@@ -242,7 +235,7 @@ public class CommonHandler
                         DyeItem dyeItem = (DyeItem) dyeStack.getItem();
                         int color = dyeItem.getDyeColor().getColorValue();
 
-                        if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor())
+                        if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor(stack))
                         {
                             IColored colored = (IColored) stack.getItem();
                             colored.setColor(stack, color);
@@ -273,7 +266,7 @@ public class CommonHandler
 
                 GunItem gunItem = (GunItem) stack.getItem();
                 Gun gun = gunItem.getModifiedGun(stack);
-                ResourceLocation id = gun.projectile.item;
+                ResourceLocation id = gun.getProjectile().getItem();
 
                 Item item = ForgeRegistries.ITEMS.getValue(id);
                 if(item == null)

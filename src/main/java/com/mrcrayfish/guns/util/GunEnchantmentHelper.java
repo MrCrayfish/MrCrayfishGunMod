@@ -26,7 +26,7 @@ public class GunEnchantmentHelper
 
     public static int getRate(ItemStack weapon, Gun modifiedGun)
     {
-        int rate = modifiedGun.general.rate;
+        int rate = modifiedGun.getGeneral().getRate();
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.TRIGGER_FINGER.get(), weapon);
         if(level > 0)
         {
@@ -44,7 +44,7 @@ public class GunEnchantmentHelper
 
     public static int getAmmoCapacity(ItemStack weapon, Gun modifiedGun)
     {
-        int capacity = modifiedGun.general.maxAmmo;
+        int capacity = modifiedGun.getGeneral().getMaxAmmo();
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), weapon);
         if(level > 0)
         {

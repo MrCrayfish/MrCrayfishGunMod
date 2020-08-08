@@ -1,9 +1,13 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.object.Barrel;
+import com.mrcrayfish.guns.item.attachment.IBarrel;
+import com.mrcrayfish.guns.item.attachment.impl.Barrel;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 /**
+ * A basic barrel attachment item implementation with color support
+ *
  * Author: MrCrayfish
  */
 public class BarrelItem extends Item implements IBarrel, IColored
@@ -32,7 +36,7 @@ public class BarrelItem extends Item implements IBarrel, IColored
     }
 
     @Override
-    public boolean canColor()
+    public boolean canColor(ItemStack stack)
     {
         return this.colored;
     }

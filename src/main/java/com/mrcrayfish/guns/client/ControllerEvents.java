@@ -11,12 +11,12 @@ import com.mrcrayfish.guns.client.event.GunHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.item.IScope;
+import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
 import com.mrcrayfish.guns.network.message.MessageUnload;
 import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.guns.object.Scope;
+import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
@@ -167,7 +167,7 @@ public class ControllerEvents
             if(heldItem.getItem() instanceof GunItem)
             {
                 Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-                if(gun.general.auto)
+                if(gun.getGeneral().isAuto())
                 {
                     GunHandler.fire(player, heldItem);
                 }

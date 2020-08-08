@@ -49,15 +49,6 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         return builder.create();
     });
 
-    /**
-     * A fallback gun object for any weapons that haven't added a json yet.
-     */
-    static final Gun FALLBACK_GUN = Util.make(() -> {
-        Gun gun = new Gun();
-        gun.projectile.item = new ResourceLocation("cgm:basic_ammo");
-        return gun;
-    });
-
     private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
@@ -81,8 +72,8 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
                     }
                     else
                     {
-                        GunMod.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using fallback gun data", resourceLocation);
-                        map.put((GunItem) item, FALLBACK_GUN);
+                        GunMod.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
+                        map.put((GunItem) item, new Gun());
                     }
                 }
                 catch(InvalidObjectException e)
@@ -110,7 +101,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         objects.forEach((item, gun) -> {
             Validate.notNull(item.getRegistryName());
             builder.put(item.getRegistryName(), gun);
-            item.setGun(gun);
+            item.setGun(new Supplier(gun));
         });
         this.registeredGuns = builder.build();
     }
@@ -172,7 +163,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
                 {
                     return false;
                 }
-                ((GunItem) item).setGun(entry.getValue());
+                ((GunItem) item).setGun(new Supplier(entry.getValue()));
                 clientRegisteredGuns.add((GunItem) item);
             }
             return true;
@@ -205,5 +196,25 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         ImmutableMap<ResourceLocation, Gun> getRegisteredGuns();
 
         ImmutableMap<ResourceLocation, CustomGun> getCustomGuns();
+    }
+
+    /**
+     * A simple wrapper for a gun object to pass to GunItem. This is to indicate to developers that
+     * Gun instances shouldn't be changed on GunItems as they are controlled by NetworkGunManager.
+     * Changes to gun properties should be made through the JSON file.
+     */
+    public static class Supplier
+    {
+        private Gun gun;
+
+        private Supplier(Gun gun)
+        {
+            this.gun = gun;
+        }
+
+        public Gun getGun()
+        {
+            return this.gun;
+        }
     }
 }

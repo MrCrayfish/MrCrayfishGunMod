@@ -43,7 +43,7 @@ public class CustomGunManager
                 tag.put("Model", gun.getModel().write(new CompoundNBT()));
                 tag.put("Gun", gun.getGun().serializeNBT());
                 tag.putBoolean("Custom", true);
-                tag.putInt("AmmoCount", gun.getGun().general.maxAmmo);
+                tag.putInt("AmmoCount", gun.getGun().getGeneral().getMaxAmmo());
                 items.add(stack);
             });
         }

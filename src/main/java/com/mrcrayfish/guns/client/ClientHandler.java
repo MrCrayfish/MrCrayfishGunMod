@@ -147,6 +147,10 @@ public class ClientHandler
     {
         IItemColor color = (stack, index) ->
         {
+            if(!((IColored) stack.getItem()).canColor(stack))
+            {
+                return -1;
+            }
             if(index == 0 && stack.hasTag() && stack.getTag().contains("Color", Constants.NBT.TAG_INT))
             {
                 return stack.getTag().getInt("Color");
@@ -155,7 +159,7 @@ public class ClientHandler
         };
         ForgeRegistries.ITEMS.forEach(item ->
         {
-            if(item instanceof IColored && ((IColored) item).canColor())
+            if(item instanceof IColored)
             {
                 Minecraft.getInstance().getItemColors().register(color, item);
             }

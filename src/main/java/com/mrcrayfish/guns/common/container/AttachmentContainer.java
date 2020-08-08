@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.common.container;
 
 import com.mrcrayfish.guns.common.container.slot.AttachmentSlot;
 import com.mrcrayfish.guns.init.ModContainers;
-import com.mrcrayfish.guns.item.IAttachment;
+import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,8 +13,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-
-import java.util.Arrays;
 
 /**
  * Author: MrCrayfish
