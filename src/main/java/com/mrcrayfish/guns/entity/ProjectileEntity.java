@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.entity;
 
-import com.google.common.base.Predicate;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.SpreadTracker;
@@ -75,6 +74,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData
 {
@@ -454,8 +454,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    @SuppressWarnings("unchecked")
-    protected void onHitEntity(Entity entity, Vector3d hitVec, Vector3d startVec, Vector3d endVec, boolean headshot)
+    protected void onHitEntity(Entity entity, Vec3d hitVec, Vec3d startVec, Vec3d endVec, boolean headshot)
     {
         float damage = this.getDamage();
         float newDamage = GunEnchantmentHelper.getPuncturingDamage(this.weapon, this.rand, damage);
@@ -480,7 +479,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
             shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vector3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
         }
-        else if(critical || headshot)
+        else if((critical || headshot) && this.shooter instanceof ServerPlayerEntity)
         {
             SoundEvent event = headshot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_ITEM_BREAK;
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;

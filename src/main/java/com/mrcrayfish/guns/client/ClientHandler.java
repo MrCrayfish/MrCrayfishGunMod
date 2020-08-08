@@ -240,7 +240,6 @@ public class ClientHandler
         Minecraft mc = Minecraft.getInstance();
         ParticleManager particleManager = mc.particles;
         World world = mc.world;
-        Random rand = world.rand;
         double x = message.getX();
         double y = message.getY();
         double z = message.getZ();

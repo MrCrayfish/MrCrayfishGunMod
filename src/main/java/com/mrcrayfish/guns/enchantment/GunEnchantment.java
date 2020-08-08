@@ -29,6 +29,6 @@ public abstract class GunEnchantment extends Enchantment
 
     public enum Type
     {
-        WEAPON, AMMO, PROJECTILE;
+        WEAPON, AMMO, PROJECTILE
     }
 }
