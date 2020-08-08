@@ -454,7 +454,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void onHitEntity(Entity entity, Vec3d hitVec, Vec3d startVec, Vec3d endVec, boolean headshot)
+    protected void onHitEntity(Entity entity, Vector3d hitVec, Vector3d startVec, Vector3d endVec, boolean headshot)
     {
         float damage = this.getDamage();
         float newDamage = GunEnchantmentHelper.getPuncturingDamage(this.weapon, this.rand, damage);
