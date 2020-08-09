@@ -12,7 +12,7 @@
     "projectile": {
         "item": "cgm:basic_bullet",
         "visible": false,
-        "damage": 7.0,
+        "damage": 9.0,
         "size": 0.2,
         "speed": 30.0,
         "life": 1000

@@ -13,7 +13,7 @@
     "projectile": {
         "item": "cgm:shell",
         "visible": false,
-        "damage": 12.0,
+        "damage": 18.0,
         "size": 1.0,
         "speed": 15.0,
         "life": 4,

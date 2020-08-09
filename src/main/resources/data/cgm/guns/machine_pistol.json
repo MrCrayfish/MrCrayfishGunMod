@@ -1,7 +1,7 @@
 {
     "general": {
         "auto": true,
-        "rate": 2,
+        "rate": 1,
         "gripType": "cgm:one_handed",
         "maxAmmo": 40,
         "reloadSpeed": 5,
@@ -14,7 +14,7 @@
     "projectile": {
         "item": "cgm:basic_bullet",
         "visible": false,
-        "damage": 3.0,
+        "damage": 1.5,
         "size": 0.2,
         "speed": 25.0,
         "life": 10
