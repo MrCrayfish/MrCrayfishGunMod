@@ -403,12 +403,17 @@ public class GunRenderer
 
         float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
         float recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(item);
-        double kick = gun.getGeneral().getRecoilKick() * 0.0625 * this.recoilNormal * (float) (1.0 - (gun.getGeneral().getRecoilAdsReduction() * this.normalZoomProgress));
-        float recoil = (float) (gun.getGeneral().getRecoilAngle() * this.recoilNormal) * (float) (1.0 - (gun.getGeneral().getRecoilAdsReduction() * this.normalZoomProgress));
+        double kick = gun.getGeneral().getRecoilKick() * 0.0625 * this.recoilNormal * this.getAdsRecoilReduction(gun);
+        float recoil = (float) (gun.getGeneral().getRecoilAngle() * this.recoilNormal) * (float) this.getAdsRecoilReduction(gun);
         matrixStack.translate(0, 0, kick * kickReduction);
         matrixStack.translate(0, 0, 0.35);
         matrixStack.rotate(Vector3f.XP.rotationDegrees(recoil * recoilReduction));
         matrixStack.translate(0, 0, -0.35);
+    }
+
+    public double getAdsRecoilReduction(Gun gun)
+    {
+        return 1.0 - gun.getGeneral().getRecoilAdsReduction() * this.normalZoomProgress;
     }
 
     private boolean isZooming(PlayerEntity player)
