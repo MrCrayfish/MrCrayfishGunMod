@@ -54,10 +54,12 @@ public class GripType
 
             copyModelAngles(model.bipedHead, mainArm);
             copyModelAngles(model.bipedHead, secondaryArm);
-            mainArm.rotateAngleX = (float) Math.toRadians(-55F + aimProgress * -30F);
-            mainArm.rotateAngleY = (float) Math.toRadians((-45F + aimProgress * -20F) * (right ? 1F : -1F));
-            secondaryArm.rotateAngleX = (float) Math.toRadians(-42F + aimProgress * -48F);
-            secondaryArm.rotateAngleY = (float) Math.toRadians((-15F + aimProgress * 5F) * (right ? 1F : -1F));
+            mainArm.rotateAngleX = (float) Math.toRadians(-60F + aimProgress * -25F);
+            mainArm.rotateAngleY = (float) Math.toRadians((-55F + aimProgress * -10F) * (right ? 1F : -1F));
+            mainArm.rotationPointX = -5;
+            secondaryArm.rotateAngleX = (float) Math.toRadians(-65F + aimProgress * -25F);
+            secondaryArm.rotateAngleY = (float) Math.toRadians((-5F + aimProgress * -10F) * (right ? 1F : -1F));
+            secondaryArm.rotationPointZ = -1;
         }
 
         @Override
@@ -65,8 +67,8 @@ public class GripType
         public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
         {
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            player.prevRenderYawOffset = player.prevRotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
-            player.renderYawOffset = player.rotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
+            player.prevRenderYawOffset = player.prevRotationYaw + (right ? 45F : -40F);
+            player.renderYawOffset = player.rotationYaw + (right ? 45F : -40F);
         }
 
         @Override
@@ -78,9 +80,8 @@ public class GripType
                 boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
                 matrixStack.translate(0, 0, 0.05);
                 float invertRealProgress = 1.0F - aimProgress;
-                matrixStack.rotate(Vector3f.ZP.rotationDegrees((25F * invertRealProgress) * (right ? 1F : -1F)));
-                matrixStack.rotate(Vector3f.YP.rotationDegrees((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
-                matrixStack.rotate(Vector3f.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(30F * invertRealProgress + aimProgress * 5F));
+                matrixStack.rotate(Vector3f.YP.rotationDegrees((-10F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
             }
         }
     }, false);
