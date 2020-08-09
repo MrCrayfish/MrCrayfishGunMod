@@ -36,6 +36,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -47,6 +48,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -57,7 +59,9 @@ import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.LightType;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -352,6 +356,11 @@ public class GunRenderer
 
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
 
+        Entity entity = Minecraft.getInstance().player;
+        int blockLight = entity.isBurning() ? 15 : entity.world.getLightFor(LightType.BLOCK, new BlockPos(entity.getEyePosition(event.getPartialTicks())));
+        blockLight += (this.drawMuzzleFlash ? 3 : 0);
+        int packedLight = LightTexture.packLight(blockLight, entity.world.getLightFor(LightType.SKY, new BlockPos(entity.getEyePosition(event.getPartialTicks()))));
+
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
         this.renderReloadArm(matrixStack, event.getBuffers(), event.getLight(), heldItem, hand);
@@ -366,11 +375,11 @@ public class GunRenderer
         /* Render offhand arm so it is holding the weapon. Only applies if it's a two handed weapon */
         matrixStack.push();
         matrixStack.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.52F, 0.72F);
-        this.renderHeldArm(matrixStack, event.getBuffers(), event.getLight(), Minecraft.getInstance().player, heldItem, hand, event.getPartialTicks());
+        this.renderHeldArm(matrixStack, event.getBuffers(), packedLight, Minecraft.getInstance().player, heldItem, hand, event.getPartialTicks());
         matrixStack.pop();
 
         /* Renders the weapon */
-        this.renderWeapon(Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getPartialTicks());
+        this.renderWeapon(Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
 
         matrixStack.pop();
     }
