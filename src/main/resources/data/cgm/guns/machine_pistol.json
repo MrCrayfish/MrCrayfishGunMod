@@ -7,7 +7,7 @@
         "reloadSpeed": 5,
         "recoilAngle": 4.0,
         "recoilKick": 0.25,
-        "recoilAdsReduction": 0.95,
+        "recoilAdsReduction": 0.5,
         "alwaysSpread": true,
         "spread": 6.0
     },

@@ -6,7 +6,7 @@
         "recoilAngle": 10.0,
         "recoilKick": 1.0,
         "recoilDurationOffset": 0.5,
-        "recoilAdsReduction": 0.9,
+        "recoilAdsReduction": 0.4,
         "alwaysSpread": true,
         "spread": 1.0
     },

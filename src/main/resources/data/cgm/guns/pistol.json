@@ -5,7 +5,7 @@
         "maxAmmo": 15,
         "reloadSpeed": 5,
         "recoilAngle": 10.0,
-        "recoilAdsReduction": 0.85,
+        "recoilAdsReduction": 0.5,
         "alwaysSpread": true,
         "spread": 1.0
     },
@@ -32,8 +32,7 @@
     "modules": {
         "zoom": {
             "fovModifier": 0.7,
-            "yOffset": 4.5,
-            "zOffset": 1.0
+            "yOffset": 4.5
         },
         "attachments": {
             "scope": {
