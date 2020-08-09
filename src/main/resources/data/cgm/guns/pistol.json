@@ -3,7 +3,7 @@
         "rate": 4,
         "gripType": "cgm:one_handed",
         "maxAmmo": 16,
-        "reloadSpeed": 4,
+        "reloadAmount": 4,
         "recoilAngle": 10.0,
         "recoilAdsReduction": 0.5,
         "alwaysSpread": true,

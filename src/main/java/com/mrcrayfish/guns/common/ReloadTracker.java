@@ -70,7 +70,7 @@ public class ReloadTracker
         ItemStack ammo = Gun.findAmmo(player, this.gun.getProjectile().getItem());
         if(!ammo.isEmpty())
         {
-            int amount = Math.min(ammo.getCount(), this.gun.getGeneral().getReloadSpeed());
+            int amount = Math.min(ammo.getCount(), this.gun.getGeneral().getReloadAmount());
             CompoundNBT tag = this.stack.getTag();
             if(tag != null)
             {

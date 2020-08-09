@@ -14,8 +14,7 @@
         "size": 0.2,
         "speed": 2.0,
         "life": 150,
-        "damageReduceOverLife": false,
-        "damageReduceIfNotZoomed": false
+        "damageReduceOverLife": false
     },
     "sounds": {
         "fire": "cgm:item.bazooka.fire",

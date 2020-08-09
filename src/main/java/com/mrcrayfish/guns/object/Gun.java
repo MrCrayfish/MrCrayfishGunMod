@@ -60,7 +60,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private GripType gripType = GripType.ONE_HANDED;
         private int maxAmmo;
         @Optional
-        private int reloadSpeed = 1;
+        private int reloadAmount = 1;
         @Optional
         private float recoilAngle;
         @Optional
@@ -84,7 +84,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putInt("Rate", this.rate);
             tag.putString("GripType", this.gripType.getId().toString());
             tag.putInt("MaxAmmo", this.maxAmmo);
-            tag.putInt("ReloadSpeed", this.reloadSpeed);
+            tag.putInt("ReloadSpeed", this.reloadAmount);
             tag.putFloat("RecoilAngle", this.recoilAngle);
             tag.putFloat("RecoilKick", this.recoilKick);
             tag.putFloat("RecoilDurationOffset", this.recoilDurationOffset);
@@ -116,7 +116,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
             if(tag.contains("ReloadSpeed", Constants.NBT.TAG_INT))
             {
-                this.reloadSpeed = tag.getInt("ReloadSpeed");
+                this.reloadAmount = tag.getInt("ReloadSpeed");
             }
             if(tag.contains("RecoilAngle", Constants.NBT.TAG_FLOAT))
             {
@@ -158,7 +158,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.rate = this.rate;
             general.gripType = this.gripType;
             general.maxAmmo = this.maxAmmo;
-            general.reloadSpeed = this.reloadSpeed;
+            general.reloadAmount = this.reloadAmount;
             general.recoilAngle = this.recoilAngle;
             general.recoilKick = this.recoilKick;
             general.recoilDurationOffset = this.recoilDurationOffset;
@@ -202,11 +202,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         /**
-         * @return The reload speed of this weapon in ticks
+         * @return The amount of ammo to add to the weapon each reload cycle
          */
-        public int getReloadSpeed()
+        public int getReloadAmount()
         {
-            return this.reloadSpeed;
+            return this.reloadAmount;
         }
 
         /**
