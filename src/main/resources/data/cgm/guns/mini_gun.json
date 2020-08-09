@@ -4,7 +4,7 @@
         "rate": 2,
         "gripType": "cgm:mini_gun",
         "maxAmmo": 100,
-        "reloadSpeed": 4,
+        "reloadSpeed": 10,
         "recoilAngle": 1.0,
         "alwaysSpread": true,
         "spread": 5.0
