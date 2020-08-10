@@ -39,6 +39,7 @@ import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
+import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.object.Bullet;
 import com.mrcrayfish.guns.particles.BulletHoleData;
@@ -262,6 +263,11 @@ public class ClientHandler
     private static Particle spawnParticle(ParticleManager manager, IParticleData data, double x, double y, double z, Random rand, double velocityMultiplier)
     {
         return manager.addParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
+    }
+
+    public static void handleMuzzleFlash(MessageMuzzleFlash message)
+    {
+        GUN_RENDERER.showMuzzleFlashForPlayer(message.getEntityId());
     }
 
     public static boolean isLookingAtInteractableBlock()

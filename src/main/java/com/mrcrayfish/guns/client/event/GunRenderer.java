@@ -3,11 +3,13 @@ package com.mrcrayfish.guns.client.event;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.AimTracker;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.RenderTypes;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -37,6 +39,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -76,20 +79,27 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 public class GunRenderer
 {
-    private static final ResourceLocation MUZZLE_FLASH = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
+    private static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
     private static final double ZOOM_TICKS = 4;
     public static int screenTextureId = -1;
 
     private Random random = new Random();
+    private Set<Integer> entityIdForMuzzleFlash = new HashSet<>();
+    private Set<Integer> entityIdForDrawnMuzzleFlash = new HashSet<>();
+    private Map<Integer, Float> entityIdToRandomValue = new HashMap<>();
     private boolean hasDrawnMuzzleFlash = false;
     private boolean drawMuzzleFlash = false;
-    private double muzzleFlashSize;
-    private float muzzleFlashRoll;
+    private float muzzleFlashSize = 1.0F;
     private int muzzleFlashYaw;
+
     private double zoomProgress;
     private double lastZoomProgress;
     public double normalZoomProgress;
@@ -183,6 +193,11 @@ public class GunRenderer
     public void onTick(TickEvent.ClientTickEvent event)
     {
         if(event.phase != TickEvent.Phase.END) return;
+
+        this.entityIdForMuzzleFlash.removeAll(this.entityIdForDrawnMuzzleFlash);
+        this.entityIdToRandomValue.keySet().removeAll(this.entityIdForDrawnMuzzleFlash);
+        this.entityIdForDrawnMuzzleFlash.clear();
+        this.entityIdForDrawnMuzzleFlash.addAll(this.entityIdForMuzzleFlash);
 
         this.prevReloadTimer = this.reloadTimer;
 
@@ -723,11 +738,7 @@ public class GunRenderer
 
             RenderUtil.applyTransformType(model.isEmpty() ? stack : model, matrixStack, transformType);
 
-            if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
-            {
-                this.renderMuzzleFlash(matrixStack, stack);
-            }
-
+            this.renderMuzzleFlash(entity, matrixStack, stack, transformType);
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, matrixStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, matrixStack, renderTypeBuffer, light, partialTicks);
 
@@ -797,74 +808,97 @@ public class GunRenderer
         }
     }
 
-    private void renderMuzzleFlash(MatrixStack matrixStack, ItemStack weapon)
+    private void renderMuzzleFlash(LivingEntity entity, MatrixStack matrixStack, ItemStack weapon, ItemCameraTransforms.TransformType transformType)
+    {
+        Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
+        if(modifiedGun.getDisplay().getFlash() != null)
+        {
+            if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
+            {
+                this.drawFirstPersonMuzzleFlash(matrixStack, weapon, modifiedGun);
+            }
+            else if(transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
+            {
+                if(this.entityIdForMuzzleFlash.contains(entity.getEntityId()))
+                {
+                    this.drawThirdPersonMuzzleFlash(entity.getEntityId(), matrixStack, weapon, modifiedGun);
+                }
+            }
+        }
+    }
+
+    private void drawFirstPersonMuzzleFlash(MatrixStack matrixStack, ItemStack weapon, Gun modifiedGun)
     {
         if(this.drawMuzzleFlash)
         {
-            matrixStack.push();
-
-            Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
-            if(modifiedGun.getDisplay().getFlash() == null)
-            {
-                this.drawMuzzleFlash = false;
-                matrixStack.pop();
-                return;
-            }
-
             this.hasDrawnMuzzleFlash = true;
-
-            Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
-            double displayX = muzzleFlash.getXOffset() * 0.0625;
-            double displayY = muzzleFlash.getYOffset() * 0.0625;
-            double displayZ = muzzleFlash.getZOffset() * 0.0625;
-            matrixStack.translate(displayX, displayY, displayZ);
-            matrixStack.translate(0, -0.5, 0);
-
-            ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
-            if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
-            {
-                Barrel barrel = ((IBarrel) barrelStack.getItem()).getProperties();
-                Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
-                if(positioned != null)
-                {
-                    matrixStack.translate(0, 0, -barrel.getLength() * 0.0625 * positioned.getScale());
-                }
-            }
-
-            matrixStack.scale(0.5F, 0.5F, 0.0F);
-
-            RenderSystem.pushMatrix();
-            {
-                RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
-
-                RenderSystem.enableDepthTest();
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-
-                double partialSize = modifiedGun.getDisplay().getFlash().getSize() / 5.0;
-                double size = modifiedGun.getDisplay().getFlash().getSize() - partialSize + partialSize * this.muzzleFlashSize;
-                size = GunModifierHelper.getMuzzleFlashSize(weapon, size);
-                RenderSystem.rotatef(360F * this.muzzleFlashRoll, 0, 0, 1);
-                RenderSystem.rotatef(180F * this.muzzleFlashYaw, 1, 0, 0);
-                RenderSystem.translated(-size / 2, -size / 2, 0);
-
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBuffer();
-                Minecraft.getInstance().getTextureManager().bindTexture(MUZZLE_FLASH);
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-                buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
-                buffer.pos(size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
-                buffer.pos(size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();
-                buffer.pos(0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
-                tessellator.draw();
-
-                RenderSystem.disableBlend();
-                RenderSystem.disableDepthTest();
-            }
-            RenderSystem.popMatrix();
-
-            matrixStack.pop();
+            this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, this.muzzleFlashSize, this.muzzleFlashYaw == 0);
         }
+    }
+
+    private void drawThirdPersonMuzzleFlash(int entityId, MatrixStack matrixStack, ItemStack weapon, Gun modifiedGun)
+    {
+        if(this.entityIdForMuzzleFlash.contains(entityId))
+        {
+            float randomValue = this.entityIdToRandomValue.get(entityId);
+            this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, randomValue, randomValue >= 0.5);
+        }
+    }
+
+    private void drawMuzzleFlash(MatrixStack matrixStack, ItemStack weapon, Gun modifiedGun, float random, boolean flip)
+    {
+        matrixStack.push();
+
+        Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
+        double displayX = muzzleFlash.getXOffset() * 0.0625;
+        double displayY = muzzleFlash.getYOffset() * 0.0625;
+        double displayZ = muzzleFlash.getZOffset() * 0.0625;
+        matrixStack.translate(displayX, displayY, displayZ);
+        matrixStack.translate(0, -0.5, 0);
+
+        ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
+        if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
+        {
+            Barrel barrel = ((IBarrel) barrelStack.getItem()).getProperties();
+            Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
+            if(positioned != null)
+            {
+                matrixStack.translate(0, 0, -barrel.getLength() * 0.0625 * positioned.getScale());
+            }
+        }
+
+        matrixStack.scale(0.5F, 0.5F, 0.0F);
+
+        double partialSize = modifiedGun.getDisplay().getFlash().getSize() / 5.0;
+        float size = (float) (modifiedGun.getDisplay().getFlash().getSize() - partialSize + partialSize * random);
+        size = (float) GunModifierHelper.getMuzzleFlashSize(weapon, size);
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(360F * random));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(flip ? 180F : 0F));
+        matrixStack.translate(-size / 2, -size / 2, 0);
+
+        RenderSystem.enableAlphaTest();
+        RenderSystem.defaultAlphaFunc();
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.depthMask(true);
+        Minecraft.getInstance().getTextureManager().bindTexture(MUZZLE_FLASH_TEXTURE);
+
+        Matrix4f matrix = matrixStack.getLast().getMatrix();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+        buffer.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
+        buffer.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
+        buffer.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();
+        buffer.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
+        tessellator.draw();
+
+        RenderSystem.depthMask(true);
+        RenderSystem.disableBlend();
+        RenderSystem.defaultAlphaFunc();
+
+        matrixStack.pop();
     }
 
     private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
@@ -1097,9 +1131,14 @@ public class GunRenderer
     public void showMuzzleFlash()
     {
         this.drawMuzzleFlash = true;
-        this.muzzleFlashSize = this.random.nextDouble();
-        this.muzzleFlashRoll = this.random.nextFloat();
+        this.muzzleFlashSize = this.random.nextFloat();
         this.muzzleFlashYaw = this.random.nextInt(2);
         this.hasDrawnMuzzleFlash = false;
+    }
+
+    public void showMuzzleFlashForPlayer(int entityId)
+    {
+        this.entityIdForMuzzleFlash.add(entityId);
+        this.entityIdToRandomValue.put(entityId, this.random.nextFloat());
     }
 }
