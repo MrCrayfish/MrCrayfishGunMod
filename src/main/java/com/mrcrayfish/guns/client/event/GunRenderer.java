@@ -3,13 +3,11 @@ package com.mrcrayfish.guns.client.event;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.AimTracker;
 import com.mrcrayfish.guns.client.ClientHandler;
-import com.mrcrayfish.guns.client.RenderTypes;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -89,22 +87,21 @@ public class GunRenderer
 {
     private static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
     private static final double ZOOM_TICKS = 4;
-    public static int screenTextureId = -1;
+    private static int screenTextureId = -1;
 
     private Random random = new Random();
     private Set<Integer> entityIdForMuzzleFlash = new HashSet<>();
     private Set<Integer> entityIdForDrawnMuzzleFlash = new HashSet<>();
     private Map<Integer, Float> entityIdToRandomValue = new HashMap<>();
-    private boolean hasDrawnMuzzleFlash = false;
     private boolean drawMuzzleFlash = false;
-    private float muzzleFlashSize = 1.0F;
-    private int muzzleFlashYaw;
+    private boolean hasDrawnMuzzleFlash = false;
+    private float muzzleRandomValue = 1.0F;
 
-    private double zoomProgress;
-    private double lastZoomProgress;
-    public double normalZoomProgress;
-    public double recoilNormal;
-    public double recoilAngle;
+    private double aimProgress;
+    private double lastAimProgress;
+    private double normalisedAimProgress;
+    private double recoilNormal;
+    private double recoilAngle;
 
     private int startReloadTick;
     private int reloadTimer;
@@ -134,7 +131,7 @@ public class GunRenderer
                         {
                             newFov -= scope.getAdditionalZoom();
                         }
-                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - ((float) zoomProgress / (float) ZOOM_TICKS)));
+                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - ((float) aimProgress / (float) ZOOM_TICKS)));
                     }
                 }
             }
@@ -147,11 +144,12 @@ public class GunRenderer
         if(event.phase != TickEvent.Phase.START)
             return;
 
-        this.lastZoomProgress = this.zoomProgress;
-        if(this.hasDrawnMuzzleFlash)
-        {
-            this.drawMuzzleFlash = false;
-        }
+        this.updateAimProgress();
+    }
+
+    private void updateAimProgress()
+    {
+        this.lastAimProgress = this.aimProgress;
 
         PlayerEntity player = Minecraft.getInstance().player;
         if(player == null)
@@ -159,31 +157,31 @@ public class GunRenderer
             return;
         }
 
-        if(isZooming(player) && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+        if(this.isZooming(player) && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
         {
-            if(this.zoomProgress < ZOOM_TICKS)
+            if(this.aimProgress < ZOOM_TICKS)
             {
                 ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
                 double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
                 speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
-                this.zoomProgress += speed;
-                if(this.zoomProgress > ZOOM_TICKS)
+                this.aimProgress += speed;
+                if(this.aimProgress > ZOOM_TICKS)
                 {
-                    this.zoomProgress = (int) ZOOM_TICKS;
+                    this.aimProgress = (int) ZOOM_TICKS;
                 }
             }
         }
         else
         {
-            if(this.zoomProgress > 0)
+            if(this.aimProgress > 0)
             {
                 ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
                 double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
                 speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
-                this.zoomProgress -= speed;
-                if(this.zoomProgress < 0)
+                this.aimProgress -= speed;
+                if(this.aimProgress < 0)
                 {
-                    this.zoomProgress = 0;
+                    this.aimProgress = 0;
                 }
             }
         }
@@ -192,49 +190,70 @@ public class GunRenderer
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event)
     {
-        if(event.phase != TickEvent.Phase.END) return;
+        if(event.phase != TickEvent.Phase.END)
+            return;
+
+        this.prevReloadTimer = this.reloadTimer;
+
+        this.updateMuzzleFlash();
+
+        PlayerEntity player = Minecraft.getInstance().player;
+        if(player != null)
+        {
+            this.tickOverrideModel(player);
+            this.updateReloadTimer(player);
+        }
+    }
+
+    private void updateMuzzleFlash()
+    {
+        if(this.hasDrawnMuzzleFlash)
+        {
+            this.drawMuzzleFlash = false;
+        }
+        this.hasDrawnMuzzleFlash = true;
 
         this.entityIdForMuzzleFlash.removeAll(this.entityIdForDrawnMuzzleFlash);
         this.entityIdToRandomValue.keySet().removeAll(this.entityIdForDrawnMuzzleFlash);
         this.entityIdForDrawnMuzzleFlash.clear();
         this.entityIdForDrawnMuzzleFlash.addAll(this.entityIdForMuzzleFlash);
+    }
 
-        this.prevReloadTimer = this.reloadTimer;
-
-        PlayerEntity player = Minecraft.getInstance().player;
-        if(player != null)
+    private void updateReloadTimer(PlayerEntity player)
+    {
+        if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
         {
-            ItemStack heldItem = player.getHeldItemMainhand();
-            if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
+            if(this.startReloadTick == -1)
             {
-                IOverrideModel model = ModelOverrides.getModel(heldItem);
-                if(model != null)
-                {
-                    model.tick(player);
-                }
+                this.startReloadTick = player.ticksExisted + 5;
             }
+            if(this.reloadTimer < 5)
+            {
+                this.reloadTimer++;
+            }
+        }
+        else
+        {
+            if(this.startReloadTick != -1)
+            {
+                this.startReloadTick = -1;
+            }
+            if(this.reloadTimer > 0)
+            {
+                this.reloadTimer--;
+            }
+        }
+    }
 
-            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+    private void tickOverrideModel(PlayerEntity player)
+    {
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
+        {
+            IOverrideModel model = ModelOverrides.getModel(heldItem);
+            if(model != null)
             {
-                if(this.startReloadTick == -1)
-                {
-                    this.startReloadTick = player.ticksExisted + 5;
-                }
-                if(this.reloadTimer < 5)
-                {
-                    this.reloadTimer++;
-                }
-            }
-            else
-            {
-                if(this.startReloadTick != -1)
-                {
-                    this.startReloadTick = -1;
-                }
-                if(this.reloadTimer > 0)
-                {
-                    this.reloadTimer -= 1;
-                }
+                model.tick(player);
             }
         }
     }
@@ -242,8 +261,8 @@ public class GunRenderer
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent event)
     {
-        normalZoomProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0.0 : event.getPartialTicks())) / ZOOM_TICKS;
-        if(normalZoomProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+        this.normalisedAimProgress = (this.lastAimProgress + (this.aimProgress - this.lastAimProgress) * (this.lastAimProgress == 0 || this.lastAimProgress == ZOOM_TICKS ? 0.0 : event.getPartialTicks())) / ZOOM_TICKS;
+        if(this.normalisedAimProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
         {
             event.setCanceled(true);
         }
@@ -267,7 +286,7 @@ public class GunRenderer
             matrixStack.translate((double) -(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
 
             /* The new controlled bobbing */
-            double invertZoomProgress = 1.0 - this.normalZoomProgress;
+            double invertZoomProgress = 1.0 - this.normalisedAimProgress;
             matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
             matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
@@ -325,7 +344,7 @@ public class GunRenderer
         GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
 
-        if(this.normalZoomProgress > 0 && modifiedGun.canAimDownSight())
+        if(this.normalisedAimProgress > 0 && modifiedGun.canAimDownSight())
         {
             if(event.getHand() == Hand.MAIN_HAND)
             {
@@ -353,15 +372,15 @@ public class GunRenderer
                 float side = right ? 1.0F : -1.0F;
 
                 /* Reverses the original first person translations */
-                matrixStack.translate(-0.56 * side * this.normalZoomProgress, 0.52 * this.normalZoomProgress, 0);
+                matrixStack.translate(-0.56 * side * this.normalisedAimProgress, 0.52 * this.normalisedAimProgress, 0);
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
-                matrixStack.translate(xOffset * side * this.normalZoomProgress, yOffset * this.normalZoomProgress, zOffset * normalZoomProgress);
+                matrixStack.translate(xOffset * side * this.normalisedAimProgress, yOffset * this.normalisedAimProgress, zOffset * normalisedAimProgress);
             }
             else
             {
                 /* Makes the off hand item move out of view */
-                matrixStack.translate(0, -1 * this.normalZoomProgress, 0);
+                matrixStack.translate(0, -1 * this.normalisedAimProgress, 0);
             }
         }
 
@@ -437,7 +456,7 @@ public class GunRenderer
 
     public double getAdsRecoilReduction(Gun gun)
     {
-        return 1.0 - gun.getGeneral().getRecoilAdsReduction() * this.normalZoomProgress;
+        return 1.0 - gun.getGeneral().getRecoilAdsReduction() * this.normalisedAimProgress;
     }
 
     private boolean isZooming(PlayerEntity player)
@@ -831,8 +850,7 @@ public class GunRenderer
     {
         if(this.drawMuzzleFlash)
         {
-            this.hasDrawnMuzzleFlash = true;
-            this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, this.muzzleFlashSize, this.muzzleFlashYaw == 0);
+            this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, this.muzzleRandomValue, this.muzzleRandomValue >= 0.5F);
         }
     }
 
@@ -841,7 +859,7 @@ public class GunRenderer
         if(this.entityIdForMuzzleFlash.contains(entityId))
         {
             float randomValue = this.entityIdToRandomValue.get(entityId);
-            this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, randomValue, randomValue >= 0.5);
+            this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, randomValue, randomValue >= 0.5F);
         }
     }
 
@@ -1095,7 +1113,7 @@ public class GunRenderer
                 }
             }
         }
-        return sensitivity * (1.0 - (1.0 - GunMod.getOptions().getAdsSensitivity()) * this.normalZoomProgress) * additionalAdsSensitivity;
+        return sensitivity * (1.0 - (1.0 - GunMod.getOptions().getAdsSensitivity()) * this.normalisedAimProgress) * additionalAdsSensitivity;
     }
 
     /**
@@ -1131,14 +1149,33 @@ public class GunRenderer
     public void showMuzzleFlash()
     {
         this.drawMuzzleFlash = true;
-        this.muzzleFlashSize = this.random.nextFloat();
-        this.muzzleFlashYaw = this.random.nextInt(2);
         this.hasDrawnMuzzleFlash = false;
+        this.muzzleRandomValue = this.random.nextFloat();
     }
 
     public void showMuzzleFlashForPlayer(int entityId)
     {
         this.entityIdForMuzzleFlash.add(entityId);
         this.entityIdToRandomValue.put(entityId, this.random.nextFloat());
+    }
+
+    public double getNormalisedAimProgress()
+    {
+        return this.normalisedAimProgress;
+    }
+
+    public double getRecoilNormal()
+    {
+        return this.recoilNormal;
+    }
+
+    public double getRecoilAngle()
+    {
+        return this.recoilAngle;
+    }
+
+    public static void bindScreenTexture()
+    {
+        RenderSystem.bindTexture(GunRenderer.screenTextureId);
     }
 }
