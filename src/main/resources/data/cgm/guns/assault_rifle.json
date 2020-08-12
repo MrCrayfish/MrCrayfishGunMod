@@ -3,8 +3,8 @@
         "auto": true,
         "rate": 3,
         "gripType": "cgm:two_handed",
-        "maxAmmo": 60,
-        "reloadSpeed": 10,
+        "maxAmmo": 40,
+        "reloadAmount": 10,
         "recoilKick": 0.25,
         "recoilAngle": 3.0,
         "spread": 4.0
@@ -26,7 +26,7 @@
     "display": {
         "flash": {
             "yOffset": 3.6,
-            "zOffset": -5.9
+            "zOffset": -6.41
         }
     },
     "modules": {
@@ -50,7 +50,7 @@
                 "zOffset": 8.2
             },
             "underBarrel": {
-                "yOffset": 2.8,
+                "yOffset": 2.799,
                 "zOffset": -1.0
             }
         }

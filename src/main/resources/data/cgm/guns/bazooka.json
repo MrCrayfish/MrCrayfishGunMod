@@ -14,8 +14,7 @@
         "size": 0.2,
         "speed": 2.0,
         "life": 150,
-        "damageReduceOverLife": false,
-        "damageReduceIfNotZoomed": false
+        "damageReduceOverLife": false
     },
     "sounds": {
         "fire": "cgm:item.bazooka.fire",
@@ -25,7 +24,7 @@
     "display": {
         "flash": {
             "yOffset": 4.3,
-            "zOffset": -8.0,
+            "zOffset": -8.01,
             "size": 2.0
         }
     },

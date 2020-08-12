@@ -16,8 +16,7 @@
         "speed": 1.5,
         "life": 50,
         "gravity": true,
-        "damageReduceOverLife": false,
-        "damageReduceIfNotZoomed": false
+        "damageReduceOverLife": false
     },
     "sounds": {
         "fire": "cgm:item.grenade_launcher.fire",

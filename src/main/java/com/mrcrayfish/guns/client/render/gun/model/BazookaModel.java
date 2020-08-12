@@ -35,7 +35,7 @@ public class BazookaModel implements IOverrideModel
         
         if(isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
         {
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, (float) ClientHandler.getGunRenderer().normalZoomProgress * 0.5F + 0.5F);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, (float) ClientHandler.getGunRenderer().getNormalisedAimProgress() * 0.5F + 0.5F);
             RenderSystem.enableDepthTest();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
@@ -58,7 +58,7 @@ public class BazookaModel implements IOverrideModel
 
                 RenderSystem.pushMatrix();
                 {
-                    double invertProgress = (1.0 - ClientHandler.getGunRenderer().normalZoomProgress);
+                    double invertProgress = (1.0 - ClientHandler.getGunRenderer().getNormalisedAimProgress());
                     RenderSystem.translated(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
                     double scale = 6.0;
@@ -78,7 +78,7 @@ public class BazookaModel implements IOverrideModel
                     float red = ((reticleGlowColor >> 16) & 0xFF) / 255F;
                     float green = ((reticleGlowColor >> 8) & 0xFF) / 255F;
                     float blue = ((reticleGlowColor >> 0) & 0xFF) / 255F;
-                    float alpha = (float) (1.0F * ClientHandler.getGunRenderer().normalZoomProgress);
+                    float alpha = (float) (1.0F * ClientHandler.getGunRenderer().getNormalisedAimProgress());
 
                     Minecraft mc = Minecraft.getInstance();
                     mc.getTextureManager().bindTexture(RED_DOT_RETICLE_GLOW);
@@ -89,7 +89,7 @@ public class BazookaModel implements IOverrideModel
                     buffer.pos(size / scale, size / scale, 0).color(red, green, blue, alpha).tex(0.9375F, 0.9375F).lightmap(15728880).endVertex();
                     tessellator.draw();
 
-                    alpha = (float) (0.75F * ClientHandler.getGunRenderer().normalZoomProgress);
+                    alpha = (float) (0.75F * ClientHandler.getGunRenderer().getNormalisedAimProgress());
 
                     mc.getTextureManager().bindTexture(RED_DOT_RETICLE);
                     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);

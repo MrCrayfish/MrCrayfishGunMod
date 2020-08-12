@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.client.event;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.guns.client.RenderTypes;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.object.Bullet;
 import net.minecraft.client.Minecraft;
@@ -33,15 +34,6 @@ import java.util.List;
  */
 public class BulletRenderer
 {
-    private static final RenderState.AlphaState DEFAULT_ALPHA = new RenderState.AlphaState(0.0F);
-    private static final RenderState.CullState CULL_DISABLED = new RenderState.CullState(false);
-    private static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-    }, () -> {
-        RenderSystem.disableBlend();
-    });
-
     private List<Bullet> bullets = new ArrayList<>();
 
     /**
@@ -108,7 +100,7 @@ public class BulletRenderer
 
         if(bullet.getProjectile().getShooterId() != entity.getEntityId())
         {
-            RenderType bulletType = getBulletTrail();
+            RenderType bulletType = RenderTypes.getBulletTrail();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
             builder.pos(matrix4f, 0, 0, -0.035F).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, 0, 0, 0.035F).color(red, green, blue, alpha).endVertex();
@@ -138,10 +130,5 @@ public class BulletRenderer
         Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(renderType);
 
         matrixStack.pop();
-    }
-
-    private static RenderType getBulletTrail()
-    {
-        return RenderType.makeType("projectile_trail", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder().cull(CULL_DISABLED).alpha(DEFAULT_ALPHA).transparency(TRANSLUCENT_TRANSPARENCY).build(false));
     }
 }

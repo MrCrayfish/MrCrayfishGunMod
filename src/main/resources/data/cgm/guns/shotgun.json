@@ -2,10 +2,11 @@
     "general": {
         "rate": 8,
         "gripType": "cgm:two_handed",
-        "maxAmmo": 4,
+        "maxAmmo": 8,
+        "reloadAmount": 2,
         "recoilKick": 0.5,
         "recoilAngle": 10.0,
-        "recoilAdsReduction": 0.5,
+        "recoilAdsReduction": 0.4,
         "projectileAmount": 5,
         "alwaysSpread": true,
         "spread": 12.0
@@ -13,12 +14,11 @@
     "projectile": {
         "item": "cgm:shell",
         "visible": false,
-        "damage": 12.0,
+        "damage": 18.0,
         "size": 1.0,
         "speed": 15.0,
         "life": 4,
-        "gravity": false,
-        "damageReduceIfNotZoomed": false
+        "gravity": false
     },
     "sounds": {
         "fire": "cgm:item.shotgun.fire",
@@ -29,7 +29,7 @@
     "display": {
         "flash": {
             "yOffset": 3.6506,
-            "zOffset": -3.8
+            "zOffset": -3.81
         }
     },
     "modules": {

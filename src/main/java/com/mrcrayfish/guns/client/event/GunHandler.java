@@ -191,6 +191,7 @@ public class GunHandler
             if(Config.SERVER.enableCameraRecoil.get())
             {
                 float recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(heldItem);
+                recoilModifier *= ClientHandler.getGunRenderer().getAdsRecoilReduction(modifiedGun);
                 recoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;
                 progressRecoil = 0F;
             }

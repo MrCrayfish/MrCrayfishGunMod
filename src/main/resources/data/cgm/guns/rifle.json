@@ -2,11 +2,11 @@
     "general": {
         "rate": 6,
         "gripType": "cgm:two_handed",
-        "maxAmmo": 8,
+        "maxAmmo": 10,
+        "reloadAmount": 2,
         "recoilAngle": 10.0,
-        "recoilKick": 1.0,
-        "recoilDurationOffset": 0.25,
-        "recoilAdsReduction": 0.9,
+        "recoilKick": 0.5,
+        "recoilAdsReduction": 0.5,
         "alwaysSpread": true,
         "spread": 1.0
     },
@@ -14,11 +14,10 @@
         "item": "cgm:advanced_bullet",
         "visible": false,
         "gravity": true,
-        "damage": 10.0,
+        "damage": 14.0,
         "size": 0.0625,
         "speed": 30.0,
-        "life": 10,
-        "damageReduceIfNotZoomed": true
+        "life": 10
     },
     "sounds": {
         "fire": "cgm:item.rifle.fire",
@@ -29,7 +28,7 @@
     "display": {
         "flash": {
             "yOffset": 3.8365,
-            "zOffset": -10.2
+            "zOffset": -10.21
         }
     },
     "modules": {

@@ -6,10 +6,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BreakableBlock;
 import net.minecraft.block.StainedGlassPaneBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -20,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
@@ -275,5 +281,21 @@ public class RenderUtil
     public static boolean isMouseWithin(int mouseX, int mouseY, int x, int y, int width, int height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+    }
+
+    public static void renderFirstPersonArm(ClientPlayerEntity player, HandSide hand, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        EntityRendererManager renderManager = mc.getRenderManager();
+        PlayerRenderer renderer = (PlayerRenderer) renderManager.getRenderer(player);
+        mc.getTextureManager().bindTexture(player.getLocationSkin());
+        if (hand == HandSide.RIGHT)
+        {
+            renderer.renderRightArm(matrixStack, buffer, combinedLight, player);
+        }
+        else
+        {
+            renderer.renderLeftArm(matrixStack, buffer, combinedLight, player);
+        }
     }
 }

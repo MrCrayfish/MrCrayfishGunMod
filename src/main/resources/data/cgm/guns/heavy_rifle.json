@@ -3,10 +3,11 @@
         "rate": 40,
         "gripType": "cgm:two_handed",
         "maxAmmo": 4,
+        "reloadAmount": 1,
         "recoilAngle": 10.0,
         "recoilKick": 1.0,
         "recoilDurationOffset": 0.5,
-        "recoilAdsReduction": 0.9,
+        "recoilAdsReduction": 0.4,
         "alwaysSpread": true,
         "spread": 1.0
     },
@@ -17,8 +18,7 @@
         "damage": 18.0,
         "size": 0.0625,
         "speed": 50.0,
-        "life": 10,
-        "damageReduceIfNotZoomed": true
+        "life": 10
     },
     "sounds": {
         "fire": "cgm:item.heavy_rifle.fire",
@@ -29,7 +29,7 @@
     "display": {
         "flash": {
             "yOffset": 3.6,
-            "zOffset": -9.4,
+            "zOffset": -9.41,
             "size": 1.0
         }
     },

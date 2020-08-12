@@ -1,10 +1,10 @@
 {
     "general": {
         "auto": true,
-        "rate": 1,
+        "rate": 2,
         "gripType": "cgm:mini_gun",
         "maxAmmo": 100,
-        "reloadSpeed": 4,
+        "reloadAmount": 10,
         "recoilAngle": 1.0,
         "alwaysSpread": true,
         "spread": 5.0
@@ -12,7 +12,7 @@
     "projectile": {
         "item": "cgm:basic_bullet",
         "visible": false,
-        "damage": 1.25,
+        "damage": 3.0,
         "size": 0.2,
         "speed": 15.0,
         "life": 10
@@ -25,7 +25,7 @@
     "display": {
         "flash": {
             "yOffset": 2.7,
-            "zOffset": -11.5
+            "zOffset": -11.51
         }
     }
 }

@@ -36,6 +36,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -46,17 +48,22 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.LightType;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -72,25 +79,29 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 public class GunRenderer
 {
-    private static final ResourceLocation MUZZLE_FLASH = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
+    private static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
     private static final double ZOOM_TICKS = 4;
-    public static int screenTextureId = -1;
+    private static int screenTextureId = -1;
 
     private Random random = new Random();
-    private boolean hasDrawnMuzzleFlash = false;
-    private boolean drawMuzzleFlash = false;
-    private double muzzleFlashSize;
-    private float muzzleFlashRoll;
-    private int muzzleFlashYaw;
-    private double zoomProgress;
-    private double lastZoomProgress;
-    public double normalZoomProgress;
-    public double recoilNormal;
-    public double recoilAngle;
+    private Set<Integer> entityIdForMuzzleFlash = new HashSet<>();
+    private Set<Integer> entityIdForDrawnMuzzleFlash = new HashSet<>();
+    private Map<Integer, Float> entityIdToRandomValue = new HashMap<>();
+
+    private double aimProgress;
+    private double lastAimProgress;
+    private double normalisedAimProgress;
+    private double recoilNormal;
+    private double recoilAngle;
 
     private int startReloadTick;
     private int reloadTimer;
@@ -120,7 +131,7 @@ public class GunRenderer
                         {
                             newFov -= scope.getAdditionalZoom();
                         }
-                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - ((float) zoomProgress / (float) ZOOM_TICKS)));
+                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - ((float) aimProgress / (float) ZOOM_TICKS)));
                     }
                 }
             }
@@ -133,11 +144,12 @@ public class GunRenderer
         if(event.phase != TickEvent.Phase.START)
             return;
 
-        this.lastZoomProgress = this.zoomProgress;
-        if(this.hasDrawnMuzzleFlash)
-        {
-            this.drawMuzzleFlash = false;
-        }
+        this.updateAimProgress();
+    }
+
+    private void updateAimProgress()
+    {
+        this.lastAimProgress = this.aimProgress;
 
         PlayerEntity player = Minecraft.getInstance().player;
         if(player == null)
@@ -145,31 +157,31 @@ public class GunRenderer
             return;
         }
 
-        if(isZooming(player) && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+        if(this.isZooming(player) && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
         {
-            if(this.zoomProgress < ZOOM_TICKS)
+            if(this.aimProgress < ZOOM_TICKS)
             {
                 ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
                 double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
                 speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
-                this.zoomProgress += speed;
-                if(this.zoomProgress > ZOOM_TICKS)
+                this.aimProgress += speed;
+                if(this.aimProgress > ZOOM_TICKS)
                 {
-                    this.zoomProgress = (int) ZOOM_TICKS;
+                    this.aimProgress = (int) ZOOM_TICKS;
                 }
             }
         }
         else
         {
-            if(this.zoomProgress > 0)
+            if(this.aimProgress > 0)
             {
                 ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
                 double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
                 speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
-                this.zoomProgress -= speed;
-                if(this.zoomProgress < 0)
+                this.aimProgress -= speed;
+                if(this.aimProgress < 0)
                 {
-                    this.zoomProgress = 0;
+                    this.aimProgress = 0;
                 }
             }
         }
@@ -178,44 +190,64 @@ public class GunRenderer
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event)
     {
-        if(event.phase != TickEvent.Phase.END) return;
+        if(event.phase != TickEvent.Phase.END)
+            return;
 
         this.prevReloadTimer = this.reloadTimer;
+
+        this.updateMuzzleFlash();
 
         PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
-            ItemStack heldItem = player.getHeldItemMainhand();
-            if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
-            {
-                IOverrideModel model = ModelOverrides.getModel(heldItem);
-                if(model != null)
-                {
-                    model.tick(player);
-                }
-            }
+            this.tickOverrideModel(player);
+            this.updateReloadTimer(player);
+        }
+    }
 
-            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+    private void updateMuzzleFlash()
+    {
+        this.entityIdForMuzzleFlash.removeAll(this.entityIdForDrawnMuzzleFlash);
+        this.entityIdToRandomValue.keySet().removeAll(this.entityIdForDrawnMuzzleFlash);
+        this.entityIdForDrawnMuzzleFlash.clear();
+        this.entityIdForDrawnMuzzleFlash.addAll(this.entityIdForMuzzleFlash);
+    }
+
+    private void updateReloadTimer(PlayerEntity player)
+    {
+        if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+        {
+            if(this.startReloadTick == -1)
             {
-                if(this.startReloadTick == -1)
-                {
-                    this.startReloadTick = player.ticksExisted + 5;
-                }
-                if(this.reloadTimer < 5)
-                {
-                    this.reloadTimer++;
-                }
+                this.startReloadTick = player.ticksExisted + 5;
             }
-            else
+            if(this.reloadTimer < 5)
             {
-                if(this.startReloadTick != -1)
-                {
-                    this.startReloadTick = -1;
-                }
-                if(this.reloadTimer > 0)
-                {
-                    this.reloadTimer -= 1;
-                }
+                this.reloadTimer++;
+            }
+        }
+        else
+        {
+            if(this.startReloadTick != -1)
+            {
+                this.startReloadTick = -1;
+            }
+            if(this.reloadTimer > 0)
+            {
+                this.reloadTimer--;
+            }
+        }
+    }
+
+    private void tickOverrideModel(PlayerEntity player)
+    {
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
+        {
+            IOverrideModel model = ModelOverrides.getModel(heldItem);
+            if(model != null)
+            {
+                model.tick(player);
             }
         }
     }
@@ -223,8 +255,8 @@ public class GunRenderer
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent event)
     {
-        normalZoomProgress = (lastZoomProgress + (zoomProgress - lastZoomProgress) * (lastZoomProgress == 0 || lastZoomProgress == ZOOM_TICKS ? 0.0 : event.getPartialTicks())) / ZOOM_TICKS;
-        if(normalZoomProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+        this.normalisedAimProgress = (this.lastAimProgress + (this.aimProgress - this.lastAimProgress) * (this.lastAimProgress == 0 || this.lastAimProgress == ZOOM_TICKS ? 0.0 : event.getPartialTicks())) / ZOOM_TICKS;
+        if(this.normalisedAimProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
         {
             event.setCanceled(true);
         }
@@ -248,7 +280,7 @@ public class GunRenderer
             matrixStack.translate((double) -(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
 
             /* The new controlled bobbing */
-            double invertZoomProgress = 1.0 - this.normalZoomProgress;
+            double invertZoomProgress = 1.0 - this.normalisedAimProgress;
             matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
             matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
@@ -306,7 +338,7 @@ public class GunRenderer
         GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
 
-        if(this.normalZoomProgress > 0 && modifiedGun.canAimDownSight())
+        if(this.normalisedAimProgress > 0 && modifiedGun.canAimDownSight())
         {
             if(event.getHand() == Hand.MAIN_HAND)
             {
@@ -334,15 +366,15 @@ public class GunRenderer
                 float side = right ? 1.0F : -1.0F;
 
                 /* Reverses the original first person translations */
-                matrixStack.translate(-0.56 * side * this.normalZoomProgress, 0.52 * this.normalZoomProgress, 0);
+                matrixStack.translate(-0.56 * side * this.normalisedAimProgress, 0.52 * this.normalisedAimProgress, 0);
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
-                matrixStack.translate(xOffset * side * this.normalZoomProgress, yOffset * this.normalZoomProgress, zOffset * normalZoomProgress);
+                matrixStack.translate(xOffset * side * this.normalisedAimProgress, yOffset * this.normalisedAimProgress, zOffset * normalisedAimProgress);
             }
             else
             {
                 /* Makes the off hand item move out of view */
-                matrixStack.translate(0, -1 * this.normalZoomProgress, 0);
+                matrixStack.translate(0, -1 * this.normalisedAimProgress, 0);
             }
         }
 
@@ -351,6 +383,12 @@ public class GunRenderer
         matrixStack.translate(0, equipProgress * -0.6F, 0);
 
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
+
+        Entity entity = Minecraft.getInstance().player;
+        Objects.requireNonNull(entity);
+        int blockLight = entity.isBurning() ? 15 : entity.world.getLightFor(LightType.BLOCK, new BlockPos(entity.getEyePosition(event.getPartialTicks())));
+        blockLight += (this.entityIdForMuzzleFlash.contains(entity.getEntityId()) ? 3 : 0);
+        int packedLight = LightTexture.packLight(blockLight, entity.world.getLightFor(LightType.SKY, new BlockPos(entity.getEyePosition(event.getPartialTicks()))));
 
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
@@ -363,14 +401,14 @@ public class GunRenderer
         this.applyRecoil(matrixStack, heldItem, modifiedGun);
         this.applyReload(matrixStack, event.getPartialTicks());
 
-        /* Render offhand arm so it is holding the weapon. Only applies if it's a two handed weapon */
+        /* Renders the first persons arms from the grip type of the weapon */
         matrixStack.push();
         matrixStack.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.52F, 0.72F);
-        this.renderHeldArm(matrixStack, event.getBuffers(), event.getLight(), Minecraft.getInstance().player, heldItem, hand, event.getPartialTicks());
+        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, matrixStack, event.getBuffers(), event.getLight(), event.getPartialTicks());
         matrixStack.pop();
 
         /* Renders the weapon */
-        this.renderWeapon(Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getPartialTicks());
+        this.renderWeapon(Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
 
         matrixStack.pop();
     }
@@ -403,12 +441,17 @@ public class GunRenderer
 
         float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
         float recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(item);
-        double kick = gun.getGeneral().getRecoilKick() * 0.0625 * this.recoilNormal * (float) (1.0 - (gun.getGeneral().getRecoilAdsReduction() * this.normalZoomProgress));
-        float recoil = (float) (gun.getGeneral().getRecoilAngle() * this.recoilNormal) * (float) (1.0 - (gun.getGeneral().getRecoilAdsReduction() * this.normalZoomProgress));
+        double kick = gun.getGeneral().getRecoilKick() * 0.0625 * this.recoilNormal * this.getAdsRecoilReduction(gun);
+        float recoil = (float) (gun.getGeneral().getRecoilAngle() * this.recoilNormal) * (float) this.getAdsRecoilReduction(gun);
         matrixStack.translate(0, 0, kick * kickReduction);
         matrixStack.translate(0, 0, 0.35);
         matrixStack.rotate(Vector3f.XP.rotationDegrees(recoil * recoilReduction));
         matrixStack.translate(0, 0, -0.35);
+    }
+
+    public double getAdsRecoilReduction(Gun gun)
+    {
+        return 1.0 - gun.getGeneral().getRecoilAdsReduction() * this.normalisedAimProgress;
     }
 
     private boolean isZooming(PlayerEntity player)
@@ -587,7 +630,7 @@ public class GunRenderer
         {
             PlayerModel model = event.getModelPlayer();
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            gun.getGeneral().getGripType().getHeldAnimation().applyPlayerModelRotation(model, Hand.MAIN_HAND, AimTracker.getAimProgress((PlayerEntity) event.getEntity(), event.getPartialTicks()));
+            gun.getGeneral().getGripType().getHeldAnimation().applyPlayerModelRotation(player, model, Hand.MAIN_HAND, AimTracker.getAimProgress((PlayerEntity) event.getEntity(), event.getPartialTicks()));
             copyModelAngles(model.bipedRightArm, model.bipedRightArmwear);
             copyModelAngles(model.bipedLeftArm, model.bipedLeftArmwear);
         }
@@ -635,19 +678,30 @@ public class GunRenderer
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             if(!gun.getGeneral().getGripType().canRenderOffhand())
             {
+                if(player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == Items.ELYTRA)
+                {
+                    return;
+                }
+
                 matrixStack.push();
 
                 matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
                 if(player.isCrouching())
                 {
-                    matrixStack.translate(0 * 0.0625, -7 * 0.0625, -5 * 0.0625);
+                    matrixStack.translate(0 * 0.0625, -7 * 0.0625, -4 * 0.0625);
                     matrixStack.rotate(Vector3f.XP.rotationDegrees(30F));
                 }
                 else
                 {
-                    matrixStack.translate(0 * 0.0625, -5 * 0.0625, -2.75 * 0.0625);
+                    matrixStack.translate(0 * 0.0625, -5 * 0.0625, -2 * 0.0625);
                 }
+
+                if(!player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty())
+                {
+                    matrixStack.translate(0, 0, -1 * 0.0625);
+                }
+
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees(-45F));
                 matrixStack.scale(0.5F, 0.5F, 0.5F);
 
@@ -711,11 +765,7 @@ public class GunRenderer
 
             RenderUtil.applyTransformType(model.isEmpty() ? stack : model, matrixStack, transformType);
 
-            if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
-            {
-                this.renderMuzzleFlash(matrixStack, stack);
-            }
-
+            this.renderMuzzleFlash(entity, matrixStack, stack, transformType);
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, matrixStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, matrixStack, renderTypeBuffer, light, partialTicks);
 
@@ -785,74 +835,78 @@ public class GunRenderer
         }
     }
 
-    private void renderMuzzleFlash(MatrixStack matrixStack, ItemStack weapon)
+    private void renderMuzzleFlash(LivingEntity entity, MatrixStack matrixStack, ItemStack weapon, ItemCameraTransforms.TransformType transformType)
     {
-        if(this.drawMuzzleFlash)
+        Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
+        if(modifiedGun.getDisplay().getFlash() == null)
         {
-            matrixStack.push();
-
-            Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
-            if(modifiedGun.getDisplay().getFlash() == null)
-            {
-                this.drawMuzzleFlash = false;
-                matrixStack.pop();
-                return;
-            }
-
-            this.hasDrawnMuzzleFlash = true;
-
-            Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
-            double displayX = muzzleFlash.getXOffset() * 0.0625;
-            double displayY = muzzleFlash.getYOffset() * 0.0625;
-            double displayZ = muzzleFlash.getZOffset() * 0.0625;
-            matrixStack.translate(displayX, displayY, displayZ);
-            matrixStack.translate(0, -0.5, 0);
-
-            ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
-            if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
-            {
-                Barrel barrel = ((IBarrel) barrelStack.getItem()).getProperties();
-                Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
-                if(positioned != null)
-                {
-                    matrixStack.translate(0, 0, -barrel.getLength() * 0.0625 * positioned.getScale());
-                }
-            }
-
-            matrixStack.scale(0.5F, 0.5F, 0.0F);
-
-            RenderSystem.pushMatrix();
-            {
-                RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
-
-                RenderSystem.enableDepthTest();
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-
-                double partialSize = modifiedGun.getDisplay().getFlash().getSize() / 5.0;
-                double size = modifiedGun.getDisplay().getFlash().getSize() - partialSize + partialSize * this.muzzleFlashSize;
-                size = GunModifierHelper.getMuzzleFlashSize(weapon, size);
-                RenderSystem.rotatef(360F * this.muzzleFlashRoll, 0, 0, 1);
-                RenderSystem.rotatef(180F * this.muzzleFlashYaw, 1, 0, 0);
-                RenderSystem.translated(-size / 2, -size / 2, 0);
-
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBuffer();
-                Minecraft.getInstance().getTextureManager().bindTexture(MUZZLE_FLASH);
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-                buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
-                buffer.pos(size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
-                buffer.pos(size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();
-                buffer.pos(0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
-                tessellator.draw();
-
-                RenderSystem.disableBlend();
-                RenderSystem.disableDepthTest();
-            }
-            RenderSystem.popMatrix();
-
-            matrixStack.pop();
+            return;
         }
+
+        if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
+        {
+            if(this.entityIdForMuzzleFlash.contains(entity.getEntityId()))
+            {
+                float randomValue = this.entityIdToRandomValue.get(entity.getEntityId());
+                this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, randomValue, randomValue >= 0.5F);
+            }
+        }
+    }
+
+    private void drawMuzzleFlash(MatrixStack matrixStack, ItemStack weapon, Gun modifiedGun, float random, boolean flip)
+    {
+        matrixStack.push();
+
+        Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
+        double displayX = muzzleFlash.getXOffset() * 0.0625;
+        double displayY = muzzleFlash.getYOffset() * 0.0625;
+        double displayZ = muzzleFlash.getZOffset() * 0.0625;
+        matrixStack.translate(displayX, displayY, displayZ);
+        matrixStack.translate(0, -0.5, 0);
+
+        ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
+        if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
+        {
+            Barrel barrel = ((IBarrel) barrelStack.getItem()).getProperties();
+            Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
+            if(positioned != null)
+            {
+                matrixStack.translate(0, 0, -barrel.getLength() * 0.0625 * positioned.getScale());
+            }
+        }
+
+        matrixStack.scale(0.5F, 0.5F, 0.0F);
+
+        double partialSize = modifiedGun.getDisplay().getFlash().getSize() / 5.0;
+        float size = (float) (modifiedGun.getDisplay().getFlash().getSize() - partialSize + partialSize * random);
+        size = (float) GunModifierHelper.getMuzzleFlashSize(weapon, size);
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(360F * random));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(flip ? 180F : 0F));
+        matrixStack.translate(-size / 2, -size / 2, 0);
+
+        RenderSystem.enableAlphaTest();
+        RenderSystem.defaultAlphaFunc();
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.depthMask(true);
+        Minecraft.getInstance().getTextureManager().bindTexture(MUZZLE_FLASH_TEXTURE);
+
+        Matrix4f matrix = matrixStack.getLast().getMatrix();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
+        buffer.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
+        buffer.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
+        buffer.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();
+        buffer.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
+        tessellator.draw();
+
+        RenderSystem.depthMask(true);
+        RenderSystem.disableBlend();
+        RenderSystem.defaultAlphaFunc();
+
+        matrixStack.pop();
     }
 
     private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
@@ -860,57 +914,6 @@ public class GunRenderer
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
-    }
-
-    private void renderHeldArm(MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, ClientPlayerEntity player, ItemStack stack, HandSide hand, float partialTicks)
-    {
-        matrixStack.push();
-
-        Gun modifiedGun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-        if(modifiedGun.getGeneral().getGripType() == GripType.TWO_HANDED)
-        {
-            matrixStack.translate(0, 0, -1);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-
-            float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
-            matrixStack.translate(0, -reloadProgress * 2, 0);
-
-            int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
-            matrixStack.translate(6 * side * 0.0625, -0.585, -0.5);
-
-            if(Minecraft.getInstance().player.getSkinType().equals("slim") && hand.opposite() == HandSide.LEFT)
-            {
-                matrixStack.translate(0.03125F * -side, 0, 0);
-            }
-
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(15F * -side));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(15F * -side));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-35F));
-            matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-            this.renderArm(player, matrixStack, buffer, light, hand.opposite());
-        }
-        else if(modifiedGun.getGeneral().getGripType() == GripType.ONE_HANDED)
-        {
-            matrixStack.translate(0, 0, -1);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-
-            double centerOffset = 2.5;
-            if(Minecraft.getInstance().player.getSkinType().equals("slim"))
-            {
-                centerOffset += hand == HandSide.RIGHT ? 0.2 : 0.8;
-            }
-            centerOffset = hand == HandSide.RIGHT ? -centerOffset : centerOffset;
-            matrixStack.translate(centerOffset * 0.0625, -0.45, -1.0);
-
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(75F));
-            matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-            this.renderArm(player, matrixStack, buffer, light, hand);
-        }
-
-        matrixStack.pop();
     }
 
     private void renderReloadArm(MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, ItemStack stack, HandSide hand)
@@ -950,7 +953,7 @@ public class GunRenderer
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-75F * percent));
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-        this.renderArm(mc.player, matrixStack, buffer, light, hand.opposite());
+        RenderUtil.renderFirstPersonArm(mc.player, hand.opposite(), matrixStack, buffer, light);
 
         if(reload < 0.5F)
         {
@@ -963,23 +966,6 @@ public class GunRenderer
         }
 
         matrixStack.pop();
-    }
-
-    private void renderArm(ClientPlayerEntity player, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, HandSide hand)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        EntityRendererManager renderManager = mc.getRenderManager();
-
-        mc.getTextureManager().bindTexture(player.getLocationSkin());
-        PlayerRenderer playerrenderer = (PlayerRenderer) renderManager.<AbstractClientPlayerEntity>getRenderer(player);
-        if (hand == HandSide.RIGHT)
-        {
-            playerrenderer.renderRightArm(matrixStack, buffer, combinedLight, player);
-        }
-        else
-        {
-            playerrenderer.renderLeftArm(matrixStack, buffer, combinedLight, player);
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
@@ -1050,7 +1036,7 @@ public class GunRenderer
                 }
             }
         }
-        return sensitivity * (1.0 - (1.0 - GunMod.getOptions().getAdsSensitivity()) * this.normalZoomProgress) * additionalAdsSensitivity;
+        return sensitivity * (1.0 - (1.0 - GunMod.getOptions().getAdsSensitivity()) * this.normalisedAimProgress) * additionalAdsSensitivity;
     }
 
     /**
@@ -1085,10 +1071,37 @@ public class GunRenderer
 
     public void showMuzzleFlash()
     {
-        this.drawMuzzleFlash = true;
-        this.muzzleFlashSize = this.random.nextDouble();
-        this.muzzleFlashRoll = this.random.nextFloat();
-        this.muzzleFlashYaw = this.random.nextInt(2);
-        this.hasDrawnMuzzleFlash = false;
+        this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getEntityId());
+    }
+
+    public void showMuzzleFlashForPlayer(int entityId)
+    {
+        this.entityIdForMuzzleFlash.add(entityId);
+        this.entityIdToRandomValue.put(entityId, this.random.nextFloat());
+    }
+
+    public double getNormalisedAimProgress()
+    {
+        return this.normalisedAimProgress;
+    }
+
+    public double getRecoilNormal()
+    {
+        return this.recoilNormal;
+    }
+
+    public double getRecoilAngle()
+    {
+        return this.recoilAngle;
+    }
+
+    public float getReloadProgress(float partialTicks)
+    {
+        return (this.prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
+    }
+
+    public static void bindScreenTexture()
+    {
+        RenderSystem.bindTexture(GunRenderer.screenTextureId);
     }
 }
