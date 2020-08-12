@@ -52,8 +52,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.CooldownTracker;
@@ -674,19 +676,30 @@ public class GunRenderer
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             if(!gun.getGeneral().getGripType().canRenderOffhand())
             {
+                if(player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == Items.ELYTRA)
+                {
+                    return;
+                }
+
                 matrixStack.push();
 
                 matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
                 if(player.isCrouching())
                 {
-                    matrixStack.translate(0 * 0.0625, -7 * 0.0625, -5 * 0.0625);
+                    matrixStack.translate(0 * 0.0625, -7 * 0.0625, -4 * 0.0625);
                     matrixStack.rotate(Vector3f.XP.rotationDegrees(30F));
                 }
                 else
                 {
-                    matrixStack.translate(0 * 0.0625, -5 * 0.0625, -2.75 * 0.0625);
+                    matrixStack.translate(0 * 0.0625, -5 * 0.0625, -2 * 0.0625);
                 }
+
+                if(!player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty())
+                {
+                    matrixStack.translate(0, 0, -1 * 0.0625);
+                }
+
                 matrixStack.rotate(Vector3f.ZP.rotationDegrees(-45F));
                 matrixStack.scale(0.5F, 0.5F, 0.5F);
 
