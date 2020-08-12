@@ -401,10 +401,10 @@ public class GunRenderer
         this.applyRecoil(matrixStack, heldItem, modifiedGun);
         this.applyReload(matrixStack, event.getPartialTicks());
 
-        /* Render offhand arm so it is holding the weapon. Only applies if it's a two handed weapon */
+        /* Renders the first persons arms from the grip type of the weapon */
         matrixStack.push();
         matrixStack.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.52F, 0.72F);
-        this.renderHeldArm(matrixStack, event.getBuffers(), packedLight, Minecraft.getInstance().player, heldItem, hand, event.getPartialTicks());
+        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, matrixStack, event.getBuffers(), event.getLight(), event.getPartialTicks());
         matrixStack.pop();
 
         /* Renders the weapon */
@@ -917,51 +917,8 @@ public class GunRenderer
     private void renderHeldArm(MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, ClientPlayerEntity player, ItemStack stack, HandSide hand, float partialTicks)
     {
         matrixStack.push();
-
         Gun modifiedGun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-        if(modifiedGun.getGeneral().getGripType() == GripType.TWO_HANDED)
-        {
-            matrixStack.translate(0, 0, -1);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-
-            float reloadProgress = (prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
-            matrixStack.translate(0, -reloadProgress * 2, 0);
-
-            int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
-            matrixStack.translate(6 * side * 0.0625, -0.585, -0.5);
-
-            if(Minecraft.getInstance().player.getSkinType().equals("slim") && hand.opposite() == HandSide.LEFT)
-            {
-                matrixStack.translate(0.03125F * -side, 0, 0);
-            }
-
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(15F * -side));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(15F * -side));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-35F));
-            matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-            this.renderArm(player, matrixStack, buffer, light, hand.opposite());
-        }
-        else if(modifiedGun.getGeneral().getGripType() == GripType.ONE_HANDED)
-        {
-            matrixStack.translate(0, 0, -1);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-
-            double centerOffset = 2.5;
-            if(Minecraft.getInstance().player.getSkinType().equals("slim"))
-            {
-                centerOffset += hand == HandSide.RIGHT ? 0.2 : 0.8;
-            }
-            centerOffset = hand == HandSide.RIGHT ? -centerOffset : centerOffset;
-            matrixStack.translate(centerOffset * 0.0625, -0.45, -1.0);
-
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(75F));
-            matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-            this.renderArm(player, matrixStack, buffer, light, hand);
-        }
-
+        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(player, hand, stack, matrixStack, buffer, light, partialTicks);
         matrixStack.pop();
     }
 
@@ -1002,7 +959,7 @@ public class GunRenderer
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-75F * percent));
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
-        this.renderArm(mc.player, matrixStack, buffer, light, hand.opposite());
+        RenderUtil.renderFirstPersonArm(mc.player, hand.opposite(), matrixStack, buffer, light);
 
         if(reload < 0.5F)
         {
@@ -1015,23 +972,6 @@ public class GunRenderer
         }
 
         matrixStack.pop();
-    }
-
-    private void renderArm(ClientPlayerEntity player, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, HandSide hand)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        EntityRendererManager renderManager = mc.getRenderManager();
-
-        mc.getTextureManager().bindTexture(player.getLocationSkin());
-        PlayerRenderer playerrenderer = (PlayerRenderer) renderManager.<AbstractClientPlayerEntity>getRenderer(player);
-        if (hand == HandSide.RIGHT)
-        {
-            playerrenderer.renderRightArm(matrixStack, buffer, combinedLight, player);
-        }
-        else
-        {
-            playerrenderer.renderLeftArm(matrixStack, buffer, combinedLight, player);
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
@@ -1158,6 +1098,11 @@ public class GunRenderer
     public double getRecoilAngle()
     {
         return this.recoilAngle;
+    }
+
+    public float getReloadProgress(float partialTicks)
+    {
+        return (this.prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
     }
 
     public static void bindScreenTexture()

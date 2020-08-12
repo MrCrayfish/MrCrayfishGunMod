@@ -1,10 +1,13 @@
 package com.mrcrayfish.guns.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -48,4 +51,16 @@ public interface HeldAnimation
      */
     @OnlyIn(Dist.CLIENT)
     default void applyHeldItemTransforms(Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer) {}
+
+    /**
+     *
+     * @param player
+     * @param hand
+     * @param stack
+     * @param matrixStack
+     * @param buffer
+     * @param light
+     * @param partialTicks
+     */
+    default void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks) {}
 }
