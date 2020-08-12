@@ -168,7 +168,7 @@ public class CommonHandler
 
                     if(modifiedGun.getDisplay().getFlash() != null)
                     {
-                        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),new MessageMuzzleFlash(player.getEntityId()));
+                        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> player),new MessageMuzzleFlash(player.getEntityId()));
                     }
 
                     if(!player.isCreative())

@@ -80,6 +80,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -93,9 +94,6 @@ public class GunRenderer
     private Set<Integer> entityIdForMuzzleFlash = new HashSet<>();
     private Set<Integer> entityIdForDrawnMuzzleFlash = new HashSet<>();
     private Map<Integer, Float> entityIdToRandomValue = new HashMap<>();
-    private boolean drawMuzzleFlash = false;
-    private boolean hasDrawnMuzzleFlash = false;
-    private float muzzleRandomValue = 1.0F;
 
     private double aimProgress;
     private double lastAimProgress;
@@ -207,12 +205,6 @@ public class GunRenderer
 
     private void updateMuzzleFlash()
     {
-        if(this.hasDrawnMuzzleFlash)
-        {
-            this.drawMuzzleFlash = false;
-        }
-        this.hasDrawnMuzzleFlash = true;
-
         this.entityIdForMuzzleFlash.removeAll(this.entityIdForDrawnMuzzleFlash);
         this.entityIdToRandomValue.keySet().removeAll(this.entityIdForDrawnMuzzleFlash);
         this.entityIdForDrawnMuzzleFlash.clear();
@@ -391,8 +383,9 @@ public class GunRenderer
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
 
         Entity entity = Minecraft.getInstance().player;
+        Objects.requireNonNull(entity);
         int blockLight = entity.isBurning() ? 15 : entity.world.getLightFor(LightType.BLOCK, new BlockPos(entity.getEyePosition(event.getPartialTicks())));
-        blockLight += (this.drawMuzzleFlash ? 3 : 0);
+        blockLight += (this.entityIdForMuzzleFlash.contains(entity.getEntityId()) ? 3 : 0);
         int packedLight = LightTexture.packLight(blockLight, entity.world.getLightFor(LightType.SKY, new BlockPos(entity.getEyePosition(event.getPartialTicks()))));
 
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
@@ -830,36 +823,18 @@ public class GunRenderer
     private void renderMuzzleFlash(LivingEntity entity, MatrixStack matrixStack, ItemStack weapon, ItemCameraTransforms.TransformType transformType)
     {
         Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
-        if(modifiedGun.getDisplay().getFlash() != null)
+        if(modifiedGun.getDisplay().getFlash() == null)
         {
-            if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
-            {
-                this.drawFirstPersonMuzzleFlash(matrixStack, weapon, modifiedGun);
-            }
-            else if(transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-            {
-                if(this.entityIdForMuzzleFlash.contains(entity.getEntityId()))
-                {
-                    this.drawThirdPersonMuzzleFlash(entity.getEntityId(), matrixStack, weapon, modifiedGun);
-                }
-            }
+            return;
         }
-    }
 
-    private void drawFirstPersonMuzzleFlash(MatrixStack matrixStack, ItemStack weapon, Gun modifiedGun)
-    {
-        if(this.drawMuzzleFlash)
+        if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
         {
-            this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, this.muzzleRandomValue, this.muzzleRandomValue >= 0.5F);
-        }
-    }
-
-    private void drawThirdPersonMuzzleFlash(int entityId, MatrixStack matrixStack, ItemStack weapon, Gun modifiedGun)
-    {
-        if(this.entityIdForMuzzleFlash.contains(entityId))
-        {
-            float randomValue = this.entityIdToRandomValue.get(entityId);
-            this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, randomValue, randomValue >= 0.5F);
+            if(this.entityIdForMuzzleFlash.contains(entity.getEntityId()))
+            {
+                float randomValue = this.entityIdToRandomValue.get(entity.getEntityId());
+                this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, randomValue, randomValue >= 0.5F);
+            }
         }
     }
 
@@ -1148,9 +1123,7 @@ public class GunRenderer
 
     public void showMuzzleFlash()
     {
-        this.drawMuzzleFlash = true;
-        this.hasDrawnMuzzleFlash = false;
-        this.muzzleRandomValue = this.random.nextFloat();
+        this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getEntityId());
     }
 
     public void showMuzzleFlashForPlayer(int entityId)
