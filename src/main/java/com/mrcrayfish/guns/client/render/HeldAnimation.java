@@ -25,7 +25,7 @@ public interface HeldAnimation
      * @param aimProgress the current animation progress of looking down the weapons sight
      */
     @OnlyIn(Dist.CLIENT)
-    default void applyPlayerModelRotation(PlayerModel model, Hand hand, float aimProgress) {}
+    default void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress) {}
 
     /**
      * Allows for transformations of the player model. This is where the entire player model can
