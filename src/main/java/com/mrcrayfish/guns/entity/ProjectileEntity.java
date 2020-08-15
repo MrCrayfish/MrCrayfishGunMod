@@ -425,8 +425,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if(fireStarterLevel > 0)
             {
                 BlockPos offsetPos = pos.offset(blockRayTraceResult.getFace());
-                BlockState offsetState = this.world.getBlockState(offsetPos);
-                if(FlintAndSteelItem.canSetFire(offsetState, this.world, offsetPos))
+                if(AbstractFireBlock.canLightBlock(this.world, offsetPos))
                 {
                     BlockState fireState = AbstractFireBlock.getFireForPlacement(this.world, offsetPos);
                     this.world.setBlockState(offsetPos, fireState, 11);
