@@ -37,6 +37,7 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -422,11 +423,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             this.onHitBlock(state, pos, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
 
             int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
-            if(fireStarterLevel > 0 && state.isSolidSide(this.world, pos, blockRayTraceResult.getFace()))
+            if(fireStarterLevel > 0)
             {
                 BlockPos offsetPos = pos.offset(blockRayTraceResult.getFace());
                 BlockState offsetState = this.world.getBlockState(offsetPos);
-                if(offsetState.isAir(this.world, offsetPos))
+                if(FlintAndSteelItem.canSetFire(offsetState, this.world, offsetPos))
                 {
                     BlockState fireState = ((FireBlock) Blocks.FIRE).getStateForPlacement(this.world, offsetPos);
                     this.world.setBlockState(offsetPos, fireState, 11);
@@ -443,13 +444,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             {
                 return;
             }
-            this.onHitEntity(entity, result.getHitVec(), startVec, endVec, entityRayTraceResult.isHeadshot());
 
             int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
             if(fireStarterLevel > 0)
             {
-                entity.setFire(1);
+                entity.setFire(2);
             }
+
+            this.onHitEntity(entity, result.getHitVec(), startVec, endVec, entityRayTraceResult.isHeadshot());
 
             int collateralLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
             if(collateralLevel == 0)
