@@ -421,7 +421,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             this.onHitBlock(state, pos, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
 
-            int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments. FIRE_STARTER.get(), this.weapon);
+            int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
             if(fireStarterLevel > 0 && state.isSolidSide(this.world, pos, blockRayTraceResult.getFace()))
             {
                 BlockPos offsetPos = pos.offset(blockRayTraceResult.getFace());
@@ -445,7 +445,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             this.onHitEntity(entity, result.getHitVec(), startVec, endVec, entityRayTraceResult.isHeadshot());
 
-            int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments. FIRE_STARTER.get(), this.weapon);
+            int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
             if(fireStarterLevel > 0)
             {
                 entity.setFire(1);
