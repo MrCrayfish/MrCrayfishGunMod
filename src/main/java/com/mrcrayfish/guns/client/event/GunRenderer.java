@@ -452,6 +452,10 @@ public class GunRenderer
 
     private boolean isZooming(PlayerEntity player)
     {
+        if(this.aimProgress == 0 && ClientHandler.isLookingAtInteractableBlock())
+        {
+            return false;
+        }
         if(player != null && player.getHeldItemMainhand() != ItemStack.EMPTY)
         {
             ItemStack stack = player.getHeldItemMainhand();

@@ -3,6 +3,7 @@ package com.mrcrayfish.guns;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -176,7 +177,7 @@ public class Config
                 this.enabled = builder.comment("If true, nearby mobs are angered and/or scared by the firing of guns.").define("enabled", true);
                 this.angerHostileMobs = builder.comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.").define("angerHostileMobs", true);
                 this.range = builder.comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.").defineInRange("unsilencedRange", 20.0, 0.0, Double.MAX_VALUE);
-                this.exemptEntities = builder.comment("Any mobs of defined will not aggro on shooters").defineList("exemptClasses", Collections.singletonList("minecraft:villager"), o -> true);
+                this.exemptEntities = builder.comment("Any mobs of defined will not aggro on shooters").defineList("exemptMobs", Arrays.asList("minecraft:villager", "minecraft:bee"), o -> true);
             }
             builder.pop();
         }

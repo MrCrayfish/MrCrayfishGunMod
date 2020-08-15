@@ -59,12 +59,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -281,6 +283,11 @@ public class ClientHandler
                 BlockState state = mc.world.getBlockState(result.getPos());
                 Block block = state.getBlock();
                 return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get();
+            }
+            else if(mc.objectMouseOver instanceof EntityRayTraceResult)
+            {
+                EntityRayTraceResult result = (EntityRayTraceResult) mc.objectMouseOver;
+                return result.getEntity() instanceof ItemFrameEntity;
             }
         }
         return false;
