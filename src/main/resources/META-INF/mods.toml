@@ -27,6 +27,6 @@ Adds weapons into Minecraft
 [[dependencies.cgm]]
     modId="obfuscate"
     mandatory=true
-    versionRange="[0.4.2,)"
+    versionRange="[0.5.0,)"
     ordering="NONE"
     side="BOTH"
