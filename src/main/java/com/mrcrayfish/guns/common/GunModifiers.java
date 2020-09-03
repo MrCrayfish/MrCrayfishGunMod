@@ -137,6 +137,33 @@ public class GunModifiers
         }
     };
 
+    public static final IGunModifier LIGHT_RECOIL = new IGunModifier()
+    {
+        @Override
+        public float recoilModifier()
+        {
+            return 0.75F;
+        }
+
+        @Override
+        public float kickModifier()
+        {
+            return 0.75F;
+        }
+
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 1.2F;
+        }
+
+        @Override
+        public float modifyProjectileSpread(float spread)
+        {
+            return spread * 0.8F;
+        }
+    };
+
     public static final IGunModifier REDUCED_RECOIL = new IGunModifier()
     {
         @Override
