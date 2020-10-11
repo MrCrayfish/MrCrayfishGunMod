@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.entity;
 
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.interfaces.IExplosionDamageable;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.block.BlockState;
@@ -71,6 +72,11 @@ public class MissileEntity extends ProjectileEntity
             return;
 
         Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
-        world.createExplosion(entity, entity.getPosX(), entity.getPosY(), entity.getPosZ(), Config.COMMON.missiles.explosionRadius.get().floatValue(), false, mode);
+        Explosion explosion = world.createExplosion(entity, entity.getPosX(), entity.getPosY(), entity.getPosZ(), Config.COMMON.missiles.explosionRadius.get().floatValue(), false, mode);
+        explosion.getAffectedBlockPositions().forEach(pos ->
+        {
+            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable)
+                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
+        });
     }
 }
