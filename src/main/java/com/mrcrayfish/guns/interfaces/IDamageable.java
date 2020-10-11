@@ -11,7 +11,9 @@ import net.minecraft.world.World;
 public interface IDamageable
 {
     @Deprecated
-    void onBlockDamaged(World world, BlockState state, BlockPos pos, int damage);
+    default void onBlockDamaged(World world, BlockState state, BlockPos pos, int damage)
+    {
+    }
 
     default void onBlockDamaged(World world, BlockState state, BlockPos pos, ProjectileEntity projectile, float rawDamage, int damage)
     {
