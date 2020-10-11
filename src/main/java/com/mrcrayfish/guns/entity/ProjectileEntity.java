@@ -392,7 +392,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             if(block instanceof IDamageable)
             {
-                ((IDamageable) block).onBlockDamaged(this.world, state, pos, (int) Math.ceil(getDamage() / 2.0) + 1);
+                ((IDamageable) block).onBlockDamaged(world, state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1);
             }
 
             Vector3d hitVec = blockRayTraceResult.getHitVec();
