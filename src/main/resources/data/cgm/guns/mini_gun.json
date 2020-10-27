@@ -19,8 +19,7 @@
     },
     "sounds": {
         "fire": "cgm:item.mini_gun.fire",
-        "reload": "cgm:item.pistol.reload",
-        "cock": "cgm:item.shotgun.fire"
+        "reload": "cgm:item.pistol.reload"
     },
     "display": {
         "flash": {

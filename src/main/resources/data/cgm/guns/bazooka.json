@@ -18,8 +18,7 @@
     },
     "sounds": {
         "fire": "cgm:item.bazooka.fire",
-        "reload": "cgm:item.pistol.reload",
-        "cock": "cgm:item.shotgun.fire"
+        "reload": "cgm:item.pistol.reload"
     },
     "display": {
         "flash": {

@@ -3,22 +3,30 @@ package com.mrcrayfish.guns.common;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
+import com.mrcrayfish.guns.network.PacketHandler;
+import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.concurrent.TickDelayedTask;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -119,6 +127,18 @@ public class ReloadTracker
                     {
                         RELOAD_TRACKER_MAP.remove(player.getUniqueID());
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+
+                        final PlayerEntity finalPlayer = player;
+                        final Gun gun = tracker.gun;
+                        DelayedTask.runAfter(4, () ->
+                        {
+                            SoundEvent cockEvent = ForgeRegistries.SOUND_EVENTS.getValue(gun.getSounds().getCock());
+                            if(cockEvent != null && finalPlayer.isAlive())
+                            {
+                                MessageGunSound messageSound = new MessageGunSound(cockEvent, SoundCategory.PLAYERS, (float) finalPlayer.getPosX(), (float) (finalPlayer.getPosY() + 1.0), (float) finalPlayer.getPosZ(), 1.0F, 1.0F, true);
+                                PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) finalPlayer), messageSound);
+                            }
+                        });
                     }
                 }
             }

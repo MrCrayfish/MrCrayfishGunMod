@@ -20,7 +20,7 @@
     "sounds": {
         "fire": "cgm:item.pistol.fire",
         "reload": "cgm:item.pistol.reload",
-        "cock": "cgm:item.shotgun.fire",
+        "cock": "cgm:item.pistol.cock",
         "silencedFire": "cgm:item.pistol.silenced_fire"
     },
     "display": {
