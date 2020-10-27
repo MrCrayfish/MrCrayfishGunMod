@@ -1,22 +1,20 @@
 package com.mrcrayfish.guns.object;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.render.HeldAnimation;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
@@ -65,7 +63,30 @@ public class GripType
 
             RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
         }
-    }, true);
+
+        @Override
+        public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
+        {
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
+
+            if(player.isCrouching())
+            {
+                matrixStack.translate(-4.5 * 0.0625, -15 * 0.0625, -4 * 0.0625);
+            }
+            else
+            {
+                matrixStack.translate(-4.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
+            }
+
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(75F));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(model.bipedRightLeg.rotateAngleX) / 10F)));
+            matrixStack.scale(0.5F, 0.5F, 0.5F);
+
+            return true;
+        }
+    });
 
     /**
      * A grip type designed for weapons that are held with two hands, like an assault rifle
@@ -163,7 +184,13 @@ public class GripType
 
             RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
         }
-    }, false);
+
+        @Override
+        public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
+        {
+            return GripType.applyBackTransforms(player, matrixStack);
+        }
+    });
 
     /**
      * A custom grip type designed for the mini gun simply due it's nature of being a completely
@@ -207,7 +234,13 @@ public class GripType
                 matrixStack.translate(0, 0, -2 * 0.0625F);
             }
         }
-    }, false);
+
+        @Override
+        public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
+        {
+            return GripType.applyBackTransforms(player, matrixStack);
+        }
+    });
 
     /**
      * A custom grip type designed for the bazooka.
@@ -237,7 +270,51 @@ public class GripType
             player.prevRenderYawOffset = player.prevRotationYaw + 35F * (right ? 1F : -1F);
             player.renderYawOffset = player.rotationYaw + 35F * (right ? 1F : -1F);
         }
-    }, false);
+
+        @Override
+        public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
+        {
+            return GripType.applyBackTransforms(player, matrixStack);
+        }
+    });
+
+    /**
+     * A common method to set up a transformation of the weapon onto the players' back.
+     *
+     * @param player      the player the weapon is being rendered on
+     * @param matrixStack the matrixstack instance
+     * @return if the weapon can render
+     */
+    public static boolean applyBackTransforms(PlayerEntity player, MatrixStack matrixStack)
+    {
+        if(player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == Items.ELYTRA)
+        {
+            return false;
+        }
+
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
+
+        if(player.isCrouching())
+        {
+            matrixStack.translate(0 * 0.0625, -7 * 0.0625, -4 * 0.0625);
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(30F));
+        }
+        else
+        {
+            matrixStack.translate(0 * 0.0625, -5 * 0.0625, -2 * 0.0625);
+        }
+
+        if(!player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty())
+        {
+            matrixStack.translate(0, 0, -1 * 0.0625);
+        }
+
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(-45F));
+        matrixStack.scale(0.5F, 0.5F, 0.5F);
+
+        return true;
+    }
 
     /**
      * The grip type map.
@@ -277,20 +354,17 @@ public class GripType
 
     private final ResourceLocation id;
     private final HeldAnimation heldAnimation;
-    private final boolean renderOffhand;
 
     /**
      * Creates a new grip type.
      *
      * @param id the id of the grip type
      * @param heldAnimation the animation functions to apply to the held weapon
-     * @param renderOffhand if this grip type allows the weapon to be rendered in the off hand
      */
-    public GripType(ResourceLocation id, HeldAnimation heldAnimation, boolean renderOffhand)
+    public GripType(ResourceLocation id, HeldAnimation heldAnimation)
     {
         this.id = id;
         this.heldAnimation = heldAnimation;
-        this.renderOffhand = renderOffhand;
     }
 
     /**
@@ -307,14 +381,6 @@ public class GripType
     public HeldAnimation getHeldAnimation()
     {
         return this.heldAnimation;
-    }
-
-    /**
-     * Determines if this grip type will allow the weapon to be rendered in the off hand
-     */
-    public boolean canRenderOffhand()
-    {
-        return this.renderOffhand;
     }
 
     /**

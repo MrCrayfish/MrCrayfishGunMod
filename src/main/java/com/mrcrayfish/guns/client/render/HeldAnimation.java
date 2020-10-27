@@ -63,4 +63,16 @@ public interface HeldAnimation
      * @param partialTicks
      */
     default void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks) {}
+
+    /**
+     *
+     * @param player
+     * @param model
+     * @param stack
+     * @param partialTicks
+     */
+    default boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
+    {
+        return false;
+    }
 }

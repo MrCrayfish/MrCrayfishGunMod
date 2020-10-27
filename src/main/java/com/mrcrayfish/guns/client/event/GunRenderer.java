@@ -19,7 +19,6 @@ import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IBarrel;
 import com.mrcrayfish.guns.item.attachment.impl.Barrel;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
-import com.mrcrayfish.guns.object.GripType;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
@@ -29,7 +28,6 @@ import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
@@ -40,8 +38,6 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -52,10 +48,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.CooldownTracker;
@@ -291,14 +285,10 @@ public class GunRenderer
 
         if(event.getHand() == Hand.OFF_HAND)
         {
-            ItemStack mainHandStack = Minecraft.getInstance().player.getHeldItemMainhand();
-            if(mainHandStack.getItem() instanceof GunItem)
+            if(heldItem.getItem() instanceof GunItem)
             {
-                if(((GunItem) mainHandStack.getItem()).getModifiedGun(mainHandStack).getGeneral().getGripType() != GripType.ONE_HANDED)
-                {
-                    event.setCanceled(true);
-                    return;
-                }
+                event.setCanceled(true);
+                return;
             }
         }
 
@@ -309,12 +299,6 @@ public class GunRenderer
 
         /* Cancel it because we are doing our own custom render */
         event.setCanceled(true);
-
-        /* Ignores rendering the gun if the grip type doesn't allow it to be render in the offhand */
-        if(event.getHand() == Hand.OFF_HAND)
-        {
-            return;
-        }
 
         ItemStack overrideModel = ItemStack.EMPTY;
         if(heldItem.getTag() != null)
@@ -579,6 +563,12 @@ public class GunRenderer
         LivingEntity entity = event.getEntity();
         ItemStack heldItem = entity.getHeldItem(hand);
 
+        if(hand == Hand.OFF_HAND)
+        {
+            event.setCanceled(true);
+            return;
+        }
+
         if(heldItem.getItem() instanceof GunItem)
         {
             event.setCanceled(true);
@@ -595,31 +585,7 @@ public class GunRenderer
 
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             gun.getGeneral().getGripType().getHeldAnimation().applyHeldItemTransforms(hand, entity instanceof PlayerEntity ? AimTracker.getAimProgress((PlayerEntity) entity, event.getPartialTicks()) : 0.0F, event.getMatrixStack(), event.getRenderTypeBuffer());
-            if(hand == Hand.MAIN_HAND)
-            {
-                this.renderWeapon(entity, heldItem, event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks());
-            }
-        }
-
-        if(hand == Hand.OFF_HAND)
-        {
-            ItemStack mainHandStack = entity.getHeldItemMainhand();
-            if(!mainHandStack.isEmpty() && mainHandStack.getItem() instanceof GunItem)
-            {
-                Gun mainHandGun = ((GunItem) mainHandStack.getItem()).getModifiedGun(mainHandStack);
-                if(!mainHandGun.getGeneral().getGripType().canRenderOffhand())
-                {
-                    event.setCanceled(true);
-                }
-                else if(heldItem.getItem() instanceof GunItem)
-                {
-                    Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-                    if(gun.getGeneral().getGripType().canRenderOffhand())
-                    {
-                        this.renderWeapon(entity, heldItem, event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks());
-                    }
-                }
-            }
+            this.renderWeapon(entity, heldItem, event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks());
         }
     }
 
@@ -677,62 +643,14 @@ public class GunRenderer
         ItemStack heldItem = player.getHeldItemOffhand();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
+            matrixStack.push();
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            if(!gun.getGeneral().getGripType().canRenderOffhand())
+            if(gun.getGeneral().getGripType().getHeldAnimation().applyOffhandTransforms(player, event.getModelPlayer(), heldItem, matrixStack, event.getPartialTicks()))
             {
-                if(player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == Items.ELYTRA)
-                {
-                    return;
-                }
-
-                matrixStack.push();
-
-                matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-                matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
-                if(player.isCrouching())
-                {
-                    matrixStack.translate(0 * 0.0625, -7 * 0.0625, -4 * 0.0625);
-                    matrixStack.rotate(Vector3f.XP.rotationDegrees(30F));
-                }
-                else
-                {
-                    matrixStack.translate(0 * 0.0625, -5 * 0.0625, -2 * 0.0625);
-                }
-
-                if(!player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty())
-                {
-                    matrixStack.translate(0, 0, -1 * 0.0625);
-                }
-
-                matrixStack.rotate(Vector3f.ZP.rotationDegrees(-45F));
-                matrixStack.scale(0.5F, 0.5F, 0.5F);
-
                 IRenderTypeBuffer buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
                 this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, matrixStack, buffer, event.getLight(), event.getPartialTicks());
-
-                matrixStack.pop();
             }
-            else
-            {
-                matrixStack.push();
-                matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-                matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
-                if(player.isCrouching())
-                {
-                    matrixStack.translate(-4.5 * 0.0625, -15 * 0.0625, -4 * 0.0625);
-                }
-                else
-                {
-                    matrixStack.translate(-4.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
-                }
-                matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
-                matrixStack.rotate(Vector3f.ZP.rotationDegrees(75F));
-                matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(event.getModelPlayer().bipedRightLeg.rotateAngleX) / 10F)));
-                matrixStack.scale(0.5F, 0.5F, 0.5F);
-                IRenderTypeBuffer buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-                this.renderWeapon(player, heldItem, ItemCameraTransforms.TransformType.FIXED, matrixStack, buffer, event.getLight(), event.getPartialTicks());
-                matrixStack.pop();
-            }
+            matrixStack.pop();
         }
     }
 
