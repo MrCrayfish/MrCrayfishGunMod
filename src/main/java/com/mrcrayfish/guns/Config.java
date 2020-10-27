@@ -52,11 +52,13 @@ public class Config
      */
     public static class Display
     {
+        public final ForgeConfigSpec.BooleanValue oldAnimations;
+
         public Display(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for display related options").push("display");
             {
-
+                this.oldAnimations = builder.comment("If true, uses the old animations for two handed weapons prior to official release").define("oldAnimations", false);
             }
             builder.pop();
         }
