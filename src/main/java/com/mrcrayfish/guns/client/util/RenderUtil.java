@@ -7,6 +7,8 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Matrix3f;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.Vector3f;
@@ -189,6 +191,15 @@ public class RenderUtil
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
         boolean leftHanded = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
         ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
+
+        /* Flips the model and normals if left handed. */
+        if(leftHanded)
+        {
+            Matrix4f scale = Matrix4f.makeScale(-1, 1, 1);
+            Matrix3f normal = new net.minecraft.client.renderer.Matrix3f(scale);
+            matrixStack.getLast().getMatrix().mul(scale);
+            matrixStack.getLast().getNormal().mul(normal);
+        }
     }
 
     public interface Transform
