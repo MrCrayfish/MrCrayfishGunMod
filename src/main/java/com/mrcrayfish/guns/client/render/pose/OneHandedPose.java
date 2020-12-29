@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
@@ -61,9 +62,13 @@ public class OneHandedPose implements HeldAnimation
         {
             matrixStack.translate(-4.5 * 0.0625, -15 * 0.0625, -4 * 0.0625);
         }
+        else if(!player.getItemStackFromSlot(EquipmentSlotType.LEGS).isEmpty())
+        {
+            matrixStack.translate(-4.0 * 0.0625, -13 * 0.0625, 1 * 0.0625);
+        }
         else
         {
-            matrixStack.translate(-4.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
+            matrixStack.translate(-3.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
         }
 
         matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
