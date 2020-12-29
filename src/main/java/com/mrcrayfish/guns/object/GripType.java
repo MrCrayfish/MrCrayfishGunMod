@@ -3,8 +3,14 @@ package com.mrcrayfish.guns.object;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.AimPose;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.LimbPose;
 import com.mrcrayfish.guns.client.render.HeldAnimation;
+import com.mrcrayfish.guns.client.render.pose.BazookaPose;
+import com.mrcrayfish.guns.client.render.pose.MiniGunPose;
+import com.mrcrayfish.guns.client.render.pose.OneHandedPose;
+import com.mrcrayfish.guns.client.render.pose.TwoHandedPose;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -22,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,279 +40,23 @@ public class GripType
     /**
      * A grip type designed for weapons that are held with only one hand, like a pistol
      */
-    public static final GripType ONE_HANDED = new GripType(new ResourceLocation(Reference.MOD_ID, "one_handed"), new HeldAnimation()
-    {
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress)
-        {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            ModelRenderer arm = right ? model.bipedRightArm : model.bipedLeftArm;
-            copyModelAngles(model.bipedHead, arm);
-            arm.rotateAngleX += Math.toRadians(-70F);
-        }
-
-        @Override
-        public void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
-        {
-            matrixStack.translate(0, 0, -1);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-
-            double centerOffset = 2.5;
-            if(Minecraft.getInstance().player.getSkinType().equals("slim"))
-            {
-                centerOffset += hand == HandSide.RIGHT ? 0.2 : 0.8;
-            }
-            centerOffset = hand == HandSide.RIGHT ? -centerOffset : centerOffset;
-            matrixStack.translate(centerOffset * 0.0625, -0.45, -1.0);
-
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(75F));
-            matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-            RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
-        }
-
-        @Override
-        public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
-        {
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
-
-            if(player.isCrouching())
-            {
-                matrixStack.translate(-4.5 * 0.0625, -15 * 0.0625, -4 * 0.0625);
-            }
-            else
-            {
-                matrixStack.translate(-4.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
-            }
-
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(75F));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(model.bipedRightLeg.rotateAngleX) / 10F)));
-            matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-            return true;
-        }
-    });
+    public static final GripType ONE_HANDED = new GripType(new ResourceLocation(Reference.MOD_ID, "one_handed"), new OneHandedPose());
 
     /**
      * A grip type designed for weapons that are held with two hands, like an assault rifle
      */
-    public static final GripType TWO_HANDED = new GripType(new ResourceLocation(Reference.MOD_ID, "two_handed"), new HeldAnimation()
-    {
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress)
-        {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
-            ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
-
-            if(Minecraft.getInstance().getRenderViewEntity() == player && Minecraft.getInstance().gameSettings.thirdPersonView == 0)
-            {
-                mainArm.rotateAngleX = 0;
-                mainArm.rotateAngleY = 0;
-                mainArm.rotateAngleZ = 0;
-                return;
-            }
-
-            copyModelAngles(model.bipedHead, mainArm);
-            copyModelAngles(model.bipedHead, secondaryArm);
-
-            if(Config.CLIENT.display.oldAnimations.get())
-            {
-                mainArm.rotateAngleX = (float) Math.toRadians(-55F + aimProgress * -30F);
-                mainArm.rotateAngleY = (float) Math.toRadians((-45F + aimProgress * -20F) * (right ? 1F : -1F));
-                secondaryArm.rotateAngleX = (float) Math.toRadians(-42F + aimProgress * -48F);
-                secondaryArm.rotateAngleY = (float) Math.toRadians((-15F + aimProgress * 5F) * (right ? 1F : -1F));
-            }
-            else
-            {
-                mainArm.rotateAngleX = (float) Math.toRadians(-60F + aimProgress * -25F);
-                mainArm.rotateAngleY = (float) Math.toRadians((-55F + aimProgress * -10F) * (right ? 1F : -1F));
-                mainArm.rotationPointX = -5;
-                secondaryArm.rotateAngleX = (float) Math.toRadians(-65F + aimProgress * -25F);
-                secondaryArm.rotateAngleY = (float) Math.toRadians((-5F + aimProgress * -10F) * (right ? 1F : -1F));
-                secondaryArm.rotationPointZ = -1;
-            }
-        }
-
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
-        {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            if(Config.CLIENT.display.oldAnimations.get())
-            {
-                player.prevRenderYawOffset = player.prevRotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
-                player.renderYawOffset = player.rotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
-            }
-            else
-            {
-                player.prevRenderYawOffset = player.prevRotationYaw + (right ? 45F : -40F);
-                player.renderYawOffset = player.rotationYaw + (right ? 45F : -40F);
-            }
-        }
-
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public void applyHeldItemTransforms(Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
-        {
-            if(hand == Hand.MAIN_HAND)
-            {
-                boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-                matrixStack.translate(0, 0, 0.05);
-                float invertRealProgress = 1.0F - aimProgress;
-                if(Config.CLIENT.display.oldAnimations.get())
-                {
-                    matrixStack.rotate(Vector3f.ZP.rotationDegrees((25F * invertRealProgress) * (right ? 1F : -1F)));
-                    matrixStack.rotate(Vector3f.YP.rotationDegrees((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
-                    matrixStack.rotate(Vector3f.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
-                }
-                else
-                {
-                    matrixStack.rotate(Vector3f.XP.rotationDegrees(30F * invertRealProgress + aimProgress * 5F));
-                    matrixStack.rotate(Vector3f.YP.rotationDegrees((-10F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
-                }
-            }
-        }
-
-        @Override
-        public void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
-        {
-            matrixStack.translate(0, 0, -1);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-
-            matrixStack.push();
-
-            float reloadProgress = ClientHandler.getGunRenderer().getReloadProgress(partialTicks);
-            matrixStack.translate(0, -reloadProgress * 2, 0);
-
-            int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
-            matrixStack.translate(6 * side * 0.0625, -0.585, -0.5);
-
-            if(Minecraft.getInstance().player.getSkinType().equals("slim") && hand.opposite() == HandSide.LEFT)
-            {
-                matrixStack.translate(0.03125F * -side, 0, 0);
-            }
-
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(15F * -side));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(15F * -side));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-35F));
-            matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-            RenderUtil.renderFirstPersonArm(player, hand.opposite(), matrixStack, buffer, light);
-
-            matrixStack.pop();
-
-            double centerOffset = 2.5;
-            if(Minecraft.getInstance().player.getSkinType().equals("slim"))
-            {
-                centerOffset += hand == HandSide.RIGHT ? 0.2 : 0.8;
-            }
-            centerOffset = hand == HandSide.RIGHT ? -centerOffset : centerOffset;
-            matrixStack.translate(centerOffset * 0.0625, -0.4, -0.975);
-
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
-            matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-            RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
-        }
-
-        @Override
-        public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
-        {
-            return GripType.applyBackTransforms(player, matrixStack);
-        }
-    });
+    public static final GripType TWO_HANDED = new GripType(new ResourceLocation(Reference.MOD_ID, "two_handed"), new TwoHandedPose());
 
     /**
      * A custom grip type designed for the mini gun simply due it's nature of being a completely
      * unique way to hold the weapon
      */
-    public static final GripType MINI_GUN = new GripType(new ResourceLocation(Reference.MOD_ID, "mini_gun"), new HeldAnimation()
-    {
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress)
-        {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
-            ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
-
-            mainArm.rotateAngleX = (float) Math.toRadians(-15F);
-            mainArm.rotateAngleY = (float) Math.toRadians(-45F) * (right ? 1F : -1F);
-            mainArm.rotateAngleZ = (float) Math.toRadians(0F);
-
-            secondaryArm.rotateAngleX = (float) Math.toRadians(-45F);
-            secondaryArm.rotateAngleY = (float) Math.toRadians(30F) * (right ? 1F : -1F);
-            secondaryArm.rotateAngleZ = (float) Math.toRadians(0F);
-        }
-
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
-        {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            player.prevRenderYawOffset = player.prevRotationYaw + 45F * (right ? 1F : -1F);
-            player.renderYawOffset = player.rotationYaw + 45F * (right ? 1F : -1F);
-        }
-
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public void applyHeldItemTransforms(Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
-        {
-            if(hand == Hand.OFF_HAND)
-            {
-                matrixStack.translate(0, -10 * 0.0625F, 0);
-                matrixStack.translate(0, 0, -2 * 0.0625F);
-            }
-        }
-
-        @Override
-        public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
-        {
-            return GripType.applyBackTransforms(player, matrixStack);
-        }
-    });
+    public static final GripType MINI_GUN = new GripType(new ResourceLocation(Reference.MOD_ID, "mini_gun"), new MiniGunPose());
 
     /**
      * A custom grip type designed for the bazooka.
      */
-    public static final GripType BAZOOKA = new GripType(new ResourceLocation(Reference.MOD_ID, "bazooka"), new HeldAnimation()
-    {
-        @Override
-        public void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress)
-        {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
-            ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
-
-            mainArm.rotateAngleX = (float) Math.toRadians(-90F);
-            mainArm.rotateAngleY = (float) Math.toRadians(-35F) * (right ? 1F : -1F);
-            mainArm.rotateAngleZ = (float) Math.toRadians(0F);
-
-            secondaryArm.rotateAngleX = (float) Math.toRadians(-91F);
-            secondaryArm.rotateAngleY = (float) Math.toRadians(45F) * (right ? 1F : -1F);
-            secondaryArm.rotateAngleZ = (float) Math.toRadians(0F);
-        }
-
-        @Override
-        public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
-        {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            player.prevRenderYawOffset = player.prevRotationYaw + 35F * (right ? 1F : -1F);
-            player.renderYawOffset = player.rotationYaw + 35F * (right ? 1F : -1F);
-        }
-
-        @Override
-        public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
-        {
-            return GripType.applyBackTransforms(player, matrixStack);
-        }
-    });
+    public static final GripType BAZOOKA = new GripType(new ResourceLocation(Reference.MOD_ID, "bazooka"), new BazookaPose());
 
     /**
      * A common method to set up a transformation of the weapon onto the players' back.
@@ -410,19 +161,5 @@ public class GripType
     public HeldAnimation getHeldAnimation()
     {
         return this.heldAnimation;
-    }
-
-    /**
-     * Copies the rotations from one {@link ModelRenderer} instance to another
-     *
-     * @param source the model renderer to grab the rotations from
-     * @param dest   the model renderer to apply the rotations to
-     */
-    @OnlyIn(Dist.CLIENT)
-    private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
-    {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
     }
 }

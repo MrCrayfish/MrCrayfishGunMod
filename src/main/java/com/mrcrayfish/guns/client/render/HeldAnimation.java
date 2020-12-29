@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -50,7 +51,7 @@ public interface HeldAnimation
      * @param buffer a render type buffer instance
      */
     @OnlyIn(Dist.CLIENT)
-    default void applyHeldItemTransforms(Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer) {}
+    default void applyHeldItemTransforms(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer) {}
 
     /**
      *
@@ -74,5 +75,19 @@ public interface HeldAnimation
     default boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
     {
         return false;
+    }
+
+    /**
+     * Copies the rotations from one {@link ModelRenderer} instance to another
+     *
+     * @param source the model renderer to grab the rotations from
+     * @param dest   the model renderer to apply the rotations to
+     */
+    @OnlyIn(Dist.CLIENT)
+    static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
+    {
+        dest.rotateAngleX = source.rotateAngleX;
+        dest.rotateAngleY = source.rotateAngleY;
+        dest.rotateAngleZ = source.rotateAngleZ;
     }
 }
