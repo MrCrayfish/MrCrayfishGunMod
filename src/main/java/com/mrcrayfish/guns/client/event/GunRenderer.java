@@ -59,6 +59,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LightType;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -367,7 +368,6 @@ public class GunRenderer
         matrixStack.translate(0, equipProgress * -0.6F, 0);
 
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
-
         Entity entity = Minecraft.getInstance().player;
         Objects.requireNonNull(entity);
         int blockLight = entity.isBurning() ? 15 : entity.world.getLightFor(LightType.BLOCK, new BlockPos(entity.getEyePosition(event.getPartialTicks())));
@@ -379,7 +379,8 @@ public class GunRenderer
         this.renderReloadArm(matrixStack, event.getBuffers(), event.getLight(), heldItem, hand);
 
         /* Translate the item position based on the hand side */
-        matrixStack.translate(0.56, -0.52, -0.72);
+        int offset = right ? 1 : -1;
+        matrixStack.translate(0.56 * offset, -0.52, -0.72);
 
         /* Applies recoil and reload rotations */
         this.applyRecoil(matrixStack, heldItem, modifiedGun);
@@ -387,12 +388,13 @@ public class GunRenderer
 
         /* Renders the first persons arms from the grip type of the weapon */
         matrixStack.push();
-        matrixStack.translate(-(0.56F - (right ? 0.0F : 0.72F)), 0.52F, 0.72F);
+        matrixStack.translate(-0.56 * offset, 0.52, 0.72);
         modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, matrixStack, event.getBuffers(), event.getLight(), event.getPartialTicks());
         matrixStack.pop();
 
         /* Renders the weapon */
-        this.renderWeapon(Minecraft.getInstance().player, heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
+        ItemCameraTransforms.TransformType transformType = right ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
+        this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
 
         matrixStack.pop();
     }
@@ -595,6 +597,12 @@ public class GunRenderer
         // Dirty hack to reject first person arms
         if(event.getAgeInTicks() == 0F)
         {
+            event.getModelPlayer().bipedRightArm.rotateAngleX = 0;
+            event.getModelPlayer().bipedRightArm.rotateAngleY = 0;
+            event.getModelPlayer().bipedRightArm.rotateAngleZ = 0;
+            event.getModelPlayer().bipedLeftArm.rotateAngleX = 0;
+            event.getModelPlayer().bipedLeftArm.rotateAngleY = 0;
+            event.getModelPlayer().bipedLeftArm.rotateAngleZ = 0;
             return;
         }
 
@@ -776,7 +784,7 @@ public class GunRenderer
             return;
         }
 
-        if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
+        if(transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
         {
             if(this.entityIdForMuzzleFlash.contains(entity.getEntityId()))
             {
@@ -888,7 +896,7 @@ public class GunRenderer
         matrixStack.translate(-2.75 * side * 0.0625, -0.5625, -0.5625);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
         matrixStack.translate(0, -0.35 * (1.0 - percent), 0);
-        matrixStack.translate(side * 1 * 0.0625, 0, 0);
+        matrixStack.translate(side * 0.0625, 0, 0);
         matrixStack.rotate(Vector3f.XP.rotationDegrees(90F));
         matrixStack.rotate(Vector3f.YP.rotationDegrees(35F * -side));
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-75F * percent));

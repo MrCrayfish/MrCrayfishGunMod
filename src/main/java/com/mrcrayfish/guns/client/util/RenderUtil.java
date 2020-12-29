@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.HandSide;
+import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -186,12 +187,8 @@ public class RenderUtil
     public static void applyTransformType(ItemStack stack, MatrixStack matrixStack, ItemCameraTransforms.TransformType transformType)
     {
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
-        ItemTransformVec3f transformVec3f = model.getItemCameraTransforms().getTransform(transformType);
-        matrixStack.translate(transformVec3f.translation.getX(), transformVec3f.translation.getY(), transformVec3f.translation.getZ());
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(transformVec3f.rotation.getX()));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(transformVec3f.rotation.getY()));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(transformVec3f.rotation.getZ()));
-        matrixStack.scale(transformVec3f.scale.getX(), transformVec3f.scale.getY(), transformVec3f.scale.getZ());
+        boolean leftHanded = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+        ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
     }
 
     public interface Transform
