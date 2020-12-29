@@ -592,6 +592,12 @@ public class GunRenderer
     @SubscribeEvent
     public void onSetupAngles(PlayerModelEvent.SetupAngles.Post event)
     {
+        // Dirty hack to reject first person arms
+        if(event.getAgeInTicks() == 0F)
+        {
+            return;
+        }
+
         PlayerEntity player = event.getPlayer();
         ItemStack heldItem = player.getHeldItemMainhand();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)

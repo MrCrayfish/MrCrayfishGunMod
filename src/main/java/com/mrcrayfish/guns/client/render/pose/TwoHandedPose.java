@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.LimbPose;
 import com.mrcrayfish.guns.client.render.HeldAnimation;
 import com.mrcrayfish.guns.client.util.RenderUtil;
+import com.mrcrayfish.guns.object.GripType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -144,19 +145,10 @@ public class TwoHandedPose implements HeldAnimation
     @OnlyIn(Dist.CLIENT)
     public void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress)
     {
-        initPose();
-
-        boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+        Minecraft mc = Minecraft.getInstance();
+        boolean right = mc.gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
         ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
         ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
-
-        if(Minecraft.getInstance().getRenderViewEntity() == player && Minecraft.getInstance().gameSettings.thirdPersonView == 0)
-        {
-            mainArm.rotateAngleX = 0;
-            mainArm.rotateAngleY = 0;
-            mainArm.rotateAngleZ = 0;
-            return;
-        }
 
         if(Config.CLIENT.display.oldAnimations.get())
         {
@@ -167,12 +159,19 @@ public class TwoHandedPose implements HeldAnimation
         }
         else
         {
-            float angle = MathHelper.lerp(Minecraft.getInstance().getRenderPartialTicks(), player.prevRotationPitch, player.rotationPitch) / 90F;
+            float angle = this.getPlayerPitch(player);
             float angleAbs = Math.abs(angle);
             AimPose targetPose = angle > 0.0 ? this.downPose : this.upPose;
             this.applyAimPose(targetPose, mainArm, secondaryArm, angleAbs, aimProgress);
             model.bipedHead.rotateAngleX = (float) Math.toRadians(angle > 0.0 ? angle * 70F : angle * 90F);
         }
+    }
+
+    private float getPlayerPitch(PlayerEntity player)
+    {
+        if(Minecraft.getInstance().getRenderViewEntity() == player && Minecraft.getInstance().currentScreen != null)
+            return 0F;
+        return MathHelper.lerp(Minecraft.getInstance().getRenderPartialTicks(), player.prevRotationPitch, player.rotationPitch) / 90F;
     }
 
     private void applyAimPose(AimPose targetPose, ModelRenderer rightArm, ModelRenderer leftArm, float partial, float zoom)
@@ -203,7 +202,7 @@ public class TwoHandedPose implements HeldAnimation
     public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
     {
         boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-        float angle = MathHelper.lerp(Minecraft.getInstance().getRenderPartialTicks(), player.prevRotationPitch, player.rotationPitch) / 90F;
+        float angle = this.getPlayerPitch(player);
         float angleAbs = Math.abs(angle);
         AimPose targetPose = angle > 0.0 ? this.downPose : this.upPose;
         float rightOffset = this.getValue(targetPose.getIdle().getRenderYawOffset(), targetPose.getAiming().getRenderYawOffset(), this.forwardPose.getIdle().getRenderYawOffset(), this.forwardPose.getAiming().getRenderYawOffset(), 0F, angleAbs, aimProgress);
@@ -220,7 +219,7 @@ public class TwoHandedPose implements HeldAnimation
             boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
             matrixStack.translate(0, 0, 0.05);
 
-            float angle = MathHelper.lerp(Minecraft.getInstance().getRenderPartialTicks(), player.prevRotationPitch, player.rotationPitch) / 90F;
+            float angle = this.getPlayerPitch(player);
             float angleAbs = Math.abs(angle);
             AimPose targetPose = angle > 0.0 ? this.downPose : this.upPose;
 
@@ -235,12 +234,6 @@ public class TwoHandedPose implements HeldAnimation
             matrixStack.rotate(Vector3f.XP.rotationDegrees(rotateX));
             matrixStack.rotate(Vector3f.YP.rotationDegrees(rotateY));
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(rotateZ));
-
-            //matrixStack.rotate(Vector3f.XP.rotationDegrees(60F * invertRealProgress + aimProgress * 5F));
-            //matrixStack.rotate(Vector3f.YP.rotationDegrees((0F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
-            //matrixStack.rotate(Vector3f.ZP.rotationDegrees((35F + aimProgress * -20F)));
-            //matrixStack.rotate(Vector3f.XP.rotationDegrees(30F * invertRealProgress + aimProgress * 5F));
-            //matrixStack.rotate(Vector3f.YP.rotationDegrees((-10F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
         }
     }
 
@@ -285,5 +278,11 @@ public class TwoHandedPose implements HeldAnimation
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
         RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
+    }
+
+    @Override
+    public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
+    {
+        return GripType.applyBackTransforms(player, matrixStack);
     }
 }
