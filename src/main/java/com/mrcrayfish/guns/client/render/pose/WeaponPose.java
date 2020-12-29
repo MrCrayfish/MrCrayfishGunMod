@@ -58,6 +58,14 @@ public abstract class WeaponPose implements HeldAnimation
      */
     protected abstract AimPose getDownPose();
 
+    /**
+     * If this weapon pose has an aim pose
+     */
+    protected boolean hasAimPose()
+    {
+        return true;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress)
@@ -69,8 +77,9 @@ public abstract class WeaponPose implements HeldAnimation
 
         float angle = this.getPlayerPitch(player);
         float angleAbs = Math.abs(angle);
+        float zoom = this.hasAimPose() ? aimProgress : 0F;
         AimPose targetPose = angle > 0.0 ? this.downPose : this.upPose;
-        this.applyAimPose(targetPose, mainArm, secondaryArm, angleAbs, aimProgress, right ? 1 : -1);
+        this.applyAimPose(targetPose, mainArm, secondaryArm, angleAbs, zoom, right ? 1 : -1);
     }
 
     /**
@@ -117,8 +126,9 @@ public abstract class WeaponPose implements HeldAnimation
         boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
         float angle = this.getPlayerPitch(player);
         float angleAbs = Math.abs(angle);
+        float zoom = this.hasAimPose() ? aimProgress : 0F;
         AimPose targetPose = angle > 0.0 ? this.downPose : this.upPose;
-        float rightOffset = this.getValue(targetPose.getIdle().getRenderYawOffset(), targetPose.getAiming().getRenderYawOffset(), this.forwardPose.getIdle().getRenderYawOffset(), this.forwardPose.getAiming().getRenderYawOffset(), 0F, angleAbs, aimProgress, right ? 1 : -1);
+        float rightOffset = this.getValue(targetPose.getIdle().getRenderYawOffset(), targetPose.getAiming().getRenderYawOffset(), this.forwardPose.getIdle().getRenderYawOffset(), this.forwardPose.getAiming().getRenderYawOffset(), 0F, angleAbs, zoom, right ? 1 : -1);
         player.prevRenderYawOffset = player.prevRotationYaw + rightOffset;
         player.renderYawOffset = player.rotationYaw + rightOffset;
     }
@@ -135,16 +145,17 @@ public abstract class WeaponPose implements HeldAnimation
 
             float angle = this.getPlayerPitch(player);
             float angleAbs = Math.abs(angle);
+            float zoom = this.hasAimPose() ? aimProgress : 0F;
             AimPose targetPose = angle > 0.0 ? this.downPose : this.upPose;
 
-            float translateX = this.getValue(targetPose.getIdle().getItemTranslate().getX(), targetPose.getAiming().getItemTranslate().getX(), this.forwardPose.getIdle().getItemTranslate().getX(), this.forwardPose.getAiming().getItemTranslate().getX(), 0F, angleAbs, aimProgress, 1F);
-            float translateY = this.getValue(targetPose.getIdle().getItemTranslate().getY(), targetPose.getAiming().getItemTranslate().getY(), this.forwardPose.getIdle().getItemTranslate().getY(), this.forwardPose.getAiming().getItemTranslate().getY(), 0F, angleAbs, aimProgress, 1F);
-            float translateZ = this.getValue(targetPose.getIdle().getItemTranslate().getZ(), targetPose.getAiming().getItemTranslate().getZ(), this.forwardPose.getIdle().getItemTranslate().getZ(), this.forwardPose.getAiming().getItemTranslate().getZ(), 0F, angleAbs, aimProgress, 1F);
+            float translateX = this.getValue(targetPose.getIdle().getItemTranslate().getX(), targetPose.getAiming().getItemTranslate().getX(), this.forwardPose.getIdle().getItemTranslate().getX(), this.forwardPose.getAiming().getItemTranslate().getX(), 0F, angleAbs, zoom, 1F);
+            float translateY = this.getValue(targetPose.getIdle().getItemTranslate().getY(), targetPose.getAiming().getItemTranslate().getY(), this.forwardPose.getIdle().getItemTranslate().getY(), this.forwardPose.getAiming().getItemTranslate().getY(), 0F, angleAbs, zoom, 1F);
+            float translateZ = this.getValue(targetPose.getIdle().getItemTranslate().getZ(), targetPose.getAiming().getItemTranslate().getZ(), this.forwardPose.getIdle().getItemTranslate().getZ(), this.forwardPose.getAiming().getItemTranslate().getZ(), 0F, angleAbs, zoom, 1F);
             matrixStack.translate(translateX * 0.0625 * leftHanded, translateY * 0.0625, translateZ * 0.0625);
 
-            float rotateX = this.getValue(targetPose.getIdle().getItemRotation().getX(), targetPose.getAiming().getItemRotation().getX(), this.forwardPose.getIdle().getItemRotation().getX(), this.forwardPose.getAiming().getItemRotation().getX(), 0F, angleAbs, aimProgress, 1F);
-            float rotateY = this.getValue(targetPose.getIdle().getItemRotation().getY(), targetPose.getAiming().getItemRotation().getY(), this.forwardPose.getIdle().getItemRotation().getY(), this.forwardPose.getAiming().getItemRotation().getY(), 0F, angleAbs, aimProgress, 1F);
-            float rotateZ = this.getValue(targetPose.getIdle().getItemRotation().getZ(), targetPose.getAiming().getItemRotation().getZ(), this.forwardPose.getIdle().getItemRotation().getZ(), this.forwardPose.getAiming().getItemRotation().getZ(), 0F, angleAbs, aimProgress, 1F);
+            float rotateX = this.getValue(targetPose.getIdle().getItemRotation().getX(), targetPose.getAiming().getItemRotation().getX(), this.forwardPose.getIdle().getItemRotation().getX(), this.forwardPose.getAiming().getItemRotation().getX(), 0F, angleAbs, zoom, 1F);
+            float rotateY = this.getValue(targetPose.getIdle().getItemRotation().getY(), targetPose.getAiming().getItemRotation().getY(), this.forwardPose.getIdle().getItemRotation().getY(), this.forwardPose.getAiming().getItemRotation().getY(), 0F, angleAbs, zoom, 1F);
+            float rotateZ = this.getValue(targetPose.getIdle().getItemRotation().getZ(), targetPose.getAiming().getItemRotation().getZ(), this.forwardPose.getIdle().getItemRotation().getZ(), this.forwardPose.getAiming().getItemRotation().getZ(), 0F, angleAbs, zoom, 1F);
             matrixStack.rotate(Vector3f.XP.rotationDegrees(rotateX));
             matrixStack.rotate(Vector3f.YP.rotationDegrees(rotateY * leftHanded));
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(rotateZ * leftHanded));

@@ -39,6 +39,12 @@ public class BazookaPose extends WeaponPose
     }
 
     @Override
+    protected boolean hasAimPose()
+    {
+        return false;
+    }
+
+    @Override
     public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
     {
         return GripType.applyBackTransforms(player, matrixStack);
