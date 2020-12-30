@@ -340,7 +340,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
         {
             int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-            boundingBox = BoundingBoxManager.getBoundingBox(entity, ping); //TODO this is actually the last position
+            boundingBox = BoundingBoxManager.getBoundingBox((PlayerEntity) entity, ping); //TODO this is actually the last position
         }
         boundingBox = boundingBox.expand(0, expandHeight, 0);
 
@@ -366,7 +366,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 AxisAlignedBB box = headshotBox.getHeadshotBox((LivingEntity) entity);
                 if(box != null)
                 {
-                    box = box.offset(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+                    box = box.offset(boundingBox.getCenter().x, boundingBox.minY, boundingBox.getCenter().z);
                     Optional<Vec3d> headshotHitPos = box.rayTrace(startVec, endVec);
                     if(!headshotHitPos.isPresent())
                     {

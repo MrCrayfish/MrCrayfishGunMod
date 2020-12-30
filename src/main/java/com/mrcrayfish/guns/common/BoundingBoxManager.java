@@ -128,6 +128,7 @@ public class BoundingBoxManager
     }
 
     public static AxisAlignedBB getBoundingBox(Entity entity, int ping)
+    public static AxisAlignedBB getBoundingBox(PlayerEntity entity, int ping)
     {
         if(playerBoxes.containsKey(entity.getUniqueID()))
         {
