@@ -410,7 +410,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if(fireStarterLevel > 0)
             {
                 BlockPos offsetPos = pos.offset(blockRayTraceResult.getFace());
-                if(AbstractFireBlock.canLightBlock(this.world, offsetPos))
+                if(AbstractFireBlock.canLightBlock(this.world, offsetPos, blockRayTraceResult.getFace()))
                 {
                     BlockState fireState = AbstractFireBlock.getFireForPlacement(this.world, offsetPos);
                     this.world.setBlockState(offsetPos, fireState, 11);
@@ -606,25 +606,25 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             BlockState blockState = world.getBlockState(blockPos);
             if(predicate.test(blockState)) return null;
             FluidState fluidState = world.getFluidState(blockPos);
-            Vector3d startVec = rayTraceContext.func_222253_b();
-            Vector3d endVec = rayTraceContext.func_222250_a();
+            Vector3d startVec = rayTraceContext.getStartVec();
+            Vector3d endVec = rayTraceContext.getEndVec();
             VoxelShape blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
             BlockRayTraceResult blockResult = world.rayTraceBlocks(startVec, endVec, blockPos, blockShape, blockState);
             VoxelShape fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
             BlockRayTraceResult fluidResult = fluidShape.rayTrace(startVec, endVec, blockPos);
-            double blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.func_222253_b().squareDistanceTo(blockResult.getHitVec());
-            double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.func_222253_b().squareDistanceTo(fluidResult.getHitVec());
+            double blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.getStartVec().squareDistanceTo(blockResult.getHitVec());
+            double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.getStartVec().squareDistanceTo(fluidResult.getHitVec());
             return blockDistance <= fluidDistance ? blockResult : fluidResult;
         }, (rayTraceContext) -> {
-            Vector3d Vector3d = rayTraceContext.func_222253_b().subtract(rayTraceContext.func_222250_a());
-            return BlockRayTraceResult.createMiss(rayTraceContext.func_222250_a(), Direction.getFacingFromVector(Vector3d.x, Vector3d.y, Vector3d.z), new BlockPos(rayTraceContext.func_222250_a()));
+            Vector3d Vector3d = rayTraceContext.getStartVec().subtract(rayTraceContext.getEndVec());
+            return BlockRayTraceResult.createMiss(rayTraceContext.getEndVec(), Direction.getFacingFromVector(Vector3d.x, Vector3d.y, Vector3d.z), new BlockPos(rayTraceContext.getEndVec()));
         });
     }
 
     private static <T> T func_217300_a(RayTraceContext context, BiFunction<RayTraceContext, BlockPos, T> hitFunction, Function<RayTraceContext, T> p_217300_2_)
     {
-        Vector3d startVec = context.func_222253_b();
-        Vector3d endVec = context.func_222250_a();
+        Vector3d startVec = context.getStartVec();
+        Vector3d endVec = context.getEndVec();
         if(startVec.equals(endVec))
         {
             return p_217300_2_.apply(context);

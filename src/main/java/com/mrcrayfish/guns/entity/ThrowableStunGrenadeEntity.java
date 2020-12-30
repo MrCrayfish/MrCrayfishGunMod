@@ -72,7 +72,7 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
         {
             return;
         }
-        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(this.getPosX(), y, this.getPosZ(), 64, this.world.func_234923_W_())), new MessageStunGrenade(this.getPosX(), y, this.getPosZ()));
+        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(this.getPosX(), y, this.getPosZ(), 64, this.world.getDimensionKey())), new MessageStunGrenade(this.getPosX(), y, this.getPosZ()));
 
         // Calculate bounds of area where potentially effected players my be
         double diameter = Math.max(Config.COMMON.stunGrenades.deafen.criteria.radius.get(), Config.COMMON.stunGrenades.blind.criteria.radius.get()) * 2 + 1;

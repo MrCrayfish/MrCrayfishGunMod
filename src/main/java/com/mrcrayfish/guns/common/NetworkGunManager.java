@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.object.CustomGun;
@@ -22,9 +23,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
 
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +46,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
 {
     private static final Gson GSON_INSTANCE = Util.make(() -> {
@@ -50,6 +57,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     });
 
     private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
+    private static NetworkGunManager instance;
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
@@ -189,6 +197,32 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     public static List<GunItem> getClientRegisteredGuns()
     {
         return ImmutableList.copyOf(clientRegisteredGuns);
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(FMLServerStoppedEvent event)
+    {
+        NetworkGunManager.instance = null;
+    }
+
+    @SubscribeEvent
+    public static void addReloadListenerEvent(AddReloadListenerEvent event)
+    {
+        NetworkGunManager networkGunManager = new NetworkGunManager();
+        event.addListener(networkGunManager);
+        NetworkGunManager.instance = networkGunManager;
+    }
+
+    /**
+     * Gets the network gun manager. This will be null if the client isn't running an integrated
+     * server or the client is connected to a dedicated server.
+     *
+     * @return the network gun manager
+     */
+    @Nullable
+    public static NetworkGunManager get()
+    {
+        return instance;
     }
 
     public interface IGunProvider

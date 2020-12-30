@@ -100,7 +100,7 @@ public class RenderUtil
             if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || flag))
             {
                 boolean flag1;
-                if(transformType != ItemCameraTransforms.TransformType.GUI && !transformType.func_241716_a_() && stack.getItem() instanceof BlockItem)
+                if(transformType != ItemCameraTransforms.TransformType.GUI && !transformType.isFirstPerson() && stack.getItem() instanceof BlockItem)
                 {
                     Block block = ((BlockItem) stack.getItem()).getBlock();
                     flag1 = !(block instanceof BreakableBlock) && !(block instanceof StainedGlassPaneBlock);
@@ -125,25 +125,25 @@ public class RenderUtil
                         {
                             entry.getMatrix().mul(0.5F);
                         }
-                        else if(transformType.func_241716_a_())
+                        else if(transformType.isFirstPerson())
                         {
                             entry.getMatrix().mul(0.75F);
                         }
 
                         if(flag1)
                         {
-                            builder = ItemRenderer.func_241732_b_(buffer, rendertype, entry);
+                            builder = ItemRenderer.getDirectGlintVertexBuilder(buffer, rendertype, entry);
                         }
                         else
                         {
-                            builder = ItemRenderer.func_241731_a_(buffer, rendertype, entry);
+                            builder = ItemRenderer.getGlintVertexBuilder(buffer, rendertype, entry);
                         }
 
                         matrixStack.pop();
                     }
                     else if(flag1)
                     {
-                        builder = ItemRenderer.func_239391_c_(buffer, rendertype, true, stack.hasEffect() || parent.hasEffect());
+                        builder = ItemRenderer.getEntityGlintVertexBuilder(buffer, rendertype, true, stack.hasEffect() || parent.hasEffect());
                     }
                     else
                     {

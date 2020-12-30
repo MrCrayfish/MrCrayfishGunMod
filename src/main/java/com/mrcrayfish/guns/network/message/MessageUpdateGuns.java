@@ -27,10 +27,10 @@ public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvid
     @Override
     public void encode(PacketBuffer buffer)
     {
-        Validate.notNull(GunMod.getNetworkGunManager());
-        Validate.notNull(GunMod.getCustomGunLoader());
-        GunMod.getNetworkGunManager().writeRegisteredGuns(buffer);
-        GunMod.getCustomGunLoader().writeCustomGuns(buffer);
+        Validate.notNull(NetworkGunManager.get());
+        Validate.notNull(CustomGunLoader.get());
+        NetworkGunManager.get().writeRegisteredGuns(buffer);
+        CustomGunLoader.get().writeCustomGuns(buffer);
     }
 
     @Override

@@ -38,6 +38,6 @@ public class StunRingingSound extends TickableSound
         }
 
         //Stops playing the sound
-        this.func_239509_o_();
+        this.finishPlaying();
     }
 }

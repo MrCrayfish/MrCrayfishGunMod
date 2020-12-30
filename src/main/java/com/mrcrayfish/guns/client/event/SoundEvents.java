@@ -96,7 +96,8 @@ public class SoundEvents
                     SOUND_VOLUMES.put(sound, volume);
 
                     entry.runOnSoundExecutor(soundSource -> {
-                        soundSource.func_216423_c(getMutedVolume(effect.getDuration(), volume));
+                        //TODO test this
+                        soundSource.setGain(getMutedVolume(effect.getDuration(), volume));
                     });
                 });
             }
@@ -116,7 +117,7 @@ public class SoundEvents
                 if(entry1 != null)
                 {
                     entry1.runOnSoundExecutor(soundSource -> {
-                        soundSource.func_216423_c(entry.getValue());
+                        soundSource.setGain(entry.getValue());
                     });
                 }
             }

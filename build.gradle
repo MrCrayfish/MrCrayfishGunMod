@@ -11,18 +11,19 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 
-version = "1.0.0-1.16.1"
+version = "1.0.0-1.16.4"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200707-1.16.1'
+    mappings channel: 'snapshot', version: '20201028-1.16.3'
 
     runs {
         client {
             workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
@@ -34,6 +35,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
@@ -45,6 +47,7 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
@@ -64,9 +67,9 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.61'
-    compile fg.deobf('curse.maven:obfuscate:3000205')
-    compile fg.deobf('curse.maven:controllable:3008760')
+    minecraft 'net.minecraftforge:forge:1.16.4-35.1.4'
+    compile fg.deobf('curse.maven:obfuscate-289380:3148131')
+    compile fg.deobf('curse.maven:controllable-317269:3068902')
 }
 
 jar {

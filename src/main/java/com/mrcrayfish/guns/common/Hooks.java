@@ -37,7 +37,7 @@ public class Hooks
     @SuppressWarnings("unused")
     public static void onReload()
     {
-        NetworkGunManager manager = GunMod.getNetworkGunManager();
+        NetworkGunManager manager = NetworkGunManager.get();
         if(manager != null)
         {
             PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new MessageUpdateGuns());

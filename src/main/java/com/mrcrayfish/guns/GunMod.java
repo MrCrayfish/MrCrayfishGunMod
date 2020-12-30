@@ -58,12 +58,9 @@ public class GunMod
     }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
     private static GunOptions options;
-    private static NetworkGunManager networkGunManager;
-    private static CustomGunLoader customGunLoader;
 
     public GunMod()
     {
-        MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
@@ -103,45 +100,6 @@ public class GunMod
         Minecraft mc = event.getMinecraftSupplier().get();
         GunMod.options = new GunOptions(mc.gameDir);
         ClientHandler.setup();
-    }
-
-    @SubscribeEvent
-    public void onServerStart(FMLServerStoppedEvent event)
-    {
-        GunMod.networkGunManager = null;
-    }
-
-    @SubscribeEvent
-    public void addReloadListenerEvent(AddReloadListenerEvent event)
-    {
-        NetworkGunManager networkGunManager = new NetworkGunManager();
-        event.addListener(networkGunManager);
-        GunMod.networkGunManager = networkGunManager;
-
-        CustomGunLoader customGunLoader = new CustomGunLoader();
-        event.addListener(customGunLoader);
-        GunMod.customGunLoader = customGunLoader;
-    }
-
-    /**
-     * Gets the network gun manager. This will be null if the client isn't running an integrated
-     * server or the client is connected to a dedicated server.
-     *
-     * @return the network gun manager
-     */
-    @Nullable
-    public static NetworkGunManager getNetworkGunManager()
-    {
-        return networkGunManager;
-    }
-
-    /**
-     * @return
-     */
-    @Nullable
-    public static CustomGunLoader getCustomGunLoader()
-    {
-        return customGunLoader;
     }
 
     /**

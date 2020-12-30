@@ -68,7 +68,7 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
     {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.func_230459_a_(matrixStack, mouseX, mouseY); //Render tool tips
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY); //Render tool tips
 
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
@@ -80,23 +80,23 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
                 IAttachment.Type type = IAttachment.Type.values()[i];
                 if(!this.container.getSlot(i).isEnabled())
                 {
-                    this.renderTooltip(matrixStack, Arrays.asList(new TranslationTextComponent("slot.cgm.attachment." + type.getTranslationKey()), new TranslationTextComponent("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
+                    this.func_243308_b(matrixStack, Arrays.asList(new TranslationTextComponent("slot.cgm.attachment." + type.getTranslationKey()), new TranslationTextComponent("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
                 }
                 else if(this.weaponInventory.getStackInSlot(i).isEmpty())
                 {
 
-                    this.renderTooltip(matrixStack, Collections.singletonList(new TranslationTextComponent("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
+                    this.func_243308_b(matrixStack, Collections.singletonList(new TranslationTextComponent("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
                 }
             }
         }
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY)
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
     {
         Minecraft minecraft = Minecraft.getInstance();
-        this.font.func_238422_b_(matrixStack, this.title, (float)this.field_238742_p_, (float)this.field_238743_q_, 4210752);
-        this.font.func_238422_b_(matrixStack, this.playerInventory.getDisplayName(), (float)this.field_238744_r_, (float)this.field_238745_s_ + 19, 4210752);
+        this.font.func_243248_b(matrixStack, this.title, (float)this.windowX, (float)this.windowY, 4210752);
+        this.font.func_243248_b(matrixStack, this.playerInventory.getDisplayName(), (float)this.windowX, (float)this.windowY + 19, 4210752);
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         int left = (this.width - this.xSize) / 2;
@@ -145,7 +145,7 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
     }
 
     @Override
-    protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         Minecraft minecraft = Minecraft.getInstance();

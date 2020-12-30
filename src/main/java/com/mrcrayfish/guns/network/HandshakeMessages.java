@@ -58,12 +58,12 @@ public class HandshakeMessages
 
         void encode(PacketBuffer buffer)
         {
-            /* This shouldn't be null as it's encoding from the logical server but
+            /* This shouldn't be null as it's encoded from the logical server but
              * it's just here to avoiding IDE warnings */
-            Validate.notNull(GunMod.getNetworkGunManager());
-            GunMod.getNetworkGunManager().writeRegisteredGuns(buffer);
-            Validate.notNull(GunMod.getCustomGunLoader());
-            GunMod.getCustomGunLoader().writeCustomGuns(buffer);
+            Validate.notNull(NetworkGunManager.get());
+            NetworkGunManager.get().writeRegisteredGuns(buffer);
+            Validate.notNull(CustomGunLoader.get());
+            CustomGunLoader.get().writeCustomGuns(buffer);
         }
 
         static S2CUpdateGuns decode(PacketBuffer buffer)
