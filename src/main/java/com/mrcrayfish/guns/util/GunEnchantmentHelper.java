@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.util;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -66,10 +67,9 @@ public class GunEnchantmentHelper
     public static float getPuncturingDamage(ItemStack weapon, Random rand, float damage)
     {
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.PUNCTURING.get(), weapon);
-        if(rand.nextInt(5) == 0)
+        if(rand.nextFloat() < level * 0.05)
         {
-            float modifier = 0.05F * level;
-            return damage + damage * modifier;
+            return (float) (damage + damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
         }
         return damage;
     }
