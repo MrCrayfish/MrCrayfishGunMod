@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.network;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.object.CustomGun;

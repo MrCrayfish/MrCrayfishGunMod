@@ -272,7 +272,7 @@ public class RenderUtil
         if(leftHanded)
         {
             Matrix4f scale = Matrix4f.makeScale(-1, 1, 1);
-            Matrix3f normal = new net.minecraft.client.renderer.Matrix3f(scale);
+            Matrix3f normal = new Matrix3f(scale);
             matrixStack.getLast().getMatrix().mul(scale);
             matrixStack.getLast().getNormal().mul(normal);
         }

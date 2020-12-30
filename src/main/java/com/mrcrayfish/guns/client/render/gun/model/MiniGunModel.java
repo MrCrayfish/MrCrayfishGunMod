@@ -15,9 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**

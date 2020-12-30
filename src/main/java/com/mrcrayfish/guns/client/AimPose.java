@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.client;
 
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * Author: MrCrayfish

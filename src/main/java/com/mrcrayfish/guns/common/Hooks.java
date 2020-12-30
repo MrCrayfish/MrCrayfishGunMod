@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.entity.DamageSourceProjectile;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
