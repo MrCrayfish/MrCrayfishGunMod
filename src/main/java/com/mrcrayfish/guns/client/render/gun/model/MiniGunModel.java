@@ -18,19 +18,20 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 /**
  * Author: MrCrayfish
  */
 public class MiniGunModel implements IOverrideModel
 {
-    private Map<UUID, Rotations> rotationMap = new HashMap<>();
+    private WeakHashMap<LivingEntity, Rotations> rotationMap = new WeakHashMap<>();
 
     @Override
     public void tick(PlayerEntity entity)
     {
-        this.rotationMap.putIfAbsent(entity.getUniqueID(), new Rotations());
-        Rotations rotations = this.rotationMap.get(entity.getUniqueID());
+        this.rotationMap.putIfAbsent(entity, new Rotations());
+        Rotations rotations = this.rotationMap.get(entity);
         rotations.prevRotation = rotations.rotation;
 
         boolean shooting = SyncedPlayerData.instance().get(entity, ModSyncedDataKeys.SHOOTING);
@@ -53,7 +54,7 @@ public class MiniGunModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
-        Rotations rotations = this.rotationMap.computeIfAbsent(entity.getUniqueID(), uuid -> new Rotations());
+        Rotations rotations = this.rotationMap.computeIfAbsent(entity, uuid -> new Rotations());
         RenderUtil.renderModel(SpecialModels.MINI_GUN_BASE.getModel(), stack,matrixStack, renderTypeBuffer, light, overlay);
         RenderUtil.renderModel(SpecialModels.MINI_GUN_BARRELS.getModel(), ItemCameraTransforms.TransformType.NONE, () -> {
             RenderUtil.rotateZ(matrixStack, 0.5F, 0.125F, rotations.prevRotation + (rotations.rotation - rotations.prevRotation) * partialTicks);
