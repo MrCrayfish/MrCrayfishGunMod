@@ -1,6 +1,6 @@
 {
     "general": {
-        "rate": 6,
+        "rate": 8,
         "gripType": "cgm:two_handed",
         "maxAmmo": 10,
         "reloadAmount": 2,
@@ -14,7 +14,7 @@
         "item": "cgm:advanced_bullet",
         "visible": false,
         "gravity": true,
-        "damage": 14.0,
+        "damage": 15.0,
         "size": 0.0625,
         "speed": 30.0,
         "life": 10
@@ -22,7 +22,7 @@
     "sounds": {
         "fire": "cgm:item.rifle.fire",
         "reload": "cgm:item.pistol.reload",
-        "cock": "cgm:item.shotgun.fire",
+        "cock": "cgm:item.rifle.cock",
         "silencedFire": "cgm:item.rifle.silenced_fire"
     },
     "display": {

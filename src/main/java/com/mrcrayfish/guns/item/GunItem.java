@@ -27,9 +27,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
+import java.util.WeakHashMap;
 
 public class GunItem extends Item implements IColored
 {
+    private WeakHashMap<CompoundNBT, Gun> modifiedGunCache = new WeakHashMap<>();
+
     private Gun gun = new Gun();
 
     public GunItem(Item.Properties properties)
@@ -146,16 +149,19 @@ public class GunItem extends Item implements IColored
         CompoundNBT tagCompound = stack.getTag();
         if(tagCompound != null && tagCompound.contains("Gun", Constants.NBT.TAG_COMPOUND))
         {
-            if(tagCompound.getBoolean("Custom"))
+            return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
             {
-                return Gun.create(tagCompound.getCompound("Gun"));
-            }
-            else
-            {
-                Gun gunCopy = this.gun.copy();
-                gunCopy.deserializeNBT(tagCompound.getCompound("Gun"));
-                return gunCopy;
-            }
+                if(tagCompound.getBoolean("Custom"))
+                {
+                    return Gun.create(tagCompound.getCompound("Gun"));
+                }
+                else
+                {
+                    Gun gunCopy = this.gun.copy();
+                    gunCopy.deserializeNBT(tagCompound.getCompound("Gun"));
+                    return gunCopy;
+                }
+            });
         }
         return this.gun;
     }

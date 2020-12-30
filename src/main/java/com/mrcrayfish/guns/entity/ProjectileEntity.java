@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -322,7 +323,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
         {
             int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-            boundingBox = BoundingBoxManager.getBoundingBox(entity, ping); //TODO this is actually the last position
+            boundingBox = BoundingBoxManager.getBoundingBox((PlayerEntity) entity, ping); //TODO this is actually the last position
         }
         boundingBox = boundingBox.expand(0, expandHeight, 0);
 
@@ -348,7 +349,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 AxisAlignedBB box = headshotBox.getHeadshotBox((LivingEntity) entity);
                 if(box != null)
                 {
-                    box = box.offset(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+                    box = box.offset(boundingBox.getCenter().x, boundingBox.minY, boundingBox.getCenter().z);
                     Optional<Vector3d> headshotHitPos = box.rayTrace(startVec, endVec);
                     if(!headshotHitPos.isPresent())
                     {
@@ -449,7 +450,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void onHitEntity(Entity entity, Vector3d hitVec, Vector3d startVec, Vector3d endVec, boolean headshot)
     {
         float damage = this.getDamage();
-        float newDamage = GunEnchantmentHelper.getPuncturingDamage(this.weapon, this.rand, damage);
+        float newDamage = this.getCriticalDamage(this.weapon, this.rand, damage);
         boolean critical = damage != newDamage;
         damage = newDamage;
 
@@ -577,6 +578,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
         float damage = initialDamage / this.general.getProjectileAmount();
         return GunModifierHelper.getModifiedDamage(this.weapon, this.modifiedGun, damage);
+    }
+
+    private float getCriticalDamage(ItemStack weapon, Random rand, float damage)
+    {
+        float chance = GunModifierHelper.getCriticalChance(weapon);
+        if(rand.nextFloat() < chance)
+        {
+            return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
+        }
+        return damage;
     }
 
     @Override

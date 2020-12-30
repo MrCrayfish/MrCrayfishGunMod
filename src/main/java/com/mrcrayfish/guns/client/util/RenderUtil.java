@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -24,7 +23,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.HandSide;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -263,12 +265,17 @@ public class RenderUtil
     public static void applyTransformType(ItemStack stack, MatrixStack matrixStack, ItemCameraTransforms.TransformType transformType)
     {
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
-        ItemTransformVec3f transformVec3f = model.getItemCameraTransforms().getTransform(transformType);
-        matrixStack.translate(transformVec3f.translation.getX(), transformVec3f.translation.getY(), transformVec3f.translation.getZ());
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(transformVec3f.rotation.getX()));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(transformVec3f.rotation.getY()));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(transformVec3f.rotation.getZ()));
-        matrixStack.scale(transformVec3f.scale.getX(), transformVec3f.scale.getY(), transformVec3f.scale.getZ());
+        boolean leftHanded = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+        ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
+
+        /* Flips the model and normals if left handed. */
+        if(leftHanded)
+        {
+            Matrix4f scale = Matrix4f.makeScale(-1, 1, 1);
+            Matrix3f normal = new net.minecraft.client.renderer.Matrix3f(scale);
+            matrixStack.getLast().getMatrix().mul(scale);
+            matrixStack.getLast().getNormal().mul(normal);
+        }
     }
 
     public interface Transform

@@ -20,8 +20,7 @@
     },
     "sounds": {
         "fire": "cgm:item.grenade_launcher.fire",
-        "reload": "cgm:item.pistol.reload",
-        "cock": "cgm:item.shotgun.fire"
+        "reload": "cgm:item.pistol.reload"
     },
     "display": {
         "flash": {

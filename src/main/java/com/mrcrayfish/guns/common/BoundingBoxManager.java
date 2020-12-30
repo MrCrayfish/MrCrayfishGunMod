@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.common;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import com.mrcrayfish.guns.object.headshot.BasicHeadshotBox;
 import com.mrcrayfish.guns.object.headshot.ChildHeadshotBox;
@@ -8,6 +9,8 @@ import com.mrcrayfish.guns.object.headshot.NoChildRotatedHeadshotBox;
 import com.mrcrayfish.guns.object.headshot.RotatedHeadshotBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -21,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 /**
  * Author: MrCrayfish
@@ -28,7 +32,7 @@ import java.util.UUID;
 public class BoundingBoxManager
 {
     private static Map<EntityType<?>, IHeadshotBox<?>> headshotBoxes = new HashMap<>();
-    private static Map<UUID, LinkedList<AxisAlignedBB>> playerBoxes = new HashMap<>();
+    private static WeakHashMap<PlayerEntity, LinkedList<AxisAlignedBB>> playerBoxes = new WeakHashMap<>();
 
     static
     {
@@ -86,7 +90,14 @@ public class BoundingBoxManager
         registerHeadshotBox(EntityType.PIGLIN, new ChildHeadshotBox<>(8.0, 24.0, 0.75, 0.5));
     }
 
-    public static <T extends Entity> void registerHeadshotBox(EntityType<T> type, IHeadshotBox<T> headshotBox)
+    /**
+     * Registers a headshot box for the specified entity type.
+     *
+     * @param type        the entity type
+     * @param headshotBox a {@link IHeadshotBox} instance
+     * @param <T>         a type that extends {@link LivingEntity}
+     */
+    public static <T extends LivingEntity> void registerHeadshotBox(EntityType<T> type, IHeadshotBox<T> headshotBox)
     {
         headshotBoxes.putIfAbsent(type, headshotBox);
     }
@@ -101,14 +112,17 @@ public class BoundingBoxManager
     @SubscribeEvent(receiveCanceled = true)
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
+        if(!Config.COMMON.gameplay.improvedHitboxes.get())
+            return;
+
         if(event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.END)
         {
             if(event.player.isSpectator())
             {
-                playerBoxes.remove(event.player.getUniqueID());
+                playerBoxes.remove(event.player);
                 return;
             }
-            LinkedList<AxisAlignedBB> boxes = playerBoxes.computeIfAbsent(event.player.getUniqueID(), uuid -> new LinkedList<>());
+            LinkedList<AxisAlignedBB> boxes = playerBoxes.computeIfAbsent(event.player, player -> new LinkedList<>());
             boxes.addFirst(event.player.getBoundingBox());
             if(boxes.size() > 20)
             {
@@ -120,14 +134,14 @@ public class BoundingBoxManager
     @SubscribeEvent(receiveCanceled = true)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        playerBoxes.remove(event.getPlayer().getUniqueID());
+        playerBoxes.remove(event.getPlayer());
     }
 
-    public static AxisAlignedBB getBoundingBox(Entity entity, int ping)
+    public static AxisAlignedBB getBoundingBox(PlayerEntity entity, int ping)
     {
-        if(playerBoxes.containsKey(entity.getUniqueID()))
+        if(playerBoxes.containsKey(entity))
         {
-            LinkedList<AxisAlignedBB> boxes = playerBoxes.get(entity.getUniqueID());
+            LinkedList<AxisAlignedBB> boxes = playerBoxes.get(entity);
             int index = MathHelper.clamp(ping, 0, boxes.size() - 1);
             return boxes.get(index);
         }

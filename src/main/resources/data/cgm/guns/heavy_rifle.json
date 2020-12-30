@@ -23,8 +23,10 @@
     "sounds": {
         "fire": "cgm:item.heavy_rifle.fire",
         "reload": "cgm:item.pistol.reload",
-        "cock": "cgm:item.shotgun.fire",
-        "silencedFire": "cgm:item.heavy_rifle.silenced_fire"
+        "cock": "cgm:item.heavy_rifle.cock",
+        "silencedFire": "cgm:item.heavy_rifle.silenced_fire",
+        "cockAfterFire": true,
+        "cockDelay": 12
     },
     "display": {
         "flash": {

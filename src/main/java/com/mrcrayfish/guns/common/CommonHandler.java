@@ -165,7 +165,7 @@ public class CommonHandler
                         double posY = player.prevPosY + player.getEyeHeight();
                         double posZ = player.prevPosZ;
                         float volume = GunModifierHelper.getFireSoundVolume(heldItem);
-                        float pitch = 0.8F + world.rand.nextFloat() * 0.2F;
+                        float pitch = 0.9F + world.rand.nextFloat() * 0.2F;
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, false);
                         PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), radius, player.world.getDimensionKey())), messageSound);
