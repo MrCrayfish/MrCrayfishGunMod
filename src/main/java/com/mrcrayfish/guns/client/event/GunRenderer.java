@@ -69,6 +69,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
@@ -195,8 +196,16 @@ public class GunRenderer
         PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
-            this.tickOverrideModel(player);
             this.updateReloadTimer(player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.START && event.side == LogicalSide.CLIENT)
+        {
+            this.tickOverrideModel(event.player);
         }
     }
 
