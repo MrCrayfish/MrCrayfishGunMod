@@ -235,4 +235,19 @@ public class GunModifierHelper
         }
         return MathHelper.clamp(rate, 0, Integer.MAX_VALUE);
     }
+
+    public static float getCriticalChance(ItemStack weapon)
+    {
+        float chance = 0F;
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                chance += modifier.criticalChance();
+            }
+        }
+        chance += GunEnchantmentHelper.getPuncturingChance(weapon);
+        return MathHelper.clamp(chance, 0F, 1F);
+    }
 }

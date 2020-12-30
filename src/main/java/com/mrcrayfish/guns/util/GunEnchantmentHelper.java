@@ -64,13 +64,9 @@ public class GunEnchantmentHelper
         return 1.0;
     }
 
-    public static float getPuncturingDamage(ItemStack weapon, Random rand, float damage)
+    public static float getPuncturingChance(ItemStack weapon)
     {
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.PUNCTURING.get(), weapon);
-        if(rand.nextFloat() < level * 0.05)
-        {
-            return (float) (damage + damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
-        }
-        return damage;
+        return level * 0.05F;
     }
 }

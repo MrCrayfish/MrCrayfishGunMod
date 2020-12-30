@@ -86,4 +86,9 @@ public interface IGunModifier
     {
         return rate;
     }
+
+    default float criticalChance()
+    {
+        return 0F;
+    }
 }
