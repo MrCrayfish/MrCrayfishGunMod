@@ -437,11 +437,14 @@ public class GunRenderer
         float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
         float recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(item);
         double kick = gun.getGeneral().getRecoilKick() * 0.0625 * this.recoilNormal * this.getAdsRecoilReduction(gun);
-        float recoil = (float) (gun.getGeneral().getRecoilAngle() * this.recoilNormal) * (float) this.getAdsRecoilReduction(gun);
+        float recoilLift = (float) (gun.getGeneral().getRecoilAngle() * this.recoilNormal) * (float) this.getAdsRecoilReduction(gun);
+        float recoilSwayAmount = (float) (2F + 1F * (1.0 - this.normalisedAimProgress));
+        float recoilSway = (float) ((this.recoilRandom * recoilSwayAmount - recoilSwayAmount / 2F) * this.recoilNormal);
         matrixStack.translate(0, 0, kick * kickReduction);
         matrixStack.translate(0, 0, 0.35);
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) ((this.recoilRandom * 2F - 1F) * this.recoilNormal)));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(recoil * recoilReduction));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(recoilSway * recoilReduction));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(recoilSway * recoilReduction));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(recoilLift * recoilReduction));
         matrixStack.translate(0, 0, -0.35);
     }
 
