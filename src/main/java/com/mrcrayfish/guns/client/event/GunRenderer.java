@@ -841,6 +841,7 @@ public class GunRenderer
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(true);
+        RenderSystem.disableCull();
         Minecraft.getInstance().getTextureManager().bindTexture(MUZZLE_FLASH_TEXTURE);
 
         Matrix4f matrix = matrixStack.getLast().getMatrix();
@@ -853,6 +854,7 @@ public class GunRenderer
         buffer.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
         tessellator.draw();
 
+        RenderSystem.enableCull();
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
         RenderSystem.defaultAlphaFunc();
