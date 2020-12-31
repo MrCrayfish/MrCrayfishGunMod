@@ -188,6 +188,7 @@ public class GunHandler
             {
                 ClientHandler.getGunRenderer().showMuzzleFlash();
             }
+            ClientHandler.getGunRenderer().shoot();
             if(Config.SERVER.enableCameraRecoil.get())
             {
                 float recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(heldItem);

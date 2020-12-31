@@ -97,6 +97,7 @@ public class GunRenderer
     private double normalisedAimProgress;
     private double recoilNormal;
     private double recoilAngle;
+    private float recoilRandom;
 
     private int startReloadTick;
     private int reloadTimer;
@@ -439,6 +440,7 @@ public class GunRenderer
         float recoil = (float) (gun.getGeneral().getRecoilAngle() * this.recoilNormal) * (float) this.getAdsRecoilReduction(gun);
         matrixStack.translate(0, 0, kick * kickReduction);
         matrixStack.translate(0, 0, 0.35);
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) ((this.recoilRandom * 2F - 1F) * this.recoilNormal)));
         matrixStack.rotate(Vector3f.XP.rotationDegrees(recoil * recoilReduction));
         matrixStack.translate(0, 0, -0.35);
     }
@@ -872,7 +874,7 @@ public class GunRenderer
     private void renderReloadArm(MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, ItemStack stack, HandSide hand)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null || mc.player.ticksExisted < startReloadTick || reloadTimer != 5)
+        if(mc.player == null || mc.player.ticksExisted < this.startReloadTick || this.reloadTimer != 5)
         {
             return;
         }
@@ -1022,6 +1024,11 @@ public class GunRenderer
         return 0.0F;
     }
 
+    public void shoot()
+    {
+        this.recoilRandom = this.random.nextFloat();
+    }
+
     public void showMuzzleFlash()
     {
         this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getEntityId());
@@ -1050,7 +1057,7 @@ public class GunRenderer
 
     public float getReloadProgress(float partialTicks)
     {
-        return (this.prevReloadTimer + (reloadTimer - prevReloadTimer) * partialTicks) / 5F;
+        return (this.prevReloadTimer + (this.reloadTimer - this.prevReloadTimer) * partialTicks) / 5F;
     }
 
     public static void bindScreenTexture()
