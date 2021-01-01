@@ -7,6 +7,7 @@ import net.minecraft.block.BreakableBlock;
 import net.minecraft.block.StainedGlassPaneBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -17,6 +18,8 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -117,7 +120,7 @@ public class RenderUtil
                 }
                 else
                 {
-                    RenderType rendertype = RenderTypeLookup.func_239219_a_(stack, flag1);
+                    RenderType renderType = getRenderType(stack, !flag1);
                     IVertexBuilder builder;
                     if(stack.getItem() == Items.COMPASS && stack.hasEffect())
                     {
@@ -134,22 +137,22 @@ public class RenderUtil
 
                         if(flag1)
                         {
-                            builder = ItemRenderer.getDirectGlintVertexBuilder(buffer, rendertype, entry);
+                            builder = ItemRenderer.getDirectGlintVertexBuilder(buffer, renderType, entry);
                         }
                         else
                         {
-                            builder = ItemRenderer.getGlintVertexBuilder(buffer, rendertype, entry);
+                            builder = ItemRenderer.getGlintVertexBuilder(buffer, renderType, entry);
                         }
 
                         matrixStack.pop();
                     }
                     else if(flag1)
                     {
-                        builder = ItemRenderer.getEntityGlintVertexBuilder(buffer, rendertype, true, stack.hasEffect() || parent.hasEffect());
+                        builder = ItemRenderer.getEntityGlintVertexBuilder(buffer, renderType, true, stack.hasEffect() || parent.hasEffect());
                     }
                     else
                     {
-                        builder = ItemRenderer.getBuffer(buffer, rendertype, true, stack.hasEffect() || parent.hasEffect());
+                        builder = ItemRenderer.getBuffer(buffer, renderType, true, stack.hasEffect() || parent.hasEffect());
                     }
 
                     renderModel(model, stack, parent, transform, matrixStack, builder, light, overlay);
@@ -302,5 +305,16 @@ public class RenderUtil
         {
             renderer.renderLeftArm(matrixStack, buffer, combinedLight, player);
         }
+    }
+
+    private static RenderType getRenderType(ItemStack stack, boolean entity)
+    {
+        Item item = stack.getItem();
+        if(item instanceof BlockItem)
+        {
+            Block block = ((BlockItem) item).getBlock();
+            return RenderTypeLookup.func_239220_a_(block.getDefaultState(), !entity);
+        }
+        return entity ? Atlases.getItemEntityTranslucentCullType() : RenderType.getEntityTranslucent(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
     }
 }
