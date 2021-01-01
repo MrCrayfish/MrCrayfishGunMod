@@ -103,6 +103,10 @@ public class GunRenderer
     private int reloadTimer;
     private int prevReloadTimer;
 
+    private int sprintTransition;
+    private int prevSprintTransition;
+    private int sprintCooldown;
+
     private Field equippedProgressMainHandField;
     private Field prevEquippedProgressMainHandField;
 
@@ -139,6 +143,26 @@ public class GunRenderer
     {
         if(event.phase != TickEvent.Phase.START)
             return;
+
+        this.prevSprintTransition = this.sprintTransition;
+
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player != null && mc.player.isSprinting() && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.SHOOTING) && !ClientHandler.isAiming() && this.sprintCooldown == 0)
+        {
+            if(this.sprintTransition < 5)
+            {
+                this.sprintTransition++;
+            }
+        }
+        else if(this.sprintTransition > 0)
+        {
+            this.sprintTransition--;
+        }
+
+        if(this.sprintCooldown > 0)
+        {
+            this.sprintCooldown--;
+        }
 
         this.updateAimProgress();
     }
@@ -392,6 +416,7 @@ public class GunRenderer
         matrixStack.translate(0.56 * offset, -0.52, -0.72);
 
         /* Applies recoil and reload rotations */
+        this.applySprinting(modifiedGun, hand, matrixStack, event.getPartialTicks());
         this.applyRecoil(matrixStack, heldItem, modifiedGun);
         this.applyReload(matrixStack, event.getPartialTicks());
 
@@ -406,6 +431,18 @@ public class GunRenderer
         this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
 
         matrixStack.pop();
+    }
+
+    private void applySprinting(Gun modifiedGun, HandSide hand, MatrixStack matrixStack, float partialTicks)
+    {
+        if(modifiedGun.getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation())
+        {
+            float leftHanded = hand == HandSide.LEFT ? -1 : 1;
+            float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
+            matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-25F * transition));
+        }
     }
 
     private void applyReload(MatrixStack matrixStack, float partialTicks)
@@ -1030,6 +1067,8 @@ public class GunRenderer
     public void shoot()
     {
         this.recoilRandom = this.random.nextFloat();
+        this.sprintTransition = 0;
+        this.sprintCooldown = 5;
     }
 
     public void showMuzzleFlash()

@@ -49,4 +49,10 @@ public class BazookaPose extends WeaponPose
     {
         return GripType.applyBackTransforms(player, matrixStack);
     }
+
+    @Override
+    public boolean canApplySprintingAnimation()
+    {
+        return false;
+    }
 }

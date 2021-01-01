@@ -78,6 +78,17 @@ public interface HeldAnimation
     }
 
     /**
+     * If the sprinting animation should be applied in first person for the grip type this held
+     * animation is applied to.
+     *
+     * @return can apply sprinting animation
+     */
+    default boolean canApplySprintingAnimation()
+    {
+        return true;
+    }
+
+    /**
      * Copies the rotations from one {@link ModelRenderer} instance to another
      *
      * @param source the model renderer to grab the rotations from
