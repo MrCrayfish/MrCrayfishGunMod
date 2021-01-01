@@ -439,6 +439,7 @@ public class GunRenderer
         {
             float leftHanded = hand == HandSide.LEFT ? -1 : 1;
             float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
+            transition = (float) Math.sin((transition * Math.PI) / 2);
             matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
             matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
             matrixStack.rotate(Vector3f.XP.rotationDegrees(-25F * transition));
