@@ -382,12 +382,13 @@ public class GunRenderer
 
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 float side = right ? 1.0F : -1.0F;
+                double transition = 1.0 - Math.pow(1.0 - this.normalisedAimProgress, 2);
 
                 /* Reverses the original first person translations */
-                matrixStack.translate(-0.56 * side * this.normalisedAimProgress, 0.52 * this.normalisedAimProgress, 0);
+                matrixStack.translate(-0.56 * side * transition, 0.52 * transition, 0);
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
-                matrixStack.translate(xOffset * side * this.normalisedAimProgress, yOffset * this.normalisedAimProgress, zOffset * normalisedAimProgress);
+                matrixStack.translate(xOffset * side * transition, yOffset * transition, zOffset * transition);
             }
             else
             {
