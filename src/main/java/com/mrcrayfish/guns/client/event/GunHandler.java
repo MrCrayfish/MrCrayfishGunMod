@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.hook.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageShoot;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -180,6 +182,9 @@ public class GunHandler
             GunItem gunItem = (GunItem) heldItem.getItem();
             Gun modifiedGun = gunItem.getModifiedGun(heldItem);
 
+            if(MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(player, heldItem)))
+                return;
+
             int rate = GunEnchantmentHelper.getRate(heldItem, modifiedGun);
             rate = GunModifierHelper.getModifiedRate(heldItem, rate);
             tracker.setCooldown(heldItem.getItem(), rate);
@@ -196,6 +201,8 @@ public class GunHandler
                 recoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;
                 progressRecoil = 0F;
             }
+
+            MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
         }
     }
 
