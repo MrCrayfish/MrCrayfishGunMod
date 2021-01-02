@@ -93,6 +93,9 @@ public class CommonHandler
                 Gun modifiedGun = item.getModifiedGun(heldItem);
                 if(modifiedGun != null)
                 {
+                    if(MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(player, heldItem)))
+                        return;
+
                     /* Updates the yaw and pitch with the clients current yaw and pitch */
                     player.rotationYaw = message.getRotationYaw();
                     player.rotationPitch = message.getRotationPitch();
@@ -132,7 +135,7 @@ public class CommonHandler
                         }
                     }
 
-                    MinecraftForge.EVENT_BUS.post(new GunFireEvent(player, heldItem));
+                    MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
 
                     if(Config.COMMON.aggroMobs.enabled.get())
                     {
