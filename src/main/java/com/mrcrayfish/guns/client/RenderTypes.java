@@ -5,7 +5,6 @@ import com.mrcrayfish.guns.client.render.ScreenTextureState;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -15,7 +14,6 @@ public class RenderTypes
 {
     public static final RenderState.LightmapState LIGHTMAP_ENABLED = new RenderState.LightmapState(true);
     public static final RenderState.OverlayState OVERLAY_ENABLED = new RenderState.OverlayState(true);
-    public static final RenderState.DiffuseLightingState DIFFUSE_LIGHTING_ENABLED = new RenderState.DiffuseLightingState(true);
     public static final RenderState.CullState CULL_DISABLED = new RenderState.CullState(false);
     public static final RenderState.AlphaState DEFAULT_ALPHA = new RenderState.AlphaState(0.0F);
     public static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
