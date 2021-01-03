@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -44,6 +45,11 @@ public class MediumScopeModel implements IOverrideModel
         
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
+            if(entity.getPrimaryHand() == HandSide.LEFT)
+            {
+                matrixStack.scale(-1, 1, 1);
+            }
+
             float scopeSize = 1.325F;
             float size = scopeSize / 16.0F;
             float crop = 0.4F;
