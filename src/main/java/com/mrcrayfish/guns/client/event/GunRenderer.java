@@ -144,7 +144,7 @@ public class GunRenderer
         this.prevSprintTransition = this.sprintTransition;
 
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && mc.player.isSprinting() && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.SHOOTING) && !ClientHandler.isAiming() && this.sprintCooldown == 0)
+        if(mc.player != null && mc.player.isSprinting() && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.SHOOTING) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING) && !ClientHandler.isAiming() && this.sprintCooldown == 0)
         {
             if(this.sprintTransition < 5)
             {
