@@ -39,9 +39,17 @@ public class ScreenTextureState extends RenderState.TexturingState
     private ScreenTextureState()
     {
         super("screen_texture", () -> {
+            RenderSystem.enableDepthTest();
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
             RenderSystem.enableTexture();
             RenderSystem.bindTexture(ScreenTextureState.instance().getTextureId());
-        }, () -> {});
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        }, () -> {
+            RenderSystem.disableDepthTest();
+            RenderSystem.disableBlend();
+        });
     }
 
     public int getTextureId()
