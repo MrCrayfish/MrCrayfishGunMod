@@ -2,6 +2,8 @@ package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.item.attachment.IStock;
 import com.mrcrayfish.guns.item.attachment.impl.Stock;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -39,5 +41,11 @@ public class StockItem extends Item implements IStock, IColored
     public boolean canColor(ItemStack stack)
     {
         return this.colored;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
+    {
+        return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
     }
 }

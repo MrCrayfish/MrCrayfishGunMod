@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.object.Gun;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
@@ -67,5 +68,12 @@ public class AttachmentSlot extends Slot
     public int getSlotStackLimit()
     {
         return 1;
+    }
+
+    @Override
+    public boolean canTakeStack(PlayerEntity player)
+    {
+        ItemStack itemstack = this.getStack();
+        return (itemstack.isEmpty() || player.isCreative() || !EnchantmentHelper.hasBindingCurse(itemstack)) && super.canTakeStack(player);
     }
 }
