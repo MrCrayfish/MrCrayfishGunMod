@@ -2,8 +2,10 @@ package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.RenderTypes;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -11,12 +13,15 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -34,14 +39,6 @@ public class LongScopeModel implements IOverrideModel
 
         if(this.isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
         {
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, (float) ClientHandler.getGunRenderer().getNormalisedAimProgress() * 0.5F + 0.5F);
-            RenderSystem.enableDepthTest();
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            GunRenderer.bindScreenTexture();
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
             float size = 1.1F / 16.0F;
             float crop = 0.4F;
             Minecraft mc = Minecraft.getInstance();
@@ -50,45 +47,40 @@ public class LongScopeModel implements IOverrideModel
             float offset = (float) (ClientHandler.getGunRenderer().getRecoilNormal() * kickAmount * (1.0 / window.getHeight()));
             float texU = ((window.getWidth() - window.getHeight() + window.getHeight() * crop * 2.0F) / 2.0F) / window.getWidth();
 
-            RenderSystem.pushMatrix();
+            matrixStack.push();
             {
-                RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
-                RenderSystem.translated(-size / 2, 0.85 * 0.0625, 2.45 * 0.0625);
+                Matrix4f matrix = matrixStack.getLast().getMatrix();
+                Matrix3f normal = matrixStack.getLast().getNormal();
+
+                matrixStack.translate(-size / 2, 0.85 * 0.0625, 2.45 * 0.0625);
+
                 float color = (float) ClientHandler.getGunRenderer().getNormalisedAimProgress() * 0.8F + 0.2F;
-                RenderSystem.color4f(color, color, color, 1.0F);
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBuffer();
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                buffer.pos(0, size, 0).tex(texU, 1.0F - crop + offset).endVertex();
-                buffer.pos(0, 0, 0).tex(texU, crop + offset).endVertex();
-                buffer.pos(size, 0, 0).tex(1.0F - texU, crop + offset).endVertex();
-                buffer.pos(size, size, 0).tex(1.0F - texU, 1.0F - crop + offset).endVertex();
-                tessellator.draw();
 
-                RenderSystem.color4f(1.0F, 1.0F, 1.0F, (float) ClientHandler.getGunRenderer().getNormalisedAimProgress() * 0.8F + 0.2F);
-                RenderSystem.translated(0, 0, 0.0001);
-                mc.getTextureManager().bindTexture(RETICLE);
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                buffer.pos(0, 0, 0).tex(0.9921875F, 0.9921875F).endVertex();
-                buffer.pos(size, 0, 0).tex(0, 0.9921875F).endVertex();
-                buffer.pos(size, size, 0).tex(0, 0).endVertex();
-                buffer.pos(0, size, 0).tex(0.9921875F, 0).endVertex();
-                tessellator.draw();
+                IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderTypes.getScreen());
+                builder.pos(matrix, 0, size, 0).color(color, color, color, 1.0F).tex(texU, 1.0F - crop + offset).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, 0, 0, 0).color(color, color, color, 1.0F).tex(texU, crop + offset).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, size, 0, 0).color(color, color, color, 1.0F).tex(1.0F - texU, crop + offset).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, size, size, 0).color(color, color, color, 1.0F).tex(1.0F - texU, 1.0F - crop + offset).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
 
-                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                RenderSystem.translated(0, 0, 0.0001);
-                mc.getTextureManager().bindTexture(VIGNETTE);
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                buffer.pos(0, 0, 0).tex(0.984375F, 0.984375F).endVertex();
-                buffer.pos(size, 0, 0).tex(0, 0.984375F).endVertex();
-                buffer.pos(size, size, 0).tex(0, 0).endVertex();
-                buffer.pos(0, size, 0).tex(0.984375F, 0).endVertex();
-                tessellator.draw();
+                matrixStack.translate(0, 0, 0.0001);
+
+                float alpha = (float) (ClientHandler.getGunRenderer().getNormalisedAimProgress() * 0.8F + 0.2F);
+
+                builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RETICLE));
+                builder.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0.9921875F, 0.9921875F).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0, 0.9921875F).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0, 0).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0.9921875F, 0).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+
+                matrixStack.translate(0, 0, 0.0001);
+
+                builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(VIGNETTE));
+                builder.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0.984375F, 0.984375F).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0.984375F).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+                builder.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0.984375F, 0).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
             }
-            RenderSystem.popMatrix();
-
-            RenderSystem.disableBlend();
-            RenderSystem.disableDepthTest();
+            matrixStack.pop();
         }
     }
 

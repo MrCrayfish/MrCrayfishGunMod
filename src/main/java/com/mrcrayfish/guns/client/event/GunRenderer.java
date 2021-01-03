@@ -8,6 +8,7 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.AimTracker;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.render.ScreenTextureState;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -41,6 +42,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
@@ -85,7 +87,6 @@ public class GunRenderer
 {
     private static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
     private static final double ZOOM_TICKS = 4;
-    private static int screenTextureId = -1;
 
     private Random random = new Random();
     private Set<Integer> entityIdForMuzzleFlash = new HashSet<>();
@@ -990,18 +991,6 @@ public class GunRenderer
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRenderLastWorld(RenderWorldLastEvent event)
-    {
-        if(screenTextureId == -1)
-        {
-            screenTextureId = GlStateManager.genTexture();
-        }
-        Minecraft mc = Minecraft.getInstance();
-        GlStateManager.bindTexture(screenTextureId);
-        GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0);
-    }
-
     /**
      *
      * @param sensitivity
@@ -1102,10 +1091,5 @@ public class GunRenderer
     public float getReloadProgress(float partialTicks)
     {
         return (this.prevReloadTimer + (this.reloadTimer - this.prevReloadTimer) * partialTicks) / 5F;
-    }
-
-    public static void bindScreenTexture()
-    {
-        RenderSystem.bindTexture(GunRenderer.screenTextureId);
     }
 }
