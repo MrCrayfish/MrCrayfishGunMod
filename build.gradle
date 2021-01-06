@@ -1,21 +1,28 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
 version = "1.0.0-1.16.4"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+mixin {
+    add sourceSets.main, "cgm.refmap.json"
+}
 
 minecraft {
     mappings channel: 'snapshot', version: '20201028-1.16.3'
@@ -26,6 +33,7 @@ minecraft {
             property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            arg '-mixin.config=cgm.mixins.json'
             mods {
                 cgm {
                     source sourceSets.main
@@ -38,6 +46,7 @@ minecraft {
             property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            arg '-mixin.config=cgm.mixins.json'
             mods {
                 cgm {
                     source sourceSets.main
@@ -50,7 +59,8 @@ minecraft {
             property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'cgm', '--all', '--output', file('src/generated/resources/')
+            arg '-mixin.config=cgm.mixins.json'
             mods {
                 cgm {
                     source sourceSets.main
@@ -81,7 +91,8 @@ jar {
                 "Implementation-Title": "Gun Mod",
                 "Implementation-Version": project.version,
                 "Implementation-Vendor" : "MrCrayfish",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "cgm.mixins.json"
         ])
     }
 }

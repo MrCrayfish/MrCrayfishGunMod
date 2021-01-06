@@ -13,7 +13,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 public class Hooks
 {
     /**
-     * Linked via ASM. Checks if the specified damage source can cause knockback. Unfortunately
+     * Checks if the specified damage source can cause knockback. Unfortunately
      * Forge's event {@link net.minecraftforge.event.entity.living.LivingKnockBackEvent} does not
      * providing the damage source and it's impossible to check if the immediate damage source is
      * a projectile, it only knows about the shooter. As always, definitely not the best way to be
@@ -23,7 +23,6 @@ public class Hooks
      * @param source the damage source causing the knockback
      * @return true if the specified damage source can cause knockback
      */
-    @SuppressWarnings("unused")
     public static boolean canCauseKnockBack(DamageSource source)
     {
         if(source instanceof DamageSourceProjectile)
@@ -33,7 +32,6 @@ public class Hooks
         return true;
     }
 
-    @SuppressWarnings("unused")
     public static void onReload()
     {
         NetworkGunManager manager = NetworkGunManager.get();
