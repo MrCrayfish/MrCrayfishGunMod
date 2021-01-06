@@ -13,9 +13,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -138,6 +140,16 @@ public class ReloadTracker
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        MinecraftServer server = event.getPlayer().getServer();
+        if(server != null)
+        {
+            server.execute(() -> RELOAD_TRACKER_MAP.remove(event.getPlayer().getUniqueID()));
         }
     }
 }
