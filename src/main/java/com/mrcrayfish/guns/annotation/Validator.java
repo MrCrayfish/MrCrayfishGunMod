@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.annotation;
 
-import javax.annotation.Nonnull;
 import java.io.InvalidObjectException;
 import java.lang.reflect.Field;
 
@@ -19,7 +18,7 @@ public class Validator
      * @throws IllegalAccessException if it's unable to access a field. This should never happen
      * @throws InvalidObjectException if the object's required fields are null
      */
-    public static <T> boolean isValidObject(@Nonnull T t) throws IllegalAccessException, InvalidObjectException
+    public static <T> boolean isValidObject(T t) throws IllegalAccessException, InvalidObjectException
     {
         Field[] fields = t.getClass().getDeclaredFields();
         for(Field field : fields)
@@ -28,7 +27,7 @@ public class Validator
             {
                 continue;
             }
-            
+
             field.setAccessible(true);
 
             if(field.get(t) == null)

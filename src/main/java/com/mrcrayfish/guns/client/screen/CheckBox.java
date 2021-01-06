@@ -45,7 +45,7 @@ public class CheckBox extends Widget
         {
             this.blit(matrixStack, this.x, this.y - 1, 8, 0, 9, 8);
         }
-        this.drawString(matrixStack, minecraft.fontRenderer, this.getMessage(), this.x + 12, this.y, 0xFFFFFF);
+        drawString(matrixStack, minecraft.fontRenderer, this.getMessage(), this.x + 12, this.y, 0xFFFFFF);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.client;
+package com.mrcrayfish.guns.client.render.pose;
 
 import net.minecraft.util.math.vector.Vector3f;
 

@@ -31,7 +31,7 @@ public class MissileEntity extends ProjectileEntity
     }
 
     @Override
-    protected void onTick()
+    protected void onProjectileTick()
     {
         if (this.world.isRemote)
         {

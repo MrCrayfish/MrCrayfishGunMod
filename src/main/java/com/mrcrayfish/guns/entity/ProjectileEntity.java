@@ -114,6 +114,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.modifiedGravity = GunModifierHelper.getModifiedProjectileGravity(weapon, -0.05);
         this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.getLife());
 
+        /* Get speed and set motion */
         Vector3d dir = this.getDirection(shooter, weapon, item, modifiedGun);
         double speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon, modifiedGun);
         double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.getSpeed() * speedModifier);
@@ -134,10 +135,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    protected void registerData()
-    {
-
-    }
+    protected void registerData() {}
 
     @Override
     public EntitySize getSize(Pose pose)
@@ -177,7 +175,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public ItemStack getWeapon()
     {
-        return weapon;
+        return this.weapon;
     }
 
     public void setItem(ItemStack item)
@@ -200,7 +198,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     {
         super.tick();
         this.updateHeading();
-        this.onTick();
+        this.onProjectileTick();
 
         if(!this.world.isRemote())
         {
@@ -273,10 +271,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void onTick()
+    /**
+     * A simple method to perform logic on each tick of the projectile. This method is appropriate
+     * for spawning particles. Override {@link #tick()} to make changes to physics
+     */
+    protected void onProjectileTick()
     {
     }
 
+    /**
+     * Called when the projectile has run out of it's life. In other words, the projectile managed
+     * to not hit any blocks and instead aged. The grenade uses this to explode in the air.
+     */
     protected void onExpired()
     {
     }
@@ -565,7 +571,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public Projectile getProjectile()
     {
-        return projectile;
+        return this.projectile;
     }
 
     private Vector3d getVectorFromRotation(float pitch, float yaw)
@@ -577,14 +583,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return new Vector3d((double) (f1 * f2), (double) f3, (double) (f * f2));
     }
 
+    /**
+     * Gets the entity who spawned the projectile
+     */
     public LivingEntity getShooter()
     {
         return this.shooter;
     }
 
+    /**
+     * Gets the id of the entity who spawned the projectile
+     */
     public int getShooterId()
     {
-        return shooterId;
+        return this.shooterId;
     }
 
     public float getDamage()
@@ -627,14 +639,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      *
      * @param world     the world to perform the ray trace
      * @param context   the ray trace context
-     * @param predicate the block state predicate
+     * @param ignorePredicate the block state predicate
      * @return a result of the raytrace
      */
-    private static BlockRayTraceResult rayTraceBlocks(World world, RayTraceContext context, Predicate<BlockState> predicate)
+    private static BlockRayTraceResult rayTraceBlocks(World world, RayTraceContext context, Predicate<BlockState> ignorePredicate)
     {
-        return func_217300_a(context, (rayTraceContext, blockPos) -> {
+        return performRayTrace(context, (rayTraceContext, blockPos) -> {
             BlockState blockState = world.getBlockState(blockPos);
-            if(predicate.test(blockState)) return null;
+            if(ignorePredicate.test(blockState)) return null;
             FluidState fluidState = world.getFluidState(blockPos);
             Vector3d startVec = rayTraceContext.getStartVec();
             Vector3d endVec = rayTraceContext.getEndVec();
@@ -651,7 +663,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         });
     }
 
-    private static <T> T func_217300_a(RayTraceContext context, BiFunction<RayTraceContext, BlockPos, T> hitFunction, Function<RayTraceContext, T> p_217300_2_)
+    private static <T> T performRayTrace(RayTraceContext context, BiFunction<RayTraceContext, BlockPos, T> hitFunction, Function<RayTraceContext, T> p_217300_2_)
     {
         Vector3d startVec = context.getStartVec();
         Vector3d endVec = context.getEndVec();

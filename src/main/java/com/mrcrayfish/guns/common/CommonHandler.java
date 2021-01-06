@@ -11,6 +11,7 @@ import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.hook.GunFireEvent;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import com.mrcrayfish.guns.interfaces.IProjectileFactory;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -122,7 +123,7 @@ public class CommonHandler
 
                     for(int i = 0; i < modifiedGun.getGeneral().getProjectileAmount(); i++)
                     {
-                        ProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.getProjectile().getItem());
+                        IProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.getProjectile().getItem());
                         ProjectileEntity bullet = factory.create(world, player, heldItem, item, modifiedGun);
                         bullet.setWeapon(heldItem);
                         bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));

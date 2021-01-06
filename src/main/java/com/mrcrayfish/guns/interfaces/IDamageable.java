@@ -6,6 +6,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
+ * An interface for notifying a block it has been hit by a projectile.
+ *
  * Author: MrCrayfish
  */
 public interface IDamageable

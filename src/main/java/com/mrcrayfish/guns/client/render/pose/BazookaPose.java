@@ -1,8 +1,6 @@
 package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.client.AimPose;
-import com.mrcrayfish.guns.client.LimbPose;
 import com.mrcrayfish.guns.object.GripType;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;

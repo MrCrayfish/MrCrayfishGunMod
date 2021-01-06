@@ -3,6 +3,8 @@ package com.mrcrayfish.guns.interfaces;
 import com.mrcrayfish.guns.common.GunModifiers;
 import com.mrcrayfish.guns.item.attachment.impl.Barrel;
 
+//TODO write docs
+
 /**
  * An interface that allows control over the behaviour of weapons through attachments.
  * See {@link GunModifiers} for examples of how this can be implemented. Implementations can then

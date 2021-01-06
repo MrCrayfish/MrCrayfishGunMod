@@ -25,8 +25,8 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 public class GunItem extends Item implements IColored
@@ -145,7 +145,7 @@ public class GunItem extends Item implements IColored
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack)
     {
-        return Color.CYAN.getRGB();
+        return Objects.requireNonNull(TextFormatting.AQUA.getColor());
     }
 
     public Gun getModifiedGun(ItemStack stack)

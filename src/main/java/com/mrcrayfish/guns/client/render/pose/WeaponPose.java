@@ -1,8 +1,6 @@
 package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.client.AimPose;
-import com.mrcrayfish.guns.client.LimbPose;
 import com.mrcrayfish.guns.client.render.HeldAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -21,7 +19,7 @@ import javax.annotation.Nullable;
 /**
  * A simple class that handles interpolating between different poses depending on the rotation pitch
  * of the player. Used for pointing the weapon in the same direction the playing is looking.
- *
+ * <p>
  * Author: MrCrayfish
  */
 public abstract class WeaponPose implements HeldAnimation
@@ -86,7 +84,9 @@ public abstract class WeaponPose implements HeldAnimation
     protected float getPlayerPitch(PlayerEntity player)
     {
         if(Minecraft.getInstance().getRenderViewEntity() == player && Minecraft.getInstance().currentScreen != null)
+        {
             return 0F;
+        }
         return MathHelper.lerp(Minecraft.getInstance().getRenderPartialTicks(), player.prevRotationPitch, player.rotationPitch) / 90F;
     }
 

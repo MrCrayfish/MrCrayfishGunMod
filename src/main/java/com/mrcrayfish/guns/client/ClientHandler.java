@@ -60,7 +60,6 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -141,8 +140,7 @@ public class ClientHandler
 
     private static void registerColors()
     {
-        IItemColor color = (stack, index) ->
-        {
+        IItemColor color = (stack, index) -> {
             if(!((IColored) stack.getItem()).canColor(stack))
             {
                 return -1;
@@ -153,8 +151,7 @@ public class ClientHandler
             }
             return -1;
         };
-        ForgeRegistries.ITEMS.forEach(item ->
-        {
+        ForgeRegistries.ITEMS.forEach(item -> {
             if(item instanceof IColored)
             {
                 Minecraft.getInstance().getItemColors().register(color, item);
@@ -164,12 +161,12 @@ public class ClientHandler
 
     private static void registerModelOverrides()
     {
-        ModelOverrides.register(new ItemStack(ModItems.MINI_GUN.get()), new MiniGunModel());
-        ModelOverrides.register(new ItemStack(ModItems.SHORT_SCOPE.get()), new ShortScopeModel());
-        ModelOverrides.register(new ItemStack(ModItems.MEDIUM_SCOPE.get()), new MediumScopeModel());
-        ModelOverrides.register(new ItemStack(ModItems.LONG_SCOPE.get()), new LongScopeModel());
-        ModelOverrides.register(new ItemStack(ModItems.BAZOOKA.get()), new BazookaModel());
-        ModelOverrides.register(new ItemStack(ModItems.GRENADE_LAUNCHER.get()), new GrenadeLauncherModel());
+        ModelOverrides.register(ModItems.MINI_GUN.get(), new MiniGunModel());
+        ModelOverrides.register(ModItems.SHORT_SCOPE.get(), new ShortScopeModel());
+        ModelOverrides.register(ModItems.MEDIUM_SCOPE.get(), new MediumScopeModel());
+        ModelOverrides.register(ModItems.LONG_SCOPE.get(), new LongScopeModel());
+        ModelOverrides.register(ModItems.BAZOOKA.get(), new BazookaModel());
+        ModelOverrides.register(ModItems.GRENADE_LAUNCHER.get(), new GrenadeLauncherModel());
     }
 
     private static void registerParticleFactories()
@@ -296,20 +293,15 @@ public class ClientHandler
     public static boolean isAiming()
     {
         Minecraft mc = Minecraft.getInstance();
-        if(!mc.isGameFocused())
-            return false;
+        if(!mc.isGameFocused()) return false;
 
-        if(mc.player == null)
-            return false;
+        if(mc.player == null) return false;
 
-        if(mc.player.isSpectator())
-            return false;
+        if(mc.player.isSpectator()) return false;
 
-        if(!(mc.player.inventory.getCurrentItem().getItem() instanceof GunItem))
-            return false;
+        if(!(mc.player.inventory.getCurrentItem().getItem() instanceof GunItem)) return false;
 
-        if(mc.currentScreen != null)
-            return false;
+        if(mc.currentScreen != null) return false;
 
         boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
         if(GunMod.controllableLoaded)

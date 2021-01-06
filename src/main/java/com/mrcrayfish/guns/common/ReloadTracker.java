@@ -30,6 +30,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
+@SuppressWarnings("unused")
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ReloadTracker
 {
@@ -48,11 +49,20 @@ public class ReloadTracker
         this.gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
     }
 
+    /**
+     * Tests if the current item the player is holding is the same as the one being reloaded
+     *
+     * @param player the player to check
+     * @return True if it's the same weapon and slot
+     */
     private boolean isSameWeapon(PlayerEntity player)
     {
         return !this.stack.isEmpty() && player.inventory.currentItem == this.slot && player.inventory.getCurrentItem() == this.stack;
     }
 
+    /**
+     * @return
+     */
     private boolean isWeaponFull()
     {
         CompoundNBT tag = ItemStackUtil.createTagCompound(this.stack);
@@ -128,8 +138,7 @@ public class ReloadTracker
 
                         final PlayerEntity finalPlayer = player;
                         final Gun gun = tracker.gun;
-                        DelayedTask.runAfter(4, () ->
-                        {
+                        DelayedTask.runAfter(4, () -> {
                             SoundEvent cockEvent = ForgeRegistries.SOUND_EVENTS.getValue(gun.getSounds().getCock());
                             if(cockEvent != null && finalPlayer.isAlive())
                             {

@@ -113,6 +113,7 @@ public class RenderUtil
                 {
                     flag1 = true;
                 }
+
                 if(model.isLayered())
                 {
                     net.minecraftforge.client.ForgeHooksClient.drawItemLayered(Minecraft.getInstance().getItemRenderer(), model, stack, matrixStack, buffer, light, overlay, flag1);
@@ -164,41 +165,9 @@ public class RenderUtil
 
             matrixStack.pop();
         }
-
-        /*if(!stack.isEmpty())
-        {
-            matrixStack.push();
-
-            boolean isGui = transformType == ItemCameraTransforms.TransformType.GUI;
-            boolean tridentFlag = isGui || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
-            if(stack.getItem() == Items.TRIDENT && tridentFlag)
-            {
-                model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
-            }
-
-            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, false);
-            matrixStack.translate(-0.5, -0.5, -0.5);
-            if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || tridentFlag))
-            {
-                RenderType renderType = RenderTypeLookup.getRenderType(stack);
-                if(isGui && Objects.equals(renderType, Atlases.getTranslucentBlockType()))
-                {
-                    renderType = Atlases.getTranslucentCullBlockType();
-                }
-                IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(buffer, renderType, true, stack.hasEffect() || parent.hasEffect());
-                renderModel(model, stack, parent, transform, matrixStack, vertexBuilder, light, overlay);
-            }
-            else
-            {
-                stack.getItem().getItemStackTileEntityRenderer().render(stack, matrixStack, buffer, light, overlay);
-            }
-
-            matrixStack.pop();
-        }*/
     }
 
     /**
-     *
      * @param model
      * @param stack
      * @param parent
@@ -225,7 +194,6 @@ public class RenderUtil
     }
 
     /**
-     *
      * @param matrixStack
      * @param buffer
      * @param quads
@@ -296,7 +264,7 @@ public class RenderUtil
         EntityRendererManager renderManager = mc.getRenderManager();
         PlayerRenderer renderer = (PlayerRenderer) renderManager.getRenderer(player);
         mc.getTextureManager().bindTexture(player.getLocationSkin());
-        if (hand == HandSide.RIGHT)
+        if(hand == HandSide.RIGHT)
         {
             renderer.renderRightArm(matrixStack, buffer, combinedLight, player);
         }

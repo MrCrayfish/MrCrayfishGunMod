@@ -32,6 +32,10 @@ public class Hooks
         return true;
     }
 
+    /**
+     * Called when resources are reloaded on the server. Send any changes that have been made to
+     * weapon properties.
+     */
     public static void onReload()
     {
         NetworkGunManager manager = NetworkGunManager.get();
