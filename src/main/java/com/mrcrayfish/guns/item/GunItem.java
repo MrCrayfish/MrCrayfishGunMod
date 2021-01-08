@@ -16,10 +16,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -58,49 +55,45 @@ public class GunItem extends Item implements IColored
         Item ammo = ForgeRegistries.ITEMS.getValue(modifiedGun.getProjectile().getItem());
         if(ammo != null)
         {
-            tooltip.add(new TranslationTextComponent("info.cgm.ammo_type", I18n.format(ammo.getTranslationKey())));
+            tooltip.add(new TranslationTextComponent("info.cgm.ammo_type", new TranslationTextComponent(ammo.getTranslationKey()).mergeStyle(TextFormatting.WHITE)).mergeStyle(TextFormatting.GRAY));
         }
 
         String additionalDamageText = "";
         CompoundNBT tagCompound = stack.getTag();
         if(tagCompound != null)
         {
-            if(tagCompound.contains("AdditionalDamage", Constants.NBT.TAG_FLOAT))
+            if(tagCompound.contains("AdditionalDamage", Constants.NBT.TAG_ANY_NUMERIC))
             {
                 float additionalDamage = tagCompound.getFloat("AdditionalDamage");
                 additionalDamage += GunModifierHelper.getAdditionalDamage(stack);
 
                 if(additionalDamage > 0)
                 {
-                    additionalDamageText = TextFormatting.GREEN + " +" + additionalDamage;
+                    additionalDamageText = TextFormatting.GREEN + " +" + ItemStack.DECIMALFORMAT.format(additionalDamage);
                 }
                 else if(additionalDamage < 0)
                 {
-                    additionalDamageText = TextFormatting.RED + " " + additionalDamage;
+                    additionalDamageText = TextFormatting.RED + " " + ItemStack.DECIMALFORMAT.format(additionalDamage);
                 }
             }
         }
 
-        tooltip.add(new StringTextComponent(TextFormatting.GRAY + I18n.format("info.cgm.damage", TextFormatting.RESET + Float.toString(modifiedGun.getProjectile().getDamage()) + additionalDamageText)));
+        tooltip.add(new TranslationTextComponent("info.cgm.damage", TextFormatting.WHITE + ItemStack.DECIMALFORMAT.format(modifiedGun.getProjectile().getDamage()) + additionalDamageText).mergeStyle(TextFormatting.GRAY));
 
         if(tagCompound != null)
         {
             if(tagCompound.getBoolean("IgnoreAmmo"))
             {
-                tooltip.add(new TranslationTextComponent("info.cgm.ignore_ammo"));
+                tooltip.add(new TranslationTextComponent("info.cgm.ignore_ammo").mergeStyle(TextFormatting.AQUA));
             }
             else
             {
                 int ammoCount = tagCompound.getInt("AmmoCount");
-                tooltip.add(new TranslationTextComponent("info.cgm.ammo", Integer.toString(ammoCount), GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)));
+                tooltip.add(new TranslationTextComponent("info.cgm.ammo", TextFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).mergeStyle(TextFormatting.GRAY));
             }
         }
 
-        String key = TextFormatting.getTextWithoutFormattingCodes(KeyBinds.KEY_ATTACHMENTS.getKey().func_237520_d_().getUnformattedComponentText());
-        if(key != null)
-        {
-            tooltip.add(new TranslationTextComponent("info.cgm.attachment_help", key.toUpperCase()));
-        }
+        tooltip.add(new TranslationTextComponent("info.cgm.attachment_help", new KeybindTextComponent("key.cgm.attachments")).mergeStyle(TextFormatting.YELLOW));
     }
 
     @Override
