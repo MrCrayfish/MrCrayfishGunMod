@@ -962,31 +962,6 @@ public class GunRenderer
         matrixStack.pop();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
-    public void blindPlayer(TickEvent.RenderTickEvent event)
-    {
-        if(event.phase != TickEvent.Phase.END)
-        {
-            return;
-        }
-
-        if(Minecraft.getInstance().player == null)
-        {
-            return;
-        }
-
-        EffectInstance effect = Minecraft.getInstance().player.getActivePotionEffect(ModEffects.BLINDED.get());
-        if(effect != null)
-        {
-            // Render white screen-filling overlay at full alpha effect when duration is above threshold
-            // When below threshold, fade to full transparency as duration approaches 0
-            float percent = Math.min((effect.getDuration() / (float) Config.SERVER.alphaFadeThreshold.get()), 1);
-            MainWindow window = Minecraft.getInstance().getMainWindow();
-            MatrixStack matrixStack = new MatrixStack();
-            Screen.fill(matrixStack, 0, 0, window.getWidth(), window.getHeight(), ((int) (percent * Config.SERVER.alphaOverlay.get() + 0.5) << 24) | 16777215);
-        }
-    }
-
     /**
      *
      * @param sensitivity
