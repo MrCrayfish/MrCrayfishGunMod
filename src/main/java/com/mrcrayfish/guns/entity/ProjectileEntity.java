@@ -747,26 +747,34 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      *
      * @param entity The entity to explode
      * @param radius The amount of radius the entity should deal
+     * @param forceNone If true, forces the explosion mode to be NONE instead of config value
      */
-    public static void createExplosion(Entity entity, float radius)
+    public static void createExplosion(Entity entity, float radius, boolean forceNone)
     {
         World world = entity.world;
-        if (world.isRemote())
+        if(world.isRemote())
             return;
 
+        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
         Explosion explosion = new Explosion(world, entity, null, null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, Explosion.Mode.NONE);
         explosion.doExplosionA();
         explosion.getAffectedBlockPositions().forEach(pos ->
         {
-            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable)
+            if(world.getBlockState(pos).getBlock() instanceof IExplosionDamageable)
+            {
                 ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
+            }
         });
         explosion.doExplosionB(true);
-        explosion.clearAffectedBlockPositions();
 
-        for (ServerPlayerEntity serverplayerentity : ((ServerWorld) world).getPlayers())
+        if(mode == Explosion.Mode.NONE)
         {
-            if (serverplayerentity.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ()) < 4096.0D)
+            explosion.clearAffectedBlockPositions();
+        }
+
+        for(ServerPlayerEntity serverplayerentity : ((ServerWorld) world).getPlayers())
+        {
+            if(serverplayerentity.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ()) < 4096.0D)
             {
                 serverplayerentity.connection.sendPacket(new SExplosionPacket(entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius / 5f, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(serverplayerentity)));
             }

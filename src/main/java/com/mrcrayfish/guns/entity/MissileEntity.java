@@ -53,45 +53,18 @@ public class MissileEntity extends ProjectileEntity
     @Override
     protected void onHitEntity(Entity entity, Vector3d hitVec, Vector3d startVec, Vector3d endVec, boolean headshot)
     {
-        createExplosion(this);
+        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
     }
 
     @Override
     protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
     {
-        createExplosion(this);
+        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
     }
 
     @Override
     public void onExpired()
     {
-        createExplosion(this);
-    }
-
-    private static void createExplosion(MissileEntity entity)
-    {
-        World world = entity.world;
-        if (world.isRemote())
-            return;
-
-        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
-        Explosion explosion = new Explosion(world, entity, entity.getPosX(), entity.getPosY(), entity.getPosZ(), Config.COMMON.missiles.explosionRadius.get().floatValue(), false, mode);
-        explosion.doExplosionA();
-        explosion.getAffectedBlockPositions().forEach(pos ->
-        {
-            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable)
-                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
-        });
-        explosion.doExplosionB(true);
-        if (mode == Explosion.Mode.NONE)
-            explosion.clearAffectedBlockPositions();
-
-        for (ServerPlayerEntity serverplayerentity : ((ServerWorld) world).getPlayers())
-        {
-            if (serverplayerentity.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ()) < 4096.0D)
-            {
-                serverplayerentity.connection.sendPacket(new SExplosionPacket(entity.getPosX(), entity.getPosY(), entity.getPosZ(), Config.COMMON.missiles.explosionRadius.get().floatValue(), explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(serverplayerentity)));
-            }
-        }
+        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
     }
 }
