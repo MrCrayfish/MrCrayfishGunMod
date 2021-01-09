@@ -608,7 +608,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             initialDamage *= modifier;
         }
         float damage = initialDamage / this.general.getProjectileAmount();
-        return GunModifierHelper.getModifiedDamage(this.weapon, this.modifiedGun, damage);
+        damage = GunModifierHelper.getModifiedDamage(this.weapon, this.modifiedGun, damage);
+        return Math.max(0F, damage);
     }
 
     private float getCriticalDamage(ItemStack weapon, Random rand, float damage)
