@@ -1,17 +1,18 @@
 {
-    "required": true,
-    "package": "com.mrcrayfish.guns.mixin",
-    "compatibilityLevel": "JAVA_8",
-    "minVersion": "0.8",
-    "refmap": "cgm.refmap.json",
-    "mixins": [
-        "common.LivingEntityMixin",
-        "common.PlayerListMixin"
-    ],
-    "client": [
-        "client.MouseHelperMixin"
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    }
+  "required": true,
+  "package": "com.mrcrayfish.guns.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "cgm.refmap.json",
+  "mixins": [
+    "common.LivingEntityMixin",
+    "common.PlayerListMixin"
+  ],
+  "client": [
+    "client.GameRendererMixin",
+    "client.MouseHelperMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
