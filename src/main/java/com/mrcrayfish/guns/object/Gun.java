@@ -697,91 +697,39 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             @Optional
             @Nullable
-            private Scope scope;
+            private ScaledPositioned scope;
             @Optional
             @Nullable
-            private Barrel barrel;
+            private ScaledPositioned barrel;
             @Optional
             @Nullable
-            private Stock stock;
+            private ScaledPositioned stock;
             @Optional
             @Nullable
-            private UnderBarrel underBarrel;
+            private ScaledPositioned underBarrel;
 
             @Nullable
-            public Scope getScope()
+            public ScaledPositioned getScope()
             {
                 return this.scope;
             }
 
             @Nullable
-            public Barrel getBarrel()
+            public ScaledPositioned getBarrel()
             {
                 return this.barrel;
             }
 
             @Nullable
-            public Stock getStock()
+            public ScaledPositioned getStock()
             {
                 return this.stock;
             }
 
             @Nullable
-            public UnderBarrel getUnderBarrel()
+            public ScaledPositioned getUnderBarrel()
             {
                 return this.underBarrel;
-            }
-
-            public static class Scope extends ScaledPositioned
-            {
-                public Scope copy()
-                {
-                    Scope scope = new Scope();
-                    scope.scale = this.scale;
-                    scope.xOffset = this.xOffset;
-                    scope.yOffset = this.yOffset;
-                    scope.zOffset = this.zOffset;
-                    return scope;
-                }
-            }
-
-            public static class Barrel extends ScaledPositioned
-            {
-                public Barrel copy()
-                {
-                    Barrel barrel = new Barrel();
-                    barrel.scale = this.scale;
-                    barrel.xOffset = this.xOffset;
-                    barrel.yOffset = this.yOffset;
-                    barrel.zOffset = this.zOffset;
-                    return barrel;
-                }
-            }
-
-            public static class Stock extends ScaledPositioned
-            {
-                public Stock copy()
-                {
-                    Stock stock = new Stock();
-                    stock.scale = this.scale;
-                    stock.xOffset = this.xOffset;
-                    stock.yOffset = this.yOffset;
-                    stock.zOffset = this.zOffset;
-                    return stock;
-                }
-            }
-
-            public static class UnderBarrel extends ScaledPositioned
-            {
-                public UnderBarrel copy()
-                {
-                    UnderBarrel underBarrel = new UnderBarrel();
-                    underBarrel.scale = this.scale;
-                    underBarrel.xOffset = this.xOffset;
-                    underBarrel.yOffset = this.yOffset;
-                    underBarrel.zOffset = this.zOffset;
-                    return underBarrel;
-                }
             }
 
             @Override
@@ -812,27 +760,19 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 if(tag.contains("Scope", Constants.NBT.TAG_COMPOUND))
                 {
-                    Scope scope = new Scope();
-                    scope.deserializeNBT(tag.getCompound("Scope"));
-                    this.scope = scope;
+                    this.scope = new ScaledPositioned(tag.getCompound("Scope"));
                 }
                 if(tag.contains("Barrel", Constants.NBT.TAG_COMPOUND))
                 {
-                    Barrel barrel = new Barrel();
-                    barrel.deserializeNBT(tag.getCompound("Barrel"));
-                    this.barrel = barrel;
+                    this.barrel = new ScaledPositioned(tag.getCompound("Barrel"));
                 }
                 if(tag.contains("Stock", Constants.NBT.TAG_COMPOUND))
                 {
-                    Stock stock = new Stock();
-                    stock.deserializeNBT(tag.getCompound("Stock"));
-                    this.stock = stock;
+                    this.stock = new ScaledPositioned(tag.getCompound("Stock"));
                 }
                 if(tag.contains("UnderBarrel", Constants.NBT.TAG_COMPOUND))
                 {
-                    UnderBarrel underBarrel = new UnderBarrel();
-                    underBarrel.deserializeNBT(tag.getCompound("UnderBarrel"));
-                    this.underBarrel = underBarrel;
+                    this.underBarrel = new ScaledPositioned(tag.getCompound("UnderBarrel"));
                 }
             }
 
@@ -948,12 +888,28 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             return this.zOffset;
         }
+
+        public Positioned copy()
+        {
+            Positioned positioned = new Positioned();
+            positioned.xOffset = this.xOffset;
+            positioned.yOffset = this.yOffset;
+            positioned.zOffset = this.zOffset;
+            return positioned;
+        }
     }
 
     public static class ScaledPositioned extends Positioned
     {
         @Optional
         protected double scale = 1.0;
+
+        public ScaledPositioned() {}
+
+        public ScaledPositioned(CompoundNBT tag)
+        {
+            this.deserializeNBT(tag);
+        }
 
         @Override
         public CompoundNBT serializeNBT()
@@ -976,6 +932,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public double getScale()
         {
             return this.scale;
+        }
+
+        @Override
+        public ScaledPositioned copy()
+        {
+            ScaledPositioned positioned = new ScaledPositioned();
+            positioned.xOffset = this.xOffset;
+            positioned.yOffset = this.yOffset;
+            positioned.zOffset = this.zOffset;
+            positioned.scale = this.scale;
+            return positioned;
         }
     }
 

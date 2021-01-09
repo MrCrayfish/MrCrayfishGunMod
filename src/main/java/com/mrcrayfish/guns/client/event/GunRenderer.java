@@ -850,6 +850,9 @@ public class GunRenderer
         matrixStack.push();
 
         Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
+        if(muzzleFlash == null)
+            return;
+
         double displayX = muzzleFlash.getXOffset() * 0.0625;
         double displayY = muzzleFlash.getYOffset() * 0.0625;
         double displayZ = muzzleFlash.getZOffset() * 0.0625;
@@ -860,7 +863,7 @@ public class GunRenderer
         if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
         {
             Barrel barrel = ((IBarrel) barrelStack.getItem()).getProperties();
-            Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(IAttachment.Type.BARREL);
+            Gun.ScaledPositioned positioned = modifiedGun.getModules().getAttachments().getBarrel();
             if(positioned != null)
             {
                 matrixStack.translate(0, 0, -barrel.getLength() * 0.0625 * positioned.getScale());
