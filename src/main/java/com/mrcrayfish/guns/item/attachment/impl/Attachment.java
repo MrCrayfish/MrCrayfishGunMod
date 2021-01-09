@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.item.attachment.IAttachment;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -62,7 +63,7 @@ public abstract class Attachment
             List<ITextComponent> perks = attachment.getProperties().getPerks();
             if(perks != null && perks.size() > 0)
             {
-                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title"));
+                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title").mergeStyle(TextFormatting.GRAY, TextFormatting.BOLD));
                 event.getToolTip().addAll(perks);
                 return;
             }
@@ -121,11 +122,11 @@ public abstract class Attachment
             }
             if(additionalDamage > 0.0F)
             {
-                addPerk(positivePerks, true, "perk.cgm.additional_damage.positive", String.valueOf(additionalDamage / 2.0));
+                addPerk(positivePerks, true, "perk.cgm.additional_damage.positive", ItemStack.DECIMALFORMAT.format(additionalDamage / 2.0));
             }
             else if(additionalDamage < 0.0F)
             {
-                addPerk(negativePerks, false, "perk.cgm.additional_damage.negative", String.valueOf(additionalDamage / 2.0));
+                addPerk(negativePerks, false, "perk.cgm.additional_damage.negative", ItemStack.DECIMALFORMAT.format(additionalDamage / 2.0));
             }
 
             /* Test for modified damage */
@@ -244,19 +245,14 @@ public abstract class Attachment
             attachment.getProperties().setPerks(positivePerks);
             if(positivePerks.size() > 0)
             {
-                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title"));
+                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title").mergeStyle(TextFormatting.GRAY, TextFormatting.BOLD));
                 event.getToolTip().addAll(positivePerks);
             }
         }
     }
 
-    private static void addPerk(List<ITextComponent> components, boolean positive, String id)
+    private static void addPerk(List<ITextComponent> components, boolean positive, String id, Object... params)
     {
-        components.add(new TranslationTextComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", I18n.format(id)));
-    }
-
-    private static void addPerk(List<ITextComponent> components, boolean positive, String id, String s)
-    {
-        components.add(new TranslationTextComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", I18n.format(id, s)));
+        components.add(new TranslationTextComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", new TranslationTextComponent(id, params).mergeStyle(TextFormatting.WHITE)).mergeStyle(positive ? TextFormatting.DARK_AQUA : TextFormatting.DARK_GRAY));
     }
 }

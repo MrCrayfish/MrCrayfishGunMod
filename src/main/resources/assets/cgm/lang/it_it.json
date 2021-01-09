@@ -31,7 +31,7 @@
     "death.attack.cgm.bullet.decimated": "%1$s e' stato decimato da %2$s",
 
     "info.cgm.damage": "Danno: %s",
-    "info.cgm.ammo": "Munizioni: %s/%s",
+    "info.cgm.ammo": "Munizioni: %s",
     "info.cgm.ignore_ammo": "Munizioni infinite",
 
     "config.cgm.title": "MrCrayfish's Gun Mod Config",
