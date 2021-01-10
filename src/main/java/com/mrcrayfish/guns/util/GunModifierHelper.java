@@ -52,7 +52,7 @@ public class GunModifierHelper
             IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
             for(IGunModifier modifier : modifiers)
             {
-                gravity = +modifier.additionalProjectileGravity();
+                gravity += modifier.additionalProjectileGravity();
             }
         }
         return gravity;
