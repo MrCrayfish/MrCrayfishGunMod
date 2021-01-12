@@ -1105,7 +1105,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         if(player.isCreative())
         {
             Item item = ForgeRegistries.ITEMS.getValue(id);
-            return item != null ? new ItemStack(item) : ItemStack.EMPTY;
+            return item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
         }
         for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
         {
