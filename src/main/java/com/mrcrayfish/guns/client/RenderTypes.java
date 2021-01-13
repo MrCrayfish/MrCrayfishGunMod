@@ -1,10 +1,12 @@
 package com.mrcrayfish.guns.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.render.ScreenTextureState;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -32,5 +34,11 @@ public class RenderTypes
     {
         RenderType.State state = RenderType.State.getBuilder().texturing(ScreenTextureState.instance()).cull(CULL_DISABLED).lightmap(LIGHTMAP_ENABLED).overlay(OVERLAY_ENABLED).build(false);
         return RenderType.makeType("cgm:screen_texture", DefaultVertexFormats.ENTITY, 7, 256, true, true, state);
+    }
+
+    public static RenderType getMuzzleFlash()
+    {
+        RenderType.State state = RenderType.State.getBuilder().texture(new RenderState.TextureState(GunRenderer.MUZZLE_FLASH_TEXTURE, false, false)).transparency(TRANSLUCENT_TRANSPARENCY).alpha(DEFAULT_ALPHA).cull(CULL_DISABLED).build(true);
+        return RenderType.makeType("cgm:muzzle_flash", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, 7, 256, true, true, state);
     }
 }

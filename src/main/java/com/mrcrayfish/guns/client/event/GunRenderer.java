@@ -2,11 +2,13 @@ package com.mrcrayfish.guns.client.event;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.AimTracker;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.RenderTypes;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -33,6 +35,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -45,6 +48,7 @@ import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -55,6 +59,7 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
@@ -81,7 +86,7 @@ import java.util.Set;
 
 public class GunRenderer
 {
-    private static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
+    public static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
     private static final double ZOOM_TICKS = 4;
 
     private Random random = new Random();
@@ -757,9 +762,9 @@ public class GunRenderer
 
             RenderUtil.applyTransformType(model.isEmpty() ? stack : model, matrixStack, transformType);
 
-            this.renderMuzzleFlash(entity, matrixStack, stack, transformType);
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, matrixStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, matrixStack, renderTypeBuffer, light, partialTicks);
+            this.renderMuzzleFlash(entity, matrixStack, renderTypeBuffer, stack, transformType);
 
             matrixStack.pop();
             return true;
@@ -827,7 +832,7 @@ public class GunRenderer
         }
     }
 
-    private void renderMuzzleFlash(LivingEntity entity, MatrixStack matrixStack, ItemStack weapon, ItemCameraTransforms.TransformType transformType)
+    private void renderMuzzleFlash(LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer buffer, ItemStack weapon, ItemCameraTransforms.TransformType transformType)
     {
         Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
         if(modifiedGun.getDisplay().getFlash() == null)
@@ -840,12 +845,12 @@ public class GunRenderer
             if(this.entityIdForMuzzleFlash.contains(entity.getEntityId()))
             {
                 float randomValue = this.entityIdToRandomValue.get(entity.getEntityId());
-                this.drawMuzzleFlash(matrixStack, weapon, modifiedGun, randomValue, randomValue >= 0.5F);
+                this.drawMuzzleFlash(weapon, modifiedGun, randomValue, randomValue >= 0.5F, matrixStack, buffer);
             }
         }
     }
 
-    private void drawMuzzleFlash(MatrixStack matrixStack, ItemStack weapon, Gun modifiedGun, float random, boolean flip)
+    private void drawMuzzleFlash(ItemStack weapon, Gun modifiedGun, float random, boolean flip, MatrixStack matrixStack, IRenderTypeBuffer buffer)
     {
         matrixStack.push();
 
@@ -879,29 +884,12 @@ public class GunRenderer
         matrixStack.rotate(Vector3f.XP.rotationDegrees(flip ? 180F : 0F));
         matrixStack.translate(-size / 2, -size / 2, 0);
 
-        RenderSystem.enableAlphaTest();
-        RenderSystem.defaultAlphaFunc();
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.depthMask(true);
-        RenderSystem.disableCull();
-        Minecraft.getInstance().getTextureManager().bindTexture(MUZZLE_FLASH_TEXTURE);
-
         Matrix4f matrix = matrixStack.getLast().getMatrix();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-        buffer.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
-        buffer.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
-        buffer.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();
-        buffer.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
-        tessellator.draw();
-
-        RenderSystem.enableCull();
-        RenderSystem.depthMask(true);
-        RenderSystem.disableBlend();
-        RenderSystem.defaultAlphaFunc();
+        IVertexBuilder builder = buffer.getBuffer(RenderTypes.getMuzzleFlash());
+        builder.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
+        builder.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
+        builder.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();
+        builder.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
 
         matrixStack.pop();
     }
