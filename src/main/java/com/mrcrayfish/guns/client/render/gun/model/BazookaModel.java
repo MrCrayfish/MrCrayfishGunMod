@@ -41,7 +41,7 @@ public class BazookaModel implements IOverrideModel
 
                 double size = 1.4 / 16.0;
                 matrixStack.translate(-size / 2 - 3.5 * 0.0625, -3.7 * 0.0625 - size / 2, -7 * 0.0625);
-e
+
                 IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(VIGNETTE));
                 builder.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.pos(matrix, (float) size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
