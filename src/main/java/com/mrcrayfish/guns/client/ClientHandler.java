@@ -70,9 +70,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -120,7 +122,6 @@ public class ClientHandler
         registerEntityRenders();
         registerColors();
         registerModelOverrides();
-        registerParticleFactories();
         registerScreenFactories();
     }
 
@@ -167,13 +168,6 @@ public class ClientHandler
         ModelOverrides.register(ModItems.LONG_SCOPE.get(), new LongScopeModel());
         ModelOverrides.register(ModItems.BAZOOKA.get(), new BazookaModel());
         ModelOverrides.register(ModItems.GRENADE_LAUNCHER.get(), new GrenadeLauncherModel());
-    }
-
-    private static void registerParticleFactories()
-    {
-        ParticleManager particleManager = Minecraft.getInstance().particles;
-        particleManager.registerFactory(ModParticleTypes.BULLET_HOLE.get(), (typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed) -> new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos()));
-        particleManager.registerFactory(ModParticleTypes.BLOOD.get(), (typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed) -> new BloodParticle(worldIn, x, y, z));
     }
 
     private static void registerScreenFactories()
