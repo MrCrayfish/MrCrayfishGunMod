@@ -616,12 +616,23 @@ public class GunRenderer
         LivingEntity entity = event.getEntity();
         ItemStack heldItem = entity.getHeldItem(hand);
 
-        if(hand == Hand.OFF_HAND && entity.getHeldItemMainhand().getItem() instanceof GunItem)
+        if(hand == Hand.OFF_HAND)
         {
-            Gun modifiedGun = ((GunItem) entity.getHeldItemMainhand().getItem()).getModifiedGun(entity.getHeldItemMainhand());
-            if(!modifiedGun.getGeneral().getGripType().getHeldAnimation().canRenderOffhandItem())
+            if(heldItem.getItem() instanceof GunItem)
+            {
                 event.setCanceled(true);
-            return;
+                return;
+            }
+
+            if(entity.getHeldItemMainhand().getItem() instanceof GunItem)
+            {
+                Gun modifiedGun = ((GunItem) entity.getHeldItemMainhand().getItem()).getModifiedGun(entity.getHeldItemMainhand());
+                if(!modifiedGun.getGeneral().getGripType().getHeldAnimation().canRenderOffhandItem())
+                {
+                    event.setCanceled(true);
+                    return;
+                }
+            }
         }
 
         if(heldItem.getItem() instanceof GunItem)
