@@ -12,7 +12,7 @@ import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
-import com.mrcrayfish.guns.network.message.MessageBulletHole;
+import com.mrcrayfish.guns.network.message.MessageProjectileHit;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
@@ -404,6 +404,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 return;
             }
 
+            Vector3d hitVec = result.getHitVec();
             BlockPos pos = blockRayTraceResult.getPos();
             BlockState state = this.world.getBlockState(pos);
             Block block = state.getBlock();
@@ -420,17 +421,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             if(block instanceof IDamageable)
             {
-                ((IDamageable) block).onBlockDamaged(world, state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1);
+                ((IDamageable) block).onBlockDamaged(this.world, state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1);
             }
 
-            Vector3d hitVec = blockRayTraceResult.getHitVec();
-            double holeX = hitVec.getX() + 0.005 * blockRayTraceResult.getFace().getXOffset();
-            double holeY = hitVec.getY() + 0.005 * blockRayTraceResult.getFace().getYOffset();
-            double holeZ = hitVec.getZ() + 0.005 * blockRayTraceResult.getFace().getZOffset();
-            Direction direction = blockRayTraceResult.getFace();
-            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.world.getChunkAt(blockRayTraceResult.getPos())), new MessageBulletHole(holeX, holeY, holeZ, direction, pos));
-
-            this.onHitBlock(state, pos, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
+            this.onHitBlock(state, pos, blockRayTraceResult.getFace(), hitVec.x, hitVec.y, hitVec.z);
 
             int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
             if(fireStarterLevel > 0)
@@ -509,10 +503,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(hitVec.x, hitVec.y, hitVec.z));
     }
 
-    protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
+    protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {
-        ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state), x, y, z, (int) this.projectile.getDamage(), 0.0, 0.0, 0.0, 0.05);
-        this.world.playSound(null, x, y, z, state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F);
+        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.world.getChunkAt(pos)), new MessageProjectileHit(x, y, z, pos, face));
     }
 
     @Override
@@ -674,71 +667,69 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
         else
         {
-            double d0 = MathHelper.lerp(-1.0E-7D, endVec.x, startVec.x);
-            double d1 = MathHelper.lerp(-1.0E-7D, endVec.y, startVec.y);
-            double d2 = MathHelper.lerp(-1.0E-7D, endVec.z, startVec.z);
-            double d3 = MathHelper.lerp(-1.0E-7D, startVec.x, endVec.x);
-            double d4 = MathHelper.lerp(-1.0E-7D, startVec.y, endVec.y);
-            double d5 = MathHelper.lerp(-1.0E-7D, startVec.z, endVec.z);
-            int i = MathHelper.floor(d3);
-            int j = MathHelper.floor(d4);
-            int k = MathHelper.floor(d5);
-            BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(i, j, k);
-            T t = hitFunction.apply(context, blockpos$mutable);
+            double startX = MathHelper.lerp(-0.0000001, endVec.x, startVec.x);
+            double startY = MathHelper.lerp(-0.0000001, endVec.y, startVec.y);
+            double startZ = MathHelper.lerp(-0.0000001, endVec.z, startVec.z);
+            double endX = MathHelper.lerp(-0.0000001, startVec.x, endVec.x);
+            double endY = MathHelper.lerp(-0.0000001, startVec.y, endVec.y);
+            double endZ = MathHelper.lerp(-0.0000001, startVec.z, endVec.z);
+            int blockX = MathHelper.floor(endX);
+            int blockY = MathHelper.floor(endY);
+            int blockZ = MathHelper.floor(endZ);
+            BlockPos.Mutable mutablePos = new BlockPos.Mutable(blockX, blockY, blockZ);
+            T t = hitFunction.apply(context, mutablePos);
             if(t != null)
             {
                 return t;
             }
-            else
-            {
-                double d6 = d0 - d3;
-                double d7 = d1 - d4;
-                double d8 = d2 - d5;
-                int l = MathHelper.signum(d6);
-                int i1 = MathHelper.signum(d7);
-                int j1 = MathHelper.signum(d8);
-                double d9 = l == 0 ? Double.MAX_VALUE : (double) l / d6;
-                double d10 = i1 == 0 ? Double.MAX_VALUE : (double) i1 / d7;
-                double d11 = j1 == 0 ? Double.MAX_VALUE : (double) j1 / d8;
-                double d12 = d9 * (l > 0 ? 1.0D - MathHelper.frac(d3) : MathHelper.frac(d3));
-                double d13 = d10 * (i1 > 0 ? 1.0D - MathHelper.frac(d4) : MathHelper.frac(d4));
-                double d14 = d11 * (j1 > 0 ? 1.0D - MathHelper.frac(d5) : MathHelper.frac(d5));
 
-                while(d12 <= 1.0D || d13 <= 1.0D || d14 <= 1.0D)
+            double deltaX = startX - endX;
+            double deltaY = startY - endY;
+            double deltaZ = startZ - endZ;
+            int signX = MathHelper.signum(deltaX);
+            int signY = MathHelper.signum(deltaY);
+            int signZ = MathHelper.signum(deltaZ);
+            double d9 = signX == 0 ? Double.MAX_VALUE : (double) signX / deltaX;
+            double d10 = signY == 0 ? Double.MAX_VALUE : (double) signY / deltaY;
+            double d11 = signZ == 0 ? Double.MAX_VALUE : (double) signZ / deltaZ;
+            double d12 = d9 * (signX > 0 ? 1.0D - MathHelper.frac(endX) : MathHelper.frac(endX));
+            double d13 = d10 * (signY > 0 ? 1.0D - MathHelper.frac(endY) : MathHelper.frac(endY));
+            double d14 = d11 * (signZ > 0 ? 1.0D - MathHelper.frac(endZ) : MathHelper.frac(endZ));
+
+            while(d12 <= 1.0D || d13 <= 1.0D || d14 <= 1.0D)
+            {
+                if(d12 < d13)
                 {
-                    if(d12 < d13)
+                    if(d12 < d14)
                     {
-                        if(d12 < d14)
-                        {
-                            i += l;
-                            d12 += d9;
-                        }
-                        else
-                        {
-                            k += j1;
-                            d14 += d11;
-                        }
-                    }
-                    else if(d13 < d14)
-                    {
-                        j += i1;
-                        d13 += d10;
+                        blockX += signX;
+                        d12 += d9;
                     }
                     else
                     {
-                        k += j1;
+                        blockZ += signZ;
                         d14 += d11;
                     }
-
-                    T t1 = hitFunction.apply(context, blockpos$mutable.setPos(i, j, k));
-                    if(t1 != null)
-                    {
-                        return t1;
-                    }
+                }
+                else if(d13 < d14)
+                {
+                    blockY += signY;
+                    d13 += d10;
+                }
+                else
+                {
+                    blockZ += signZ;
+                    d14 += d11;
                 }
 
-                return p_217300_2_.apply(context);
+                T t1 = hitFunction.apply(context, mutablePos.setPos(blockX, blockY, blockZ));
+                if(t1 != null)
+                {
+                    return t1;
+                }
             }
+
+            return p_217300_2_.apply(context);
         }
     }
 

@@ -9,8 +9,6 @@ import com.mrcrayfish.guns.client.audio.GunShotSound;
 import com.mrcrayfish.guns.client.event.BulletRenderer;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.event.SoundEvents;
-import com.mrcrayfish.guns.client.particle.BloodParticle;
-import com.mrcrayfish.guns.client.particle.BulletHoleParticle;
 import com.mrcrayfish.guns.client.render.entity.GrenadeRenderer;
 import com.mrcrayfish.guns.client.render.entity.MissileRenderer;
 import com.mrcrayfish.guns.client.render.entity.ProjectileRenderer;
@@ -37,9 +35,9 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBullet;
-import com.mrcrayfish.guns.network.message.MessageBulletHole;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
+import com.mrcrayfish.guns.network.message.MessageProjectileHit;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.object.Bullet;
 import com.mrcrayfish.guns.particles.BulletHoleData;
@@ -60,6 +58,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -67,6 +66,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -78,6 +78,7 @@ import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
@@ -219,16 +220,6 @@ public class ClientHandler
         }
     }
 
-    public static void handleMessageBulletHole(MessageBulletHole message)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        World world = mc.world;
-        if(world != null)
-        {
-            world.addParticle(new BulletHoleData(message.getDirection(), message.getPos()), true, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
-        }
-    }
-
     public static void handleExplosionStunGrenade(MessageStunGrenade message)
     {
         Minecraft mc = Minecraft.getInstance();
@@ -250,6 +241,29 @@ public class ClientHandler
             Particle smoke = spawnParticle(particleManager, ParticleTypes.SMOKE, x, y, z, world.rand, 4.0);
             smoke.setMaxAge((int) ((8 / (Math.random() * 0.1 + 0.4)) * 0.5));
             spawnParticle(particleManager, ParticleTypes.CRIT, x, y, z, world.rand, 4.0);
+        }
+    }
+
+    public static void handleProjectileHit(MessageProjectileHit message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        World world = mc.world;
+        if(world != null)
+        {
+            BlockState state = world.getBlockState(message.getPos());
+            double holeX = message.getX() + 0.005 * message.getFace().getXOffset();
+            double holeY = message.getY() + 0.005 * message.getFace().getYOffset();
+            double holeZ = message.getZ() + 0.005 * message.getFace().getZOffset();
+            double distance = Math.sqrt(mc.player.getDistanceSq(message.getX(), message.getY(), message.getZ()));
+            world.addParticle(new BulletHoleData(message.getFace(), message.getPos()), false, holeX, holeY, holeZ, 0, 0, 0);
+            if(distance < 16.0)
+            {
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
+            }
+            if(distance < 32.0)
+            {
+                world.playSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F, false);
+            }
         }
     }
 

@@ -12,6 +12,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SExplosionPacket;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
@@ -57,7 +58,7 @@ public class MissileEntity extends ProjectileEntity
     }
 
     @Override
-    protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
+    protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {
         createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
     }

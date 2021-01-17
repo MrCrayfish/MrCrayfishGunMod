@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -33,7 +34,7 @@ public class GrenadeEntity extends ProjectileEntity
     }
 
     @Override
-    protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
+    protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {
         createExplosion(this, this.getDamage() / 5F, true);
     }

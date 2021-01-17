@@ -55,13 +55,13 @@ public class PacketHandler
         registerPlayMessage(MessageStunGrenade.class, MessageStunGrenade::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageCraft.class, MessageCraft::new, LogicalSide.SERVER);
         registerPlayMessage(MessageBullet.class, MessageBullet::new, LogicalSide.CLIENT);
-        registerPlayMessage(MessageBulletHole.class, MessageBulletHole::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageAttachments.class, MessageAttachments::new, LogicalSide.SERVER);
         registerPlayMessage(MessageUpdateGuns.class, MessageUpdateGuns::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageBlood.class, MessageBlood::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageShooting.class, MessageShooting::new, LogicalSide.SERVER);
         registerPlayMessage(MessageGunSound.class, MessageGunSound::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageMuzzleFlash.class, MessageMuzzleFlash::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageProjectileHit.class, MessageProjectileHit::new, LogicalSide.CLIENT);
     }
 
     /**
