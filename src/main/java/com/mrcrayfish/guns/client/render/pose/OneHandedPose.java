@@ -84,4 +84,10 @@ public class OneHandedPose implements HeldAnimation
     {
         return false;
     }
+
+    @Override
+    public boolean canRenderOffhandItem()
+    {
+        return true;
+    }
 }

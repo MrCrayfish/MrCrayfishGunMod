@@ -89,6 +89,14 @@ public interface HeldAnimation
     }
 
     /**
+     * @return <code>true</code> if any items in the offhand should be rendered
+     */
+    default boolean canRenderOffhandItem()
+    {
+        return false;
+    }
+
+    /**
      * Copies the rotations from one {@link ModelRenderer} instance to another
      *
      * @param source the model renderer to grab the rotations from
