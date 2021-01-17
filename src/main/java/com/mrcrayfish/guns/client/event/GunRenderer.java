@@ -621,7 +621,7 @@ public class GunRenderer
         LivingEntity entity = event.getEntity();
         ItemStack heldItem = entity.getHeldItem(hand);
 
-        if(hand == Hand.OFF_HAND)
+        if(hand == Hand.OFF_HAND && entity.getHeldItemMainhand().getItem() instanceof GunItem)
         {
             event.setCanceled(true);
             return;
