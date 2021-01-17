@@ -1,22 +1,23 @@
 package com.mrcrayfish.guns.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.Reference;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * A texture state that represents the buffer after the world has been rendered but before the HUD
  * is rendered. Used for rendering scopes. This object is restricted to one instance.
- *
+ * <p>
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
@@ -26,46 +27,58 @@ public class ScreenTextureState extends RenderState.TexturingState
 
     public static ScreenTextureState instance()
     {
-        if(instance == null)
-        {
-            instance = new ScreenTextureState();
-        }
-        return instance;
+        return instance == null ? instance = new ScreenTextureState() : instance;
     }
 
-    private int textureId = -1;
+    private int textureId;
+    private int lastWindowWidth;
+    private int lastWindowHeight;
 
     private ScreenTextureState()
     {
-        super("screen_texture", () -> {
+        super("screen_texture", () ->
+        {
             RenderSystem.enableDepthTest();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableTexture();
-            RenderSystem.bindTexture(ScreenTextureState.instance().getTextureId());
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        }, () -> {
+            RenderSystem.bindTexture(instance().getTextureId());
+        }, () ->
+        {
             RenderSystem.disableDepthTest();
             RenderSystem.disableBlend();
         });
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onRenderWorldLast);
     }
 
-    public int getTextureId()
+    private int getTextureId()
     {
-        RenderSystem.assertThread(RenderSystem::isOnRenderThreadOrInit);
-        if(this.textureId == -1)
+        if (this.textureId == 0)
         {
             this.textureId = TextureUtil.generateTextureId();
+            // Texture params only need to be set once, not once per frame
+            RenderSystem.bindTexture(this.textureId);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         }
         return this.textureId;
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onRenderLastWorld(RenderWorldLastEvent event)
+    private void onRenderWorldLast(RenderWorldLastEvent event)
     {
-        Minecraft mc = Minecraft.getInstance();
-        GlStateManager.bindTexture(instance().getTextureId());
-        GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, 0, 0, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 0);
+        MainWindow mainWindow = Minecraft.getInstance().getMainWindow();
+        RenderSystem.bindTexture(this.getTextureId());
+        if (mainWindow.getWidth() != this.lastWindowWidth || mainWindow.getHeight() != this.lastWindowHeight)
+        {
+            // When window resizes the texture needs to be re-initialized and copied, so both are done in the same call
+            this.lastWindowWidth = mainWindow.getWidth();
+            this.lastWindowHeight = mainWindow.getHeight();
+            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, mainWindow.getWidth(), mainWindow.getHeight(), 0);
+        }
+        else
+        {
+            // Copy sub-image is faster than copy because the texture does not need to be initialized
+            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, mainWindow.getWidth(), mainWindow.getHeight());
+        }
     }
 }

@@ -1,44 +1,42 @@
 package com.mrcrayfish.guns.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.GunRenderer;
 import com.mrcrayfish.guns.client.render.ScreenTextureState;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 /**
  * author: mrcrayfish
  */
-public class RenderTypes
+public final class RenderTypes extends RenderType
 {
-    public static final RenderState.LightmapState LIGHTMAP_ENABLED = new RenderState.LightmapState(true);
-    public static final RenderState.OverlayState OVERLAY_ENABLED = new RenderState.OverlayState(true);
-    public static final RenderState.CullState CULL_DISABLED = new RenderState.CullState(false);
-    public static final RenderState.AlphaState DEFAULT_ALPHA = new RenderState.AlphaState(0.0F);
-    public static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-    }, () -> {
-        RenderSystem.disableBlend();
-    });
+    private static final RenderType BULLET_TRAIL = RenderType.makeType(Reference.MOD_ID + ":projectile_trail", DefaultVertexFormats.POSITION_COLOR, GL_QUADS, 256, true, true, RenderType.State.getBuilder().cull(CULL_DISABLED).alpha(DEFAULT_ALPHA).transparency(TRANSLUCENT_TRANSPARENCY).build(false));
+    private static final RenderType SCREEN = RenderType.makeType(Reference.MOD_ID + ":screen_texture", DefaultVertexFormats.ENTITY, GL_QUADS, 256, true, false, RenderType.State.getBuilder().texturing(ScreenTextureState.instance()).lightmap(LIGHTMAP_ENABLED).overlay(OVERLAY_ENABLED).build(false));
+    private static final RenderType MUZZLE_FLASH = RenderType.makeType(Reference.MOD_ID + ":muzzle_flash", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL_QUADS, 256, true, false, RenderType.State.getBuilder().texture(new RenderState.TextureState(GunRenderer.MUZZLE_FLASH_TEXTURE, false, false)).transparency(TRANSLUCENT_TRANSPARENCY).alpha(DEFAULT_ALPHA).cull(CULL_DISABLED).build(true));
+
+    private RenderTypes(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn)
+    {
+        super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
+    }
 
     public static RenderType getBulletTrail()
     {
-        return RenderType.makeType("cgm:projectile_trail", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder().cull(CULL_DISABLED).alpha(DEFAULT_ALPHA).transparency(TRANSLUCENT_TRANSPARENCY).build(false));
+        return BULLET_TRAIL;
     }
 
     public static RenderType getScreen()
     {
-        RenderType.State state = RenderType.State.getBuilder().texturing(ScreenTextureState.instance()).cull(CULL_DISABLED).lightmap(LIGHTMAP_ENABLED).overlay(OVERLAY_ENABLED).build(false);
-        return RenderType.makeType("cgm:screen_texture", DefaultVertexFormats.ENTITY, 7, 256, true, true, state);
+        return SCREEN;
     }
 
     public static RenderType getMuzzleFlash()
     {
-        RenderType.State state = RenderType.State.getBuilder().texture(new RenderState.TextureState(GunRenderer.MUZZLE_FLASH_TEXTURE, false, false)).transparency(TRANSLUCENT_TRANSPARENCY).alpha(DEFAULT_ALPHA).cull(CULL_DISABLED).build(true);
-        return RenderType.makeType("cgm:muzzle_flash", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, 7, 256, true, true, state);
+        return MUZZLE_FLASH;
     }
 }
