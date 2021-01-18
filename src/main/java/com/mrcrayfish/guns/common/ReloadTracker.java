@@ -143,7 +143,7 @@ public class ReloadTracker
                             SoundEvent cockEvent = ForgeRegistries.SOUND_EVENTS.getValue(gun.getSounds().getCock());
                             if(cockEvent != null && finalPlayer.isAlive())
                             {
-                                MessageGunSound messageSound = new MessageGunSound(cockEvent, SoundCategory.PLAYERS, (float) finalPlayer.getPosX(), (float) (finalPlayer.getPosY() + 1.0), (float) finalPlayer.getPosZ(), 1.0F, 1.0F, finalPlayer.getEntityId());
+                                MessageGunSound messageSound = new MessageGunSound(cockEvent, SoundCategory.PLAYERS, (float) finalPlayer.getPosX(), (float) (finalPlayer.getPosY() + 1.0), (float) finalPlayer.getPosZ(), 1.0F, 1.0F, finalPlayer.getEntityId(), false);
                                 PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) finalPlayer), messageSound);
                             }
                         });
