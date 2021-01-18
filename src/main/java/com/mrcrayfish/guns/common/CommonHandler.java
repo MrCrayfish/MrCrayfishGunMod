@@ -25,6 +25,7 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import io.netty.buffer.Unpooled;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -35,6 +36,7 @@ import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -43,6 +45,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -52,9 +55,11 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -119,21 +124,22 @@ public class CommonHandler
                         SpreadTracker.get(player.getUniqueID()).update(player, item);
                     }
 
-                    boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
-
-                    for(int i = 0; i < modifiedGun.getGeneral().getProjectileAmount(); i++)
+                    int count = modifiedGun.getGeneral().getProjectileAmount();
+                    Gun.Projectile projectileProps = modifiedGun.getProjectile();
+                    ProjectileEntity[] spawnedProjectiles = new ProjectileEntity[count];
+                    for(int i = 0; i < count; i++)
                     {
-                        IProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.getProjectile().getItem());
-                        ProjectileEntity bullet = factory.create(world, player, heldItem, item, modifiedGun);
-                        bullet.setWeapon(heldItem);
-                        bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
-                        world.addEntity(bullet);
-
-                        if(!modifiedGun.getProjectile().isVisible())
-                        {
-                            MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.getPosX(), bullet.getPosY(), bullet.getPosZ(), bullet.getMotion().getX(), bullet.getMotion().getY(), bullet.getMotion().getZ(), modifiedGun.getProjectile().getTrailColor(), modifiedGun.getProjectile().getTrailLengthMultiplier());
-                            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimensionKey())), messageBullet);
-                        }
+                        IProjectileFactory factory = ProjectileManager.getInstance().getFactory(projectileProps.getItem());
+                        ProjectileEntity projectileEntity = factory.create(world, player, heldItem, item, modifiedGun);
+                        projectileEntity.setWeapon(heldItem);
+                        projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
+                        world.addEntity(projectileEntity);
+                        spawnedProjectiles[i] = projectileEntity;
+                    }
+                    if(!projectileProps.isVisible())
+                    {
+                        MessageBullet messageBullet = new MessageBullet(spawnedProjectiles, projectileProps, player.getEntityId());
+                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimensionKey())), messageBullet);
                     }
 
                     MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
@@ -159,6 +165,7 @@ public class CommonHandler
                         }
                     }
 
+                    boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
                     ResourceLocation fireSound = silenced ? modifiedGun.getSounds().getSilencedFire() : modifiedGun.getSounds().getFire();
                     SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(fireSound);
                     if(event != null)

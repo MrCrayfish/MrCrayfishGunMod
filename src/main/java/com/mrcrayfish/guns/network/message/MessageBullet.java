@@ -1,8 +1,14 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.google.common.base.MoreObjects;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.entity.ProjectileEntity;
+import com.mrcrayfish.guns.object.Gun;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
 
@@ -11,57 +17,83 @@ import java.util.function.Supplier;
  */
 public class MessageBullet implements IMessage
 {
-    private int entityId;
-    private double posX;
-    private double posY;
-    private double posZ;
-    private double motionX;
-    private double motionY;
-    private double motionZ;
+    private int[] entityIds;
+    private Vector3d[] positions;
+    private Vector3d[] motions;
+    private ItemStack item;
     private int trailColor;
     private double trailLengthMultiplier;
+    private int life;
+    private double gravity;
+    private int shooterId;
 
     public MessageBullet() {}
 
-    public MessageBullet(int entityId, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, int trailColor, double trailLengthMultiplier)
+    public MessageBullet(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId)
     {
-        this.entityId = entityId;
-        this.posX = posX;
-        this.posY = posY;
-        this.posZ = posZ;
-        this.motionX = motionX;
-        this.motionY = motionY;
-        this.motionZ = motionZ;
-        this.trailColor = trailColor;
-        this.trailLengthMultiplier = trailLengthMultiplier;
+        this.positions = new Vector3d[spawnedProjectiles.length];
+        this.motions = new Vector3d[spawnedProjectiles.length];
+        this.entityIds = new int[spawnedProjectiles.length];
+        for(int i = 0; i < spawnedProjectiles.length; i++)
+        {
+            ProjectileEntity projectile = spawnedProjectiles[i];
+            this.positions[i] = projectile.getPositionVec();
+            this.motions[i] = projectile.getMotion();
+            this.entityIds[i] = projectile.getEntityId();
+        }
+        this.item = MoreObjects.firstNonNull(new ItemStack(ForgeRegistries.ITEMS.getValue(projectileProps.getItem())), ItemStack.EMPTY);
+        this.trailColor = projectileProps.getTrailColor();
+        this.trailLengthMultiplier = projectileProps.getTrailLengthMultiplier();
+        this.life = projectileProps.getLife();
+        this.gravity = spawnedProjectiles[0].getModifiedGravity(); //It's possible that projectiles have different gravity
+        this.shooterId = shooterId;
     }
 
     @Override
     public void encode(PacketBuffer buffer)
     {
-        buffer.writeVarInt(this.entityId);
-        buffer.writeDouble(this.posX);
-        buffer.writeDouble(this.posY);
-        buffer.writeDouble(this.posZ);
-        buffer.writeDouble(this.motionX);
-        buffer.writeDouble(this.motionY);
-        buffer.writeDouble(this.motionZ);
+        buffer.writeInt(this.entityIds.length);
+        for(int i = 0; i < this.entityIds.length; i++)
+        {
+            buffer.writeInt(this.entityIds[i]);
+
+            Vector3d position = this.positions[i];
+            buffer.writeDouble(position.x);
+            buffer.writeDouble(position.y);
+            buffer.writeDouble(position.z);
+
+            Vector3d motion = this.motions[i];
+            buffer.writeDouble(motion.x);
+            buffer.writeDouble(motion.y);
+            buffer.writeDouble(motion.z);
+        }
+        buffer.writeItemStack(this.item);
         buffer.writeVarInt(this.trailColor);
         buffer.writeDouble(this.trailLengthMultiplier);
+        buffer.writeInt(this.life);
+        buffer.writeDouble(this.gravity);
+        buffer.writeInt(this.shooterId);
     }
 
     @Override
     public void decode(PacketBuffer buffer)
     {
-        this.entityId = buffer.readVarInt();
-        this.posX = buffer.readDouble();
-        this.posY = buffer.readDouble();
-        this.posZ = buffer.readDouble();
-        this.motionX = buffer.readDouble();
-        this.motionY = buffer.readDouble();
-        this.motionZ = buffer.readDouble();
+        int size = buffer.readInt();
+        this.entityIds = new int[size];
+        this.positions = new Vector3d[size];
+        this.motions = new Vector3d[size];
+        for(int i = 0; i < size; i++)
+        {
+            this.entityIds[i] = buffer.readInt();
+            this.positions[i] = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+            this.motions[i] = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+        }
+        this.item = buffer.readItemStack();
         this.trailColor = buffer.readVarInt();
         this.trailLengthMultiplier = buffer.readDouble();
+        this.life = buffer.readInt();
+        this.gravity = buffer.readDouble();
+        this.shooterId = buffer.readInt();
     }
 
     @Override
@@ -71,48 +103,53 @@ public class MessageBullet implements IMessage
         supplier.get().setPacketHandled(true);
     }
 
-    public int getEntityId()
+    public int getCount()
     {
-        return entityId;
+        return this.entityIds.length;
     }
 
-    public double getPosX()
+    public int[] getEntityIds()
     {
-        return posX;
+        return this.entityIds;
     }
 
-    public double getPosY()
+    public Vector3d[] getPositions()
     {
-        return posY;
+        return this.positions;
     }
 
-    public double getPosZ()
+    public Vector3d[] getMotions()
     {
-        return posZ;
-    }
-
-    public double getMotionX()
-    {
-        return motionX;
-    }
-
-    public double getMotionY()
-    {
-        return motionY;
-    }
-
-    public double getMotionZ()
-    {
-        return motionZ;
+        return this.motions;
     }
 
     public int getTrailColor()
     {
-        return trailColor;
+        return this.trailColor;
     }
 
     public double getTrailLengthMultiplier()
     {
-        return trailLengthMultiplier;
+        return this.trailLengthMultiplier;
+    }
+
+    public int getLife()
+    {
+        return this.life;
+    }
+
+    public ItemStack getItem()
+    {
+        return this.item;
+    }
+
+    public double getGravity()
+    {
+        return this.gravity;
+    }
+
+    public int getShooterId()
+    {
+        return this.shooterId;
     }
 }

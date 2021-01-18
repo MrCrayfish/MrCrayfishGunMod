@@ -13,6 +13,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageProjectileHit;
+import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.object.EntityResult;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.object.Gun.Projectile;
@@ -45,8 +46,6 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SExplosionPacket;
 import net.minecraft.network.play.server.SPlaySoundPacket;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -191,6 +190,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public void setAdditionalDamage(float additionalDamage)
     {
         this.additionalDamage = additionalDamage;
+    }
+
+    public double getModifiedGravity()
+    {
+        return this.modifiedGravity;
     }
 
     @Override
@@ -619,6 +623,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public boolean isInRangeToRenderDist(double distance)
     {
         return true;
+    }
+
+    @Override
+    public void onRemovedFromWorld()
+    {
+        if(!this.world.isRemote)
+        {
+            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(this::getDeathTargetPoint), new MessageRemoveProjectile(this.getEntityId()));
+        }
+    }
+
+    private PacketDistributor.TargetPoint getDeathTargetPoint()
+    {
+        return new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosX(), 256, this.world.getDimensionKey());
     }
 
     @Override

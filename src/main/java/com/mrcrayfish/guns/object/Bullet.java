@@ -1,136 +1,109 @@
 package com.mrcrayfish.guns.object;
 
-import com.mrcrayfish.guns.entity.ProjectileEntity;
-import com.mrcrayfish.guns.network.message.MessageBullet;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Author: MrCrayfish
  */
 public class Bullet
 {
-    private ProjectileEntity projectile;
     private int entityId;
-    private double posX;
-    private double posY;
-    private double posZ;
-    private double motionX;
-    private double motionY;
-    private double motionZ;
-    private float rotationYaw;
-    private float rotationPitch;
-    private boolean finished = false;
+    private Vector3d position;
+    private Vector3d motion;
+    private float yaw;
+    private float pitch;
+    private boolean dead;
+    private ItemStack item;
     private int trailColor;
     private double trailLengthMultiplier;
+    private int age;
+    private int maxAge;
+    private double gravity;
+    private int shooterId;
 
-    public Bullet(@Nullable ProjectileEntity projectile, MessageBullet message)
+    public Bullet(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId)
     {
-        this.projectile = projectile;
-        this.entityId = message.getEntityId();
-        this.posX = message.getPosX();
-        this.posY = message.getPosY();
-        this.posZ = message.getPosZ();
-        this.motionX = message.getMotionX();
-        this.motionY = message.getMotionY();
-        this.motionZ = message.getMotionZ();
-        this.trailColor = message.getTrailColor();
-        this.trailLengthMultiplier = message.getTrailLengthMultiplier();
-        this.updateHeading();
+        this.entityId = entityId;
+        this.position = position;
+        this.motion = motion;
+        this.item = item;
+        this.trailColor = trailColor;
+        this.trailLengthMultiplier = trailMultiplier;
+        this.maxAge = maxAge;
+        this.gravity = gravity;
+        this.shooterId = shooterId;
+        this.updateYawPitch();
     }
 
-    private void updateHeading()
+    private void updateYawPitch()
     {
-        float d = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-        this.rotationYaw = (float) (MathHelper.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
-        this.rotationPitch = (float) (MathHelper.atan2(this.motionY, (double) d) * (180D / Math.PI));
+        float horizontalLength = MathHelper.sqrt(this.motion.x * this.motion.x + this.motion.z * this.motion.z);
+        this.yaw = (float) Math.toDegrees(MathHelper.atan2(this.motion.x, this.motion.z));
+        this.pitch = (float) Math.toDegrees(MathHelper.atan2(this.motion.y, (double) horizontalLength));
     }
 
-    public void tick(World world)
+    public void tick()
     {
-        if(this.projectile == null)
-        {
-            Entity entity = world.getEntityByID(this.entityId);
-            if(entity instanceof ProjectileEntity)
-            {
-                this.projectile = (ProjectileEntity) entity;
-                /*this.posX = this.projectile.posX;
-                this.posY = this.projectile.posY;
-                this.posZ = this.projectile.posZ;
-                this.motionX = this.projectile.motionX;
-                this.motionY = this.projectile.motionY;
-                this.motionZ = this.projectile.motionZ;*/
-            }
-        }
-        else if(!this.projectile.isAlive())
-        {
-            this.finished = true;
-        }
-        else
-        {
-            this.posX += this.motionX;
-            this.posY += this.motionY;
-            this.posZ += this.motionZ;
+        this.age++;
 
-            if(this.projectile.getProjectile().isGravity())
-            {
-                this.motionY -= 0.05;
-                this.updateHeading();
-            }
+        this.position = this.position.add(this.motion);
+
+        if(this.gravity != 0)
+        {
+            this.motion = this.motion.add(0, this.gravity, 0);
+            this.updateYawPitch();
+        }
+
+        Entity entity = Minecraft.getInstance().getRenderViewEntity();
+        double distance = entity != null ? Math.sqrt(entity.getDistanceSq(this.position)) : Double.MAX_VALUE;
+        if(this.age >= this.maxAge || distance > 256)
+        {
+            this.dead = true;
         }
     }
 
-    public ProjectileEntity getProjectile()
+    public int getEntityId()
     {
-        return this.projectile;
+        return this.entityId;
     }
 
-    public double getPosX()
+    public Vector3d getPosition()
     {
-        return this.posX;
+        return this.position;
     }
 
-    public double getPosY()
+    public Vector3d getMotion()
     {
-        return this.posY;
+        return this.motion;
     }
 
-    public double getPosZ()
+    public float getYaw()
     {
-        return this.posZ;
+        return this.yaw;
     }
 
-    public double getMotionX()
+    public float getPitch()
     {
-        return this.motionX;
+        return this.pitch;
     }
 
-    public double getMotionY()
+    public boolean isDead()
     {
-        return this.motionY;
+        return this.dead;
     }
 
-    public double getMotionZ()
+    public int getAge()
     {
-        return this.motionZ;
+        return this.age;
     }
 
-    public float getRotationYaw()
+    public ItemStack getItem()
     {
-        return this.rotationYaw;
-    }
-
-    public float getRotationPitch()
-    {
-        return this.rotationPitch;
-    }
-
-    public boolean isFinished()
-    {
-        return this.finished;
+        return this.item;
     }
 
     public int getTrailColor()
@@ -141,5 +114,27 @@ public class Bullet
     public double getTrailLengthMultiplier()
     {
         return this.trailLengthMultiplier;
+    }
+
+    public boolean isTrailVisible()
+    {
+        Entity entity = Minecraft.getInstance().getRenderViewEntity();
+        return entity != null && entity.getEntityId() != this.shooterId;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.entityId;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj instanceof Bullet)
+        {
+            return ((Bullet) obj).entityId == this.entityId;
+        }
+        return false;
     }
 }

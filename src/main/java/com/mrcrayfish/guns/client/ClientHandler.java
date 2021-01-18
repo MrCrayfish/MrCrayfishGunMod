@@ -38,6 +38,7 @@ import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageProjectileHit;
+import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.object.Bullet;
 import com.mrcrayfish.guns.particles.BulletHoleData;
@@ -58,6 +59,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -65,6 +67,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -214,9 +217,19 @@ public class ClientHandler
         World world = Minecraft.getInstance().world;
         if(world != null)
         {
-            Entity entity = world.getEntityByID(message.getEntityId());
-            ProjectileEntity projectile = (ProjectileEntity) entity;
-            BULLET_RENDERER.addBullet(new Bullet(projectile, message));
+            int[] entityIds = message.getEntityIds();
+            Vector3d[] positions = message.getPositions();
+            Vector3d[] motions = message.getMotions();
+            ItemStack item = message.getItem();
+            int trailColor = message.getTrailColor();
+            double trailLengthMultiplier = message.getTrailLengthMultiplier();
+            int life = message.getLife();
+            double gravity = message.getGravity();
+            int shooterId = message.getShooterId();
+            for(int i = 0; i < message.getCount(); i++)
+            {
+                BULLET_RENDERER.addBullet(new Bullet(entityIds[i], positions[i], motions[i], item, trailColor, trailLengthMultiplier, life, gravity, shooterId));
+            }
         }
     }
 
@@ -265,6 +278,11 @@ public class ClientHandler
                 world.playSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F, false);
             }
         }
+    }
+
+    public static void handleRemoveProjectile(MessageRemoveProjectile message)
+    {
+        BULLET_RENDERER.remove(message.getEntityId());
     }
 
     private static Particle spawnParticle(ParticleManager manager, IParticleData data, double x, double y, double z, Random rand, double velocityMultiplier)
