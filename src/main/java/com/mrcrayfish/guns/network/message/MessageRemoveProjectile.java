@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -9,13 +9,13 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageMuzzleFlash implements IMessage
+public class MessageRemoveProjectile implements IMessage
 {
     private int entityId;
 
-    public MessageMuzzleFlash() {}
+    public MessageRemoveProjectile() {}
 
-    public MessageMuzzleFlash(int entityId)
+    public MessageRemoveProjectile(int entityId)
     {
         this.entityId = entityId;
     }
@@ -35,7 +35,7 @@ public class MessageMuzzleFlash implements IMessage
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientHandler.handleMuzzleFlash(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleRemoveProjectile(this));
         supplier.get().setPacketHandled(true);
     }
 

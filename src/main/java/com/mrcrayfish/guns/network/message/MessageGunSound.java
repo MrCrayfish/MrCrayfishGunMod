@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -21,11 +21,12 @@ public class MessageGunSound implements IMessage
     private float z;
     private float volume;
     private float pitch;
-    private boolean shooter;
+    private int shooterId;
+    private boolean muzzle;
 
     public MessageGunSound() {}
 
-    public MessageGunSound(SoundEvent sound, SoundCategory category, float x, float y, float z, float volume, float pitch, boolean shooter)
+    public MessageGunSound(SoundEvent sound, SoundCategory category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle)
     {
         this.id = sound.getRegistryName();
         this.category = category;
@@ -34,7 +35,8 @@ public class MessageGunSound implements IMessage
         this.z = z;
         this.volume = volume;
         this.pitch = pitch;
-        this.shooter = shooter;
+        this.shooterId = shooterId;
+        this.muzzle = muzzle;
     }
 
     @Override
@@ -47,7 +49,8 @@ public class MessageGunSound implements IMessage
         buffer.writeFloat(this.z);
         buffer.writeFloat(this.volume);
         buffer.writeFloat(this.pitch);
-        buffer.writeBoolean(this.shooter);
+        buffer.writeInt(this.shooterId);
+        buffer.writeBoolean(this.muzzle);
     }
 
     @Override
@@ -60,13 +63,14 @@ public class MessageGunSound implements IMessage
         this.z = buffer.readFloat();
         this.volume = buffer.readFloat();
         this.pitch = buffer.readFloat();
-        this.shooter = buffer.readBoolean();
+        this.shooterId = buffer.readInt();
+        this.muzzle = buffer.readBoolean();
     }
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientHandler.handleMessageGunSound(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageGunSound(this));
         supplier.get().setPacketHandled(true);
     }
 
@@ -105,8 +109,13 @@ public class MessageGunSound implements IMessage
         return this.pitch;
     }
 
-    public boolean isShooter()
+    public int getShooterId()
     {
-        return this.shooter;
+        return this.shooterId;
+    }
+
+    public boolean showMuzzleFlash()
+    {
+        return this.muzzle;
     }
 }

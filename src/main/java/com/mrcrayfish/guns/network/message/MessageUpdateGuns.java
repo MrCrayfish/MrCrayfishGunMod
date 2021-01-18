@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.guns.client.ClientPlayHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.NetworkGunManager;
@@ -42,10 +43,7 @@ public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvid
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> {
-            NetworkGunManager.updateRegisteredGuns(this);
-            CustomGunManager.updateCustomGuns(this);
-        });
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleUpdateGuns(this));
         supplier.get().setPacketHandled(true);
     }
 

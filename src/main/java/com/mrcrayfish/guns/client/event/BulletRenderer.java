@@ -18,50 +18,73 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
 public class BulletRenderer
 {
-    private List<Bullet> bullets = new ArrayList<>();
+    private Map<Integer, Bullet> bullets = new HashMap<>();
 
     /**
+     * Adds a bullet to render into the world
      *
-     * @param bullet
+     * @param bullet the bullet instance
      */
     public void addBullet(Bullet bullet)
     {
-        this.bullets.add(bullet);
+        World world = Minecraft.getInstance().world;
+        if(world != null)
+        {
+            this.bullets.put(bullet.getEntityId(), bullet);
+        }
+    }
+
+    /**
+     * Removes the bullet for the given entity id.
+     *
+     * @param entityId the entity id of the bullet
+     */
+    public void remove(int entityId)
+    {
+        this.bullets.remove(entityId);
     }
 
     @SubscribeEvent
     public void onTickBullets(TickEvent.ClientTickEvent event)
     {
-        if(Minecraft.getInstance().world != null && event.phase == TickEvent.Phase.END)
+        World world = Minecraft.getInstance().world;
+        if(world != null)
         {
-            this.bullets.forEach(bullet -> bullet.tick(Minecraft.getInstance().world));
-            this.bullets.removeIf(Bullet::isFinished);
+            if(event.phase == TickEvent.Phase.END)
+            {
+                this.bullets.values().forEach(Bullet::tick);
+                this.bullets.values().removeIf(Bullet::isDead);
+            }
+        }
+        else if(!this.bullets.isEmpty())
+        {
+            this.bullets.clear();
         }
     }
 
     @SubscribeEvent
     public void onRenderBullets(RenderWorldLastEvent event)
     {
-        for(Bullet bullet : this.bullets)
+        for(Bullet bullet : this.bullets.values())
         {
             this.renderBullet(bullet, event.getMatrixStack(), event.getPartialTicks());
         }
     }
 
     /**
-     *
      * @param bullet
      * @param matrixStack
      * @param partialTicks
@@ -70,31 +93,32 @@ public class BulletRenderer
     {
         Minecraft mc = Minecraft.getInstance();
         Entity entity = mc.getRenderViewEntity();
-        if(entity == null || bullet.isFinished() || bullet.getProjectile() == null)
-            return;
+        if(entity == null || bullet.isDead()) return;
 
         matrixStack.push();
 
         Vector3d view = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
-        double bulletX = bullet.getPosX() + bullet.getMotionX() * partialTicks;
-        double bulletY = bullet.getPosY() + bullet.getMotionY() * partialTicks;
-        double bulletZ = bullet.getPosZ() + bullet.getMotionZ() * partialTicks;
+        Vector3d position = bullet.getPosition();
+        Vector3d motion = bullet.getMotion();
+        double bulletX = position.x + motion.x * partialTicks;
+        double bulletY = position.y + motion.y * partialTicks;
+        double bulletZ = position.z + motion.z * partialTicks;
         matrixStack.translate(bulletX - view.getX(), bulletY - view.getY(), bulletZ - view.getZ());
 
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(bullet.getRotationYaw()));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(-bullet.getRotationPitch() + 90));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(bullet.getYaw()));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-bullet.getPitch() + 90));
 
-        Vector3d motionVec = new Vector3d(bullet.getMotionX(), bullet.getMotionY(), bullet.getMotionZ());
+        Vector3d motionVec = new Vector3d(motion.x, motion.y, motion.z);
         float trailLength = (float) ((motionVec.length() / 3.0F) * bullet.getTrailLengthMultiplier());
-        float red = (float)(bullet.getTrailColor() >> 16 & 255) / 255.0F;
-        float green = (float)(bullet.getTrailColor() >> 8 & 255) / 255.0F;
-        float blue = (float)(bullet.getTrailColor() & 255) / 255.0F;
+        float red = (float) (bullet.getTrailColor() >> 16 & 255) / 255.0F;
+        float green = (float) (bullet.getTrailColor() >> 8 & 255) / 255.0F;
+        float blue = (float) (bullet.getTrailColor() & 255) / 255.0F;
         float alpha = 0.3F;
 
         Matrix4f matrix4f = matrixStack.getLast().getMatrix();
         IRenderTypeBuffer.Impl renderTypeBuffer = mc.getRenderTypeBuffers().getBufferSource();
 
-        if(bullet.getProjectile().getShooterId() != entity.getEntityId())
+        if(bullet.isTrailVisible())
         {
             RenderType bulletType = RenderTypes.getBulletTrail();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
@@ -109,21 +133,17 @@ public class BulletRenderer
             Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(bulletType);
         }
 
-        // No point rendering item if empty, so return
-        if(bullet.getProjectile().getItem().isEmpty())
+        if(!bullet.getItem().isEmpty())
         {
-            matrixStack.pop();
-            return;
+            matrixStack.rotate(Vector3f.YP.rotationDegrees((bullet.getAge() + partialTicks) * (float) 50));
+            matrixStack.scale(0.275F, 0.275F, 0.275F);
+
+            int combinedLight = WorldRenderer.getCombinedLight(entity.world, new BlockPos(entity.getPositionVec()));
+            ItemStack stack = bullet.getItem();
+            RenderType renderType = RenderTypeLookup.func_239219_a_(stack, false);
+            RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, matrixStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY);
+            Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(renderType);
         }
-
-        matrixStack.rotate(Vector3f.YP.rotationDegrees((bullet.getProjectile().ticksExisted + partialTicks) * (float) 50));
-        matrixStack.scale(0.275F, 0.275F, 0.275F);
-
-        int combinedLight = WorldRenderer.getCombinedLight(entity.world, new BlockPos(entity.getPositionVec()));
-        ItemStack stack = bullet.getProjectile().getItem();
-        RenderType renderType = RenderTypeLookup.func_239219_a_(stack, false);
-        RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, matrixStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY);
-        Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(renderType);
 
         matrixStack.pop();
     }

@@ -17,7 +17,6 @@ import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBullet;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
-import com.mrcrayfish.guns.network.message.MessageMuzzleFlash;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
@@ -119,21 +118,23 @@ public class CommonHandler
                         SpreadTracker.get(player.getUniqueID()).update(player, item);
                     }
 
-                    boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
-
-                    for(int i = 0; i < modifiedGun.getGeneral().getProjectileAmount(); i++)
+                    int count = modifiedGun.getGeneral().getProjectileAmount();
+                    Gun.Projectile projectileProps = modifiedGun.getProjectile();
+                    ProjectileEntity[] spawnedProjectiles = new ProjectileEntity[count];
+                    for(int i = 0; i < count; i++)
                     {
-                        IProjectileFactory factory = ProjectileManager.getInstance().getFactory(modifiedGun.getProjectile().getItem());
-                        ProjectileEntity bullet = factory.create(world, player, heldItem, item, modifiedGun);
-                        bullet.setWeapon(heldItem);
-                        bullet.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
-                        world.addEntity(bullet);
-
-                        if(!modifiedGun.getProjectile().isVisible())
-                        {
-                            MessageBullet messageBullet = new MessageBullet(bullet.getEntityId(), bullet.getPosX(), bullet.getPosY(), bullet.getPosZ(), bullet.getMotion().getX(), bullet.getMotion().getY(), bullet.getMotion().getZ(), modifiedGun.getProjectile().getTrailColor(), modifiedGun.getProjectile().getTrailLengthMultiplier());
-                            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimensionKey())), messageBullet);
-                        }
+                        IProjectileFactory factory = ProjectileManager.getInstance().getFactory(projectileProps.getItem());
+                        ProjectileEntity projectileEntity = factory.create(world, player, heldItem, item, modifiedGun);
+                        projectileEntity.setWeapon(heldItem);
+                        projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
+                        world.addEntity(projectileEntity);
+                        spawnedProjectiles[i] = projectileEntity;
+                        projectileEntity.tick();
+                    }
+                    if(!projectileProps.isVisible())
+                    {
+                        MessageBullet messageBullet = new MessageBullet(spawnedProjectiles, projectileProps, player.getEntityId());
+                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimensionKey())), messageBullet);
                     }
 
                     MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
@@ -159,24 +160,21 @@ public class CommonHandler
                         }
                     }
 
+                    boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
                     ResourceLocation fireSound = silenced ? modifiedGun.getSounds().getSilencedFire() : modifiedGun.getSounds().getFire();
                     SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(fireSound);
                     if(event != null)
                     {
-                        double posX = player.prevPosX;
-                        double posY = player.prevPosY + player.getEyeHeight();
-                        double posZ = player.prevPosZ;
+                        double posX = player.getPosX();
+                        double posY = player.getPosY() + player.getEyeHeight();
+                        double posZ = player.getPosZ();
                         float volume = GunModifierHelper.getFireSoundVolume(heldItem);
                         float pitch = 0.9F + world.rand.nextFloat() * 0.2F;
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
-                        MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, false);
-                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player, player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ(), radius, player.world.getDimensionKey())), messageSound);
-                        PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> player), new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, true));
-                    }
-
-                    if(modifiedGun.getDisplay().getFlash() != null)
-                    {
-                        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> player),new MessageMuzzleFlash(player.getEntityId()));
+                        boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
+                        MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId(), muzzle);
+                        PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(posX, posY, posZ, radius, player.world.getDimensionKey());
+                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> targetPoint), messageSound);
                     }
 
                     if(!player.isCreative())
