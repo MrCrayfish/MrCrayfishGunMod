@@ -135,6 +135,7 @@ public class CommonHandler
                         projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                         world.addEntity(projectileEntity);
                         spawnedProjectiles[i] = projectileEntity;
+                        projectileEntity.tick();
                     }
                     if(!projectileProps.isVisible())
                     {
