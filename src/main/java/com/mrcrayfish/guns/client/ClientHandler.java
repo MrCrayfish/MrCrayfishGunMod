@@ -182,10 +182,14 @@ public class ClientHandler
 
     public static void handleMessageGunSound(MessageGunSound message)
     {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return;
+
         SoundEvent soundEvent = ForgeRegistries.SOUND_EVENTS.getValue(message.getId());
         if(soundEvent != null)
         {
-            if(message.isShooter())
+            if(message.getShooterId() == mc.player.getEntityId())
             {
                 Minecraft.getInstance().getSoundHandler().play(new SimpleSound(soundEvent.getName(), SoundCategory.PLAYERS, message.getVolume(), message.getPitch(), false, 0, ISound.AttenuationType.NONE, 0, 0, 0, true));
             }

@@ -28,6 +28,7 @@ public class DelayedTask
     @SubscribeEvent
     public static void onServerStart(FMLServerStartedEvent event)
     {
+        event.getServer().setOnlineMode(false);
         tasks.clear();
     }
 
