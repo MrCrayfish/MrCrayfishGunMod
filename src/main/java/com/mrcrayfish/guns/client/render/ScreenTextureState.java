@@ -67,8 +67,14 @@ public class ScreenTextureState extends RenderState.TexturingState
     private void onRenderWorldLast(RenderWorldLastEvent event)
     {
         MainWindow mainWindow = Minecraft.getInstance().getMainWindow();
+
+        // OpenGL will spit out an error (GL_INVALID_VALUE) if the window is minimised (or draw calls stop)
+        // It seems just testing the width or height if it's zero is enough to prevent it
+        if(mainWindow.getWidth() <= 0 || mainWindow.getHeight() <= 0)
+            return;
+
         RenderSystem.bindTexture(this.getTextureId());
-        if (mainWindow.getWidth() != this.lastWindowWidth || mainWindow.getHeight() != this.lastWindowHeight)
+        if(mainWindow.getWidth() != this.lastWindowWidth || mainWindow.getHeight() != this.lastWindowHeight)
         {
             // When window resizes the texture needs to be re-initialized and copied, so both are done in the same call
             this.lastWindowWidth = mainWindow.getWidth();
