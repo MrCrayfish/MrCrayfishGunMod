@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -53,7 +53,7 @@ public class MessageProjectileHit implements IMessage
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientHandler.handleProjectileHit(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHit(this));
         supplier.get().setPacketHandled(true);
     }
 

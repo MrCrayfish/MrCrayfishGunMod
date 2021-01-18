@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -35,7 +35,7 @@ public class MessageRemoveProjectile implements IMessage
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientHandler.handleRemoveProjectile(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleRemoveProjectile(this));
         supplier.get().setPacketHandled(true);
     }
 

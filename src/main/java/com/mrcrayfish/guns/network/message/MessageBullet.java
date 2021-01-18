@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.google.common.base.MoreObjects;
-import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.ClientPlayHandler;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.item.ItemStack;
@@ -99,7 +99,7 @@ public class MessageBullet implements IMessage
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientHandler.handleMessageBullet(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBullet(this));
         supplier.get().setPacketHandled(true);
     }
 

@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -70,7 +70,7 @@ public class MessageGunSound implements IMessage
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientHandler.handleMessageGunSound(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageGunSound(this));
         supplier.get().setPacketHandled(true);
     }
 
