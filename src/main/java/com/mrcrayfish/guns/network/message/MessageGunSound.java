@@ -22,10 +22,11 @@ public class MessageGunSound implements IMessage
     private float volume;
     private float pitch;
     private int shooterId;
+    private boolean muzzle;
 
     public MessageGunSound() {}
 
-    public MessageGunSound(SoundEvent sound, SoundCategory category, float x, float y, float z, float volume, float pitch, int shooterId)
+    public MessageGunSound(SoundEvent sound, SoundCategory category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle)
     {
         this.id = sound.getRegistryName();
         this.category = category;
@@ -35,6 +36,7 @@ public class MessageGunSound implements IMessage
         this.volume = volume;
         this.pitch = pitch;
         this.shooterId = shooterId;
+        this.muzzle = muzzle;
     }
 
     @Override
@@ -48,6 +50,7 @@ public class MessageGunSound implements IMessage
         buffer.writeFloat(this.volume);
         buffer.writeFloat(this.pitch);
         buffer.writeInt(this.shooterId);
+        buffer.writeBoolean(this.muzzle);
     }
 
     @Override
@@ -61,6 +64,7 @@ public class MessageGunSound implements IMessage
         this.volume = buffer.readFloat();
         this.pitch = buffer.readFloat();
         this.shooterId = buffer.readInt();
+        this.muzzle = buffer.readBoolean();
     }
 
     @Override
@@ -108,5 +112,10 @@ public class MessageGunSound implements IMessage
     public int getShooterId()
     {
         return this.shooterId;
+    }
+
+    public boolean showMuzzleFlash()
+    {
+        return this.muzzle;
     }
 }

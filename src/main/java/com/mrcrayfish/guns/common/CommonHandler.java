@@ -177,14 +177,10 @@ public class CommonHandler
                         float volume = GunModifierHelper.getFireSoundVolume(heldItem);
                         float pitch = 0.9F + world.rand.nextFloat() * 0.2F;
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
-                        MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId());
+                        boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
+                        MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId(), muzzle);
                         PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(posX, posY, posZ, radius, player.world.getDimensionKey());
                         PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> targetPoint), messageSound);
-                    }
-
-                    if(modifiedGun.getDisplay().getFlash() != null)
-                    {
-                        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> player), new MessageMuzzleFlash(player.getEntityId()));
                     }
 
                     if(!player.isCreative())
