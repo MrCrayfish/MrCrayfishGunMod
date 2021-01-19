@@ -342,8 +342,8 @@ public class GunRenderingHandler
         double recoilNormal = RecoilHandler.get().getGunRecoilNormal();
         float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
         float recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(item);
-        double kick = gun.getGeneral().getRecoilKick() * 0.0625 * recoilNormal * this.getAdsRecoilReduction(gun);
-        float recoilLift = (float) (gun.getGeneral().getRecoilAngle() * recoilNormal) * (float) this.getAdsRecoilReduction(gun);
+        double kick = gun.getGeneral().getRecoilKick() * 0.0625 * recoilNormal * RecoilHandler.get().getAdsRecoilReduction(gun);
+        float recoilLift = (float) (gun.getGeneral().getRecoilAngle() * recoilNormal) * (float) RecoilHandler.get().getAdsRecoilReduction(gun);
         float recoilSwayAmount = (float) (2F + 1F * (1.0 - AimingHandler.get().getNormalisedAdsProgress()));
         float recoilSway = (float) ((RecoilHandler.get().getGunRecoilRandom() * recoilSwayAmount - recoilSwayAmount / 2F) * recoilNormal);
         matrixStack.translate(0, 0, kick * kickReduction);
@@ -352,11 +352,6 @@ public class GunRenderingHandler
         matrixStack.rotate(Vector3f.ZP.rotationDegrees(recoilSway * recoilReduction));
         matrixStack.rotate(Vector3f.XP.rotationDegrees(recoilLift * recoilReduction));
         matrixStack.translate(0, 0, -0.35);
-    }
-
-    private double getAdsRecoilReduction(Gun gun)
-    {
-        return 1.0 - gun.getGeneral().getRecoilAdsReduction() * AimingHandler.get().getNormalisedAdsProgress();
     }
 
     @SubscribeEvent
