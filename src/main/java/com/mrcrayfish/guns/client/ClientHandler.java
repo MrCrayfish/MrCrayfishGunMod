@@ -148,7 +148,7 @@ public class ClientHandler
             try
             {
                 OptionsRowList list = (OptionsRowList) mouseOptionsField.get(screen);
-                list.addOption(GunOptions.ADS_SENSITIVITY);
+                list.addOption(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR_TYPE);
             }
             catch(IllegalAccessException e)
             {

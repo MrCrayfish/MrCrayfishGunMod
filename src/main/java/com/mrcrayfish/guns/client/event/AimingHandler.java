@@ -1,10 +1,9 @@
 package com.mrcrayfish.guns.client.event;
 
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
+import com.mrcrayfish.controllable.client.ControllerType;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.init.ModBlocks;
@@ -22,7 +21,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -31,16 +29,15 @@ import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -65,7 +62,7 @@ public class AimingHandler
         return instance;
     }
 
-    public static final ResourceLocation CROSSHAIR = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair.png");
+    public static final ResourceLocation CROSSHAIR = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair_circle.png");
 
     private static final double MAX_AIM_PROGRESS = 4;
     private final Map<UUID, AimTracker> aimingMap = new HashMap<>();
@@ -192,6 +189,9 @@ public class AimingHandler
         if(this.normalisedAdsProgress == 1.0 || event.getType() != RenderGameOverlayEvent.ElementType.CROSSHAIRS)
             return;
 
+        if(GunMod.getOptions().getCrosshairType() == CrosshairType.DEFAULT)
+            return;
+
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null)
             return;
@@ -208,7 +208,7 @@ public class AimingHandler
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F - (float) this.normalisedAdsProgress);
         RenderSystem.translatef((float)(scaledWidth / 2), (float)(scaledHeight / 2), 0);
         RenderSystem.scalef(1.0F, -1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(CROSSHAIR);
+        mc.getTextureManager().bindTexture(GunMod.getOptions().getCrosshairType().getTexture());
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
@@ -371,6 +371,45 @@ public class AimingHandler
         public float getNormalProgress(float partialTicks)
         {
             return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
+        }
+    }
+
+    public enum CrosshairType implements IStringSerializable
+    {
+        DEFAULT("default"),
+        CIRCLE("circle");
+
+        private String id;
+        private ResourceLocation texture;
+
+        CrosshairType(@Nullable String id)
+        {
+            this.id = id;
+            this.texture = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair_" + id + ".png");
+        }
+
+        public ResourceLocation getTexture()
+        {
+            return this.texture;
+        }
+
+        @Override
+        public String getString()
+        {
+            return this.id;
+        }
+
+        public static CrosshairType byName(String name)
+        {
+            for(int i = 0; i < values().length; i++)
+            {
+                CrosshairType type = values()[i];
+                if(type.id.equals(name))
+                {
+                    return type;
+                }
+            }
+            return DEFAULT;
         }
     }
 }

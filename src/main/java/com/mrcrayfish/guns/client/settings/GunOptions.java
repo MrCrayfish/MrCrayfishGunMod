@@ -3,6 +3,8 @@ package com.mrcrayfish.guns.client.settings;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.client.event.AimingHandler;
+import net.minecraft.client.AbstractOption;
 import net.minecraft.client.settings.SliderPercentageOption;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
@@ -36,10 +38,20 @@ public class GunOptions
         return new TranslationTextComponent("cgm.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
     });
 
+    public static final AbstractOption CROSSHAIR_TYPE = new GunEnumOption<>("cgm.options.crosshairType", AimingHandler.CrosshairType.class, gameSettings -> {
+        return GunMod.getOptions().crosshairType;
+    }, (gameSettings, value) -> {
+        GunMod.getOptions().crosshairType = value;
+    }, (gameSettings, option) -> {
+        AimingHandler.CrosshairType type = GunMod.getOptions().crosshairType;
+        return new TranslationTextComponent("cgm.options.crosshairType.format", new TranslationTextComponent("cgm.options.crosshairType." + type.getString()));
+    });
+
     public static final Splitter COLON_SPLITTER = Splitter.on(':');
 
     private File optionsFile;
     private double adsSensitivity = 0.75;
+    private AimingHandler.CrosshairType crosshairType = AimingHandler.CrosshairType.DEFAULT;
 
     public GunOptions(File dataDir)
     {
@@ -83,6 +95,9 @@ public class GunOptions
                         case "adsSensitivity":
                             this.adsSensitivity = Double.parseDouble(value);
                             break;
+                        case "crosshairType":
+                            this.crosshairType = AimingHandler.CrosshairType.byName(value);
+                            break;
                     }
                 }
                 catch(Exception e)
@@ -103,6 +118,7 @@ public class GunOptions
         try(PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(this.optionsFile), StandardCharsets.UTF_8)))
         {
             writer.println("adsSensitivity:" + this.adsSensitivity);
+            writer.println("crosshairType:" + this.crosshairType.getString());
         }
         catch(FileNotFoundException e)
         {
@@ -116,5 +132,10 @@ public class GunOptions
     public double getAdsSensitivity()
     {
         return this.adsSensitivity;
+    }
+
+    public AimingHandler.CrosshairType getCrosshairType()
+    {
+        return this.crosshairType;
     }
 }
