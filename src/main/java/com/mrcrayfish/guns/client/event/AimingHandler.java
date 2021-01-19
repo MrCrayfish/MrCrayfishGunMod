@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client.event;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
@@ -21,6 +22,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -61,8 +63,6 @@ public class AimingHandler
         }
         return instance;
     }
-
-    public static final ResourceLocation CROSSHAIR = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair_circle.png");
 
     private static final double MAX_AIM_PROGRESS = 4;
     private final Map<UUID, AimTracker> aimingMap = new HashMap<>();
@@ -378,7 +378,11 @@ public class AimingHandler
     public enum CrosshairType implements IStringSerializable
     {
         DEFAULT("default"),
-        CIRCLE("circle");
+        BETTER_DEFAULT("better_default"),
+        CIRCLE("circle"),
+        FILLED_CIRCLE("filled_circle"),
+        SQUARE("square"),
+        ARROW("arrow");
 
         private String id;
         private ResourceLocation texture;
@@ -386,7 +390,7 @@ public class AimingHandler
         CrosshairType(@Nullable String id)
         {
             this.id = id;
-            this.texture = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair_" + id + ".png");
+            this.texture = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair/" + id + ".png");
         }
 
         public ResourceLocation getTexture()
