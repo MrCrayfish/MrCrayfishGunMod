@@ -211,15 +211,16 @@ public class AimingHandler
         mc.getTextureManager().bindTexture(GunMod.getOptions().getCrosshairType().getTexture());
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         double size = 8.0;
         double halfSize = size / 2.0;
-        buffer.pos(-halfSize, -halfSize, 0).tex(0, 0).endVertex();
-        buffer.pos(halfSize, -halfSize, 0).tex(1, 0).endVertex();
-        buffer.pos(halfSize, halfSize, 0).tex(1, 1).endVertex();
-        buffer.pos(-halfSize, halfSize, 0).tex(0, 1).endVertex();
+        buffer.pos(-halfSize, -halfSize, 0).tex(0, 1).endVertex();
+        buffer.pos(halfSize, -halfSize, 0).tex(1, 1).endVertex();
+        buffer.pos(halfSize, halfSize, 0).tex(1, 0).endVertex();
+        buffer.pos(-halfSize, halfSize, 0).tex(0, 0).endVertex();
         tessellator.draw();
         RenderSystem.popMatrix();
     }
