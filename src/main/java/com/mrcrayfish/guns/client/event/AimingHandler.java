@@ -1,5 +1,8 @@
 package com.mrcrayfish.guns.client.event;
 
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
@@ -19,11 +22,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,6 +42,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -55,6 +64,8 @@ public class AimingHandler
         }
         return instance;
     }
+
+    public static final ResourceLocation CROSSHAIR = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair.png");
 
     private static final double MAX_AIM_PROGRESS = 4;
     private final Map<UUID, AimTracker> aimingMap = new HashMap<>();
@@ -177,6 +188,40 @@ public class AimingHandler
         {
             event.setCanceled(true);
         }
+
+        if(this.normalisedAdsProgress == 1.0 || event.getType() != RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+            return;
+
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return;
+
+        ItemStack heldItem = mc.player.getHeldItemMainhand();
+        if(!(heldItem.getItem() instanceof GunItem))
+            return;
+
+        event.setCanceled(true);
+
+        RenderSystem.pushMatrix();
+        int scaledWidth = event.getWindow().getScaledWidth();
+        int scaledHeight = event.getWindow().getScaledHeight();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F - (float) this.normalisedAdsProgress);
+        RenderSystem.translatef((float)(scaledWidth / 2), (float)(scaledHeight / 2), 0);
+        RenderSystem.scalef(1.0F, -1.0F, 1.0F);
+        mc.getTextureManager().bindTexture(CROSSHAIR);
+        RenderSystem.enableBlend();
+        RenderSystem.enableAlphaTest();
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        double size = 8.0;
+        double halfSize = size / 2.0;
+        buffer.pos(-halfSize, -halfSize, 0).tex(0, 0).endVertex();
+        buffer.pos(halfSize, -halfSize, 0).tex(1, 0).endVertex();
+        buffer.pos(halfSize, halfSize, 0).tex(1, 1).endVertex();
+        buffer.pos(-halfSize, halfSize, 0).tex(0, 1).endVertex();
+        tessellator.draw();
+        RenderSystem.popMatrix();
     }
 
     private void updateAimProgress()
