@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.client.render.pose;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.object.GripType;
 import net.minecraft.client.Minecraft;
@@ -81,7 +82,7 @@ public class TwoHandedPose extends WeaponPose
 
         matrixStack.push();
 
-        float reloadProgress = ClientHandler.getGunRenderer().getReloadProgress(partialTicks);
+        float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
         matrixStack.translate(0, -reloadProgress * 2, 0);
 
         int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;

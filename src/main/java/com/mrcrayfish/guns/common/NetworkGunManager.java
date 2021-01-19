@@ -117,7 +117,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     /**
      * Writes all registered guns into the provided packet buffer
      *
-     * @param buffer a packet buffer instance
+     * @param buffer a packet buffer get
      */
     public void writeRegisteredGuns(PacketBuffer buffer)
     {
@@ -131,7 +131,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     /**
      * Reads all registered guns from the provided packet buffer
      *
-     * @param buffer a packet buffer instance
+     * @param buffer a packet buffer get
      * @return a map of registered guns from the server
      */
     public static ImmutableMap<ResourceLocation, Gun> readRegisteredGuns(PacketBuffer buffer)

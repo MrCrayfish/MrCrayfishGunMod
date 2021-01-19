@@ -149,7 +149,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         /**
-         * @return A copy of the general instance
+         * @return A copy of the general get
          */
         public General copy()
         {

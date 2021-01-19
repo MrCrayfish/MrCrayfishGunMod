@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.RenderTypes;
+import com.mrcrayfish.guns.client.event.AimingHandler;
+import com.mrcrayfish.guns.client.event.RecoilHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.MainWindow;
@@ -43,8 +45,8 @@ public class LongScopeModel implements IOverrideModel
             float crop = 0.4F;
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
-            int kickAmount = (int) ClientHandler.getGunRenderer().getRecoilAngle();
-            float offset = (float) (ClientHandler.getGunRenderer().getRecoilNormal() * kickAmount * (1.0 / window.getHeight()));
+            int kickAmount = (int) RecoilHandler.get().getGunRecoilAngle();
+            float offset = (float) (RecoilHandler.get().getGunRecoilNormal() * kickAmount * (1.0 / window.getHeight()));
             float texU = ((window.getWidth() - window.getHeight() + window.getHeight() * crop * 2.0F) / 2.0F) / window.getWidth();
 
             matrixStack.push();
@@ -54,7 +56,7 @@ public class LongScopeModel implements IOverrideModel
 
                 matrixStack.translate(-size / 2, 0.85 * 0.0625, 2.45 * 0.0625);
 
-                float color = (float) ClientHandler.getGunRenderer().getNormalisedAimProgress() * 0.8F + 0.2F;
+                float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
                 IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderTypes.getScreen());
                 builder.pos(matrix, 0, size, 0).color(color, color, color, 1.0F).tex(texU, 1.0F - crop + offset).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -64,7 +66,7 @@ public class LongScopeModel implements IOverrideModel
 
                 matrixStack.translate(0, 0, 0.0001);
 
-                float alpha = (float) (ClientHandler.getGunRenderer().getNormalisedAimProgress() * 0.8F + 0.2F);
+                float alpha = (float) (AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F);
 
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RETICLE));
                 builder.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0.9921875F, 0.9921875F).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();

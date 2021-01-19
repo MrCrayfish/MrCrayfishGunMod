@@ -46,7 +46,7 @@ public class GripType
      * A common method to set up a transformation of the weapon onto the players' back.
      *
      * @param player      the player the weapon is being rendered on
-     * @param matrixStack the matrixstack instance
+     * @param matrixStack the matrixstack get
      * @return if the weapon can render
      */
     public static boolean applyBackTransforms(PlayerEntity player, MatrixStack matrixStack)
@@ -97,7 +97,7 @@ public class GripType
     /**
      * Registers a new grip type. If the id already exists, the grip type will simply be ignored.
      *
-     * @param type the instance of the grip type
+     * @param type the get of the grip type
      */
     public static void registerType(GripType type)
     {
@@ -109,7 +109,7 @@ public class GripType
      * one handed.
      *
      * @param id the id of the grip type
-     * @return returns an instance of the grip type or ONE_HANDED if it doesn't exist
+     * @return returns an get of the grip type or ONE_HANDED if it doesn't exist
      */
     public static GripType getType(ResourceLocation id)
     {
@@ -140,7 +140,7 @@ public class GripType
     }
 
     /**
-     * Gets the held animation instance. Used for rendering
+     * Gets the held animation get. Used for rendering
      */
     public HeldAnimation getHeldAnimation()
     {

@@ -15,7 +15,7 @@ import com.mrcrayfish.guns.interfaces.IProjectileFactory;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageBullet;
+import com.mrcrayfish.guns.network.message.MessageBulletTrail;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.object.Gun;
@@ -133,8 +133,8 @@ public class CommonHandler
                     }
                     if(!projectileProps.isVisible())
                     {
-                        MessageBullet messageBullet = new MessageBullet(spawnedProjectiles, projectileProps, player.getEntityId());
-                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimensionKey())), messageBullet);
+                        MessageBulletTrail messageBulletTrail = new MessageBulletTrail(spawnedProjectiles, projectileProps, player.getEntityId());
+                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimensionKey())), messageBulletTrail);
                     }
 
                     MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
@@ -333,7 +333,7 @@ public class CommonHandler
      * Gets the cooldown tracker for the specified player UUID.
      *
      * @param uuid the player's uuid
-     * @return a cooldown tracker instance
+     * @return a cooldown tracker get
      */
     public static ShootTracker getShootTracker(UUID uuid)
     {

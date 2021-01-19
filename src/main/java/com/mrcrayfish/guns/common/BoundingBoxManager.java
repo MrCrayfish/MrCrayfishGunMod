@@ -93,7 +93,7 @@ public class BoundingBoxManager
      * Registers a headshot box for the specified entity type.
      *
      * @param type        the entity type
-     * @param headshotBox a {@link IHeadshotBox} instance
+     * @param headshotBox a {@link IHeadshotBox} get
      * @param <T>         a type that extends {@link LivingEntity}
      */
     public static <T extends LivingEntity> void registerHeadshotBox(EntityType<T> type, IHeadshotBox<T> headshotBox)

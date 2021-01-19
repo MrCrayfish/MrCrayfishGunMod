@@ -9,7 +9,7 @@ import net.minecraft.util.math.vector.Vector3d;
 /**
  * Author: MrCrayfish
  */
-public class Bullet
+public class BulletTrail
 {
     private int entityId;
     private Vector3d position;
@@ -25,7 +25,7 @@ public class Bullet
     private double gravity;
     private int shooterId;
 
-    public Bullet(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId)
+    public BulletTrail(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId)
     {
         this.entityId = entityId;
         this.position = position;
@@ -131,9 +131,9 @@ public class Bullet
     @Override
     public boolean equals(Object obj)
     {
-        if(obj instanceof Bullet)
+        if(obj instanceof BulletTrail)
         {
-            return ((Bullet) obj).entityId == this.entityId;
+            return ((BulletTrail) obj).entityId == this.entityId;
         }
         return false;
     }

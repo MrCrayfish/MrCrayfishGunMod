@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.google.common.base.MoreObjects;
-import com.mrcrayfish.guns.client.ClientPlayHandler;
+import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageBullet implements IMessage
+public class MessageBulletTrail implements IMessage
 {
     private int[] entityIds;
     private Vector3d[] positions;
@@ -27,9 +27,9 @@ public class MessageBullet implements IMessage
     private double gravity;
     private int shooterId;
 
-    public MessageBullet() {}
+    public MessageBulletTrail() {}
 
-    public MessageBullet(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId)
+    public MessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId)
     {
         this.positions = new Vector3d[spawnedProjectiles.length];
         this.motions = new Vector3d[spawnedProjectiles.length];
@@ -99,7 +99,7 @@ public class MessageBullet implements IMessage
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBullet(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBulletTrail(this));
         supplier.get().setPacketHandled(true);
     }
 

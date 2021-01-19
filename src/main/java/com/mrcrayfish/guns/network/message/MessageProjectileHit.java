@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.client.ClientPlayHandler;
+import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;

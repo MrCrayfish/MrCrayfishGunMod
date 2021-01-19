@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.event.GunRenderingHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.item.GunItem;
@@ -125,7 +126,7 @@ public class AttachmentScreen extends ContainerScreen<AttachmentContainer>
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             IRenderTypeBuffer.Impl buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
-            ClientHandler.getGunRenderer().renderWeapon(this.minecraft.player, this.minecraft.player.getHeldItemMainhand(), ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, 15728880, 0F);
+            GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getHeldItemMainhand(), ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, 15728880, 0F);
             buffer.finish();
 
             RenderSystem.disableAlphaTest();

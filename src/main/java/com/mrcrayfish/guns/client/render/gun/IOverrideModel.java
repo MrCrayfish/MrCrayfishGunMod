@@ -34,7 +34,7 @@ public interface IOverrideModel
      * @param parent        if an attachment, the parent is the weapon this attachment is attached to otherwise it's an empty stack.
      * @param entity        the entity holding the item
      * @param matrixStack   the current matrix stack
-     * @param buffer        a render type buffer instance
+     * @param buffer        a render type buffer get
      * @param light         the combined light for the item
      * @param overlay       the overlay texture for the item
      */

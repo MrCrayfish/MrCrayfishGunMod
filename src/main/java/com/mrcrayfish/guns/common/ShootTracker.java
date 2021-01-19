@@ -26,7 +26,7 @@ public class ShootTracker
      * of the weapon to determine when it's allowed to fire again.
      *
      * @param item        a gun item
-     * @param modifiedGun the modified gun instance of the specified gun
+     * @param modifiedGun the modified gun get of the specified gun
      */
     public void putCooldown(ItemStack weapon, GunItem item, Gun modifiedGun)
     {

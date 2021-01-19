@@ -54,4 +54,9 @@ public class GunFireEvent extends PlayerEvent
             super(player, stack);
         }
     }
+
+    public boolean isClient()
+    {
+        return getPlayer().getEntityWorld().isRemote();
+    }
 }

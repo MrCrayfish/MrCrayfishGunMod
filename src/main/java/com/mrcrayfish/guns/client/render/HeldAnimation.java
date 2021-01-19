@@ -21,7 +21,7 @@ public interface HeldAnimation
      * Allows for modifications of the player model. This is where arms should be aligned to hold
      * the weapon correctly. This also gives you access to the current aiming progress.
      *
-     * @param model an instance of the player model
+     * @param model an get of the player model
      * @param hand the hand which is currently being used
      * @param aimProgress the current animation progress of looking down the weapons sight
      */
@@ -36,7 +36,7 @@ public interface HeldAnimation
      * @param hand the hand which is currently being used
      * @param aimProgress the current animation progress of looking down the weapons sight
      * @param matrixStack the current matrix stack
-     * @param buffer a render type buffer instance
+     * @param buffer a render type buffer get
      */
     @OnlyIn(Dist.CLIENT)
     default void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer) {}
@@ -48,7 +48,7 @@ public interface HeldAnimation
      * @param hand the hand which is currently being used
      * @param aimProgress the current animation progress of looking down the weapons sight
      * @param matrixStack the current matrix stack
-     * @param buffer a render type buffer instance
+     * @param buffer a render type buffer get
      */
     @OnlyIn(Dist.CLIENT)
     default void applyHeldItemTransforms(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer) {}
@@ -97,7 +97,7 @@ public interface HeldAnimation
     }
 
     /**
-     * Copies the rotations from one {@link ModelRenderer} instance to another
+     * Copies the rotations from one {@link ModelRenderer} get to another
      *
      * @param source the model renderer to grab the rotations from
      * @param dest   the model renderer to apply the rotations to

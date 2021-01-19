@@ -61,7 +61,7 @@ public class DelayedTask
      * Adds a new delayed task to the system.
      *
      * @param ticks the amount of ticks to delay the execution
-     * @param run   a runnable instance with the code to run
+     * @param run   a runnable get with the code to run
      */
     public static void runAfter(int ticks, Runnable run)
     {

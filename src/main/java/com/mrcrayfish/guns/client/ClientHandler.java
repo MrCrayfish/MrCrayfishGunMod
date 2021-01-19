@@ -1,12 +1,14 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.controllable.Controllable;
-import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.event.BulletRenderer;
-import com.mrcrayfish.guns.client.event.GunRenderer;
-import com.mrcrayfish.guns.client.event.SoundEvents;
+import com.mrcrayfish.guns.client.event.AimingHandler;
+import com.mrcrayfish.guns.client.event.BulletTrailRenderingHandler;
+import com.mrcrayfish.guns.client.event.GunRenderingHandler;
+import com.mrcrayfish.guns.client.event.RecoilHandler;
+import com.mrcrayfish.guns.client.event.ReloadHandler;
+import com.mrcrayfish.guns.client.event.ShootingHandler;
+import com.mrcrayfish.guns.client.event.SoundHandler;
 import com.mrcrayfish.guns.client.render.entity.GrenadeRenderer;
 import com.mrcrayfish.guns.client.render.entity.MissileRenderer;
 import com.mrcrayfish.guns.client.render.entity.ProjectileRenderer;
@@ -25,14 +27,9 @@ import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
-import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.MouseSettingsScreen;
@@ -40,9 +37,6 @@ import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -53,7 +47,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
 
@@ -64,23 +57,16 @@ import java.lang.reflect.Field;
 public class ClientHandler
 {
     private static Field mouseOptionsField;
-    private static final GunRenderer GUN_RENDERER = new GunRenderer();
-    private static final BulletRenderer BULLET_RENDERER = new BulletRenderer();
-
-    public static GunRenderer getGunRenderer()
-    {
-        return GUN_RENDERER;
-    }
-
-    public static BulletRenderer getBulletRenderer()
-    {
-        return BULLET_RENDERER;
-    }
 
     public static void setup()
     {
-        MinecraftForge.EVENT_BUS.register(GUN_RENDERER);
-        MinecraftForge.EVENT_BUS.register(BULLET_RENDERER);
+        MinecraftForge.EVENT_BUS.register(AimingHandler.get());
+        MinecraftForge.EVENT_BUS.register(BulletTrailRenderingHandler.get());
+        MinecraftForge.EVENT_BUS.register(GunRenderingHandler.get());
+        MinecraftForge.EVENT_BUS.register(RecoilHandler.get());
+        MinecraftForge.EVENT_BUS.register(ReloadHandler.get());
+        MinecraftForge.EVENT_BUS.register(ShootingHandler.get());
+        MinecraftForge.EVENT_BUS.register(SoundHandler.get());
 
         /* Only register controller events if Controllable is loaded otherwise it will crash */
         if(GunMod.controllableLoaded)
@@ -89,7 +75,6 @@ public class ClientHandler
         }
 
         KeyBinds.register();
-        SoundEvents.initReflection();
 
         setupRenderLayers();
         registerEntityRenders();
@@ -147,53 +132,6 @@ public class ClientHandler
     {
         ScreenManager.registerFactory(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
         ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
-    }
-
-    public static boolean isLookingAtInteractableBlock()
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.objectMouseOver != null && mc.world != null)
-        {
-            if(mc.objectMouseOver instanceof BlockRayTraceResult)
-            {
-                BlockRayTraceResult result = (BlockRayTraceResult) mc.objectMouseOver;
-                BlockState state = mc.world.getBlockState(result.getPos());
-                Block block = state.getBlock();
-                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get();
-            }
-            else if(mc.objectMouseOver instanceof EntityRayTraceResult)
-            {
-                EntityRayTraceResult result = (EntityRayTraceResult) mc.objectMouseOver;
-                return result.getEntity() instanceof ItemFrameEntity;
-            }
-        }
-        return false;
-    }
-
-    public static boolean isAiming()
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(!mc.isGameFocused()) return false;
-
-        if(mc.player == null) return false;
-
-        if(mc.player.isSpectator()) return false;
-
-        if(!(mc.player.inventory.getCurrentItem().getItem() instanceof GunItem)) return false;
-
-        if(mc.currentScreen != null) return false;
-
-        boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
-        if(GunMod.controllableLoaded)
-        {
-            Controller controller = Controllable.getController();
-            if(controller != null)
-            {
-                zooming |= controller.getLTriggerValue() >= 0.5;
-            }
-        }
-
-        return zooming;
     }
 
     @SubscribeEvent

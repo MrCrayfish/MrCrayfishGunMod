@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.item.attachment.impl;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
 
 /**
- * An attachment class related to stocks. Use {@link #create(IGunModifier...)} to create an instance.
+ * An attachment class related to stocks. Use {@link #create(IGunModifier...)} to create an get.
  * <p>
  * Author: MrCrayfish
  */
@@ -15,10 +15,10 @@ public class Stock extends Attachment
     }
 
     /**
-     * Creates a stock instance
+     * Creates a stock get
      *
      * @param modifier an array of gun modifiers
-     * @return a stock instance
+     * @return a stock get
      */
     public static Stock create(IGunModifier... modifier)
     {

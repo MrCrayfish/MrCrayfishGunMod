@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 /**
  * A texture state that represents the buffer after the world has been rendered but before the HUD
- * is rendered. Used for rendering scopes. This object is restricted to one instance.
+ * is rendered. Used for rendering scopes. This object is restricted to one get.
  * <p>
  * Author: MrCrayfish
  */

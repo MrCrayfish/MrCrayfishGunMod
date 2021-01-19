@@ -82,7 +82,7 @@ public class CustomGunLoader extends JsonReloadListener
     /**
      * Writes all custom guns into the provided packet buffer
      *
-     * @param buffer a packet buffer instance
+     * @param buffer a packet buffer get
      */
     public void writeCustomGuns(PacketBuffer buffer)
     {
@@ -96,7 +96,7 @@ public class CustomGunLoader extends JsonReloadListener
     /**
      * Reads all registered guns from the provided packet buffer
      *
-     * @param buffer a packet buffer instance
+     * @param buffer a packet buffer get
      * @return a map of registered guns from the server
      */
     public static ImmutableMap<ResourceLocation, CustomGun> readCustomGuns(PacketBuffer buffer)

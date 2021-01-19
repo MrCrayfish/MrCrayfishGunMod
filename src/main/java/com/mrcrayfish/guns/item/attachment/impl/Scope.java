@@ -7,7 +7,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * An attachment class related to scopes. Scopes need to at least specify the additional zoom (or fov)
  * they provide and the y-offset to the center of the scope for them to render correctly. Use
- * {@link #create(float, double, IGunModifier...)} to create an instance.
+ * {@link #create(float, double, IGunModifier...)} to create an get.
  * <p>
  * Author: MrCrayfish
  */
@@ -38,7 +38,7 @@ public class Scope extends Attachment
      * Sets the offset distance from the camera to the view finder
      *
      * @param offset the view finder offset
-     * @return this scope instance
+     * @return this scope get
      */
     public Scope viewFinderOffset(double offset)
     {
@@ -88,12 +88,12 @@ public class Scope extends Attachment
     }
 
     /**
-     * Creates a scope instance
+     * Creates a scope get
      *
      * @param additionalZoom the additional zoom this scope provides
      * @param centerOffset   the length to the center of the view finder from the base of the scope model in pixels
      * @param modifiers      an array of gun modifiers
-     * @return a scope instance
+     * @return a scope get
      */
     public static Scope create(float additionalZoom, double centerOffset, IGunModifier... modifiers)
     {

@@ -24,31 +24,51 @@ import net.minecraftforge.fml.common.Mod;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ReloadHandler
 {
-    public static int reloadingSlot;
+    private static ReloadHandler instance;
+
+    public static ReloadHandler get()
+    {
+        if(instance == null)
+        {
+            instance = new ReloadHandler();
+        }
+        return instance;
+    }
+
+    private int startReloadTick;
+    private int reloadTimer;
+    private int prevReloadTimer;
+    private int reloadingSlot;
+
+    private ReloadHandler() {}
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event)
+    public void onClientTick(TickEvent.ClientTickEvent event)
     {
         if(event.phase != TickEvent.Phase.END)
-        {
             return;
-        }
+
+        this.prevReloadTimer = this.reloadTimer;
 
         PlayerEntity player = Minecraft.getInstance().player;
-        if(player != null && SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+        if(player != null)
         {
-            if(reloadingSlot != player.inventory.currentItem)
+            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
-                setReloading(false);
+                if(this.reloadingSlot != player.inventory.currentItem)
+                {
+                    setReloading(false);
+                }
             }
+
+            updateReloadTimer(player);
         }
     }
 
     @SubscribeEvent
-    public static void onKeyPressed(InputEvent.KeyInputEvent event)
+    public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
         if(Minecraft.getInstance().player == null)
         {
@@ -73,7 +93,7 @@ public class ReloadHandler
         }
     }
 
-    public static void setReloading(boolean reloading)
+    public void setReloading(boolean reloading)
     {
         PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
@@ -97,7 +117,7 @@ public class ReloadHandler
                         }
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, true);
                         PacketHandler.getPlayChannel().sendToServer(new MessageReload(true));
-                        reloadingSlot = player.inventory.currentItem;
+                        this.reloadingSlot = player.inventory.currentItem;
                     }
                 }
             }
@@ -105,8 +125,49 @@ public class ReloadHandler
             {
                 SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                 PacketHandler.getPlayChannel().sendToServer(new MessageReload(false));
-                reloadingSlot = -1;
+                this.reloadingSlot = -1;
             }
         }
+    }
+
+    private void updateReloadTimer(PlayerEntity player)
+    {
+        if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+        {
+            if(this.startReloadTick == -1)
+            {
+                this.startReloadTick = player.ticksExisted + 5;
+            }
+            if(this.reloadTimer < 5)
+            {
+                this.reloadTimer++;
+            }
+        }
+        else
+        {
+            if(this.startReloadTick != -1)
+            {
+                this.startReloadTick = -1;
+            }
+            if(this.reloadTimer > 0)
+            {
+                this.reloadTimer--;
+            }
+        }
+    }
+
+    public int getStartReloadTick()
+    {
+        return this.startReloadTick;
+    }
+
+    public int getReloadTimer()
+    {
+        return this.reloadTimer;
+    }
+
+    public float getReloadProgress(float partialTicks)
+    {
+        return (this.prevReloadTimer + (this.reloadTimer - this.prevReloadTimer) * partialTicks) / 5F;
     }
 }

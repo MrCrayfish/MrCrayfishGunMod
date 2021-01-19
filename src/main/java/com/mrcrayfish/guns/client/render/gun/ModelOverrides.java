@@ -1,8 +1,16 @@
 package com.mrcrayfish.guns.client.render.gun;
 
+import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.item.GunItem;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -11,6 +19,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ModelOverrides
 {
     private static final Map<Item, IOverrideModel> MODEL_MAP = new HashMap<>();
@@ -52,5 +61,27 @@ public class ModelOverrides
     public static IOverrideModel getModel(ItemStack stack)
     {
         return MODEL_MAP.get(stack.getItem());
+    }
+
+    @SubscribeEvent
+    public static void onClientPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.START && event.side == LogicalSide.CLIENT)
+        {
+            tick(event.player);
+        }
+    }
+
+    private static void tick(PlayerEntity player)
+    {
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
+        {
+            IOverrideModel model = ModelOverrides.getModel(heldItem);
+            if(model != null)
+            {
+                model.tick(player);
+            }
+        }
     }
 }

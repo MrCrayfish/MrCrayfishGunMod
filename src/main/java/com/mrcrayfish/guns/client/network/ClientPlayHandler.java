@@ -1,20 +1,20 @@
-package com.mrcrayfish.guns.client;
+package com.mrcrayfish.guns.client.network;
 
-import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.audio.GunShotSound;
+import com.mrcrayfish.guns.client.event.BulletTrailRenderingHandler;
+import com.mrcrayfish.guns.client.event.GunRenderingHandler;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.network.message.MessageBlood;
-import com.mrcrayfish.guns.network.message.MessageBullet;
+import com.mrcrayfish.guns.network.message.MessageBulletTrail;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.network.message.MessageProjectileHit;
 import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
-import com.mrcrayfish.guns.object.Bullet;
-import com.mrcrayfish.guns.object.CustomGun;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.object.BulletTrail;
 import com.mrcrayfish.guns.particles.BulletHoleData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -26,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.vector.Vector3d;
@@ -48,7 +47,7 @@ public class ClientPlayHandler
 
         if(message.showMuzzleFlash())
         {
-            ClientHandler.getGunRenderer().showMuzzleFlashForPlayer(message.getShooterId());
+            GunRenderingHandler.get().showMuzzleFlashForPlayer(message.getShooterId());
         }
 
         SoundEvent soundEvent = ForgeRegistries.SOUND_EVENTS.getValue(message.getId());
@@ -81,7 +80,7 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageBullet(MessageBullet message)
+    public static void handleMessageBulletTrail(MessageBulletTrail message)
     {
         World world = Minecraft.getInstance().world;
         if(world != null)
@@ -97,7 +96,7 @@ public class ClientPlayHandler
             int shooterId = message.getShooterId();
             for(int i = 0; i < message.getCount(); i++)
             {
-                ClientHandler.getBulletRenderer().addBullet(new Bullet(entityIds[i], positions[i], motions[i], item, trailColor, trailLengthMultiplier, life, gravity, shooterId));
+                BulletTrailRenderingHandler.get().add(new BulletTrail(entityIds[i], positions[i], motions[i], item, trailColor, trailLengthMultiplier, life, gravity, shooterId));
             }
         }
     }
@@ -156,7 +155,7 @@ public class ClientPlayHandler
 
     public static void handleRemoveProjectile(MessageRemoveProjectile message)
     {
-        ClientHandler.getBulletRenderer().remove(message.getEntityId());
+        BulletTrailRenderingHandler.get().remove(message.getEntityId());
     }
 
     public static void handleUpdateGuns(MessageUpdateGuns message)

@@ -7,7 +7,8 @@ import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.client.event.GunHandler;
+import com.mrcrayfish.guns.client.event.AimingHandler;
+import com.mrcrayfish.guns.client.event.ShootingHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
@@ -50,7 +51,7 @@ public class ControllerEvents
                         event.setCanceled(true);
                         if(event.getState())
                         {
-                            GunHandler.fire(player, heldItem);
+                            ShootingHandler.get().fire(player, heldItem);
                         }
                     }
                     break;
@@ -97,7 +98,7 @@ public class ControllerEvents
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
-            if(heldItem.getItem() instanceof GunItem && ClientHandler.isAiming())
+            if(heldItem.getItem() instanceof GunItem && AimingHandler.get().isAiming())
             {
                 event.setYawSpeed(10.0F * (float) GunMod.getOptions().getAdsSensitivity());
                 event.setPitchSpeed(7.5F * (float) GunMod.getOptions().getAdsSensitivity());
@@ -136,7 +137,7 @@ public class ControllerEvents
                 }
 
                 ItemStack scopeStack = Gun.getScopeStack(heldItem);
-                if(scopeStack.getItem() instanceof IScope && ClientHandler.isAiming())
+                if(scopeStack.getItem() instanceof IScope && AimingHandler.get().isAiming())
                 {
                     IScope iscope = (IScope) scopeStack.getItem();
                     Scope scope = iscope.getProperties();
@@ -169,7 +170,7 @@ public class ControllerEvents
                 Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
                 if(gun.getGeneral().isAuto())
                 {
-                    GunHandler.fire(player, heldItem);
+                    ShootingHandler.get().fire(player, heldItem);
                 }
             }
         }
@@ -184,13 +185,13 @@ public class ControllerEvents
 
         if(this.reloadCounter > 40)
         {
-            ReloadHandler.setReloading(false);
+            ReloadHandler.get().setReloading(false);
             PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
             this.reloadCounter = -1;
         }
         else if(this.reloadCounter > 0 && !controller.getButtonsStates().getState(Buttons.X))
         {
-            ReloadHandler.setReloading(!SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING));
+            ReloadHandler.get().setReloading(!SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING));
             reloadCounter = -1;
         }
     }

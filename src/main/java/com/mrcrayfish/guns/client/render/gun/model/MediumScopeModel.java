@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.RenderTypes;
+import com.mrcrayfish.guns.client.event.AimingHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.MainWindow;
@@ -56,7 +57,7 @@ public class MediumScopeModel implements IOverrideModel
 
                 matrixStack.translate(-size / 2, 0.06, 1.5 * 0.0625);
 
-                float color = (float) ClientHandler.getGunRenderer().getNormalisedAimProgress() * 0.8F + 0.2F;
+                float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
                 IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderTypes.getScreen());
                 builder.pos(matrix, 0, size, 0).color(color, color, color, 1.0F).tex(texU, 1.0F - crop).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -72,7 +73,7 @@ public class MediumScopeModel implements IOverrideModel
                 builder.pos(matrix, size, 0, 0).color(color, color, color, 1.0F).tex(1, 0).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.pos(matrix, size, size, 0).color(color, color, color, 1.0F).tex(1, 1).overlay(overlay).lightmap(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
 
-                double invertProgress = (1.0 - ClientHandler.getGunRenderer().getNormalisedAimProgress());
+                double invertProgress = (1.0 - AimingHandler.get().getNormalisedAdsProgress());
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
                 double scale = 8.0;
@@ -90,7 +91,7 @@ public class MediumScopeModel implements IOverrideModel
                 float red = ((reticleGlowColor >> 16) & 0xFF) / 255F;
                 float green = ((reticleGlowColor >> 8) & 0xFF) / 255F;
                 float blue = ((reticleGlowColor >> 0) & 0xFF) / 255F;
-                float alpha = (float) (1.0F * ClientHandler.getGunRenderer().getNormalisedAimProgress());
+                float alpha = (float) (1.0F * AimingHandler.get().getNormalisedAdsProgress());
 
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(HOLO_RETICLE_GLOW));
                 builder.pos(matrix, 0, (float) (size / scale), 0).color(red, green, blue, alpha).tex(0.0F, 0.9375F).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -98,7 +99,7 @@ public class MediumScopeModel implements IOverrideModel
                 builder.pos(matrix, (float) (size / scale), 0, 0).color(red, green, blue, alpha).tex(0.9375F, 0.0F).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.pos(matrix, (float) (size / scale), (float) (size / scale), 0).color(red, green, blue, alpha).tex(0.9375F, 0.9375F).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
 
-                alpha = (float) (0.75F * ClientHandler.getGunRenderer().getNormalisedAimProgress());
+                alpha = (float) (0.75F * AimingHandler.get().getNormalisedAdsProgress());
 
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(HOLO_RETICLE));
                 builder.pos(matrix, 0, (float) (size / scale), 0).color(1.0F, 1.0F, 1.0F, alpha).tex(0.0F, 0.9375F).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
