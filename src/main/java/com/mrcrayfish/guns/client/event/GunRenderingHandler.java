@@ -86,7 +86,7 @@ public class GunRenderingHandler
 
     private int sprintTransition;
     private int prevSprintTransition;
-    private int sprintCooldown; //TODO increase cooldown
+    private int sprintCooldown;
 
     private Field equippedProgressMainHandField;
     private Field prevEquippedProgressMainHandField;
@@ -141,7 +141,7 @@ public class GunRenderingHandler
             return;
 
         this.sprintTransition = 0;
-        this.sprintCooldown = 5;
+        this.sprintCooldown = 8;
 
         ItemStack heldItem = event.getStack();
         GunItem gunItem = (GunItem) heldItem.getItem();
