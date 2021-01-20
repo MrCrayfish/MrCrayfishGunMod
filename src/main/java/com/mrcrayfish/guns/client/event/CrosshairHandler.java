@@ -5,6 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
+import com.mrcrayfish.guns.client.render.crosshair.TechCrosshair;
 import com.mrcrayfish.guns.client.render.crosshair.TexturedCrosshair;
 import com.mrcrayfish.guns.hook.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
@@ -55,6 +56,7 @@ public class CrosshairHandler
         this.register(new TexturedCrosshair(new ResourceLocation(Reference.MOD_ID, "line")));
         this.register(new TexturedCrosshair(new ResourceLocation(Reference.MOD_ID, "t")));
         this.register(new TexturedCrosshair(new ResourceLocation(Reference.MOD_ID, "smiley")));
+        this.register(new TechCrosshair());
     }
 
     /**
