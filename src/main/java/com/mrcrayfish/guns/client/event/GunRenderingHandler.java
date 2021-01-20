@@ -49,6 +49,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -91,6 +92,9 @@ public class GunRenderingHandler
     private int prevSprintTransition;
     private int sprintCooldown;
 
+    private float offhandTranslate;
+    private float prevOffhandTranslate;
+
     private Field equippedProgressMainHandField;
     private Field prevEquippedProgressMainHandField;
     
@@ -104,6 +108,7 @@ public class GunRenderingHandler
 
         this.updateSprinting();
         this.updateMuzzleFlash();
+        this.updateOffhandTranslate();
     }
 
     private void updateSprinting()
@@ -137,6 +142,25 @@ public class GunRenderingHandler
         this.entityIdForDrawnMuzzleFlash.addAll(this.entityIdForMuzzleFlash);
     }
 
+    private void updateOffhandTranslate()
+    {
+        this.prevOffhandTranslate = this.offhandTranslate;
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return;
+
+        boolean down = false;
+        ItemStack heldItem = mc.player.getHeldItemMainhand();
+        if(heldItem.getItem() instanceof GunItem)
+        {
+            Gun modifiedGun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
+            down = !modifiedGun.getGeneral().getGripType().getHeldAnimation().canRenderOffhandItem();
+        }
+
+        float direction = down ? -0.3F : 0.3F;
+        this.offhandTranslate = MathHelper.clamp(this.offhandTranslate + direction, 0.0F, 1.0F);
+    }
+
     @SubscribeEvent
     public void onGunFire(GunFireEvent.Post event)
     {
@@ -164,9 +188,6 @@ public class GunRenderingHandler
     @SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
-        //TODO make the transition less gltichy when switching between items
-        //TODO make the offhand translate down when zooming in
-
         Minecraft mc = Minecraft.getInstance();
         MatrixStack matrixStack = event.getMatrixStack();
         if(mc.gameSettings.viewBobbing && mc.getRenderViewEntity() instanceof PlayerEntity)
@@ -199,16 +220,21 @@ public class GunRenderingHandler
                 return;
             }
 
+            float offhand = 1.0F - MathHelper.lerp(event.getPartialTicks(), this.prevOffhandTranslate, this.offhandTranslate);
+            matrixStack.translate(0, offhand * -0.6F, 0);
+
             PlayerEntity player = Minecraft.getInstance().player;
-            if (player != null && player.getHeldItemMainhand().getItem() instanceof GunItem)
+            if(player != null && player.getHeldItemMainhand().getItem() instanceof GunItem)
             {
                 Gun modifiedGun = ((GunItem) player.getHeldItemMainhand().getItem()).getModifiedGun(player.getHeldItemMainhand());
-                if (!modifiedGun.getGeneral().getGripType().getHeldAnimation().canRenderOffhandItem())
+                if(!modifiedGun.getGeneral().getGripType().getHeldAnimation().canRenderOffhandItem())
                 {
-                    event.setCanceled(true);
                     return;
                 }
             }
+
+            /* Makes the off hand item move out of view */
+            matrixStack.translate(0, -1 * AimingHandler.get().getNormalisedAdsProgress(), 0);
         }
 
         if(!(heldItem.getItem() instanceof GunItem))
@@ -275,16 +301,12 @@ public class GunRenderingHandler
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 matrixStack.translate(xOffset * side * transition, yOffset * transition, zOffset * transition);
             }
-            else
-            {
-                /* Makes the off hand item move out of view */
-                matrixStack.translate(0, -1 * AimingHandler.get().getNormalisedAdsProgress(), 0);
-            }
         }
 
         /* Applies equip progress animation translations */
         float equipProgress = this.getEquipProgress(event.getPartialTicks());
-        matrixStack.translate(0, equipProgress * -0.6F, 0);
+        //matrixStack.translate(0, equipProgress * -0.6F, 0);
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(equipProgress * -50F));
 
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
         Entity entity = Minecraft.getInstance().player;
