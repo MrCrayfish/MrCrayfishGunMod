@@ -144,7 +144,7 @@ public class CrosshairHandler
     }
 
     @SubscribeEvent
-    public void onClientTick(GunFireEvent.Post event)
+    public void onGunFired(GunFireEvent.Post event)
     {
         Crosshair crosshair = this.getCurrentCrosshair();
         if(crosshair == null || crosshair.isDefault())
