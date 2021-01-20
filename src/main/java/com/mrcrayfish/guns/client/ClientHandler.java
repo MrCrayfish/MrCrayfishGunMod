@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.event.AimingHandler;
 import com.mrcrayfish.guns.client.event.BulletTrailRenderingHandler;
+import com.mrcrayfish.guns.client.event.CrosshairHandler;
 import com.mrcrayfish.guns.client.event.GunRenderingHandler;
 import com.mrcrayfish.guns.client.event.RecoilHandler;
 import com.mrcrayfish.guns.client.event.ReloadHandler;
@@ -62,6 +63,7 @@ public class ClientHandler
     {
         MinecraftForge.EVENT_BUS.register(AimingHandler.get());
         MinecraftForge.EVENT_BUS.register(BulletTrailRenderingHandler.get());
+        MinecraftForge.EVENT_BUS.register(CrosshairHandler.get());
         MinecraftForge.EVENT_BUS.register(GunRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(RecoilHandler.get());
         MinecraftForge.EVENT_BUS.register(ReloadHandler.get());
@@ -148,7 +150,7 @@ public class ClientHandler
             try
             {
                 OptionsRowList list = (OptionsRowList) mouseOptionsField.get(screen);
-                list.addOption(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR_TYPE);
+                list.addOption(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
             }
             catch(IllegalAccessException e)
             {

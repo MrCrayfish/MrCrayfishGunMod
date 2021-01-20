@@ -7,6 +7,7 @@ import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.controllable.client.ControllerType;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.Crosshair;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
@@ -181,51 +182,11 @@ public class AimingHandler
     public void onRenderOverlay(RenderGameOverlayEvent event)
     {
         this.normalisedAdsProgress = (this.lastAdsProgress + (this.adsProgress - this.lastAdsProgress) * (this.lastAdsProgress == 0 || this.lastAdsProgress == MAX_AIM_PROGRESS ? 0.0 : event.getPartialTicks())) / MAX_AIM_PROGRESS;
-        if(this.normalisedAdsProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+        Crosshair crosshair = CrosshairHandler.get().getCurrentCrosshair();
+        if(this.normalisedAdsProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (crosshair == null || crosshair.isDefault()))
         {
             event.setCanceled(true);
         }
-
-        if(this.normalisedAdsProgress == 1.0 || event.getType() != RenderGameOverlayEvent.ElementType.CROSSHAIRS)
-            return;
-
-        if(GunMod.getOptions().getCrosshairType() == CrosshairType.DEFAULT)
-            return;
-
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null)
-            return;
-
-        ItemStack heldItem = mc.player.getHeldItemMainhand();
-        if(!(heldItem.getItem() instanceof GunItem))
-            return;
-
-        event.setCanceled(true);
-
-        RenderSystem.pushMatrix();
-        int scaledWidth = event.getWindow().getScaledWidth();
-        int scaledHeight = event.getWindow().getScaledHeight();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F - (float) this.normalisedAdsProgress);
-        RenderSystem.translatef((float)(scaledWidth / 2), (float)(scaledHeight / 2), 0);
-        RenderSystem.scalef(1.0F, -1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(GunMod.getOptions().getCrosshairType().getTexture());
-        RenderSystem.enableBlend();
-        RenderSystem.enableAlphaTest();
-        if(GunMod.getOptions().getCrosshairType().isBlended())
-        {
-            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        }
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        double size = 8.0;
-        double halfSize = size / 2.0;
-        buffer.pos(-halfSize, -halfSize, 0).tex(0, 1).endVertex();
-        buffer.pos(halfSize, -halfSize, 0).tex(1, 1).endVertex();
-        buffer.pos(halfSize, halfSize, 0).tex(1, 0).endVertex();
-        buffer.pos(-halfSize, halfSize, 0).tex(0, 0).endVertex();
-        tessellator.draw();
-        RenderSystem.popMatrix();
     }
 
     private void updateAimProgress()
@@ -375,68 +336,6 @@ public class AimingHandler
         public float getNormalProgress(float partialTicks)
         {
             return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
-        }
-    }
-
-    public enum CrosshairType implements IStringSerializable
-    {
-        DEFAULT("default"),
-        BETTER_DEFAULT("better_default"),
-        CIRCLE("circle"),
-        FILLED_CIRCLE("filled_circle", false),
-        SQUARE("square"),
-        ROUND("round"),
-        ARROW("arrow"),
-        DOT("dot"),
-        BOX("box"),
-        HIT_MARKER("hit_marker"),
-        LINE("line"),
-        T_POSE("t_pose"),
-        SMILEY("smiley");
-
-        private String id;
-        private ResourceLocation texture;
-        private boolean blend;
-
-        CrosshairType(String id)
-        {
-            this(id, true);
-        }
-
-        CrosshairType(String id, boolean blend)
-        {
-            this.id = id;
-            this.texture = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair/" + id + ".png");
-            this.blend = blend;
-        }
-
-        public ResourceLocation getTexture()
-        {
-            return this.texture;
-        }
-
-        public boolean isBlended()
-        {
-            return this.blend;
-        }
-
-        @Override
-        public String getString()
-        {
-            return this.id;
-        }
-
-        public static CrosshairType byName(String name)
-        {
-            for(int i = 0; i < values().length; i++)
-            {
-                CrosshairType type = values()[i];
-                if(type.id.equals(name))
-                {
-                    return type;
-                }
-            }
-            return DEFAULT;
         }
     }
 }

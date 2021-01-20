@@ -3,10 +3,13 @@ package com.mrcrayfish.guns.client.settings;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.client.Crosshair;
 import com.mrcrayfish.guns.client.event.AimingHandler;
+import com.mrcrayfish.guns.client.event.CrosshairHandler;
 import net.minecraft.client.AbstractOption;
 import net.minecraft.client.settings.SliderPercentageOption;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.commons.io.IOUtils;
@@ -38,20 +41,23 @@ public class GunOptions
         return new TranslationTextComponent("cgm.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
     });
 
-    public static final AbstractOption CROSSHAIR_TYPE = new GunEnumOption<>("cgm.options.crosshairType", AimingHandler.CrosshairType.class, gameSettings -> {
-        return GunMod.getOptions().crosshairType;
-    }, (gameSettings, value) -> {
-        GunMod.getOptions().crosshairType = value;
-    }, (gameSettings, option) -> {
-        AimingHandler.CrosshairType type = GunMod.getOptions().crosshairType;
-        return new TranslationTextComponent("cgm.options.crosshairType.format", new TranslationTextComponent("cgm.options.crosshairType." + type.getString()));
+    public static final AbstractOption CROSSHAIR = new GunListOption<>("cgm.options.crosshair", () -> {
+        return CrosshairHandler.get().getRegisteredCrosshairs();
+    }, () -> {
+        return GunMod.getOptions().crosshair;
+    }, (value) -> {
+        GunMod.getOptions().crosshair = value;
+        CrosshairHandler.get().setCrosshair(value);
+    }, (value) -> {
+        ResourceLocation id = value.getLocation();
+        return new TranslationTextComponent(id.getNamespace() + ".crosshair." + id.getPath());
     });
 
     public static final Splitter COLON_SPLITTER = Splitter.on(':');
 
     private File optionsFile;
     private double adsSensitivity = 0.75;
-    private AimingHandler.CrosshairType crosshairType = AimingHandler.CrosshairType.DEFAULT;
+    private ResourceLocation crosshair = Crosshair.DEFAULT.getLocation();
 
     public GunOptions(File dataDir)
     {
@@ -95,8 +101,8 @@ public class GunOptions
                         case "adsSensitivity":
                             this.adsSensitivity = Double.parseDouble(value);
                             break;
-                        case "crosshairType":
-                            this.crosshairType = AimingHandler.CrosshairType.byName(value);
+                        case "crosshair":
+                            this.crosshair = new ResourceLocation(value);
                             break;
                     }
                 }
@@ -110,7 +116,6 @@ public class GunOptions
         {
             GunMod.LOGGER.error("Failed to load options", e);
         }
-
     }
 
     public void saveOptions()
@@ -118,7 +123,7 @@ public class GunOptions
         try(PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(this.optionsFile), StandardCharsets.UTF_8)))
         {
             writer.println("adsSensitivity:" + this.adsSensitivity);
-            writer.println("crosshairType:" + this.crosshairType.getString());
+            writer.println("crosshair:" + this.crosshair);
         }
         catch(FileNotFoundException e)
         {
@@ -134,8 +139,8 @@ public class GunOptions
         return this.adsSensitivity;
     }
 
-    public AimingHandler.CrosshairType getCrosshairType()
+    public ResourceLocation getCrosshair()
     {
-        return this.crosshairType;
+        return this.crosshair;
     }
 }
