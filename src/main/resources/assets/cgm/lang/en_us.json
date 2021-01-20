@@ -40,7 +40,7 @@
     "info.cgm.ammo": "Ammo: %s",
     "info.cgm.ammo_type": "Ammo Type: %s",
     "info.cgm.attachment_help": "Press %s in-game for Attachments",
-    "key.categories.gun": "MrCrayfish's Gun Mod",
+    "key.categories.cgm": "MrCrayfish's Gun Mod",
     "key.cgm.reload": "Reload",
     "key.cgm.unload": "Unload",
     "key.cgm.attachments": "Modify Attachments",
