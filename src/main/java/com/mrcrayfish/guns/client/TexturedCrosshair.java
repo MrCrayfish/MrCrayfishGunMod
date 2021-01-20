@@ -34,7 +34,7 @@ public class TexturedCrosshair extends Crosshair
     }
 
     @Override
-    public void render(Minecraft mc, MatrixStack stack, int windowWidth, int windowHeight)
+    public void render(Minecraft mc, MatrixStack stack, int windowWidth, int windowHeight, float partialTicks)
     {
         float alpha = 1.0F - (float) AimingHandler.get().getNormalisedAdsProgress();
         float size = 8.0F;

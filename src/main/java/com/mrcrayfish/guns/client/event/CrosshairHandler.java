@@ -6,11 +6,13 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.Crosshair;
 import com.mrcrayfish.guns.client.TexturedCrosshair;
+import com.mrcrayfish.guns.hook.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nullable;
@@ -124,7 +126,30 @@ public class CrosshairHandler
         stack.push();
         int scaledWidth = event.getWindow().getScaledWidth();
         int scaledHeight = event.getWindow().getScaledHeight();
-        crosshair.render(mc, stack, scaledWidth, scaledHeight);
+        crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTicks());
         stack.pop();
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        if(event.phase != TickEvent.Phase.END)
+            return;
+
+        Crosshair crosshair = this.getCurrentCrosshair();
+        if(crosshair == null || crosshair.isDefault())
+            return;
+
+        crosshair.tick();
+    }
+
+    @SubscribeEvent
+    public void onClientTick(GunFireEvent.Post event)
+    {
+        Crosshair crosshair = this.getCurrentCrosshair();
+        if(crosshair == null || crosshair.isDefault())
+            return;
+
+        crosshair.onGunFired();
     }
 }

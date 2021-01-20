@@ -34,17 +34,29 @@ public abstract class Crosshair implements IResourceLocation
      * Renders the crosshair to the screen. If implementing, positioning is not initially set to
      * the center of the screen. Use windowWidth and windowHeight for calculating the center.
      *
-     * @param mc a minecraft instance
-     * @param stack the current matrix stack
-     * @param windowWidth the scaled width of the window
+     * @param mc           a minecraft instance
+     * @param stack        the current matrix stack
+     * @param windowWidth  the scaled width of the window
      * @param windowHeight the scaled height of the window
+     * @param partialTicks
      */
-    public void render(Minecraft mc, MatrixStack stack, int windowWidth, int windowHeight) {}
+    public void render(Minecraft mc, MatrixStack stack, int windowWidth, int windowHeight, float partialTicks) {}
+
+    /**
+     * Ticks the crosshair for any logic
+     */
+    public void tick() {}
+
+    /**
+     * Called when the held gun is fired
+     */
+    public void onGunFired() {}
 
     /**
      * Gets the id of the crosshair
      */
     @Override
+
     public final ResourceLocation getLocation()
     {
         return this.id;
