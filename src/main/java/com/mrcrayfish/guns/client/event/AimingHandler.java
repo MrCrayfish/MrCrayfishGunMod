@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.client.event;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.client.Crosshair;
+import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;

@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.client;
+package com.mrcrayfish.guns.client.render.crosshair;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
