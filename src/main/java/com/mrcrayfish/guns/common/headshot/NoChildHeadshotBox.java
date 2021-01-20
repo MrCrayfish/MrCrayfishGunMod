@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.common.headshot;
 
-import com.mrcrayfish.guns.common.headshot.BasicHeadshotBox;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 

@@ -1,12 +1,12 @@
 package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import com.mrcrayfish.guns.common.headshot.BasicHeadshotBox;
 import com.mrcrayfish.guns.common.headshot.ChildHeadshotBox;
 import com.mrcrayfish.guns.common.headshot.NoChildHeadshotBox;
 import com.mrcrayfish.guns.common.headshot.NoChildRotatedHeadshotBox;
 import com.mrcrayfish.guns.common.headshot.RotatedHeadshotBox;
+import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

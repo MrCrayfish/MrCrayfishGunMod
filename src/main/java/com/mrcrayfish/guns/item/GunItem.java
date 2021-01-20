@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.item;
 
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
-import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;

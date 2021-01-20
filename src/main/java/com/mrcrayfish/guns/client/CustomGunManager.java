@@ -1,9 +1,9 @@
 package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.init.ModItems;
-import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

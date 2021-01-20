@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.entity;
 
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.util;
 
-import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.init.ModEnchantments;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;

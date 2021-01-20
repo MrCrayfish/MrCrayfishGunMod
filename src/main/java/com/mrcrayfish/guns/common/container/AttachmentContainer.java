@@ -1,9 +1,9 @@
 package com.mrcrayfish.guns.common.container;
 
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.container.slot.AttachmentSlot;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

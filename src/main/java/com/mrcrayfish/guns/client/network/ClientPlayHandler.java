@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.network;
 
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.client.BulletTrail;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.audio.GunShotSound;
 import com.mrcrayfish.guns.client.handler.BulletTrailRenderingHandler;
@@ -14,7 +15,6 @@ import com.mrcrayfish.guns.network.message.MessageProjectileHit;
 import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
-import com.mrcrayfish.guns.client.BulletTrail;
 import com.mrcrayfish.guns.particles.BulletHoleData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;

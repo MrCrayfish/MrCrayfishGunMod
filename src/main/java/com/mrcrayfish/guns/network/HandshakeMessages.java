@@ -1,10 +1,10 @@
 package com.mrcrayfish.guns.network;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.guns.common.CustomGunLoader;
-import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.CustomGun;
+import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.common.NetworkGunManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Validate;

@@ -2,10 +2,10 @@ package com.mrcrayfish.guns.mixin.client;
 
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
-import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
