@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.RenderTypes;
+import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -49,7 +49,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -760,7 +759,7 @@ public class GunRenderingHandler
         matrixStack.translate(-size / 2, -size / 2, 0);
 
         Matrix4f matrix = matrixStack.getLast().getMatrix();
-        IVertexBuilder builder = buffer.getBuffer(RenderTypes.getMuzzleFlash());
+        IVertexBuilder builder = buffer.getBuffer(GunRenderType.getMuzzleFlash());
         builder.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
         builder.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
         builder.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();

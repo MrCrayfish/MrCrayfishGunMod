@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.client.render.gun.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.RenderTypes;
+import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.event.AimingHandler;
 import com.mrcrayfish.guns.client.event.RecoilHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -57,7 +57,7 @@ public class LongScopeModel implements IOverrideModel
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
-                IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderTypes.getScreen());
+                IVertexBuilder builder = renderTypeBuffer.getBuffer(GunRenderType.getScreen());
                 builder.pos(matrix, 0, size, 0).color(color, color, color, 1.0F).tex(texU, 1.0F - crop + offset).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.pos(matrix, 0, 0, 0).color(color, color, color, 1.0F).tex(texU, crop + offset).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.pos(matrix, size, 0, 0).color(color, color, color, 1.0F).tex(1.0F - texU, crop + offset).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();

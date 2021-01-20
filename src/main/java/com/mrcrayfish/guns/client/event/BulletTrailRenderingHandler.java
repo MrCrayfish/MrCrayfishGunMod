@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.client.event;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.guns.client.RenderTypes;
+import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.object.BulletTrail;
 import net.minecraft.client.Minecraft;
@@ -147,7 +147,7 @@ public class BulletTrailRenderingHandler
 
         if(bulletTrail.isTrailVisible())
         {
-            RenderType bulletType = RenderTypes.getBulletTrail();
+            RenderType bulletType = GunRenderType.getBulletTrail();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
             builder.pos(matrix4f, 0, 0, -0.035F).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, 0, 0, 0.035F).color(red, green, blue, alpha).endVertex();
