@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.event.AimingHandler;
-import com.mrcrayfish.guns.client.event.GunRenderingHandler;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;

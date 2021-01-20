@@ -1,12 +1,8 @@
 package com.mrcrayfish.guns.client.event;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
-import com.mrcrayfish.controllable.client.ControllerType;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.Crosshair;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
@@ -23,17 +19,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -42,7 +32,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

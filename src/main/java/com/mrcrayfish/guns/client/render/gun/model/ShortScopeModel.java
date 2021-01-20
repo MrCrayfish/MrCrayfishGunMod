@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.client.render.gun.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.event.AimingHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;

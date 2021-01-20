@@ -1,13 +1,11 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.LivingEntity;
@@ -16,7 +14,10 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.KeybindTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;

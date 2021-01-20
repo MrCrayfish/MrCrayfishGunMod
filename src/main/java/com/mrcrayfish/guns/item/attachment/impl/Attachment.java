@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.item.attachment.impl;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;

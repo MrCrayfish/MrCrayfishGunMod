@@ -3,8 +3,6 @@ package com.mrcrayfish.guns.client.event;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.hook.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -17,12 +15,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 /**
