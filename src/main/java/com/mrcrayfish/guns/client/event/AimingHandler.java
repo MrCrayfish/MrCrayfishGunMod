@@ -211,7 +211,10 @@ public class AimingHandler
         mc.getTextureManager().bindTexture(GunMod.getOptions().getCrosshairType().getTexture());
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        if(GunMod.getOptions().getCrosshairType().isBlended())
+        {
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        }
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -380,22 +383,41 @@ public class AimingHandler
         DEFAULT("default"),
         BETTER_DEFAULT("better_default"),
         CIRCLE("circle"),
-        FILLED_CIRCLE("filled_circle"),
+        FILLED_CIRCLE("filled_circle", false),
         SQUARE("square"),
-        ARROW("arrow");
+        ROUND("round"),
+        ARROW("arrow"),
+        DOT("dot"),
+        BOX("box"),
+        HIT_MARKER("hit_marker"),
+        LINE("line"),
+        T_POSE("t_pose"),
+        SMILEY("smiley");
 
         private String id;
         private ResourceLocation texture;
+        private boolean blend;
 
-        CrosshairType(@Nullable String id)
+        CrosshairType(String id)
+        {
+            this(id, true);
+        }
+
+        CrosshairType(String id, boolean blend)
         {
             this.id = id;
             this.texture = new ResourceLocation(Reference.MOD_ID, "textures/effect/crosshair/" + id + ".png");
+            this.blend = blend;
         }
 
         public ResourceLocation getTexture()
         {
             return this.texture;
+        }
+
+        public boolean isBlended()
+        {
+            return this.blend;
         }
 
         @Override
