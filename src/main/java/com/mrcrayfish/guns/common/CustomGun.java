@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.object;
+package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.annotation.Ignored;
 import net.minecraft.item.ItemStack;

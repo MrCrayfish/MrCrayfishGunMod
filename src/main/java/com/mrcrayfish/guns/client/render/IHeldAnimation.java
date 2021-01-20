@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * Author: MrCrayfish
  */
-public interface HeldAnimation
+public interface IHeldAnimation
 {
     /**
      * Allows for modifications of the player model. This is where arms should be aligned to hold

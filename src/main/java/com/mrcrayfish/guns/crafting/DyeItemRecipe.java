@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.recipe;
+package com.mrcrayfish.guns.crafting;
 
 import com.mrcrayfish.guns.init.ModRecipeSerializers;
 import com.mrcrayfish.guns.item.IColored;

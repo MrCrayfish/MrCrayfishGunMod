@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.hook;
+package com.mrcrayfish.guns.event;
 
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import net.minecraft.util.math.RayTraceResult;

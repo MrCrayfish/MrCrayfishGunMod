@@ -1,8 +1,8 @@
-package com.mrcrayfish.guns.object;
+package com.mrcrayfish.guns.common;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.render.HeldAnimation;
+import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import com.mrcrayfish.guns.client.render.pose.BazookaPose;
 import com.mrcrayfish.guns.client.render.pose.MiniGunPose;
 import com.mrcrayfish.guns.client.render.pose.OneHandedPose;
@@ -117,7 +117,7 @@ public class GripType
     }
 
     private final ResourceLocation id;
-    private final HeldAnimation heldAnimation;
+    private final IHeldAnimation heldAnimation;
 
     /**
      * Creates a new grip type.
@@ -125,7 +125,7 @@ public class GripType
      * @param id the id of the grip type
      * @param heldAnimation the animation functions to apply to the held weapon
      */
-    public GripType(ResourceLocation id, HeldAnimation heldAnimation)
+    public GripType(ResourceLocation id, IHeldAnimation heldAnimation)
     {
         this.id = id;
         this.heldAnimation = heldAnimation;
@@ -142,7 +142,7 @@ public class GripType
     /**
      * Gets the held animation get. Used for rendering
      */
-    public HeldAnimation getHeldAnimation()
+    public IHeldAnimation getHeldAnimation()
     {
         return this.heldAnimation;
     }

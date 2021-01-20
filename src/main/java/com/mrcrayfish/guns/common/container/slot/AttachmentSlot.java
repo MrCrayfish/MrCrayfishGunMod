@@ -4,7 +4,7 @@ import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;

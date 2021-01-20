@@ -39,7 +39,7 @@ public interface IColored
      */
     default boolean hasColor(ItemStack stack)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = ItemStackUtil.getTagCompound(stack);
         return tagCompound.contains("Color", Constants.NBT.TAG_INT);
     }
 
@@ -51,7 +51,7 @@ public interface IColored
      */
     default int getColor(ItemStack stack)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = ItemStackUtil.getTagCompound(stack);
         return tagCompound.getInt("Color");
     }
 
@@ -63,7 +63,7 @@ public interface IColored
      */
     default void setColor(ItemStack stack, int color)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = ItemStackUtil.getTagCompound(stack);
         tagCompound.putInt("Color", color);
     }
 
@@ -74,7 +74,7 @@ public interface IColored
      */
     default void removeColor(ItemStack stack)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = ItemStackUtil.getTagCompound(stack);
         tagCompound.remove("Color");
     }
 

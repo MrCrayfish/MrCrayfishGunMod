@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.crosshair;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.client.event.CrosshairHandler;
+import com.mrcrayfish.guns.client.handler.CrosshairHandler;
 import com.mrcrayfish.guns.interfaces.IResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;

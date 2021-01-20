@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
@@ -109,7 +109,7 @@ public class GunItem extends Item implements IColored
         if(this.isInGroup(group))
         {
             ItemStack stack = new ItemStack(this);
-            ItemStackUtil.createTagCompound(stack).putInt("AmmoCount", this.gun.getGeneral().getMaxAmmo());
+            ItemStackUtil.getTagCompound(stack).putInt("AmmoCount", this.gun.getGeneral().getMaxAmmo());
             stacks.add(stack);
         }
     }
@@ -123,7 +123,7 @@ public class GunItem extends Item implements IColored
     @Override
     public boolean showDurabilityBar(ItemStack stack)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = ItemStackUtil.getTagCompound(stack);
         Gun modifiedGun = this.getModifiedGun(stack);
         return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt("AmmoCount") != GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun);
     }
@@ -131,7 +131,7 @@ public class GunItem extends Item implements IColored
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = ItemStackUtil.getTagCompound(stack);
         Gun modifiedGun = this.getModifiedGun(stack);
         return 1.0 - (tagCompound.getInt("AmmoCount") / (double) GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun));
     }

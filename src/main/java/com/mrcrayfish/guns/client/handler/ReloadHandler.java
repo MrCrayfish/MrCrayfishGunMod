@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.client.event;
+package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
@@ -6,7 +6,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageReload;
 import com.mrcrayfish.guns.network.message.MessageUnload;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;

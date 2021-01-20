@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.hook;
+package com.mrcrayfish.guns.event;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

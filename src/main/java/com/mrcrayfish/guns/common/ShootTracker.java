@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.common;
 
 import com.google.common.collect.Maps;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.object.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.item.Item;

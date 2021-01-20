@@ -2,9 +2,9 @@ package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.client.event.ReloadHandler;
+import com.mrcrayfish.guns.client.handler.ReloadHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
-import com.mrcrayfish.guns.object.GripType;
+import com.mrcrayfish.guns.common.GripType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

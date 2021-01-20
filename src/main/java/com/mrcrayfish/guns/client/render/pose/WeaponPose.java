@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.client.render.HeldAnimation;
+import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * <p>
  * Author: MrCrayfish
  */
-public abstract class WeaponPose implements HeldAnimation
+public abstract class WeaponPose implements IHeldAnimation
 {
     private AimPose upPose;
     private AimPose forwardPose;

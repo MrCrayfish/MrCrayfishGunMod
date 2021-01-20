@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.client;
+package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
@@ -7,9 +7,6 @@ import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.client.event.AimingHandler;
-import com.mrcrayfish.guns.client.event.ReloadHandler;
-import com.mrcrayfish.guns.client.event.ShootingHandler;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IScope;
@@ -17,7 +14,7 @@ import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
 import com.mrcrayfish.guns.network.message.MessageUnload;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
@@ -31,7 +28,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 /**
  * Author: MrCrayfish
  */
-public class ControllerEvents
+public class ControllerHandler
 {
     private int reloadCounter = -1;
 

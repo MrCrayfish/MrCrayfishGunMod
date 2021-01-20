@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.client.event;
+package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;

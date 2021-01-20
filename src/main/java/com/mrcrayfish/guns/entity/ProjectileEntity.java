@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.entity;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.SpreadTracker;
-import com.mrcrayfish.guns.hook.GunProjectileHitEvent;
+import com.mrcrayfish.guns.event.GunProjectileHitEvent;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.interfaces.IDamageable;
@@ -14,11 +14,9 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageProjectileHit;
 import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
-import com.mrcrayfish.guns.object.EntityResult;
-import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.guns.object.Gun.Projectile;
-import com.mrcrayfish.guns.object.HitResult;
-import com.mrcrayfish.guns.util.ExtendedEntityRayTraceResult;
+import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.common.Gun.Projectile;
+import com.mrcrayfish.guns.util.math.ExtendedEntityRayTraceResult;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
@@ -303,17 +301,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             if(!entity.equals(this.shooter))
             {
-                HitResult result = this.getHitResult(entity, startVec, endVec);
-                Optional<Vector3d> hitPos = result.getHitPos();
-                if(!hitPos.isPresent())
-                {
+                EntityResult result = this.getHitResult(entity, startVec, endVec);
+                Vector3d hitPos = result.getHitPos();
+                if(hitPos == Vector3d.ZERO)
                     continue;
-                }
 
-                double distanceToHit = startVec.distanceTo(hitPos.get());
+                double distanceToHit = startVec.distanceTo(hitPos);
                 if(distanceToHit < closestDistance)
                 {
-                    hitVec = hitPos.get();
+                    hitVec = hitPos;
                     hitEntity = entity;
                     closestDistance = distanceToHit;
                     headshot = result.isHeadshot();
@@ -332,20 +328,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             if(!entity.equals(this.shooter))
             {
-                HitResult result = this.getHitResult(entity, startVec, endVec);
-                Optional<Vector3d> hitPos = result.getHitPos();
-                if(!hitPos.isPresent())
-                {
+                EntityResult result = this.getHitResult(entity, startVec, endVec);
+                Vector3d hitPos = result.getHitPos();
+                if(hitPos == Vector3d.ZERO)
                     continue;
-                }
-                hitEntities.add(new EntityResult(entity, hitPos.get(), result.isHeadshot()));
+                hitEntities.add(new EntityResult(entity, hitPos, result.isHeadshot()));
             }
         }
         return hitEntities;
     }
 
     @SuppressWarnings("unchecked")
-    private HitResult getHitResult(Entity entity, Vector3d startVec, Vector3d endVec)
+    private EntityResult getHitResult(Entity entity, Vector3d startVec, Vector3d endVec)
     {
         double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
         AxisAlignedBB boundingBox = entity.getBoundingBox();
@@ -363,7 +357,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
             if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
             {
-                return new HitResult(null, false);
+                return new EntityResult(entity, Vector3d.ZERO, false);
             }
             hitPos = grownHitPos;
         }
@@ -393,7 +387,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 }
             }
         }
-        return new HitResult(hitPos, headshot);
+        return new EntityResult(entity, hitPos, headshot);
     }
 
     private void onHit(RayTraceResult result, Vector3d startVec, Vector3d endVec)
@@ -787,6 +781,47 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             {
                 serverplayerentity.connection.sendPacket(new SExplosionPacket(entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius / 5f, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(serverplayerentity)));
             }
+        }
+    }
+
+    /**
+     * Author: MrCrayfish
+     */
+    public static class EntityResult
+    {
+        private Entity entity;
+        private Vector3d hitVec;
+        private boolean headshot;
+
+        public EntityResult(Entity entity, Vector3d hitVec, boolean headshot)
+        {
+            this.entity = entity;
+            this.hitVec = hitVec;
+            this.headshot = headshot;
+        }
+
+        /**
+         * Gets the entity that was hit by the projectile
+         */
+        public Entity getEntity()
+        {
+            return this.entity;
+        }
+
+        /**
+         * Gets the position the projectile hit
+         */
+        public Vector3d getHitPos()
+        {
+            return this.hitVec;
+        }
+
+        /**
+         * Gets if this was a headshot
+         */
+        public boolean isHeadshot()
+        {
+            return this.headshot;
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.event.GunRenderingHandler;
+import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.client.render.ScreenTextureState;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;

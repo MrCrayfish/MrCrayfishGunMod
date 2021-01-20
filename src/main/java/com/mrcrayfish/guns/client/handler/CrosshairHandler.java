@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.client.event;
+package com.mrcrayfish.guns.client.handler;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -7,7 +7,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import com.mrcrayfish.guns.client.render.crosshair.TechCrosshair;
 import com.mrcrayfish.guns.client.render.crosshair.TexturedCrosshair;
-import com.mrcrayfish.guns.hook.GunFireEvent;
+import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;

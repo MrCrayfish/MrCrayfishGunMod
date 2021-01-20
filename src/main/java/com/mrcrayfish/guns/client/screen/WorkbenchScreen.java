@@ -110,7 +110,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         if(!weapons.isEmpty())
         {
             ItemStack icon = new ItemStack(ModItems.ASSAULT_RIFLE.get());
-            ItemStackUtil.createTagCompound(icon).putInt("AmmoCount", ModItems.ASSAULT_RIFLE.get().getGun().getGeneral().getMaxAmmo());
+            ItemStackUtil.getTagCompound(icon).putInt("AmmoCount", ModItems.ASSAULT_RIFLE.get().getGun().getGeneral().getMaxAmmo());
             this.tabs.add(new Tab(icon, "weapons", weapons));
         }
 

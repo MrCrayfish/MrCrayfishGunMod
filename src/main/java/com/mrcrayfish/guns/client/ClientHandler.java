@@ -2,14 +2,15 @@ package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.event.AimingHandler;
-import com.mrcrayfish.guns.client.event.BulletTrailRenderingHandler;
-import com.mrcrayfish.guns.client.event.CrosshairHandler;
-import com.mrcrayfish.guns.client.event.GunRenderingHandler;
-import com.mrcrayfish.guns.client.event.RecoilHandler;
-import com.mrcrayfish.guns.client.event.ReloadHandler;
-import com.mrcrayfish.guns.client.event.ShootingHandler;
-import com.mrcrayfish.guns.client.event.SoundHandler;
+import com.mrcrayfish.guns.client.handler.AimingHandler;
+import com.mrcrayfish.guns.client.handler.BulletTrailRenderingHandler;
+import com.mrcrayfish.guns.client.handler.ControllerHandler;
+import com.mrcrayfish.guns.client.handler.CrosshairHandler;
+import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
+import com.mrcrayfish.guns.client.handler.RecoilHandler;
+import com.mrcrayfish.guns.client.handler.ReloadHandler;
+import com.mrcrayfish.guns.client.handler.ShootingHandler;
+import com.mrcrayfish.guns.client.handler.SoundHandler;
 import com.mrcrayfish.guns.client.render.entity.GrenadeRenderer;
 import com.mrcrayfish.guns.client.render.entity.MissileRenderer;
 import com.mrcrayfish.guns.client.render.entity.ProjectileRenderer;
@@ -73,7 +74,7 @@ public class ClientHandler
         /* Only register controller events if Controllable is loaded otherwise it will crash */
         if(GunMod.controllableLoaded)
         {
-            MinecraftForge.EVENT_BUS.register(new ControllerEvents());
+            MinecraftForge.EVENT_BUS.register(new ControllerHandler());
         }
 
         KeyBinds.register();

@@ -7,8 +7,6 @@ import com.google.gson.JsonElement;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
-import com.mrcrayfish.guns.object.CustomGun;
-import com.mrcrayfish.guns.object.GripType;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;

@@ -10,7 +10,12 @@ import net.minecraft.nbt.CompoundNBT;
  */
 public class ItemStackUtil
 {
-    public static CompoundNBT createTagCompound(ItemStack stack)
+    /**
+     * Simple helper method to add and get the tag compound from an item stack. The tag compound
+     * on an item stack is null and needs to be initialized before using. This cuts down on common
+     * code.
+     */
+    public static CompoundNBT getTagCompound(ItemStack stack)
     {
         if(!stack.hasTag())
         {
@@ -19,28 +24,12 @@ public class ItemStackUtil
         return stack.getTag();
     }
 
-    public static boolean areItemStackSameItem(ItemStack source, ItemStack other)
-    {
-        if(source.getItem() != other.getItem())
-        {
-            return false;
-        }
-        return source.getDamage() == other.getDamage();
-    }
-
-    public static boolean areItemStackEqualIgnoreTag(ItemStack source, ItemStack other)
-    {
-        if(source.getCount() != other.getCount())
-        {
-            return false;
-        }
-        else if(source.getItem() != other.getItem())
-        {
-            return false;
-        }
-        return source.getDamage() == other.getDamage();
-    }
-
+    /**
+     * Writes an ItemStack to a buffer without it's tag compound
+     *
+     * @param buf   the byte buffer to write to
+     * @param stack the item stack to write
+     */
     public static void writeItemStackToBufIgnoreTag(ByteBuf buf, ItemStack stack)
     {
         if(stack.isEmpty())
@@ -52,6 +41,12 @@ public class ItemStackUtil
         buf.writeByte(stack.getCount());
     }
 
+    /**
+     * Reads an ItemStack from a buffer that has no tag compound.
+     *
+     * @param buf the byte buffer to read from
+     * @return the read item stack
+     */
     public static ItemStack readItemStackFromBufIgnoreTag(ByteBuf buf)
     {
         int id = buf.readShort();

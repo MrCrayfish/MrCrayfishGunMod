@@ -1,6 +1,6 @@
-package com.mrcrayfish.guns.util;
+package com.mrcrayfish.guns.util.math;
 
-import com.mrcrayfish.guns.object.EntityResult;
+import com.mrcrayfish.guns.entity.ProjectileEntity;
 import net.minecraft.util.math.EntityRayTraceResult;
 
 /**
@@ -10,10 +10,10 @@ public class ExtendedEntityRayTraceResult extends EntityRayTraceResult
 {
     private final boolean headshot;
 
-    public ExtendedEntityRayTraceResult(EntityResult result)
+    public ExtendedEntityRayTraceResult(ProjectileEntity.EntityResult result)
     {
-        super(result.entity, result.hitVec);
-        this.headshot = result.headshot;
+        super(result.getEntity(), result.getHitPos());
+        this.headshot = result.isHeadshot();
     }
 
     public boolean isHeadshot()

@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.interfaces;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

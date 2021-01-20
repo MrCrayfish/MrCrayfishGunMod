@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.network.message;
 import com.google.common.base.MoreObjects;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.vector.Vector3d;

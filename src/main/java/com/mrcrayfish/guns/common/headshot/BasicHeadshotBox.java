@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.object.headshot;
+package com.mrcrayfish.guns.common.headshot;
 
 import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import net.minecraft.entity.LivingEntity;

@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
-import com.mrcrayfish.guns.client.event.CrosshairHandler;
+import com.mrcrayfish.guns.client.handler.CrosshairHandler;
 import net.minecraft.client.AbstractOption;
 import net.minecraft.client.settings.SliderPercentageOption;
 import net.minecraft.nbt.CompoundNBT;

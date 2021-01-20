@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.mixin.common;
 
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.common.Hooks;
+import com.mrcrayfish.guns.entity.DamageSourceProjectile;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +28,8 @@ public class LivingEntityMixin
     @ModifyArgs(method = "attackEntityFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyKnockback(FDD)V"))
     private void modifyApplyKnockbackArgs(Args args)
     {
-        if(!Hooks.canCauseKnockBack(this.source))
+        boolean knockback = this.source instanceof DamageSourceProjectile ? Config.COMMON.gameplay.enableKnockback.get() : true;
+        if(!knockback)
         {
             args.set(0, 0F);
             return;

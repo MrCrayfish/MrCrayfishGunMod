@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.object.headshot;
+package com.mrcrayfish.guns.common.headshot;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;

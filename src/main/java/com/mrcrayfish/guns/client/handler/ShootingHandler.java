@@ -1,14 +1,14 @@
-package com.mrcrayfish.guns.client.event;
+package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.hook.GunFireEvent;
+import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.network.message.MessageShooting;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;

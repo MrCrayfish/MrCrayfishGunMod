@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.object;
+package com.mrcrayfish.guns.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

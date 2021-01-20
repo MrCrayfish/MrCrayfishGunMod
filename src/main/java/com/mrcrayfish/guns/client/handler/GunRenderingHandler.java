@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.client.event;
+package com.mrcrayfish.guns.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -8,7 +8,7 @@ import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
-import com.mrcrayfish.guns.hook.GunFireEvent;
+import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GrenadeItem;
 import com.mrcrayfish.guns.item.GunItem;
@@ -16,7 +16,7 @@ import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IBarrel;
 import com.mrcrayfish.guns.item.attachment.impl.Barrel;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.ItemStackUtil;
@@ -667,7 +667,7 @@ public class GunRenderingHandler
         if(stack.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-            CompoundNBT gunTag = ItemStackUtil.createTagCompound(stack);
+            CompoundNBT gunTag = ItemStackUtil.getTagCompound(stack);
             CompoundNBT attachments = gunTag.getCompound("Attachments");
             for(String tagKey : attachments.keySet())
             {

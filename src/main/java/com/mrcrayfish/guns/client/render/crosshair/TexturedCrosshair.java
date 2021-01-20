@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.client.render.crosshair;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mrcrayfish.guns.client.event.AimingHandler;
+import com.mrcrayfish.guns.client.handler.AimingHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;

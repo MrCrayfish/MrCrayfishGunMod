@@ -1,4 +1,4 @@
-package com.mrcrayfish.guns.object;
+package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
@@ -1096,7 +1096,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static float getAdditionalDamage(ItemStack gunStack)
     {
-        CompoundNBT tag = ItemStackUtil.createTagCompound(gunStack);
+        CompoundNBT tag = ItemStackUtil.getTagCompound(gunStack);
         return tag.getFloat("AdditionalDamage");
     }
 
@@ -1125,7 +1125,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static boolean hasAmmo(ItemStack gunStack)
     {
-        CompoundNBT tag = ItemStackUtil.createTagCompound(gunStack);
+        CompoundNBT tag = ItemStackUtil.getTagCompound(gunStack);
         return tag.getBoolean("IgnoreAmmo") || tag.getInt("AmmoCount") > 0;
     }
 }

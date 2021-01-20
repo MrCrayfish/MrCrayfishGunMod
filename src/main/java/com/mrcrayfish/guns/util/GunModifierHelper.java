@@ -2,7 +2,7 @@ package com.mrcrayfish.guns.util;
 
 import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import com.mrcrayfish.guns.object.Gun;
+import com.mrcrayfish.guns.common.Gun;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
