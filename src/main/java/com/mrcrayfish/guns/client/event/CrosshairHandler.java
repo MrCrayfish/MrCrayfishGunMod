@@ -55,20 +55,32 @@ public class CrosshairHandler
         this.register(new TexturedCrosshair(new ResourceLocation(Reference.MOD_ID, "smiley")));
     }
 
+    /**
+     * Registers a new crosshair. If the crosshair has already been registered, it will be ignored.
+     */
     public void register(Crosshair crosshair)
     {
-        if(this.registeredCrosshairs.indexOf(crosshair) == -1)
+        if(!this.idToCrosshair.containsKey(crosshair.getLocation()))
         {
             this.idToCrosshair.put(crosshair.getLocation(), crosshair);
             this.registeredCrosshairs.add(crosshair);
         }
     }
 
+    /**
+     * Sets the crosshair using the given id. The crosshair with the associated id must be registered
+     * or the default crosshair will be used.
+     *
+     * @param id the id of the crosshair
+     */
     public void setCrosshair(ResourceLocation id)
     {
         this.currentCrosshair = this.idToCrosshair.getOrDefault(id, Crosshair.DEFAULT);
     }
 
+    /**
+     * Gets the current crosshair
+     */
     @Nullable
     public Crosshair getCurrentCrosshair()
     {
@@ -80,6 +92,9 @@ public class CrosshairHandler
         return this.currentCrosshair;
     }
 
+    /**
+     * Gets a list of registered crosshairs. Please note that this list is immutable.
+     */
     public ImmutableList<Crosshair> getRegisteredCrosshairs()
     {
         return ImmutableList.copyOf(this.registeredCrosshairs);

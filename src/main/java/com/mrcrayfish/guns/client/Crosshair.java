@@ -20,19 +20,39 @@ public abstract class Crosshair implements IResourceLocation
 
     private ResourceLocation id;
 
+    /**
+     * The default constructor for crosshairs
+     *
+     * @param id the id for the crosshair
+     */
     protected Crosshair(ResourceLocation id)
     {
         this.id = id;
     }
 
+    /**
+     * Renders the crosshair to the screen. If implementing, positioning is not initially set to
+     * the center of the screen. Use windowWidth and windowHeight for calculating the center.
+     *
+     * @param mc a minecraft instance
+     * @param stack the current matrix stack
+     * @param windowWidth the scaled width of the window
+     * @param windowHeight the scaled height of the window
+     */
     public void render(Minecraft mc, MatrixStack stack, int windowWidth, int windowHeight) {}
 
+    /**
+     * Gets the id of the crosshair
+     */
     @Override
     public final ResourceLocation getLocation()
     {
         return this.id;
     }
 
+    /**
+     * Test for default crosshair (aka normal minecraft crosshair)
+     */
     public final boolean isDefault()
     {
         return this == DEFAULT;
