@@ -302,10 +302,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if(!entity.equals(this.shooter))
             {
                 EntityResult result = this.getHitResult(entity, startVec, endVec);
-                Vector3d hitPos = result.getHitPos();
-                if(hitPos == Vector3d.ZERO)
+                if(result == null)
                     continue;
-
+                Vector3d hitPos = result.getHitPos();
                 double distanceToHit = startVec.distanceTo(hitPos);
                 if(distanceToHit < closestDistance)
                 {
@@ -329,15 +328,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if(!entity.equals(this.shooter))
             {
                 EntityResult result = this.getHitResult(entity, startVec, endVec);
-                Vector3d hitPos = result.getHitPos();
-                if(hitPos == Vector3d.ZERO)
+                if(result == null)
                     continue;
-                hitEntities.add(new EntityResult(entity, hitPos, result.isHeadshot()));
+                hitEntities.add(result);
             }
         }
         return hitEntities;
     }
 
+    @Nullable
     @SuppressWarnings("unchecked")
     private EntityResult getHitResult(Entity entity, Vector3d startVec, Vector3d endVec)
     {
@@ -357,7 +356,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
             if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
             {
-                return new EntityResult(entity, Vector3d.ZERO, false);
+                return null;
             }
             hitPos = grownHitPos;
         }
@@ -387,6 +386,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 }
             }
         }
+
+        if(hitPos == null)
+        {
+            return null;
+        }
+
         return new EntityResult(entity, hitPos, headshot);
     }
 
