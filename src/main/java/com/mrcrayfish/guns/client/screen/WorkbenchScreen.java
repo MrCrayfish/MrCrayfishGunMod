@@ -17,7 +17,6 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageCraft;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import com.mrcrayfish.guns.util.InventoryUtil;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -110,7 +109,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         if(!weapons.isEmpty())
         {
             ItemStack icon = new ItemStack(ModItems.ASSAULT_RIFLE.get());
-            ItemStackUtil.getTagCompound(icon).putInt("AmmoCount", ModItems.ASSAULT_RIFLE.get().getGun().getGeneral().getMaxAmmo());
+            icon.getOrCreateTag().putInt("AmmoCount", ModItems.ASSAULT_RIFLE.get().getGun().getGeneral().getMaxAmmo());
             this.tabs.add(new Tab(icon, "weapons", weapons));
         }
 

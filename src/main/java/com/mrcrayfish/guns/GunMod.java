@@ -10,7 +10,6 @@ import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -38,7 +37,7 @@ public class GunMod
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.PISTOL.get());
-            ItemStackUtil.getTagCompound(stack).putInt("AmmoCount", ModItems.PISTOL.get().getGun().getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.PISTOL.get().getGun().getGeneral().getMaxAmmo());
             return stack;
         }
 

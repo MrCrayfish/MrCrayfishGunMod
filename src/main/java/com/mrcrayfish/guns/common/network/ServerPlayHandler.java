@@ -25,7 +25,6 @@ import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.InventoryUtil;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
@@ -167,7 +166,7 @@ public class ServerPlayHandler
 
                     if(!player.isCreative())
                     {
-                        CompoundNBT tag = ItemStackUtil.getTagCompound(heldItem);
+                        CompoundNBT tag = heldItem.getOrCreateTag();
                         if(!tag.getBoolean("IgnoreAmmo"))
                         {
                             int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);

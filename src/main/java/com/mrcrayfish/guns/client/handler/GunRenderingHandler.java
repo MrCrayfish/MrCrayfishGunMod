@@ -19,7 +19,6 @@ import com.mrcrayfish.guns.item.attachment.impl.Barrel;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
@@ -667,7 +666,7 @@ public class GunRenderingHandler
         if(stack.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-            CompoundNBT gunTag = ItemStackUtil.getTagCompound(stack);
+            CompoundNBT gunTag = stack.getOrCreateTag();
             CompoundNBT attachments = gunTag.getCompound("Attachments");
             for(String tagKey : attachments.keySet())
             {

@@ -6,7 +6,6 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -64,7 +63,7 @@ public class ReloadTracker
      */
     private boolean isWeaponFull()
     {
-        CompoundNBT tag = ItemStackUtil.getTagCompound(this.stack);
+        CompoundNBT tag = this.stack.getOrCreateTag();
         return tag.getInt("AmmoCount") >= GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
     }
 

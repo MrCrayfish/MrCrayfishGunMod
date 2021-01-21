@@ -3,27 +3,12 @@ package com.mrcrayfish.guns.util;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 
 /**
  * Author: MrCrayfish
  */
-public class ItemStackUtil
+public class BufferUtil
 {
-    /**
-     * Simple helper method to add and get the tag compound from an item stack. The tag compound
-     * on an item stack is null and needs to be initialized before using. This cuts down on common
-     * code.
-     */
-    public static CompoundNBT getTagCompound(ItemStack stack)
-    {
-        if(!stack.hasTag())
-        {
-            stack.setTag(new CompoundNBT());
-        }
-        return stack.getTag();
-    }
-
     /**
      * Writes an ItemStack to a buffer without it's tag compound
      *

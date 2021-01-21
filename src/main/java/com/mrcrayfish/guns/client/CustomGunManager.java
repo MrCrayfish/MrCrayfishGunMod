@@ -4,7 +4,6 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.init.ModItems;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
@@ -39,7 +38,7 @@ public class CustomGunManager
             {
                 ItemStack stack = new ItemStack(ModItems.PISTOL.get());
                 stack.setDisplayName(new TranslationTextComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
-                CompoundNBT tag = ItemStackUtil.getTagCompound(stack);
+                CompoundNBT tag = stack.getOrCreateTag();
                 tag.put("Model", gun.getModel().write(new CompoundNBT()));
                 tag.put("Gun", gun.getGun().serializeNBT());
                 tag.putBoolean("Custom", true);

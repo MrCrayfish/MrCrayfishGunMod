@@ -6,7 +6,6 @@ import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -1096,7 +1095,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static float getAdditionalDamage(ItemStack gunStack)
     {
-        CompoundNBT tag = ItemStackUtil.getTagCompound(gunStack);
+        CompoundNBT tag = gunStack.getOrCreateTag();
         return tag.getFloat("AdditionalDamage");
     }
 
@@ -1125,7 +1124,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static boolean hasAmmo(ItemStack gunStack)
     {
-        CompoundNBT tag = ItemStackUtil.getTagCompound(gunStack);
+        CompoundNBT tag = gunStack.getOrCreateTag();
         return tag.getBoolean("IgnoreAmmo") || tag.getInt("AmmoCount") > 0;
     }
 }

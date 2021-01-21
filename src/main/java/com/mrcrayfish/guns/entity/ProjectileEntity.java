@@ -16,9 +16,9 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageProjectileHit;
 import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
+import com.mrcrayfish.guns.util.BufferUtil;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import com.mrcrayfish.guns.util.math.ExtendedEntityRayTraceResult;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.block.AbstractFireBlock;
@@ -532,7 +532,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         buffer.writeCompoundTag(this.projectile.serializeNBT());
         buffer.writeCompoundTag(this.general.serializeNBT());
         buffer.writeInt(this.shooterId);
-        ItemStackUtil.writeItemStackToBufIgnoreTag(buffer, this.item);
+        BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.item);
         buffer.writeDouble(this.modifiedGravity);
         buffer.writeVarInt(this.life);
     }
@@ -545,7 +545,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.general = new Gun.General();
         this.general.deserializeNBT(buffer.readCompoundTag());
         this.shooterId = buffer.readInt();
-        this.item = ItemStackUtil.readItemStackFromBufIgnoreTag(buffer);
+        this.item = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
         this.entitySize = new EntitySize(this.projectile.getSize(), this.projectile.getSize(), false);

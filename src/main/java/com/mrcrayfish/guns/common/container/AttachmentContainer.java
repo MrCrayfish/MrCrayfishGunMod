@@ -4,7 +4,6 @@ import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.container.slot.AttachmentSlot;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -111,7 +110,7 @@ public class AttachmentContainer extends Container
             }
         }
 
-        CompoundNBT tag = ItemStackUtil.getTagCompound(this.weapon);
+        CompoundNBT tag = this.weapon.getOrCreateTag();
         tag.put("Attachments", attachments);
         super.detectAndSendChanges();
     }
