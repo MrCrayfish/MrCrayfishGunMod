@@ -4,12 +4,16 @@ import com.google.common.collect.Maps;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
 
 /**
  * A simple class to track and control weapon cooldowns
@@ -18,7 +22,28 @@ import java.util.Map;
  */
 public class ShootTracker
 {
+    /**
+     * A custom implementation of the cooldown tracker in order to provide the best experience for
+     * players. On servers, Minecraft's cooldown tracker is sent to the client but the latency creates
+     * an awkward experience as the cooldown applies to the item after the packet has traveled to the
+     * server then back to the client. To fix this and still apply security, we just handle the
+     * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
+     * applied on the client in {@link GunItem#onItemRightClick} and {@link GunItem#onUsingTick}.
+     */
+    private static final Map<PlayerEntity, ShootTracker> SHOOT_TRACKER_MAP = new WeakHashMap<>();
+
     private final Map<Item, Pair<Long, Integer>> cooldownMap = Maps.newHashMap();
+
+    /**
+     * Gets the cooldown tracker for the specified player UUID.
+     *
+     * @param player the player instance
+     * @return a cooldown tracker get
+     */
+    public static ShootTracker getShootTracker(PlayerEntity player)
+    {
+        return SHOOT_TRACKER_MAP.computeIfAbsent(player, player1 -> new ShootTracker());
+    }
 
     /**
      * Puts a cooldown for the specified gun item. This stores the time it was fired and the rate

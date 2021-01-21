@@ -153,7 +153,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             if(!modifiedGun.getGeneral().isAlwaysSpread())
             {
-                gunSpread *= SpreadTracker.get(shooter.getUniqueID()).getSpread(item);
+                gunSpread *= SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
             }
 
             if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))

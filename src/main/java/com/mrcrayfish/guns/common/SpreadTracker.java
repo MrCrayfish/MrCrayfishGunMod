@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 /**
  * Author: MrCrayfish
@@ -24,7 +26,7 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class SpreadTracker
 {
-    private static final Map<UUID, SpreadTracker> TRACKER_MAP = new HashMap<>();
+    private static final Map<PlayerEntity, SpreadTracker> TRACKER_MAP = new WeakHashMap<>();
 
     private final Map<GunItem, Pair<MutableLong, MutableInt>> SPREAD_TRACKER_MAP = new HashMap<>();
 
@@ -67,9 +69,9 @@ public class SpreadTracker
         return 0F;
     }
 
-    public static SpreadTracker get(UUID uuid)
+    public static SpreadTracker get(PlayerEntity player)
     {
-        return TRACKER_MAP.computeIfAbsent(uuid, uuid1 -> new SpreadTracker());
+        return TRACKER_MAP.computeIfAbsent(player, player1 -> new SpreadTracker());
     }
 
     @SubscribeEvent
@@ -78,7 +80,7 @@ public class SpreadTracker
         MinecraftServer server = event.getPlayer().getServer();
         if(server != null)
         {
-            server.execute(() -> TRACKER_MAP.remove(event.getPlayer().getUniqueID()));
+            server.execute(() -> TRACKER_MAP.remove(event.getPlayer()));
         }
     }
 }

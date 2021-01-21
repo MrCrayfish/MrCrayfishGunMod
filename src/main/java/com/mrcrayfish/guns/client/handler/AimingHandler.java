@@ -37,6 +37,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 /**
  * Author: MrCrayfish
@@ -55,7 +56,7 @@ public class AimingHandler
     }
 
     private static final double MAX_AIM_PROGRESS = 4;
-    private final Map<UUID, AimTracker> aimingMap = new HashMap<>();
+    private final Map<PlayerEntity, AimTracker> aimingMap = new WeakHashMap<>();
     private double adsProgress;
     private double lastAdsProgress;
     private double normalisedAdsProgress;
@@ -76,7 +77,7 @@ public class AimingHandler
             tracker.handleAiming(player, player.getHeldItem(Hand.MAIN_HAND));
             if(!tracker.isAiming())
             {
-                this.aimingMap.remove(player.getUniqueID());
+                this.aimingMap.remove(player);
             }
         }
     }
@@ -84,11 +85,11 @@ public class AimingHandler
     @Nullable
     private AimTracker getAimTracker(PlayerEntity player)
     {
-        if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING) && !this.aimingMap.containsKey(player.getUniqueID()))
+        if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING) && !this.aimingMap.containsKey(player))
         {
-            this.aimingMap.put(player.getUniqueID(), new AimTracker());
+            this.aimingMap.put(player, new AimTracker());
         }
-        return this.aimingMap.get(player.getUniqueID());
+        return this.aimingMap.get(player);
     }
 
     public float getAimProgress(PlayerEntity player, float partialTicks)

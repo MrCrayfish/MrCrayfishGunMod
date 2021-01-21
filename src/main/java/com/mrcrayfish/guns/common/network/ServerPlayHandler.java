@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.common.network;
 
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.common.CommonHandler;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.common.ShootTracker;
@@ -87,7 +86,7 @@ public class ServerPlayHandler
                     player.rotationYaw = message.getRotationYaw();
                     player.rotationPitch = message.getRotationPitch();
 
-                    ShootTracker tracker = CommonHandler.getShootTracker(player.getUniqueID());
+                    ShootTracker tracker = ShootTracker.getShootTracker(player);
                     if(tracker.hasCooldown(item))
                     {
                         GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
@@ -102,7 +101,7 @@ public class ServerPlayHandler
 
                     if(!modifiedGun.getGeneral().isAlwaysSpread() && modifiedGun.getGeneral().getSpread() > 0.0F)
                     {
-                        SpreadTracker.get(player.getUniqueID()).update(player, item);
+                        SpreadTracker.get(player).update(player, item);
                     }
 
                     int count = modifiedGun.getGeneral().getProjectileAmount();

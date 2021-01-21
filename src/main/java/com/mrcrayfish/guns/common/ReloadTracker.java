@@ -24,6 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 /**
  * Author: MrCrayfish
@@ -32,7 +33,7 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ReloadTracker
 {
-    private static final Map<UUID, ReloadTracker> RELOAD_TRACKER_MAP = new HashMap<>();
+    private static final Map<PlayerEntity, ReloadTracker> RELOAD_TRACKER_MAP = new WeakHashMap<>();
 
     private int startTick;
     private int slot;
@@ -110,19 +111,19 @@ public class ReloadTracker
             PlayerEntity player = event.player;
             if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
-                if(!RELOAD_TRACKER_MAP.containsKey(player.getUniqueID()))
+                if(!RELOAD_TRACKER_MAP.containsKey(player))
                 {
                     if(!(player.inventory.getCurrentItem().getItem() instanceof GunItem))
                     {
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                         return;
                     }
-                    RELOAD_TRACKER_MAP.put(player.getUniqueID(), new ReloadTracker(player));
+                    RELOAD_TRACKER_MAP.put(player, new ReloadTracker(player));
                 }
-                ReloadTracker tracker = RELOAD_TRACKER_MAP.get(player.getUniqueID());
+                ReloadTracker tracker = RELOAD_TRACKER_MAP.get(player);
                 if(!tracker.isSameWeapon(player) || tracker.isWeaponFull() || tracker.hasNoAmmo(player))
                 {
-                    RELOAD_TRACKER_MAP.remove(player.getUniqueID());
+                    RELOAD_TRACKER_MAP.remove(player);
                     SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                     return;
                 }
@@ -131,7 +132,7 @@ public class ReloadTracker
                     tracker.increaseAmmo(player);
                     if(tracker.isWeaponFull() || tracker.hasNoAmmo(player))
                     {
-                        RELOAD_TRACKER_MAP.remove(player.getUniqueID());
+                        RELOAD_TRACKER_MAP.remove(player);
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
 
                         final PlayerEntity finalPlayer = player;
@@ -157,7 +158,7 @@ public class ReloadTracker
         MinecraftServer server = event.getPlayer().getServer();
         if(server != null)
         {
-            server.execute(() -> RELOAD_TRACKER_MAP.remove(event.getPlayer().getUniqueID()));
+            server.execute(() -> RELOAD_TRACKER_MAP.remove(event.getPlayer()));
         }
     }
 }
