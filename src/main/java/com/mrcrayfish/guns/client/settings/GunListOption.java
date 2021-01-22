@@ -1,10 +1,10 @@
 package com.mrcrayfish.guns.client.settings;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.interfaces.IResourceLocation;
 import net.minecraft.client.AbstractOption;
 import net.minecraft.client.GameSettings;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.OptionButton;
 import net.minecraft.util.ResourceLocation;
@@ -13,8 +13,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -55,7 +53,7 @@ public class GunListOption<E extends IResourceLocation> extends AbstractOption
             List<E> list = this.supplier.get();
             if(list.isEmpty())
                 return;
-            this.nextItem();
+            this.nextItem(Screen.hasShiftDown() ? -1 : 1);
             button.setMessage(this.getTitle());
         }) {
             @Override
@@ -96,13 +94,13 @@ public class GunListOption<E extends IResourceLocation> extends AbstractOption
         }
     }
 
-    private void nextItem()
+    private void nextItem(int offset)
     {
         List<E> list = this.supplier.get();
         E current = this.get();
         if(current != null)
         {
-            int nextIndex = (list.indexOf(current) + 1) % list.size();
+            int nextIndex =  Math.floorMod(list.indexOf(current) + offset, list.size());
             E next = list.get(nextIndex);
             this.set(next);
         }
