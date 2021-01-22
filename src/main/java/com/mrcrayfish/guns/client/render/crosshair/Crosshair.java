@@ -32,7 +32,8 @@ public abstract class Crosshair implements IResourceLocation
 
     /**
      * Renders the crosshair to the screen. If implementing, positioning is not initially set to
-     * the center of the screen. Use windowWidth and windowHeight for calculating the center.
+     * the center of the screen. Use windowWidth and windowHeight for calculating the center. It
+     * should be considered that the player may not be in a world.
      *
      * @param mc           a minecraft instance
      * @param stack        the current matrix stack
