@@ -13,6 +13,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -28,6 +30,7 @@ public class GunListOption<E extends IResourceLocation> extends AbstractOption
     private Supplier<ResourceLocation> getter;
     private Consumer<ResourceLocation> setter;
     private Function<E, ITextComponent> displayNameGetter;
+    private IAdditionalRenderer renderer = (button, matrixStack, partialTicks) -> {};
 
     public GunListOption(String title, Supplier<List<E>> supplier, Supplier<ResourceLocation> getter, Consumer<ResourceLocation> setter, Function<E, ITextComponent> displayNameGetter)
     {
@@ -37,6 +40,12 @@ public class GunListOption<E extends IResourceLocation> extends AbstractOption
         this.getter = getter;
         this.setter = setter;
         this.displayNameGetter = displayNameGetter;
+    }
+
+    public GunListOption setRenderer(@Nullable IAdditionalRenderer renderer)
+    {
+        this.renderer = renderer;
+        return this;
     }
 
     @Override
@@ -55,6 +64,7 @@ public class GunListOption<E extends IResourceLocation> extends AbstractOption
                 List<E> list = GunListOption.this.supplier.get();
                 this.active = !list.isEmpty();
                 super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+                GunListOption.this.renderer.render(this, matrixStack, partialTicks);
             }
         };
     }
@@ -107,5 +117,10 @@ public class GunListOption<E extends IResourceLocation> extends AbstractOption
             component = this.displayNameGetter.apply(e);
         }
         return new TranslationTextComponent(this.title + ".format", component);
+    }
+
+    public interface IAdditionalRenderer
+    {
+        void render(OptionButton button, MatrixStack matrixStack, float partialTicks);
     }
 }

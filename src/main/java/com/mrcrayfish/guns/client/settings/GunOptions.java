@@ -2,7 +2,11 @@ package com.mrcrayfish.guns.client.settings;
 
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.handler.CrosshairHandler;
+import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import net.minecraft.client.AbstractOption;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.settings.SliderPercentageOption;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -38,5 +42,24 @@ public class GunOptions
     }, (value) -> {
         ResourceLocation id = value.getLocation();
         return new TranslationTextComponent(id.getNamespace() + ".crosshair." + id.getPath());
+    }).setRenderer((button, matrixStack, partialTicks) -> {
+        matrixStack.push();
+        matrixStack.translate(button.x, button.y, 0);
+        matrixStack.translate(button.getWidth() + 2, 2, 0);
+        Crosshair crosshair = CrosshairHandler.get().getCurrentCrosshair();
+        if(crosshair != null)
+        {
+            if(crosshair.isDefault())
+            {
+                Minecraft mc = Minecraft.getInstance();
+                mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+                AbstractGui.blit(matrixStack, (16 - 15) / 2, (16 - 15) / 2, 0, 0, 0, 15, 15, 256, 256);
+            }
+            else
+            {
+                crosshair.render(Minecraft.getInstance(), matrixStack, 16, 16, partialTicks);
+            }
+        }
+        matrixStack.push();
     });
 }
