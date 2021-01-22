@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.mixin.client;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
 import com.mrcrayfish.guns.common.Gun;
@@ -50,6 +51,7 @@ public class MouseHelperMixin
                 }
             }
         }
-        return original * (1.0 - (1.0 - GunMod.getOptions().getAdsSensitivity()) * AimingHandler.get().getNormalisedAdsProgress()) * additionalAdsSensitivity;
+        double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
+        return original * (1.0 - (1.0 - adsSensitivity) * AimingHandler.get().getNormalisedAdsProgress()) * additionalAdsSensitivity;
     }
 }

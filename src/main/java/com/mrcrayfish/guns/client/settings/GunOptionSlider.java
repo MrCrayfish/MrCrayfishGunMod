@@ -22,6 +22,5 @@ public class GunOptionSlider extends OptionSlider
     protected void func_230972_a_()
     {
         this.option.set(this.settings, this.option.denormalizeValue(this.sliderValue));
-        GunMod.getOptions().saveOptions();
     }
 }

@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client.handler;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
@@ -90,8 +91,8 @@ public class CrosshairHandler
     {
         if(this.currentCrosshair == null && this.registeredCrosshairs.size() > 0)
         {
-            ResourceLocation id = GunMod.getOptions().getCrosshair();
-            this.currentCrosshair = this.idToCrosshair.getOrDefault(id, Crosshair.DEFAULT);
+            ResourceLocation id = ResourceLocation.tryCreate(Config.CLIENT.display.crosshair.get());
+            this.currentCrosshair = id != null ? this.idToCrosshair.getOrDefault(id, Crosshair.DEFAULT) : Crosshair.DEFAULT;
         }
         return this.currentCrosshair;
     }

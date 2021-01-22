@@ -95,7 +95,6 @@ public class GunListOption<E extends IResourceLocation> extends AbstractOption
             int nextIndex = (list.indexOf(current) + 1) % list.size();
             E next = list.get(nextIndex);
             this.set(next);
-            GunMod.getOptions().saveOptions();
         }
     }
 

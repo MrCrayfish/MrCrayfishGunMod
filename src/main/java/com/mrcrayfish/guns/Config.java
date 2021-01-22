@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns;
 
+import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -16,6 +17,7 @@ public class Config
         public final Sounds sounds;
         public final Display display;
         public final Particle particle;
+        public final Controls controls;
 
         public Client(ForgeConfigSpec.Builder builder)
         {
@@ -24,6 +26,7 @@ public class Config
                 this.sounds = new Sounds(builder);
                 this.display = new Display(builder);
                 this.particle = new Particle(builder);
+                this.controls = new Controls(builder);
             }
             builder.pop();
         }
@@ -52,12 +55,14 @@ public class Config
     public static class Display
     {
         public final ForgeConfigSpec.BooleanValue oldAnimations;
+        public final ForgeConfigSpec.ConfigValue<String> crosshair;
 
         public Display(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for display related options").push("display");
             {
                 this.oldAnimations = builder.comment("If true, uses the old animations for two handed weapons prior to official release").define("oldAnimations", false);
+                this.crosshair = builder.comment("The custom crosshair to use for weapons. Go to (Options > Controls > Mouse Settings > Crosshair) in game to change this!").define("crosshair", Crosshair.DEFAULT.getLocation().toString());
             }
             builder.pop();
         }
@@ -81,6 +86,20 @@ public class Config
                 this.bulletHoleLifeMax = builder.comment("The maximum duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLifeMax", 200, 0, Integer.MAX_VALUE);
                 this.bulletHoleFadeThreshold = builder.comment("The percentage of the maximum life that must pass before particles begin fading away. 0 makes the particles always fade and 1 removes facing completely").defineInRange("bulletHoleFadeThreshold", 0.98, 0, 1.0);
                 this.enableBlood = builder.comment("If true, blood will will spawn from entities that are hit from a projectile").define("enableBlood", false);
+            }
+            builder.pop();
+        }
+    }
+
+    public static class Controls
+    {
+        public final ForgeConfigSpec.DoubleValue aimDownSightSensitivity;
+
+        public Controls(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Properties relating to controls").push("controls");
+            {
+                this.aimDownSightSensitivity = builder.comment("A value to multiple the mouse sensitivity by when aiming down weapon sights. Go to (Options > Controls > Mouse Settings > ADS Sensitivity) in game to change this!").defineInRange("aimDownSightSensitivity", 0.75, 0.0, 1.0);
             }
             builder.pop();
         }
@@ -319,7 +338,7 @@ public class Config
             builder.comment("Properties relating to projectile spread").push("projectile_spread");
             {
                 this.spreadThreshold = builder.comment("The amount of time in milliseconds before logic to apply spread is skipped. The value indicates a reasonable amount of time before a weapon is considered stable again.").defineInRange("spreadThreshold", 300, 0, 1000);
-                this.maxCount = builder.comment("The amount of times a player has too shoot within the spread threshold before the maximum amount of spread is applied. Setting the value higher means it will take longer for the spread to be applied.").defineInRange("maxCount", 10, 1, Integer.MAX_VALUE);
+                this.maxCount = builder.comment("The amount of times a player has to shoot within the spread threshold before the maximum amount of spread is applied. Setting the value higher means it will take longer for the spread to be applied.").defineInRange("maxCount", 10, 1, Integer.MAX_VALUE);
             }
             builder.pop();
         }
@@ -386,5 +405,10 @@ public class Config
         final Pair<Server, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
         serverSpec = serverSpecPair.getRight();
         SERVER = serverSpecPair.getLeft();
+    }
+
+    public static void saveClientConfig()
+    {
+        clientSpec.save();
     }
 }

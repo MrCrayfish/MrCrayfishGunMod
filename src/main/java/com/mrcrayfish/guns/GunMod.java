@@ -89,16 +89,6 @@ public class GunMod
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        Minecraft mc = event.getMinecraftSupplier().get();
-        GunMod.options = new GunOptions(mc.gameDir);
         ClientHandler.setup();
-    }
-
-    /**
-     * @return
-     */
-    public static GunOptions getOptions()
-    {
-        return options;
     }
 }

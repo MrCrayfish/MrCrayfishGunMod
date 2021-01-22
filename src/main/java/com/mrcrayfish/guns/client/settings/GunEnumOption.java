@@ -35,7 +35,6 @@ public class GunEnumOption<E extends Enum<E> & IStringSerializable> extends Abst
     private void nextEnum(GameSettings options)
     {
         this.set(options, this.getEnum(++this.ordinal));
-        GunMod.getOptions().saveOptions();
     }
 
     public void set(GameSettings options, E e)

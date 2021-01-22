@@ -6,6 +6,7 @@ import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
@@ -97,8 +98,9 @@ public class ControllerHandler
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem && AimingHandler.get().isAiming())
             {
-                event.setYawSpeed(10.0F * (float) GunMod.getOptions().getAdsSensitivity());
-                event.setPitchSpeed(7.5F * (float) GunMod.getOptions().getAdsSensitivity());
+                double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
+                event.setYawSpeed(10.0F * (float) adsSensitivity);
+                event.setPitchSpeed(7.5F * (float) adsSensitivity);
 
                 Scope scope = Gun.getScope(heldItem);
                 if(scope != null && scope.isStable() && event.getController().getButtonsStates().getState(Buttons.RIGHT_THUMB_STICK))
