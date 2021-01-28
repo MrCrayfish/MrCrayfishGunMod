@@ -36,6 +36,6 @@ personal liking. This mod adds ten weapons into the game!
 [[dependencies.cgm]]
     modId="controllable"
     mandatory=false
-    versionRange="[0.8.1,)"
+    versionRange="[0.10.1,)"
     ordering="AFTER"
     side="CLIENT"
