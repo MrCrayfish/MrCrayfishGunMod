@@ -75,6 +75,7 @@ public class ClientHandler
         if(GunMod.controllableLoaded)
         {
             MinecraftForge.EVENT_BUS.register(new ControllerHandler());
+            GunButtonBindings.register();
         }
 
         KeyBinds.register();

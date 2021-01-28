@@ -2,14 +2,12 @@ package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
-import com.mrcrayfish.controllable.client.ButtonBindings;
-import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
-import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.GatherActionsEvent;
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.client.GunButtonBindings;
+import com.mrcrayfish.guns.client.GunConflictContext;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
@@ -40,11 +38,11 @@ public class ControllerHandler
     {
         PlayerEntity player = Minecraft.getInstance().player;
         World world = Minecraft.getInstance().world;
-        if(player != null && world != null)
+        if(player != null && world != null && Minecraft.getInstance().currentScreen == null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
             int button = event.getButton();
-            if(button == ButtonBindings.ATTACK.getButton())
+            if(button == GunButtonBindings.SHOOT.getButton())
             {
                 if(heldItem.getItem() instanceof GunItem)
                 {
@@ -55,21 +53,21 @@ public class ControllerHandler
                     }
                 }
             }
-            else if(button == ButtonBindings.USE_ITEM.getButton())
+            else if(button == GunButtonBindings.AIM.getButton())
             {
                 if(heldItem.getItem() instanceof GunItem)
                 {
                     event.setCanceled(true);
                 }
             }
-            else if(button == ButtonBindings.SNEAK.getButton())
+            else if(button == GunButtonBindings.STEADY_AIM.getButton())
             {
                 if(heldItem.getItem() instanceof GunItem)
                 {
                     event.setCanceled(true);
                 }
             }
-            else if(button == ButtonBindings.SWAP_HANDS.getButton())
+            else if(button == GunButtonBindings.RELOAD.getButton())
             {
                 if(heldItem.getItem() instanceof GunItem)
                 {
@@ -80,7 +78,7 @@ public class ControllerHandler
                     }
                 }
             }
-            else if(button == ButtonBindings.PICK_BLOCK.getButton())
+            else if(button == GunButtonBindings.OPEN_ATTACHMENTS.getButton())
             {
                 if(heldItem.getItem() instanceof GunItem && Minecraft.getInstance().currentScreen == null)
                 {
@@ -108,7 +106,7 @@ public class ControllerHandler
                 event.setPitchSpeed(7.5F * (float) adsSensitivity);
 
                 Scope scope = Gun.getScope(heldItem);
-                if(scope != null && scope.isStable() && Controllable.isButtonPressed(ButtonBindings.SNEAK.getButton()))
+                if(scope != null && scope.isStable() && Controllable.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton()))
                 {
                     event.setYawSpeed(event.getYawSpeed() / 2.0F);
                     event.setPitchSpeed(event.getPitchSpeed() / 2.0F);
@@ -129,15 +127,15 @@ public class ControllerHandler
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem)
             {
-                event.getActions().put(ButtonBindings.USE_ITEM, new Action("Aim", Action.Side.RIGHT));
-                event.getActions().put(ButtonBindings.ATTACK, new Action("Shoot", Action.Side.RIGHT));
+                event.getActions().put(GunButtonBindings.AIM, new Action("Aim", Action.Side.RIGHT));
+                event.getActions().put(GunButtonBindings.SHOOT, new Action("Shoot", Action.Side.RIGHT));
 
                 GunItem gunItem = (GunItem) heldItem.getItem();
                 Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                 CompoundNBT tag = heldItem.getTag();
                 if(tag != null && tag.getInt("AmmoCount") < GunEnchantmentHelper.getAmmoCapacity(heldItem, modifiedGun))
                 {
-                    event.getActions().put(ButtonBindings.SWAP_HANDS, new Action("Reload", Action.Side.LEFT));
+                    event.getActions().put(GunButtonBindings.RELOAD, new Action("Reload", Action.Side.LEFT));
                 }
 
                 ItemStack scopeStack = Gun.getScopeStack(heldItem);
@@ -147,7 +145,7 @@ public class ControllerHandler
                     Scope scope = iscope.getProperties();
                     if(scope.isStable())
                     {
-                        event.getActions().put(ButtonBindings.SNEAK, new Action("Hold Breath", Action.Side.RIGHT));
+                        event.getActions().put(GunButtonBindings.STEADY_AIM, new Action("Hold Breath", Action.Side.RIGHT));
                     }
                 }
             }
@@ -169,7 +167,7 @@ public class ControllerHandler
         if(player == null)
             return;
 
-        if(Controllable.isButtonPressed(ButtonBindings.ATTACK.getButton()))
+        if(Controllable.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().currentScreen == null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem)
@@ -184,7 +182,7 @@ public class ControllerHandler
 
         if(mc.currentScreen == null && this.reloadCounter != -1)
         {
-            if(Controllable.isButtonPressed(ButtonBindings.SWAP_HANDS.getButton()))
+            if(Controllable.isButtonPressed(GunButtonBindings.RELOAD.getButton()))
             {
                 this.reloadCounter++;
             }
@@ -196,7 +194,7 @@ public class ControllerHandler
             PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
             this.reloadCounter = -1;
         }
-        else if(this.reloadCounter > 0 && !ButtonBindings.SWAP_HANDS.isButtonDown())
+        else if(this.reloadCounter > 0 && !Controllable.isButtonPressed(GunButtonBindings.RELOAD.getButton()))
         {
             ReloadHandler.get().setReloading(!SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING));
             this.reloadCounter = -1;
@@ -206,12 +204,12 @@ public class ControllerHandler
     public static boolean isAiming()
     {
         Controller controller = Controllable.getController();
-        return controller != null && Controllable.isButtonPressed(ButtonBindings.USE_ITEM.getButton());
+        return controller != null && Controllable.isButtonPressed(GunButtonBindings.AIM.getButton());
     }
 
     public static boolean isShooting()
     {
         Controller controller = Controllable.getController();
-        return controller != null && Controllable.isButtonPressed(ButtonBindings.ATTACK.getButton());
+        return controller != null && Controllable.isButtonPressed(GunButtonBindings.SHOOT.getButton());
     }
 }

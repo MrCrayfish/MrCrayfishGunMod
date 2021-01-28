@@ -220,9 +220,6 @@ public class AimingHandler
     public boolean isAiming()
     {
         Minecraft mc = Minecraft.getInstance();
-        if(!mc.isGameFocused())
-            return false;
-
         if(mc.player == null)
             return false;
 

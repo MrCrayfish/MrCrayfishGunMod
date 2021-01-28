@@ -128,5 +128,11 @@
     "perk.cgm.rate.positive": "Increased Fire Rate",
     "perk.cgm.rate.negative": "Reduced Fire Rate",
     "gui.cgm.assemble": "Assemble",
-    "gui.cgm.show_remaining": "Show Remaining"
+    "gui.cgm.show_remaining": "Show Remaining",
+    "button.categories.cgm": "MrCrayfish's Gun Mod",
+    "cgm.button.shoot": "Shoot Weapon",
+    "cgm.button.aim": "Aim Down Sight",
+    "cgm.button.reload": "Reload / Unload",
+    "cgm.button.attachments": "Modify Attachments",
+    "cgm.button.steadyAim": "Steady Aim"
 }
