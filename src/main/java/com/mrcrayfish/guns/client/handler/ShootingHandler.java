@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.ButtonBindings;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.common.Gun;
@@ -110,11 +111,7 @@ public class ShootingHandler
                 boolean shooting = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
                 if(GunMod.controllableLoaded)
                 {
-                    Controller controller = Controllable.getController();
-                    if(controller != null)
-                    {
-                        shooting |= controller.getRTriggerValue() > 0.5;
-                    }
+                    shooting |= ControllerHandler.isShooting();
                 }
                 if(shooting)
                 {

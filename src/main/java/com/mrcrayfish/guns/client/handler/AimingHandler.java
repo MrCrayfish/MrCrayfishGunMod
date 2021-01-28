@@ -246,11 +246,7 @@ public class AimingHandler
         boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
         if(GunMod.controllableLoaded)
         {
-            Controller controller = Controllable.getController();
-            if(controller != null)
-            {
-                zooming |= controller.getLTriggerValue() >= 0.5;
-            }
+            zooming |= ControllerHandler.isAiming();
         }
 
         return zooming;
