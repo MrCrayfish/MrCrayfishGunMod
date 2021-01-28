@@ -11,6 +11,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.glfw.GLFW;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -79,12 +80,12 @@ public class ScreenTextureState extends RenderState.TexturingState
             // When window resizes the texture needs to be re-initialized and copied, so both are done in the same call
             this.lastWindowWidth = mainWindow.getWidth();
             this.lastWindowHeight = mainWindow.getHeight();
-            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, mainWindow.getWidth(), mainWindow.getHeight(), 0);
+            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, mainWindow.getFramebufferWidth(), mainWindow.getFramebufferHeight(), 0);
         }
         else
         {
             // Copy sub-image is faster than copy because the texture does not need to be initialized
-            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, mainWindow.getWidth(), mainWindow.getHeight());
+            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, mainWindow.getFramebufferWidth(), mainWindow.getFramebufferHeight());
         }
     }
 }
