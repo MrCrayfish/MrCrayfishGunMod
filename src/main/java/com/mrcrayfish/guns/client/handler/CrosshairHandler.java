@@ -125,6 +125,9 @@ public class CrosshairHandler
 
         event.setCanceled(true);
 
+        if(!mc.gameSettings.getPointOfView().func_243192_a())
+            return;
+
         MatrixStack stack = event.getMatrixStack();
         stack.push();
         int scaledWidth = event.getWindow().getScaledWidth();
