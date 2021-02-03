@@ -764,8 +764,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return;
 
         Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
-        Explosion explosion = new Explosion(world, entity, null, null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, Explosion.Mode.NONE);
+        Explosion explosion = new Explosion(world, entity, null, null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, mode);
         explosion.doExplosionA();
+        explosion.doExplosionB(true);
         explosion.getAffectedBlockPositions().forEach(pos ->
         {
             if(world.getBlockState(pos).getBlock() instanceof IExplosionDamageable)
@@ -773,7 +774,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
             }
         });
-        explosion.doExplosionB(true);
 
         if(mode == Explosion.Mode.NONE)
         {
