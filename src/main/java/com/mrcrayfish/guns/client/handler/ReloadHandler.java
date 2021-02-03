@@ -17,6 +17,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Author: MrCrayfish
@@ -56,11 +57,11 @@ public class ReloadHandler
             {
                 if(this.reloadingSlot != player.inventory.currentItem)
                 {
-                    setReloading(false);
+                    this.setReloading(false);
                 }
             }
 
-            updateReloadTimer(player);
+            this.updateReloadTimer(player);
         }
     }
 
@@ -76,16 +77,16 @@ public class ReloadHandler
         {
             if(!SyncedPlayerData.instance().get(Minecraft.getInstance().player, ModSyncedDataKeys.RELOADING))
             {
-                setReloading(true);
+                this.setReloading(true);
             }
             else
             {
-                setReloading(false);
+                this.setReloading(false);
             }
         }
         if(KeyBinds.KEY_UNLOAD.isPressed() && event.getAction() == GLFW.GLFW_PRESS)
         {
-            setReloading(false);
+            this.setReloading(false);
             PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
         }
     }
