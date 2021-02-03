@@ -72,7 +72,7 @@ public class ReloadHandler
             return;
         }
 
-        if(KeyBinds.KEY_RELOAD.isPressed())
+        if(KeyBinds.KEY_RELOAD.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS)
         {
             if(!SyncedPlayerData.instance().get(Minecraft.getInstance().player, ModSyncedDataKeys.RELOADING))
             {
@@ -83,7 +83,7 @@ public class ReloadHandler
                 setReloading(false);
             }
         }
-        if(KeyBinds.KEY_UNLOAD.isPressed())
+        if(KeyBinds.KEY_UNLOAD.isPressed() && event.getAction() == GLFW.GLFW_PRESS)
         {
             setReloading(false);
             PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
