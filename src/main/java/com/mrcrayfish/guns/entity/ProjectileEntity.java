@@ -20,6 +20,7 @@ import com.mrcrayfish.guns.util.BufferUtil;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.math.ExtendedEntityRayTraceResult;
+import com.mrcrayfish.guns.world.ProjectileExplosion;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
@@ -59,6 +60,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.ExplosionContext;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -763,11 +765,23 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(world.isRemote())
             return;
 
-        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
-        Explosion explosion = new Explosion(world, entity, null, null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, mode);
-        if(net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion)) return;
+        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.Mode.BREAK : Explosion.Mode.NONE;
+        Explosion explosion = new ProjectileExplosion(world, entity, null, null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, mode);
+
+        if(net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
+            return;
+
+        // Do explosion logic
         explosion.doExplosionA();
         explosion.doExplosionB(true);
+
+        // Clears the affected blocks if mode is none
+        if(mode == Explosion.Mode.NONE)
+        {
+            explosion.clearAffectedBlockPositions();
+        }
+
+        // Send event to blocks that are exploded (none if mode is none)
         explosion.getAffectedBlockPositions().forEach(pos ->
         {
             if(world.getBlockState(pos).getBlock() instanceof IExplosionDamageable)
@@ -776,16 +790,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         });
 
-        if(mode == Explosion.Mode.NONE)
+        for(ServerPlayerEntity player : ((ServerWorld) world).getPlayers())
         {
-            explosion.clearAffectedBlockPositions();
-        }
-
-        for(ServerPlayerEntity serverplayerentity : ((ServerWorld) world).getPlayers())
-        {
-            if(serverplayerentity.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ()) < 4096.0D)
+            if(player.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ()) < 4096)
             {
-                serverplayerentity.connection.sendPacket(new SExplosionPacket(entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius / 5f, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(serverplayerentity)));
+                player.connection.sendPacket(new SExplosionPacket(entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(player)));
             }
         }
     }
