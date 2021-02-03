@@ -82,7 +82,7 @@ public class TwoHandedPose extends WeaponPose
         matrixStack.push();
 
         float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
-        matrixStack.translate(0, -reloadProgress * 2, 0);
+        matrixStack.translate(reloadProgress * 0.5, -reloadProgress, -reloadProgress * 0.5);
 
         int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
         matrixStack.translate(6 * side * 0.0625, -0.585, -0.5);
