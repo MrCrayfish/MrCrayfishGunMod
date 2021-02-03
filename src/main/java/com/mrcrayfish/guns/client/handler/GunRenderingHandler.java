@@ -315,7 +315,7 @@ public class GunRenderingHandler
 
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
-        this.renderReloadArm(matrixStack, event.getBuffers(), event.getLight(), heldItem, hand);
+        this.renderReloadArm(matrixStack, event.getBuffers(), event.getLight(), modifiedGun, heldItem, hand);
 
         /* Translate the item position based on the hand side */
         int offset = right ? 1 : -1;
@@ -767,14 +767,13 @@ public class GunRenderingHandler
         matrixStack.pop();
     }
 
-    private void renderReloadArm(MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, ItemStack stack, HandSide hand)
+    private void renderReloadArm(MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, Gun modifiedGun, ItemStack stack, HandSide hand)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || mc.player.ticksExisted < ReloadHandler.get().getStartReloadTick() || ReloadHandler.get().getReloadTimer() != 5)
             return;
 
-        Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-        Item item = ForgeRegistries.ITEMS.getValue(gun.getProjectile().getItem());
+        Item item = ForgeRegistries.ITEMS.getValue(modifiedGun.getProjectile().getItem());
         if(item == null)
             return;
 
@@ -808,10 +807,41 @@ public class GunRenderingHandler
             matrixStack.translate(-side * 5 * 0.0625, 15 * 0.0625, -1 * 0.0625);
             matrixStack.rotate(Vector3f.XP.rotationDegrees(180F));
             matrixStack.scale(0.75F, 0.75F, 0.75F);
-            RenderUtil.renderModel(new ItemStack(item), ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, matrixStack, buffer, light, OverlayTexture.NO_OVERLAY);
+            ItemStack ammo = new ItemStack(item, modifiedGun.getGeneral().getReloadAmount());
+            IBakedModel model = RenderUtil.getModel(ammo);
+            boolean isModel = model.isGui3d();
+            this.random.setSeed(Item.getIdFromItem(item));
+            int count = Math.min(modifiedGun.getGeneral().getReloadAmount(), 5);
+            for(int i = 0; i < count; ++i)
+            {
+                matrixStack.push();
+                if(i > 0)
+                {
+                    if(isModel)
+                    {
+                        float x = (this.random.nextFloat() * 2.0F - 1.0F) * 0.15F;
+                        float y = (this.random.nextFloat() * 2.0F - 1.0F) * 0.15F;
+                        float z = (this.random.nextFloat() * 2.0F - 1.0F) * 0.15F;
+                        matrixStack.translate(x, y, z);
+                    }
+                    else
+                    {
+                        float x = (this.random.nextFloat() * 2.0F - 1.0F) * 0.15F * 0.5F;
+                        float y = (this.random.nextFloat() * 2.0F - 1.0F) * 0.15F * 0.5F;
+                        matrixStack.translate(x, y, 0);
+                    }
+                }
+
+                RenderUtil.renderModel(ammo, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, matrixStack, buffer, light, OverlayTexture.NO_OVERLAY);
+                matrixStack.pop();
+
+                if(!isModel)
+                {
+                    matrixStack.translate(0.0, 0.0, 0.09375F);
+                }
+            }
             matrixStack.pop();
         }
-
         matrixStack.pop();
     }
 
