@@ -149,6 +149,10 @@ public class ReloadTracker
                     }
                 }
             }
+            else if(RELOAD_TRACKER_MAP.containsKey(player))
+            {
+                RELOAD_TRACKER_MAP.remove(player);
+            }
         }
     }
 
