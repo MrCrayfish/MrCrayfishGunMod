@@ -765,6 +765,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
         Explosion explosion = new Explosion(world, entity, null, null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, mode);
+        if(net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion)) return;
         explosion.doExplosionA();
         explosion.doExplosionB(true);
         explosion.getAffectedBlockPositions().forEach(pos ->
