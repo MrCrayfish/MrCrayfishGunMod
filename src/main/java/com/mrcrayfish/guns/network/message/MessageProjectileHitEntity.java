@@ -2,8 +2,6 @@ package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -11,23 +9,23 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageProjectileHit implements IMessage
+public class MessageProjectileHitEntity implements IMessage
 {
     private double x;
     private double y;
     private double z;
-    private BlockPos pos;
-    private Direction face;
+    private int type;
+    private boolean player;
 
-    public MessageProjectileHit() {}
+    public MessageProjectileHitEntity() {}
 
-    public MessageProjectileHit(double x, double y, double z, BlockPos pos, Direction face)
+    public MessageProjectileHitEntity(double x, double y, double z, int type, boolean player)
     {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.pos = pos;
-        this.face = face;
+        this.type = type;
+        this.player = player;
     }
 
     @Override
@@ -36,8 +34,8 @@ public class MessageProjectileHit implements IMessage
         buffer.writeDouble(this.x);
         buffer.writeDouble(this.y);
         buffer.writeDouble(this.z);
-        buffer.writeBlockPos(this.pos);
-        buffer.writeEnumValue(this.face);
+        buffer.writeByte(this.type);
+        buffer.writeBoolean(this.player);
     }
 
     @Override
@@ -46,14 +44,14 @@ public class MessageProjectileHit implements IMessage
         this.x = buffer.readDouble();
         this.y = buffer.readDouble();
         this.z = buffer.readDouble();
-        this.pos = buffer.readBlockPos();
-        this.face = buffer.readEnumValue(Direction.class);
+        this.type = buffer.readByte();
+        this.player = buffer.readBoolean();
     }
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHit(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHitEntity(this));
         supplier.get().setPacketHandled(true);
     }
 
@@ -72,13 +70,25 @@ public class MessageProjectileHit implements IMessage
         return this.z;
     }
 
-    public BlockPos getPos()
+    public boolean isHeadshot()
     {
-        return this.pos;
+        return this.type == HitType.HEADSHOT;
     }
 
-    public Direction getFace()
+    public boolean isCritical()
     {
-        return this.face;
+        return this.type == HitType.CRITICAL;
+    }
+
+    public boolean isPlayer()
+    {
+        return this.player;
+    }
+
+    public static class HitType
+    {
+        public static final int NORMAL = 0;
+        public static final int HEADSHOT = 1;
+        public static final int CRITICAL = 2;
     }
 }

@@ -8,10 +8,12 @@ import com.mrcrayfish.guns.client.handler.BulletTrailRenderingHandler;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.init.ModParticleTypes;
+import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBulletTrail;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
-import com.mrcrayfish.guns.network.message.MessageProjectileHit;
+import com.mrcrayfish.guns.network.message.MessageProjectileHitBlock;
+import com.mrcrayfish.guns.network.message.MessageProjectileHitEntity;
 import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
@@ -22,12 +24,16 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -130,7 +136,7 @@ public class ClientPlayHandler
         return manager.addParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
 
-    public static void handleProjectileHit(MessageProjectileHit message)
+    public static void handleProjectileHitBlock(MessageProjectileHitBlock message)
     {
         Minecraft mc = Minecraft.getInstance();
         World world = mc.world;
@@ -151,6 +157,20 @@ public class ClientPlayHandler
                 world.playSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F, false);
             }
         }
+    }
+
+    public static void handleProjectileHitEntity(MessageProjectileHitEntity message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        World world = mc.world;
+        if(world == null)
+            return;
+
+        SoundEvent event = message.isHeadshot() ? ModSounds.ENTITY_HEADSHOT.get() : message.isCritical() ? ModSounds.ENTITY_CRITICAL.get() : message.isPlayer() ? SoundEvents.ENTITY_PLAYER_HURT : null;
+        if(event == null)
+            return;
+
+        mc.getSoundHandler().play(SimpleSound.master(event, 1.0F, 0.95F + world.rand.nextFloat() * 0.1F));
     }
 
     public static void handleRemoveProjectile(MessageRemoveProjectile message)

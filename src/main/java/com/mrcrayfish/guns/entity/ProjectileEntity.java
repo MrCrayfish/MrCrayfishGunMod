@@ -15,7 +15,8 @@ import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
-import com.mrcrayfish.guns.network.message.MessageProjectileHit;
+import com.mrcrayfish.guns.network.message.MessageProjectileHitBlock;
+import com.mrcrayfish.guns.network.message.MessageProjectileHitEntity;
 import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.util.BufferUtil;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
@@ -486,28 +487,19 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
         entity.attackEntityFrom(source, damage);
 
-        //TODO merge packets and add config option to change sounds
-        if(entity instanceof PlayerEntity && this.shooter instanceof ServerPlayerEntity)
+        if(this.shooter instanceof PlayerEntity)
         {
-            SoundEvent event = headshot ? SoundEvents.ENTITY_ARROW_HIT : critical ? ModSounds.ENTITY_CRITICAL.get() : SoundEvents.ENTITY_PLAYER_HURT;
-            ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
-            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.MASTER, new Vector3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 1.0F, 0.95F + this.rand.nextFloat() * 0.1F));
-        }
-        else if((critical || headshot) && this.shooter instanceof ServerPlayerEntity)
-        {
-            SoundEvent event = critical ? ModSounds.ENTITY_CRITICAL.get() : ModSounds.ENTITY_HEADSHOT.get();
-            ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
-            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.MASTER, new Vector3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 1.0F, 0.95F + this.rand.nextFloat() * 0.21F));
+            int hitType = critical ? MessageProjectileHitEntity.HitType.CRITICAL : headshot ? MessageProjectileHitEntity.HitType.HEADSHOT : MessageProjectileHitEntity.HitType.NORMAL;
+            PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) this.shooter), new MessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof PlayerEntity));
         }
 
         /* Send blood particle to tracking clients. */
-        //TODO maybe make clients send settings to server to prevent sending unnecessary packets
         PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(hitVec.x, hitVec.y, hitVec.z));
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {
-        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.world.getChunkAt(pos)), new MessageProjectileHit(x, y, z, pos, face));
+        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.world.getChunkAt(pos)), new MessageProjectileHitBlock(x, y, z, pos, face));
     }
 
     @Override
