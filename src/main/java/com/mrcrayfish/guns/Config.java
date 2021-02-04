@@ -38,12 +38,14 @@ public class Config
     public static class Sounds
     {
         public final ForgeConfigSpec.BooleanValue playSoundWhenHeadshot;
+        public final ForgeConfigSpec.BooleanValue playSoundWhenCritical;
 
         public Sounds(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Control sounds triggered by guns").push("sounds");
             {
                 this.playSoundWhenHeadshot = builder.comment("If true, a sound will play when you successfully hit a headshot on a entity with a gun").define("playSoundWhenHeadshot", true);
+                this.playSoundWhenCritical = builder.comment("If true, a sound will play when you successfully hit a critical on a entity with a gun").define("playSoundWhenCritical", true);
             }
             builder.pop();
         }

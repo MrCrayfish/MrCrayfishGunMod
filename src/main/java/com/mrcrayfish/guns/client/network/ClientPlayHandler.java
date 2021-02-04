@@ -168,9 +168,6 @@ public class ClientPlayHandler
         if(event == null)
             return;
 
-        if(message.isHeadshot() && !Config.CLIENT.sounds.playSoundWhenHeadshot.get())
-            return;
-
         mc.getSoundHandler().play(SimpleSound.master(event, 1.0F, 1.0F + world.rand.nextFloat() * 0.2F));
     }
 
@@ -179,11 +176,17 @@ public class ClientPlayHandler
     {
         if(critical)
         {
-            return SoundEvents.ENTITY_PLAYER_ATTACK_CRIT;
+            if(Config.CLIENT.sounds.playSoundWhenCritical.get())
+            {
+                return SoundEvents.ENTITY_PLAYER_ATTACK_CRIT;
+            }
         }
         else if(headshot)
         {
-            return SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK;
+            if(Config.CLIENT.sounds.playSoundWhenHeadshot.get())
+            {
+                return SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK;
+            }
         }
         else if(player)
         {
