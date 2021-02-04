@@ -18,7 +18,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * Author: MrCrayfish
  */
-//TODO add support to revent to old animations
 public class MiniGunPose extends WeaponPose
 {
     @Override
