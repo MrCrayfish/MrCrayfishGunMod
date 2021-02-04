@@ -35,6 +35,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
@@ -163,7 +164,7 @@ public class ClientPlayHandler
         if(world == null)
             return;
 
-        SoundEvent event = message.isHeadshot() ? ModSounds.ENTITY_HEADSHOT.get() : message.isCritical() ? ModSounds.ENTITY_CRITICAL.get() : message.isPlayer() ? SoundEvents.ENTITY_PLAYER_HURT : null;
+        SoundEvent event = getHitSound(message.isCritical(), message.isHeadshot(), message.isPlayer());
         if(event == null)
             return;
 
@@ -172,6 +173,25 @@ public class ClientPlayHandler
 
         mc.getSoundHandler().play(SimpleSound.master(event, 1.0F, 1.0F + world.rand.nextFloat() * 0.2F));
     }
+
+    @Nullable
+    private static SoundEvent getHitSound(boolean critical, boolean headshot, boolean player)
+    {
+        if(critical)
+        {
+            return SoundEvents.ENTITY_PLAYER_ATTACK_CRIT;
+        }
+        else if(headshot)
+        {
+            return SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK;
+        }
+        else if(player)
+        {
+            return SoundEvents.ENTITY_PLAYER_HURT;
+        }
+        return null;
+    }
+
 
     public static void handleRemoveProjectile(MessageRemoveProjectile message)
     {
