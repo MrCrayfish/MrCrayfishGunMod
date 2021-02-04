@@ -37,7 +37,7 @@
         "attachments": {
             "scope": {
                 "yOffset": 3.7,
-                "zOffset": 6.5,
+                "zOffset": 6.0,
                 "scale": 0.75
             },
             "barrel": {
