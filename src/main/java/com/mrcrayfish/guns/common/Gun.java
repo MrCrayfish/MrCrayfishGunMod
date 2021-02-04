@@ -515,7 +515,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Nullable
         private ResourceLocation createSound(CompoundNBT tag, String key)
         {
-            String sound = tag.getString("SilencedFire");
+            String sound = tag.getString(key);
             return sound.isEmpty() ? null : new ResourceLocation(sound);
         }
 
