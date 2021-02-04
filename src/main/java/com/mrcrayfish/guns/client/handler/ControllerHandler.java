@@ -7,7 +7,6 @@ import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.GatherActionsEvent;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.GunButtonBindings;
-import com.mrcrayfish.guns.client.GunConflictContext;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;

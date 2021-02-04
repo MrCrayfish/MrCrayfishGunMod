@@ -1,7 +1,5 @@
 package com.mrcrayfish.guns.client.handler;
 
-import com.mrcrayfish.controllable.Controllable;
-import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import com.mrcrayfish.guns.common.Gun;
@@ -34,9 +32,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**

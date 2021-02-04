@@ -6,7 +6,6 @@ import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import net.minecraft.client.AbstractOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.settings.SliderPercentageOption;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;

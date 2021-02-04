@@ -1,8 +1,5 @@
 package com.mrcrayfish.guns.client.handler;
 
-import com.mrcrayfish.controllable.Controllable;
-import com.mrcrayfish.controllable.client.ButtonBindings;
-import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.event.GunFireEvent;

@@ -4,7 +4,6 @@ import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

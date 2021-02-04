@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.client.settings;
 
-import com.mrcrayfish.guns.GunMod;
 import net.minecraft.client.AbstractOption;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.gui.widget.Widget;
