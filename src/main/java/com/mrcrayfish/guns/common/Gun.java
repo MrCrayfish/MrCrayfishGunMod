@@ -759,19 +759,19 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 if(tag.contains("Scope", Constants.NBT.TAG_COMPOUND))
                 {
-                    this.scope = new ScaledPositioned(tag.getCompound("Scope"));
+                    this.scope = this.createScaledPositioned(tag, "Scope");
                 }
                 if(tag.contains("Barrel", Constants.NBT.TAG_COMPOUND))
                 {
-                    this.barrel = new ScaledPositioned(tag.getCompound("Barrel"));
+                    this.barrel = this.createScaledPositioned(tag, "Barrel");
                 }
                 if(tag.contains("Stock", Constants.NBT.TAG_COMPOUND))
                 {
-                    this.stock = new ScaledPositioned(tag.getCompound("Stock"));
+                    this.stock = this.createScaledPositioned(tag, "Stock");
                 }
                 if(tag.contains("UnderBarrel", Constants.NBT.TAG_COMPOUND))
                 {
-                    this.underBarrel = new ScaledPositioned(tag.getCompound("UnderBarrel"));
+                    this.underBarrel = this.createScaledPositioned(tag, "UnderBarrel");
                 }
             }
 
@@ -795,6 +795,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                     attachments.underBarrel = this.underBarrel.copy();
                 }
                 return attachments;
+            }
+
+            @Nullable
+            private ScaledPositioned createScaledPositioned(CompoundNBT tag, String key)
+            {
+                CompoundNBT attachment = tag.getCompound(key);
+                return attachment.isEmpty() ? null : new ScaledPositioned(tag.getCompound("Scope"));
             }
         }
 
