@@ -23,5 +23,7 @@
    "item.grenade.pin":                  { "subtitle": "subtitle.cgm.grenade.pin",    "sounds": [{ "name": "cgm:item/grenade/pin" }]},
    "entity.stun_grenade.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/stun_grenade/explosion" }]},
    "entity.stun_grenade.ring":          { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:entity/stun_grenade/ring", "stream": true }]},
+   "entity.headshot":                   { "subtitle": "subtitle.cgm.headshot",       "sounds": [{ "name": "cgm:entity/headshot" }]},
+   "entity.critical":                   { "subtitle": "subtitle.cgm.critical",       "sounds": [{ "name": "cgm:entity/critical" }]},
    "ui.weapon.attach":                  { "subtitle": "subtitle.cgm.attach",         "sounds": [{ "name": "cgm:ui/weapon/attach" }]}
 }

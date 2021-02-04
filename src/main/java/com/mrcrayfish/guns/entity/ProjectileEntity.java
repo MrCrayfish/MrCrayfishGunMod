@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.common.Gun.Projectile;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.event.GunProjectileHitEvent;
 import com.mrcrayfish.guns.init.ModEnchantments;
+import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.interfaces.IDamageable;
 import com.mrcrayfish.guns.interfaces.IExplosionDamageable;
@@ -346,7 +347,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
         {
             int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-            boundingBox = BoundingBoxManager.getBoundingBox((PlayerEntity) entity, ping); //TODO this is actually the last position
+            boundingBox = BoundingBoxManager.getBoundingBox((PlayerEntity) entity, ping);
         }
         boundingBox = boundingBox.expand(0, expandHeight, 0);
 
@@ -485,21 +486,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
         entity.attackEntityFrom(source, damage);
 
+        //TODO merge packets and add config option to change sounds
         if(entity instanceof PlayerEntity && this.shooter instanceof ServerPlayerEntity)
         {
-            SoundEvent event = headshot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
-            if(critical)
-            {
-                event = SoundEvents.ENTITY_ITEM_BREAK; //TODO change
-            }
+            SoundEvent event = headshot ? SoundEvents.ENTITY_ARROW_HIT : critical ? ModSounds.ENTITY_CRITICAL.get() : SoundEvents.ENTITY_PLAYER_HURT;
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
-            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vector3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
+            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.MASTER, new Vector3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 1.0F, 0.95F + this.rand.nextFloat() * 0.1F));
         }
         else if((critical || headshot) && this.shooter instanceof ServerPlayerEntity)
         {
-            SoundEvent event = headshot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_ITEM_BREAK;
+            SoundEvent event = critical ? ModSounds.ENTITY_CRITICAL.get() : ModSounds.ENTITY_HEADSHOT.get();
             ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
-            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vector3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
+            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.MASTER, new Vector3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 1.0F, 0.95F + this.rand.nextFloat() * 0.21F));
         }
 
         /* Send blood particle to tracking clients. */
