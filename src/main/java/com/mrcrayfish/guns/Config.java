@@ -37,13 +37,13 @@ public class Config
      */
     public static class Sounds
     {
-        public final ForgeConfigSpec.BooleanValue hitSound;
+        public final ForgeConfigSpec.BooleanValue playSoundWhenHeadshot;
 
         public Sounds(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Control sounds triggered by guns").push("sounds");
             {
-                this.hitSound = builder.comment("If true, a ding sound will play when you successfully hit a player with a gun").define("playSoundWhenTargetHit", true);
+                this.playSoundWhenHeadshot = builder.comment("If true, a sound will play when you successfully hit a headshot on a entity with a gun").define("playSoundWhenHeadshot", true);
             }
             builder.pop();
         }

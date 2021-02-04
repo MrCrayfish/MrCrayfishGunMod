@@ -24,10 +24,7 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPlaySoundPacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -170,7 +167,10 @@ public class ClientPlayHandler
         if(event == null)
             return;
 
-        mc.getSoundHandler().play(SimpleSound.master(event, 1.0F, 0.95F + world.rand.nextFloat() * 0.1F));
+        if(message.isHeadshot() && !Config.CLIENT.sounds.playSoundWhenHeadshot.get())
+            return;
+
+        mc.getSoundHandler().play(SimpleSound.master(event, 1.0F, 1.0F + world.rand.nextFloat() * 0.2F));
     }
 
     public static void handleRemoveProjectile(MessageRemoveProjectile message)
