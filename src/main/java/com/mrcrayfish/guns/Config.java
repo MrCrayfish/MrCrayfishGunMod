@@ -38,14 +38,18 @@ public class Config
     public static class Sounds
     {
         public final ForgeConfigSpec.BooleanValue playSoundWhenHeadshot;
+        public final ForgeConfigSpec.ConfigValue<String> headshotSound;
         public final ForgeConfigSpec.BooleanValue playSoundWhenCritical;
+        public final ForgeConfigSpec.ConfigValue<String> criticalSound;
 
         public Sounds(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Control sounds triggered by guns").push("sounds");
             {
                 this.playSoundWhenHeadshot = builder.comment("If true, a sound will play when you successfully hit a headshot on a entity with a gun").define("playSoundWhenHeadshot", true);
+                this.headshotSound = builder.comment("The sound to play when a headshot occurs").define("headshotSound", "minecraft:entity.player.attack.knockback");
                 this.playSoundWhenCritical = builder.comment("If true, a sound will play when you successfully hit a critical on a entity with a gun").define("playSoundWhenCritical", true);
+                this.criticalSound = builder.comment("The sound to play when a critical occurs").define("criticalSound", "minecraft:entity.player.attack.crit");
             }
             builder.pop();
         }

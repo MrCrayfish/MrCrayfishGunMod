@@ -28,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -178,14 +179,16 @@ public class ClientPlayHandler
         {
             if(Config.CLIENT.sounds.playSoundWhenCritical.get())
             {
-                return SoundEvents.ENTITY_PLAYER_ATTACK_CRIT;
+                SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(Config.CLIENT.sounds.criticalSound.get()));
+                return event != null ? event : SoundEvents.ENTITY_PLAYER_ATTACK_CRIT;
             }
         }
         else if(headshot)
         {
             if(Config.CLIENT.sounds.playSoundWhenHeadshot.get())
             {
-                return SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK;
+                SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(Config.CLIENT.sounds.headshotSound.get()));
+                return event != null ? event : SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK;
             }
         }
         else if(player)
