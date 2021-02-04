@@ -60,6 +60,12 @@ public class TwoHandedPose extends WeaponPose
             boolean right = mc.gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
             ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
             ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
+            mainArm.rotateAngleX = model.bipedHead.rotateAngleX;
+            mainArm.rotateAngleY = model.bipedHead.rotateAngleY;
+            mainArm.rotateAngleZ = model.bipedHead.rotateAngleZ;
+            secondaryArm.rotateAngleX = model.bipedHead.rotateAngleX;
+            secondaryArm.rotateAngleY = model.bipedHead.rotateAngleY;
+            secondaryArm.rotateAngleZ = model.bipedHead.rotateAngleZ;
             mainArm.rotateAngleX = (float) Math.toRadians(-55F + aimProgress * -30F);
             mainArm.rotateAngleY = (float) Math.toRadians((-45F + aimProgress * -20F) * (right ? 1F : -1F));
             secondaryArm.rotateAngleX = (float) Math.toRadians(-42F + aimProgress * -48F);
@@ -70,6 +76,44 @@ public class TwoHandedPose extends WeaponPose
             super.applyPlayerModelRotation(player, model, hand, aimProgress);
             float angle = this.getPlayerPitch(player);
             model.bipedHead.rotateAngleX = (float) Math.toRadians(angle > 0.0 ? angle * 70F : angle * 90F);
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
+    {
+        if(Config.CLIENT.display.oldAnimations.get())
+        {
+            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+            player.prevRenderYawOffset = player.prevRotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
+            player.renderYawOffset = player.rotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
+        }
+        else
+        {
+            super.applyPlayerPreRender(player, hand, aimProgress, matrixStack, buffer);
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void applyHeldItemTransforms(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
+    {
+        if(Config.CLIENT.display.oldAnimations.get())
+        {
+            if(hand == Hand.MAIN_HAND)
+            {
+                boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+                matrixStack.translate(0, 0, 0.05);
+                float invertRealProgress = 1.0F - aimProgress;
+                matrixStack.rotate(Vector3f.ZP.rotationDegrees((25F * invertRealProgress) * (right ? 1F : -1F)));
+                matrixStack.rotate(Vector3f.YP.rotationDegrees((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
+            }
+        }
+        else
+        {
+            super.applyHeldItemTransforms(player, hand, aimProgress, matrixStack, buffer);
         }
     }
 

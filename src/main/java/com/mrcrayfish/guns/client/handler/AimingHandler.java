@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client.handler;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import com.mrcrayfish.guns.common.Gun;
@@ -62,6 +63,11 @@ public class AimingHandler
 
     private AimingHandler() {}
 
+    public double getMaxAimProgress()
+    {
+        return Config.CLIENT.display.oldAnimations.get() ? 8 : MAX_AIM_PROGRESS;
+    }
+
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
@@ -106,13 +112,13 @@ public class AimingHandler
         if(event.phase != TickEvent.Phase.START)
             return;
 
-        updateAimProgress();
+        this.updateAimProgress();
 
         PlayerEntity player = Minecraft.getInstance().player;
         if(player == null)
             return;
 
-        if(isAiming())
+        if(this.isAiming())
         {
             if(!this.aiming)
             {
@@ -235,7 +241,7 @@ public class AimingHandler
         if(gun.getModules().getZoom() == null)
             return false;
 
-        if(this.adsProgress == 0 && isLookingAtInteractableBlock())
+        if(this.adsProgress == 0 && this.isLookingAtInteractableBlock())
             return false;
 
         boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
@@ -257,7 +263,6 @@ public class AimingHandler
                 BlockRayTraceResult result = (BlockRayTraceResult) mc.objectMouseOver;
                 BlockState state = mc.world.getBlockState(result.getPos());
                 Block block = state.getBlock();
-                //TODO add doors
                 return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || block instanceof DoorBlock || block instanceof TrapDoorBlock;
             }
             else if(mc.objectMouseOver instanceof EntityRayTraceResult)
@@ -274,24 +279,25 @@ public class AimingHandler
         return this.normalisedAdsProgress;
     }
 
-    public static class AimTracker
+    public class AimTracker
     {
         private int currentAim;
         private int previousAim;
 
         private void handleAiming(PlayerEntity player, ItemStack heldItem)
         {
+            double maxAimProgress = AimingHandler.this.getMaxAimProgress();
             this.previousAim = this.currentAim;
             if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING))
             {
-                if(this.currentAim < MAX_AIM_PROGRESS)
+                if(this.currentAim < maxAimProgress)
                 {
                     double speed = GunEnchantmentHelper.getAimDownSightSpeed(heldItem);
                     speed = GunModifierHelper.getModifiedAimDownSightSpeed(heldItem, speed);
                     this.currentAim += speed;
-                    if(this.currentAim > MAX_AIM_PROGRESS)
+                    if(this.currentAim > maxAimProgress)
                     {
-                        this.currentAim = (int) MAX_AIM_PROGRESS;
+                        this.currentAim = (int) maxAimProgress;
                     }
                 }
             }
@@ -317,7 +323,8 @@ public class AimingHandler
 
         public float getNormalProgress(float partialTicks)
         {
-            return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
+            double maxAimProgress = AimingHandler.this.getMaxAimProgress();
+            return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == maxAimProgress ? 0 : partialTicks)) / (float) maxAimProgress;
         }
     }
 }
