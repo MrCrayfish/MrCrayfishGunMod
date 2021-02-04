@@ -67,7 +67,7 @@ public class Config
         {
             builder.comment("Configuration for display related options").push("display");
             {
-                this.oldAnimations = builder.comment("If true, uses the old animations for two handed weapons prior to official release").define("oldAnimations", false);
+                this.oldAnimations = builder.comment("If true, uses the old animation poses for weapons. This is only for nostalgic reasons and not recommended to switch back.").define("oldAnimations", false);
                 this.crosshair = builder.comment("The custom crosshair to use for weapons. Go to (Options > Controls > Mouse Settings > Crosshair) in game to change this!").define("crosshair", Crosshair.DEFAULT.getLocation().toString());
             }
             builder.pop();
