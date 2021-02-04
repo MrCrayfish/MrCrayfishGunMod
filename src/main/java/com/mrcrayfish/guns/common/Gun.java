@@ -1058,6 +1058,20 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         return ItemStack.EMPTY;
     }
 
+    public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, IAttachment.Type type)
+    {
+        if(!gun.canAttachType(type))
+            return false;
+
+        CompoundNBT compound = stack.getTag();
+        if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
+        {
+            CompoundNBT attachment = compound.getCompound("Attachments");
+            return attachment.contains(type.getTagKey(), Constants.NBT.TAG_COMPOUND);
+        }
+        return false;
+    }
+
     @Nullable
     public static Scope getScope(ItemStack gun)
     {

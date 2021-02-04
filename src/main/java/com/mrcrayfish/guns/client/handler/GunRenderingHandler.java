@@ -363,6 +363,10 @@ public class GunRenderingHandler
     private void applyRecoilTransforms(MatrixStack matrixStack, ItemStack item, Gun gun)
     {
         double recoilNormal = RecoilHandler.get().getGunRecoilNormal();
+        if(Gun.hasAttachmentEquipped(item, gun, IAttachment.Type.SCOPE))
+        {
+            recoilNormal -= recoilNormal * (0.5 * AimingHandler.get().getNormalisedAdsProgress());
+        }
         float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
         float recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(item);
         double kick = gun.getGeneral().getRecoilKick() * 0.0625 * recoilNormal * RecoilHandler.get().getAdsRecoilReduction(gun);
