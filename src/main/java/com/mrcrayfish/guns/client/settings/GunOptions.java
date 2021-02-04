@@ -59,6 +59,6 @@ public class GunOptions
                 crosshair.render(Minecraft.getInstance(), matrixStack, 16, 16, partialTicks);
             }
         }
-        matrixStack.push();
+        matrixStack.pop();
     });
 }
