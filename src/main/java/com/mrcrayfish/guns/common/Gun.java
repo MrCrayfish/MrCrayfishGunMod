@@ -486,19 +486,19 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             if(tag.contains("Fire", Constants.NBT.TAG_STRING))
             {
-                this.fire = new ResourceLocation(tag.getString("Fire"));
+                this.fire = this.createSound(tag, "Fire");
             }
             if(tag.contains("Reload", Constants.NBT.TAG_STRING))
             {
-                this.reload = new ResourceLocation(tag.getString("Reload"));
+                this.reload = this.createSound(tag, "Reload");
             }
             if(tag.contains("Cock", Constants.NBT.TAG_STRING))
             {
-                this.cock = new ResourceLocation(tag.getString("Cock"));
+                this.cock = this.createSound(tag, "Cock");
             }
             if(tag.contains("SilencedFire", Constants.NBT.TAG_STRING))
             {
-                this.silencedFire = new ResourceLocation(tag.getString("SilencedFire"));
+                this.silencedFire = this.createSound(tag, "SilencedFire");
             }
         }
 
@@ -510,6 +510,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             sounds.cock = this.cock;
             sounds.silencedFire = this.silencedFire;
             return sounds;
+        }
+
+        @Nullable
+        private ResourceLocation createSound(CompoundNBT tag, String key)
+        {
+            String sound = tag.getString("SilencedFire");
+            return sound.isEmpty() ? null : new ResourceLocation(sound);
         }
 
         /**
@@ -618,9 +625,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             if(tag.contains("Flash", Constants.NBT.TAG_COMPOUND))
             {
-                Flash flash = new Flash();
-                flash.deserializeNBT(tag.getCompound("Flash"));
-                this.flash = flash;
+                CompoundNBT flashTag = tag.getCompound("Flash");
+                if(!flashTag.isEmpty())
+                {
+                    Flash flash = new Flash();
+                    flash.deserializeNBT(tag.getCompound("Flash"));
+                    this.flash = flash;
+                }
+                else
+                {
+                    this.flash = null;
+                }
             }
         }
 
