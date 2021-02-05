@@ -55,9 +55,8 @@ public class AimingHandler
     }
 
     private static final double MAX_AIM_PROGRESS = 4;
+    private final AimTracker localTracker = new AimTracker();
     private final Map<PlayerEntity, AimTracker> aimingMap = new WeakHashMap<>();
-    private double adsProgress;
-    private double lastAdsProgress;
     private double normalisedAdsProgress;
     private boolean aiming = false;
 
@@ -98,6 +97,11 @@ public class AimingHandler
 
     public float getAimProgress(PlayerEntity player, float partialTicks)
     {
+        if(player.isUser())
+        {
+            return this.localTracker.getNormalProgress(partialTicks);
+        }
+
         AimTracker tracker = this.getAimTracker(player);
         if(tracker != null)
         {
@@ -111,8 +115,6 @@ public class AimingHandler
     {
         if(event.phase != TickEvent.Phase.START)
             return;
-
-        this.updateAimProgress();
 
         PlayerEntity player = Minecraft.getInstance().player;
         if(player == null)
@@ -133,6 +135,8 @@ public class AimingHandler
             PacketHandler.getPlayChannel().sendToServer(new MessageAim(false));
             this.aiming = false;
         }
+
+        this.localTracker.handleAiming(player, player.getHeldItem(Hand.MAIN_HAND));
     }
 
     @SubscribeEvent
@@ -175,49 +179,11 @@ public class AimingHandler
     @SubscribeEvent(receiveCanceled = true)
     public void onRenderOverlay(RenderGameOverlayEvent event)
     {
-        this.normalisedAdsProgress = (this.lastAdsProgress + (this.adsProgress - this.lastAdsProgress) * (this.lastAdsProgress == 0 || this.lastAdsProgress == MAX_AIM_PROGRESS ? 0.0 : event.getPartialTicks())) / MAX_AIM_PROGRESS;
+        this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTicks());
         Crosshair crosshair = CrosshairHandler.get().getCurrentCrosshair();
         if(this.normalisedAdsProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (crosshair == null || crosshair.isDefault()))
         {
             event.setCanceled(true);
-        }
-    }
-
-    private void updateAimProgress()
-    {
-        this.lastAdsProgress = this.adsProgress;
-
-        PlayerEntity player = Minecraft.getInstance().player;
-        if(player == null)
-            return;
-
-        if(isAiming() && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
-        {
-            if(this.adsProgress < MAX_AIM_PROGRESS)
-            {
-                ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
-                double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
-                speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
-                this.adsProgress += speed;
-                if(this.adsProgress > MAX_AIM_PROGRESS)
-                {
-                    this.adsProgress = (int) MAX_AIM_PROGRESS;
-                }
-            }
-        }
-        else
-        {
-            if(this.adsProgress > 0)
-            {
-                ItemStack weapon = player.getHeldItem(Hand.MAIN_HAND);
-                double speed = GunEnchantmentHelper.getAimDownSightSpeed(weapon);
-                speed = GunModifierHelper.getModifiedAimDownSightSpeed(weapon, speed);
-                this.adsProgress -= speed;
-                if(this.adsProgress < 0)
-                {
-                    this.adsProgress = 0;
-                }
-            }
         }
     }
 
@@ -241,7 +207,10 @@ public class AimingHandler
         if(gun.getModules().getZoom() == null)
             return false;
 
-        if(this.adsProgress == 0 && this.isLookingAtInteractableBlock())
+        if(!this.localTracker.isAiming() && this.isLookingAtInteractableBlock())
+            return false;
+
+        if(SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
             return false;
 
         boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
@@ -286,18 +255,17 @@ public class AimingHandler
 
         private void handleAiming(PlayerEntity player, ItemStack heldItem)
         {
-            double maxAimProgress = AimingHandler.this.getMaxAimProgress();
             this.previousAim = this.currentAim;
-            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING))
+            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING) || (player.isUser() && AimingHandler.this.isAiming()))
             {
-                if(this.currentAim < maxAimProgress)
+                if(this.currentAim < MAX_AIM_PROGRESS)
                 {
                     double speed = GunEnchantmentHelper.getAimDownSightSpeed(heldItem);
                     speed = GunModifierHelper.getModifiedAimDownSightSpeed(heldItem, speed);
                     this.currentAim += speed;
-                    if(this.currentAim > maxAimProgress)
+                    if(this.currentAim > MAX_AIM_PROGRESS)
                     {
-                        this.currentAim = (int) maxAimProgress;
+                        this.currentAim = (int) MAX_AIM_PROGRESS;
                     }
                 }
             }
@@ -323,8 +291,7 @@ public class AimingHandler
 
         public float getNormalProgress(float partialTicks)
         {
-            double maxAimProgress = AimingHandler.this.getMaxAimProgress();
-            return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == maxAimProgress ? 0 : partialTicks)) / (float) maxAimProgress;
+            return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
         }
     }
 }
