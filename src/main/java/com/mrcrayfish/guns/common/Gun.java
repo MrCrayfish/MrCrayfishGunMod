@@ -816,7 +816,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             private ScaledPositioned createScaledPositioned(CompoundNBT tag, String key)
             {
                 CompoundNBT attachment = tag.getCompound(key);
-                return attachment.isEmpty() ? null : new ScaledPositioned(tag.getCompound("Scope"));
+                return attachment.isEmpty() ? null : new ScaledPositioned(attachment);
             }
         }
 
