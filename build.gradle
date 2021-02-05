@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -70,6 +73,14 @@ minecraft {
     }
 }
 
+processResources {
+    doLast {
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
+            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+        }
+    }
+}
+
 repositories {
     maven {
         url = "https://www.cursemaven.com"
@@ -85,14 +96,14 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title": "Gun Mod",
-                "Specification-Vendor": "MrCrayfish",
-                "Specification-Version": "1",
-                "Implementation-Title": "Gun Mod",
-                "Implementation-Version": project.version,
-                "Implementation-Vendor" : "MrCrayfish",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs": "cgm.mixins.json"
+            "Specification-Title": "Gun Mod",
+            "Specification-Vendor": "MrCrayfish",
+            "Specification-Version": "1",
+            "Implementation-Title": "Gun Mod",
+            "Implementation-Version": project.version,
+            "Implementation-Vendor" : "MrCrayfish",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "cgm.mixins.json"
         ])
     }
 }
