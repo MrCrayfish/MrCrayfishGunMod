@@ -24,12 +24,14 @@ import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
@@ -232,7 +234,8 @@ public class AimingHandler
                 BlockRayTraceResult result = (BlockRayTraceResult) mc.objectMouseOver;
                 BlockState state = mc.world.getBlockState(result.getPos());
                 Block block = state.getBlock();
-                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || block instanceof DoorBlock || block instanceof TrapDoorBlock;
+                // Forge should add a tag for intractable blocks so modders can know which blocks can be interacted with :)
+                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || BlockTags.DOORS.contains(block) || BlockTags.TRAPDOORS.contains(block) || Tags.Blocks.CHESTS.contains(block) || Tags.Blocks.FENCE_GATES.contains(block);
             }
             else if(mc.objectMouseOver instanceof EntityRayTraceResult)
             {
