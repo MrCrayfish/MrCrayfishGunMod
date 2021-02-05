@@ -64,11 +64,6 @@ public class AimingHandler
 
     private AimingHandler() {}
 
-    public double getMaxAimProgress()
-    {
-        return Config.CLIENT.display.oldAnimations.get() ? 8 : MAX_AIM_PROGRESS;
-    }
-
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
@@ -101,13 +96,13 @@ public class AimingHandler
     {
         if(player.isUser())
         {
-            return this.localTracker.getNormalProgress(partialTicks);
+            return (float) this.localTracker.getNormalProgress(partialTicks);
         }
 
         AimTracker tracker = this.getAimTracker(player);
         if(tracker != null)
         {
-            return tracker.getNormalProgress(partialTicks);
+            return (float) tracker.getNormalProgress(partialTicks);
         }
         return 0F;
     }
@@ -253,8 +248,8 @@ public class AimingHandler
 
     public class AimTracker
     {
-        private int currentAim;
-        private int previousAim;
+        private double currentAim;
+        private double previousAim;
 
         private void handleAiming(PlayerEntity player, ItemStack heldItem)
         {
@@ -292,7 +287,7 @@ public class AimingHandler
             return this.currentAim != 0 || this.previousAim != 0;
         }
 
-        public float getNormalProgress(float partialTicks)
+        public double getNormalProgress(float partialTicks)
         {
             return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
         }
