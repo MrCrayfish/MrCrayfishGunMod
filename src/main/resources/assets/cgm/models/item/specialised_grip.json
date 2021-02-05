@@ -27,8 +27,8 @@
 			}
 		},
 		{
-			"from": [7.5, 7.225, 8.14645],
-			"to": [8.5, 7.93211, 8.5],
+			"from": [7.501, 7.225, 8.14645],
+			"to": [8.499, 7.93211, 8.5],
 			"rotation": {"angle": 45, "axis": "x", "origin": [8, 7.225, 8.5]},
 			"faces": {
 				"east": {"uv": [7, 1, 8, 2], "rotation": 90, "texture": "#0", "tintindex": 0},
@@ -37,8 +37,8 @@
 			}
 		},
 		{
-			"from": [7.5, 7.225, 7.5],
-			"to": [8.5, 7.93211, 7.85355],
+			"from": [7.501, 7.225, 7.5],
+			"to": [8.499, 7.93211, 7.85355],
 			"rotation": {"angle": -45, "axis": "x", "origin": [8, 7.225, 7.5]},
 			"faces": {
 				"north": {"uv": [11, 1, 13, 2], "texture": "#0", "tintindex": 0},
@@ -81,81 +81,5 @@
 			"translation": [0, 4.5, -1.25],
 			"scale": [2.5, 2.5, 2.5]
 		}
-	},
-	"groups": [0, 1, 2, 3,
-		{
-			"name": "octagon",
-			"origin": [8, 8, 8],
-			"children": []
-		},
-		{
-			"name": "grenade_launcher",
-			"origin": [8, 8, 8],
-			"children": [4,
-				{
-					"name": "assault_rifle",
-					"origin": [8, 8, 8],
-					"children": [
-						{
-							"name": "Main",
-							"origin": [8.8, 4, 10.5],
-							"children": []
-						},
-						{
-							"name": "Handle",
-							"origin": [8, 8, 8],
-							"children": []
-						},
-						{
-							"name": "Magazine",
-							"origin": [8, 8, 8],
-							"children": []
-						},
-						{
-							"name": "Stock",
-							"origin": [7.61163, 2.61276, 18],
-							"children": [
-								{
-									"name": "Backplate",
-									"origin": [7.56163, -5.78715, 19.1],
-									"children": []
-								}
-							]
-						},
-						{
-							"name": "Barrel",
-							"origin": [7.5, 3.2, 1],
-							"children": [
-								{
-									"name": "Guard",
-									"origin": [7.60022, 2.79978, 10.5],
-									"children": []
-								}
-							]
-						}
-					]
-				},
-				{
-					"name": "octagon",
-					"origin": [8, 8, 8],
-					"children": []
-				},
-				{
-					"name": "hexadecagon",
-					"origin": [8, 8, 8],
-					"children": []
-				},
-				{
-					"name": "hexadecagon",
-					"origin": [8, 8, 8],
-					"children": []
-				},
-				{
-					"name": "octagon",
-					"origin": [8, 8, 8],
-					"children": []
-				}
-			]
-		}
-	]
+	}
 }
