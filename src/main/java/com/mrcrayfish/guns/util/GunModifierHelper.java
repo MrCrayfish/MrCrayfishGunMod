@@ -187,6 +187,20 @@ public class GunModifierHelper
         return additionalDamage;
     }
 
+    public static float getModifiedProjectileDamage(ItemStack weapon, float damage)
+    {
+        float finalDamage = damage;
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                finalDamage = modifier.modifyProjectileDamage(finalDamage);
+            }
+        }
+        return finalDamage;
+    }
+
     public static float getModifiedDamage(ItemStack weapon, Gun modifiedGun, float damage)
     {
         float finalDamage = damage;

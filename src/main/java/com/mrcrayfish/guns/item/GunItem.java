@@ -79,7 +79,9 @@ public class GunItem extends Item implements IColored
             }
         }
 
-        tooltip.add(new TranslationTextComponent("info.cgm.damage", TextFormatting.WHITE + ItemStack.DECIMALFORMAT.format(modifiedGun.getProjectile().getDamage()) + additionalDamageText).mergeStyle(TextFormatting.GRAY));
+        float damage = modifiedGun.getProjectile().getDamage();
+        damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
+        tooltip.add(new TranslationTextComponent("info.cgm.damage", TextFormatting.WHITE + ItemStack.DECIMALFORMAT.format(damage) + additionalDamageText).mergeStyle(TextFormatting.GRAY));
 
         if(tagCompound != null)
         {
