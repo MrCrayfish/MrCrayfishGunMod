@@ -252,6 +252,6 @@ public abstract class Attachment
 
     private static void addPerk(List<ITextComponent> components, boolean positive, String id, Object... params)
     {
-        components.add(new TranslationTextComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", new TranslationTextComponent(id, params).mergeStyle(TextFormatting.WHITE)).mergeStyle(positive ? TextFormatting.DARK_AQUA : TextFormatting.DARK_GRAY));
+        components.add(new TranslationTextComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", new TranslationTextComponent(id, params).mergeStyle(TextFormatting.WHITE)).mergeStyle(positive ? TextFormatting.DARK_AQUA : TextFormatting.GOLD));
     }
 }
