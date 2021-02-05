@@ -433,7 +433,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             this.onHitBlock(state, pos, blockRayTraceResult.getFace(), hitVec.x, hitVec.y, hitVec.z);
 
             int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
-            if(fireStarterLevel > 0)
+            if(fireStarterLevel > 0 && Config.COMMON.gameplay.enableGunGriefing.get())
             {
                 BlockPos offsetPos = pos.offset(blockRayTraceResult.getFace());
                 if(AbstractFireBlock.canLightBlock(this.world, offsetPos, blockRayTraceResult.getFace()))
