@@ -176,4 +176,16 @@ public class GunItem extends Item implements IColored
         }
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack)
+    {
+        return this.getItemStackLimit(stack) == 1;
+    }
+
+    @Override
+    public int getItemEnchantability()
+    {
+        return 10;
+    }
 }
