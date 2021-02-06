@@ -1,7 +1,9 @@
 package com.mrcrayfish.guns.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.util.OptifineHelper;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderState;
@@ -53,7 +55,7 @@ public class ScreenTextureState extends RenderState.TexturingState
 
     private int getTextureId()
     {
-        if (this.textureId == 0)
+        if(this.textureId == 0)
         {
             this.textureId = TextureUtil.generateTextureId();
             // Texture params only need to be set once, not once per frame
@@ -66,6 +68,10 @@ public class ScreenTextureState extends RenderState.TexturingState
 
     private void onRenderWorldLast(RenderWorldLastEvent event)
     {
+        // Yep scopes will never work with shaders
+        if(OptifineHelper.isShadersEnabled())
+            return;
+
         MainWindow mainWindow = Minecraft.getInstance().getMainWindow();
 
         // OpenGL will spit out an error (GL_INVALID_VALUE) if the window is minimised (or draw calls stop)
