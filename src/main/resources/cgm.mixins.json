@@ -6,7 +6,8 @@
   "refmap": "cgm.refmap.json",
   "mixins": [
     "common.LivingEntityMixin",
-    "common.PlayerListMixin"
+    "common.PlayerListMixin",
+    "common.SittingPhaseMixin"
   ],
   "client": [
     "client.GameRendererMixin",
