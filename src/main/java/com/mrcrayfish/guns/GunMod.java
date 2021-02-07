@@ -48,8 +48,6 @@ public class GunMod
         }
     }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
-    private static GunOptions options;
-
     public GunMod()
     {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
