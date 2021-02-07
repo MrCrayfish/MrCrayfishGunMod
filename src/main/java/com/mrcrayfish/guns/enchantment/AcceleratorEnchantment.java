@@ -13,26 +13,20 @@ public class AcceleratorEnchantment extends GunEnchantment
     }
 
     @Override
-    public int getMinLevel()
-    {
-        return 1;
-    }
-
-    @Override
     public int getMaxLevel()
     {
-        return 3;
+        return 2;
     }
 
     @Override
     public int getMinEnchantability(int level)
     {
-        return 15;
+        return 10 + (level - 1) * 10;
     }
 
     @Override
     public int getMaxEnchantability(int level)
     {
-        return this.getMinEnchantability(level) + 30;
+        return this.getMinEnchantability(level) + 20;
     }
 }

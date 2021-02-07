@@ -17,9 +17,9 @@ public class GunEnchantmentHelper
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.QUICK_HANDS.get(), weapon);
         if(level > 0)
         {
-            interval /= 2;
+            interval -= 3 * level;
         }
-        return interval;
+        return Math.max(interval, 1);
     }
 
     public static int getRate(ItemStack weapon, Gun modifiedGun)

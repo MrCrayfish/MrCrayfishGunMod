@@ -13,14 +13,20 @@ public class QuickHandsEnchantment extends GunEnchantment
     }
 
     @Override
+    public int getMaxLevel()
+    {
+        return 2;
+    }
+
+    @Override
     public int getMinEnchantability(int level)
     {
-        return 10;
+        return 1 + 10 * (level - 1);
     }
 
     @Override
     public int getMaxEnchantability(int level)
     {
-        return this.getMinEnchantability(level) + 30;
+        return super.getMinEnchantability(level) + 50;
     }
 }

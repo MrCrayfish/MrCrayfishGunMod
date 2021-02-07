@@ -186,6 +186,6 @@ public class GunItem extends Item implements IColored
     @Override
     public int getItemEnchantability()
     {
-        return 10;
+        return 5;
     }
 }

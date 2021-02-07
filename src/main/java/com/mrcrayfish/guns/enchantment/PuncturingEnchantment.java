@@ -13,12 +13,6 @@ public class PuncturingEnchantment extends GunEnchantment
     }
 
     @Override
-    public int getMinLevel()
-    {
-        return 1;
-    }
-
-    @Override
     public int getMaxLevel()
     {
         return 4;
@@ -27,12 +21,12 @@ public class PuncturingEnchantment extends GunEnchantment
     @Override
     public int getMinEnchantability(int level)
     {
-        return 10;
+        return 1 + (level - 1) * 10;
     }
 
     @Override
     public int getMaxEnchantability(int level)
     {
-        return 30;
+        return this.getMinEnchantability(level) + 10;
     }
 }
