@@ -51,7 +51,7 @@ public class GunEnchantmentHelper
         return capacity;
     }
 
-    public static double getProjectileSpeedModifier(ItemStack weapon, Gun modifiedGun)
+    public static double getProjectileSpeedModifier(ItemStack weapon)
     {
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ACCELERATOR.get(), weapon);
         if(level > 0)
@@ -59,6 +59,16 @@ public class GunEnchantmentHelper
             return 1.0 + 0.15 * level;
         }
         return 1.0;
+    }
+
+    public static float getAcceleratorDamage(ItemStack weapon, float damage)
+    {
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ACCELERATOR.get(), weapon);
+        if(level > 0)
+        {
+            return damage + damage * (0.1F * level);
+        }
+        return damage;
     }
 
     public static float getPuncturingChance(ItemStack weapon)

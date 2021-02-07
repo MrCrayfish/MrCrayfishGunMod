@@ -81,6 +81,7 @@ public class GunItem extends Item implements IColored
 
         float damage = modifiedGun.getProjectile().getDamage();
         damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
+        damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
         tooltip.add(new TranslationTextComponent("info.cgm.damage", TextFormatting.WHITE + ItemStack.DECIMALFORMAT.format(damage) + additionalDamageText).mergeStyle(TextFormatting.GRAY));
 
         if(tagCompound != null)
