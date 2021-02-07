@@ -28,17 +28,19 @@ public class LivingEntityMixin
     @ModifyArgs(method = "attackEntityFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyKnockback(FDD)V"))
     private void modifyApplyKnockbackArgs(Args args)
     {
-        boolean knockback = this.source instanceof DamageSourceProjectile ? Config.COMMON.gameplay.enableKnockback.get() : true;
-        if(!knockback)
+        if(this.source instanceof DamageSourceProjectile)
         {
-            args.set(0, 0F);
-            return;
-        }
+            if(!Config.COMMON.gameplay.enableKnockback.get())
+            {
+                args.set(0, 0F);
+                return;
+            }
 
-        double strength = Config.COMMON.gameplay.knockbackStrength.get();
-        if(strength > 0)
-        {
-            args.set(0, (float) strength);
+            double strength = Config.COMMON.gameplay.knockbackStrength.get();
+            if(strength > 0)
+            {
+                args.set(0, (float) strength);
+            }
         }
     }
 }
