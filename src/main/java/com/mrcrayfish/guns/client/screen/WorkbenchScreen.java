@@ -422,7 +422,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         RenderSystem.pushMatrix();
         {
             RenderSystem.translatef(startX + 88, startY + 60, 100);
-            RenderSystem.scalef(90F, -90F, 90F);
+            RenderSystem.scalef(50F, -50F, 50F);
             RenderSystem.rotatef(5F, 1, 0, 0);
             RenderSystem.rotatef(Minecraft.getInstance().player.ticksExisted + partialTicks, 0, 1, 0);
 
@@ -434,7 +434,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             IRenderTypeBuffer.Impl buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
-            Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.GROUND, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
+            Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.FIXED, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
             buffer.finish();
 
             RenderSystem.disableAlphaTest();
