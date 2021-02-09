@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client.screen;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -156,13 +157,11 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
     public void init()
     {
         super.init();
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
         if(!this.tabs.isEmpty())
         {
-            startY += 28;
+            this.guiTop += 28;
         }
-        this.addButton(new Button(startX + 9, startY + 18, 15, 20, new StringTextComponent("<"), button ->
+        this.addButton(new Button(this.guiLeft + 9, this.guiTop + 18, 15, 20, new StringTextComponent("<"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             if(index - 1 < 0)
@@ -174,7 +173,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 this.loadItem(index - 1);
             }
         }));
-        this.addButton(new Button(startX + 153, startY + 18, 15, 20, new StringTextComponent(">"), button ->
+        this.addButton(new Button(this.guiLeft + 153, this.guiTop + 18, 15, 20, new StringTextComponent(">"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             if(index + 1 >= this.currentTab.getRecipes().size())
@@ -186,7 +185,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                 this.loadItem(index + 1);
             }
         }));
-        this.btnCraft = this.addButton(new Button(startX + 195, startY + 16, 74, 20, new TranslationTextComponent("gui.cgm.workbench.assemble"), button ->
+        this.btnCraft = this.addButton(new Button(this.guiLeft + 195, this.guiTop + 16, 74, 20, new TranslationTextComponent("gui.cgm.workbench.assemble"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
@@ -194,7 +193,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getPos()));
         }));
         this.btnCraft.active = false;
-        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 172, startY + 51, new TranslationTextComponent("gui.cgm.workbench.show_remaining")));
+        this.checkBoxMaterials = this.addButton(new CheckBox(this.guiLeft + 172, this.guiTop + 51, new TranslationTextComponent("gui.cgm.workbench.show_remaining")));
         this.checkBoxMaterials.setToggled(WorkbenchScreen.showRemaining);
         this.loadItem(this.currentTab.getCurrentIndex());
     }
@@ -262,11 +261,9 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         boolean result = super.mouseClicked(mouseX, mouseY, mouseButton);
         WorkbenchScreen.showRemaining = this.checkBoxMaterials.isToggled();
 
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
         for(int i = 0; i < this.tabs.size(); i++)
         {
-            if(RenderUtil.isMouseWithin((int) mouseX, (int) mouseY, startX + 28 * i, startY, 28, 28))
+            if(RenderUtil.isMouseWithin((int) mouseX, (int) mouseY, this.guiLeft + 28 * i, this.guiTop - 28, 28, 28))
             {
                 this.currentTab = this.tabs.get(i);
                 this.loadItem(this.currentTab.getCurrentIndex());
@@ -307,21 +304,16 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
 
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
+        int startX = this.guiLeft;
+        int startY = this.guiTop;
 
         for(int i = 0; i < this.tabs.size(); i++)
         {
-            if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY, 28, 28))
+            if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY - 28, 28, 28))
             {
                 this.renderTooltip(matrixStack, new TranslationTextComponent(this.tabs.get(i).getTabKey()), mouseX, mouseY);
                 return;
             }
-        }
-
-        if(!this.tabs.isEmpty())
-        {
-            startY += 28;
         }
 
         for(int i = 0; i < this.filteredMaterials.size(); i++)
@@ -349,8 +341,8 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
     {
         int offset = this.tabs.isEmpty() ? 0 : 28;
-        this.font.func_243248_b(matrixStack, this.title, (float)this.titleX, (float)this.titleY - 66 + offset, 4210752);
-        this.font.func_243248_b(matrixStack, this.playerInventory.getDisplayName(), (float)this.playerInventoryTitleX, (float)this.playerInventoryTitleY + 19 + offset, 4210752);
+        this.font.func_243248_b(matrixStack, this.title, (float)this.titleX, (float)this.titleY - 28 + offset, 4210752);
+        this.font.func_243248_b(matrixStack, this.playerInventory.getDisplayName(), (float)this.playerInventoryTitleX, (float)this.playerInventoryTitleY - 9 + offset, 4210752);
     }
 
     @Override
@@ -359,12 +351,8 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         /* Fixes partial ticks to use percentage from 0 to 1 */
         partialTicks = Minecraft.getInstance().getRenderPartialTicks();
 
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
-        if(!this.tabs.isEmpty())
-        {
-            startY += 28;
-        }
+        int startX = this.guiLeft;
+        int startY = this.guiTop;
 
         RenderSystem.enableBlend();
 
@@ -495,6 +483,11 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             materials.set(i, filteredMaterials.get(i));
         }
         return materials;
+    }
+
+    public List<Tab> getTabs()
+    {
+        return ImmutableList.copyOf(this.tabs);
     }
 
     public static class MaterialItem

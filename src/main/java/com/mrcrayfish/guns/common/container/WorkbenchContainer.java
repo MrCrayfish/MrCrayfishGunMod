@@ -27,7 +27,7 @@ public class WorkbenchContainer extends Container
 
         int offset = WorkbenchRecipes.isEmpty(workbench.getWorld()) ? 0 : 28;
 
-        this.addSlot(new Slot(workbench, 0, 174, 18 + offset)
+        this.addSlot(new Slot(workbench, 0, 174, 18)
         {
             @Override
             public boolean isItemValid(ItemStack stack)
@@ -46,13 +46,13 @@ public class WorkbenchContainer extends Container
         {
             for(int x = 0; x < 9; x++)
             {
-                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 102 + y * 18 + offset));
+                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 102 + y * 18));
             }
         }
 
         for(int x = 0; x < 9; x++)
         {
-            this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 160 + offset));
+            this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 160));
         }
     }
 
