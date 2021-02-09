@@ -21,5 +21,6 @@ build
 eclipse
 run
 logs
+libs
 
 classes

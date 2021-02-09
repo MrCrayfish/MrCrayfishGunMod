@@ -85,12 +85,14 @@ repositories {
     maven {
         url = "https://www.cursemaven.com"
     }
+    flatDir { dirs 'libs' } //TEMP
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.4-35.1.4'
     compile fg.deobf('curse.maven:obfuscate-289380:3169370')
-    compile fg.deobf('curse.maven:controllable-317269:3189970')
+    //compile fg.deobf('curse.maven:controllable-317269:3196545')
+    compile fg.deobf('local:controllable:0.10.3-1.16.3') //TEMP
 }
 
 jar {
