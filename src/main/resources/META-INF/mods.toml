@@ -30,7 +30,7 @@ personal liking. This mod adds ten weapons into the game!
 [[dependencies.cgm]]
     modId="obfuscate"
     mandatory=true
-    versionRange="[0.5.1,)"
+    versionRange="[0.6.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
