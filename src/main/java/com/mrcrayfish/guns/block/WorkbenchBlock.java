@@ -43,7 +43,7 @@ public class WorkbenchBlock extends RotatedObjectBlock
         {
             return SHAPES.get(state);
         }
-        Direction direction = state.get(DIRECTION);
+        Direction direction = state.get(HORIZONTAL_FACING);
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(Block.makeCuboidShape(0.5, 0, 0.5, 15.5, 13, 15.5));
         shapes.add(Block.makeCuboidShape(0, 13, 0, 16, 15, 16));

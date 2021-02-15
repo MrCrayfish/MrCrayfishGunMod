@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.client.settings;
 
-import com.mrcrayfish.guns.GunMod;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.gui.widget.OptionSlider;
 import net.minecraft.client.settings.SliderPercentageOption;
@@ -22,6 +21,5 @@ public class GunOptionSlider extends OptionSlider
     protected void applyValue()
     {
         this.option.set(this.options, this.option.denormalizeValue(this.value));
-        GunMod.getOptions().saveOptions();
     }
 }

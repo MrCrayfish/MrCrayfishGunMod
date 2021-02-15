@@ -2,23 +2,26 @@ package com.mrcrayfish.guns.entity;
 
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
+import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.common.Gun.Projectile;
 import com.mrcrayfish.guns.common.SpreadTracker;
+import com.mrcrayfish.guns.event.GunProjectileHitEvent;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.interfaces.IDamageable;
+import com.mrcrayfish.guns.interfaces.IExplosionDamageable;
 import com.mrcrayfish.guns.interfaces.IHeadshotBox;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBlood;
-import com.mrcrayfish.guns.network.message.MessageBulletHole;
-import com.mrcrayfish.guns.object.EntityResult;
-import com.mrcrayfish.guns.object.Gun;
-import com.mrcrayfish.guns.object.Gun.Projectile;
-import com.mrcrayfish.guns.object.HitResult;
-import com.mrcrayfish.guns.util.ExtendedEntityRayTraceResult;
+import com.mrcrayfish.guns.network.message.MessageProjectileHitBlock;
+import com.mrcrayfish.guns.network.message.MessageProjectileHitEntity;
+import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
+import com.mrcrayfish.guns.util.BufferUtil;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
-import com.mrcrayfish.guns.util.ItemStackUtil;
+import com.mrcrayfish.guns.util.math.ExtendedEntityRayTraceResult;
+import com.mrcrayfish.guns.world.ProjectileExplosion;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -44,14 +47,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SExplosionPacket;
-import net.minecraft.network.play.server.SPlaySoundPacket;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -64,6 +61,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -81,7 +79,7 @@ import java.util.function.Predicate;
 
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData
 {
-    private static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isAlive() && !input.isSpectator() && input.canBeCollidedWith();
+    private static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.canBeCollidedWith() && !input.isSpectator();
     private static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
 
     protected int shooterId;
@@ -113,8 +111,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.modifiedGravity = GunModifierHelper.getModifiedProjectileGravity(weapon, -0.05);
         this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.getLife());
 
+        /* Get speed and set motion */
         Vec3d dir = this.getDirection(shooter, weapon, item, modifiedGun);
-        double speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon, modifiedGun);
+        double speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
         double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.getSpeed() * speedModifier);
         this.setMotion(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
@@ -133,10 +132,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    protected void registerData()
-    {
-
-    }
+    protected void registerData() {}
 
     @Override
     public EntitySize getSize(Pose pose)
@@ -157,7 +153,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             if(!modifiedGun.getGeneral().isAlwaysSpread())
             {
-                gunSpread *= SpreadTracker.get(shooter.getUniqueID()).getSpread(item);
+                gunSpread *= SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
             }
 
             if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
@@ -176,7 +172,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public ItemStack getWeapon()
     {
-        return weapon;
+        return this.weapon;
     }
 
     public void setItem(ItemStack item)
@@ -194,12 +190,17 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.additionalDamage = additionalDamage;
     }
 
+    public double getModifiedGravity()
+    {
+        return this.modifiedGravity;
+    }
+
     @Override
     public void tick()
     {
         super.tick();
         this.updateHeading();
-        this.onTick();
+        this.onProjectileTick();
 
         if(!this.world.isRemote())
         {
@@ -272,10 +273,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void onTick()
+    /**
+     * A simple method to perform logic on each tick of the projectile. This method is appropriate
+     * for spawning particles. Override {@link #tick()} to make changes to physics
+     */
+    protected void onProjectileTick()
     {
     }
 
+    /**
+     * Called when the projectile has run out of it's life. In other words, the projectile managed
+     * to not hit any blocks and instead aged. The grenade uses this to explode in the air.
+     */
     protected void onExpired()
     {
     }
@@ -292,17 +301,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             if(!entity.equals(this.shooter))
             {
-                HitResult result = this.getHitResult(entity, startVec, endVec);
-                Optional<Vec3d> hitPos = result.getHitPos();
-                if(!hitPos.isPresent())
-                {
+                EntityResult result = this.getHitResult(entity, startVec, endVec);
+                if(result == null)
                     continue;
-                }
-
-                double distanceToHit = startVec.distanceTo(hitPos.get());
+                Vec3d hitPos = result.getHitPos();
+                double distanceToHit = startVec.distanceTo(hitPos);
                 if(distanceToHit < closestDistance)
                 {
-                    hitVec = hitPos.get();
+                    hitVec = hitPos;
                     hitEntity = entity;
                     closestDistance = distanceToHit;
                     headshot = result.isHeadshot();
@@ -321,27 +327,25 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             if(!entity.equals(this.shooter))
             {
-                HitResult result = this.getHitResult(entity, startVec, endVec);
-                Optional<Vec3d> hitPos = result.getHitPos();
-                if(!hitPos.isPresent())
-                {
+                EntityResult result = this.getHitResult(entity, startVec, endVec);
+                if(result == null)
                     continue;
-                }
-                hitEntities.add(new EntityResult(entity, hitPos.get(), result.isHeadshot()));
+                hitEntities.add(result);
             }
         }
         return hitEntities;
     }
 
+    @Nullable
     @SuppressWarnings("unchecked")
-    private HitResult getHitResult(Entity entity, Vec3d startVec, Vec3d endVec)
+    private EntityResult getHitResult(Entity entity, Vec3d startVec, Vec3d endVec)
     {
         double expandHeight = entity instanceof PlayerEntity && !entity.isCrouching() ? 0.0625 : 0.0;
         AxisAlignedBB boundingBox = entity.getBoundingBox();
         if(Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayerEntity && this.shooter != null)
         {
             int ping = (int) Math.floor((((ServerPlayerEntity) this.shooter).ping / 1000.0) * 20.0 + 0.5);
-            boundingBox = BoundingBoxManager.getBoundingBox((PlayerEntity) entity, ping); //TODO this is actually the last position
+            boundingBox = BoundingBoxManager.getBoundingBox((PlayerEntity) entity, ping);
         }
         boundingBox = boundingBox.expand(0, expandHeight, 0);
 
@@ -352,7 +356,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             RayTraceResult raytraceresult = rayTraceBlocks(this.world, new RayTraceContext(startVec, grownHitPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this), IGNORE_LEAVES);
             if(raytraceresult.getType() == RayTraceResult.Type.BLOCK)
             {
-                return new HitResult(null, false);
+                return null;
             }
             hitPos = grownHitPos;
         }
@@ -382,11 +386,19 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 }
             }
         }
-        return new HitResult(hitPos, headshot);
+
+        if(hitPos == null)
+        {
+            return null;
+        }
+
+        return new EntityResult(entity, hitPos, headshot);
     }
 
     private void onHit(RayTraceResult result, Vec3d startVec, Vec3d endVec)
     {
+        MinecraftForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this));
+
         if(result instanceof BlockRayTraceResult)
         {
             BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) result;
@@ -395,6 +407,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 return;
             }
 
+            Vec3d hitVec = result.getHitVec();
             BlockPos pos = blockRayTraceResult.getPos();
             BlockState state = this.world.getBlockState(pos);
             Block block = state.getBlock();
@@ -411,24 +424,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             if(block instanceof IDamageable)
             {
-                ((IDamageable) block).onBlockDamaged(this.world, state, pos, (int) Math.ceil(getDamage() / 2.0) + 1);
+                ((IDamageable) block).onBlockDamaged(this.world, state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1);
             }
 
-            Vec3d hitVec = blockRayTraceResult.getHitVec();
-            double holeX = hitVec.getX() + 0.005 * blockRayTraceResult.getFace().getXOffset();
-            double holeY = hitVec.getY() + 0.005 * blockRayTraceResult.getFace().getYOffset();
-            double holeZ = hitVec.getZ() + 0.005 * blockRayTraceResult.getFace().getZOffset();
-            Direction direction = blockRayTraceResult.getFace();
-            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.world.getChunkAt(blockRayTraceResult.getPos())), new MessageBulletHole(holeX, holeY, holeZ, direction, pos));
-
-            this.onHitBlock(state, pos, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z);
+            this.onHitBlock(state, pos, blockRayTraceResult.getFace(), hitVec.x, hitVec.y, hitVec.z);
 
             int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
-            if(fireStarterLevel > 0)
+            if(fireStarterLevel > 0 && Config.COMMON.gameplay.enableGunGriefing.get())
             {
                 BlockPos offsetPos = pos.offset(blockRayTraceResult.getFace());
-                BlockState offsetState = this.world.getBlockState(offsetPos);
-                if(FlintAndSteelItem.canSetFire(offsetState, this.world, offsetPos))
+                if(FlintAndSteelItem.canSetFire(this.world.getBlockState(offsetPos), this.world, offsetPos))
                 {
                     BlockState fireState = ((FireBlock) Blocks.FIRE).getStateForPlacement(this.world, offsetPos);
                     this.world.setBlockState(offsetPos, fireState, 11);
@@ -479,32 +484,19 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
         entity.attackEntityFrom(source, damage);
 
-        if(entity instanceof PlayerEntity && this.shooter instanceof ServerPlayerEntity)
+        if(this.shooter instanceof PlayerEntity)
         {
-            SoundEvent event = headshot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_PLAYER_HURT;
-            if(critical)
-            {
-                event = SoundEvents.ENTITY_ITEM_BREAK; //TODO change
-            }
-            ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
-            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
-        }
-        else if((critical || headshot) && this.shooter instanceof ServerPlayerEntity)
-        {
-            SoundEvent event = headshot ? SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP : SoundEvents.ENTITY_ITEM_BREAK;
-            ServerPlayerEntity shooterPlayer = (ServerPlayerEntity) this.shooter;
-            shooterPlayer.connection.sendPacket(new SPlaySoundPacket(event.getRegistryName(), SoundCategory.PLAYERS, new Vec3d(this.shooter.getPosX(), this.shooter.getPosY(), this.shooter.getPosZ()), 0.75F, 1.0F));
+            int hitType = critical ? MessageProjectileHitEntity.HitType.CRITICAL : headshot ? MessageProjectileHitEntity.HitType.HEADSHOT : MessageProjectileHitEntity.HitType.NORMAL;
+            PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) this.shooter), new MessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof PlayerEntity));
         }
 
         /* Send blood particle to tracking clients. */
-        //TODO maybe make clients send settings to server to prevent sending unnecessary packets
         PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(hitVec.x, hitVec.y, hitVec.z));
     }
 
-    protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
+    protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {
-        ((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state), x, y, z, (int) this.projectile.getDamage(), 0.0, 0.0, 0.0, 0.05);
-        this.world.playSound(null, x, y, z, state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F);
+        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.world.getChunkAt(pos)), new MessageProjectileHitBlock(x, y, z, pos, face));
     }
 
     @Override
@@ -533,7 +525,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         buffer.writeCompoundTag(this.projectile.serializeNBT());
         buffer.writeCompoundTag(this.general.serializeNBT());
         buffer.writeInt(this.shooterId);
-        ItemStackUtil.writeItemStackToBufIgnoreTag(buffer, this.item);
+        BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.item);
         buffer.writeDouble(this.modifiedGravity);
         buffer.writeVarInt(this.life);
     }
@@ -546,7 +538,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.general = new Gun.General();
         this.general.deserializeNBT(buffer.readCompoundTag());
         this.shooterId = buffer.readInt();
-        this.item = ItemStackUtil.readItemStackFromBufIgnoreTag(buffer);
+        this.item = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
         this.entitySize = new EntitySize(this.projectile.getSize(), this.projectile.getSize(), false);
@@ -563,7 +555,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public Projectile getProjectile()
     {
-        return projectile;
+        return this.projectile;
     }
 
     private Vec3d getVectorFromRotation(float pitch, float yaw)
@@ -575,14 +567,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return new Vec3d((double) (f1 * f2), (double) f3, (double) (f * f2));
     }
 
+    /**
+     * Gets the entity who spawned the projectile
+     */
     public LivingEntity getShooter()
     {
         return this.shooter;
     }
 
+    /**
+     * Gets the id of the entity who spawned the projectile
+     */
     public int getShooterId()
     {
-        return shooterId;
+        return this.shooterId;
     }
 
     public float getDamage()
@@ -594,7 +592,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             initialDamage *= modifier;
         }
         float damage = initialDamage / this.general.getProjectileAmount();
-        return GunModifierHelper.getModifiedDamage(this.weapon, this.modifiedGun, damage);
+        damage = GunModifierHelper.getModifiedDamage(this.weapon, this.modifiedGun, damage);
+        damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
+        return Math.max(0F, damage);
     }
 
     private float getCriticalDamage(ItemStack weapon, Random rand, float damage)
@@ -614,6 +614,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
+    public void onRemovedFromWorld()
+    {
+        if(!this.world.isRemote)
+        {
+            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(this::getDeathTargetPoint), new MessageRemoveProjectile(this.getEntityId()));
+        }
+    }
+
+    private PacketDistributor.TargetPoint getDeathTargetPoint()
+    {
+        return new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosX(), 256, this.world.getDimension().getType());
+    }
+
+    @Override
     public IPacket<?> createSpawnPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
@@ -625,14 +639,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      *
      * @param world     the world to perform the ray trace
      * @param context   the ray trace context
-     * @param predicate the block state predicate
+     * @param ignorePredicate the block state predicate
      * @return a result of the raytrace
      */
-    private static BlockRayTraceResult rayTraceBlocks(World world, RayTraceContext context, Predicate<BlockState> predicate)
+    private static BlockRayTraceResult rayTraceBlocks(World world, RayTraceContext context, Predicate<BlockState> ignorePredicate)
     {
-        return func_217300_a(context, (rayTraceContext, blockPos) -> {
+        return performRayTrace(context, (rayTraceContext, blockPos) -> {
             BlockState blockState = world.getBlockState(blockPos);
-            if(predicate.test(blockState)) return null;
+            if(ignorePredicate.test(blockState)) return null;
             IFluidState fluidState = world.getFluidState(blockPos);
             Vec3d startVec = rayTraceContext.func_222253_b();
             Vec3d endVec = rayTraceContext.func_222250_a();
@@ -644,12 +658,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.func_222253_b().squareDistanceTo(fluidResult.getHitVec());
             return blockDistance <= fluidDistance ? blockResult : fluidResult;
         }, (rayTraceContext) -> {
-            Vec3d vec3d = rayTraceContext.func_222253_b().subtract(rayTraceContext.func_222250_a());
-            return BlockRayTraceResult.createMiss(rayTraceContext.func_222250_a(), Direction.getFacingFromVector(vec3d.x, vec3d.y, vec3d.z), new BlockPos(rayTraceContext.func_222250_a()));
+            Vec3d Vec3d = rayTraceContext.func_222253_b().subtract(rayTraceContext.func_222250_a());
+            return BlockRayTraceResult.createMiss(rayTraceContext.func_222250_a(), Direction.getFacingFromVector(Vec3d.x, Vec3d.y, Vec3d.z), new BlockPos(rayTraceContext.func_222250_a()));
         });
     }
 
-    private static <T> T func_217300_a(RayTraceContext context, BiFunction<RayTraceContext, BlockPos, T> hitFunction, Function<RayTraceContext, T> p_217300_2_)
+    private static <T> T performRayTrace(RayTraceContext context, BiFunction<RayTraceContext, BlockPos, T> hitFunction, Function<RayTraceContext, T> p_217300_2_)
     {
         Vec3d startVec = context.func_222253_b();
         Vec3d endVec = context.func_222250_a();
@@ -659,71 +673,69 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
         else
         {
-            double d0 = MathHelper.lerp(-1.0E-7D, endVec.x, startVec.x);
-            double d1 = MathHelper.lerp(-1.0E-7D, endVec.y, startVec.y);
-            double d2 = MathHelper.lerp(-1.0E-7D, endVec.z, startVec.z);
-            double d3 = MathHelper.lerp(-1.0E-7D, startVec.x, endVec.x);
-            double d4 = MathHelper.lerp(-1.0E-7D, startVec.y, endVec.y);
-            double d5 = MathHelper.lerp(-1.0E-7D, startVec.z, endVec.z);
-            int i = MathHelper.floor(d3);
-            int j = MathHelper.floor(d4);
-            int k = MathHelper.floor(d5);
-            BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(i, j, k);
-            T t = hitFunction.apply(context, blockpos$mutable);
+            double startX = MathHelper.lerp(-0.0000001, endVec.x, startVec.x);
+            double startY = MathHelper.lerp(-0.0000001, endVec.y, startVec.y);
+            double startZ = MathHelper.lerp(-0.0000001, endVec.z, startVec.z);
+            double endX = MathHelper.lerp(-0.0000001, startVec.x, endVec.x);
+            double endY = MathHelper.lerp(-0.0000001, startVec.y, endVec.y);
+            double endZ = MathHelper.lerp(-0.0000001, startVec.z, endVec.z);
+            int blockX = MathHelper.floor(endX);
+            int blockY = MathHelper.floor(endY);
+            int blockZ = MathHelper.floor(endZ);
+            BlockPos.Mutable mutablePos = new BlockPos.Mutable(blockX, blockY, blockZ);
+            T t = hitFunction.apply(context, mutablePos);
             if(t != null)
             {
                 return t;
             }
-            else
-            {
-                double d6 = d0 - d3;
-                double d7 = d1 - d4;
-                double d8 = d2 - d5;
-                int l = MathHelper.signum(d6);
-                int i1 = MathHelper.signum(d7);
-                int j1 = MathHelper.signum(d8);
-                double d9 = l == 0 ? Double.MAX_VALUE : (double) l / d6;
-                double d10 = i1 == 0 ? Double.MAX_VALUE : (double) i1 / d7;
-                double d11 = j1 == 0 ? Double.MAX_VALUE : (double) j1 / d8;
-                double d12 = d9 * (l > 0 ? 1.0D - MathHelper.frac(d3) : MathHelper.frac(d3));
-                double d13 = d10 * (i1 > 0 ? 1.0D - MathHelper.frac(d4) : MathHelper.frac(d4));
-                double d14 = d11 * (j1 > 0 ? 1.0D - MathHelper.frac(d5) : MathHelper.frac(d5));
 
-                while(d12 <= 1.0D || d13 <= 1.0D || d14 <= 1.0D)
+            double deltaX = startX - endX;
+            double deltaY = startY - endY;
+            double deltaZ = startZ - endZ;
+            int signX = MathHelper.signum(deltaX);
+            int signY = MathHelper.signum(deltaY);
+            int signZ = MathHelper.signum(deltaZ);
+            double d9 = signX == 0 ? Double.MAX_VALUE : (double) signX / deltaX;
+            double d10 = signY == 0 ? Double.MAX_VALUE : (double) signY / deltaY;
+            double d11 = signZ == 0 ? Double.MAX_VALUE : (double) signZ / deltaZ;
+            double d12 = d9 * (signX > 0 ? 1.0D - MathHelper.frac(endX) : MathHelper.frac(endX));
+            double d13 = d10 * (signY > 0 ? 1.0D - MathHelper.frac(endY) : MathHelper.frac(endY));
+            double d14 = d11 * (signZ > 0 ? 1.0D - MathHelper.frac(endZ) : MathHelper.frac(endZ));
+
+            while(d12 <= 1.0D || d13 <= 1.0D || d14 <= 1.0D)
+            {
+                if(d12 < d13)
                 {
-                    if(d12 < d13)
+                    if(d12 < d14)
                     {
-                        if(d12 < d14)
-                        {
-                            i += l;
-                            d12 += d9;
-                        }
-                        else
-                        {
-                            k += j1;
-                            d14 += d11;
-                        }
-                    }
-                    else if(d13 < d14)
-                    {
-                        j += i1;
-                        d13 += d10;
+                        blockX += signX;
+                        d12 += d9;
                     }
                     else
                     {
-                        k += j1;
+                        blockZ += signZ;
                         d14 += d11;
                     }
-
-                    T t1 = hitFunction.apply(context, blockpos$mutable.setPos(i, j, k));
-                    if(t1 != null)
-                    {
-                        return t1;
-                    }
+                }
+                else if(d13 < d14)
+                {
+                    blockY += signY;
+                    d13 += d10;
+                }
+                else
+                {
+                    blockZ += signZ;
+                    d14 += d11;
                 }
 
-                return p_217300_2_.apply(context);
+                T t1 = hitFunction.apply(context, mutablePos.setPos(blockX, blockY, blockZ));
+                if(t1 != null)
+                {
+                    return t1;
+                }
             }
+
+            return p_217300_2_.apply(context);
         }
     }
 
@@ -732,24 +744,86 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      *
      * @param entity The entity to explode
      * @param radius The amount of radius the entity should deal
+     * @param forceNone If true, forces the explosion mode to be NONE instead of config value
      */
-    public static void createExplosion(Entity entity, float radius)
+    public static void createExplosion(Entity entity, float radius, boolean forceNone)
     {
         World world = entity.world;
-        if (world.isRemote())
+        if(world.isRemote())
             return;
 
-        Explosion explosion = new Explosion(world, entity, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, Explosion.Mode.NONE);
+        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.Mode.BREAK : Explosion.Mode.NONE;
+        Explosion explosion = new ProjectileExplosion(world, entity, entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, false, mode);
+
+        if(net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
+            return;
+
+        // Do explosion logic
         explosion.doExplosionA();
         explosion.doExplosionB(true);
-        explosion.clearAffectedBlockPositions();
 
-        for (ServerPlayerEntity serverplayerentity : ((ServerWorld) world).getPlayers())
+        // Clears the affected blocks if mode is none
+        if(mode == Explosion.Mode.NONE)
         {
-            if (serverplayerentity.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ()) < 4096.0D)
+            explosion.clearAffectedBlockPositions();
+        }
+
+        // Send event to blocks that are exploded (none if mode is none)
+        explosion.getAffectedBlockPositions().forEach(pos ->
+        {
+            if(world.getBlockState(pos).getBlock() instanceof IExplosionDamageable)
             {
-                serverplayerentity.connection.sendPacket(new SExplosionPacket(entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius / 5f, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(serverplayerentity)));
+                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
             }
+        });
+
+        for(ServerPlayerEntity player : ((ServerWorld) world).getPlayers())
+        {
+            if(player.getDistanceSq(entity.getPosX(), entity.getPosY(), entity.getPosZ()) < 4096)
+            {
+                player.connection.sendPacket(new SExplosionPacket(entity.getPosX(), entity.getPosY(), entity.getPosZ(), radius, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(player)));
+            }
+        }
+    }
+
+    /**
+     * Author: MrCrayfish
+     */
+    public static class EntityResult
+    {
+        private Entity entity;
+        private Vec3d hitVec;
+        private boolean headshot;
+
+        public EntityResult(Entity entity, Vec3d hitVec, boolean headshot)
+        {
+            this.entity = entity;
+            this.hitVec = hitVec;
+            this.headshot = headshot;
+        }
+
+        /**
+         * Gets the entity that was hit by the projectile
+         */
+        public Entity getEntity()
+        {
+            return this.entity;
+        }
+
+        /**
+         * Gets the position the projectile hit
+         */
+        public Vec3d getHitPos()
+        {
+            return this.hitVec;
+        }
+
+        /**
+         * Gets if this was a headshot
+         */
+        public boolean isHeadshot()
+        {
+            return this.headshot;
         }
     }
 }

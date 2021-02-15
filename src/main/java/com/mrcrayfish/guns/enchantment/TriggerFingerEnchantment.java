@@ -13,12 +13,6 @@ public class TriggerFingerEnchantment extends GunEnchantment
     }
 
     @Override
-    public int getMinLevel()
-    {
-        return 1;
-    }
-
-    @Override
     public int getMaxLevel()
     {
         return 2;
@@ -27,12 +21,12 @@ public class TriggerFingerEnchantment extends GunEnchantment
     @Override
     public int getMinEnchantability(int level)
     {
-        return 15;
+        return 15 + (level - 1) * 10;
     }
 
     @Override
     public int getMaxEnchantability(int level)
     {
-        return this.getMinEnchantability(level) + 50;
+        return this.getMinEnchantability(level) + 40;
     }
 }

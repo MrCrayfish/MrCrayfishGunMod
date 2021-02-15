@@ -39,7 +39,6 @@
         },
         "attachments": {
             "scope": {
-                "smooth": true,
                 "yOffset": 4.3,
                 "zOffset": 3.3
             },

@@ -15,12 +15,12 @@ public class LightweightEnchantment extends GunEnchantment
     @Override
     public int getMinEnchantability(int level)
     {
-        return 10;
+        return 15;
     }
 
     @Override
     public int getMaxEnchantability(int level)
     {
-        return this.getMinEnchantability(level) + 30;
+        return this.getMinEnchantability(level) + 20;
     }
 }

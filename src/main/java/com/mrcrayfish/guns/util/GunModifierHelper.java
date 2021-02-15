@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.util;
 
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
@@ -52,7 +52,7 @@ public class GunModifierHelper
             IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
             for(IGunModifier modifier : modifiers)
             {
-                gravity = +modifier.additionalProjectileGravity();
+                gravity += modifier.additionalProjectileGravity();
             }
         }
         return gravity;
@@ -187,6 +187,20 @@ public class GunModifierHelper
         return additionalDamage;
     }
 
+    public static float getModifiedProjectileDamage(ItemStack weapon, float damage)
+    {
+        float finalDamage = damage;
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                finalDamage = modifier.modifyProjectileDamage(finalDamage);
+            }
+        }
+        return finalDamage;
+    }
+
     public static float getModifiedDamage(ItemStack weapon, Gun modifiedGun, float damage)
     {
         float finalDamage = damage;
@@ -195,8 +209,7 @@ public class GunModifierHelper
             IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
             for(IGunModifier modifier : modifiers)
             {
-                float newDamage = modifier.modifyProjectileDamage(damage);
-                finalDamage += (newDamage - damage);
+                finalDamage = modifier.modifyProjectileDamage(finalDamage);
             }
         }
         for(int i = 0; i < IAttachment.Type.values().length; i++)

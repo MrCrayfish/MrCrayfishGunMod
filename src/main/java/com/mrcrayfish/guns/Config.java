@@ -1,9 +1,9 @@
 package com.mrcrayfish.guns;
 
+import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,6 +17,7 @@ public class Config
         public final Sounds sounds;
         public final Display display;
         public final Particle particle;
+        public final Controls controls;
 
         public Client(ForgeConfigSpec.Builder builder)
         {
@@ -25,6 +26,7 @@ public class Config
                 this.sounds = new Sounds(builder);
                 this.display = new Display(builder);
                 this.particle = new Particle(builder);
+                this.controls = new Controls(builder);
             }
             builder.pop();
         }
@@ -35,13 +37,19 @@ public class Config
      */
     public static class Sounds
     {
-        public final ForgeConfigSpec.BooleanValue hitSound;
+        public final ForgeConfigSpec.BooleanValue playSoundWhenHeadshot;
+        public final ForgeConfigSpec.ConfigValue<String> headshotSound;
+        public final ForgeConfigSpec.BooleanValue playSoundWhenCritical;
+        public final ForgeConfigSpec.ConfigValue<String> criticalSound;
 
         public Sounds(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Control sounds triggered by guns").push("sounds");
             {
-                this.hitSound = builder.comment("If true, a ding sound will play when you successfully hit a player with a gun").define("playSoundWhenTargetHit", true);
+                this.playSoundWhenHeadshot = builder.comment("If true, a sound will play when you successfully hit a headshot on a entity with a gun").define("playSoundWhenHeadshot", true);
+                this.headshotSound = builder.comment("The sound to play when a headshot occurs").define("headshotSound", "minecraft:entity.player.attack.knockback");
+                this.playSoundWhenCritical = builder.comment("If true, a sound will play when you successfully hit a critical on a entity with a gun").define("playSoundWhenCritical", true);
+                this.criticalSound = builder.comment("The sound to play when a critical occurs").define("criticalSound", "minecraft:entity.player.attack.crit");
             }
             builder.pop();
         }
@@ -53,12 +61,14 @@ public class Config
     public static class Display
     {
         public final ForgeConfigSpec.BooleanValue oldAnimations;
+        public final ForgeConfigSpec.ConfigValue<String> crosshair;
 
         public Display(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for display related options").push("display");
             {
-                this.oldAnimations = builder.comment("If true, uses the old animations for two handed weapons prior to official release").define("oldAnimations", false);
+                this.oldAnimations = builder.comment("If true, uses the old animation poses for weapons. This is only for nostalgic reasons and not recommended to switch back.").define("oldAnimations", false);
+                this.crosshair = builder.comment("The custom crosshair to use for weapons. Go to (Options > Controls > Mouse Settings > Crosshair) in game to change this!").define("crosshair", Crosshair.DEFAULT.getLocation().toString());
             }
             builder.pop();
         }
@@ -82,6 +92,20 @@ public class Config
                 this.bulletHoleLifeMax = builder.comment("The maximum duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLifeMax", 200, 0, Integer.MAX_VALUE);
                 this.bulletHoleFadeThreshold = builder.comment("The percentage of the maximum life that must pass before particles begin fading away. 0 makes the particles always fade and 1 removes facing completely").defineInRange("bulletHoleFadeThreshold", 0.98, 0, 1.0);
                 this.enableBlood = builder.comment("If true, blood will will spawn from entities that are hit from a projectile").define("enableBlood", false);
+            }
+            builder.pop();
+        }
+    }
+
+    public static class Controls
+    {
+        public final ForgeConfigSpec.DoubleValue aimDownSightSensitivity;
+
+        public Controls(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Properties relating to controls").push("controls");
+            {
+                this.aimDownSightSensitivity = builder.comment("A value to multiple the mouse sensitivity by when aiming down weapon sights. Go to (Options > Controls > Mouse Settings > ADS Sensitivity) in game to change this!").defineInRange("aimDownSightSensitivity", 0.75, 0.0, 1.0);
             }
             builder.pop();
         }
@@ -128,6 +152,7 @@ public class Config
         public final ForgeConfigSpec.DoubleValue criticalDamageMultiplier;
         public final ForgeConfigSpec.BooleanValue ignoreLeaves;
         public final ForgeConfigSpec.BooleanValue enableKnockback;
+        public final ForgeConfigSpec.DoubleValue knockbackStrength;
         public final ForgeConfigSpec.BooleanValue improvedHitboxes;
 
         public Gameplay(ForgeConfigSpec.Builder builder)
@@ -135,12 +160,13 @@ public class Config
             builder.comment("Properties relating to gameplay").push("gameplay");
             {
                 this.enableGunGriefing = builder.comment("If enable, allows guns to shoot out glass and remove blocks on explosions").define("enableGunGriefing", true);
-                this.growBoundingBoxAmount = builder.comment("The extra amount to expand an entity's bounding box when checking for projectile collision. Setting this value higher will make it easier to hit entities").defineInRange("growBoundingBoxAmount", 0.0625, 0.0, 1.0);
+                this.growBoundingBoxAmount = builder.comment("The extra amount to expand an entity's bounding box when checking for projectile collision. Setting this value higher will make it easier to hit entities").defineInRange("growBoundingBoxAmount", 0.3, 0.0, 1.0);
                 this.enableHeadShots = builder.comment("Enables the check for head shots for players. Projectiles that hit the head of a player will have increased damage.").define("enableHeadShots", true);
                 this.headShotDamageMultiplier = builder.comment("The value to multiply the damage by if projectile hit the players head").defineInRange("headShotDamageMultiplier", 1.25, 1.0, Double.MAX_VALUE);
                 this.criticalDamageMultiplier = builder.comment("The value to multiply the damage by if projectile is a critical hit").defineInRange("criticalDamageMultiplier", 1.5, 1.0, Double.MAX_VALUE);
                 this.ignoreLeaves = builder.comment("If true, projectiles will ignore leaves when checking for collision").define("ignoreLeaves", true);
                 this.enableKnockback = builder.comment("If true, projectiles will cause knockback when an entity is hit. By default this is set to true to match the behaviour of Minecraft.").define("enableKnockback", true);
+                this.knockbackStrength = builder.comment("Sets the strengthof knockback when shot by a bullet projectile. Knockback must be enabled for this to take effect. If value is equal to zero, knockback will use default minecraft value").defineInRange("knockbackStrength", 0.15, 0.0, 1.0);
                 this.improvedHitboxes = builder.comment("If true, improves the accuracy of weapons by considering the ping of the player. This has no affect on singleplayer. This will add a little overhead if enabled.").define("improvedHitboxes", false);
             }
             builder.pop();
@@ -181,7 +207,7 @@ public class Config
                 this.enabled = builder.comment("If true, nearby mobs are angered and/or scared by the firing of guns.").define("enabled", true);
                 this.angerHostileMobs = builder.comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.").define("angerHostileMobs", true);
                 this.range = builder.comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.").defineInRange("unsilencedRange", 20.0, 0.0, Double.MAX_VALUE);
-                this.exemptEntities = builder.comment("Any mobs of defined will not aggro on shooters").defineList("exemptMobs", Arrays.asList("minecraft:villager", "minecraft:bee"), o -> true);
+                this.exemptEntities = builder.comment("Any mobs of defined will not aggro on shooters").defineList("exemptMobs", Collections.emptyList(), o -> true);
             }
             builder.pop();
         }
@@ -318,7 +344,7 @@ public class Config
             builder.comment("Properties relating to projectile spread").push("projectile_spread");
             {
                 this.spreadThreshold = builder.comment("The amount of time in milliseconds before logic to apply spread is skipped. The value indicates a reasonable amount of time before a weapon is considered stable again.").defineInRange("spreadThreshold", 300, 0, 1000);
-                this.maxCount = builder.comment("The amount of times a player has too shoot within the spread threshold before the maximum amount of spread is applied. Setting the value higher means it will take longer for the spread to be applied.").defineInRange("maxCount", 10, 1, Integer.MAX_VALUE);
+                this.maxCount = builder.comment("The amount of times a player has to shoot within the spread threshold before the maximum amount of spread is applied. Setting the value higher means it will take longer for the spread to be applied.").defineInRange("maxCount", 10, 1, Integer.MAX_VALUE);
             }
             builder.pop();
         }
@@ -385,5 +411,10 @@ public class Config
         final Pair<Server, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
         serverSpec = serverSpecPair.getRight();
         SERVER = serverSpecPair.getLeft();
+    }
+
+    public static void saveClientConfig()
+    {
+        clientSpec.save();
     }
 }

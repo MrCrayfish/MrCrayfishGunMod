@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.item;
 
-import com.mrcrayfish.guns.util.ItemStackUtil;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.DyeItem;
@@ -39,7 +38,7 @@ public interface IColored
      */
     default boolean hasColor(ItemStack stack)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = stack.getOrCreateTag();
         return tagCompound.contains("Color", Constants.NBT.TAG_INT);
     }
 
@@ -51,7 +50,7 @@ public interface IColored
      */
     default int getColor(ItemStack stack)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = stack.getOrCreateTag();
         return tagCompound.getInt("Color");
     }
 
@@ -63,7 +62,7 @@ public interface IColored
      */
     default void setColor(ItemStack stack, int color)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = stack.getOrCreateTag();
         tagCompound.putInt("Color", color);
     }
 
@@ -74,7 +73,7 @@ public interface IColored
      */
     default void removeColor(ItemStack stack)
     {
-        CompoundNBT tagCompound = ItemStackUtil.createTagCompound(stack);
+        CompoundNBT tagCompound = stack.getOrCreateTag();
         tagCompound.remove("Color");
     }
 

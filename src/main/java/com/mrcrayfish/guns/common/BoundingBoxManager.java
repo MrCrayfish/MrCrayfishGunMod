@@ -1,12 +1,12 @@
 package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.common.headshot.BasicHeadshotBox;
+import com.mrcrayfish.guns.common.headshot.ChildHeadshotBox;
+import com.mrcrayfish.guns.common.headshot.NoChildHeadshotBox;
+import com.mrcrayfish.guns.common.headshot.NoChildRotatedHeadshotBox;
+import com.mrcrayfish.guns.common.headshot.RotatedHeadshotBox;
 import com.mrcrayfish.guns.interfaces.IHeadshotBox;
-import com.mrcrayfish.guns.object.headshot.BasicHeadshotBox;
-import com.mrcrayfish.guns.object.headshot.ChildHeadshotBox;
-import com.mrcrayfish.guns.object.headshot.NoChildHeadshotBox;
-import com.mrcrayfish.guns.object.headshot.NoChildRotatedHeadshotBox;
-import com.mrcrayfish.guns.object.headshot.RotatedHeadshotBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**
@@ -42,7 +41,8 @@ public class BoundingBoxManager
             double scale = 30.0 / 32.0;
             if(entity.isSwimming())
             {
-                Vec3d pos = Vec3d.fromPitchYaw(0.0F, entity.renderYawOffset).normalize().scale(0.8);
+                headBox = headBox.offset(0, 3 * 0.0625, 0);
+                Vec3d pos = Vec3d.fromPitchYaw(entity.rotationPitch, entity.renderYawOffset).normalize().scale(0.8);
                 headBox = headBox.offset(pos);
             }
             else
@@ -53,7 +53,6 @@ public class BoundingBoxManager
         });
 
         registerHeadshotBox(EntityType.ZOMBIE, new ChildHeadshotBox<>(8.0, 24.0, 0.75, 0.5));
-        registerHeadshotBox(EntityType.ZOMBIE_PIGMAN, new ChildHeadshotBox<>(8.0, 24.0, 0.75, 0.5));
         registerHeadshotBox(EntityType.HUSK, new ChildHeadshotBox<>(8.0, 24.0, 0.75, 0.5));
         registerHeadshotBox(EntityType.SKELETON, new BasicHeadshotBox<>(8.0, 24.0));
         registerHeadshotBox(EntityType.STRAY, new BasicHeadshotBox<>(8.0, 24.0));
@@ -90,7 +89,7 @@ public class BoundingBoxManager
      * Registers a headshot box for the specified entity type.
      *
      * @param type        the entity type
-     * @param headshotBox a {@link IHeadshotBox} instance
+     * @param headshotBox a {@link IHeadshotBox} get
      * @param <T>         a type that extends {@link LivingEntity}
      */
     public static <T extends LivingEntity> void registerHeadshotBox(EntityType<T> type, IHeadshotBox<T> headshotBox)

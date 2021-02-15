@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.common;
 
 import com.google.gson.JsonDeserializer;
-import com.mrcrayfish.guns.object.GripType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;

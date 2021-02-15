@@ -1,12 +1,11 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.client.CustomGunManager;
+import com.mrcrayfish.guns.client.network.ClientPlayHandler;
+import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.CustomGunLoader;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
-import com.mrcrayfish.guns.object.CustomGun;
-import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -27,10 +26,10 @@ public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvid
     @Override
     public void encode(PacketBuffer buffer)
     {
-        Validate.notNull(GunMod.getNetworkGunManager());
-        Validate.notNull(GunMod.getCustomGunLoader());
-        GunMod.getNetworkGunManager().writeRegisteredGuns(buffer);
-        GunMod.getCustomGunLoader().writeCustomGuns(buffer);
+        Validate.notNull(NetworkGunManager.get());
+        Validate.notNull(CustomGunLoader.get());
+        NetworkGunManager.get().writeRegisteredGuns(buffer);
+        CustomGunLoader.get().writeCustomGuns(buffer);
     }
 
     @Override
@@ -43,10 +42,7 @@ public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvid
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> {
-            NetworkGunManager.updateRegisteredGuns(this);
-            CustomGunManager.updateCustomGuns(this);
-        });
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleUpdateGuns(this));
         supplier.get().setPacketHandled(true);
     }
 

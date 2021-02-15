@@ -5,9 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
-import com.mrcrayfish.guns.object.CustomGun;
-import com.mrcrayfish.guns.object.GripType;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -15,7 +14,12 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
+import javax.annotation.Nullable;
 import java.io.InvalidObjectException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +27,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class CustomGunLoader extends JsonReloadListener
 {
     private static final Gson GSON_INSTANCE = Util.make(() -> {
@@ -32,6 +37,8 @@ public class CustomGunLoader extends JsonReloadListener
         builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
         return builder.create();
     });
+
+    private static CustomGunLoader instance;
 
     private Map<ResourceLocation, CustomGun> customGunMap = new HashMap<>();
 
@@ -74,7 +81,7 @@ public class CustomGunLoader extends JsonReloadListener
     /**
      * Writes all custom guns into the provided packet buffer
      *
-     * @param buffer a packet buffer instance
+     * @param buffer a packet buffer get
      */
     public void writeCustomGuns(PacketBuffer buffer)
     {
@@ -88,7 +95,7 @@ public class CustomGunLoader extends JsonReloadListener
     /**
      * Reads all registered guns from the provided packet buffer
      *
-     * @param buffer a packet buffer instance
+     * @param buffer a packet buffer get
      * @return a map of registered guns from the server
      */
     public static ImmutableMap<ResourceLocation, CustomGun> readCustomGuns(PacketBuffer buffer)
@@ -107,5 +114,19 @@ public class CustomGunLoader extends JsonReloadListener
             return builder.build();
         }
         return ImmutableMap.of();
+    }
+
+    @SubscribeEvent
+    public static void onServerStarting(FMLServerAboutToStartEvent event)
+    {
+        CustomGunLoader customGunLoader = new CustomGunLoader();
+        event.getServer().getResourceManager().addReloadListener(customGunLoader);
+        CustomGunLoader.instance = customGunLoader;
+    }
+
+    @Nullable
+    public static CustomGunLoader get()
+    {
+        return instance;
     }
 }

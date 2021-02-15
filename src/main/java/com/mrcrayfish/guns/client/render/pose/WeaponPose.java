@@ -1,21 +1,13 @@
 package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.client.AimPose;
-import com.mrcrayfish.guns.client.ClientHandler;
-import com.mrcrayfish.guns.client.LimbPose;
-import com.mrcrayfish.guns.client.render.HeldAnimation;
-import com.mrcrayfish.guns.client.util.RenderUtil;
-import com.mrcrayfish.guns.object.GripType;
+import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
@@ -27,10 +19,10 @@ import javax.annotation.Nullable;
 /**
  * A simple class that handles interpolating between different poses depending on the rotation pitch
  * of the player. Used for pointing the weapon in the same direction the playing is looking.
- *
+ * <p>
  * Author: MrCrayfish
  */
-public abstract class WeaponPose implements HeldAnimation
+public abstract class WeaponPose implements IHeldAnimation
 {
     private AimPose upPose;
     private AimPose forwardPose;
@@ -79,7 +71,7 @@ public abstract class WeaponPose implements HeldAnimation
         float angleAbs = Math.abs(angle);
         float zoom = this.hasAimPose() ? aimProgress : 0F;
         AimPose targetPose = angle > 0.0 ? this.downPose : this.upPose;
-        this.applyAimPose(targetPose, mainArm, secondaryArm, angleAbs, zoom, right ? 1 : -1);
+        this.applyAimPose(targetPose, mainArm, secondaryArm, angleAbs, zoom, right ? 1 : -1, model.isSneak);
     }
 
     /**
@@ -92,23 +84,25 @@ public abstract class WeaponPose implements HeldAnimation
     protected float getPlayerPitch(PlayerEntity player)
     {
         if(Minecraft.getInstance().getRenderViewEntity() == player && Minecraft.getInstance().currentScreen != null)
+        {
             return 0F;
+        }
         return MathHelper.lerp(Minecraft.getInstance().getRenderPartialTicks(), player.prevRotationPitch, player.rotationPitch) / 90F;
     }
 
-    private void applyAimPose(AimPose targetPose, ModelRenderer rightArm, ModelRenderer leftArm, float partial, float zoom, float offhand)
+    private void applyAimPose(AimPose targetPose, ModelRenderer rightArm, ModelRenderer leftArm, float partial, float zoom, float offhand, boolean sneaking)
     {
-        this.applyLimbPoseToModelRenderer(targetPose.getIdle().getRightArm(), targetPose.getAiming().getRightArm(), this.forwardPose.getIdle().getRightArm(), this.forwardPose.getAiming().getRightArm(), rightArm, partial, zoom, offhand);
-        this.applyLimbPoseToModelRenderer(targetPose.getIdle().getLeftArm(), targetPose.getAiming().getLeftArm(), this.forwardPose.getIdle().getLeftArm(), this.forwardPose.getAiming().getLeftArm(), leftArm, partial, zoom, offhand);
+        this.applyLimbPoseToModelRenderer(targetPose.getIdle().getRightArm(), targetPose.getAiming().getRightArm(), this.forwardPose.getIdle().getRightArm(), this.forwardPose.getAiming().getRightArm(), rightArm, partial, zoom, offhand, sneaking);
+        this.applyLimbPoseToModelRenderer(targetPose.getIdle().getLeftArm(), targetPose.getAiming().getLeftArm(), this.forwardPose.getIdle().getLeftArm(), this.forwardPose.getAiming().getLeftArm(), leftArm, partial, zoom, offhand, sneaking);
     }
 
-    private void applyLimbPoseToModelRenderer(LimbPose targetIdlePose, LimbPose targetAimingPose, LimbPose idlePose, LimbPose aimingPose, ModelRenderer renderer, float partial, float zoom, float leftHanded)
+    private void applyLimbPoseToModelRenderer(LimbPose targetIdlePose, LimbPose targetAimingPose, LimbPose idlePose, LimbPose aimingPose, ModelRenderer renderer, float partial, float zoom, float leftHanded, boolean sneaking)
     {
         renderer.rotateAngleX = (float) Math.toRadians(this.getValue(targetIdlePose.getRotationAngleX(), targetAimingPose.getRotationAngleX(), idlePose.getRotationAngleX(), aimingPose.getRotationAngleX(), renderer.rotateAngleX, partial, zoom, 1F));
         renderer.rotateAngleY = (float) Math.toRadians(this.getValue(targetIdlePose.getRotationAngleY(), targetAimingPose.getRotationAngleY(), idlePose.getRotationAngleY(), aimingPose.getRotationAngleY(), renderer.rotateAngleY, partial, zoom, leftHanded));
         renderer.rotateAngleZ = (float) Math.toRadians(this.getValue(targetIdlePose.getRotationAngleZ(), targetAimingPose.getRotationAngleZ(), idlePose.getRotationAngleZ(), aimingPose.getRotationAngleZ(), renderer.rotateAngleZ, partial, zoom, leftHanded));
         renderer.rotationPointX = this.getValue(targetIdlePose.getRotationPointX(), targetAimingPose.getRotationPointX(), idlePose.getRotationPointX(), aimingPose.getRotationPointX(), renderer.rotationPointX, partial, zoom, leftHanded);
-        renderer.rotationPointY = this.getValue(targetIdlePose.getRotationPointY(), targetAimingPose.getRotationPointY(), idlePose.getRotationPointY(), aimingPose.getRotationPointY(), renderer.rotationPointY, partial, zoom, 1F);
+        renderer.rotationPointY = this.getValue(targetIdlePose.getRotationPointY(), targetAimingPose.getRotationPointY(), idlePose.getRotationPointY(), aimingPose.getRotationPointY(), renderer.rotationPointY, partial, zoom, 1F) + (sneaking ? 2F : 0F);
         renderer.rotationPointZ = this.getValue(targetIdlePose.getRotationPointZ(), targetAimingPose.getRotationPointZ(), idlePose.getRotationPointZ(), aimingPose.getRotationPointZ(), renderer.rotationPointZ, partial, zoom, 1F);
     }
 

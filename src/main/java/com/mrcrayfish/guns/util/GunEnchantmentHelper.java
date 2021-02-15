@@ -1,13 +1,10 @@
 package com.mrcrayfish.guns.util;
 
-import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModEnchantments;
-import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-
-import java.util.Random;
 
 /**
  * Author: MrCrayfish
@@ -20,9 +17,9 @@ public class GunEnchantmentHelper
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.QUICK_HANDS.get(), weapon);
         if(level > 0)
         {
-            interval /= 2;
+            interval -= 3 * level;
         }
-        return interval;
+        return Math.max(interval, 1);
     }
 
     public static int getRate(ItemStack weapon, Gun modifiedGun)
@@ -54,7 +51,7 @@ public class GunEnchantmentHelper
         return capacity;
     }
 
-    public static double getProjectileSpeedModifier(ItemStack weapon, Gun modifiedGun)
+    public static double getProjectileSpeedModifier(ItemStack weapon)
     {
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ACCELERATOR.get(), weapon);
         if(level > 0)
@@ -62,6 +59,16 @@ public class GunEnchantmentHelper
             return 1.0 + 0.15 * level;
         }
         return 1.0;
+    }
+
+    public static float getAcceleratorDamage(ItemStack weapon, float damage)
+    {
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ACCELERATOR.get(), weapon);
+        if(level > 0)
+        {
+            return damage + damage * (0.1F * level);
+        }
+        return damage;
     }
 
     public static float getPuncturingChance(ItemStack weapon)

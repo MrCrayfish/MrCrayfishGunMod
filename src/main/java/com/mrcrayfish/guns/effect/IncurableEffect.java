@@ -22,4 +22,6 @@ public class IncurableEffect extends Effect
     {
         return Collections.emptyList();
     }
+
+
 }

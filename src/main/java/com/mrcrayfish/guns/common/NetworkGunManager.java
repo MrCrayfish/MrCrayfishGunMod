@@ -6,11 +6,9 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.object.CustomGun;
-import com.mrcrayfish.guns.object.GripType;
-import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketBuffer;
@@ -22,9 +20,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
 
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +44,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
 {
     private static final Gson GSON_INSTANCE = Util.make(() -> {
@@ -50,6 +55,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     });
 
     private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
+    private static NetworkGunManager instance;
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
@@ -109,7 +115,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     /**
      * Writes all registered guns into the provided packet buffer
      *
-     * @param buffer a packet buffer instance
+     * @param buffer a packet buffer get
      */
     public void writeRegisteredGuns(PacketBuffer buffer)
     {
@@ -123,7 +129,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     /**
      * Reads all registered guns from the provided packet buffer
      *
-     * @param buffer a packet buffer instance
+     * @param buffer a packet buffer get
      * @return a map of registered guns from the server
      */
     public static ImmutableMap<ResourceLocation, Gun> readRegisteredGuns(PacketBuffer buffer)
@@ -189,6 +195,32 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     public static List<GunItem> getClientRegisteredGuns()
     {
         return ImmutableList.copyOf(clientRegisteredGuns);
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(FMLServerStoppedEvent event)
+    {
+        NetworkGunManager.instance = null;
+    }
+
+    @SubscribeEvent
+    public static void onServerStarting(FMLServerAboutToStartEvent event)
+    {
+        NetworkGunManager networkGunManager = new NetworkGunManager();
+        event.getServer().getResourceManager().addReloadListener(networkGunManager);
+        NetworkGunManager.instance = networkGunManager;
+    }
+
+    /**
+     * Gets the network gun manager. This will be null if the client isn't running an integrated
+     * server or the client is connected to a dedicated server.
+     *
+     * @return the network gun manager
+     */
+    @Nullable
+    public static NetworkGunManager get()
+    {
+        return instance;
     }
 
     public interface IGunProvider

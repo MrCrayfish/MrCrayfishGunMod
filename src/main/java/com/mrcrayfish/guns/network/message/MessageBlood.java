@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.client.ClientHandler;
+import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -43,7 +43,7 @@ public class MessageBlood implements IMessage
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientHandler.handleMessageBlood(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBlood(this));
         supplier.get().setPacketHandled(true);
     }
 

@@ -54,21 +54,22 @@ public class PacketHandler
         registerPlayMessage(MessageUnload.class, MessageUnload::new, LogicalSide.SERVER);
         registerPlayMessage(MessageStunGrenade.class, MessageStunGrenade::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageCraft.class, MessageCraft::new, LogicalSide.SERVER);
-        registerPlayMessage(MessageBullet.class, MessageBullet::new, LogicalSide.CLIENT);
-        registerPlayMessage(MessageBulletHole.class, MessageBulletHole::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageBulletTrail.class, MessageBulletTrail::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageAttachments.class, MessageAttachments::new, LogicalSide.SERVER);
         registerPlayMessage(MessageUpdateGuns.class, MessageUpdateGuns::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageBlood.class, MessageBlood::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageShooting.class, MessageShooting::new, LogicalSide.SERVER);
         registerPlayMessage(MessageGunSound.class, MessageGunSound::new, LogicalSide.CLIENT);
-        registerPlayMessage(MessageMuzzleFlash.class, MessageMuzzleFlash::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageProjectileHitBlock.class, MessageProjectileHitBlock::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageProjectileHitEntity.class, MessageProjectileHitEntity::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageRemoveProjectile.class, MessageRemoveProjectile::new, LogicalSide.CLIENT);
     }
 
     /**
      * Register an {@link IMessage} to the play network channel.
      *
      * @param clazz the class of the message
-     * @param messageSupplier a supplier to create an instance of the message
+     * @param messageSupplier a supplier to create an get of the message
      * @param side the logical side this message is to be handled on
      * @param <T> inferred by first parameter, class must implement {@link IMessage}
      */

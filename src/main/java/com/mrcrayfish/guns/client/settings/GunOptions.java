@@ -1,24 +1,17 @@
 package com.mrcrayfish.guns.client.settings;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Splitter;
-import com.mrcrayfish.guns.GunMod;
-import net.minecraft.client.resources.I18n;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.client.handler.CrosshairHandler;
+import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.settings.AbstractOption;
 import net.minecraft.client.settings.SliderPercentageOption;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import org.apache.commons.io.IOUtils;
+import net.minecraft.util.text.TranslationTextComponent;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -27,94 +20,45 @@ public class GunOptions
 {
     private static final DecimalFormat FORMAT = new DecimalFormat("0.0#");
 
-    public static final SliderPercentageOption ADS_SENSITIVITY = new GunSliderPercentageOption("cgm.options.adsSensitivity", 0.0, 2.0, 0.01F, gameSettings -> {
-        return GunMod.getOptions().adsSensitivity;
+    public static final SliderPercentageOption ADS_SENSITIVITY = new GunSliderPercentageOption("cgm.options.adsSensitivity", 0.0, 1.0, 0.01F, gameSettings -> {
+        return Config.CLIENT.controls.aimDownSightSensitivity.get();
     }, (gameSettings, value) -> {
-        GunMod.getOptions().adsSensitivity = MathHelper.clamp(value, 0.0, 2.0);
+        Config.CLIENT.controls.aimDownSightSensitivity.set(MathHelper.clamp(value, 0.0, 1.0));
+        Config.saveClientConfig();
     }, (gameSettings, option) -> {
-        double adsSensitivity = GunMod.getOptions().adsSensitivity;
-        return I18n.format("cgm.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
+        double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
+        return new TranslationTextComponent("cgm.options.adsSensitivity.format", FORMAT.format(adsSensitivity)).getFormattedText();
     });
 
-    public static final Splitter COLON_SPLITTER = Splitter.on(':');
-
-    private File optionsFile;
-    private double adsSensitivity = 0.75;
-
-    public GunOptions(File dataDir)
-    {
-        this.optionsFile = new File(dataDir, "cgm-options.txt");
-        this.loadOptions();
-    }
-
-    private void loadOptions()
-    {
-        try
+    public static final AbstractOption CROSSHAIR = new GunListOption<>("cgm.options.crosshair", () -> {
+        return CrosshairHandler.get().getRegisteredCrosshairs();
+    }, () -> {
+        return ResourceLocation.tryCreate(Config.CLIENT.display.crosshair.get());
+    }, (value) -> {
+        Config.CLIENT.display.crosshair.set(value.toString());
+        Config.saveClientConfig();
+        CrosshairHandler.get().setCrosshair(value);
+    }, (value) -> {
+        ResourceLocation id = value.getLocation();
+        return new TranslationTextComponent(id.getNamespace() + ".crosshair." + id.getPath());
+    }).setRenderer((button, matrixStack, partialTicks) -> {
+        matrixStack.push();
+        matrixStack.translate(button.x, button.y, 0);
+        matrixStack.translate(button.getWidth() + 2, 2, 0);
+        Crosshair crosshair = CrosshairHandler.get().getCurrentCrosshair();
+        if(crosshair != null)
         {
-            if(!this.optionsFile.exists())
+            if(crosshair.isDefault())
             {
-                return;
+                Minecraft mc = Minecraft.getInstance();
+                mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+                AbstractGui.blit((16 - 15) / 2, (16 - 15) / 2, 0, 0, 0, 15, 15, 256, 256);
             }
-
-            List<String> lines = IOUtils.readLines(new FileInputStream(this.optionsFile), Charsets.UTF_8);
-            CompoundNBT compound = new CompoundNBT();
-
-            for(String line : lines)
+            else
             {
-                try
-                {
-                    Iterator<String> iterator = COLON_SPLITTER.omitEmptyStrings().limit(2).split(line).iterator();
-                    compound.putString(iterator.next(), iterator.next());
-                }
-                catch(Exception var10)
-                {
-                    GunMod.LOGGER.warn("Skipping bad option: {}", line);
-                }
-            }
-
-            for(String key : compound.keySet())
-            {
-                String value = compound.getString(key);
-
-                try
-                {
-                    switch(key)
-                    {
-                        case "adsSensitivity":
-                            this.adsSensitivity = Double.parseDouble(value);
-                            break;
-                    }
-                }
-                catch(Exception e)
-                {
-                    GunMod.LOGGER.warn("Skipping bad option: {}:{}", key, value);
-                }
+                crosshair.render(Minecraft.getInstance(), matrixStack, 16, 16, partialTicks);
             }
         }
-        catch(Exception e)
-        {
-            GunMod.LOGGER.error("Failed to load options", e);
-        }
-
-    }
-
-    public void saveOptions()
-    {
-        try(PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(this.optionsFile), StandardCharsets.UTF_8)))
-        {
-            writer.println("adsSensitivity:" + this.adsSensitivity);
-        }
-        catch(FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Gets the ads sensitivity
-     */
-    public double getAdsSensitivity()
-    {
-        return this.adsSensitivity;
-    }
+        matrixStack.pop();
+    });
 }

@@ -4,7 +4,7 @@ import com.mrcrayfish.guns.interfaces.IGunModifier;
 
 /**
  * An attachment class related to barrels. Barrels need to specify the length in order to render
- * the muzzle flash correctly. Use {@link #create(float, IGunModifier...)} to create an instance.
+ * the muzzle flash correctly. Use {@link #create(float, IGunModifier...)} to create an get.
  * <p>
  * Author: MrCrayfish
  */
@@ -26,11 +26,11 @@ public class Barrel extends Attachment
     }
 
     /**
-     * Creates a barrel instance
+     * Creates a barrel get
      *
      * @param length    the length of the barrel model in pixels
      * @param modifiers an array of gun modifiers
-     * @return a barrel instance
+     * @return a barrel get
      */
     public static Barrel create(float length, IGunModifier... modifiers)
     {

@@ -1,11 +1,10 @@
 package com.mrcrayfish.guns.network;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.CustomGunLoader;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
-import com.mrcrayfish.guns.object.CustomGun;
-import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Validate;
@@ -58,12 +57,12 @@ public class HandshakeMessages
 
         void encode(PacketBuffer buffer)
         {
-            /* This shouldn't be null as it's encoding from the logical server but
+            /* This shouldn't be null as it's encoded from the logical server but
              * it's just here to avoiding IDE warnings */
-            Validate.notNull(GunMod.getNetworkGunManager());
-            GunMod.getNetworkGunManager().writeRegisteredGuns(buffer);
-            Validate.notNull(GunMod.getCustomGunLoader());
-            GunMod.getCustomGunLoader().writeCustomGuns(buffer);
+            Validate.notNull(NetworkGunManager.get());
+            NetworkGunManager.get().writeRegisteredGuns(buffer);
+            Validate.notNull(CustomGunLoader.get());
+            CustomGunLoader.get().writeCustomGuns(buffer);
         }
 
         static S2CUpdateGuns decode(PacketBuffer buffer)

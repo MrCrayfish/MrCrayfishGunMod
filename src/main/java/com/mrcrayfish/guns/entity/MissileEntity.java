@@ -1,17 +1,17 @@
 package com.mrcrayfish.guns.entity;
 
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.object.Gun;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 /**
@@ -30,7 +30,7 @@ public class MissileEntity extends ProjectileEntity
     }
 
     @Override
-    protected void onTick()
+    protected void onProjectileTick()
     {
         if (this.world.isRemote)
         {
@@ -49,28 +49,18 @@ public class MissileEntity extends ProjectileEntity
     @Override
     protected void onHitEntity(Entity entity, Vec3d hitVec, Vec3d startVec, Vec3d endVec, boolean headshot)
     {
-        createExplosion(this);
+        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
     }
 
     @Override
-    protected void onHitBlock(BlockState state, BlockPos pos, double x, double y, double z)
+    protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {
-        createExplosion(this);
+        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
     }
 
     @Override
     public void onExpired()
     {
-        createExplosion(this);
-    }
-
-    private static void createExplosion(MissileEntity entity)
-    {
-        World world = entity.world;
-        if (world.isRemote())
-            return;
-
-        Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
-        world.createExplosion(entity, entity.getPosX(), entity.getPosY(), entity.getPosZ(), Config.COMMON.missiles.explosionRadius.get().floatValue(), false, mode);
+        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
     }
 }

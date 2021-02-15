@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.common.CommonHandler;
+import com.mrcrayfish.guns.common.network.ServerPlayHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -47,7 +47,7 @@ public class MessageCraft implements IMessage
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                CommonHandler.craftItem(player, this.id, this.pos);
+                ServerPlayHandler.handleCraft(player, this.id, this.pos);
             }
         });
         supplier.get().setPacketHandled(true);

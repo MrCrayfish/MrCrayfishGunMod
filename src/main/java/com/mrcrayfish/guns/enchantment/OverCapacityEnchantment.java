@@ -13,26 +13,20 @@ public class OverCapacityEnchantment extends GunEnchantment
     }
 
     @Override
-    public int getMinLevel()
-    {
-        return 1;
-    }
-
-    @Override
     public int getMaxLevel()
     {
-        return 2;
+        return 3;
     }
 
     @Override
     public int getMinEnchantability(int level)
     {
-        return 15;
+        return 5 + (level - 1) * 10;
     }
 
     @Override
     public int getMaxEnchantability(int level)
     {
-        return this.getMinEnchantability(level) + 40;
+        return super.getMinEnchantability(level) + 50;
     }
 }

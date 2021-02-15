@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.client.settings;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.settings.SliderPercentageOption;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;

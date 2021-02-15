@@ -20,5 +20,7 @@ build
 # other
 eclipse
 run
+logs
+libs
 
 classes

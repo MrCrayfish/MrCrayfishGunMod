@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client.util;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.Atlases;
@@ -17,8 +18,9 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -120,7 +122,6 @@ public class RenderUtil
     }
 
     /**
-     *
      * @param model
      * @param stack
      * @param parent
@@ -147,7 +148,6 @@ public class RenderUtil
     }
 
     /**
-     *
      * @param matrixStack
      * @param buffer
      * @param quads
@@ -196,7 +196,7 @@ public class RenderUtil
         if(leftHanded)
         {
             Matrix4f scale = Matrix4f.makeScale(-1, 1, 1);
-            Matrix3f normal = new net.minecraft.client.renderer.Matrix3f(scale);
+            Matrix3f normal = new Matrix3f(scale);
             matrixStack.getLast().getMatrix().mul(scale);
             matrixStack.getLast().getNormal().mul(normal);
         }
@@ -218,7 +218,7 @@ public class RenderUtil
         EntityRendererManager renderManager = mc.getRenderManager();
         PlayerRenderer renderer = (PlayerRenderer) renderManager.getRenderer(player);
         mc.getTextureManager().bindTexture(player.getLocationSkin());
-        if (hand == HandSide.RIGHT)
+        if(hand == HandSide.RIGHT)
         {
             renderer.renderRightArm(matrixStack, buffer, combinedLight, player);
         }
@@ -226,5 +226,21 @@ public class RenderUtil
         {
             renderer.renderLeftArm(matrixStack, buffer, combinedLight, player);
         }
+    }
+
+    private static RenderType getRenderType(ItemStack stack)
+    {
+        Item item = stack.getItem();
+        if(item instanceof BlockItem)
+        {
+            Block block = ((BlockItem) item).getBlock();
+            return RenderTypeLookup.getRenderType(block.getDefaultState());
+        }
+        return RenderType.getEntityTranslucent(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+    }
+
+    public static boolean isFirstPerson(ItemCameraTransforms.TransformType transformType)
+    {
+        return transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
     }
 }

@@ -21,6 +21,6 @@ public class CollateralEnchantment extends GunEnchantment
     @Override
     public int getMaxEnchantability(int level)
     {
-        return this.getMinEnchantability(level) + 30;
+        return this.getMinEnchantability(level) + 20;
     }
 }

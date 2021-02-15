@@ -1,24 +1,31 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url = 'https://repo.spongepowered.org/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath "com.wynprice.cursemaven:CurseMaven:2.1.4"
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
-apply plugin: "com.wynprice.cursemaven"
+apply plugin: 'org.spongepowered.mixin'
 
-version = "0.16.1-1.15.2"
+version = "1.0.0-1.15.2"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+mixin {
+    add sourceSets.main, "cgm.refmap.json"
+}
 
 minecraft {
     mappings channel: 'snapshot', version: '20200514-1.15.1'
@@ -26,10 +33,12 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            arg '-mixin.config=cgm.mixins.json'
             mods {
-                examplemod {
+                cgm {
                     source sourceSets.main
                 }
             }
@@ -37,10 +46,12 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            arg '-mixin.config=cgm.mixins.json'
             mods {
-                modid {
+                cgm {
                     source sourceSets.main
                 }
             }
@@ -48,11 +59,13 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'cgm', '--all', '--output', file('src/generated/resources/')
+            arg '-mixin.config=cgm.mixins.json'
             mods {
-                modid {
+                cgm {
                     source sourceSets.main
                 }
             }
@@ -60,29 +73,37 @@ minecraft {
     }
 }
 
+processResources {
+    doLast {
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
+            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+        }
+    }
+}
+
 repositories {
     maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+        url = "https://www.cursemaven.com"
     }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.45'
     compile fg.deobf('curse.maven:obfuscate-289380:3043368')
-    compile fg.deobf('curse.maven:controllable-317269:2880167')
+    compile fg.deobf('curse.maven:controllable-317269:3201208')
 }
 
 jar {
     manifest {
         attributes([
-                "Specification-Title": "Gun Mod",
-                "Specification-Vendor": "MrCrayfish",
-                "Specification-Version": "1",
-                "Implementation-Title": "Gun Mod",
-                "Implementation-Version": project.version,
-                "Implementation-Vendor" : "MrCrayfish",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Specification-Title": "Gun Mod",
+            "Specification-Vendor": "MrCrayfish",
+            "Specification-Version": "1",
+            "Implementation-Title": "Gun Mod",
+            "Implementation-Version": project.version,
+            "Implementation-Vendor" : "MrCrayfish",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "cgm.mixins.json"
         ])
     }
 }

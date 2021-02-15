@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.guns.client.render.HeldAnimation;
+import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * Author: MrCrayfish
  */
-public class OneHandedPose implements HeldAnimation
+public class OneHandedPose implements IHeldAnimation
 {
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -28,7 +28,7 @@ public class OneHandedPose implements HeldAnimation
     {
         boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
         ModelRenderer arm = right ? model.bipedRightArm : model.bipedLeftArm;
-        HeldAnimation.copyModelAngles(model.bipedHead, arm);
+        IHeldAnimation.copyModelAngles(model.bipedHead, arm);
         arm.rotateAngleX += Math.toRadians(-70F);
     }
 
@@ -76,6 +76,18 @@ public class OneHandedPose implements HeldAnimation
         matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(model.bipedRightLeg.rotateAngleX) / 10F)));
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
+        return true;
+    }
+
+    @Override
+    public boolean canApplySprintingAnimation()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean canRenderOffhandItem()
+    {
         return true;
     }
 }

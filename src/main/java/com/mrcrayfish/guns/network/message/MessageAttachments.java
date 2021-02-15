@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.guns.common.CommonHandler;
+import com.mrcrayfish.guns.common.network.ServerPlayHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -28,7 +28,7 @@ public class MessageAttachments implements IMessage
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                CommonHandler.openAttachmentsScreen(player);
+                ServerPlayHandler.handleAttachments(player);
             }
         });
         supplier.get().setPacketHandled(true);

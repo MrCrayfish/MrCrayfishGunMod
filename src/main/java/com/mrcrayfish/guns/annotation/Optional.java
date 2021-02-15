@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * An annotation to mark that a field is optional
+ * <p>
  * Author: MrCrayfish
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.tileentity;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
 import com.mrcrayfish.guns.init.ModTileEntities;
 import com.mrcrayfish.guns.tileentity.inventory.IStorageBlock;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;

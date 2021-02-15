@@ -4,35 +4,29 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
-import com.mrcrayfish.guns.common.CustomGunLoader;
-import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.util.ItemStackUtil;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
+import java.lang.reflect.Method;
 
 @Mod(Reference.MOD_ID)
 public class GunMod
@@ -45,7 +39,7 @@ public class GunMod
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.PISTOL.get());
-            ItemStackUtil.createTagCompound(stack).putInt("AmmoCount", ModItems.PISTOL.get().getGun().getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.PISTOL.get().getGun().getGeneral().getMaxAmmo());
             return stack;
         }
 
@@ -57,13 +51,8 @@ public class GunMod
         }
     }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
-    private static GunOptions options;
-    private static NetworkGunManager networkGunManager;
-    private static CustomGunLoader customGunLoader;
-
     public GunMod()
     {
-        MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
@@ -76,7 +65,6 @@ public class GunMod
         ModEntities.REGISTER.register(bus);
         ModItems.REGISTER.register(bus);
         ModParticleTypes.REGISTER.register(bus);
-        ModPotions.REGISTER.register(bus);
         ModRecipeSerializers.REGISTER.register(bus);
         ModSounds.REGISTER.register(bus);
         ModTileEntities.REGISTER.register(bus);
@@ -96,59 +84,15 @@ public class GunMod
         {
             MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
         }
+
+        for(Method method : ClientPlayerEntity.class.getMethods())
+        {
+            System.out.println(method.getName() + " " + method.getReturnType());
+        }
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        Minecraft mc = event.getMinecraftSupplier().get();
-        GunMod.options = new GunOptions(mc.gameDir);
         ClientHandler.setup();
-    }
-
-    @SubscribeEvent
-    public void onServerStart(FMLServerAboutToStartEvent event)
-    {
-        NetworkGunManager networkGunManager = new NetworkGunManager();
-        event.getServer().getResourceManager().addReloadListener(networkGunManager);
-        GunMod.networkGunManager = networkGunManager;
-
-        CustomGunLoader customGunLoader = new CustomGunLoader();
-        event.getServer().getResourceManager().addReloadListener(customGunLoader);
-        GunMod.customGunLoader = customGunLoader;
-    }
-
-    @SubscribeEvent
-    public void onServerStart(FMLServerStoppedEvent event)
-    {
-        GunMod.networkGunManager = null;
-    }
-
-    /**
-     * Gets the network gun manager. This will be null if the client isn't running an integrated
-     * server or the client is connected to a dedicated server.
-     *
-     * @return the network gun manager
-     */
-    @Nullable
-    public static NetworkGunManager getNetworkGunManager()
-    {
-        return networkGunManager;
-    }
-
-    /**
-     * @return
-     */
-    @Nullable
-    public static CustomGunLoader getCustomGunLoader()
-    {
-        return customGunLoader;
-    }
-
-    /**
-     * @return
-     */
-    public static GunOptions getOptions()
-    {
-        return options;
     }
 }

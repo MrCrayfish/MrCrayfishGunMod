@@ -15,6 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * A simple system to run synchronized delayed tasks. See {@link #runAfter(int, Runnable)} to add
+ * a delayed task.
+ * <p>
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -53,11 +56,19 @@ public class DelayedTask
         }
     }
 
+    /**
+     * Adds a new delayed task to the system.
+     *
+     * @param ticks the amount of ticks to delay the execution
+     * @param run   a runnable get with the code to run
+     */
     public static void runAfter(int ticks, Runnable run)
     {
         MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
         if(!server.isOnExecutionThread())
+        {
             throw new IllegalStateException("Tried to add a delayed task off the main thread");
+        }
         tasks.add(new Impl(server.getTickCounter() + ticks, run));
     }
 

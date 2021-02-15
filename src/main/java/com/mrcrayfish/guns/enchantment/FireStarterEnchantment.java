@@ -15,12 +15,12 @@ public class FireStarterEnchantment extends GunEnchantment
     @Override
     public int getMinEnchantability(int level)
     {
-        return 20;
+        return 15;
     }
 
     @Override
     public int getMaxEnchantability(int level)
     {
-        return 50;
+        return super.getMinEnchantability(level) + 30;
     }
 }

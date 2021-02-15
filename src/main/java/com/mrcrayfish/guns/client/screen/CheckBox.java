@@ -1,9 +1,11 @@
 package com.mrcrayfish.guns.client.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,9 +21,7 @@ public class CheckBox extends Widget
 
     public CheckBox(int left, int top, String title)
     {
-        super(left, top, title);
-        this.width = 8;
-        this.height = 8;
+        super(left, top, 8, 8, title);
     }
 
     public void setToggled(boolean toggled)
@@ -45,7 +45,7 @@ public class CheckBox extends Widget
         {
             this.blit(this.x, this.y - 1, 8, 0, 9, 8);
         }
-        minecraft.fontRenderer.drawString(this.getMessage(), this.x + 12, this.y, 0xFFFFFF);
+        this.drawString(minecraft.fontRenderer, this.getMessage(), this.x + 12, this.y, 0xFFFFFF);
     }
 
     @Override

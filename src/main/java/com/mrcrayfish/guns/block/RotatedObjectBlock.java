@@ -4,11 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
@@ -17,31 +14,29 @@ import javax.annotation.Nullable;
  */
 public abstract class RotatedObjectBlock extends HorizontalBlock
 {
-    public static final DirectionProperty DIRECTION = HorizontalBlock.HORIZONTAL_FACING;
-
     public RotatedObjectBlock(Block.Properties properties)
     {
         super(properties);
-        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));
+        this.setDefaultState(this.getStateContainer().getBaseState().with(HORIZONTAL_FACING, Direction.NORTH));
     }
 
     @Override
-    public boolean isNormalCube(BlockState state, IBlockReader reader, BlockPos pos)
+    public boolean isTransparent(BlockState state)
     {
-        return false;
+        return true;
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        return this.getDefaultState().with(DIRECTION, context.getPlacementHorizontalFacing());
+        return this.getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing());
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
         super.fillStateContainer(builder);
-        builder.add(DIRECTION);
+        builder.add(HORIZONTAL_FACING);
     }
 }
