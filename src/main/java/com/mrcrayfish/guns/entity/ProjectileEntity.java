@@ -66,6 +66,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -131,7 +132,24 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         Item ammo = ForgeRegistries.ITEMS.getValue(this.projectile.getItem());
         if(ammo != null)
         {
-            this.item = new ItemStack(ammo);
+            int customModelData = -1;
+            if(weapon.getTag() != null)
+            {
+                if(weapon.getTag().contains("Model", Constants.NBT.TAG_COMPOUND))
+                {
+                    ItemStack model = ItemStack.read(weapon.getTag().getCompound("Model"));
+                    if(model.getTag() != null && model.getTag().contains("CustomModelData"))
+                    {
+                        customModelData = model.getTag().getInt("CustomModelData");
+                    }
+                }
+            }
+            ItemStack ammoStack = new ItemStack(ammo);
+            if(customModelData != -1)
+            {
+                ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
+            }
+            this.item = ammoStack;
         }
     }
 

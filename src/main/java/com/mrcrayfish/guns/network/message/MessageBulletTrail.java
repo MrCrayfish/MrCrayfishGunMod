@@ -41,7 +41,7 @@ public class MessageBulletTrail implements IMessage
             this.motions[i] = projectile.getMotion();
             this.entityIds[i] = projectile.getEntityId();
         }
-        this.item = MoreObjects.firstNonNull(new ItemStack(ForgeRegistries.ITEMS.getValue(projectileProps.getItem())), ItemStack.EMPTY);
+        this.item = spawnedProjectiles[0].getItem();
         this.trailColor = projectileProps.getTrailColor();
         this.trailLengthMultiplier = projectileProps.getTrailLengthMultiplier();
         this.life = projectileProps.getLife();

@@ -172,7 +172,7 @@ public class BulletTrailRenderingHandler
             int combinedLight = WorldRenderer.getCombinedLight(entity.world, new BlockPos(entity.getPositionVec()));
             ItemStack stack = bulletTrail.getItem();
             RenderType renderType = RenderTypeLookup.func_239219_a_(stack, false);
-            RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, matrixStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null);
+            RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, matrixStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
             Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(renderType);
         }
 

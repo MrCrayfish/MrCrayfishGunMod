@@ -84,6 +84,12 @@ public class RenderUtil
         renderModel(model, transformType, stack, matrixStack, buffer, light, overlay);
     }
 
+    public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay, @Nullable World world, @Nullable LivingEntity entity)
+    {
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, world, entity);
+        renderModel(model, transformType, stack, matrixStack, buffer, light, overlay);
+    }
+
     public static void renderModel(IBakedModel model, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
     {
         renderModel(model, ItemCameraTransforms.TransformType.NONE, stack, matrixStack, buffer, light, overlay);
