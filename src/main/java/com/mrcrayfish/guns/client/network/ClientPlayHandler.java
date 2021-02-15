@@ -55,17 +55,13 @@ public class ClientPlayHandler
             GunRenderingHandler.get().showMuzzleFlashForPlayer(message.getShooterId());
         }
 
-        SoundEvent soundEvent = ForgeRegistries.SOUND_EVENTS.getValue(message.getId());
-        if(soundEvent != null)
+        if(message.getShooterId() == mc.player.getEntityId())
         {
-            if(message.getShooterId() == mc.player.getEntityId())
-            {
-                Minecraft.getInstance().getSoundHandler().play(new SimpleSound(soundEvent.getName(), SoundCategory.PLAYERS, message.getVolume(), message.getPitch(), false, 0, ISound.AttenuationType.NONE, 0, 0, 0, true));
-            }
-            else
-            {
-                Minecraft.getInstance().getSoundHandler().play(new GunShotSound(soundEvent, SoundCategory.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch()));
-            }
+            Minecraft.getInstance().getSoundHandler().play(new SimpleSound(message.getId(), SoundCategory.PLAYERS, message.getVolume(), message.getPitch(), false, 0, ISound.AttenuationType.NONE, 0, 0, 0, true));
+        }
+        else
+        {
+            Minecraft.getInstance().getSoundHandler().play(new GunShotSound(message.getId(), SoundCategory.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch()));
         }
     }
 

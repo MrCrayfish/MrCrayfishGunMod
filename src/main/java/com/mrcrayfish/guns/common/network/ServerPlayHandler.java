@@ -147,8 +147,7 @@ public class ServerPlayHandler
 
                     boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
                     ResourceLocation fireSound = silenced ? modifiedGun.getSounds().getSilencedFire() : modifiedGun.getSounds().getFire();
-                    SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(fireSound);
-                    if(event != null)
+                    if(fireSound != null)
                     {
                         double posX = player.getPosX();
                         double posY = player.getPosY() + player.getEyeHeight();
@@ -157,7 +156,7 @@ public class ServerPlayHandler
                         float pitch = 0.9F + world.rand.nextFloat() * 0.2F;
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
-                        MessageGunSound messageSound = new MessageGunSound(event, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId(), muzzle);
+                        MessageGunSound messageSound = new MessageGunSound(fireSound, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId(), muzzle);
                         PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(posX, posY, posZ, radius, player.world.getDimensionKey());
                         PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> targetPoint), messageSound);
                     }

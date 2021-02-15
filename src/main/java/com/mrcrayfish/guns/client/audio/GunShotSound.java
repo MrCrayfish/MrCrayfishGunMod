@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.LocatableSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 
@@ -12,7 +13,7 @@ import net.minecraft.util.SoundEvent;
  */
 public class GunShotSound extends LocatableSound
 {
-    public GunShotSound(SoundEvent soundIn, SoundCategory categoryIn, float x, float y, float z, float volume, float pitch)
+    public GunShotSound(ResourceLocation soundIn, SoundCategory categoryIn, float x, float y, float z, float volume, float pitch)
     {
         super(soundIn, categoryIn);
         this.x = x;

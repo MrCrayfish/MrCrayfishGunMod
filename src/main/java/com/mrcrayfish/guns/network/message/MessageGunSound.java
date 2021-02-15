@@ -26,9 +26,9 @@ public class MessageGunSound implements IMessage
 
     public MessageGunSound() {}
 
-    public MessageGunSound(SoundEvent sound, SoundCategory category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle)
+    public MessageGunSound(ResourceLocation id, SoundCategory category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle)
     {
-        this.id = sound.getRegistryName();
+        this.id = id;
         this.category = category;
         this.x = x;
         this.y = y;

@@ -12,8 +12,11 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -94,10 +97,10 @@ public class ReloadTracker
             ammo.shrink(amount);
         }
 
-        SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(this.gun.getSounds().getReload());
-        if(event != null)
+        ResourceLocation reloadSound = this.gun.getSounds().getReload();
+        if(reloadSound != null)
         {
-            player.world.playSound(null, player.getPosX(), player.getPosY() + 1.0D, player.getPosZ(), event, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new MessageGunSound(reloadSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) player.getPosY() + 1.0F, (float) player.getPosZ(), 1.0F, 1.0F, player.getEntityId(), false));
         }
     }
 
@@ -137,10 +140,10 @@ public class ReloadTracker
                         final Gun gun = tracker.gun;
                         DelayedTask.runAfter(4, () ->
                         {
-                            SoundEvent cockEvent = ForgeRegistries.SOUND_EVENTS.getValue(gun.getSounds().getCock());
-                            if(cockEvent != null && finalPlayer.isAlive())
+                            ResourceLocation cockSound = gun.getSounds().getCock();
+                            if(cockSound != null && finalPlayer.isAlive())
                             {
-                                MessageGunSound messageSound = new MessageGunSound(cockEvent, SoundCategory.PLAYERS, (float) finalPlayer.getPosX(), (float) (finalPlayer.getPosY() + 1.0), (float) finalPlayer.getPosZ(), 1.0F, 1.0F, finalPlayer.getEntityId(), false);
+                                MessageGunSound messageSound = new MessageGunSound(cockSound, SoundCategory.PLAYERS, (float) finalPlayer.getPosX(), (float) (finalPlayer.getPosY() + 1.0), (float) finalPlayer.getPosZ(), 1.0F, 1.0F, finalPlayer.getEntityId(), false);
                                 PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) finalPlayer), messageSound);
                             }
                         });
