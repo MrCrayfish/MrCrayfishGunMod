@@ -628,7 +628,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     private PacketDistributor.TargetPoint getDeathTargetPoint()
     {
-        return new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosX(), 256, this.world.getDimensionKey());
+        return new PacketDistributor.TargetPoint(this.getPosX(), this.getPosY(), this.getPosZ(), 256, this.world.getDimensionKey());
     }
 
     @Override
