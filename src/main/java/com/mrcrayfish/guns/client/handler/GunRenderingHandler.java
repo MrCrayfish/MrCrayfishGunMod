@@ -253,7 +253,8 @@ public class GunRenderingHandler
             }
         }
 
-        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(overrideModel.isEmpty() ? heldItem : overrideModel);
+        LivingEntity entity = Minecraft.getInstance().player;
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(overrideModel.isEmpty() ? heldItem : overrideModel, entity.world, entity);
         float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
         float scaleY = model.getItemCameraTransforms().firstperson_right.scale.getY();
         float scaleZ = model.getItemCameraTransforms().firstperson_right.scale.getZ();
@@ -310,7 +311,6 @@ public class GunRenderingHandler
         matrixStack.rotate(Vector3f.XP.rotationDegrees(equipProgress * -50F));
 
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
-        Entity entity = Minecraft.getInstance().player;
         Objects.requireNonNull(entity);
         int blockLight = entity.isBurning() ? 15 : entity.world.getLightFor(LightType.BLOCK, new BlockPos(entity.getEyePosition(event.getPartialTicks())));
         blockLight += (this.entityIdForMuzzleFlash.contains(entity.getEntityId()) ? 3 : 0);
@@ -643,7 +643,7 @@ public class GunRenderingHandler
                 }
             }
 
-            RenderUtil.applyTransformType(model.isEmpty() ? stack : model, matrixStack, transformType);
+            RenderUtil.applyTransformType(model.isEmpty() ? stack : model, matrixStack, transformType, entity);
 
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, matrixStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, matrixStack, renderTypeBuffer, light, partialTicks);
@@ -667,7 +667,7 @@ public class GunRenderingHandler
         }
         else
         {
-            RenderUtil.renderModel(stack, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+            RenderUtil.renderModel(stack, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, entity);
         }
     }
 
@@ -842,7 +842,7 @@ public class GunRenderingHandler
                     }
                 }
 
-                RenderUtil.renderModel(ammo, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, matrixStack, buffer, light, OverlayTexture.NO_OVERLAY);
+                RenderUtil.renderModel(ammo, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, matrixStack, buffer, light, OverlayTexture.NO_OVERLAY, null);
                 matrixStack.pop();
 
                 if(!isModel)
