@@ -91,12 +91,11 @@ public class BulletTrailRenderingHandler
         }
     }
 
-    @SubscribeEvent
-    public void onRenderWorldLast(RenderWorldLastEvent event)
+    public void render(MatrixStack stack, float partialSticks)
     {
         for(BulletTrail bulletTrail : this.bullets.values())
         {
-            this.renderBulletTrail(bulletTrail, event.getMatrixStack(), event.getPartialTicks());
+            this.renderBulletTrail(bulletTrail, stack, partialSticks);
         }
     }
 
@@ -171,9 +170,7 @@ public class BulletTrailRenderingHandler
 
             int combinedLight = WorldRenderer.getCombinedLight(entity.world, new BlockPos(entity.getPositionVec()));
             ItemStack stack = bulletTrail.getItem();
-            RenderType renderType = RenderTypeLookup.func_239219_a_(stack, false);
             RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, matrixStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
-            Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(renderType);
         }
 
         matrixStack.pop();
