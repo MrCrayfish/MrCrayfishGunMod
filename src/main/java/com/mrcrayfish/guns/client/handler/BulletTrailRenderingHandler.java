@@ -123,7 +123,8 @@ public class BulletTrailRenderingHandler
 
         Minecraft mc = Minecraft.getInstance();
         Entity entity = mc.getRenderViewEntity();
-        if(entity == null || bulletTrail.isDead()) return;
+        if(entity == null || bulletTrail.isDead())
+            return;
 
         matrixStack.push();
 
@@ -144,6 +145,13 @@ public class BulletTrailRenderingHandler
         float green = (float) (bulletTrail.getTrailColor() >> 8 & 255) / 255.0F;
         float blue = (float) (bulletTrail.getTrailColor() & 255) / 255.0F;
         float alpha = 0.3F;
+
+        // Prevents the trail length from being longer than the distance to shooter
+        Entity shooter = bulletTrail.getShooter();
+        if(shooter != null)
+        {
+            trailLength = (float) Math.min(trailLength, shooter.getEyePosition(partialTicks).distanceTo(new Vector3d(bulletX,bulletY, bulletZ)));
+        }
 
         Matrix4f matrix4f = matrixStack.getLast().getMatrix();
         IRenderTypeBuffer.Impl renderTypeBuffer = mc.getRenderTypeBuffers().getBufferSource();

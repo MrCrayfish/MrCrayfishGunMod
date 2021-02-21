@@ -5,6 +5,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 /**
  * Author: MrCrayfish
@@ -24,6 +28,7 @@ public class BulletTrail
     private int maxAge;
     private double gravity;
     private int shooterId;
+    private WeakReference<Entity> shooter;
 
     public BulletTrail(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId)
     {
@@ -114,6 +119,44 @@ public class BulletTrail
     public double getTrailLengthMultiplier()
     {
         return this.trailLengthMultiplier;
+    }
+
+    public int getShooterId()
+    {
+        return this.shooterId;
+    }
+
+    /**
+     * Gets the instance of the entity that shot the bullet. The entity is cached to avoid searching
+     * for it every frame, especially when lots of bullet trails are being rendered.
+     *
+     * @return the shooter entity
+     */
+    @Nullable
+    public Entity getShooter()
+    {
+        if(this.shooter == null)
+        {
+            World world = Minecraft.getInstance().world;
+            if(world != null)
+            {
+                Entity entity = world.getEntityByID(this.shooterId);
+                if(entity != null)
+                {
+                    this.shooter = new WeakReference<>(entity);
+                }
+            }
+        }
+        if(this.shooter != null)
+        {
+            Entity entity = this.shooter.get();
+            if(entity != null && !entity.isAlive())
+            {
+                return null;
+            }
+            return entity;
+        }
+        return null;
     }
 
     public boolean isTrailVisible()
