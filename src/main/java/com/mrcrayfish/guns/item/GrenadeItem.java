@@ -44,9 +44,7 @@ public class GrenadeItem extends AmmoItem
 
         int duration = this.getUseDuration(stack) - count;
         if(duration == 10)
-        {
             player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
-        }
     }
 
     @Override
@@ -62,13 +60,8 @@ public class GrenadeItem extends AmmoItem
     {
         if(this.canCook() && !worldIn.isRemote())
         {
-            if(entityLiving instanceof PlayerEntity)
-            {
-                if(!((PlayerEntity) entityLiving).isCreative())
-                {
-                    stack.shrink(1);
-                }
-            }
+            if(!(entityLiving instanceof PlayerEntity) || !((PlayerEntity) entityLiving).isCreative())
+                stack.shrink(1);
             ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, 0);
             grenade.onDeath();
         }
@@ -78,18 +71,13 @@ public class GrenadeItem extends AmmoItem
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft)
     {
-        if(entityLiving instanceof PlayerEntity)
-        {
-            if(!((PlayerEntity) entityLiving).isCreative())
-            {
-                stack.shrink(1);
-            }
-        }
         if(!worldIn.isRemote())
         {
             int duration = this.getUseDuration(stack) - timeLeft;
             if(duration >= 10)
             {
+                if(!(entityLiving instanceof PlayerEntity) || !((PlayerEntity) entityLiving).isCreative())
+                    stack.shrink(1);
                 ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
                 grenade.func_234612_a_(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
                 worldIn.addEntity(grenade);
@@ -110,6 +98,5 @@ public class GrenadeItem extends AmmoItem
 
     protected void onThrown(World world, ThrowableGrenadeEntity entity)
     {
-
     }
 }
