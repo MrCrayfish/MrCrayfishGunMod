@@ -16,8 +16,8 @@
         "gravity": true,
         "damage": 15.0,
         "size": 0.0625,
-        "speed": 30.0,
-        "life": 10
+        "speed": 20.0,
+        "life": 100
     },
     "sounds": {
         "fire": "cgm:item.rifle.fire",

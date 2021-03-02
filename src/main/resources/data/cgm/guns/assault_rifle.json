@@ -14,8 +14,8 @@
         "visible": false,
         "damage": 6.5,
         "size": 0.2,
-        "speed": 30.0,
-        "life": 10
+        "speed": 10.0,
+        "life": 100
     },
     "sounds": {
         "fire": "cgm:item.assault_rifle.fire",

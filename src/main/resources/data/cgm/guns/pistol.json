@@ -14,8 +14,8 @@
         "visible": false,
         "damage": 9.0,
         "size": 0.2,
-        "speed": 30.0,
-        "life": 1000
+        "speed": 10.0,
+        "life": 100
     },
     "sounds": {
         "fire": "cgm:item.pistol.fire",

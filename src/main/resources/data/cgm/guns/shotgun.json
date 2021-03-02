@@ -16,8 +16,8 @@
         "visible": false,
         "damage": 18.0,
         "size": 1.0,
-        "speed": 15.0,
-        "life": 4,
+        "speed": 10.0,
+        "life": 100,
         "gravity": false
     },
     "sounds": {
