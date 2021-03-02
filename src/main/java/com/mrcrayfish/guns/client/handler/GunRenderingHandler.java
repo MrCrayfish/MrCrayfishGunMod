@@ -647,7 +647,7 @@ public class GunRenderingHandler
 
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, matrixStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, matrixStack, renderTypeBuffer, light, partialTicks);
-            this.renderMuzzleFlash(entity, matrixStack, renderTypeBuffer, stack, transformType);
+            this.renderMuzzleFlash(entity, matrixStack, renderTypeBuffer, stack, transformType, partialTicks);
 
             matrixStack.pop();
             return true;
@@ -715,7 +715,7 @@ public class GunRenderingHandler
         }
     }
 
-    private void renderMuzzleFlash(LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer buffer, ItemStack weapon, ItemCameraTransforms.TransformType transformType)
+    private void renderMuzzleFlash(LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer buffer, ItemStack weapon, ItemCameraTransforms.TransformType transformType, float partialTicks)
     {
         Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
         if(modifiedGun.getDisplay().getFlash() == null)
@@ -728,12 +728,12 @@ public class GunRenderingHandler
             if(this.entityIdForMuzzleFlash.contains(entity.getEntityId()))
             {
                 float randomValue = this.entityIdToRandomValue.get(entity.getEntityId());
-                this.drawMuzzleFlash(weapon, modifiedGun, randomValue, randomValue >= 0.5F, matrixStack, buffer);
+                this.drawMuzzleFlash(weapon, modifiedGun, randomValue, randomValue >= 0.5F, matrixStack, buffer, partialTicks);
             }
         }
     }
 
-    private void drawMuzzleFlash(ItemStack weapon, Gun modifiedGun, float random, boolean flip, MatrixStack matrixStack, IRenderTypeBuffer buffer)
+    private void drawMuzzleFlash(ItemStack weapon, Gun modifiedGun, float random, boolean flip, MatrixStack matrixStack, IRenderTypeBuffer buffer, float partialTicks)
     {
         matrixStack.push();
 
@@ -759,6 +759,9 @@ public class GunRenderingHandler
         }
 
         matrixStack.scale(0.5F, 0.5F, 0.0F);
+
+        float scale = 0.5F + 0.5F * (1.0F - partialTicks);
+        matrixStack.scale(scale, scale, 1.0F);
 
         double partialSize = modifiedGun.getDisplay().getFlash().getSize() / 5.0;
         float size = (float) (modifiedGun.getDisplay().getFlash().getSize() - partialSize + partialSize * random);
