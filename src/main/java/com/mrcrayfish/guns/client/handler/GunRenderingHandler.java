@@ -767,12 +767,14 @@ public class GunRenderingHandler
         matrixStack.rotate(Vector3f.XP.rotationDegrees(flip ? 180F : 0F));
         matrixStack.translate(-size / 2, -size / 2, 0);
 
+        float minU = weapon.isEnchanted() ? 0.5F : 0.0F;
+        float maxU = weapon.isEnchanted() ? 1.0F : 0.5F;
         Matrix4f matrix = matrixStack.getLast().getMatrix();
         IVertexBuilder builder = buffer.getBuffer(GunRenderType.getMuzzleFlash());
-        builder.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 1.0F).lightmap(15728880).endVertex();
-        builder.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 1.0F).lightmap(15728880).endVertex();
-        builder.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(0, 0).lightmap(15728880).endVertex();
-        builder.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(1.0F, 0).lightmap(15728880).endVertex();
+        builder.pos(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(maxU, 1.0F).lightmap(15728880).endVertex();
+        builder.pos(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(minU, 1.0F).lightmap(15728880).endVertex();
+        builder.pos(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(minU, 0).lightmap(15728880).endVertex();
+        builder.pos(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).tex(maxU, 0).lightmap(15728880).endVertex();
 
         matrixStack.pop();
     }
