@@ -18,6 +18,7 @@ public class Config
         public final Display display;
         public final Particle particle;
         public final Controls controls;
+        public final Experimental experimental;
 
         public Client(ForgeConfigSpec.Builder builder)
         {
@@ -27,6 +28,7 @@ public class Config
                 this.display = new Display(builder);
                 this.particle = new Particle(builder);
                 this.controls = new Controls(builder);
+                this.experimental = new Experimental(builder);
             }
             builder.pop();
         }
@@ -106,6 +108,20 @@ public class Config
             builder.comment("Properties relating to controls").push("controls");
             {
                 this.aimDownSightSensitivity = builder.comment("A value to multiple the mouse sensitivity by when aiming down weapon sights. Go to (Options > Controls > Mouse Settings > ADS Sensitivity) in game to change this!").defineInRange("aimDownSightSensitivity", 0.75, 0.0, 1.0);
+            }
+            builder.pop();
+        }
+    }
+
+    public static class Experimental
+    {
+        public final ForgeConfigSpec.BooleanValue immersiveCamera;
+
+        public Experimental(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Experimental options").push("experimental");
+            {
+                this.immersiveCamera = builder.comment("Makes the camera and weapons move more naturally in first person view").define("immersiveCamera", false);
             }
             builder.pop();
         }

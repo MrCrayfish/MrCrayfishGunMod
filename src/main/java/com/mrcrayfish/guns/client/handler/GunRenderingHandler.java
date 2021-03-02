@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.client.handler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -37,7 +38,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -51,6 +51,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.Constants;
@@ -96,6 +97,9 @@ public class GunRenderingHandler
 
     private Field equippedProgressMainHandField;
     private Field prevEquippedProgressMainHandField;
+
+    private float immersiveWeaponRoll;
+    private float immersiveRoll;
     
     private GunRenderingHandler() {}
 
@@ -243,6 +247,13 @@ public class GunRenderingHandler
 
         /* Cancel it because we are doing our own custom render */
         event.setCanceled(true);
+
+        if(Config.CLIENT.experimental.immersiveCamera.get())
+        {
+            float targetAngle = heldItem.getItem() instanceof GunItem ? mc.player.movementInput.moveStrafe * 2F : 0F;
+            this.immersiveWeaponRoll = MathHelper.approach(this.immersiveWeaponRoll, targetAngle, 0.25F);
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(this.immersiveWeaponRoll));
+        }
 
         ItemStack overrideModel = ItemStack.EMPTY;
         if(heldItem.getTag() != null)
@@ -888,5 +899,21 @@ public class GunRenderingHandler
             e.printStackTrace();
         }
         return 0.0F;
+    }
+
+    @SubscribeEvent
+    public void onCameraSetup(EntityViewRenderEvent.CameraSetup event)
+    {
+        if(!Config.CLIENT.experimental.immersiveCamera.get())
+            return;
+
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return;
+
+        ItemStack heldItem = mc.player.getHeldItemMainhand();
+        float targetAngle = heldItem.getItem() instanceof GunItem ? mc.player.movementInput.moveStrafe * 5F: 0F;
+        this.immersiveRoll = MathHelper.approach(this.immersiveRoll, targetAngle, 0.4F);
+        event.setRoll(-this.immersiveRoll);
     }
 }
