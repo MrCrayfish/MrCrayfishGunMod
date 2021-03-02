@@ -457,6 +457,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         @Nullable
         private ResourceLocation silencedFire;
+        @Optional
+        @Nullable
+        private ResourceLocation enchantedFire;
 
         @Override
         public CompoundNBT serializeNBT()
@@ -477,6 +480,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             if(this.silencedFire != null)
             {
                 tag.putString("SilencedFire", this.silencedFire.toString());
+            }
+            if(this.enchantedFire != null)
+            {
+                tag.putString("EnchantedFire", this.enchantedFire.toString());
             }
             return tag;
         }
@@ -500,6 +507,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.silencedFire = this.createSound(tag, "SilencedFire");
             }
+            if(tag.contains("EnchantedFire", Constants.NBT.TAG_STRING))
+            {
+                this.enchantedFire = this.createSound(tag, "EnchantedFire");
+            }
         }
 
         public Sounds copy()
@@ -509,6 +520,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             sounds.reload = this.reload;
             sounds.cock = this.cock;
             sounds.silencedFire = this.silencedFire;
+            sounds.enchantedFire = this.enchantedFire;
             return sounds;
         }
 
@@ -553,6 +565,15 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public ResourceLocation getSilencedFire()
         {
             return this.silencedFire;
+        }
+
+        /**
+         * @return The registry iid of the sound event when silenced firing this weapon
+         */
+        @Nullable
+        public ResourceLocation getEnchantedFire()
+        {
+            return this.enchantedFire;
         }
     }
 

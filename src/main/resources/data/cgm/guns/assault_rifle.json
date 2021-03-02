@@ -21,7 +21,8 @@
         "fire": "cgm:item.assault_rifle.fire",
         "reload": "cgm:item.pistol.reload",
         "cock": "cgm:item.assault_rifle.cock",
-        "silencedFire": "cgm:item.assault_rifle.silenced_fire"
+        "silencedFire": "cgm:item.assault_rifle.silenced_fire",
+        "enchantedFire": "cgm:item.assault_rifle.enchanted_fire"
     },
     "display": {
         "flash": {

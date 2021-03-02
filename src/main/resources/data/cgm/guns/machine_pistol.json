@@ -23,7 +23,8 @@
         "fire": "cgm:item.machine_pistol.fire",
         "reload": "cgm:item.pistol.reload",
         "cock": "cgm:item.rifle.cock",
-        "silencedFire": "cgm:item.machine_pistol.silenced_fire"
+        "silencedFire": "cgm:item.machine_pistol.silenced_fire",
+        "enchantedFire": "cgm:item.machine_pistol.enchanted_fire"
     },
     "display": {
         "flash": {

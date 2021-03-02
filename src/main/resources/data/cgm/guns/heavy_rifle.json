@@ -25,6 +25,7 @@
         "reload": "cgm:item.pistol.reload",
         "cock": "cgm:item.heavy_rifle.cock",
         "silencedFire": "cgm:item.heavy_rifle.silenced_fire",
+        "enchantedFire": "cgm:item.heavy_rifle.enchanted_fire",
         "cockAfterFire": true,
         "cockDelay": 12
     },

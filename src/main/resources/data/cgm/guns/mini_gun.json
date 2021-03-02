@@ -19,7 +19,8 @@
     },
     "sounds": {
         "fire": "cgm:item.mini_gun.fire",
-        "reload": "cgm:item.pistol.reload"
+        "reload": "cgm:item.pistol.reload",
+        "enchantedFire": "cgm:item.mini_gun.enchanted_fire"
     },
     "display": {
         "flash": {

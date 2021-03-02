@@ -145,8 +145,7 @@ public class ServerPlayHandler
                         }
                     }
 
-                    boolean silenced = GunModifierHelper.isSilencedFire(heldItem);
-                    ResourceLocation fireSound = silenced ? modifiedGun.getSounds().getSilencedFire() : modifiedGun.getSounds().getFire();
+                    ResourceLocation fireSound = getFireSound(heldItem, modifiedGun);
                     if(fireSound != null)
                     {
                         double posX = player.getPosX();
@@ -180,6 +179,24 @@ public class ServerPlayHandler
                 world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
             }
         }
+    }
+
+    private static ResourceLocation getFireSound(ItemStack stack, Gun modifiedGun)
+    {
+        ResourceLocation fireSound = null;
+        if(GunModifierHelper.isSilencedFire(stack))
+        {
+            fireSound = modifiedGun.getSounds().getSilencedFire();
+        }
+        else if(stack.isEnchanted())
+        {
+            fireSound = modifiedGun.getSounds().getEnchantedFire();
+        }
+        if(fireSound != null)
+        {
+            return fireSound;
+        }
+        return modifiedGun.getSounds().getFire();
     }
 
     /**
