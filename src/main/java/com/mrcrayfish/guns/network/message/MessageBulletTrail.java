@@ -26,6 +26,7 @@ public class MessageBulletTrail implements IMessage
     private int life;
     private double gravity;
     private int shooterId;
+    private boolean enchanted;
 
     public MessageBulletTrail() {}
 
@@ -47,6 +48,7 @@ public class MessageBulletTrail implements IMessage
         this.life = projectileProps.getLife();
         this.gravity = spawnedProjectiles[0].getModifiedGravity(); //It's possible that projectiles have different gravity
         this.shooterId = shooterId;
+        this.enchanted = spawnedProjectiles[0].getWeapon().isEnchanted();
     }
 
     @Override
@@ -73,6 +75,7 @@ public class MessageBulletTrail implements IMessage
         buffer.writeInt(this.life);
         buffer.writeDouble(this.gravity);
         buffer.writeInt(this.shooterId);
+        buffer.writeBoolean(this.enchanted);
     }
 
     @Override
@@ -94,6 +97,7 @@ public class MessageBulletTrail implements IMessage
         this.life = buffer.readInt();
         this.gravity = buffer.readDouble();
         this.shooterId = buffer.readInt();
+        this.enchanted = buffer.readBoolean();
     }
 
     @Override
@@ -151,5 +155,10 @@ public class MessageBulletTrail implements IMessage
     public int getShooterId()
     {
         return this.shooterId;
+    }
+
+    public boolean isEnchanted()
+    {
+        return this.enchanted;
     }
 }

@@ -2,10 +2,14 @@ package com.mrcrayfish.guns.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SSpawnParticlePacket;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
@@ -29,8 +33,9 @@ public class BulletTrail
     private double gravity;
     private int shooterId;
     private WeakReference<Entity> shooter;
+    private boolean enchanted;
 
-    public BulletTrail(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId)
+    public BulletTrail(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId, boolean enchanted)
     {
         this.entityId = entityId;
         this.position = position;
@@ -41,6 +46,7 @@ public class BulletTrail
         this.maxAge = maxAge;
         this.gravity = gravity;
         this.shooterId = shooterId;
+        this.enchanted = enchanted;
         this.updateYawPitch();
     }
 
@@ -61,6 +67,16 @@ public class BulletTrail
         {
             this.motion = this.motion.add(0, this.gravity, 0);
             this.updateYawPitch();
+        }
+
+        if(this.enchanted)
+        {
+            Entity entity = Minecraft.getInstance().getRenderViewEntity();
+            if(entity != null)
+            {
+                World world = entity.world;
+                world.addOptionalParticle(ParticleTypes.ENCHANTED_HIT, true, this.position.getX(), this.position.getY(), this.position.getZ(), 0, 0, 0);
+            }
         }
 
         Entity entity = Minecraft.getInstance().getRenderViewEntity();
