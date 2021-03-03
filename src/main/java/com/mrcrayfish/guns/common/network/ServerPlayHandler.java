@@ -297,7 +297,7 @@ public class ServerPlayHandler
                 int remaining = count % maxStackSize;
                 if(remaining > 0)
                 {
-                    spawnAmmo(player, new ItemStack(item, count));
+                    spawnAmmo(player, new ItemStack(item, remaining));
                 }
             }
         }
