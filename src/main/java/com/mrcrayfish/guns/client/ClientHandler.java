@@ -39,6 +39,8 @@ import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -51,6 +53,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: MrCrayfish
@@ -85,6 +88,15 @@ public class ClientHandler
         registerColors();
         registerModelOverrides();
         registerScreenFactories();
+
+        IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+        if(resourceManager instanceof IReloadableResourceManager)
+        {
+            ((IReloadableResourceManager) resourceManager).addReloadListener((stage, rm, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) ->
+            {
+                return CompletableFuture.runAsync(SpecialModels::clearCache).thenCompose(stage::markCompleteAwaitingOthers);
+            });
+        }
     }
 
     private static void setupRenderLayers()
