@@ -43,12 +43,12 @@ public class MessageBulletTrail implements IMessage
             this.entityIds[i] = projectile.getEntityId();
         }
         this.item = spawnedProjectiles[0].getItem();
-        this.trailColor = projectileProps.getTrailColor();
+        this.enchanted = spawnedProjectiles[0].getWeapon().isEnchanted();
+        this.trailColor = this.enchanted ? 0x9C71FF : projectileProps.getTrailColor();
         this.trailLengthMultiplier = projectileProps.getTrailLengthMultiplier();
         this.life = projectileProps.getLife();
         this.gravity = spawnedProjectiles[0].getModifiedGravity(); //It's possible that projectiles have different gravity
         this.shooterId = shooterId;
-        this.enchanted = spawnedProjectiles[0].getWeapon().isEnchanted();
     }
 
     @Override
