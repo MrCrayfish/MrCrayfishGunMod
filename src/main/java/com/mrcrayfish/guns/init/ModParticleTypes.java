@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.init;
 import com.mojang.serialization.Codec;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.particles.BulletHoleData;
+import com.mrcrayfish.guns.particles.TrailData;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.fml.RegistryObject;
@@ -25,4 +26,12 @@ public class ModParticleTypes
         }
     });
     public static final RegistryObject<BasicParticleType> BLOOD = REGISTER.register("blood", () -> new BasicParticleType(true));
+    public static final RegistryObject<ParticleType<TrailData>> TRAIL = REGISTER.register("trail", () -> new ParticleType<TrailData>(false, TrailData.DESERIALIZER)
+    {
+        @Override
+        public Codec<TrailData> func_230522_e_()
+        {
+            return TrailData.CODEC;
+        }
+    });
 }

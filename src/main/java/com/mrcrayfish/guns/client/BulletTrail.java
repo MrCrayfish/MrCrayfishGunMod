@@ -1,7 +1,10 @@
 package com.mrcrayfish.guns.client;
 
+import com.mrcrayfish.guns.init.ModParticleTypes;
+import com.mrcrayfish.guns.particles.TrailData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SSpawnParticlePacket;
@@ -69,14 +72,11 @@ public class BulletTrail
             this.updateYawPitch();
         }
 
-        if(this.enchanted)
+        Entity shooter = this.getShooter();
+        if(shooter instanceof PlayerEntity && ((PlayerEntity) shooter).isUser())
         {
-            Entity entity = Minecraft.getInstance().getRenderViewEntity();
-            if(entity != null)
-            {
-                World world = entity.world;
-                world.addOptionalParticle(ParticleTypes.ENCHANTED_HIT, true, this.position.getX(), this.position.getY(), this.position.getZ(), 0, 0, 0);
-            }
+            World world = shooter.world;
+            world.addOptionalParticle(new TrailData(this.enchanted), true, this.position.getX(), this.position.getY(), this.position.getZ(), 0, 0, 0);
         }
 
         Entity entity = Minecraft.getInstance().getRenderViewEntity();
