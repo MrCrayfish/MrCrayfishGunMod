@@ -140,7 +140,7 @@ public class BulletTrailRenderingHandler
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 90));
 
         Vector3d motionVec = new Vector3d(motion.x, motion.y, motion.z);
-        float trailLength = (float) ((motionVec.length() / 3.0F) * bulletTrail.getTrailLengthMultiplier());
+        float trailLength = (float) (motionVec.length() * bulletTrail.getTrailLengthMultiplier());
         float red = (float) (bulletTrail.getTrailColor() >> 16 & 255) / 255.0F;
         float green = (float) (bulletTrail.getTrailColor() >> 8 & 255) / 255.0F;
         float blue = (float) (bulletTrail.getTrailColor() & 255) / 255.0F;
@@ -162,12 +162,12 @@ public class BulletTrailRenderingHandler
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
             builder.pos(matrix4f, 0, 0, -0.035F).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, 0, 0, 0.035F).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, 0, -trailLength, 0.035F).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, 0, -trailLength, -0.035F).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, -0.035F, 0, 0).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, 0.035F, 0, 0).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, 0.035F, -trailLength, 0).color(red, green, blue, alpha).endVertex();
-            builder.pos(matrix4f, -0.035F, -trailLength, 0).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).endVertex();
+            builder.pos(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).endVertex();
             Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(bulletType);
         }
 
