@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "cgm.refmap.json",
   "mixins": [
+    "common.EndPortalBlockMixin",
     "common.LivingEntityMixin",
     "common.PlayerListMixin",
     "common.SittingPhaseMixin"

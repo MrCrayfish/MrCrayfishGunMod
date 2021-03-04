@@ -515,15 +515,7 @@ public class GunRenderingHandler
         {
             event.setCanceled(true);
 
-            if(heldItem.getTag() != null)
-            {
-                CompoundNBT compound = heldItem.getTag();
-                if(compound.contains("Scale", Constants.NBT.TAG_FLOAT))
-                {
-                    float scale = compound.getFloat("Scale");
-                    event.getMatrixStack().scale(scale, scale, scale);
-                }
-            }
+            this.applyWeaponScale(heldItem, event.getMatrixStack());
 
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
             if(entity instanceof PlayerEntity)
@@ -531,6 +523,19 @@ public class GunRenderingHandler
                 gun.getGeneral().getGripType().getHeldAnimation().applyHeldItemTransforms((PlayerEntity) entity, hand, AimingHandler.get().getAimProgress((PlayerEntity) entity, event.getPartialTicks()), event.getMatrixStack(), event.getRenderTypeBuffer());
             }
             this.renderWeapon(entity, heldItem, event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks());
+        }
+    }
+
+    private void applyWeaponScale(ItemStack heldItem, MatrixStack stack)
+    {
+        if(heldItem.getTag() != null)
+        {
+            CompoundNBT compound = heldItem.getTag();
+            if(compound.contains("Scale", Constants.NBT.TAG_FLOAT))
+            {
+                float scale = compound.getFloat("Scale");
+                stack.scale(scale, scale, scale);
+            }
         }
     }
 
@@ -622,6 +627,10 @@ public class GunRenderingHandler
     public void onRenderEntityItem(RenderItemEvent.Entity.Pre event)
     {
         Minecraft mc = Minecraft.getInstance();
+        if(event.getItem().getItem() instanceof GunItem )
+        {
+            this.applyWeaponScale(event.getItem(), event.getMatrixStack());
+        }
         event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
     }
 
