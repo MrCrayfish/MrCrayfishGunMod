@@ -15,15 +15,17 @@ import net.minecraft.world.World;
  */
 public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
 {
-    private ResourceLocation id;
-    private ItemStack item;
-    private ImmutableList<ItemStack> materials;
+    private final ResourceLocation id;
+    private final ItemStack item;
+    private final ImmutableList<ItemStack> materials;
+    private final String group;
 
-    public WorkbenchRecipe(ResourceLocation id, ItemStack item, ImmutableList<ItemStack> materials)
+    public WorkbenchRecipe(ResourceLocation id, ItemStack item, ImmutableList<ItemStack> materials, String group)
     {
         this.id = id;
         this.item = item;
         this.materials = materials;
+        this.group = group;
     }
 
     public ItemStack getItem()
@@ -57,7 +59,7 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
     @Override
     public ItemStack getRecipeOutput()
     {
-        return ItemStack.EMPTY;
+        return this.item.copy();
     }
 
     @Override
@@ -76,5 +78,11 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
     public IRecipeType<?> getType()
     {
         return RecipeType.WORKBENCH;
+    }
+
+    @Override
+    public String getGroup()
+    {
+        return group;
     }
 }

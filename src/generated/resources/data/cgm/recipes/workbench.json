@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "III",
+    "I I"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:light_gray_concrete"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "cgm:workbench"
+  }
+}

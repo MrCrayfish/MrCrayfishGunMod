@@ -5,15 +5,18 @@ import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
+import com.mrcrayfish.guns.datagen.*;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.network.PacketHandler;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -21,6 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,6 +72,7 @@ public class GunMod
         ModSyncedDataKeys.register();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
+        bus.addListener(this::dataSetup);
         controllableLoaded = ModList.get().isLoaded("controllable");
     }
 
@@ -86,5 +91,17 @@ public class GunMod
     private void onClientSetup(FMLClientSetupEvent event)
     {
         ClientHandler.setup();
+    }
+
+    private void dataSetup(GatherDataEvent event)
+    {
+        DataGenerator dataGenerator = event.getGenerator();
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        BlockTagGen blockTagGen = new BlockTagGen(dataGenerator, existingFileHelper);
+        dataGenerator.addProvider(new RecipeGen(dataGenerator));
+        dataGenerator.addProvider(new LootTableGen(dataGenerator));
+        dataGenerator.addProvider(blockTagGen);
+        dataGenerator.addProvider(new ItemTagGen(dataGenerator, blockTagGen, existingFileHelper));
+        dataGenerator.addProvider(new LanguageGen(dataGenerator));
     }
 }

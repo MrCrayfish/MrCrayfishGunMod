@@ -1,0 +1,12 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 32
+    }
+  ],
+  "result": {
+    "item": "cgm:grenade_launcher"
+  }
+}

@@ -24,3 +24,5 @@ logs
 libs
 
 classes
+
+src/generated/resources/.cache
