@@ -1,0 +1,12 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 28
+    }
+  ],
+  "result": {
+    "item": "cgm:assault_rifle"
+  }
+}

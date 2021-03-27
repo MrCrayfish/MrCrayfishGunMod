@@ -1,0 +1,19 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 44
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    },
+    {
+      "item": "minecraft:red_dye"
+    }
+  ],
+  "result": {
+    "item": "cgm:bazooka"
+  }
+}

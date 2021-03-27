@@ -1,0 +1,16 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 4
+    },
+    {
+      "item": "minecraft:gunpowder"
+    }
+  ],
+  "result": {
+    "item": "cgm:basic_bullet",
+    "count": 32
+  }
+}

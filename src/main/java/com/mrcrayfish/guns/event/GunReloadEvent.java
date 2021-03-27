@@ -6,22 +6,22 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 /**
- * <p>Fired when a player shoots a gun.</p>
+ * <p>Fired when a player reloads a gun.</p>
  *
  * @author Ocelot
  */
-public class GunFireEvent extends PlayerEvent
+public class GunReloadEvent extends PlayerEvent
 {
     private final ItemStack stack;
 
-    public GunFireEvent(PlayerEntity player, ItemStack stack)
+    public GunReloadEvent(PlayerEntity player, ItemStack stack)
     {
         super(player);
         this.stack = stack;
     }
 
     /**
-     * @return The stack the player was holding when firing the gun
+     * @return The stack the player was holding when reloading the gun
      */
     public ItemStack getStack()
     {
@@ -37,12 +37,12 @@ public class GunFireEvent extends PlayerEvent
     }
 
     /**
-     * <p>Fired when a player is about to shoot a bullet.</p>
+     * <p>Fired when a player is about to reload a gun.</p>
      *
      * @author Ocelot
      */
     @Cancelable
-    public static class Pre extends GunFireEvent
+    public static class Pre extends GunReloadEvent
     {
         public Pre(PlayerEntity player, ItemStack stack)
         {
@@ -51,11 +51,11 @@ public class GunFireEvent extends PlayerEvent
     }
 
     /**
-     * <p>Fired after a player has shot a bullet.</p>
+     * <p>Fired after a player has started reloading a gun.</p>
      *
      * @author Ocelot
      */
-    public static class Post extends GunFireEvent
+    public static class Post extends GunReloadEvent
     {
         public Post(PlayerEntity player, ItemStack stack)
         {

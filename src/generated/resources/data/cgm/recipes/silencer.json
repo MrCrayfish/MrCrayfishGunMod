@@ -1,0 +1,15 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:sponge"
+    }
+  ],
+  "result": {
+    "item": "cgm:silencer"
+  }
+}

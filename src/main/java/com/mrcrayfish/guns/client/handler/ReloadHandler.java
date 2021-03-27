@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.event.GunReloadEvent;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -14,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -40,7 +42,9 @@ public class ReloadHandler
     private int prevReloadTimer;
     private int reloadingSlot;
 
-    private ReloadHandler() {}
+    private ReloadHandler()
+    {
+    }
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
@@ -113,9 +117,12 @@ public class ReloadHandler
                         {
                             return;
                         }
+                        if(MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
+                            return;
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, true);
                         PacketHandler.getPlayChannel().sendToServer(new MessageReload(true));
                         this.reloadingSlot = player.inventory.currentItem;
+                        MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack));
                     }
                 }
             }

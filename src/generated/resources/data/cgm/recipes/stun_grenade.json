@@ -1,0 +1,20 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 2
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "cgm:stun_grenade",
+    "count": 2
+  }
+}

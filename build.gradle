@@ -17,11 +17,13 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.0.0-1.16.4"
+version = "1.0.1-1.16.4"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 mixin {
     add sourceSets.main, "cgm.refmap.json"
