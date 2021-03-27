@@ -2,15 +2,36 @@ package com.mrcrayfish.guns.util;
 
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModEnchantments;
+import com.mrcrayfish.guns.init.ModParticleTypes;
+import com.mrcrayfish.guns.particles.TrailData;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
 public class GunEnchantmentHelper
 {
+    public static IParticleData getParticle(ItemStack weapon)
+    {
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(weapon);
+        if(enchantments.containsKey(ModEnchantments.FIRE_STARTER.get()))
+        {
+            return ParticleTypes.LAVA;
+        }
+        else if(enchantments.containsKey(ModEnchantments.PUNCTURING.get()))
+        {
+            return ParticleTypes.ENCHANTED_HIT;
+        }
+        return new TrailData(weapon.isEnchanted());
+    }
+
     public static int getReloadInterval(ItemStack weapon)
     {
         int interval = 10;

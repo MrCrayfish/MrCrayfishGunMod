@@ -8,6 +8,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SSpawnParticlePacket;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -37,8 +39,9 @@ public class BulletTrail
     private int shooterId;
     private WeakReference<Entity> shooter;
     private boolean enchanted;
+    private IParticleData particleData;
 
-    public BulletTrail(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId, boolean enchanted)
+    public BulletTrail(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId, boolean enchanted, IParticleData particleData)
     {
         this.entityId = entityId;
         this.position = position;
@@ -50,6 +53,7 @@ public class BulletTrail
         this.gravity = gravity;
         this.shooterId = shooterId;
         this.enchanted = enchanted;
+        this.particleData = particleData;
         this.updateYawPitch();
     }
 
@@ -76,7 +80,7 @@ public class BulletTrail
         if(shooter instanceof PlayerEntity && ((PlayerEntity) shooter).isUser())
         {
             World world = shooter.world;
-            world.addOptionalParticle(new TrailData(this.enchanted), true, this.position.getX(), this.position.getY(), this.position.getZ(), 0, 0, 0);
+            world.addOptionalParticle(this.particleData, true, this.position.getX(), this.position.getY(), this.position.getZ(), this.motion.x, this.motion.y, this.motion.z);
         }
 
         Entity entity = Minecraft.getInstance().getRenderViewEntity();

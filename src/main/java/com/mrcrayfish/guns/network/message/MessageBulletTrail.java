@@ -1,14 +1,16 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.google.common.base.MoreObjects;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
 
@@ -27,10 +29,11 @@ public class MessageBulletTrail implements IMessage
     private double gravity;
     private int shooterId;
     private boolean enchanted;
+    private IParticleData particleData;
 
     public MessageBulletTrail() {}
 
-    public MessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId)
+    public <T extends IParticleData> MessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId, T particleData)
     {
         this.positions = new Vector3d[spawnedProjectiles.length];
         this.motions = new Vector3d[spawnedProjectiles.length];
@@ -49,6 +52,7 @@ public class MessageBulletTrail implements IMessage
         this.life = projectileProps.getLife();
         this.gravity = spawnedProjectiles[0].getModifiedGravity(); //It's possible that projectiles have different gravity
         this.shooterId = shooterId;
+        this.particleData = particleData;
     }
 
     @Override
@@ -76,6 +80,8 @@ public class MessageBulletTrail implements IMessage
         buffer.writeDouble(this.gravity);
         buffer.writeInt(this.shooterId);
         buffer.writeBoolean(this.enchanted);
+        buffer.writeInt(Registry.PARTICLE_TYPE.getId(this.particleData.getType()));
+        this.particleData.write(buffer);
     }
 
     @Override
@@ -98,6 +104,16 @@ public class MessageBulletTrail implements IMessage
         this.gravity = buffer.readDouble();
         this.shooterId = buffer.readInt();
         this.enchanted = buffer.readBoolean();
+        ParticleType<?> type = Registry.PARTICLE_TYPE.getByValue(buffer.readInt());
+        if (type == null) {
+            type = ParticleTypes.BARRIER;
+        }
+        this.particleData = this.readParticle(buffer, type);
+    }
+
+    private <T extends IParticleData> T readParticle(PacketBuffer buffer, ParticleType<T> type)
+    {
+        return type.getDeserializer().read(type, buffer);
     }
 
     @Override
@@ -160,5 +176,10 @@ public class MessageBulletTrail implements IMessage
     public boolean isEnchanted()
     {
         return this.enchanted;
+    }
+
+    public IParticleData getParticleData()
+    {
+        return this.particleData;
     }
 }
