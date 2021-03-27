@@ -23,6 +23,8 @@ archivesBaseName = "gun-mod"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
 mixin {
     add sourceSets.main, "cgm.refmap.json"
 }

@@ -29,6 +29,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
@@ -37,7 +38,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -239,14 +239,13 @@ public class ServerPlayHandler
                         }
                     }
 
-                    world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack));
+                    InventoryHelper.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack);
                 }
             }
         }
     }
 
     /**
-     *
      * @param player
      */
     public static void handleUnload(ServerPlayerEntity player)
@@ -287,7 +286,6 @@ public class ServerPlayHandler
     }
 
     /**
-     *
      * @param player
      * @param stack
      */
@@ -301,7 +299,6 @@ public class ServerPlayHandler
     }
 
     /**
-     *
      * @param player
      */
     public static void handleAttachments(ServerPlayerEntity player)
