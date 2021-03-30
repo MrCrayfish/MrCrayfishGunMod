@@ -94,13 +94,14 @@ public class GunMod
 
     private void dataSetup(GatherDataEvent event)
     {
-        DataGenerator dataGenerator = event.getGenerator();
+        DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        BlockTagGen blockTagGen = new BlockTagGen(dataGenerator, existingFileHelper);
-        dataGenerator.addProvider(new RecipeGen(dataGenerator));
-        dataGenerator.addProvider(new LootTableGen(dataGenerator));
-        dataGenerator.addProvider(blockTagGen);
-        dataGenerator.addProvider(new ItemTagGen(dataGenerator, blockTagGen, existingFileHelper));
-        dataGenerator.addProvider(new LanguageGen(dataGenerator));
+        BlockTagGen blockTagGen = new BlockTagGen(generator, existingFileHelper);
+        generator.addProvider(new RecipeGen(generator));
+        generator.addProvider(new LootTableGen(generator));
+        generator.addProvider(blockTagGen);
+        generator.addProvider(new ItemTagGen(generator, blockTagGen, existingFileHelper));
+        generator.addProvider(new LanguageGen(generator));
+        generator.addProvider(new GunGen(generator));
     }
 }

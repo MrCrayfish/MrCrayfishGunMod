@@ -1,21 +1,27 @@
 package com.mrcrayfish.guns.common;
 
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
+import com.mrcrayfish.guns.util.GunJsonUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.IllegalFormatException;
 
 public final class Gun implements INBTSerializable<CompoundNBT>
 {
@@ -145,6 +151,33 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.spread = tag.getFloat("Spread");
             }
+        }
+
+        public JsonObject toJsonObject()
+        {
+            Preconditions.checkArgument(this.rate > 0, "Rate must be more than zero");
+            Preconditions.checkArgument(this.maxAmmo > 0, "Max ammo must be more than zero");
+            Preconditions.checkArgument(this.reloadAmount >= 1, "Reload angle must be more than or equal to zero");
+            Preconditions.checkArgument(this.recoilAngle >= 0.0F, "Recoil angle must be more than or equal to zero");
+            Preconditions.checkArgument(this.recoilKick >= 0.0F, "Recoil kick must be more than or equal to zero");
+            Preconditions.checkArgument(this.recoilDurationOffset >= 0.0F && this.recoilDurationOffset <= 1.0F, "Recoil duration offset must be between 0.0 and 1.0");
+            Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
+            Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
+            Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
+            JsonObject object = new JsonObject();
+            if(this.auto) object.addProperty("auto", true);
+            object.addProperty("rate", this.rate);
+            object.addProperty("gripType", this.gripType.getId().toString());
+            object.addProperty("maxAmmo", this.maxAmmo);
+            if(this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
+            if(this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
+            if(this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
+            if(this.recoilDurationOffset != 0.0F) object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
+            if(this.recoilAdsReduction != 0.2F) object.addProperty("recoilAdsReduction", this.recoilAdsReduction);
+            if(this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
+            if(this.alwaysSpread) object.addProperty("alwaysSpread", true);
+            if(this.spread != 0.0F) object.addProperty("spread", this.spread);
+            return object;
         }
 
         /**
@@ -346,6 +379,27 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
         }
 
+        public JsonObject toJsonObject()
+        {
+            Preconditions.checkArgument(this.damage >= 0.0F, "Damage must be more than or equal to zero");
+            Preconditions.checkArgument(this.size >= 0.0F, "Projectile size must be more than or equal to zero");
+            Preconditions.checkArgument(this.speed >= 0.0, "Projectile speed must be more than or equal to zero");
+            Preconditions.checkArgument(this.life > 0, "Projectile life must be more than zero");
+            Preconditions.checkArgument(this.trailLengthMultiplier >= 0.0, "Projectile trail length multiplier must be more than or equal to zero");
+            JsonObject object = new JsonObject();
+            object.addProperty("item", this.item.toString());
+            if(this.visible) object.addProperty("visible", true);
+            object.addProperty("damage", this.damage);
+            object.addProperty("size", this.size);
+            object.addProperty("speed", this.speed);
+            object.addProperty("life", this.life);
+            if(this.gravity) object.addProperty("gravity", true);
+            if(this.damageReduceOverLife) object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
+            if(this.trailColor != 0xFFD289) object.addProperty("trailColor", this.trailColor);
+            if(this.trailLengthMultiplier != 1.0) object.addProperty("trailLengthMultiplier", this.trailLengthMultiplier);
+            return object;
+        }
+
         public Projectile copy()
         {
             Projectile projectile = new Projectile();
@@ -513,6 +567,32 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
         }
 
+        public JsonObject toJsonObject()
+        {
+            JsonObject object = new JsonObject();
+            if(this.fire != null)
+            {
+                object.addProperty("fire", this.fire.toString());
+            }
+            if(this.reload != null)
+            {
+                object.addProperty("reload", this.reload.toString());
+            }
+            if(this.cock != null)
+            {
+                object.addProperty("cock", this.cock.toString());
+            }
+            if(this.silencedFire != null)
+            {
+                object.addProperty("silencedFire", this.silencedFire.toString());
+            }
+            if(this.enchantedFire != null)
+            {
+                object.addProperty("enchantedFire", this.enchantedFire.toString());
+            }
+            return object;
+        }
+
         public Sounds copy()
         {
             Sounds sounds = new Sounds();
@@ -611,6 +691,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 }
             }
 
+            @Override
+            public JsonObject toJsonObject()
+            {
+                JsonObject object = super.toJsonObject();
+                if(this.size != 0.5)
+                {
+                    object.addProperty("size", this.size);
+                }
+                return object;
+            }
+
             public Flash copy()
             {
                 Flash flash = new Flash();
@@ -658,6 +749,16 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                     this.flash = null;
                 }
             }
+        }
+
+        public JsonObject toJsonObject()
+        {
+            JsonObject object = new JsonObject();
+            if(this.flash != null)
+            {
+                GunJsonUtil.addObjectIfNotEmpty(object, "flash", this.flash.toJsonObject());
+            }
+            return object;
         }
 
         public Display copy()
@@ -710,6 +811,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 {
                     this.fovModifier = tag.getFloat("FovModifier");
                 }
+            }
+
+            public JsonObject toJsonObject()
+            {
+                JsonObject object = super.toJsonObject();
+                object.addProperty("fovModifier", this.fovModifier);
+                return object;
             }
 
             public Zoom copy()
@@ -811,6 +919,28 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 }
             }
 
+            public JsonObject toJsonObject()
+            {
+                JsonObject object = new JsonObject();
+                if(this.scope != null)
+                {
+                    object.add("scope", this.scope.toJsonObject());
+                }
+                if(this.barrel != null)
+                {
+                    object.add("barrel", this.barrel.toJsonObject());
+                }
+                if(this.stock != null)
+                {
+                    object.add("stock", this.stock.toJsonObject());
+                }
+                if(this.underBarrel != null)
+                {
+                    object.add("underBarrel", this.underBarrel.toJsonObject());
+                }
+                return object;
+            }
+
             public Attachments copy()
             {
                 Attachments attachments = new Attachments();
@@ -868,6 +998,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
         }
 
+        public JsonObject toJsonObject()
+        {
+            JsonObject object = new JsonObject();
+            if(this.zoom != null)
+            {
+                object.add("zoom", this.zoom.toJsonObject());
+            }
+            GunJsonUtil.addObjectIfNotEmpty(object, "attachments", this.attachments.toJsonObject());
+            return object;
+        }
+
         public Modules copy()
         {
             Modules modules = new Modules();
@@ -914,6 +1055,24 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.zOffset = tag.getDouble("ZOffset");
             }
+        }
+
+        public JsonObject toJsonObject()
+        {
+            JsonObject object = new JsonObject();
+            if(this.xOffset != 0)
+            {
+                object.addProperty("xOffset", this.xOffset);
+            }
+            if(this.yOffset != 0)
+            {
+                object.addProperty("yOffset", this.yOffset);
+            }
+            if(this.zOffset != 0)
+            {
+                object.addProperty("zOffset", this.zOffset);
+            }
+            return object;
         }
 
         public double getXOffset()
@@ -971,6 +1130,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
         }
 
+        @Override
+        public JsonObject toJsonObject()
+        {
+            JsonObject object = super.toJsonObject();
+            if(this.scale != 1.0)
+            {
+                object.addProperty("scale", this.scale);
+            }
+            return object;
+        }
+
         public double getScale()
         {
             return this.scale;
@@ -1023,6 +1193,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             this.modules.deserializeNBT(tag.getCompound("Modules"));
         }
+    }
+
+    public JsonObject toJsonObject()
+    {
+        JsonObject object = new JsonObject();
+        object.add("general", this.general.toJsonObject());
+        object.add("projectile", this.projectile.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "sounds", this.sounds.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
+        return object;
     }
 
     public static Gun create(CompoundNBT tag)
@@ -1183,5 +1364,253 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     {
         CompoundNBT tag = gunStack.getOrCreateTag();
         return tag.getBoolean("IgnoreAmmo") || tag.getInt("AmmoCount") > 0;
+    }
+
+    public static class Builder
+    {
+        private Gun gun;
+
+        private Builder()
+        {
+            this.gun = new Gun();
+        }
+
+        public static Builder create()
+        {
+            return new Builder();
+        }
+
+        public Gun build()
+        {
+            return this.gun.copy(); //Copy since the builder could be used again
+        }
+
+        public Builder setAuto(boolean auto)
+        {
+            this.gun.general.auto = auto;
+            return this;
+        }
+
+        public Builder setFireRate(int rate)
+        {
+            this.gun.general.rate = rate;
+            return this;
+        }
+
+        public Builder setGripType(GripType gripType)
+        {
+            this.gun.general.gripType = gripType;
+            return this;
+        }
+
+        public Builder setMaxAmmo(int maxAmmo)
+        {
+            this.gun.general.maxAmmo = maxAmmo;
+            return this;
+        }
+
+        public Builder setReloadAmount(int reloadAmount)
+        {
+            this.gun.general.reloadAmount = reloadAmount;
+            return this;
+        }
+
+        public Builder setRecoilAngle(float recoilAngle)
+        {
+            this.gun.general.recoilAngle = recoilAngle;
+            return this;
+        }
+
+        public Builder setRecoilKick(float recoilKick)
+        {
+            this.gun.general.recoilKick = recoilKick;
+            return this;
+        }
+
+        public Builder setRecoilDurationOffset(float recoilDurationOffset)
+        {
+            this.gun.general.recoilDurationOffset = recoilDurationOffset;
+            return this;
+        }
+
+        public Builder setRecoilAdsReduction(float recoilAdsReduction)
+        {
+            this.gun.general.recoilAdsReduction = recoilAdsReduction;
+            return this;
+        }
+
+        public Builder setProjectileAmount(int projectileAmount)
+        {
+            this.gun.general.projectileAmount = projectileAmount;
+            return this;
+        }
+
+        public Builder setAlwaysSpread(boolean alwaysSpread)
+        {
+            this.gun.general.alwaysSpread = alwaysSpread;
+            return this;
+        }
+
+        public Builder setSpread(float spread)
+        {
+            this.gun.general.spread = spread;
+            return this;
+        }
+
+        public Builder setAmmo(Item item)
+        {
+            this.gun.projectile.item = item.getRegistryName();
+            return this;
+        }
+
+        public Builder setProjectileVisible(boolean visible)
+        {
+            this.gun.projectile.visible = visible;
+            return this;
+        }
+
+        public Builder setProjectileSize(float size)
+        {
+            this.gun.projectile.size = size;
+            return this;
+        }
+
+        public Builder setProjectileSpeed(double speed)
+        {
+            this.gun.projectile.speed = speed;
+            return this;
+        }
+
+        public Builder setProjectileLife(int life)
+        {
+            this.gun.projectile.life = life;
+            return this;
+        }
+
+        public Builder setProjectileAffectedByGravity(boolean gravity)
+        {
+            this.gun.projectile.gravity = gravity;
+            return this;
+        }
+
+        public Builder setProjectileTrailColor(int trailColor)
+        {
+            this.gun.projectile.trailColor = trailColor;
+            return this;
+        }
+
+        public Builder setProjectileTrailLengthMultiplier(int trailLengthMultiplier)
+        {
+            this.gun.projectile.trailLengthMultiplier = trailLengthMultiplier;
+            return this;
+        }
+
+        public Builder setDamage(float damage)
+        {
+            this.gun.projectile.damage = damage;
+            return this;
+        }
+
+        public Builder setReduceDamageOverLife(boolean damageReduceOverLife)
+        {
+            this.gun.projectile.damageReduceOverLife = damageReduceOverLife;
+            return this;
+        }
+
+        public Builder setFireSound(SoundEvent sound)
+        {
+            this.gun.sounds.fire = sound.getRegistryName();
+            return this;
+        }
+
+        public Builder setReloadSound(SoundEvent sound)
+        {
+            this.gun.sounds.reload = sound.getRegistryName();
+            return this;
+        }
+
+        public Builder setCockSound(SoundEvent sound)
+        {
+            this.gun.sounds.cock = sound.getRegistryName();
+            return this;
+        }
+
+        public Builder setSilencedFireSound(SoundEvent sound)
+        {
+            this.gun.sounds.silencedFire = sound.getRegistryName();
+            return this;
+        }
+
+        public Builder setEnchantedFireSound(SoundEvent sound)
+        {
+            this.gun.sounds.enchantedFire = sound.getRegistryName();
+            return this;
+        }
+
+        public Builder setMuzzleFlash(double size, double xOffset, double yOffset, double zOffset)
+        {
+            Display.Flash flash = new Display.Flash();
+            flash.size = size;
+            flash.xOffset = xOffset;
+            flash.yOffset = yOffset;
+            flash.zOffset = zOffset;
+            this.gun.display.flash = flash;
+            return this;
+        }
+
+        public Builder setZoom(float fovModifier, double xOffset, double yOffset, double zOffset)
+        {
+            Modules.Zoom zoom = new Modules.Zoom();
+            zoom.fovModifier = fovModifier;
+            zoom.xOffset = xOffset;
+            zoom.yOffset = yOffset;
+            zoom.zOffset = zOffset;
+            this.gun.modules.zoom = zoom;
+            return this;
+        }
+
+        public Builder setScope(float scale, double xOffset, double yOffset, double zOffset)
+        {
+            ScaledPositioned positioned = new ScaledPositioned();
+            positioned.scale = scale;
+            positioned.xOffset = xOffset;
+            positioned.yOffset = yOffset;
+            positioned.zOffset = zOffset;
+            this.gun.modules.attachments.scope = positioned;
+            return this;
+        }
+
+        public Builder setBarrel(float scale, double xOffset, double yOffset, double zOffset)
+        {
+            ScaledPositioned positioned = new ScaledPositioned();
+            positioned.scale = scale;
+            positioned.xOffset = xOffset;
+            positioned.yOffset = yOffset;
+            positioned.zOffset = zOffset;
+            this.gun.modules.attachments.barrel = positioned;
+            return this;
+        }
+
+        public Builder setStock(float scale, double xOffset, double yOffset, double zOffset)
+        {
+            ScaledPositioned positioned = new ScaledPositioned();
+            positioned.scale = scale;
+            positioned.xOffset = xOffset;
+            positioned.yOffset = yOffset;
+            positioned.zOffset = zOffset;
+            this.gun.modules.attachments.stock = positioned;
+            return this;
+        }
+
+        public Builder setUnderBarrel(float scale, double xOffset, double yOffset, double zOffset)
+        {
+            ScaledPositioned positioned = new ScaledPositioned();
+            positioned.scale = scale;
+            positioned.xOffset = xOffset;
+            positioned.yOffset = yOffset;
+            positioned.zOffset = zOffset;
+            this.gun.modules.attachments.underBarrel = positioned;
+            return this;
+        }
     }
 }
