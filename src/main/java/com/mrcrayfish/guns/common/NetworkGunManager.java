@@ -5,9 +5,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
+import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.item.Item;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Author: MrCrayfish
@@ -46,6 +49,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
 {
+    private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
     private static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
@@ -59,41 +63,55 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
     @Override
-    protected Map<GunItem, Gun> prepare(IResourceManager resourceManager, IProfiler profiler)
+    protected Map<GunItem, Gun> prepare(IResourceManager manager, IProfiler profiler)
     {
-        Map<GunItem, Gun> map = Maps.newHashMap();
+        Map<GunItem, Gun> map = new HashMap<>();
         ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof GunItem).forEach(item ->
         {
             ResourceLocation id = item.getRegistryName();
             if(id != null)
             {
-                ResourceLocation resourceLocation = new ResourceLocation(String.format("%s:guns/%s.json", id.getNamespace(), id.getPath()));
-                try(IResource resource = resourceManager.getResource(resourceLocation); InputStream is = resource.getInputStream(); Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)))
+                List<ResourceLocation> resources = new ArrayList<>(manager.getAllResourceLocations("guns", (fileName) -> fileName.endsWith(id.getPath() + ".json")));
+                resources.sort((r1, r2) -> {
+                    if(r1.getNamespace().equals(r2.getNamespace())) return 0;
+                    return r2.getNamespace().equals(Reference.MOD_ID) ? 1 : -1;
+                });
+                resources.forEach(resource ->
                 {
-                    Gun gun = JSONUtils.fromJson(GSON_INSTANCE, reader, Gun.class);
-                    if(gun != null && Validator.isValidObject(gun))
+                    String path = resource.getPath().substring(0, resource.getPath().length() - FILE_TYPE_LENGTH_VALUE);
+                    String[] splitPath = path.split("/");
+
+                    // Makes sure the file name matches exactly with the id of the gun
+                    if(!id.getPath().equals(splitPath[splitPath.length - 1]))
+                        return;
+
+                    try(InputStream inputstream = manager.getResource(resource).getInputStream(); Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8)))
                     {
-                        map.put((GunItem) item, gun);
+                        Gun gun = JSONUtils.fromJson(GSON_INSTANCE, reader, Gun.class);
+                        if(gun != null && Validator.isValidObject(gun))
+                        {
+                            map.put((GunItem) item, gun);
+                        }
+                        else
+                        {
+                            GunMod.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resource);
+                            map.putIfAbsent((GunItem) item, new Gun());
+                        }
                     }
-                    else
+                    catch(InvalidObjectException e)
                     {
-                        GunMod.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
-                        map.put((GunItem) item, new Gun());
+                        GunMod.LOGGER.error("Missing required properties for {}", resource);
+                        e.printStackTrace();
                     }
-                }
-                catch(InvalidObjectException e)
-                {
-                    GunMod.LOGGER.error("Missing required properties for {}", resourceLocation);
-                    e.printStackTrace();
-                }
-                catch(IOException e)
-                {
-                    GunMod.LOGGER.error("Couldn't parse data file {}", resourceLocation);
-                }
-                catch(IllegalAccessException e)
-                {
-                    e.printStackTrace();
-                }
+                    catch(IOException e)
+                    {
+                        GunMod.LOGGER.error("Couldn't parse data file {}", resource);
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        e.printStackTrace();
+                    }
+                });
             }
         });
         return map;
@@ -123,7 +141,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
             buffer.writeResourceLocation(id);
             buffer.writeCompoundTag(gun.serializeNBT());
         });
-    }
+}
 
     /**
      * Reads all registered guns from the provided packet buffer
