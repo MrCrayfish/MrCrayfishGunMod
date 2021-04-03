@@ -2,7 +2,6 @@ package com.mrcrayfish.guns;
 
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
-import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.datagen.*;
@@ -71,7 +70,7 @@ public class GunMod
         ModSyncedDataKeys.register();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
-        bus.addListener(this::dataSetup);
+        bus.addListener(this::onGatherData);
         controllableLoaded = ModList.get().isLoaded("controllable");
     }
 
@@ -92,7 +91,7 @@ public class GunMod
         ClientHandler.setup();
     }
 
-    private void dataSetup(GatherDataEvent event)
+    private void onGatherData(GatherDataEvent event)
     {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
