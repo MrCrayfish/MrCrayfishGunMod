@@ -7,11 +7,11 @@
     "reloadAmount": 10,
     "recoilAngle": 1.0,
     "alwaysSpread": true,
-    "spread": 5.0
+    "spread": 8.0
   },
   "projectile": {
     "item": "cgm:basic_bullet",
-    "damage": 3.0,
+    "damage": 5.0,
     "size": 0.2,
     "speed": 8.0,
     "life": 100
