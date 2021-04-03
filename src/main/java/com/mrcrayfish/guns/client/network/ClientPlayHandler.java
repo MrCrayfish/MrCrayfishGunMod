@@ -8,7 +8,6 @@ import com.mrcrayfish.guns.client.handler.BulletTrailRenderingHandler;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.init.ModParticleTypes;
-import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.network.message.MessageBlood;
 import com.mrcrayfish.guns.network.message.MessageBulletTrail;
 import com.mrcrayfish.guns.network.message.MessageGunSound;

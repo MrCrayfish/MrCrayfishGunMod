@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.client.handler;
 
-import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import com.mrcrayfish.guns.common.Gun;
@@ -17,8 +16,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.TrapDoorBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.item.ItemFrameEntity;

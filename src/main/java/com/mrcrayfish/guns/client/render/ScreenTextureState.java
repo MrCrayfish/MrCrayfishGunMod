@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.util.OptifineHelper;
 import net.minecraft.client.MainWindow;

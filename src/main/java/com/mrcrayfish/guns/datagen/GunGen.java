@@ -7,7 +7,6 @@ import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSounds;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Mod;
 
 /**
  * Author: MrCrayfish

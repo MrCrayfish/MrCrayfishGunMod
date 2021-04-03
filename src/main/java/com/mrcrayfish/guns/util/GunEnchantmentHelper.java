@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.util;
 
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModEnchantments;
-import com.mrcrayfish.guns.init.ModParticleTypes;
 import com.mrcrayfish.guns.particles.TrailData;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
