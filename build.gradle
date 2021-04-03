@@ -87,12 +87,22 @@ repositories {
     maven {
         url = "https://www.cursemaven.com"
     }
+    maven {
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.4-35.1.4'
     compile fg.deobf('curse.maven:obfuscate-289380:3169370')
     compile fg.deobf('curse.maven:controllable-317269:3196545')
+    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51")
 }
 
 jar {
