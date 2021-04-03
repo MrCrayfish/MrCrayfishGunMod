@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.common;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
@@ -21,7 +20,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.IllegalFormatException;
 
 public final class Gun implements INBTSerializable<CompoundNBT>
 {
@@ -694,6 +692,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             @Override
             public JsonObject toJsonObject()
             {
+                Preconditions.checkArgument(this.size >= 0, "Muzzle flash size must be more than or equal to zero");
                 JsonObject object = super.toJsonObject();
                 if(this.size != 0.5)
                 {
