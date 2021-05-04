@@ -44,7 +44,12 @@ public class ReloadTracker
         this.stack = player.inventory.getCurrentItem();
         this.gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
     }
-
+    
+    public static Map<PlayerEntity, ReloadTracker> getReloadTrackerMap()
+    {
+        return RELOAD_TRACKER_MAP;
+    }
+    
     /**
      * Tests if the current item the player is holding is the same as the one being reloaded
      *
