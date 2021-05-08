@@ -24,6 +24,7 @@ public class TrailParticle extends RisingParticle
         this.particleRed = red;
         this.particleGreen = green;
         this.particleBlue = blue;
+        this.particleAlpha = 0.25F;
     }
 
     @OnlyIn(Dist.CLIENT)
