@@ -9,7 +9,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
@@ -21,7 +21,7 @@ version = "1.0.1-1.16.4"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
@@ -98,7 +98,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.4'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.65'
     compile fg.deobf('curse.maven:obfuscate-289380:3169370')
     compile fg.deobf('curse.maven:controllable-317269:3196545')
     compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51:api")
