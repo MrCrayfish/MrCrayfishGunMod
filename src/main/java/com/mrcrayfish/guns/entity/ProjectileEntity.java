@@ -419,7 +419,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     private void onHit(RayTraceResult result, Vector3d startVec, Vector3d endVec)
     {
-        MinecraftForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this));
+        if(MinecraftForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this)))
+        {
+            return;
+        }
 
         if(result instanceof BlockRayTraceResult)
         {
