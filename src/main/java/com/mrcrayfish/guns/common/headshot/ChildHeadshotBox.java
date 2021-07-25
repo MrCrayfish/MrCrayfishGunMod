@@ -32,7 +32,7 @@ public class ChildHeadshotBox<T extends LivingEntity> extends BasicHeadshotBox<T
     public AxisAlignedBB getHeadshotBox(T entity)
     {
         AxisAlignedBB headBox = super.getHeadshotBox(entity);
-        if(headBox != null && entity.isChild())
+        if(headBox != null && entity.isBaby())
         {
             return new AxisAlignedBB(headBox.minX * this.childHeadScale, headBox.minY * this.headYOffsetScale, headBox.minZ * this.childHeadScale, headBox.maxX * this.childHeadScale, headBox.maxY * (this.headYOffsetScale + 0.065), headBox.maxZ * this.childHeadScale);
         }

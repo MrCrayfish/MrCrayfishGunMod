@@ -33,7 +33,7 @@ public class GunFireEvent extends PlayerEvent
      */
     public boolean isClient()
     {
-        return this.getPlayer().getEntityWorld().isRemote();
+        return this.getPlayer().getCommandSenderWorld().isClientSide();
     }
 
     /**

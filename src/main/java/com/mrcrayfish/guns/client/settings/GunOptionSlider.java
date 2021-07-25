@@ -18,8 +18,8 @@ public class GunOptionSlider extends OptionSlider
     }
 
     @Override
-    protected void func_230972_a_()
+    protected void applyValue()
     {
-        this.option.set(this.settings, this.option.denormalizeValue(this.sliderValue));
+        this.option.set(this.options, this.option.toValue(this.value));
     }
 }

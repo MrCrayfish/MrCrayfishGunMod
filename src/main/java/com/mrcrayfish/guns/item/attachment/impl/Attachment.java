@@ -62,7 +62,7 @@ public abstract class Attachment
             List<ITextComponent> perks = attachment.getProperties().getPerks();
             if(perks != null && perks.size() > 0)
             {
-                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title").mergeStyle(TextFormatting.GRAY, TextFormatting.BOLD));
+                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title").withStyle(TextFormatting.GRAY, TextFormatting.BOLD));
                 event.getToolTip().addAll(perks);
                 return;
             }
@@ -121,11 +121,11 @@ public abstract class Attachment
             }
             if(additionalDamage > 0.0F)
             {
-                addPerk(positivePerks, true, "perk.cgm.additional_damage.positive", ItemStack.DECIMALFORMAT.format(additionalDamage / 2.0));
+                addPerk(positivePerks, true, "perk.cgm.additional_damage.positive", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0));
             }
             else if(additionalDamage < 0.0F)
             {
-                addPerk(negativePerks, false, "perk.cgm.additional_damage.negative", ItemStack.DECIMALFORMAT.format(additionalDamage / 2.0));
+                addPerk(negativePerks, false, "perk.cgm.additional_damage.negative", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0));
             }
 
             /* Test for modified damage */
@@ -244,7 +244,7 @@ public abstract class Attachment
             attachment.getProperties().setPerks(positivePerks);
             if(positivePerks.size() > 0)
             {
-                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title").mergeStyle(TextFormatting.GRAY, TextFormatting.BOLD));
+                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title").withStyle(TextFormatting.GRAY, TextFormatting.BOLD));
                 event.getToolTip().addAll(positivePerks);
             }
         }
@@ -252,6 +252,6 @@ public abstract class Attachment
 
     private static void addPerk(List<ITextComponent> components, boolean positive, String id, Object... params)
     {
-        components.add(new TranslationTextComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", new TranslationTextComponent(id, params).mergeStyle(TextFormatting.WHITE)).mergeStyle(positive ? TextFormatting.DARK_AQUA : TextFormatting.GOLD));
+        components.add(new TranslationTextComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", new TranslationTextComponent(id, params).withStyle(TextFormatting.WHITE)).withStyle(positive ? TextFormatting.DARK_AQUA : TextFormatting.GOLD));
     }
 }

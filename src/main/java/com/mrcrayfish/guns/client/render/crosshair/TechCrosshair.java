@@ -58,43 +58,43 @@ public class TechCrosshair extends Crosshair
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        BufferBuilder buffer = Tessellator.getInstance().getBuilder();
 
-        stack.push();
+        stack.pushPose();
         {
-            Matrix4f matrix = stack.getLast().getMatrix();
+            Matrix4f matrix = stack.last().pose();
             stack.translate((windowWidth - size) / 2F, (windowHeight - size) / 2F, 0);
-            mc.getTextureManager().bindTexture(DOT_CROSSHAIR);
+            mc.getTextureManager().bind(DOT_CROSSHAIR);
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(matrix, 0, size, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.pos(matrix, size, size, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.pos(matrix, size, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.finishDrawing();
+            buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.end();
             RenderSystem.enableAlphaTest();
-            WorldVertexBufferUploader.draw(buffer);
+            WorldVertexBufferUploader.end(buffer);
         }
-        stack.pop();
+        stack.popPose();
 
-        stack.push();
+        stack.pushPose();
         {
-            Matrix4f matrix = stack.getLast().getMatrix();
+            Matrix4f matrix = stack.last().pose();
             stack.translate(windowWidth / 2F, windowHeight / 2F, 0);
             float scale = 1F + MathHelper.lerp(partialTicks, this.prevScale, this.scale);
             stack.scale(scale, scale, scale);
-            stack.rotate(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, this.prevRotation, this.rotation)));
+            stack.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, this.prevRotation, this.rotation)));
             stack.translate(-size / 2F, -size / 2F, 0);
-            mc.getTextureManager().bindTexture(TECH_CROSSHAIR);
+            mc.getTextureManager().bind(TECH_CROSSHAIR);
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(matrix, 0, size, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.pos(matrix, size, size, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.pos(matrix, size, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.finishDrawing();
+            buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.end();
             RenderSystem.enableAlphaTest();
-            WorldVertexBufferUploader.draw(buffer);
+            WorldVertexBufferUploader.end(buffer);
         }
-        stack.pop();
+        stack.popPose();
 
         RenderSystem.defaultBlendFunc();
     }

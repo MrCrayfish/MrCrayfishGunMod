@@ -20,7 +20,7 @@ public class GunSliderPercentageOption extends SliderPercentageOption
     }
 
     @Override
-    public Widget createWidget(GameSettings settings, int x, int y, int width)
+    public Widget createButton(GameSettings settings, int x, int y, int width)
     {
         return new GunOptionSlider(settings, x, y, width, 20, this);
     }

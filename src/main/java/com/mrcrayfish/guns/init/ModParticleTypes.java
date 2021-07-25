@@ -19,7 +19,7 @@ public class ModParticleTypes
     public static final RegistryObject<ParticleType<BulletHoleData>> BULLET_HOLE = REGISTER.register("bullet_hole",() -> new ParticleType<BulletHoleData>(false, BulletHoleData.DESERIALIZER)
     {
         @Override
-        public Codec<BulletHoleData> func_230522_e_()
+        public Codec<BulletHoleData> codec()
         {
             return BulletHoleData.CODEC;
         }

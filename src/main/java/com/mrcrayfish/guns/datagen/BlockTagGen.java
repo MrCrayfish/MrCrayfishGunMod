@@ -13,7 +13,7 @@ public class BlockTagGen extends BlockTagsProvider
     }
 
     @Override
-    protected void registerTags()
+    protected void addTags()
     {
     }
 }

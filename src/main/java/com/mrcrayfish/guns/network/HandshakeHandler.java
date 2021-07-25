@@ -64,7 +64,7 @@ public class HandshakeHandler
         else
         {
             GunMod.LOGGER.error("Failed to synchronize gun properties from server");
-            c.get().getNetworkManager().closeChannel(new StringTextComponent("Connection closed - [MrCrayfish's Gun Mod] Failed to synchronize gun properties from server"));
+            c.get().getNetworkManager().disconnect(new StringTextComponent("Connection closed - [MrCrayfish's Gun Mod] Failed to synchronize gun properties from server"));
         }
     }
 }

@@ -33,7 +33,7 @@ public class GunOptions
     public static final AbstractOption CROSSHAIR = new GunListOption<>("cgm.options.crosshair", () -> {
         return CrosshairHandler.get().getRegisteredCrosshairs();
     }, () -> {
-        return ResourceLocation.tryCreate(Config.CLIENT.display.crosshair.get());
+        return ResourceLocation.tryParse(Config.CLIENT.display.crosshair.get());
     }, (value) -> {
         Config.CLIENT.display.crosshair.set(value.toString());
         Config.saveClientConfig();
@@ -42,7 +42,7 @@ public class GunOptions
         ResourceLocation id = value.getLocation();
         return new TranslationTextComponent(id.getNamespace() + ".crosshair." + id.getPath());
     }).setRenderer((button, matrixStack, partialTicks) -> {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(button.x, button.y, 0);
         matrixStack.translate(button.getWidth() + 2, 2, 0);
         Crosshair crosshair = CrosshairHandler.get().getCurrentCrosshair();
@@ -51,7 +51,7 @@ public class GunOptions
             if(crosshair.isDefault())
             {
                 Minecraft mc = Minecraft.getInstance();
-                mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+                mc.getTextureManager().bind(AbstractGui.GUI_ICONS_LOCATION);
                 AbstractGui.blit(matrixStack, (16 - 15) / 2, (16 - 15) / 2, 0, 0, 0, 15, 15, 256, 256);
             }
             else
@@ -59,6 +59,6 @@ public class GunOptions
                 crosshair.render(Minecraft.getInstance(), matrixStack, 16, 16, partialTicks);
             }
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     });
 }

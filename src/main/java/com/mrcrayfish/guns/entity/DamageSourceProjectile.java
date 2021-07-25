@@ -33,10 +33,10 @@ public class DamageSourceProjectile extends IndirectEntityDamageSource
     }
 
     @Override
-    public ITextComponent getDeathMessage(LivingEntity entityLivingBaseIn)
+    public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn)
     {
-        ITextComponent textComponent = this.getTrueSource() == null ? this.damageSourceEntity.getDisplayName() : this.getTrueSource().getDisplayName();
-        String deathKey = String.format("death.attack.%s.%s.%s", Reference.MOD_ID, this.damageType, DEATH_TYPES[RAND.nextInt(DEATH_TYPES.length)]);
+        ITextComponent textComponent = this.getEntity() == null ? this.entity.getDisplayName() : this.getEntity().getDisplayName();
+        String deathKey = String.format("death.attack.%s.%s.%s", Reference.MOD_ID, this.msgId, DEATH_TYPES[RAND.nextInt(DEATH_TYPES.length)]);
         return new TranslationTextComponent(deathKey, entityLivingBaseIn.getDisplayName(), textComponent);
     }
 }

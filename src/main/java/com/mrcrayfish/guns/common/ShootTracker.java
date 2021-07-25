@@ -54,7 +54,7 @@ public class ShootTracker
     {
         int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
         rate = GunModifierHelper.getModifiedRate(weapon, rate);
-        this.cooldownMap.put(item, Pair.of(Util.milliTime(), rate * 50));
+        this.cooldownMap.put(item, Pair.of(Util.getMillis(), rate * 50));
     }
 
     /**
@@ -72,7 +72,7 @@ public class ShootTracker
         if(pair != null)
         {
             /* Give a 50 millisecond leeway as most of the time the cooldown has finished, just not exactly to the millisecond */
-            return Util.milliTime() - pair.getLeft() < pair.getRight() - 50;
+            return Util.getMillis() - pair.getLeft() < pair.getRight() - 50;
         }
         return false;
     }
@@ -89,7 +89,7 @@ public class ShootTracker
         Pair<Long, Integer> pair = this.cooldownMap.get(item);
         if(pair != null)
         {
-            return pair.getRight() - (Util.milliTime() - pair.getLeft());
+            return pair.getRight() - (Util.getMillis() - pair.getLeft());
         }
         return 0;
     }

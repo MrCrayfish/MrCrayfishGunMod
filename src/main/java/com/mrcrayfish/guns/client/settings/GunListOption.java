@@ -47,7 +47,7 @@ public class GunListOption<E extends IResourceLocation> extends AbstractOption
     }
 
     @Override
-    public Widget createWidget(GameSettings options, int x, int y, int width)
+    public Widget createButton(GameSettings options, int x, int y, int width)
     {
         return new OptionButton(x, y, width, 20, this, this.getTitle(), (button) -> {
             List<E> list = this.supplier.get();

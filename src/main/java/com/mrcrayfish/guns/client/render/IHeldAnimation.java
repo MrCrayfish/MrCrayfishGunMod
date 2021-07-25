@@ -105,8 +105,8 @@ public interface IHeldAnimation
     @OnlyIn(Dist.CLIENT)
     static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
     {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
+        dest.xRot = source.xRot;
+        dest.yRot = source.yRot;
+        dest.zRot = source.zRot;
     }
 }

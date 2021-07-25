@@ -37,7 +37,7 @@ public class WorkbenchRecipeBuilder
         this.result = item.asItem();
         this.count = count;
         this.materials = new ArrayList<>();
-        this.advancementBuilder = Advancement.Builder.builder();
+        this.advancementBuilder = Advancement.Builder.advancement();
     }
 
     /**
@@ -78,7 +78,7 @@ public class WorkbenchRecipeBuilder
      */
     public WorkbenchRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn)
     {
-        this.advancementBuilder.withCriterion(name, criterionIn);
+        this.advancementBuilder.addCriterion(name, criterionIn);
         return this;
     }
 
@@ -122,8 +122,8 @@ public class WorkbenchRecipeBuilder
     public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id)
     {
         this.validate(id);
-        this.advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
-        consumerIn.accept(new WorkbenchRecipeBuilder.Result(id, this.result, this.count, this.group == null ? "" : this.group, this.materials, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath())));
+        this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(IRequirementsStrategy.OR);
+        consumerIn.accept(new WorkbenchRecipeBuilder.Result(id, this.result, this.count, this.group == null ? "" : this.group, this.materials, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath())));
     }
 
     /**
@@ -159,7 +159,7 @@ public class WorkbenchRecipeBuilder
         }
 
         @Override
-        public void serialize(JsonObject json)
+        public void serializeRecipeData(JsonObject json)
         {
             if(!this.group.isEmpty())
                 json.addProperty("group", this.group);
@@ -183,25 +183,25 @@ public class WorkbenchRecipeBuilder
         }
 
         @Override
-        public ResourceLocation getID()
+        public ResourceLocation getId()
         {
             return id;
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer()
+        public IRecipeSerializer<?> getType()
         {
             return ModRecipeSerializers.WORKBENCH.get();
         }
 
         @Override
-        public JsonObject getAdvancementJson()
+        public JsonObject serializeAdvancement()
         {
-            return this.advancement.serialize();
+            return this.advancement.serializeToJson();
         }
 
         @Override
-        public ResourceLocation getAdvancementID()
+        public ResourceLocation getAdvancementId()
         {
             return advancementId;
         }

@@ -37,7 +37,7 @@ public class GunMod
     public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
     {
         @Override
-        public ItemStack createIcon()
+        public ItemStack makeIcon()
         {
             ItemStack stack = new ItemStack(ModItems.PISTOL.get());
             stack.getOrCreateTag().putInt("AmmoCount", ModItems.PISTOL.get().getGun().getGeneral().getMaxAmmo());
@@ -45,12 +45,12 @@ public class GunMod
         }
 
         @Override
-        public void fill(NonNullList<ItemStack> items)
+        public void fillItemList(NonNullList<ItemStack> items)
         {
-            super.fill(items);
+            super.fillItemList(items);
             CustomGunManager.fill(items);
         }
-    }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
+    }.setEnchantmentCategories(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
     public GunMod()
     {

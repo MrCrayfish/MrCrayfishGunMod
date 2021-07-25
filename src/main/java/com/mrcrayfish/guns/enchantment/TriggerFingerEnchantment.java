@@ -2,6 +2,8 @@ package com.mrcrayfish.guns.enchantment;
 
 import net.minecraft.inventory.EquipmentSlotType;
 
+import net.minecraft.enchantment.Enchantment.Rarity;
+
 /**
  * Author: MrCrayfish
  */
@@ -19,14 +21,14 @@ public class TriggerFingerEnchantment extends GunEnchantment
     }
 
     @Override
-    public int getMinEnchantability(int level)
+    public int getMinCost(int level)
     {
         return 15 + (level - 1) * 10;
     }
 
     @Override
-    public int getMaxEnchantability(int level)
+    public int getMaxCost(int level)
     {
-        return this.getMinEnchantability(level) + 40;
+        return this.getMinCost(level) + 40;
     }
 }
