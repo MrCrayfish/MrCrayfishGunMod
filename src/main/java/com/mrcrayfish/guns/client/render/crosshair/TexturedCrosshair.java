@@ -40,7 +40,7 @@ public class TexturedCrosshair extends Crosshair
         float size = 8.0F;
         stack.translate((windowWidth - size) / 2F, (windowHeight - size) / 2F, 0);
 
-        mc.getTextureManager().bindTexture(this.texture);
+        mc.getTextureManager().bind(this.texture);
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
 
@@ -49,16 +49,16 @@ public class TexturedCrosshair extends Crosshair
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         }
 
-        Matrix4f matrix = stack.getLast().getMatrix();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        Matrix4f matrix = stack.last().pose();
+        BufferBuilder buffer = Tessellator.getInstance().getBuilder();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-        buffer.pos(matrix, 0, size, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-        buffer.pos(matrix, size, size, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-        buffer.pos(matrix, size, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-        buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-        buffer.finishDrawing();
+        buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.end();
         RenderSystem.enableAlphaTest();
-        WorldVertexBufferUploader.draw(buffer);
+        WorldVertexBufferUploader.end(buffer);
 
         if(this.blend)
         {

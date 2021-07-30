@@ -19,47 +19,47 @@ import javax.annotation.Nullable;
 public class WorkbenchRecipeSerializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<WorkbenchRecipe>
 {
     @Override
-    public WorkbenchRecipe read(ResourceLocation recipeId, JsonObject json)
+    public WorkbenchRecipe fromJson(ResourceLocation recipeId, JsonObject json)
     {
-        String group = JSONUtils.getString(json, "group", "");
+        String group = JSONUtils.getAsString(json, "group", "");
         ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
-        JsonArray input = JSONUtils.getJsonArray(json, "materials");
+        JsonArray input = JSONUtils.getAsJsonArray(json, "materials");
         for(int i = 0; i < input.size(); i++)
         {
             JsonObject itemObject = input.get(i).getAsJsonObject();
-            ItemStack stack = ShapedRecipe.deserializeItem(itemObject);
+            ItemStack stack = ShapedRecipe.itemFromJson(itemObject);
             builder.add(stack);
         }
         if(!json.has("result"))
             throw new JsonSyntaxException("Missing vehicle entry");
 
-        JsonObject resultObject = JSONUtils.getJsonObject(json, "result");
-        ItemStack resultItem = ShapedRecipe.deserializeItem(resultObject);
+        JsonObject resultObject = JSONUtils.getAsJsonObject(json, "result");
+        ItemStack resultItem = ShapedRecipe.itemFromJson(resultObject);
         return new WorkbenchRecipe(recipeId, resultItem, builder.build(), group);
     }
 
     @Nullable
     @Override
-    public WorkbenchRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+    public WorkbenchRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
     {
-        String group = buffer.readString();
-        ItemStack result = buffer.readItemStack();
+        String group = buffer.readUtf();
+        ItemStack result = buffer.readItem();
         ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
         int size = buffer.readVarInt();
         for(int i = 0; i < size; i++)
-            builder.add(buffer.readItemStack());
+            builder.add(buffer.readItem());
         return new WorkbenchRecipe(recipeId, result, builder.build(), group);
     }
 
     @Override
-    public void write(PacketBuffer buffer, WorkbenchRecipe recipe)
+    public void toNetwork(PacketBuffer buffer, WorkbenchRecipe recipe)
     {
-        buffer.writeString(recipe.getGroup());
-        buffer.writeItemStack(recipe.getItem());
+        buffer.writeUtf(recipe.getGroup());
+        buffer.writeItem(recipe.getItem());
         buffer.writeVarInt(recipe.getMaterials().size());
         for(ItemStack stack : recipe.getMaterials())
         {
-            buffer.writeItemStack(stack);
+            buffer.writeItem(stack);
         }
     }
 }

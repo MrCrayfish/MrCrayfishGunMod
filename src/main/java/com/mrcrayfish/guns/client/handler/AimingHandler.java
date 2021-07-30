@@ -74,7 +74,7 @@ public class AimingHandler
         AimTracker tracker = getAimTracker(player);
         if(tracker != null)
         {
-            tracker.handleAiming(player, player.getHeldItem(Hand.MAIN_HAND));
+            tracker.handleAiming(player, player.getItemInHand(Hand.MAIN_HAND));
             if(!tracker.isAiming())
             {
                 this.aimingMap.remove(player);
@@ -94,7 +94,7 @@ public class AimingHandler
 
     public float getAimProgress(PlayerEntity player, float partialTicks)
     {
-        if(player.isUser())
+        if(player.isLocalPlayer())
         {
             return (float) this.localTracker.getNormalProgress(partialTicks);
         }
@@ -133,16 +133,16 @@ public class AimingHandler
             this.aiming = false;
         }
 
-        this.localTracker.handleAiming(player, player.getHeldItem(Hand.MAIN_HAND));
+        this.localTracker.handleAiming(player, player.getItemInHand(Hand.MAIN_HAND));
     }
 
     @SubscribeEvent
     public void onFovUpdate(FOVUpdateEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && !mc.player.getHeldItemMainhand().isEmpty() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)
+        if(mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == PointOfView.FIRST_PERSON)
         {
-            ItemStack heldItem = mc.player.getHeldItemMainhand();
+            ItemStack heldItem = mc.player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
             {
                 GunItem gunItem = (GunItem) heldItem.getItem();
@@ -193,10 +193,10 @@ public class AimingHandler
         if(mc.player.isSpectator())
             return false;
 
-        if(mc.currentScreen != null)
+        if(mc.screen != null)
             return false;
 
-        ItemStack heldItem = mc.player.getHeldItemMainhand();
+        ItemStack heldItem = mc.player.getMainHandItem();
         if(!(heldItem.getItem() instanceof GunItem))
             return false;
 
@@ -210,7 +210,7 @@ public class AimingHandler
         if(SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
             return false;
 
-        boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+        boolean zooming = GLFW.glfwGetMouseButton(mc.getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
         if(GunMod.controllableLoaded)
         {
             zooming |= ControllerHandler.isAiming();
@@ -222,19 +222,19 @@ public class AimingHandler
     public boolean isLookingAtInteractableBlock()
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.objectMouseOver != null && mc.world != null)
+        if(mc.hitResult != null && mc.level != null)
         {
-            if(mc.objectMouseOver instanceof BlockRayTraceResult)
+            if(mc.hitResult instanceof BlockRayTraceResult)
             {
-                BlockRayTraceResult result = (BlockRayTraceResult) mc.objectMouseOver;
-                BlockState state = mc.world.getBlockState(result.getPos());
+                BlockRayTraceResult result = (BlockRayTraceResult) mc.hitResult;
+                BlockState state = mc.level.getBlockState(result.getBlockPos());
                 Block block = state.getBlock();
                 // Forge should add a tag for intractable blocks so modders can know which blocks can be interacted with :)
                 return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || BlockTags.DOORS.contains(block) || BlockTags.TRAPDOORS.contains(block) || Tags.Blocks.CHESTS.contains(block) || Tags.Blocks.FENCE_GATES.contains(block);
             }
-            else if(mc.objectMouseOver instanceof EntityRayTraceResult)
+            else if(mc.hitResult instanceof EntityRayTraceResult)
             {
-                EntityRayTraceResult result = (EntityRayTraceResult) mc.objectMouseOver;
+                EntityRayTraceResult result = (EntityRayTraceResult) mc.hitResult;
                 return result.getEntity() instanceof ItemFrameEntity;
             }
         }
@@ -254,7 +254,7 @@ public class AimingHandler
         private void handleAiming(PlayerEntity player, ItemStack heldItem)
         {
             this.previousAim = this.currentAim;
-            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING) || (player.isUser() && AimingHandler.this.isAiming()))
+            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING) || (player.isLocalPlayer() && AimingHandler.this.isAiming()))
             {
                 if(this.currentAim < MAX_AIM_PROGRESS)
                 {

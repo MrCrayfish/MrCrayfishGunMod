@@ -41,7 +41,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
     }
 
     @Override
-    protected void registerData()
+    protected void defineSynchedData()
     {
     }
 
@@ -50,14 +50,14 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
     {
         super.tick();
         this.prevRotation = this.rotation;
-        double speed = this.getMotion().length();
+        double speed = this.getDeltaMovement().length();
         if (speed > 0.1)
         {
             this.rotation += speed * 50;
         }
-        if (this.world.isRemote)
+        if (this.level.isClientSide)
         {
-            this.world.addParticle(ParticleTypes.SMOKE, true, this.getPosX(), this.getPosY() + 0.25, this.getPosZ(), 0, 0, 0);
+            this.level.addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY() + 0.25, this.getZ(), 0, 0, 0);
         }
     }
 

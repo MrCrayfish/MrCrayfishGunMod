@@ -87,7 +87,7 @@ public class CustomGunLoader extends JsonReloadListener
         buffer.writeVarInt(this.customGunMap.size());
         this.customGunMap.forEach((id, gun) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeCompoundTag(gun.serializeNBT());
+            buffer.writeNbt(gun.serializeNBT());
         });
     }
 
@@ -107,7 +107,7 @@ public class CustomGunLoader extends JsonReloadListener
             {
                 ResourceLocation id = buffer.readResourceLocation();
                 CustomGun customGun = new CustomGun();
-                customGun.deserializeNBT(buffer.readCompoundTag());
+                customGun.deserializeNBT(buffer.readNbt());
                 builder.put(id, customGun);
             }
             return builder.build();

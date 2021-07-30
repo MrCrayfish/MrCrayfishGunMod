@@ -39,13 +39,13 @@ public class CheckBox extends Widget
     {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         Minecraft minecraft = Minecraft.getInstance();
-        minecraft.getTextureManager().bindTexture(GUI);
+        minecraft.getTextureManager().bind(GUI);
         this.blit(matrixStack, this.x, this.y, 0, 0, 8, 8);
         if(this.toggled)
         {
             this.blit(matrixStack, this.x, this.y - 1, 8, 0, 9, 8);
         }
-        drawString(matrixStack, minecraft.fontRenderer, this.getMessage(), this.x + 12, this.y, 0xFFFFFF);
+        drawString(matrixStack, minecraft.font, this.getMessage(), this.x + 12, this.y, 0xFFFFFF);
     }
 
     @Override

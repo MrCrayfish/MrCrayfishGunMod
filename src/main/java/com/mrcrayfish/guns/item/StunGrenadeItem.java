@@ -33,6 +33,6 @@ public class StunGrenadeItem extends GrenadeItem
     @Override
     protected void onThrown(World world, ThrowableGrenadeEntity entity)
     {
-        world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
     }
 }

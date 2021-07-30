@@ -15,9 +15,9 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
  */
 public final class GunRenderType extends RenderType
 {
-    private static final RenderType BULLET_TRAIL = RenderType.makeType(Reference.MOD_ID + ":projectile_trail", DefaultVertexFormats.POSITION_COLOR, GL_QUADS, 256, true, true, RenderType.State.getBuilder().cull(CULL_DISABLED).alpha(DEFAULT_ALPHA).transparency(TRANSLUCENT_TRANSPARENCY).build(false));
-    private static final RenderType SCREEN = RenderType.makeType(Reference.MOD_ID + ":screen_texture", DefaultVertexFormats.ENTITY, GL_QUADS, 256, true, false, RenderType.State.getBuilder().texturing(ScreenTextureState.instance()).lightmap(LIGHTMAP_ENABLED).overlay(OVERLAY_ENABLED).build(false));
-    private static final RenderType MUZZLE_FLASH = RenderType.makeType(Reference.MOD_ID + ":muzzle_flash", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL_QUADS, 256, true, false, RenderType.State.getBuilder().texture(new RenderState.TextureState(GunRenderingHandler.MUZZLE_FLASH_TEXTURE, false, false)).transparency(TRANSLUCENT_TRANSPARENCY).alpha(DEFAULT_ALPHA).cull(CULL_DISABLED).build(true));
+    private static final RenderType BULLET_TRAIL = RenderType.create(Reference.MOD_ID + ":projectile_trail", DefaultVertexFormats.POSITION_COLOR, GL_QUADS, 256, true, true, RenderType.State.builder().setCullState(NO_CULL).setAlphaState(DEFAULT_ALPHA).setTransparencyState(TRANSLUCENT_TRANSPARENCY).createCompositeState(false));
+    private static final RenderType SCREEN = RenderType.create(Reference.MOD_ID + ":screen_texture", DefaultVertexFormats.NEW_ENTITY, GL_QUADS, 256, true, false, RenderType.State.builder().setTexturingState(ScreenTextureState.instance()).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false));
+    private static final RenderType MUZZLE_FLASH = RenderType.create(Reference.MOD_ID + ":muzzle_flash", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL_QUADS, 256, true, false, RenderType.State.builder().setTextureState(new RenderState.TextureState(GunRenderingHandler.MUZZLE_FLASH_TEXTURE, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setAlphaState(DEFAULT_ALPHA).setCullState(NO_CULL).createCompositeState(true));
 
     private GunRenderType(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn)
     {

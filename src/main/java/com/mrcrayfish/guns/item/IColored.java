@@ -112,7 +112,7 @@ public interface IColored
 
             for(DyeItem dyeitem : dyes)
             {
-                float[] colorComponents = dyeitem.getDyeColor().getColorComponentValues();
+                float[] colorComponents = dyeitem.getDyeColor().getTextureDiffuseColors();
                 int red = (int) (colorComponents[0] * 255.0F);
                 int green = (int) (colorComponents[1] * 255.0F);
                 int blue = (int) (colorComponents[2] * 255.0F);

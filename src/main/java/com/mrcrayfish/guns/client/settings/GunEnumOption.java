@@ -49,7 +49,7 @@ public class GunEnumOption<E extends Enum<E> & IStringSerializable> extends Abst
         return e;
     }
 
-    public Widget createWidget(GameSettings options, int x, int y, int width)
+    public Widget createButton(GameSettings options, int x, int y, int width)
     {
         return new OptionButton(x, y, width, 20, this, this.getTitle(options), (button) -> {
             this.nextEnum(options);

@@ -27,7 +27,7 @@ public class ThrowableGrenadeRenderer extends EntityRenderer<ThrowableGrenadeEnt
 
     @Nullable
     @Override
-    public ResourceLocation getEntityTexture(ThrowableGrenadeEntity entity)
+    public ResourceLocation getTextureLocation(ThrowableGrenadeEntity entity)
     {
         return null;
     }
@@ -35,30 +35,30 @@ public class ThrowableGrenadeRenderer extends EntityRenderer<ThrowableGrenadeEnt
     @Override
     public void render(ThrowableGrenadeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        matrixStack.push();
+        matrixStack.pushPose();
 
         /* Makes the grenade face in the direction of travel */
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(entityYaw));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
 
         /* Offsets to the center of the grenade before applying rotation */
         float rotation = entity.prevRotation + (entity.rotation - entity.prevRotation) * partialTicks;
         matrixStack.translate(0, 0.15, 0);
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(-rotation));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-rotation));
         matrixStack.translate(0, -0.15, 0);
 
         if(entity instanceof ThrowableStunGrenadeEntity)
         {
-            matrixStack.translate(0, entity.getSize(Pose.STANDING).height / 2, 0);
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90F));
-            matrixStack.translate(0, -entity.getSize(Pose.STANDING).height / 2, 0);
+            matrixStack.translate(0, entity.getDimensions(Pose.STANDING).height / 2, 0);
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90F));
+            matrixStack.translate(0, -entity.getDimensions(Pose.STANDING).height / 2, 0);
         }
 
         /* */
         matrixStack.translate(0.0, 0.5, 0.0);
 
-        Minecraft.getInstance().getItemRenderer().renderItem(entity.getItem(), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
+        Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

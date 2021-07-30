@@ -32,7 +32,7 @@ public class MiniGunModel implements IOverrideModel
         rotations.prevRotation = rotations.rotation;
 
         boolean shooting = SyncedPlayerData.instance().get(entity, ModSyncedDataKeys.SHOOTING);
-        ItemStack heldItem = entity.getHeldItemMainhand();
+        ItemStack heldItem = entity.getMainHandItem();
         if(!Gun.hasAmmo(heldItem) && !entity.isCreative())
         {
             shooting = false;

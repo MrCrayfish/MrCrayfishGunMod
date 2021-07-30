@@ -30,9 +30,9 @@ public class DyeItemRecipe extends SpecialRecipe
         ItemStack item = ItemStack.EMPTY;
         List<ItemStack> dyes = new ArrayList<>();
 
-        for(int i = 0; i < inventory.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getContainerSize(); ++i)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 if(stack.getItem() instanceof IColored)
@@ -58,14 +58,14 @@ public class DyeItemRecipe extends SpecialRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inventory)
+    public ItemStack assemble(CraftingInventory inventory)
     {
         ItemStack item = ItemStack.EMPTY;
         List<DyeItem> dyes = new ArrayList<>();
 
-        for(int i = 0; i < inventory.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getContainerSize(); ++i)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 if(stack.getItem() instanceof IColored)
@@ -91,13 +91,13 @@ public class DyeItemRecipe extends SpecialRecipe
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return width * height >= 2;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return ItemStack.EMPTY;
     }
@@ -111,10 +111,10 @@ public class DyeItemRecipe extends SpecialRecipe
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inventory)
     {
-        NonNullList<ItemStack> remainingItems = NonNullList.withSize(inventory.getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> remainingItems = NonNullList.withSize(inventory.getContainerSize(), ItemStack.EMPTY);
         for(int i = 0; i < remainingItems.size(); ++i)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             remainingItems.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(stack));
         }
         return remainingItems;

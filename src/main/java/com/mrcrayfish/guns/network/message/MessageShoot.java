@@ -20,8 +20,8 @@ public class MessageShoot implements IMessage
 
     public MessageShoot(PlayerEntity player)
     {
-        this.rotationYaw = player.rotationYaw;
-        this.rotationPitch = player.rotationPitch;
+        this.rotationYaw = player.yRot;
+        this.rotationPitch = player.xRot;
     }
 
     @Override

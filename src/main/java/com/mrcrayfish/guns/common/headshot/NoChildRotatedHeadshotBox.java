@@ -24,7 +24,7 @@ public class NoChildRotatedHeadshotBox<T extends LivingEntity> extends RotatedHe
     @Override
     public AxisAlignedBB getHeadshotBox(T entity)
     {
-        if(entity.isChild()) return null;
+        if(entity.isBaby()) return null;
         return super.getHeadshotBox(entity);
     }
 }

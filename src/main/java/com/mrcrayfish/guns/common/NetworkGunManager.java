@@ -121,7 +121,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         buffer.writeVarInt(this.registeredGuns.size());
         this.registeredGuns.forEach((id, gun) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeCompoundTag(gun.serializeNBT());
+            buffer.writeNbt(gun.serializeNBT());
         });
     }
 
@@ -140,7 +140,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
             for(int i = 0; i < size; i++)
             {
                 ResourceLocation id = buffer.readResourceLocation();
-                Gun gun = Gun.create(buffer.readCompoundTag());
+                Gun gun = Gun.create(buffer.readNbt());
                 builder.put(id, gun);
             }
             return builder.build();

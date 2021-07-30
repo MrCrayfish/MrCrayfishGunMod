@@ -20,17 +20,17 @@ public class SyncedTileEntity extends TileEntity
 
     protected void syncToClient()
     {
-        this.markDirty();
-        if(this.world != null && !this.world.isRemote)
+        this.setChanged();
+        if(this.level != null && !this.level.isClientSide)
         {
-            if(this.world instanceof ServerWorld)
+            if(this.level instanceof ServerWorld)
             {
                 SUpdateTileEntityPacket packet = this.getUpdatePacket();
                 if(packet != null)
                 {
-                    ServerWorld server = (ServerWorld) this.world;
-                    Stream<ServerPlayerEntity> players = server.getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(this.pos), false);
-                    players.forEach(player -> player.connection.sendPacket(packet));
+                    ServerWorld server = (ServerWorld) this.level;
+                    Stream<ServerPlayerEntity> players = server.getChunkSource().chunkMap.getPlayers(new ChunkPos(this.worldPosition), false);
+                    players.forEach(player -> player.connection.send(packet));
                 }
             }
         }
@@ -39,18 +39,18 @@ public class SyncedTileEntity extends TileEntity
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 0, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt)
     {
-        this.deserializeNBT(pkt.getNbtCompound());
+        this.deserializeNBT(pkt.getTag());
     }
 }
