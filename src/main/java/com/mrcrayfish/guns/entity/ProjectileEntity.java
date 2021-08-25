@@ -787,12 +787,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         explosion.doExplosionA();
         explosion.doExplosionB(true);
 
-        // Clears the affected blocks if mode is none
-        if(mode == Explosion.Mode.NONE)
-        {
-            explosion.clearAffectedBlockPositions();
-        }
-
         // Send event to blocks that are exploded (none if mode is none)
         explosion.getAffectedBlockPositions().forEach(pos ->
         {
@@ -801,6 +795,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
             }
         });
+
+        // Clears the affected blocks if mode is none
+        if(mode == Explosion.Mode.NONE)
+        {
+            explosion.clearAffectedBlockPositions();
+        }
 
         for(ServerPlayerEntity player : ((ServerWorld) world).getPlayers())
         {
