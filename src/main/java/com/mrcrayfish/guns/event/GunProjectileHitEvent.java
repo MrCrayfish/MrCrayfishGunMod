@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.event;
 
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
@@ -9,6 +10,7 @@ import net.minecraftforge.eventbus.api.Event;
  *
  * @author Ocelot
  */
+@Cancelable
 public class GunProjectileHitEvent extends Event
 {
     private final RayTraceResult result;
