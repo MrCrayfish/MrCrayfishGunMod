@@ -97,10 +97,10 @@ public class ReloadTracker
             ammo.shrink(amount);
         }
 
-        ResourceLocation reloadSound = this.gun.getSounds().getReload();
+        SoundEvent reloadSound = ForgeRegistries.SOUND_EVENTS.getValue(this.gun.getSounds().getReload());
         if(reloadSound != null)
         {
-            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new MessageGunSound(reloadSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) player.getPosY() + 1.0F, (float) player.getPosZ(), 1.0F, 1.0F, player.getEntityId(), false));
+            player.world.playSound(null, player.getPosX(), player.getPosYEye(), player.getPosZ(), reloadSound, SoundCategory.PLAYERS, 1.0F, 1.0F);
         }
     }
 
