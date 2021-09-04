@@ -8,6 +8,7 @@ import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -107,23 +108,7 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
                     {
                         this.world.playSound(null, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
                     }
-                    Direction direction = blockResult.getFace();
-                    switch(direction.getAxis())
-                    {
-                        case X:
-                            this.setMotion(this.getMotion().mul(-0.5, 0.75, 0.75));
-                            break;
-                        case Y:
-                            this.setMotion(this.getMotion().mul(0.75, -0.25, 0.75));
-                            if(this.getMotion().getY() < this.getGravityVelocity())
-                            {
-                                this.setMotion(this.getMotion().mul(1, 0, 1));
-                            }
-                            break;
-                        case Z:
-                            this.setMotion(this.getMotion().mul(0.75, 0.75, -0.5));
-                            break;
-                    }
+                    this.bounce(blockResult.getFace());
                 }
                 else
                 {
@@ -134,12 +119,43 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
             case ENTITY:
                 EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
                 Entity entity = entityResult.getEntity();
-                if(entity != null)
+                if(this.shouldBounce)
                 {
-
+                    double speed = this.getMotion().length();
+                    if(speed > 0.1)
+                    {
+                        entity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), 1.0F);
+                    }
+                    this.bounce(Direction.getFacingFromVector(this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ()).getOpposite());
+                    this.setMotion(this.getMotion().mul(0.25, 1.0, 0.25));
+                }
+                else
+                {
+                    this.remove();
+                    this.onDeath();
                 }
                 break;
             default:
+                break;
+        }
+    }
+
+    private void bounce(Direction direction)
+    {
+        switch(direction.getAxis())
+        {
+            case X:
+                this.setMotion(this.getMotion().mul(-0.5, 0.75, 0.75));
+                break;
+            case Y:
+                this.setMotion(this.getMotion().mul(0.75, -0.25, 0.75));
+                if(this.getMotion().getY() < this.getGravityVelocity())
+                {
+                    this.setMotion(this.getMotion().mul(1, 0, 1));
+                }
+                break;
+            case Z:
+                this.setMotion(this.getMotion().mul(0.75, 0.75, -0.5));
                 break;
         }
     }
