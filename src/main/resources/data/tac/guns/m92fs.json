@@ -1,0 +1,50 @@
+{
+  "general": {
+    "rate": 4,
+    "rateSelector": [
+      0,
+      1
+    ],
+    "gripType": "tac:one_handed_m1911",
+    "maxAmmo": 15,
+    "reloadAmount": 3,
+    "recoilAngle": 4.45,
+    "horizontalRecoilAngle": 1.205,
+    "recoilKick": 1.90,
+    "recoilAdsReduction": 0.40,
+    "alwaysSpread": true,
+    "spread": 2.05
+  },
+  "projectile": {
+    "item": "tac:9mm_round",
+    "visible": false,
+    "damage": 6.0,
+    "size": 0.2,
+    "speed": 19.5,
+    "life": 4
+  },
+  "sounds": {
+    "fire": "tac:item.fire_m92fs",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.fire_m92fss"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 9.65,
+      "zOffset": -12.19,
+      "size": 0.7
+    },
+    "weaponType": 2
+  },
+  "modules": {
+    "zoom": [{
+      "fovModifier": 0.8,
+      "yOffset": 12.56,
+      "zOffset": -14.3
+    }],
+    "attachments": {
+
+    }
+  }
+}

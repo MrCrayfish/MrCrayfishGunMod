@@ -1,0 +1,17 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:bullet_308",
+    "count": 16
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 10
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 1
+    }
+  ]
+}

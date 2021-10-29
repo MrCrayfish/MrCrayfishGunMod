@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "tac:block/workbench",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "tac:block/workbench",
+      "y": -270
+    },
+    "facing=south": {
+      "model": "tac:block/workbench",
+      "y": -180
+    },
+    "facing=west": {
+      "model": "tac:block/workbench",
+      "y": -90
+    }
+  }
+}

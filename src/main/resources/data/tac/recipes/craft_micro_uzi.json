@@ -1,0 +1,12 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:micro_uzi"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 28
+    }
+  ]
+}

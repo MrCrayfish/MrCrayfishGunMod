@@ -1,0 +1,93 @@
+{
+	"credit": "Made with Blockbench, follow @CraneNeko on Twitter, the creator of this epic/texture!",
+	"textures": {
+		"3": "tac:items/m1928_body",
+		"particle": "tac:items/m1928_body"
+	},
+	"elements": [
+		{
+			"from": [7.75, 9.5625, 9.625],
+			"to": [8.25, 9.8125, 10.125],
+			"faces": {
+				"north": {"uv": [0, 0, 0.5, 0.25], "texture": "#3", "tintindex": 0},
+				"east": {"uv": [0, 0, 0.5, 0.25], "texture": "#3", "tintindex": 0},
+				"south": {"uv": [0, 0, 0.5, 0.25], "texture": "#3", "tintindex": 0},
+				"west": {"uv": [0, 0, 0.5, 0.25], "texture": "#3", "tintindex": 0},
+				"up": {"uv": [0, 0, 0.5, 0.5], "texture": "#3", "tintindex": 0},
+				"down": {"uv": [0, 0, 0.5, 0.5], "texture": "#3", "tintindex": 0}
+			}
+		},
+		{
+			"from": [7.75, 9.8125, 9.625],
+			"to": [7.875, 10.0625, 10.125],
+			"faces": {
+				"north": {"uv": [0, 0, 0.125, 0.25], "texture": "#3", "tintindex": 0},
+				"east": {"uv": [0, 0, 0.5, 0.25], "texture": "#3", "tintindex": 0},
+				"south": {"uv": [0, 0, 0.125, 0.25], "texture": "#3", "tintindex": 0},
+				"west": {"uv": [0, 0, 0.5, 0.25], "texture": "#3", "tintindex": 0},
+				"up": {"uv": [0, 0, 0.125, 0.5], "texture": "#3", "tintindex": 0},
+				"down": {"uv": [0, 0, 0.125, 0.5], "texture": "#3", "tintindex": 0}
+			}
+		},
+		{
+			"from": [8.125, 9.8125, 9.625],
+			"to": [8.25, 10.0625, 10.125],
+			"faces": {
+				"north": {"uv": [0, 0, 0.125, 0.25], "texture": "#3", "tintindex": 0},
+				"east": {"uv": [0, 0, 0.5, 0.25], "texture": "#3", "tintindex": 0},
+				"south": {"uv": [0, 0, 0.125, 0.25], "texture": "#3", "tintindex": 0},
+				"west": {"uv": [0, 0, 0.5, 0.25], "texture": "#3", "tintindex": 0},
+				"up": {"uv": [0, 0, 0.125, 0.5], "texture": "#3", "tintindex": 0},
+				"down": {"uv": [0, 0, 0.125, 0.5], "texture": "#3", "tintindex": 0}
+			}
+		},
+		{
+			"from": [7.8125, 9.3125, 9.6875],
+			"to": [8.1875, 9.8125, 10.0625],
+			"faces": {
+				"north": {"uv": [0, 0, 0.375, 0.5], "texture": "#3", "tintindex": 0},
+				"east": {"uv": [0, 0, 0.375, 0.5], "texture": "#3", "tintindex": 0},
+				"south": {"uv": [0, 0, 0.375, 0.5], "texture": "#3", "tintindex": 0},
+				"west": {"uv": [0, 0, 0.375, 0.5], "texture": "#3", "tintindex": 0},
+				"up": {"uv": [0, 0, 0.375, 0.375], "texture": "#3", "tintindex": 0},
+				"down": {"uv": [0, 0, 0.375, 0.375], "texture": "#3", "tintindex": 0}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 1.25, -1.25],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 1.25, -1.25],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 0, -5]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 0, -5]
+		},
+		"ground": {
+			"translation": [0, 1, 0],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"gui": {
+			"rotation": [30, -140, 0],
+			"translation": [0.25, 1, 0],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [-0.25, 0, -2.5]
+		}
+	},
+	"groups": [
+		{
+			"name": "bolt_1",
+			"origin": [0, 0, 0],
+			"children": [0, 1, 2, 3]
+		}
+	]
+}

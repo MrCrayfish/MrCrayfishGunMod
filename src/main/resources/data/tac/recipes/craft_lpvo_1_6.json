@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:lpvo_1_6"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 24
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 16
+    }
+  ]
+}

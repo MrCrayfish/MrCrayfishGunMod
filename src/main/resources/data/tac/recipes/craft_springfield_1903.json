@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:springfield_1903"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 42
+    },
+    {
+      "item": "minecraft:oak_log",
+      "count": 14
+    }
+  ]
+}

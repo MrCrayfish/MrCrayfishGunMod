@@ -1,0 +1,48 @@
+{
+  "general": {
+    "rate": 4,
+    "rateSelector": [
+      0,
+      1
+    ],
+    "gripType": "tac:one_handed_m1911",
+    "maxAmmo": 10,
+    "reloadAmount": 2,
+    "recoilAngle": 3.85,
+    "horizontalRecoilAngle": 1.025,
+    "recoilKick": 1.95,
+    "recoilAdsReduction": 0.50,
+    "alwaysSpread": true,
+    "spread": 1.55
+  },
+  "projectile": {
+    "item": "tac:round45",
+    "visible": false,
+    "damage": 8,
+    "size": 0.2,
+    "speed": 20.0,
+    "life": 6
+  },
+  "sounds": {
+    "fire": "tac:item.fire_m1911",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.fire_m1911s"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 12.3,
+      "zOffset": -13.32,
+      "size": 1.1
+    },
+    "weaponType": 2
+  },
+  "modules": {
+    "zoom": [{
+      "fovModifier": 0.7,
+      "yOffset": 13.685,
+      "zOffset": -12.6
+    }]
+
+  }
+}

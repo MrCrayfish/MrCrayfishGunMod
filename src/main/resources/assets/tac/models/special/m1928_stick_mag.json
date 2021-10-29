@@ -1,0 +1,82 @@
+{
+	"credit": "Made with Blockbench, follow @CraneNeko on Twitter, the creator of this epic/texture!",
+	"textures": {
+		"5": "tac:items/m1928_body",
+		"particle": "tac:items/m1928_body"
+	},
+	"elements": [
+		{
+			"from": [7.75, -1.9375, 8.625],
+			"to": [8.25, 7.8125, 8.875],
+			"faces": {
+				"north": {"uv": [0, 0, 0.5, 9.75], "texture": "#5"},
+				"east": {"uv": [0, 0, 0.25, 9.75], "texture": "#5"},
+				"south": {"uv": [0, 0, 0.5, 9.75], "texture": "#5"},
+				"west": {"uv": [0, 0, 0.25, 9.75], "texture": "#5"},
+				"up": {"uv": [0, 0, 0.5, 0.25], "texture": "#5"},
+				"down": {"uv": [0, 0, 0.5, 0.25], "texture": "#5"}
+			}
+		},
+		{
+			"from": [7.5, -1.9375, 8.875],
+			"to": [8.5, 7.8125, 9],
+			"faces": {
+				"north": {"uv": [0, 0, 1, 9.75], "texture": "#5"},
+				"east": {"uv": [0, 0, 0.125, 9.75], "texture": "#5"},
+				"south": {"uv": [0, 0, 1, 9.75], "texture": "#5"},
+				"west": {"uv": [0, 0, 0.125, 9.75], "texture": "#5"},
+				"up": {"uv": [0, 0, 1, 0.125], "texture": "#5"},
+				"down": {"uv": [0, 0, 1, 0.125], "texture": "#5"}
+			}
+		},
+		{
+			"from": [7.25, -1.9375, 6.625],
+			"to": [8.75, 7.8125, 8.625],
+			"faces": {
+				"north": {"uv": [4, 0, 6, 10], "texture": "#5"},
+				"east": {"uv": [0, 0, 2, 9.5], "texture": "#5"},
+				"south": {"uv": [0, 0, 1.5, 9.5], "texture": "#5"},
+				"west": {"uv": [2, 0, 4, 9.5], "texture": "#5"},
+				"up": {"uv": [0, 0, 1.5, 2], "texture": "#5"},
+				"down": {"uv": [2, 0, 3.5, 2], "texture": "#5"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 1.25, -1.25],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 1.25, -1.25],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 0, -5]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 0, -5]
+		},
+		"ground": {
+			"translation": [0, 1, 0],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"gui": {
+			"rotation": [30, -140, 0],
+			"translation": [0.25, 1, 0],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [-0.25, 0.5, -2.5],
+			"scale": [1.2, 1.2, 1.2]
+		}
+	},
+	"groups": [
+		{
+			"name": "magazine_2",
+			"origin": [0, 0, 0],
+			"children": [0, 1, 2]
+		}
+	]
+}

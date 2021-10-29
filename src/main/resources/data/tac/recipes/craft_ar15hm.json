@@ -1,0 +1,12 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:ar_15_hellmouth"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 70
+    }
+  ]
+}

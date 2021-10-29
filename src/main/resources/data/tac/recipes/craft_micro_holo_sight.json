@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:micro_holo_sight"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 14
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 2
+    }
+  ]
+}

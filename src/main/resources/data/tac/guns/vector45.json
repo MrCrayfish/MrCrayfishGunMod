@@ -1,0 +1,73 @@
+{
+  "general": {
+    "auto": true,
+    "rate": 1,
+    "rateSelector": [
+      0,
+      2
+    ],
+    "gripType": "tac:two_handed_vector",
+    "maxAmmo": 20,
+    "reloadAmount": 5,
+    "recoilAngle": 6.545,
+    "horizontalRecoilAngle": 0.85,
+    "recoilKick": 1.485,
+    "recoilAdsReduction": 0.28,
+    "alwaysSpread": true,
+    "spread": 8.65
+  },
+  "projectile": {
+    "item": "tac:round45",
+    "visible": false,
+    "damage": 3.0,
+    "size": 0.2,
+    "speed": 22.5,
+    "life": 3
+  },
+  "sounds": {
+    "fire": "tac:item.fire_m92fs",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.mtar_fire_s"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 11.35,
+      "zOffset": -11.0,
+      "size": 1.10
+    },
+    "hipfireScale": 0.425,
+    "hipfireMoveScale": 0.725,
+    "hipfireRecoilScale": 0.95,
+    "weaponType": 4
+  },
+  "modules": {
+    "zoom": [{
+      "fovModifier": 0.60,
+      "yOffset": 14.80,
+      "zOffset": 3.75
+    }],
+    "attachments": {
+      "barrel": {
+        "yOffset": -100829.84,
+        "zOffset": -11.55,
+        "scale": 1.00
+      },
+      "scope": {
+        "yOffset": 13.35,
+        "zOffset": -1.8,
+        "scale": 1.00
+      },
+      "stock": {
+        "yOffset": 7.75,
+        "zOffset": -22.05,
+        "scale": 0.00
+      },
+      "underBarrel": {
+        "yOffset": 7.799,
+        "zOffset": -2.35,
+        "scale": 0.00
+      }
+    }
+  }
+}

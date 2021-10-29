@@ -1,0 +1,49 @@
+{
+  "general": {
+    "rate": 3,
+    "rateSelector": [
+      0,
+      1
+    ],
+    "gripType": "tac:one_handed_m1911",
+    "maxAmmo": 16,
+    "reloadAmount": 4,
+    "recoilAngle": 3.4,
+    "horizontalRecoilAngle": 1.125,
+    "recoilKick": 1.75,
+    "recoilAdsReduction": 0.45,
+    "alwaysSpread": true,
+    "spread": 1.8
+  },
+  "projectile": {
+    "item": "tac:9mm_round",
+    "visible": false,
+    "damage": 5.0,
+    "size": 0.2,
+    "speed": 17.0,
+    "life": 4
+  },
+  "sounds": {
+    "fire": "tac:item.fire_glock",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.fire_glocks"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 9.65,
+      "zOffset": -12.19,
+      "size": 0.7
+    },
+    "weaponType": 2
+  },
+  "modules": {
+    "zoom": [{
+      "fovModifier": 0.8,
+      "yOffset": 11.965,
+      "zOffset": -15.6
+    }],
+    "attachments": {
+    }
+  }
+}

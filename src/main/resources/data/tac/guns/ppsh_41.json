@@ -1,0 +1,50 @@
+{
+  "general": {
+    "auto": true,
+    "rate": 1,
+    "rateSelector": [
+      0,
+      1,
+      2
+    ],
+    "gripType": "tac:two_handed_ak47",
+    "maxAmmo": 35,
+    "reloadAmount": 5,
+    "recoilAngle": 0.8,
+    "horizontalRecoilAngle": 0.60,
+    "recoilKick": 0.25,
+    "recoilAdsReduction": 0.38,
+    "alwaysSpread": true,
+    "spread": 3.25
+  },
+  "projectile": {
+    "item": "tac:762x25",
+    "visible": false,
+    "damage": 2.5,
+    "size": 0.2,
+    "speed": 28.5,
+    "life": 3
+  },
+  "sounds": {
+    "fire": "tac:item.fire_m1911",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.fire_m1911s"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 8.8,
+      "zOffset": -21.15,
+      "size": 0.7
+    },
+    "weaponType": 4
+  },
+  "modules": {
+    "zoom": [{
+      "fovModifier": 0.6,
+      "yOffset": 10.42,
+      "zOffset": 1.6
+    }],
+    "attachments": {}
+  }
+}

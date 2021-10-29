@@ -3,10 +3,10 @@ loaderVersion="[32,)"
 license="GPL3"
 
 [[mods]]
-modId="cgm"
-version="1.0.1"
-displayName="MrCrayfish's Gun Mod"
-updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/cgm/update.json"
+modId="tac"
+version="1.0.0"
+displayName="Timeless and Classics"
+updateJSONURL=""
 displayURL="https://mrcrayfish.com/"
 authors="MrCrayfish"
 description='''
@@ -15,27 +15,21 @@ configured with many different attachments to add extra stats to your weapon and
 personal liking. This mod adds ten weapons into the game!
 '''
 
-[[dependencies.cgm]]
+[[dependencies.tac]]
     modId="forge"
     mandatory=true
     versionRange="[32,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.cgm]]
+[[dependencies.tac]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.16.3,1.17)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.cgm]]
+[[dependencies.tac]]
     modId="obfuscate"
     mandatory=true
     versionRange="[0.6.0,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.cgm]]
-    modId="controllable"
-    mandatory=false
-    versionRange="[0.10.3,)"
-    ordering="AFTER"
-    side="CLIENT"

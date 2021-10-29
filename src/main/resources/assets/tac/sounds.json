@@ -1,0 +1,152 @@
+{
+   "item.fire_m1911": {
+      "subtitle": "subtitle.tac.fire_1911fire",
+      "sounds": [
+         { "name": "tac:item/1911_fire" }
+      ]
+   },
+   "item.fire_m1911s": {
+      "subtitle": "subtitle.tac.fire_1911fires",
+      "sounds": [
+         { "name": "tac:item/1911supressed_fire" }
+      ]
+   },
+   "item.fire_mosin-nagant": {
+      "subtitle": "subtitle.tac.fire_mosin-nagantfire",
+      "sounds": [
+         { "name": "tac:item/mosin-nagant_fire" }
+      ]
+   },
+   "item.fire_30-30": {
+      "subtitle": "subtitle.tac.fire_30-30fire",
+      "sounds": [
+         { "name": "tac:item/30-30_fire" }
+      ]
+   },
+   "item.fire_ak74": {
+      "subtitle": "subtitle.tac.fire_ak74fire",
+      "sounds": [
+         { "name": "tac:item/ak74_fire" }
+      ]
+   },
+   "item.fire_ak74s": {
+      "subtitle": "subtitle.tac.fire_ak74fires",
+      "sounds": [
+         { "name": "tac:item/ak74_fire_supressed" }
+      ]
+   },
+   "item.fire_ak47": {
+      "subtitle": "subtitle.tac.fire_ak47fire",
+      "sounds": [
+         { "name": "tac:item/ak_fire_47" }
+      ]
+   },
+   "item.fire_ak47s": {
+      "subtitle": "subtitle.tac.fire_ak47fires",
+      "sounds": [
+         { "name": "tac:item/ak_fire_supressed_47" }
+      ]
+   },
+   "item.fire_dp28": {
+      "subtitle": "subtitle.tac.fire_dp28fire",
+      "sounds": [
+         { "name": "tac:item/dp28_fire" }
+      ]
+   },
+   "item.fire_glock": {
+      "subtitle": "subtitle.tac.fire_glockfire",
+      "sounds": [
+         { "name": "tac:item/glock_fire" }
+      ]
+   },
+   "item.fire_glocks": {
+      "subtitle": "subtitle.tac.fire_glockfires",
+      "sounds": [
+         { "name": "tac:item/glock_suppressed_fire" }
+      ]
+   },
+   "item.fire_m16": {
+      "subtitle": "subtitle.tac.fire_m16fire",
+      "sounds": [
+         { "name": "tac:item/m16_fire" }
+      ]
+   },
+   "item.fire_m16s": {
+      "subtitle": "subtitle.tac.fire_m16fires",
+      "sounds": [
+         { "name": "tac:item/m16_fire_suppressed" }
+      ]
+   },
+   "item.fire_m60": {
+      "subtitle": "subtitle.tac.fire_m60fire",
+      "sounds": [
+         { "name": "tac:item/m60_fire_opt1" }
+      ]
+   },
+   "item.fire_m92fs": {
+      "subtitle": "subtitle.tac.fire_m92fsfire",
+      "sounds": [
+         { "name": "tac:item/m92fs_fire" }
+      ]
+   },
+   "item.fire_m92fss": {
+      "subtitle": "subtitle.tac.fire_m92fsfires",
+      "sounds": [
+         { "name": "tac:item/m92fs_fire_suppressed" }
+      ]
+   },
+   "item.fire_m1851": {
+      "subtitle": "subtitle.tac.fire_m1851fire",
+      "sounds": [
+         { "name": "tac:item/m1851_fire" }
+      ]
+   },
+   "item.fire_thompson": {
+      "subtitle": "subtitle.tac.fire_thompsonfire",
+      "sounds": [
+         { "name": "tac:item/thompson_fire" }
+      ]
+   },
+   "item.fire_db": {
+      "subtitle": "subtitle.tac.fire_dbfire",
+      "sounds": [
+         { "name": "tac:item/db_fire" }
+      ]
+   },
+   "item.dmr_fire": {
+      "subtitle": "subtitle.tac.dmr_fire",
+      "sounds": [
+         { "name": "tac:item/dmr_fire" }
+      ]
+   },
+   "item.dmr_fire_s": {
+      "subtitle": "subtitle.tac.dmr_fire_s",
+      "sounds": [
+         { "name": "tac:item/dmr_fire_s" }
+      ]
+   },
+   "item.modern_sniper_fire": {
+      "subtitle": "subtitle.modern_sniper_fire",
+      "sounds": [
+         { "name": "tac:item/modern_sniper_fire" }
+      ]
+   },
+   "item.mtar_fire": {
+      "subtitle": "subtitle.tac.mtar_fire",
+      "sounds": [
+         { "name": "tac:item/mtar_fire" }
+      ]
+   },
+   "item.mtar_fire_s": {
+      "subtitle": "subtitle.tac.mtar_fire_s",
+      "sounds": [
+         { "name": "tac:item/mtar_fire_s" }
+      ]
+   },
+   "item.headshot": {
+      "subtitle": "subtitle.tac.headshot",
+      "sounds": [
+         { "name": "tac:item/headshot" }
+      ]
+   }
+}

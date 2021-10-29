@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:aimpoint_t1"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 26
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 4
+    }
+  ]
+}
