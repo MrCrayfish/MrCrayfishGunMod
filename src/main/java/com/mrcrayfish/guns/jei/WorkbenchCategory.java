@@ -114,7 +114,14 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
                 itemInputs.add(Stream.of(this.dyes).map(ItemStack::new).collect(Collectors.toList()));
             }
         }
-        recipe.getMaterials().forEach(material -> itemInputs.add(Arrays.asList(material.getMatchingStacks())));
+        recipe.getMaterials().forEach(material ->
+        {
+            itemInputs.add(Arrays.stream(material.getMatchingStacks()).map(stack -> {
+                ItemStack copy = stack.copy();
+                copy.setCount(material.getCount());
+                return copy;
+            }).collect(Collectors.toList()));
+        });
         ingredients.setInputLists(VanillaTypes.ITEM, itemInputs);
         ingredients.setOutput(VanillaTypes.ITEM,recipe.getItem());
     }
@@ -146,7 +153,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
     {
         this.window.draw(matrixStack, 0, 0);
         this.inventory.draw(matrixStack, 0, this.window.getHeight() + 2 + 11 + 2);
-        this.dyeSlot.draw(matrixStack, 139, 50);
+        this.dyeSlot.draw(matrixStack, 140, 51);
 
         Minecraft.getInstance().fontRenderer.drawString(matrixStack, I18n.format(MATERIALS_KEY), 0, 78, 0x7E7E7E);
 
