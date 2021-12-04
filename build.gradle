@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.0.1-1.16.4"
+version = "1.0.1-1.16.5"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
@@ -98,11 +98,13 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.65'
-    compile fg.deobf('curse.maven:obfuscate-289380:3169370')
-    compile fg.deobf('curse.maven:controllable-317269:3196545')
-    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.51")
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.0'
+    compile fg.deobf('curse.maven:obfuscate-289380:3336021')
+    compile fg.deobf('curse.maven:controllable-317269:3519536')
+    compile fg.deobf('curse.maven:configured-457570:3546348')
+    compile fg.deobf('curse.maven:catalogue-459701:3529457')
+    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.137:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.137")
 }
 
 jar {
