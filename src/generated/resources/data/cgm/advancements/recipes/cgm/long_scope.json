@@ -11,7 +11,27 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "tag": "forge:nuggets/iron"
+          }
+        ]
+      }
+    },
+    "has_glass_pane": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:glass_panes"
+          }
+        ]
+      }
+    },
+    "has_black_dye": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dyes/black"
           }
         ]
       }
@@ -26,6 +46,8 @@
   "requirements": [
     [
       "has_iron_ingot",
+      "has_glass_pane",
+      "has_black_dye",
       "has_the_recipe"
     ]
   ]

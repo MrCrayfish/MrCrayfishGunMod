@@ -36,6 +36,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,7 +114,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
                 itemInputs.add(Stream.of(this.dyes).map(ItemStack::new).collect(Collectors.toList()));
             }
         }
-        recipe.getMaterials().forEach(material -> itemInputs.add(Collections.singletonList(material.copy())));
+        recipe.getMaterials().forEach(material -> itemInputs.add(Arrays.asList(material.getMatchingStacks())));
         ingredients.setInputLists(VanillaTypes.ITEM, itemInputs);
         ingredients.setOutput(VanillaTypes.ITEM,recipe.getItem());
     }

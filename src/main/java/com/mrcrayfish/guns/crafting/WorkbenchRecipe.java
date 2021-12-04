@@ -3,10 +3,13 @@ package com.mrcrayfish.guns.crafting;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.guns.init.ModRecipeSerializers;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
+import com.mrcrayfish.guns.util.InventoryUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -17,15 +20,13 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
 {
     private final ResourceLocation id;
     private final ItemStack item;
-    private final ImmutableList<ItemStack> materials;
-    private final String group;
+    private final ImmutableList<WorkbenchIngredient> materials;
 
-    public WorkbenchRecipe(ResourceLocation id, ItemStack item, ImmutableList<ItemStack> materials, String group)
+    public WorkbenchRecipe(ResourceLocation id, ItemStack item, ImmutableList<WorkbenchIngredient> materials)
     {
         this.id = id;
         this.item = item;
         this.materials = materials;
-        this.group = group;
     }
 
     public ItemStack getItem()
@@ -33,7 +34,7 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
         return this.item.copy();
     }
 
-    public ImmutableList<ItemStack> getMaterials()
+    public ImmutableList<WorkbenchIngredient> getMaterials()
     {
         return this.materials;
     }
@@ -80,9 +81,23 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
         return RecipeType.WORKBENCH;
     }
 
-    @Override
-    public String getGroup()
+    public boolean hasMaterials(PlayerEntity player)
     {
-        return group;
+        for(WorkbenchIngredient ingredient : this.getMaterials())
+        {
+            if(!InventoryUtil.hasWorkstationIngredient(player, ingredient))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void consumeMaterials(PlayerEntity player)
+    {
+        for(WorkbenchIngredient ingredient : this.getMaterials())
+        {
+            InventoryUtil.removeWorkstationIngredient(player, ingredient);
+        }
     }
 }

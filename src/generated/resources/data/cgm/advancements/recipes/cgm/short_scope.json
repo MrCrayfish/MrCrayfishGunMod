@@ -11,7 +11,17 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "tag": "forge:nuggets/iron"
+          }
+        ]
+      }
+    },
+    "has_glass_pane": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:glass_panes"
           }
         ]
       }
@@ -21,7 +31,7 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:redstone"
+            "tag": "forge:dusts/redstone"
           }
         ]
       }
@@ -36,6 +46,7 @@
   "requirements": [
     [
       "has_iron_ingot",
+      "has_glass_pane",
       "has_redstone",
       "has_the_recipe"
     ]

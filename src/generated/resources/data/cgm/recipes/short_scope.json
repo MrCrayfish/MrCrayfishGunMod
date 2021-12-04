@@ -2,14 +2,15 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "item": "minecraft:iron_ingot",
+      "tag": "forge:nuggets/iron",
       "count": 2
     },
     {
-      "item": "minecraft:glass_pane"
+      "tag": "forge:glass_panes",
+      "count": 1
     },
     {
-      "item": "minecraft:redstone",
+      "tag": "forge:dusts/redstone",
       "count": 2
     }
   ],

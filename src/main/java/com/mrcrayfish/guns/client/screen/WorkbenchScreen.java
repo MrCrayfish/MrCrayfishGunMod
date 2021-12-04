@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
+import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.init.ModItems;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -69,7 +71,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         super(container, playerInventory, title);
         this.playerInventory = playerInventory;
         this.workbench = container.getWorkbench();
-        this.xSize = 256;
+        this.xSize = 275;
         this.ySize = 184;
         this.materials = new ArrayList<>();
         this.createTabs(WorkbenchRecipes.getAll(playerInventory.player.world));
@@ -205,7 +207,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         for(MaterialItem material : this.materials)
         {
-            material.update();
+            material.tick();
         }
 
         boolean canCraft = true;
@@ -283,13 +285,13 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         this.materials.clear();
 
-        List<ItemStack> materials = recipe.getMaterials();
-        if(materials != null)
+        List<WorkbenchIngredient> ingredients = recipe.getMaterials();
+        if(ingredients != null)
         {
-            for(ItemStack material : materials)
+            for(WorkbenchIngredient ingredient : ingredients)
             {
-                MaterialItem item = new MaterialItem(material);
-                item.update();
+                MaterialItem item = new MaterialItem(ingredient);
+                item.updateEnabledState();
                 this.materials.add(item);
             }
 
@@ -323,9 +325,9 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             if(RenderUtil.isMouseWithin(mouseX, mouseY, itemX, itemY, 80, 19))
             {
                 MaterialItem materialItem = this.filteredMaterials.get(i);
-                if(!materialItem.getStack().isEmpty())
+                if(materialItem != MaterialItem.EMPTY)
                 {
-                    this.renderTooltip(matrixStack, materialItem.getStack(), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, materialItem.getDisplayStack(), mouseX, mouseY);
                     return;
                 }
             }
@@ -439,7 +441,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             this.minecraft.getTextureManager().bindTexture(GUI_BASE);
 
             MaterialItem materialItem = this.filteredMaterials.get(i);
-            ItemStack stack = materialItem.stack;
+            ItemStack stack = materialItem.getDisplayStack();
             if(!stack.isEmpty())
             {
                 RenderHelper.disableStandardItemLighting();
@@ -476,8 +478,8 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
     private List<MaterialItem> getMaterials()
     {
-        List<MaterialItem> materials = NonNullList.withSize(6, new MaterialItem(ItemStack.EMPTY));
-        List<MaterialItem> filteredMaterials = this.materials.stream().filter(materialItem -> this.checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : !materialItem.stack.isEmpty()).collect(Collectors.toList());
+        List<MaterialItem> materials = NonNullList.withSize(6, MaterialItem.EMPTY);
+        List<MaterialItem> filteredMaterials = this.materials.stream().filter(materialItem -> this.checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : materialItem != MaterialItem.EMPTY).collect(Collectors.toList());
         for(int i = 0; i < filteredMaterials.size() && i < materials.size(); i++)
         {
             materials.set(i, filteredMaterials.get(i));
@@ -494,32 +496,56 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
     {
         public static final MaterialItem EMPTY = new MaterialItem();
 
+        private long lastTime = System.currentTimeMillis();
+        private int displayIndex;
         private boolean enabled = false;
-        private ItemStack stack = ItemStack.EMPTY;
+        private WorkbenchIngredient ingredient;
+        private final List<ItemStack> displayStacks = new ArrayList<>();
 
         private MaterialItem() {}
 
-        private MaterialItem(ItemStack stack)
+        private MaterialItem(WorkbenchIngredient ingredient)
         {
-            this.stack = stack;
+            this.ingredient = ingredient;
+            Stream.of(ingredient.getMatchingStacks()).forEach(stack -> {
+                ItemStack displayStack = stack.copy();
+                displayStack.setCount(ingredient.getCount());
+                this.displayStacks.add(displayStack);
+            });
         }
 
-        public ItemStack getStack()
+        public WorkbenchIngredient getIngredient()
         {
-            return stack;
+            return this.ingredient;
         }
 
-        public void update()
+        public void tick()
         {
-            if(!this.stack.isEmpty())
+            if(this.ingredient == null)
+                return;
+
+            this.updateEnabledState();
+            long currentTime = System.currentTimeMillis();
+            if(currentTime - this.lastTime >= 1000)
             {
-                this.enabled = InventoryUtil.hasItemStack(Minecraft.getInstance().player, this.stack);
+                this.displayIndex = (this.displayIndex + 1) % this.displayStacks.size();
+                this.lastTime = currentTime;
             }
+        }
+
+        public ItemStack getDisplayStack()
+        {
+            return this.ingredient != null ? this.displayStacks.get(this.displayIndex) : ItemStack.EMPTY;
+        }
+
+        public void updateEnabledState()
+        {
+            this.enabled = InventoryUtil.hasWorkstationIngredient(Minecraft.getInstance().player, this.ingredient);
         }
 
         public boolean isEnabled()
         {
-            return this.stack.isEmpty() || this.enabled;
+            return this.ingredient == null || this.enabled;
         }
     }
 

@@ -2,14 +2,15 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:nuggets/iron",
+      "count": 1
     },
     {
-      "item": "minecraft:gunpowder",
+      "tag": "forge:gunpowder",
       "count": 2
     },
     {
-      "item": "minecraft:glowstone_dust",
+      "tag": "forge:dusts/glowstone",
       "count": 4
     }
   ],

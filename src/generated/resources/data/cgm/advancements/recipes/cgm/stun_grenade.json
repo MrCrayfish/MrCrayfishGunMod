@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "tag": "forge:nuggets/iron"
           }
         ]
       }
@@ -21,7 +21,7 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:gunpowder"
+            "tag": "forge:gunpowder"
           }
         ]
       }
@@ -31,7 +31,7 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:glowstone_dust"
+            "tag": "forge:dusts/glowstone"
           }
         ]
       }

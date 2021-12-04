@@ -4,14 +4,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -19,47 +22,46 @@ import javax.annotation.Nullable;
 public class WorkbenchRecipeSerializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<WorkbenchRecipe>
 {
     @Override
-    public WorkbenchRecipe read(ResourceLocation recipeId, JsonObject json)
+    public WorkbenchRecipe read(ResourceLocation recipeId, JsonObject parent)
     {
-        String group = JSONUtils.getString(json, "group", "");
-        ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
-        JsonArray input = JSONUtils.getJsonArray(json, "materials");
+        ImmutableList.Builder<WorkbenchIngredient> builder = ImmutableList.builder();
+        JsonArray input = JSONUtils.getJsonArray(parent, "materials");
         for(int i = 0; i < input.size(); i++)
         {
-            JsonObject itemObject = input.get(i).getAsJsonObject();
-            ItemStack stack = ShapedRecipe.deserializeItem(itemObject);
-            builder.add(stack);
+            JsonObject object = input.get(i).getAsJsonObject();
+            builder.add(WorkbenchIngredient.fromJson(object));
         }
-        if(!json.has("result"))
-            throw new JsonSyntaxException("Missing vehicle entry");
-
-        JsonObject resultObject = JSONUtils.getJsonObject(json, "result");
+        if(!parent.has("result"))
+        {
+            throw new JsonSyntaxException("Missing result item entry");
+        }
+        JsonObject resultObject = JSONUtils.getJsonObject(parent, "result");
         ItemStack resultItem = ShapedRecipe.deserializeItem(resultObject);
-        return new WorkbenchRecipe(recipeId, resultItem, builder.build(), group);
+        return new WorkbenchRecipe(recipeId, resultItem, builder.build());
     }
 
     @Nullable
     @Override
     public WorkbenchRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
     {
-        String group = buffer.readString();
         ItemStack result = buffer.readItemStack();
-        ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
+        ImmutableList.Builder<WorkbenchIngredient> builder = ImmutableList.builder();
         int size = buffer.readVarInt();
         for(int i = 0; i < size; i++)
-            builder.add(buffer.readItemStack());
-        return new WorkbenchRecipe(recipeId, result, builder.build(), group);
+        {
+            builder.add((WorkbenchIngredient) Ingredient.read(buffer));
+        }
+        return new WorkbenchRecipe(recipeId, result, builder.build());
     }
 
     @Override
     public void write(PacketBuffer buffer, WorkbenchRecipe recipe)
     {
-        buffer.writeString(recipe.getGroup());
         buffer.writeItemStack(recipe.getItem());
         buffer.writeVarInt(recipe.getMaterials().size());
-        for(ItemStack stack : recipe.getMaterials())
+        for(WorkbenchIngredient ingredient : recipe.getMaterials())
         {
-            buffer.writeItemStack(stack);
+            ingredient.write(buffer);
         }
     }
 }

@@ -2,15 +2,16 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "item": "minecraft:iron_ingot",
+      "tag": "forge:nuggets/iron",
       "count": 6
     },
     {
-      "item": "minecraft:glass_pane",
+      "tag": "forge:glass_panes",
       "count": 2
     },
     {
-      "item": "minecraft:black_dye"
+      "tag": "forge:dyes/black",
+      "count": 1
     }
   ],
   "result": {

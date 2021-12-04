@@ -2,11 +2,12 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "item": "minecraft:iron_nugget",
+      "tag": "forge:nuggets/iron",
       "count": 4
     },
     {
-      "item": "minecraft:gunpowder"
+      "tag": "forge:gunpowder",
+      "count": 1
     }
   ],
   "result": {

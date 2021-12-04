@@ -8,6 +8,7 @@ import com.mrcrayfish.guns.common.ShootTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
+import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
@@ -27,6 +28,7 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -35,6 +37,7 @@ import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.util.Hand;
@@ -60,7 +63,7 @@ import java.util.function.Predicate;
  */
 public class ServerPlayHandler
 {
-    private static final Predicate<LivingEntity> HOSTILE_ENTITIES = entity -> entity.getSoundCategory() == SoundCategory.HOSTILE && !Config.COMMON.aggroMobs.exemptEntities.get().contains(entity.getType().getRegistryName().toString());
+    private static final Predicate<LivingEntity> HOSTILE_ENTITIES = entity -> entity.getSoundCategory() == SoundCategory.HOSTILE && !(entity instanceof IAngerable) && !Config.COMMON.aggroMobs.exemptEntities.get().contains(entity.getType().getRegistryName().toString());
 
     /**
      * Fires the weapon the player is currently holding.
@@ -129,7 +132,7 @@ public class ServerPlayHandler
 
                     if(Config.COMMON.aggroMobs.enabled.get())
                     {
-                        double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.COMMON.aggroMobs.range.get());
+                        double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.COMMON.aggroMobs.unsilencedRange.get());
                         double x = player.getPosX();
                         double y = player.getPosY() + 0.5;
                         double z = player.getPosZ();
@@ -220,47 +223,30 @@ public class ServerPlayHandler
             if(workbench.getPos().equals(pos))
             {
                 WorkbenchRecipe recipe = WorkbenchRecipes.getRecipeById(world, id);
-                if(recipe == null)
-                {
+                if(recipe == null || !recipe.hasMaterials(player))
                     return;
-                }
 
-                List<ItemStack> materials = recipe.getMaterials();
-                if(materials != null)
+                recipe.consumeMaterials(player);
+
+                WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
+
+                /* Gets the color based on the dye */
+                ItemStack stack = recipe.getItem();
+                ItemStack dyeStack = workbenchTileEntity.getInventory().get(0);
+                if(dyeStack.getItem() instanceof DyeItem)
                 {
-                    for(ItemStack stack : materials)
+                    DyeItem dyeItem = (DyeItem) dyeStack.getItem();
+                    int color = dyeItem.getDyeColor().getColorValue();
+
+                    if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor(stack))
                     {
-                        if(!InventoryUtil.hasItemStack(player, stack))
-                        {
-                            return;
-                        }
+                        IColored colored = (IColored) stack.getItem();
+                        colored.setColor(stack, color);
+                        workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
                     }
-
-                    for(ItemStack stack : materials)
-                    {
-                        InventoryUtil.removeItemStack(player, stack);
-                    }
-
-                    WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
-
-                    /* Gets the color based on the dye */
-                    ItemStack stack = recipe.getItem();
-                    ItemStack dyeStack = workbenchTileEntity.getInventory().get(0);
-                    if(dyeStack.getItem() instanceof DyeItem)
-                    {
-                        DyeItem dyeItem = (DyeItem) dyeStack.getItem();
-                        int color = dyeItem.getDyeColor().getColorValue();
-
-                        if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor(stack))
-                        {
-                            IColored colored = (IColored) stack.getItem();
-                            colored.setColor(stack, color);
-                            workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
-                        }
-                    }
-
-                    InventoryHelper.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack);
                 }
+
+                InventoryHelper.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack);
             }
         }
     }
