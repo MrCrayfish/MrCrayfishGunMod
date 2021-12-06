@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -64,6 +65,10 @@ public class GrenadeItem extends AmmoItem
                 stack.shrink(1);
             ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, 0);
             grenade.onDeath();
+            if(entityLiving instanceof PlayerEntity)
+            {
+                ((PlayerEntity) entityLiving).addStat(Stats.ITEM_USED.get(this));
+            }
         }
         return stack;
     }
@@ -82,6 +87,10 @@ public class GrenadeItem extends AmmoItem
                 grenade.func_234612_a_(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
                 worldIn.addEntity(grenade);
                 this.onThrown(worldIn, grenade);
+                if(entityLiving instanceof PlayerEntity)
+                {
+                    ((PlayerEntity) entityLiving).addStat(Stats.ITEM_USED.get(this));
+                }
             }
         }
     }
