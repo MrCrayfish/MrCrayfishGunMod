@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.common;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
@@ -96,8 +97,9 @@ public class ReloadTracker
         ResourceLocation reloadSound = this.gun.getSounds().getReload();
         if(reloadSound != null)
         {
+            double radius = Config.SERVER.reloadMaxDistance.get();
             MessageGunSound message = new MessageGunSound(reloadSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) player.getPosY() + 1.0F, (float) player.getPosZ(), 1.0F, 1.0F, player.getEntityId(), false, true);
-            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), (player.getPosY() + 1.0), player.getPosZ(), 16.0, player.world.getDimensionKey())), message);
+            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), (player.getPosY() + 1.0), player.getPosZ(), radius, player.world.getDimensionKey())), message);
         }
     }
 
@@ -140,8 +142,9 @@ public class ReloadTracker
                             ResourceLocation cockSound = gun.getSounds().getCock();
                             if(cockSound != null && finalPlayer.isAlive())
                             {
+                                double radius = Config.SERVER.reloadMaxDistance.get();
                                 MessageGunSound messageSound = new MessageGunSound(cockSound, SoundCategory.PLAYERS, (float) finalPlayer.getPosX(), (float) (finalPlayer.getPosY() + 1.0), (float) finalPlayer.getPosZ(), 1.0F, 1.0F, finalPlayer.getEntityId(), false, true);
-                                PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(finalPlayer.getPosX(), (finalPlayer.getPosY() + 1.0), finalPlayer.getPosZ(), 16.0, finalPlayer.world.getDimensionKey())), messageSound);
+                                PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(finalPlayer.getPosX(), (finalPlayer.getPosY() + 1.0), finalPlayer.getPosZ(), radius, finalPlayer.world.getDimensionKey())), messageSound);
                             }
                         });
                     }
