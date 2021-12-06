@@ -53,6 +53,7 @@
     "subtitle.cgm.reload": "Reloading",
     "subtitle.cgm.grenade.pin": "Grenade Pin",
     "subtitle.cgm.attach": "Attachment Attach",
+    "subtitle.cgm.cock": "Cocking Weapon",
     "cgm.option_list.no_items": "No Items",
     "cgm.options.adsSensitivity": "ADS Sensitivity",
     "cgm.options.adsSensitivity.format": "ADS Sensitivity: %s",
