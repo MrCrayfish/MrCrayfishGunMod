@@ -12,7 +12,7 @@ import net.minecraft.util.SoundCategory;
  */
 public class GunShotSound extends LocatableSound
 {
-    public GunShotSound(ResourceLocation soundIn, SoundCategory categoryIn, float x, float y, float z, float volume, float pitch)
+    public GunShotSound(ResourceLocation soundIn, SoundCategory categoryIn, float x, float y, float z, float volume, float pitch, boolean reload)
     {
         super(soundIn, categoryIn);
         this.x = x;
@@ -24,7 +24,8 @@ public class GunShotSound extends LocatableSound
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
-            this.volume = volume * (1.0F - ((float) Math.sqrt(player.getDistanceSq(x, y, z)) / Config.SERVER.gunShotMaxDistance.get().floatValue()));
+            float distance = reload ? 16.0F : Config.SERVER.gunShotMaxDistance.get().floatValue();
+            this.volume = volume * (1.0F - Math.min(1.0F, (float) Math.sqrt(player.getDistanceSq(x, y, z)) / distance));
             this.volume *= this.volume; //Ease the volume instead of linear
         }
     }
