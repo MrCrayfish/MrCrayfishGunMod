@@ -452,7 +452,7 @@ public class GunRenderingHandler
             return;
         }
 
-        if(heldItem.getItem() instanceof GunItem)
+        if(Config.CLIENT.display.cooldownIndicator.get() && heldItem.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) heldItem.getItem()).getGun();
             if(!gun.getGeneral().isAuto())

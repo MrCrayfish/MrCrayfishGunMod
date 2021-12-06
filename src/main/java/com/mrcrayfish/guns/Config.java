@@ -64,6 +64,7 @@ public class Config
     {
         public final ForgeConfigSpec.BooleanValue oldAnimations;
         public final ForgeConfigSpec.ConfigValue<String> crosshair;
+        public final ForgeConfigSpec.BooleanValue cooldownIndicator;
 
         public Display(ForgeConfigSpec.Builder builder)
         {
@@ -71,6 +72,7 @@ public class Config
             {
                 this.oldAnimations = builder.comment("If true, uses the old animation poses for weapons. This is only for nostalgic reasons and not recommended to switch back.").define("oldAnimations", false);
                 this.crosshair = builder.comment("The custom crosshair to use for weapons. Go to (Options > Controls > Mouse Settings > Crosshair) in game to change this!").define("crosshair", Crosshair.DEFAULT.getLocation().toString());
+                this.cooldownIndicator = builder.comment("If enabled, renders a cooldown indicator to make it easier to learn when you fire again.").define("cooldownIndicator", true);
             }
             builder.pop();
         }
