@@ -1,5 +1,7 @@
 package com.mrcrayfish.guns.item;
 
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.DyeItem;
@@ -7,10 +9,9 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-//TODO fix docs here
 /**
  * A simple interface to allow items to be colored. Implementing this on an item will automatically
- * register an {HERE} into {HERE}. If the item this is implemented on is an
+ * register an {@link ItemColor} into {@link ItemColors}. If the item this is implemented on is an
  * attachment, it will colored automatically by the color of the weapon if the item does not explicitly
  * have a color set.
  * <p>

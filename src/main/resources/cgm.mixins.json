@@ -7,7 +7,6 @@
   "mixins": [
     "common.EndPortalBlockMixin",
     "common.LivingEntityMixin",
-    "common.PlayerListMixin",
     "common.SittingPhaseMixin"
   ],
   "client": [
