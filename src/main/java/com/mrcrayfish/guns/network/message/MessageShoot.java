@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageShoot implements IMessage
+public class MessageShoot extends PlayMessage<MessageShoot>
 {
     private float rotationYaw;
     private float rotationPitch;
@@ -24,29 +25,36 @@ public class MessageShoot implements IMessage
         this.rotationPitch = player.getXRot();
     }
 
-    @Override
-    public void encode(FriendlyByteBuf buffer)
+    public MessageShoot(float rotationYaw, float rotationPitch)
     {
-        buffer.writeFloat(this.rotationYaw);
-        buffer.writeFloat(this.rotationPitch);
+        this.rotationYaw = rotationYaw;
+        this.rotationPitch = rotationPitch;
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public void encode(MessageShoot message, FriendlyByteBuf buffer)
     {
-        this.rotationYaw = buffer.readFloat();
-        this.rotationPitch = buffer.readFloat();
+        buffer.writeFloat(message.rotationYaw);
+        buffer.writeFloat(message.rotationPitch);
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public MessageShoot decode(FriendlyByteBuf buffer)
+    {
+        float rotationYaw = buffer.readFloat();
+        float rotationPitch = buffer.readFloat();
+        return new MessageShoot(rotationYaw, rotationPitch);
+    }
+
+    @Override
+    public void handle(MessageShoot message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() ->
         {
             ServerPlayer player = supplier.get().getSender();
             if(player != null)
             {
-                ServerPlayHandler.handleShoot(this, player);
+                ServerPlayHandler.handleShoot(message, player);
             }
         });
         supplier.get().setPacketHandled(true);

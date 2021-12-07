@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageProjectileHitBlock implements IMessage
+public class MessageProjectileHitBlock extends PlayMessage<MessageProjectileHitBlock>
 {
     private double x;
     private double y;
@@ -31,29 +32,30 @@ public class MessageProjectileHitBlock implements IMessage
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(MessageProjectileHitBlock message, FriendlyByteBuf buffer)
     {
-        buffer.writeDouble(this.x);
-        buffer.writeDouble(this.y);
-        buffer.writeDouble(this.z);
-        buffer.writeBlockPos(this.pos);
-        buffer.writeEnum(this.face);
+        buffer.writeDouble(message.x);
+        buffer.writeDouble(message.y);
+        buffer.writeDouble(message.z);
+        buffer.writeBlockPos(message.pos);
+        buffer.writeEnum(message.face);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public MessageProjectileHitBlock decode(FriendlyByteBuf buffer)
     {
-        this.x = buffer.readDouble();
-        this.y = buffer.readDouble();
-        this.z = buffer.readDouble();
-        this.pos = buffer.readBlockPos();
-        this.face = buffer.readEnum(Direction.class);
+        double x = buffer.readDouble();
+        double y = buffer.readDouble();
+        double z = buffer.readDouble();
+        BlockPos pos = buffer.readBlockPos();
+        Direction face = buffer.readEnum(Direction.class);
+        return new MessageProjectileHitBlock(x, y, z, pos, face);
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageProjectileHitBlock message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHitBlock(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHitBlock(message));
         supplier.get().setPacketHandled(true);
     }
 

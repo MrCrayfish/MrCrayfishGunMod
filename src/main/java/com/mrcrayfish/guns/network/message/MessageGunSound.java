@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageGunSound implements IMessage
+public class MessageGunSound extends PlayMessage<MessageGunSound>
 {
     private ResourceLocation id;
     private SoundSource category;
@@ -41,39 +42,40 @@ public class MessageGunSound implements IMessage
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(MessageGunSound message, FriendlyByteBuf buffer)
     {
-        buffer.writeUtf(this.id.toString());
-        buffer.writeEnum(this.category);
-        buffer.writeFloat(this.x);
-        buffer.writeFloat(this.y);
-        buffer.writeFloat(this.z);
-        buffer.writeFloat(this.volume);
-        buffer.writeFloat(this.pitch);
-        buffer.writeInt(this.shooterId);
-        buffer.writeBoolean(this.muzzle);
-        buffer.writeBoolean(this.reload);
+        buffer.writeUtf(message.id.toString());
+        buffer.writeEnum(message.category);
+        buffer.writeFloat(message.x);
+        buffer.writeFloat(message.y);
+        buffer.writeFloat(message.z);
+        buffer.writeFloat(message.volume);
+        buffer.writeFloat(message.pitch);
+        buffer.writeInt(message.shooterId);
+        buffer.writeBoolean(message.muzzle);
+        buffer.writeBoolean(message.reload);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public MessageGunSound decode(FriendlyByteBuf buffer)
     {
-        this.id = ResourceLocation.tryParse(buffer.readUtf());
-        this.category = buffer.readEnum(SoundSource.class);
-        this.x = buffer.readFloat();
-        this.y = buffer.readFloat();
-        this.z = buffer.readFloat();
-        this.volume = buffer.readFloat();
-        this.pitch = buffer.readFloat();
-        this.shooterId = buffer.readInt();
-        this.muzzle = buffer.readBoolean();
-        this.reload = buffer.readBoolean();
+        ResourceLocation id = ResourceLocation.tryParse(buffer.readUtf());
+        SoundSource category = buffer.readEnum(SoundSource.class);
+        float x = buffer.readFloat();
+        float y = buffer.readFloat();
+        float z = buffer.readFloat();
+        float volume = buffer.readFloat();
+        float pitch = buffer.readFloat();
+        int shooterId = buffer.readInt();
+        boolean muzzle = buffer.readBoolean();
+        boolean reload = buffer.readBoolean();
+        return new MessageGunSound(id, category, x, y, z, volume, pitch, shooterId, muzzle, reload);
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageGunSound message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageGunSound(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageGunSound(message));
         supplier.get().setPacketHandled(true);
     }
 

@@ -1,8 +1,10 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
+import com.mrcrayfish.guns.network.BufferUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -17,7 +19,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageBulletTrail implements IMessage
+public class MessageBulletTrail extends PlayMessage<MessageBulletTrail>
 {
     private int[] entityIds;
     private Vec3[] positions;
@@ -55,60 +57,66 @@ public class MessageBulletTrail implements IMessage
         this.particleData = particleData;
     }
 
-    @Override
-    public void encode(FriendlyByteBuf buffer)
+    public MessageBulletTrail(int[] entityIds, Vec3[] positions, Vec3[] motions, ItemStack item, int trailColor, double trailLengthMultiplier, int life, double gravity, int shooterId, boolean enchanted, ParticleOptions particleData)
     {
-        buffer.writeInt(this.entityIds.length);
-        for(int i = 0; i < this.entityIds.length; i++)
-        {
-            buffer.writeInt(this.entityIds[i]);
-
-            Vec3 position = this.positions[i];
-            buffer.writeDouble(position.x);
-            buffer.writeDouble(position.y);
-            buffer.writeDouble(position.z);
-
-            Vec3 motion = this.motions[i];
-            buffer.writeDouble(motion.x);
-            buffer.writeDouble(motion.y);
-            buffer.writeDouble(motion.z);
-        }
-        buffer.writeItem(this.item);
-        buffer.writeVarInt(this.trailColor);
-        buffer.writeDouble(this.trailLengthMultiplier);
-        buffer.writeInt(this.life);
-        buffer.writeDouble(this.gravity);
-        buffer.writeInt(this.shooterId);
-        buffer.writeBoolean(this.enchanted);
-        buffer.writeInt(Registry.PARTICLE_TYPE.getId(this.particleData.getType()));
-        this.particleData.writeToNetwork(buffer);
+        this.entityIds = entityIds;
+        this.positions = positions;
+        this.motions = motions;
+        this.item = item;
+        this.trailColor = trailColor;
+        this.trailLengthMultiplier = trailLengthMultiplier;
+        this.life = life;
+        this.gravity = gravity;
+        this.shooterId = shooterId;
+        this.enchanted = enchanted;
+        this.particleData = particleData;
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public void encode(MessageBulletTrail message, FriendlyByteBuf buffer)
+    {
+        buffer.writeInt(message.entityIds.length);
+        for(int i = 0; i < message.entityIds.length; i++)
+        {
+            buffer.writeInt(message.entityIds[i]);
+            BufferUtil.writeVec3(buffer, message.positions[i]);
+            BufferUtil.writeVec3(buffer, message.motions[i]);
+        }
+        buffer.writeItem(message.item);
+        buffer.writeVarInt(message.trailColor);
+        buffer.writeDouble(message.trailLengthMultiplier);
+        buffer.writeInt(message.life);
+        buffer.writeDouble(message.gravity);
+        buffer.writeInt(message.shooterId);
+        buffer.writeBoolean(message.enchanted);
+        buffer.writeInt(Registry.PARTICLE_TYPE.getId(message.particleData.getType()));
+        message.particleData.writeToNetwork(buffer);
+    }
+
+    @Override
+    public MessageBulletTrail decode(FriendlyByteBuf buffer)
     {
         int size = buffer.readInt();
-        this.entityIds = new int[size];
-        this.positions = new Vec3[size];
-        this.motions = new Vec3[size];
+        int[] entityIds = new int[size];
+        Vec3[] positions = new Vec3[size];
+        Vec3[] motions = new Vec3[size];
         for(int i = 0; i < size; i++)
         {
-            this.entityIds[i] = buffer.readInt();
-            this.positions[i] = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-            this.motions[i] = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+            entityIds[i] = buffer.readInt();
+            positions[i] = BufferUtil.readVec3(buffer);
+            motions[i] = BufferUtil.readVec3(buffer);
         }
-        this.item = buffer.readItem();
-        this.trailColor = buffer.readVarInt();
-        this.trailLengthMultiplier = buffer.readDouble();
-        this.life = buffer.readInt();
-        this.gravity = buffer.readDouble();
-        this.shooterId = buffer.readInt();
-        this.enchanted = buffer.readBoolean();
+        ItemStack item = buffer.readItem();
+        int trailColor = buffer.readVarInt();
+        double trailLengthMultiplier = buffer.readDouble();
+        int life = buffer.readInt();
+        double gravity = buffer.readDouble();
+        int shooterId = buffer.readInt();
+        boolean enchanted = buffer.readBoolean();
         ParticleType<?> type = Registry.PARTICLE_TYPE.byId(buffer.readInt());
-        if (type == null) {
-            type = ParticleTypes.CRIT;
-        }
-        this.particleData = this.readParticle(buffer, type);
+        if (type == null) type = ParticleTypes.CRIT;
+        ParticleOptions particleData = this.readParticle(buffer, type);
+        return new MessageBulletTrail(entityIds, positions, motions, item, trailColor, trailLengthMultiplier, life, gravity,shooterId, enchanted, particleData);
     }
 
     private <T extends ParticleOptions> T readParticle(FriendlyByteBuf buffer, ParticleType<T> type)
@@ -117,9 +125,9 @@ public class MessageBulletTrail implements IMessage
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageBulletTrail message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBulletTrail(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBulletTrail(message));
         supplier.get().setPacketHandled(true);
     }
 

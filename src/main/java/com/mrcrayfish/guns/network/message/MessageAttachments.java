@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,18 +11,21 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageAttachments implements IMessage
+public class MessageAttachments extends PlayMessage<MessageAttachments>
 {
     public MessageAttachments() {}
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {}
+    public void encode(MessageAttachments message, FriendlyByteBuf buffer) {}
 
     @Override
-    public void decode(FriendlyByteBuf buffer) {}
+    public MessageAttachments decode(FriendlyByteBuf buffer)
+    {
+        return new MessageAttachments();
+    }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageAttachments message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() ->
         {

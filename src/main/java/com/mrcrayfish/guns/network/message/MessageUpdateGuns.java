@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.CustomGunLoader;
@@ -16,7 +17,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvider
+public class MessageUpdateGuns extends PlayMessage<MessageUpdateGuns>
 {
     private ImmutableMap<ResourceLocation, Gun> registeredGuns;
     private ImmutableMap<ResourceLocation, CustomGun> customGuns;
@@ -24,7 +25,7 @@ public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvid
     public MessageUpdateGuns() {}
 
     @Override
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(MessageUpdateGuns message, FriendlyByteBuf buffer)
     {
         Validate.notNull(NetworkGunManager.get());
         Validate.notNull(CustomGunLoader.get());
@@ -33,20 +34,21 @@ public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvid
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public MessageUpdateGuns decode(FriendlyByteBuf buffer)
     {
-        this.registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
-        this.customGuns = CustomGunLoader.readCustomGuns(buffer);
+        MessageUpdateGuns message = new MessageUpdateGuns();
+        message.registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
+        message.customGuns = CustomGunLoader.readCustomGuns(buffer);
+        return message;
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageUpdateGuns message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleUpdateGuns(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleUpdateGuns(message));
         supplier.get().setPacketHandled(true);
     }
 
-    @Override
     public ImmutableMap<ResourceLocation, Gun> getRegisteredGuns()
     {
         return this.registeredGuns;

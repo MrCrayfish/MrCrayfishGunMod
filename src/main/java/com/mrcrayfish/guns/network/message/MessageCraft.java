@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.common.network.ServerPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageCraft implements IMessage
+public class MessageCraft extends PlayMessage<MessageCraft>
 {
     private ResourceLocation id;
     private BlockPos pos;
@@ -26,28 +27,27 @@ public class MessageCraft implements IMessage
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(MessageCraft message, FriendlyByteBuf buffer)
     {
-        buffer.writeResourceLocation(this.id);
-        buffer.writeBlockPos(this.pos);
+        buffer.writeResourceLocation(message.id);
+        buffer.writeBlockPos(message.pos);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public MessageCraft decode(FriendlyByteBuf buffer)
     {
-        this.id = buffer.readResourceLocation();
-        this.pos = buffer.readBlockPos();
+        return new MessageCraft(buffer.readResourceLocation(), buffer.readBlockPos());
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageCraft message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() ->
         {
             ServerPlayer player = supplier.get().getSender();
             if(player != null)
             {
-                ServerPlayHandler.handleCraft(player, this.id, this.pos);
+                ServerPlayHandler.handleCraft(player, message.id, message.pos);
             }
         });
         supplier.get().setPacketHandled(true);

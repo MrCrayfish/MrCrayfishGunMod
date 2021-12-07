@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -165,17 +167,19 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         return ImmutableMap.of();
     }
 
+    public static boolean updateRegisteredGuns(MessageUpdateGuns message)
+    {
+        return updateRegisteredGuns(message.getRegisteredGuns());
+    }
+
     /**
      * Updates registered guns from data provided by the server
      *
-     * @param message an update guns message
      * @return true if all registered guns were able to update their corresponding gun item
      */
-    @OnlyIn(Dist.CLIENT)
-    public static boolean updateRegisteredGuns(IGunProvider message)
+    private static boolean updateRegisteredGuns(Map<ResourceLocation, Gun> registeredGuns)
     {
         clientRegisteredGuns.clear();
-        Map<ResourceLocation, Gun> registeredGuns = message.getRegisteredGuns();
         if(registeredGuns != null)
         {
             for(Map.Entry<ResourceLocation, Gun> entry : registeredGuns.entrySet())
@@ -248,13 +252,6 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         return instance;
     }
 
-    public interface IGunProvider
-    {
-        ImmutableMap<ResourceLocation, Gun> getRegisteredGuns();
-
-        ImmutableMap<ResourceLocation, CustomGun> getCustomGuns();
-    }
-
     /**
      * A simple wrapper for a gun object to pass to GunItem. This is to indicate to developers that
      * Gun instances shouldn't be changed on GunItems as they are controlled by NetworkGunManager.
@@ -272,6 +269,24 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         public Gun getGun()
         {
             return this.gun;
+        }
+    }
+
+    public static class LoginData implements ILoginData
+    {
+        @Override
+        public void writeData(FriendlyByteBuf buffer)
+        {
+            Validate.notNull(NetworkGunManager.get());
+            NetworkGunManager.get().writeRegisteredGuns(buffer);
+        }
+
+        @Override
+        public Optional<String> readData(FriendlyByteBuf buffer)
+        {
+            Map<ResourceLocation, Gun> registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
+            NetworkGunManager.updateRegisteredGuns(registeredGuns);
+            return Optional.empty();
         }
     }
 }

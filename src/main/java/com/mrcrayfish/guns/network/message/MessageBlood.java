@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -9,7 +10,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageBlood implements IMessage
+public class MessageBlood extends PlayMessage<MessageBlood>
 {
     private double x;
     private double y;
@@ -25,25 +26,23 @@ public class MessageBlood implements IMessage
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(MessageBlood message, FriendlyByteBuf buffer)
     {
-        buffer.writeDouble(this.x);
-        buffer.writeDouble(this.y);
-        buffer.writeDouble(this.z);
+        buffer.writeDouble(message.x);
+        buffer.writeDouble(message.y);
+        buffer.writeDouble(message.z);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public MessageBlood decode(FriendlyByteBuf buffer)
     {
-        this.x = buffer.readDouble();
-        this.y = buffer.readDouble();
-        this.z = buffer.readDouble();
+        return new MessageBlood(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageBlood message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBlood(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBlood(message));
         supplier.get().setPacketHandled(true);
     }
 

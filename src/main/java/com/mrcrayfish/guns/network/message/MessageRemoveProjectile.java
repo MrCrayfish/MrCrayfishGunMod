@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -9,7 +10,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageRemoveProjectile implements IMessage
+public class MessageRemoveProjectile extends PlayMessage<MessageRemoveProjectile>
 {
     private int entityId;
 
@@ -21,21 +22,21 @@ public class MessageRemoveProjectile implements IMessage
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(MessageRemoveProjectile message, FriendlyByteBuf buffer)
     {
-        buffer.writeInt(this.entityId);
+        buffer.writeInt(message.entityId);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public MessageRemoveProjectile decode(FriendlyByteBuf buffer)
     {
-        this.entityId = buffer.readInt();
+        return new MessageRemoveProjectile(buffer.readInt());
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageRemoveProjectile message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleRemoveProjectile(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleRemoveProjectile(message));
         supplier.get().setPacketHandled(true);
     }
 

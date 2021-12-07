@@ -1,12 +1,13 @@
 package com.mrcrayfish.guns.network.message;
 
+import com.mrcrayfish.framework.api.network.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageStunGrenade implements IMessage
+public class MessageStunGrenade extends PlayMessage<MessageStunGrenade>
 {
     private double x, y, z;
 
@@ -20,25 +21,26 @@ public class MessageStunGrenade implements IMessage
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(MessageStunGrenade message, FriendlyByteBuf buffer)
     {
-        buffer.writeDouble(this.x);
-        buffer.writeDouble(this.y);
-        buffer.writeDouble(this.z);
+        buffer.writeDouble(message.x);
+        buffer.writeDouble(message.y);
+        buffer.writeDouble(message.z);
     }
 
     @Override
-    public void decode(FriendlyByteBuf buffer)
+    public MessageStunGrenade decode(FriendlyByteBuf buffer)
     {
-        this.x = buffer.readDouble();
-        this.y = buffer.readDouble();
-        this.z = buffer.readDouble();
+        double x = buffer.readDouble();
+        double y = buffer.readDouble();
+        double z = buffer.readDouble();
+        return new MessageStunGrenade(x, y, z);
     }
 
     @Override
-    public void handle(Supplier<NetworkEvent.Context> supplier)
+    public void handle(MessageStunGrenade message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleExplosionStunGrenade(this));
+        supplier.get().enqueueWork(() -> ClientPlayHandler.handleExplosionStunGrenade(message));
         supplier.get().setPacketHandled(true);
     }
 
