@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -105,17 +106,21 @@ public class CrosshairHandler
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent event)
+    public void onRenderOverlay(RenderGameOverlayEvent.PreLayer event)
     {
-        if(true) return;
-
-        //TODO restore custom crosshair rendering
-        //if(event.getType() != RenderGameOverlayEvent.ElementType.CROSSHAIRS)
-        //    return;
+        if(event.getOverlay() != ForgeIngameGui.CROSSHAIR_ELEMENT)
+            return;
 
         Crosshair crosshair = this.getCurrentCrosshair();
+        if(AimingHandler.get().getNormalisedAdsProgress() > 0)
+        {
+            event.setCanceled(true);
+        }
+
         if(crosshair == null || crosshair.isDefault())
+        {
             return;
+        }
 
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null)

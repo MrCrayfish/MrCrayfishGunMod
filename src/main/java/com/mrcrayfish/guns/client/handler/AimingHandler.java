@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
@@ -26,6 +27,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVModifierEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -172,13 +174,6 @@ public class AimingHandler
     public void onRenderOverlay(RenderGameOverlayEvent event)
     {
         this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTicks());
-
-        //TODO restore custom crosshair
-        /*Crosshair crosshair = CrosshairHandler.get().getCurrentCrosshair();
-        if(this.normalisedAdsProgress > 0 && event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && (crosshair == null || crosshair.isDefault()))
-        {
-            event.setCanceled(true);
-        }*/
     }
 
     public boolean isAiming()

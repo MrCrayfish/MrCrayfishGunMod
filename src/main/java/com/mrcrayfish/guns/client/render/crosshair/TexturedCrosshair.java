@@ -38,11 +38,13 @@ public class TexturedCrosshair extends Crosshair
     @Override
     public void render(Minecraft mc, PoseStack stack, int windowWidth, int windowHeight, float partialTicks)
     {
+        stack.pushPose();
+
         float alpha = 1.0F - (float) AimingHandler.get().getNormalisedAdsProgress();
         float size = 8.0F;
         stack.translate((windowWidth - size) / 2F, (windowHeight - size) / 2F, 0);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, this.texture);
         RenderSystem.enableBlend();
@@ -55,10 +57,10 @@ public class TexturedCrosshair extends Crosshair
         Matrix4f matrix = stack.last().pose();
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        buffer.vertex(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0, 1).endVertex();
-        buffer.vertex(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(1, 1).endVertex();
-        buffer.vertex(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(1, 0).endVertex();
-        buffer.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0, 0).endVertex();
+        buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
         buffer.end();
         BufferUploader.end(buffer);
 
@@ -66,5 +68,7 @@ public class TexturedCrosshair extends Crosshair
         {
             RenderSystem.defaultBlendFunc();
         }
+
+        stack.popPose();
     }
 }

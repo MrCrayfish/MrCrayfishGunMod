@@ -13,6 +13,7 @@ import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -62,16 +63,16 @@ public class TechCrosshair extends Crosshair
 
         stack.pushPose();
         {
-            Matrix4f matrix = stack.last().pose();
-            stack.translate((windowWidth - size) / 2F, (windowHeight - size) / 2F, 0);
-            RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, DOT_CROSSHAIR);
+            Matrix4f matrix = stack.last().pose();
+            stack.translate((windowWidth - size) / 2F, (windowHeight - size) / 2F, 0);
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            buffer.vertex(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0, 1).endVertex();
-            buffer.vertex(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(1, 1).endVertex();
-            buffer.vertex(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(1, 0).endVertex();
-            buffer.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0, 0).endVertex();
+            buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
             buffer.end();
             BufferUploader.end(buffer);
         }
@@ -85,14 +86,14 @@ public class TechCrosshair extends Crosshair
             stack.scale(scale, scale, scale);
             stack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, this.prevRotation, this.rotation)));
             stack.translate(-size / 2F, -size / 2F, 0);
-            RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, TECH_CROSSHAIR);
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            buffer.vertex(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0, 1).endVertex();
-            buffer.vertex(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(1, 1).endVertex();
-            buffer.vertex(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(1, 0).endVertex();
-            buffer.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0, 0).endVertex();
+            buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
             buffer.end();
             BufferUploader.end(buffer);
         }
