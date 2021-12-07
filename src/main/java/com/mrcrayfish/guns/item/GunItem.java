@@ -142,7 +142,7 @@ public class GunItem extends Item implements IColored
     @Override
     public int getBarColor(ItemStack stack)
     {
-        return Objects.requireNonNull(ChatFormatting.AQUA.getColor());
+        return Objects.requireNonNull(ChatFormatting.YELLOW.getColor());
     }
 
     public Gun getModifiedGun(ItemStack stack)
