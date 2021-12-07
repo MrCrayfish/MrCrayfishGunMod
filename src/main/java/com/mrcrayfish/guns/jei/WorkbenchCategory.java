@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.init.ModBlocks;
@@ -168,47 +169,26 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         int titleX = this.window.getWidth() / 2;
         GuiComponent.drawCenteredString(poseStack, Minecraft.getInstance().font, displayName, titleX, 5, Color.WHITE.getRGB());
 
-
-        //TODO update this
-        /*RenderSystem.pushMatrix();
+        PoseStack stack = RenderSystem.getModelViewStack();
+        stack.pushPose();
         {
-            RenderSystem.multMatrix(poseStack.last().pose());
-            RenderSystem.translatef(81, 40, 1050);
-            RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
-
-            PoseStack matrixstack = new PoseStack();
-            matrixstack.translate(0.0D, 0.0D, 1000.0D);
-            matrixstack.scale(40F, 40F, 40F);
-            matrixstack.mulPose(Vector3f.XP.rotationDegrees(-5F));
+            stack.mulPoseMatrix(poseStack.last().pose());
+            stack.translate(81, 40, 0);
+            stack.scale(40F, 40F, 40F);
+            stack.mulPose(Vector3f.XP.rotationDegrees(-5F));
             float partialTicks = Minecraft.getInstance().getFrameTime();
-            matrixstack.mulPose(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
-
-            RenderSystem.enableRescaleNormal();
-            RenderSystem.enableAlphaTest();
-            RenderSystem.defaultAlphaFunc();
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            stack.mulPose(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
+            stack.scale(-1, -1, -1);
+            RenderSystem.applyModelViewMatrix();
 
             BakedModel model = RenderUtil.getModel(output);
-            boolean notSideLit = !model.usesBlockLight();
-            if(notSideLit)
-            {
-                Lighting.setupForFlatItems();
-            }
+            Lighting.setupFor3DItems();
 
             MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-            Minecraft.getInstance().getItemRenderer().render(output, ItemTransforms.TransformType.FIXED, false, matrixstack, buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
+            Minecraft.getInstance().getItemRenderer().render(output, ItemTransforms.TransformType.FIXED, false, new PoseStack(), buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
             buffer.endBatch();
-
-            if(notSideLit)
-            {
-                Lighting.setupFor3DItems();
-            }
-
-            RenderSystem.disableAlphaTest();
-            RenderSystem.disableRescaleNormal();
         }
-        RenderSystem.popMatrix();*/
+        stack.popPose();
+        RenderSystem.applyModelViewMatrix();
     }
 }
