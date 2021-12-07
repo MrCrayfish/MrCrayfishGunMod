@@ -10,8 +10,8 @@ import com.mrcrayfish.guns.enchantment.PuncturingEnchantment;
 import com.mrcrayfish.guns.enchantment.QuickHandsEnchantment;
 import com.mrcrayfish.guns.enchantment.ReclaimedEnchantment;
 import com.mrcrayfish.guns.enchantment.TriggerFingerEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 

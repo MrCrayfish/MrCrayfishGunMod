@@ -2,11 +2,11 @@ package com.mrcrayfish.guns.network;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.network.message.*;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.FMLHandshakeHandler;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.FMLHandshakeHandler;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 import java.util.function.Supplier;
 
@@ -23,7 +23,7 @@ public class PacketHandler
                 .loginIndex(HandshakeMessages.LoginIndexedMessage::getLoginIndex, HandshakeMessages.LoginIndexedMessage::setLoginIndex)
                 .decoder(HandshakeMessages.C2SAcknowledge::decode)
                 .encoder(HandshakeMessages.C2SAcknowledge::encode)
-                .consumer(FMLHandshakeHandler.indexFirst((handler, msg, s) -> HandshakeHandler.handleAcknowledge(msg, s)))
+                .consumer(FMLHandshakeHandler.indexFirst((handler, msg, context) -> HandshakeHandler.handleAcknowledge(msg, context)))
                 .add();
 
         HANDSHAKE_CHANNEL.messageBuilder(HandshakeMessages.S2CUpdateGuns.class, 1)

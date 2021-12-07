@@ -2,12 +2,11 @@ package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.event.GunReloadEvent;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -18,9 +17,7 @@ public class MessageReload implements IMessage
 {
     private boolean reload;
 
-    public MessageReload()
-    {
-    }
+    public MessageReload() {}
 
     public MessageReload(boolean reload)
     {
@@ -28,13 +25,13 @@ public class MessageReload implements IMessage
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBoolean(this.reload);
     }
 
     @Override
-    public void decode(PacketBuffer buffer)
+    public void decode(FriendlyByteBuf buffer)
     {
         this.reload = buffer.readBoolean();
     }
@@ -44,17 +41,17 @@ public class MessageReload implements IMessage
     {
         supplier.get().enqueueWork(() ->
         {
-            ServerPlayerEntity player = supplier.get().getSender();
+            ServerPlayer player = supplier.get().getSender();
             if(player != null && !player.isSpectator())
             {
-                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, this.reload); // This has to be set in order to verify the packet is sent if the event is cancelled
+                ModSyncedDataKeys.RELOADING.setValue(player, this.reload); // This has to be set in order to verify the packet is sent if the event is cancelled
                 if(!this.reload)
                     return;
 
-                ItemStack gun = player.getHeldItemMainhand();
+                ItemStack gun = player.getMainHandItem();
                 if(MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun)))
                 {
-                    SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+                    ModSyncedDataKeys.RELOADING.setValue(player, false);
                     return;
                 }
                 MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, gun));

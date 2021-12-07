@@ -6,12 +6,11 @@ import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHelper;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.MouseHandler;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,21 +19,21 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 /**
  * Author: MrCrayfish
  */
-@Mixin(MouseHelper.class)
-public class MouseHelperMixin
+@Mixin(MouseHandler.class)
+public class MouseHandlerMixin
 {
-    @ModifyVariable(method = "updatePlayerLook()V", at = @At(value = "STORE", opcode = Opcodes.DSTORE), ordinal = 2)
+    @ModifyVariable(method = "turnPlayer()V", at = @At(value = "STORE", opcode = Opcodes.DSTORE), ordinal = 2)
     private double sensitivity(double original)
     {
         float additionalAdsSensitivity = 1.0F;
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && !mc.player.getHeldItemMainhand().isEmpty() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)
+        if(mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON)
         {
-            ItemStack heldItem = mc.player.getHeldItemMainhand();
+            ItemStack heldItem = mc.player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
             {
                 GunItem gunItem = (GunItem) heldItem.getItem();
-                if(AimingHandler.get().isAiming() && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
+                if(AimingHandler.get().isAiming() && !ModSyncedDataKeys.RELOADING.getValue(mc.player))
                 {
                     Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                     if(modifiedGun.getModules().getZoom() != null)
@@ -45,7 +44,7 @@ public class MouseHelperMixin
                         {
                             newFov -= scope.getAdditionalZoom();
                         }
-                        additionalAdsSensitivity = MathHelper.clamp(1.0F - (1.0F / newFov) / 10F, 0.0F, 1.0F);
+                        additionalAdsSensitivity = Mth.clamp(1.0F - (1.0F / newFov) / 10F, 0.0F, 1.0F);
                     }
                 }
             }

@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.handler;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
@@ -10,8 +10,8 @@ import com.mrcrayfish.guns.client.render.crosshair.TexturedCrosshair;
 import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -90,7 +90,7 @@ public class CrosshairHandler
     {
         if(this.currentCrosshair == null && this.registeredCrosshairs.size() > 0)
         {
-            ResourceLocation id = ResourceLocation.tryCreate(Config.CLIENT.display.crosshair.get());
+            ResourceLocation id = ResourceLocation.tryParse(Config.CLIENT.display.crosshair.get());
             this.currentCrosshair = id != null ? this.idToCrosshair.getOrDefault(id, Crosshair.DEFAULT) : Crosshair.DEFAULT;
         }
         return this.currentCrosshair;
@@ -99,7 +99,7 @@ public class CrosshairHandler
     /**
      * Gets a list of registered crosshairs. Please note that this list is immutable.
      */
-    public ImmutableList<Crosshair> getRegisteredCrosshairs()
+    public List<Crosshair> getRegisteredCrosshairs()
     {
         return ImmutableList.copyOf(this.registeredCrosshairs);
     }
@@ -107,8 +107,11 @@ public class CrosshairHandler
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent event)
     {
-        if(event.getType() != RenderGameOverlayEvent.ElementType.CROSSHAIRS)
-            return;
+        if(true) return;
+
+        //TODO restore custom crosshair rendering
+        //if(event.getType() != RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+        //    return;
 
         Crosshair crosshair = this.getCurrentCrosshair();
         if(crosshair == null || crosshair.isDefault())
@@ -118,21 +121,21 @@ public class CrosshairHandler
         if(mc.player == null)
             return;
 
-        ItemStack heldItem = mc.player.getHeldItemMainhand();
+        ItemStack heldItem = mc.player.getMainHandItem();
         if(!(heldItem.getItem() instanceof GunItem))
             return;
 
         event.setCanceled(true);
 
-        if(!mc.gameSettings.getPointOfView().func_243192_a())
+        if(!mc.options.getCameraType().isFirstPerson())
             return;
 
-        MatrixStack stack = event.getMatrixStack();
-        stack.push();
-        int scaledWidth = event.getWindow().getScaledWidth();
-        int scaledHeight = event.getWindow().getScaledHeight();
+        PoseStack stack = event.getMatrixStack();
+        stack.pushPose();
+        int scaledWidth = event.getWindow().getGuiScaledWidth();
+        int scaledHeight = event.getWindow().getGuiScaledHeight();
         crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTicks());
-        stack.pop();
+        stack.popPose();
     }
 
     @SubscribeEvent

@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -20,7 +20,7 @@ public class MessageStunGrenade implements IMessage
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeDouble(this.x);
         buffer.writeDouble(this.y);
@@ -28,7 +28,7 @@ public class MessageStunGrenade implements IMessage
     }
 
     @Override
-    public void decode(PacketBuffer buffer)
+    public void decode(FriendlyByteBuf buffer)
     {
         this.x = buffer.readDouble();
         this.y = buffer.readDouble();

@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.Reference;
@@ -17,21 +17,23 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.platform.Lighting;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Vector3f;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.awt.*;
@@ -57,7 +59,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
     private final IDrawableStatic inventory;
     private final IDrawableStatic dyeSlot;
     private final IDrawable icon;
-    private final String title;
+    private final Component title;
     private final Item[] dyes;
 
     public WorkbenchCategory(IGuiHelper helper)
@@ -67,7 +69,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         this.inventory = helper.createDrawable(BACKGROUND, 7, 101, 162, 36);
         this.dyeSlot = helper.createDrawable(BACKGROUND, 7, 101, 18, 18);
         this.icon = helper.createDrawableIngredient(new ItemStack(ModBlocks.WORKBENCH.get()));
-        this.title = I18n.format(TITLE_KEY);
+        this.title = new TranslatableComponent(TITLE_KEY);
         this.dyes = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
     }
 
@@ -84,7 +86,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
     }
 
     @Override
-    public String getTitle()
+    public Component getTitle()
     {
         return this.title;
     }
@@ -116,7 +118,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         }
         recipe.getMaterials().forEach(material ->
         {
-            itemInputs.add(Arrays.stream(material.getMatchingStacks()).map(stack -> {
+            itemInputs.add(Arrays.stream(material.getItems()).map(stack -> {
                 ItemStack copy = stack.copy();
                 copy.setCount(material.getCount());
                 return copy;
@@ -149,35 +151,37 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
     }
 
     @Override
-    public void draw(WorkbenchRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY)
+    public void draw(WorkbenchRecipe recipe, PoseStack poseStack, double mouseX, double mouseY)
     {
-        this.window.draw(matrixStack, 0, 0);
-        this.inventory.draw(matrixStack, 0, this.window.getHeight() + 2 + 11 + 2);
-        this.dyeSlot.draw(matrixStack, 140, 51);
+        this.window.draw(poseStack, 0, 0);
+        this.inventory.draw(poseStack, 0, this.window.getHeight() + 2 + 11 + 2);
+        this.dyeSlot.draw(poseStack, 140, 51);
 
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack, I18n.format(MATERIALS_KEY), 0, 78, 0x7E7E7E);
+        Minecraft.getInstance().font.draw(poseStack, I18n.get(MATERIALS_KEY), 0, 78, 0x7E7E7E);
 
         ItemStack output = recipe.getItem();
-        IFormattableTextComponent displayName = output.getDisplayName().deepCopy();
+        MutableComponent displayName = output.getHoverName().copy();
         if(output.getCount() > 1)
         {
-            displayName.append(new StringTextComponent(" x " + output.getCount()).mergeStyle(TextFormatting.GOLD, TextFormatting.BOLD));
+            displayName.append(new TextComponent(" x " + output.getCount()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
         }
         int titleX = this.window.getWidth() / 2;
-        AbstractGui.drawCenteredString(matrixStack, Minecraft.getInstance().fontRenderer, displayName, titleX, 5, Color.WHITE.getRGB());
+        GuiComponent.drawCenteredString(poseStack, Minecraft.getInstance().font, displayName, titleX, 5, Color.WHITE.getRGB());
 
-        RenderSystem.pushMatrix();
+
+        //TODO update this
+        /*RenderSystem.pushMatrix();
         {
-            RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
+            RenderSystem.multMatrix(poseStack.last().pose());
             RenderSystem.translatef(81, 40, 1050);
             RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
 
-            MatrixStack matrixstack = new MatrixStack();
+            PoseStack matrixstack = new PoseStack();
             matrixstack.translate(0.0D, 0.0D, 1000.0D);
             matrixstack.scale(40F, 40F, 40F);
-            matrixstack.rotate(Vector3f.XP.rotationDegrees(-5F));
-            float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-            matrixstack.rotate(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.ticksExisted + partialTicks));
+            matrixstack.mulPose(Vector3f.XP.rotationDegrees(-5F));
+            float partialTicks = Minecraft.getInstance().getFrameTime();
+            matrixstack.mulPose(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
 
             RenderSystem.enableRescaleNormal();
             RenderSystem.enableAlphaTest();
@@ -186,25 +190,25 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            IBakedModel model = RenderUtil.getModel(output);
-            boolean notSideLit = !model.isSideLit();
+            BakedModel model = RenderUtil.getModel(output);
+            boolean notSideLit = !model.usesBlockLight();
             if(notSideLit)
             {
-                RenderHelper.setupGuiFlatDiffuseLighting();
+                Lighting.setupForFlatItems();
             }
 
-            IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-            Minecraft.getInstance().getItemRenderer().renderItem(output, ItemCameraTransforms.TransformType.FIXED, false, matrixstack, buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
-            buffer.finish();
+            MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+            Minecraft.getInstance().getItemRenderer().render(output, ItemTransforms.TransformType.FIXED, false, matrixstack, buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
+            buffer.endBatch();
 
             if(notSideLit)
             {
-                RenderHelper.setupGui3DDiffuseLighting();
+                Lighting.setupFor3DItems();
             }
 
             RenderSystem.disableAlphaTest();
             RenderSystem.disableRescaleNormal();
         }
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 }

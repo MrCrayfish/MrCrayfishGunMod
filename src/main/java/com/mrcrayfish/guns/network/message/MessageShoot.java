@@ -1,10 +1,10 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.common.network.ServerPlayHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -18,21 +18,21 @@ public class MessageShoot implements IMessage
 
     public MessageShoot() {}
 
-    public MessageShoot(PlayerEntity player)
+    public MessageShoot(Player player)
     {
-        this.rotationYaw = player.rotationYaw;
-        this.rotationPitch = player.rotationPitch;
+        this.rotationYaw = player.getYRot();
+        this.rotationPitch = player.getXRot();
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeFloat(this.rotationYaw);
         buffer.writeFloat(this.rotationPitch);
     }
 
     @Override
-    public void decode(PacketBuffer buffer)
+    public void decode(FriendlyByteBuf buffer)
     {
         this.rotationYaw = buffer.readFloat();
         this.rotationPitch = buffer.readFloat();
@@ -43,7 +43,7 @@ public class MessageShoot implements IMessage
     {
         supplier.get().enqueueWork(() ->
         {
-            ServerPlayerEntity player = supplier.get().getSender();
+            ServerPlayer player = supplier.get().getSender();
             if(player != null)
             {
                 ServerPlayHandler.handleShoot(this, player);

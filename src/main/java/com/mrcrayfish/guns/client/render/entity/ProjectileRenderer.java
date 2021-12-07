@@ -1,54 +1,54 @@
 package com.mrcrayfish.guns.client.render.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
 
 public class ProjectileRenderer extends EntityRenderer<ProjectileEntity>
 {
-    public ProjectileRenderer(EntityRendererManager renderManager)
+    public ProjectileRenderer(EntityRendererProvider.Context context)
     {
-        super(renderManager);
+        super(context);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(ProjectileEntity entity)
+    public ResourceLocation getTextureLocation(ProjectileEntity entity)
     {
         return null;
     }
 
     @Override
-    public void render(ProjectileEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    public void render(ProjectileEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light)
     {
-        if(!entity.getProjectile().isVisible() || entity.ticksExisted <= 1)
+        if(!entity.getProjectile().isVisible() || entity.tickCount <= 1)
         {
             return;
         }
 
-        matrixStack.push();
+        poseStack.pushPose();
 
         if(!RenderUtil.getModel(entity.getItem()).isGui3d())
         {
-            matrixStack.rotate(this.renderManager.getCameraOrientation());
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
-            Minecraft.getInstance().getItemRenderer().renderItem(entity.getItem(), ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
+            poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+            Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
         }
         else
         {
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(entityYaw));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(entity.rotationPitch));
-            Minecraft.getInstance().getItemRenderer().renderItem(entity.getItem(), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot()));
+            Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
         }
 
-        matrixStack.pop();
+        poseStack.popPose();
     }
 }

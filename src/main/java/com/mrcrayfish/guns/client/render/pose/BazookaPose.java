@@ -1,17 +1,17 @@
 package com.mrcrayfish.guns.client.render.pose;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.GripType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
+import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,19 +52,19 @@ public class BazookaPose extends WeaponPose
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress)
+    public void applyPlayerModelRotation(Player player, PlayerModel model, InteractionHand hand, float aimProgress)
     {
         if(Config.CLIENT.display.oldAnimations.get())
         {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
-            ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
-            mainArm.rotateAngleX = (float) Math.toRadians(-90F);
-            mainArm.rotateAngleY = (float) Math.toRadians(-35F) * (right ? 1F : -1F);
-            mainArm.rotateAngleZ = (float) Math.toRadians(0F);
-            secondaryArm.rotateAngleX = (float) Math.toRadians(-91F);
-            secondaryArm.rotateAngleY = (float) Math.toRadians(45F) * (right ? 1F : -1F);
-            secondaryArm.rotateAngleZ = (float) Math.toRadians(0F);
+            boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
+            ModelPart mainArm = right ? model.rightArm : model.leftArm;
+            ModelPart secondaryArm = right ? model.leftArm : model.rightArm;
+            mainArm.xRot = (float) Math.toRadians(-90F);
+            mainArm.yRot = (float) Math.toRadians(-35F) * (right ? 1F : -1F);
+            mainArm.zRot = (float) Math.toRadians(0F);
+            secondaryArm.xRot = (float) Math.toRadians(-91F);
+            secondaryArm.yRot = (float) Math.toRadians(45F) * (right ? 1F : -1F);
+            secondaryArm.zRot = (float) Math.toRadians(0F);
         }
         else
         {
@@ -73,34 +73,34 @@ public class BazookaPose extends WeaponPose
     }
 
     @Override
-    public void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
+    public void applyPlayerPreRender(Player player, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer)
     {
         if(Config.CLIENT.display.oldAnimations.get())
         {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            player.prevRenderYawOffset = player.prevRotationYaw + 35F * (right ? 1F : -1F);
-            player.renderYawOffset = player.rotationYaw + 35F * (right ? 1F : -1F);
+            boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
+            player.yBodyRotO = player.yRotO + 35F * (right ? 1F : -1F);
+            player.yBodyRot = player.getYRot() + 35F * (right ? 1F : -1F);
         }
         else
         {
-            super.applyPlayerPreRender(player, hand, aimProgress, matrixStack, buffer);
+            super.applyPlayerPreRender(player, hand, aimProgress, poseStack, buffer);
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyHeldItemTransforms(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer)
+    public void applyHeldItemTransforms(Player player, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer)
     {
         if(!Config.CLIENT.display.oldAnimations.get())
         {
-            super.applyHeldItemTransforms(player, hand, aimProgress, matrixStack, buffer);
+            super.applyHeldItemTransforms(player, hand, aimProgress, poseStack, buffer);
         }
     }
 
     @Override
-    public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
+    public boolean applyOffhandTransforms(Player player, PlayerModel model, ItemStack stack, PoseStack poseStack, float partialTicks)
     {
-        return GripType.applyBackTransforms(player, matrixStack);
+        return GripType.applyBackTransforms(player, poseStack);
     }
 
     @Override

@@ -6,11 +6,11 @@ import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
 import com.mrcrayfish.guns.entity.ThrowableStunGrenadeEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -29,9 +29,9 @@ public class ModEntities
     public static final RegistryObject<EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
     public static final RegistryObject<EntityType<ThrowableStunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", ThrowableStunGrenadeEntity::new);
 
-    private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, World, T> function)
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function)
     {
-        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).size(0.25F, 0.25F).setTrackingRange(100).setUpdateInterval(1).disableSummoning().immuneToFire().setShouldReceiveVelocityUpdates(true).build(id);
+        EntityType<T> type = EntityType.Builder.of(function::apply, MobCategory.MISC).sized(0.25F, 0.25F).setTrackingRange(100).setUpdateInterval(1).noSummon().fireImmune().setShouldReceiveVelocityUpdates(true).build(id);
         return REGISTER.register(id, () -> type);
     }
 
@@ -47,13 +47,13 @@ public class ModEntities
      * @param <T>      an entity that is a projectile entity
      * @return A registry object containing the new entity type
      */
-    private static <T extends ProjectileEntity> RegistryObject<EntityType<T>> registerProjectile(String id, BiFunction<EntityType<T>, World, T> function)
+    private static <T extends ProjectileEntity> RegistryObject<EntityType<T>> registerProjectile(String id, BiFunction<EntityType<T>, Level, T> function)
     {
-        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC)
-            .size(0.25F, 0.25F)
+        EntityType<T> type = EntityType.Builder.of(function::apply, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
             .setTrackingRange(0)
-            .disableSummoning()
-            .immuneToFire()
+            .noSummon()
+            .fireImmune()
             .setShouldReceiveVelocityUpdates(false)
             .setCustomClientFactory((spawnEntity, world) -> null)
             .build(id);

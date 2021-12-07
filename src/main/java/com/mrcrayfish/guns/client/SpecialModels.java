@@ -2,8 +2,8 @@ package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.guns.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -37,7 +37,7 @@ public enum SpecialModels
      * Cached model
      */
     @OnlyIn(Dist.CLIENT)
-    private IBakedModel cachedModel;
+    private BakedModel cachedModel;
 
     /**
      * Sets the model's location
@@ -67,11 +67,11 @@ public enum SpecialModels
      * @return isolated model
      */
     @OnlyIn(Dist.CLIENT)
-    public IBakedModel getModel()
+    public BakedModel getModel()
     {
         if(this.cachedModel == null)
         {
-            IBakedModel model = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
+            BakedModel model = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
             if(model == Minecraft.getInstance().getModelManager().getMissingModel())
             {
                 return model;

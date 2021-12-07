@@ -1,14 +1,14 @@
 package com.mrcrayfish.guns.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,7 +26,7 @@ public interface IHeldAnimation
      * @param aimProgress the current animation progress of looking down the weapons sight
      */
     @OnlyIn(Dist.CLIENT)
-    default void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress) {}
+    default void applyPlayerModelRotation(Player player, PlayerModel model, InteractionHand hand, float aimProgress) {}
 
     /**
      * Allows for transformations of the player model. This is where the entire player model can
@@ -35,11 +35,11 @@ public interface IHeldAnimation
      * @param player the player holding the weapon
      * @param hand the hand which is currently being used
      * @param aimProgress the current animation progress of looking down the weapons sight
-     * @param matrixStack the current matrix stack
+     * @param poseStack the current matrix stack
      * @param buffer a render type buffer get
      */
     @OnlyIn(Dist.CLIENT)
-    default void applyPlayerPreRender(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer) {}
+    default void applyPlayerPreRender(Player player, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer) {}
 
     /**
      * Allows for transformations of the weapon before rendering. This is where rotations can be
@@ -47,23 +47,23 @@ public interface IHeldAnimation
      *
      * @param hand the hand which is currently being used
      * @param aimProgress the current animation progress of looking down the weapons sight
-     * @param matrixStack the current matrix stack
+     * @param poseStack the current matrix stack
      * @param buffer a render type buffer get
      */
     @OnlyIn(Dist.CLIENT)
-    default void applyHeldItemTransforms(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer) {}
+    default void applyHeldItemTransforms(Player player, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer) {}
 
     /**
      *
      * @param player
      * @param hand
      * @param stack
-     * @param matrixStack
+     * @param poseStack
      * @param buffer
      * @param light
      * @param partialTicks
      */
-    default void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks) {}
+    default void renderFirstPersonArms(LocalPlayer player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks) {}
 
     /**
      *
@@ -72,7 +72,7 @@ public interface IHeldAnimation
      * @param stack
      * @param partialTicks
      */
-    default boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
+    default boolean applyOffhandTransforms(Player player, PlayerModel model, ItemStack stack, PoseStack poseStack, float partialTicks)
     {
         return false;
     }
@@ -97,16 +97,16 @@ public interface IHeldAnimation
     }
 
     /**
-     * Copies the rotations from one {@link ModelRenderer} get to another
+     * Copies the rotations from one {@link ModelPart} get to another
      *
      * @param source the model renderer to grab the rotations from
      * @param dest   the model renderer to apply the rotations to
      */
     @OnlyIn(Dist.CLIENT)
-    static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
+    static void copyModelAngles(ModelPart source, ModelPart dest)
     {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
+        dest.xRot = source.xRot;
+        dest.yRot = source.yRot;
+        dest.zRot = source.zRot;
     }
 }

@@ -1,9 +1,9 @@
 package com.mrcrayfish.guns.util;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
 
 import java.util.Collection;
 
@@ -14,12 +14,12 @@ public class VoxelShapeHelper
 {
     public static VoxelShape combineAll(Collection<VoxelShape> shapes)
     {
-        VoxelShape result = VoxelShapes.empty();
+        VoxelShape result = Shapes.empty();
         for(VoxelShape shape : shapes)
         {
-            result = VoxelShapes.combine(result, shape, IBooleanFunction.OR);
+            result = Shapes.joinUnoptimized(result, shape, BooleanOp.OR);
         }
-        return result.simplify();
+        return result.optimize();
     }
 
     public static VoxelShape[] getRotatedShapes(VoxelShape source)
@@ -33,8 +33,8 @@ public class VoxelShapeHelper
 
     public static VoxelShape rotate(VoxelShape source, Direction direction)
     {
-        double[] adjustedValues = adjustValues(direction, source.getStart(Direction.Axis.X), source.getStart(Direction.Axis.Z), source.getEnd(Direction.Axis.X), source.getEnd(Direction.Axis.Z));
-        return VoxelShapes.create(adjustedValues[0], source.getStart(Direction.Axis.Y), adjustedValues[1], adjustedValues[2], source.getEnd(Direction.Axis.Y), adjustedValues[3]);
+        double[] adjustedValues = adjustValues(direction, source.min(Direction.Axis.X), source.min(Direction.Axis.Z), source.max(Direction.Axis.X), source.max(Direction.Axis.Z));
+        return Shapes.box(adjustedValues[0], source.min(Direction.Axis.Y), adjustedValues[1], adjustedValues[2], source.max(Direction.Axis.Y), adjustedValues[3]);
     }
 
     private static double[] adjustValues(Direction direction, double var1, double var2, double var3, double var4)

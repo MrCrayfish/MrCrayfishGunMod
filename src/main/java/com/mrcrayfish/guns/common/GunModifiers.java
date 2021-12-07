@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.interfaces.IGunModifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 /**
  * Author: MrCrayfish
@@ -133,7 +133,7 @@ public class GunModifiers
         @Override
         public int modifyFireRate(int rate)
         {
-            return MathHelper.clamp((int) (rate * 1.25), rate + 1, Integer.MAX_VALUE);
+            return Mth.clamp((int) (rate * 1.25), rate + 1, Integer.MAX_VALUE);
         }
     };
 

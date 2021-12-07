@@ -1,54 +1,54 @@
 package com.mrcrayfish.guns.client.render.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
 public class GrenadeRenderer extends EntityRenderer<GrenadeEntity>
 {
-    public GrenadeRenderer(EntityRendererManager renderManager)
+    public GrenadeRenderer(EntityRendererProvider.Context context)
     {
-        super(renderManager);
+        super(context);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(GrenadeEntity entity)
+    public ResourceLocation getTextureLocation(GrenadeEntity entity)
     {
         return null;
     }
 
     @Override
-    public void render(GrenadeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    public void render(GrenadeEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light)
     {
-        if(!entity.getProjectile().isVisible() || entity.ticksExisted <= 1)
+        if(!entity.getProjectile().isVisible() || entity.tickCount <= 1)
         {
             return;
         }
 
-        matrixStack.push();
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(entityYaw));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(entity.rotationPitch));
+        poseStack.pushPose();
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot()));
 
         /* Offsets to the center of the grenade before applying rotation */
-        float rotation = entity.ticksExisted + partialTicks;
-        matrixStack.translate(0, 0.15, 0);
-        matrixStack.rotate(Vector3f.XN.rotationDegrees(rotation * 20));
-        matrixStack.translate(0, -0.15, 0);
+        float rotation = entity.tickCount + partialTicks;
+        poseStack.translate(0, 0.15, 0);
+        poseStack.mulPose(Vector3f.XN.rotationDegrees(rotation * 20));
+        poseStack.translate(0, -0.15, 0);
 
-        matrixStack.translate(0.0, 0.5, 0.0);
+        poseStack.translate(0.0, 0.5, 0.0);
 
-        Minecraft.getInstance().getItemRenderer().renderItem(entity.getItem(), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
-        matrixStack.pop();
+        Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
+        poseStack.popPose();
     }
 }

@@ -1,10 +1,9 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -23,13 +22,13 @@ public class MessageShooting implements IMessage
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBoolean(this.shooting);
     }
 
     @Override
-    public void decode(PacketBuffer buffer)
+    public void decode(FriendlyByteBuf buffer)
     {
         this.shooting = buffer.readBoolean();
     }
@@ -39,10 +38,10 @@ public class MessageShooting implements IMessage
     {
         supplier.get().enqueueWork(() ->
         {
-            ServerPlayerEntity player = supplier.get().getSender();
+            ServerPlayer player = supplier.get().getSender();
             if(player != null)
             {
-                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.SHOOTING, this.shooting);
+                ModSyncedDataKeys.SHOOTING.setValue(player, this.shooting);
             }
         });
         supplier.get().setPacketHandled(true);

@@ -1,13 +1,13 @@
 package com.mrcrayfish.guns.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
@@ -18,8 +18,8 @@ import java.lang.ref.WeakReference;
 public class BulletTrail
 {
     private int entityId;
-    private Vector3d position;
-    private Vector3d motion;
+    private Vec3 position;
+    private Vec3 motion;
     private float yaw;
     private float pitch;
     private boolean dead;
@@ -32,9 +32,9 @@ public class BulletTrail
     private int shooterId;
     private WeakReference<Entity> shooter;
     private boolean enchanted;
-    private IParticleData particleData;
+    private ParticleOptions particleData;
 
-    public BulletTrail(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId, boolean enchanted, IParticleData particleData)
+    public BulletTrail(int entityId, Vec3 position, Vec3 motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId, boolean enchanted, ParticleOptions particleData)
     {
         this.entityId = entityId;
         this.position = position;
@@ -52,9 +52,9 @@ public class BulletTrail
 
     private void updateYawPitch()
     {
-        float horizontalLength = MathHelper.sqrt(this.motion.x * this.motion.x + this.motion.z * this.motion.z);
-        this.yaw = (float) Math.toDegrees(MathHelper.atan2(this.motion.x, this.motion.z));
-        this.pitch = (float) Math.toDegrees(MathHelper.atan2(this.motion.y, (double) horizontalLength));
+        float horizontalLength = Mth.sqrt((float) (this.motion.x * this.motion.x + this.motion.z * this.motion.z));
+        this.yaw = (float) Math.toDegrees(Mth.atan2(this.motion.x, this.motion.z));
+        this.pitch = (float) Math.toDegrees(Mth.atan2(this.motion.y, (double) horizontalLength));
     }
 
     public void tick()
@@ -70,14 +70,14 @@ public class BulletTrail
         }
 
         Entity shooter = this.getShooter();
-        if(shooter instanceof PlayerEntity && ((PlayerEntity) shooter).isUser())
+        if(shooter instanceof Player && ((Player) shooter).isLocalPlayer())
         {
-            World world = shooter.world;
-            world.addOptionalParticle(this.particleData, true, this.position.getX(), this.position.getY(), this.position.getZ(), this.motion.x, this.motion.y, this.motion.z);
+            Level world = shooter.level;
+            world.addAlwaysVisibleParticle(this.particleData, true, this.position.x(), this.position.y(), this.position.z(), this.motion.x, this.motion.y, this.motion.z);
         }
 
-        Entity entity = Minecraft.getInstance().getRenderViewEntity();
-        double distance = entity != null ? Math.sqrt(entity.getDistanceSq(this.position)) : Double.MAX_VALUE;
+        Entity entity = Minecraft.getInstance().getCameraEntity();
+        double distance = entity != null ? Math.sqrt(entity.distanceToSqr(this.position)) : Double.MAX_VALUE;
         if(this.age >= this.maxAge || distance > 256)
         {
             this.dead = true;
@@ -89,12 +89,12 @@ public class BulletTrail
         return this.entityId;
     }
 
-    public Vector3d getPosition()
+    public Vec3 getPosition()
     {
         return this.position;
     }
 
-    public Vector3d getMotion()
+    public Vec3 getMotion()
     {
         return this.motion;
     }
@@ -150,10 +150,10 @@ public class BulletTrail
     {
         if(this.shooter == null)
         {
-            World world = Minecraft.getInstance().world;
+            Level world = Minecraft.getInstance().level;
             if(world != null)
             {
-                Entity entity = world.getEntityByID(this.shooterId);
+                Entity entity = world.getEntity(this.shooterId);
                 if(entity != null)
                 {
                     this.shooter = new WeakReference<>(entity);
@@ -174,8 +174,8 @@ public class BulletTrail
 
     public boolean isTrailVisible()
     {
-        Entity entity = Minecraft.getInstance().getRenderViewEntity();
-        return entity != null && entity.getEntityId() != this.shooterId;
+        Entity entity = Minecraft.getInstance().getCameraEntity();
+        return entity != null && entity.getId() != this.shooterId;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.datagen;
 
 import com.mrcrayfish.guns.Reference;
-import net.minecraft.data.BlockTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -13,7 +13,7 @@ public class BlockTagGen extends BlockTagsProvider
     }
 
     @Override
-    protected void registerTags()
+    protected void addTags()
     {
     }
 }

@@ -2,14 +2,14 @@ package com.mrcrayfish.guns.crafting;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import java.util.Collection;
@@ -21,17 +21,17 @@ import java.util.stream.Stream;
  */
 public class WorkbenchIngredient extends Ingredient
 {
-    private final IItemList itemList;
+    private final Value itemList;
     private final int count;
 
-    protected WorkbenchIngredient(Stream<? extends IItemList> itemList, int count)
+    protected WorkbenchIngredient(Stream<? extends Value> itemList, int count)
     {
         super(itemList);
         this.itemList = null;
         this.count = count;
     }
 
-    private WorkbenchIngredient(IItemList itemList, int count)
+    private WorkbenchIngredient(Value itemList, int count)
     {
         super(Stream.of(itemList));
         this.itemList = itemList;
@@ -51,37 +51,37 @@ public class WorkbenchIngredient extends Ingredient
 
     public static WorkbenchIngredient fromJson(JsonObject object)
     {
-        Ingredient.IItemList value = deserializeItemList(object);
-        int count = JSONUtils.getInt(object, "count", 1);
+        Ingredient.Value value = valueFromJson(object);
+        int count = GsonHelper.getAsInt(object, "count", 1);
         return new WorkbenchIngredient(Stream.of(value), count);
     }
 
     @Override
-    public JsonElement serialize()
+    public JsonElement toJson()
     {
         JsonObject object = this.itemList.serialize();
         object.addProperty("count", this.count);
         return object;
     }
 
-    public static WorkbenchIngredient of(IItemProvider provider, int count)
+    public static WorkbenchIngredient of(ItemLike provider, int count)
     {
-        return new WorkbenchIngredient(new Ingredient.SingleItemList(new ItemStack(provider)), count);
+        return new WorkbenchIngredient(new Ingredient.ItemValue(new ItemStack(provider)), count);
     }
 
     public static WorkbenchIngredient of(ItemStack stack, int count)
     {
-        return new WorkbenchIngredient(new Ingredient.SingleItemList(stack), count);
+        return new WorkbenchIngredient(new Ingredient.ItemValue(stack), count);
     }
 
-    public static WorkbenchIngredient of(ITag<Item> tag, int count)
+    public static WorkbenchIngredient of(Tag<Item> tag, int count)
     {
-        return new WorkbenchIngredient(new Ingredient.TagList(tag), count);
+        return new WorkbenchIngredient(new Ingredient.TagValue(tag), count);
     }
 
     public static WorkbenchIngredient of(ResourceLocation id, int count)
     {
-        return new WorkbenchIngredient(new MissingSingleItemList(id), count);
+        return new WorkbenchIngredient(new UnknownValue(id), count);
     }
 
     public static class Serializer implements IIngredientSerializer<WorkbenchIngredient>
@@ -89,11 +89,11 @@ public class WorkbenchIngredient extends Ingredient
         public static final WorkbenchIngredient.Serializer INSTANCE = new WorkbenchIngredient.Serializer();
 
         @Override
-        public WorkbenchIngredient parse(PacketBuffer buffer)
+        public WorkbenchIngredient parse(FriendlyByteBuf buffer)
         {
             int itemCount = buffer.readVarInt();
             int count = buffer.readVarInt();
-            Stream<Ingredient.SingleItemList> values = Stream.generate(() -> new SingleItemList(buffer.readItemStack())).limit(itemCount);
+            Stream<Ingredient.ItemValue> values = Stream.generate(() -> new ItemValue(buffer.readItem())).limit(itemCount);
             return new WorkbenchIngredient(values, count);
         }
 
@@ -104,13 +104,13 @@ public class WorkbenchIngredient extends Ingredient
         }
 
         @Override
-        public void write(PacketBuffer buffer, WorkbenchIngredient ingredient)
+        public void write(FriendlyByteBuf buffer, WorkbenchIngredient ingredient)
         {
-            buffer.writeVarInt(ingredient.getMatchingStacks().length);
+            buffer.writeVarInt(ingredient.getItems().length);
             buffer.writeVarInt(ingredient.count);
-            for(ItemStack stack : ingredient.getMatchingStacks())
+            for(ItemStack stack : ingredient.getItems())
             {
-                buffer.writeItemStack(stack);
+                buffer.writeItem(stack);
             }
         }
     }
@@ -118,19 +118,20 @@ public class WorkbenchIngredient extends Ingredient
     /**
      * Allows ability to define an ingredient from another mod without adding it as a dependency in
      * the development environment. Serializes the data to be read by the regular
-     * {@link SingleItemList}. Only use this for generating data.
+     * {@link ItemValue}. Only use this for generating data.
      */
-    public static class MissingSingleItemList implements Ingredient.IItemList
+    @SuppressWarnings("ClassCanBeRecord")
+    public static class UnknownValue implements Ingredient.Value
     {
         private final ResourceLocation id;
 
-        public MissingSingleItemList(ResourceLocation id)
+        public UnknownValue(ResourceLocation id)
         {
             this.id = id;
         }
 
         @Override
-        public Collection<ItemStack> getStacks()
+        public Collection<ItemStack> getItems()
         {
             return Collections.emptyList();
         }

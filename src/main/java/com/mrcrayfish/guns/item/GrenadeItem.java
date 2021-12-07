@@ -2,16 +2,16 @@ package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
 import com.mrcrayfish.guns.init.ModSounds;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
@@ -27,9 +27,9 @@ public class GrenadeItem extends AmmoItem
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack)
+    public UseAnim getUseAnimation(ItemStack stack)
     {
-        return UseAction.BOW;
+        return UseAnim.BOW;
     }
 
     @Override
@@ -45,57 +45,57 @@ public class GrenadeItem extends AmmoItem
 
         int duration = this.getUseDuration(stack) - count;
         if(duration == 10)
-            player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+            player.level.playLocalSound(player.getX(), player.getY(), player.getZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundSource.PLAYERS, 1.0F, 1.0F, false);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn)
     {
-        ItemStack stack = playerIn.getHeldItem(handIn);
-        playerIn.setActiveHand(handIn);
-        return ActionResult.resultConsume(stack);
+        ItemStack stack = playerIn.getItemInHand(handIn);
+        playerIn.startUsingItem(handIn);
+        return InteractionResultHolder.consume(stack);
     }
 
     @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
+    public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving)
     {
-        if(this.canCook() && !worldIn.isRemote())
+        if(this.canCook() && !worldIn.isClientSide())
         {
-            if(!(entityLiving instanceof PlayerEntity) || !((PlayerEntity) entityLiving).isCreative())
+            if(!(entityLiving instanceof Player) || !((Player) entityLiving).isCreative())
                 stack.shrink(1);
             ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, 0);
             grenade.onDeath();
-            if(entityLiving instanceof PlayerEntity)
+            if(entityLiving instanceof Player)
             {
-                ((PlayerEntity) entityLiving).addStat(Stats.ITEM_USED.get(this));
+                ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
             }
         }
         return stack;
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft)
+    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft)
     {
-        if(!worldIn.isRemote())
+        if(!worldIn.isClientSide())
         {
             int duration = this.getUseDuration(stack) - timeLeft;
             if(duration >= 10)
             {
-                if(!(entityLiving instanceof PlayerEntity) || !((PlayerEntity) entityLiving).isCreative())
+                if(!(entityLiving instanceof Player) || !((Player) entityLiving).isCreative())
                     stack.shrink(1);
                 ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
-                grenade.func_234612_a_(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
-                worldIn.addEntity(grenade);
+                grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+                worldIn.addFreshEntity(grenade);
                 this.onThrown(worldIn, grenade);
-                if(entityLiving instanceof PlayerEntity)
+                if(entityLiving instanceof Player)
                 {
-                    ((PlayerEntity) entityLiving).addStat(Stats.ITEM_USED.get(this));
+                    ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
                 }
             }
         }
     }
 
-    public ThrowableGrenadeEntity create(World world, LivingEntity entity, int timeLeft)
+    public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft)
     {
         return new ThrowableGrenadeEntity(world, entity, timeLeft);
     }
@@ -105,7 +105,7 @@ public class GrenadeItem extends AmmoItem
         return true;
     }
 
-    protected void onThrown(World world, ThrowableGrenadeEntity entity)
+    protected void onThrown(Level world, ThrowableGrenadeEntity entity)
     {
     }
 }

@@ -9,14 +9,13 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageReload;
 import com.mrcrayfish.guns.network.message.MessageUnload;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
@@ -54,12 +53,12 @@ public class ReloadHandler
 
         this.prevReloadTimer = this.reloadTimer;
 
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         if(player != null)
         {
-            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+            if(ModSyncedDataKeys.RELOADING.getValue(player))
             {
-                if(this.reloadingSlot != player.inventory.currentItem)
+                if(this.reloadingSlot != player.getInventory().selected)
                 {
                     this.setReloading(false);
                 }
@@ -72,14 +71,13 @@ public class ReloadHandler
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
-        if(Minecraft.getInstance().player == null)
-        {
+        Player player = Minecraft.getInstance().player;
+        if(player == null)
             return;
-        }
 
-        if(KeyBinds.KEY_RELOAD.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS)
+        if(KeyBinds.KEY_RELOAD.isDown() && event.getAction() == GLFW.GLFW_PRESS)
         {
-            if(!SyncedPlayerData.instance().get(Minecraft.getInstance().player, ModSyncedDataKeys.RELOADING))
+            if(!ModSyncedDataKeys.RELOADING.getValue(player))
             {
                 this.setReloading(true);
             }
@@ -88,7 +86,7 @@ public class ReloadHandler
                 this.setReloading(false);
             }
         }
-        if(KeyBinds.KEY_UNLOAD.isPressed() && event.getAction() == GLFW.GLFW_PRESS)
+        if(KeyBinds.KEY_UNLOAD.consumeClick() && event.getAction() == GLFW.GLFW_PRESS)
         {
             this.setReloading(false);
             PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
@@ -97,16 +95,16 @@ public class ReloadHandler
 
     public void setReloading(boolean reloading)
     {
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         if(player != null)
         {
             if(reloading)
             {
-                ItemStack stack = player.getHeldItemMainhand();
+                ItemStack stack = player.getMainHandItem();
                 if(stack.getItem() instanceof GunItem)
                 {
-                    CompoundNBT tag = stack.getTag();
-                    if(tag != null && !tag.contains("IgnoreAmmo", Constants.NBT.TAG_BYTE))
+                    CompoundTag tag = stack.getTag();
+                    if(tag != null && !tag.contains("IgnoreAmmo", Tag.TAG_BYTE))
                     {
                         Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
                         if(tag.getInt("AmmoCount") >= GunEnchantmentHelper.getAmmoCapacity(stack, gun))
@@ -119,29 +117,29 @@ public class ReloadHandler
                         }
                         if(MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                             return;
-                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, true);
+                        ModSyncedDataKeys.RELOADING.setValue(player, true);
                         PacketHandler.getPlayChannel().sendToServer(new MessageReload(true));
-                        this.reloadingSlot = player.inventory.currentItem;
+                        this.reloadingSlot = player.getInventory().selected;
                         MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack));
                     }
                 }
             }
             else
             {
-                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+                ModSyncedDataKeys.RELOADING.setValue(player, false);
                 PacketHandler.getPlayChannel().sendToServer(new MessageReload(false));
                 this.reloadingSlot = -1;
             }
         }
     }
 
-    private void updateReloadTimer(PlayerEntity player)
+    private void updateReloadTimer(Player player)
     {
-        if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+        if(ModSyncedDataKeys.RELOADING.getValue(player))
         {
             if(this.startReloadTick == -1)
             {
-                this.startReloadTick = player.ticksExisted + 5;
+                this.startReloadTick = player.tickCount + 5;
             }
             if(this.reloadTimer < 5)
             {

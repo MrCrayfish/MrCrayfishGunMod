@@ -9,19 +9,19 @@ import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.util.GunJsonUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
-public final class Gun implements INBTSerializable<CompoundNBT>
+public final class Gun implements INBTSerializable<CompoundTag>
 {
     private General general = new General();
     private Projectile projectile = new Projectile();
@@ -54,7 +54,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         return this.modules;
     }
 
-    public static class General implements INBTSerializable<CompoundNBT>
+    public static class General implements INBTSerializable<CompoundTag>
     {
         @Optional
         private boolean auto = false;
@@ -80,9 +80,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private float spread;
 
         @Override
-        public CompoundNBT serializeNBT()
+        public CompoundTag serializeNBT()
         {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             tag.putBoolean("Auto", this.auto);
             tag.putInt("Rate", this.rate);
             tag.putString("GripType", this.gripType.getId().toString());
@@ -99,53 +99,53 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         @Override
-        public void deserializeNBT(CompoundNBT tag)
+        public void deserializeNBT(CompoundTag tag)
         {
-            if(tag.contains("Auto", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Auto", Tag.TAG_ANY_NUMERIC))
             {
                 this.auto = tag.getBoolean("Auto");
             }
-            if(tag.contains("Rate", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Rate", Tag.TAG_ANY_NUMERIC))
             {
                 this.rate = tag.getInt("Rate");
             }
-            if(tag.contains("GripType", Constants.NBT.TAG_STRING))
+            if(tag.contains("GripType", Tag.TAG_STRING))
             {
-                this.gripType = GripType.getType(ResourceLocation.tryCreate(tag.getString("GripType")));
+                this.gripType = GripType.getType(ResourceLocation.tryParse(tag.getString("GripType")));
             }
-            if(tag.contains("MaxAmmo", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("MaxAmmo", Tag.TAG_ANY_NUMERIC))
             {
                 this.maxAmmo = tag.getInt("MaxAmmo");
             }
-            if(tag.contains("ReloadSpeed", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("ReloadSpeed", Tag.TAG_ANY_NUMERIC))
             {
                 this.reloadAmount = tag.getInt("ReloadSpeed");
             }
-            if(tag.contains("RecoilAngle", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("RecoilAngle", Tag.TAG_ANY_NUMERIC))
             {
                 this.recoilAngle = tag.getFloat("RecoilAngle");
             }
-            if(tag.contains("RecoilKick", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("RecoilKick", Tag.TAG_ANY_NUMERIC))
             {
                 this.recoilKick = tag.getFloat("RecoilKick");
             }
-            if(tag.contains("RecoilDurationOffset", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("RecoilDurationOffset", Tag.TAG_ANY_NUMERIC))
             {
                 this.recoilDurationOffset = tag.getFloat("RecoilDurationOffset");
             }
-            if(tag.contains("RecoilAdsReduction", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("RecoilAdsReduction", Tag.TAG_ANY_NUMERIC))
             {
                 this.recoilAdsReduction = tag.getFloat("RecoilAdsReduction");
             }
-            if(tag.contains("ProjectileAmount", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("ProjectileAmount", Tag.TAG_ANY_NUMERIC))
             {
                 this.projectileAmount = tag.getInt("ProjectileAmount");
             }
-            if(tag.contains("AlwaysSpread", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("AlwaysSpread", Tag.TAG_ANY_NUMERIC))
             {
                 this.alwaysSpread = tag.getBoolean("AlwaysSpread");
             }
-            if(tag.contains("Spread", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Spread", Tag.TAG_ANY_NUMERIC))
             {
                 this.spread = tag.getFloat("Spread");
             }
@@ -297,7 +297,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
     }
 
-    public static class Projectile implements INBTSerializable<CompoundNBT>
+    public static class Projectile implements INBTSerializable<CompoundTag>
     {
         private ResourceLocation item = new ResourceLocation(Reference.MOD_ID, "basic_ammo");
         @Optional
@@ -316,9 +316,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private double trailLengthMultiplier = 1.0;
 
         @Override
-        public CompoundNBT serializeNBT()
+        public CompoundTag serializeNBT()
         {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             tag.putString("Item", this.item.toString());
             tag.putBoolean("Visible", this.visible);
             tag.putFloat("Damage", this.damage);
@@ -333,45 +333,45 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         @Override
-        public void deserializeNBT(CompoundNBT tag)
+        public void deserializeNBT(CompoundTag tag)
         {
-            if(tag.contains("Item", Constants.NBT.TAG_STRING))
+            if(tag.contains("Item", Tag.TAG_STRING))
             {
                 this.item = new ResourceLocation(tag.getString("Item"));
             }
-            if(tag.contains("Visible", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Visible", Tag.TAG_ANY_NUMERIC))
             {
                 this.visible = tag.getBoolean("Visible");
             }
-            if(tag.contains("Damage", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Damage", Tag.TAG_ANY_NUMERIC))
             {
                 this.damage = tag.getFloat("Damage");
             }
-            if(tag.contains("Size", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Size", Tag.TAG_ANY_NUMERIC))
             {
                 this.size = tag.getFloat("Size");
             }
-            if(tag.contains("Speed", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Speed", Tag.TAG_ANY_NUMERIC))
             {
                 this.speed = tag.getDouble("Speed");
             }
-            if(tag.contains("Life", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Life", Tag.TAG_ANY_NUMERIC))
             {
                 this.life = tag.getInt("Life");
             }
-            if(tag.contains("Gravity", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Gravity", Tag.TAG_ANY_NUMERIC))
             {
                 this.gravity = tag.getBoolean("Gravity");
             }
-            if(tag.contains("DamageReduceOverLife", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("DamageReduceOverLife", Tag.TAG_ANY_NUMERIC))
             {
                 this.damageReduceOverLife = tag.getBoolean("DamageReduceOverLife");
             }
-            if(tag.contains("TrailColor", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("TrailColor", Tag.TAG_ANY_NUMERIC))
             {
                 this.trailColor = tag.getInt("TrailColor");
             }
-            if(tag.contains("TrailLengthMultiplier", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("TrailLengthMultiplier", Tag.TAG_ANY_NUMERIC))
             {
                 this.trailLengthMultiplier = tag.getDouble("TrailLengthMultiplier");
             }
@@ -495,7 +495,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
     }
 
-    public static class Sounds implements INBTSerializable<CompoundNBT>
+    public static class Sounds implements INBTSerializable<CompoundTag>
     {
         @Optional
         @Nullable
@@ -514,9 +514,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private ResourceLocation enchantedFire;
 
         @Override
-        public CompoundNBT serializeNBT()
+        public CompoundTag serializeNBT()
         {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             if(this.fire != null)
             {
                 tag.putString("Fire", this.fire.toString());
@@ -541,25 +541,25 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         @Override
-        public void deserializeNBT(CompoundNBT tag)
+        public void deserializeNBT(CompoundTag tag)
         {
-            if(tag.contains("Fire", Constants.NBT.TAG_STRING))
+            if(tag.contains("Fire", Tag.TAG_STRING))
             {
                 this.fire = this.createSound(tag, "Fire");
             }
-            if(tag.contains("Reload", Constants.NBT.TAG_STRING))
+            if(tag.contains("Reload", Tag.TAG_STRING))
             {
                 this.reload = this.createSound(tag, "Reload");
             }
-            if(tag.contains("Cock", Constants.NBT.TAG_STRING))
+            if(tag.contains("Cock", Tag.TAG_STRING))
             {
                 this.cock = this.createSound(tag, "Cock");
             }
-            if(tag.contains("SilencedFire", Constants.NBT.TAG_STRING))
+            if(tag.contains("SilencedFire", Tag.TAG_STRING))
             {
                 this.silencedFire = this.createSound(tag, "SilencedFire");
             }
-            if(tag.contains("EnchantedFire", Constants.NBT.TAG_STRING))
+            if(tag.contains("EnchantedFire", Tag.TAG_STRING))
             {
                 this.enchantedFire = this.createSound(tag, "EnchantedFire");
             }
@@ -603,7 +603,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         @Nullable
-        private ResourceLocation createSound(CompoundNBT tag, String key)
+        private ResourceLocation createSound(CompoundTag tag, String key)
         {
             String sound = tag.getString(key);
             return sound.isEmpty() ? null : new ResourceLocation(sound);
@@ -655,7 +655,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
     }
 
-    public static class Display implements INBTSerializable<CompoundNBT>
+    public static class Display implements INBTSerializable<CompoundTag>
     {
         @Optional
         @Nullable
@@ -672,18 +672,18 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             private double size = 0.5;
 
             @Override
-            public CompoundNBT serializeNBT()
+            public CompoundTag serializeNBT()
             {
-                CompoundNBT tag = super.serializeNBT();
+                CompoundTag tag = super.serializeNBT();
                 tag.putDouble("Size", this.size);
                 return tag;
             }
 
             @Override
-            public void deserializeNBT(CompoundNBT tag)
+            public void deserializeNBT(CompoundTag tag)
             {
                 super.deserializeNBT(tag);
-                if(tag.contains("Size", Constants.NBT.TAG_ANY_NUMERIC))
+                if(tag.contains("Size", Tag.TAG_ANY_NUMERIC))
                 {
                     this.size = tag.getDouble("Size");
                 }
@@ -721,9 +721,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         @Override
-        public CompoundNBT serializeNBT()
+        public CompoundTag serializeNBT()
         {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             if(this.flash != null)
             {
                 tag.put("Flash", this.flash.serializeNBT());
@@ -732,11 +732,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         @Override
-        public void deserializeNBT(CompoundNBT tag)
+        public void deserializeNBT(CompoundTag tag)
         {
-            if(tag.contains("Flash", Constants.NBT.TAG_COMPOUND))
+            if(tag.contains("Flash", Tag.TAG_COMPOUND))
             {
-                CompoundNBT flashTag = tag.getCompound("Flash");
+                CompoundTag flashTag = tag.getCompound("Flash");
                 if(!flashTag.isEmpty())
                 {
                     Flash flash = new Flash();
@@ -771,7 +771,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
     }
 
-    public static class Modules implements INBTSerializable<CompoundNBT>
+    public static class Modules implements INBTSerializable<CompoundTag>
     {
         @Optional
         @Nullable
@@ -795,18 +795,18 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             private float fovModifier;
 
             @Override
-            public CompoundNBT serializeNBT()
+            public CompoundTag serializeNBT()
             {
-                CompoundNBT tag = super.serializeNBT();
+                CompoundTag tag = super.serializeNBT();
                 tag.putFloat("FovModifier", this.fovModifier);
                 return tag;
             }
 
             @Override
-            public void deserializeNBT(CompoundNBT tag)
+            public void deserializeNBT(CompoundTag tag)
             {
                 super.deserializeNBT(tag);
-                if(tag.contains("FovModifier", Constants.NBT.TAG_ANY_NUMERIC))
+                if(tag.contains("FovModifier", Tag.TAG_ANY_NUMERIC))
                 {
                     this.fovModifier = tag.getFloat("FovModifier");
                 }
@@ -835,7 +835,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
         }
 
-        public static class Attachments implements INBTSerializable<CompoundNBT>
+        public static class Attachments implements INBTSerializable<CompoundTag>
         {
             @Optional
             @Nullable
@@ -875,9 +875,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
 
             @Override
-            public CompoundNBT serializeNBT()
+            public CompoundTag serializeNBT()
             {
-                CompoundNBT tag = new CompoundNBT();
+                CompoundTag tag = new CompoundTag();
                 if(this.scope != null)
                 {
                     tag.put("Scope", this.scope.serializeNBT());
@@ -898,21 +898,21 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
 
             @Override
-            public void deserializeNBT(CompoundNBT tag)
+            public void deserializeNBT(CompoundTag tag)
             {
-                if(tag.contains("Scope", Constants.NBT.TAG_COMPOUND))
+                if(tag.contains("Scope", Tag.TAG_COMPOUND))
                 {
                     this.scope = this.createScaledPositioned(tag, "Scope");
                 }
-                if(tag.contains("Barrel", Constants.NBT.TAG_COMPOUND))
+                if(tag.contains("Barrel", Tag.TAG_COMPOUND))
                 {
                     this.barrel = this.createScaledPositioned(tag, "Barrel");
                 }
-                if(tag.contains("Stock", Constants.NBT.TAG_COMPOUND))
+                if(tag.contains("Stock", Tag.TAG_COMPOUND))
                 {
                     this.stock = this.createScaledPositioned(tag, "Stock");
                 }
-                if(tag.contains("UnderBarrel", Constants.NBT.TAG_COMPOUND))
+                if(tag.contains("UnderBarrel", Tag.TAG_COMPOUND))
                 {
                     this.underBarrel = this.createScaledPositioned(tag, "UnderBarrel");
                 }
@@ -963,17 +963,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
 
             @Nullable
-            private ScaledPositioned createScaledPositioned(CompoundNBT tag, String key)
+            private ScaledPositioned createScaledPositioned(CompoundTag tag, String key)
             {
-                CompoundNBT attachment = tag.getCompound(key);
+                CompoundTag attachment = tag.getCompound(key);
                 return attachment.isEmpty() ? null : new ScaledPositioned(attachment);
             }
         }
 
         @Override
-        public CompoundNBT serializeNBT()
+        public CompoundTag serializeNBT()
         {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             if(this.zoom != null)
             {
                 tag.put("Zoom", this.zoom.serializeNBT());
@@ -983,15 +983,15 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         @Override
-        public void deserializeNBT(CompoundNBT tag)
+        public void deserializeNBT(CompoundTag tag)
         {
-            if(tag.contains("Zoom", Constants.NBT.TAG_COMPOUND))
+            if(tag.contains("Zoom", Tag.TAG_COMPOUND))
             {
                 Zoom zoom = new Zoom();
                 zoom.deserializeNBT(tag.getCompound("Zoom"));
                 this.zoom = zoom;
             }
-            if(tag.contains("Attachments", Constants.NBT.TAG_COMPOUND))
+            if(tag.contains("Attachments", Tag.TAG_COMPOUND))
             {
                 this.attachments.deserializeNBT(tag.getCompound("Attachments"));
             }
@@ -1020,7 +1020,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
     }
 
-    public static class Positioned implements INBTSerializable<CompoundNBT>
+    public static class Positioned implements INBTSerializable<CompoundTag>
     {
         @Optional
         protected double xOffset;
@@ -1030,9 +1030,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         protected double zOffset;
 
         @Override
-        public CompoundNBT serializeNBT()
+        public CompoundTag serializeNBT()
         {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             tag.putDouble("XOffset", this.xOffset);
             tag.putDouble("YOffset", this.yOffset);
             tag.putDouble("ZOffset", this.zOffset);
@@ -1040,17 +1040,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         @Override
-        public void deserializeNBT(CompoundNBT tag)
+        public void deserializeNBT(CompoundTag tag)
         {
-            if(tag.contains("XOffset", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("XOffset", Tag.TAG_ANY_NUMERIC))
             {
                 this.xOffset = tag.getDouble("XOffset");
             }
-            if(tag.contains("YOffset", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("YOffset", Tag.TAG_ANY_NUMERIC))
             {
                 this.yOffset = tag.getDouble("YOffset");
             }
-            if(tag.contains("ZOffset", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("ZOffset", Tag.TAG_ANY_NUMERIC))
             {
                 this.zOffset = tag.getDouble("ZOffset");
             }
@@ -1106,24 +1106,24 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
         public ScaledPositioned() {}
 
-        public ScaledPositioned(CompoundNBT tag)
+        public ScaledPositioned(CompoundTag tag)
         {
             this.deserializeNBT(tag);
         }
 
         @Override
-        public CompoundNBT serializeNBT()
+        public CompoundTag serializeNBT()
         {
-            CompoundNBT tag = super.serializeNBT();
+            CompoundTag tag = super.serializeNBT();
             tag.putDouble("Scale", this.scale);
             return tag;
         }
 
         @Override
-        public void deserializeNBT(CompoundNBT tag)
+        public void deserializeNBT(CompoundTag tag)
         {
             super.deserializeNBT(tag);
-            if(tag.contains("Scale", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("Scale", Tag.TAG_ANY_NUMERIC))
             {
                 this.scale = tag.getDouble("Scale");
             }
@@ -1158,9 +1158,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     }
 
     @Override
-    public CompoundNBT serializeNBT()
+    public CompoundTag serializeNBT()
     {
-        CompoundNBT tag = new CompoundNBT();
+        CompoundTag tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
         tag.put("Projectile", this.projectile.serializeNBT());
         tag.put("Sounds", this.sounds.serializeNBT());
@@ -1170,25 +1170,25 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT tag)
+    public void deserializeNBT(CompoundTag tag)
     {
-        if(tag.contains("General", Constants.NBT.TAG_COMPOUND))
+        if(tag.contains("General", Tag.TAG_COMPOUND))
         {
             this.general.deserializeNBT(tag.getCompound("General"));
         }
-        if(tag.contains("Projectile", Constants.NBT.TAG_COMPOUND))
+        if(tag.contains("Projectile", Tag.TAG_COMPOUND))
         {
             this.projectile.deserializeNBT(tag.getCompound("Projectile"));
         }
-        if(tag.contains("Sounds", Constants.NBT.TAG_COMPOUND))
+        if(tag.contains("Sounds", Tag.TAG_COMPOUND))
         {
             this.sounds.deserializeNBT(tag.getCompound("Sounds"));
         }
-        if(tag.contains("Display", Constants.NBT.TAG_COMPOUND))
+        if(tag.contains("Display", Tag.TAG_COMPOUND))
         {
             this.display.deserializeNBT(tag.getCompound("Display"));
         }
-        if(tag.contains("Modules", Constants.NBT.TAG_COMPOUND))
+        if(tag.contains("Modules", Tag.TAG_COMPOUND))
         {
             this.modules.deserializeNBT(tag.getCompound("Modules"));
         }
@@ -1205,7 +1205,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         return object;
     }
 
-    public static Gun create(CompoundNBT tag)
+    public static Gun create(CompoundTag tag)
     {
         Gun gun = new Gun();
         gun.deserializeNBT(tag);
@@ -1269,13 +1269,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static ItemStack getScopeStack(ItemStack gun)
     {
-        CompoundNBT compound = gun.getTag();
-        if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
+        CompoundTag compound = gun.getTag();
+        if(compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND))
         {
-            CompoundNBT attachment = compound.getCompound("Attachments");
-            if(attachment.contains("Scope", Constants.NBT.TAG_COMPOUND))
+            CompoundTag attachment = compound.getCompound("Attachments");
+            if(attachment.contains("Scope", Tag.TAG_COMPOUND))
             {
-                return ItemStack.read(attachment.getCompound("Scope"));
+                return ItemStack.of(attachment.getCompound("Scope"));
             }
         }
         return ItemStack.EMPTY;
@@ -1286,11 +1286,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         if(!gun.canAttachType(type))
             return false;
 
-        CompoundNBT compound = stack.getTag();
-        if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
+        CompoundTag compound = stack.getTag();
+        if(compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND))
         {
-            CompoundNBT attachment = compound.getCompound("Attachments");
-            return attachment.contains(type.getTagKey(), Constants.NBT.TAG_COMPOUND);
+            CompoundTag attachment = compound.getCompound("Attachments");
+            return attachment.contains(type.getTagKey(), Tag.TAG_COMPOUND);
         }
         return false;
     }
@@ -1298,13 +1298,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     @Nullable
     public static Scope getScope(ItemStack gun)
     {
-        CompoundNBT compound = gun.getTag();
-        if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
+        CompoundTag compound = gun.getTag();
+        if(compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND))
         {
-            CompoundNBT attachment = compound.getCompound("Attachments");
-            if(attachment.contains("Scope", Constants.NBT.TAG_COMPOUND))
+            CompoundTag attachment = compound.getCompound("Attachments");
+            if(attachment.contains("Scope", Tag.TAG_COMPOUND))
             {
-                ItemStack scopeStack = ItemStack.read(attachment.getCompound("Scope"));
+                ItemStack scopeStack = ItemStack.of(attachment.getCompound("Scope"));
                 Scope scope = null;
                 if(scopeStack.getItem() instanceof IScope)
                 {
@@ -1318,13 +1318,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static ItemStack getAttachment(IAttachment.Type type, ItemStack gun)
     {
-        CompoundNBT compound = gun.getTag();
-        if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
+        CompoundTag compound = gun.getTag();
+        if(compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND))
         {
-            CompoundNBT attachment = compound.getCompound("Attachments");
-            if(attachment.contains(type.getTagKey(), Constants.NBT.TAG_COMPOUND))
+            CompoundTag attachment = compound.getCompound("Attachments");
+            if(attachment.contains(type.getTagKey(), Tag.TAG_COMPOUND))
             {
-                return ItemStack.read(attachment.getCompound(type.getTagKey()));
+                return ItemStack.of(attachment.getCompound(type.getTagKey()));
             }
         }
         return ItemStack.EMPTY;
@@ -1332,20 +1332,20 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static float getAdditionalDamage(ItemStack gunStack)
     {
-        CompoundNBT tag = gunStack.getOrCreateTag();
+        CompoundTag tag = gunStack.getOrCreateTag();
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static ItemStack findAmmo(PlayerEntity player, ResourceLocation id)
+    public static ItemStack findAmmo(Player player, ResourceLocation id)
     {
         if(player.isCreative())
         {
             Item item = ForgeRegistries.ITEMS.getValue(id);
             return item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
         }
-        for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
+        for(int i = 0; i < player.getInventory().getContainerSize(); ++i)
         {
-            ItemStack stack = player.inventory.getStackInSlot(i);
+            ItemStack stack = player.getInventory().getItem(i);
             if(isAmmo(stack, id))
             {
                 return stack;
@@ -1361,7 +1361,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static boolean hasAmmo(ItemStack gunStack)
     {
-        CompoundNBT tag = gunStack.getOrCreateTag();
+        CompoundTag tag = gunStack.getOrCreateTag();
         return tag.getBoolean("IgnoreAmmo") || tag.getInt("AmmoCount") > 0;
     }
 

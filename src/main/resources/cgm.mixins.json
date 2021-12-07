@@ -12,8 +12,8 @@
   ],
   "client": [
     "client.GameRendererMixin",
-    "client.MouseHelperMixin",
-    "client.WorldRendererMixin"
+    "client.MouseHandlerMixin",
+      "client.LevelRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

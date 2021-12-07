@@ -2,6 +2,5 @@
 @MethodsReturnNonnullByDefault
 package com.mrcrayfish.guns.datagen;
 
-import mcp.MethodsReturnNonnullByDefault;
-
+import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import javax.annotation.ParametersAreNonnullByDefault;

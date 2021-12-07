@@ -2,21 +2,19 @@ package com.mrcrayfish.guns.crafting;
 
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.guns.init.ModRecipeSerializers;
-import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
+import com.mrcrayfish.guns.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.guns.util.InventoryUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
+public class WorkbenchRecipe implements Recipe<WorkbenchBlockEntity>
 {
     private final ResourceLocation id;
     private final ItemStack item;
@@ -40,25 +38,25 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
     }
 
     @Override
-    public boolean matches(WorkbenchTileEntity inv, World worldIn)
+    public boolean matches(WorkbenchBlockEntity inv, Level worldIn)
     {
         return false;
     }
 
     @Override
-    public ItemStack getCraftingResult(WorkbenchTileEntity inv)
+    public ItemStack assemble(WorkbenchBlockEntity inv)
     {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return this.item.copy();
     }
@@ -70,18 +68,18 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer()
+    public RecipeSerializer<?> getSerializer()
     {
         return ModRecipeSerializers.WORKBENCH.get();
     }
 
     @Override
-    public IRecipeType<?> getType()
+    public net.minecraft.world.item.crafting.RecipeType<?> getType()
     {
-        return RecipeType.WORKBENCH;
+        return ModRecipeType.WORKBENCH;
     }
 
-    public boolean hasMaterials(PlayerEntity player)
+    public boolean hasMaterials(Player player)
     {
         for(WorkbenchIngredient ingredient : this.getMaterials())
         {
@@ -93,7 +91,7 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
         return true;
     }
 
-    public void consumeMaterials(PlayerEntity player)
+    public void consumeMaterials(Player player)
     {
         for(WorkbenchIngredient ingredient : this.getMaterials())
         {

@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.util;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Author: MrCrayfish
@@ -22,7 +22,7 @@ public class BufferUtil
             buf.writeShort(-1);
             return;
         }
-        buf.writeShort(Item.getIdFromItem(stack.getItem()));
+        buf.writeShort(Item.getId(stack.getItem()));
         buf.writeByte(stack.getCount());
     }
 
@@ -39,6 +39,6 @@ public class BufferUtil
         {
             return ItemStack.EMPTY;
         }
-        return new ItemStack(Item.getItemById(id), buf.readByte());
+        return new ItemStack(Item.byId(id), buf.readByte());
     }
 }

@@ -1,9 +1,9 @@
 package com.mrcrayfish.guns.interfaces;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 /**
  * An interface for notifying a block it has been destroyed by a projectile explosion.
@@ -12,5 +12,5 @@ import net.minecraft.world.World;
  */
 public interface IExplosionDamageable
 {
-    void onProjectileExploded(World world, BlockState state, BlockPos pos, Entity entity);
+    void onProjectileExploded(Level world, BlockState state, BlockPos pos, Entity entity);
 }

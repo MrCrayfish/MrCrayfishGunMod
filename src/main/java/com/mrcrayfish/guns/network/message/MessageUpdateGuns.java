@@ -6,9 +6,9 @@ import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import org.apache.commons.lang3.Validate;
 
 import java.util.function.Supplier;
@@ -24,7 +24,7 @@ public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvid
     public MessageUpdateGuns() {}
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         Validate.notNull(NetworkGunManager.get());
         Validate.notNull(CustomGunLoader.get());
@@ -33,7 +33,7 @@ public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvid
     }
 
     @Override
-    public void decode(PacketBuffer buffer)
+    public void decode(FriendlyByteBuf buffer)
     {
         this.registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
         this.customGuns = CustomGunLoader.readCustomGuns(buffer);

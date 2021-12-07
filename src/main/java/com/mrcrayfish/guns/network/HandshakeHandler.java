@@ -3,8 +3,8 @@ package com.mrcrayfish.guns.network;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.common.NetworkGunManager;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -64,7 +64,7 @@ public class HandshakeHandler
         else
         {
             GunMod.LOGGER.error("Failed to synchronize gun properties from server");
-            c.get().getNetworkManager().closeChannel(new StringTextComponent("Connection closed - [MrCrayfish's Gun Mod] Failed to synchronize gun properties from server"));
+            c.get().getNetworkManager().disconnect(new TextComponent("Connection closed - [MrCrayfish's Gun Mod] Failed to synchronize gun properties from server"));
         }
     }
 }

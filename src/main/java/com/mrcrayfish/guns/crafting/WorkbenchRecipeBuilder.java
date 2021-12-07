@@ -7,15 +7,15 @@ import com.mrcrayfish.guns.init.ModRecipeSerializers;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -34,25 +34,25 @@ public class WorkbenchRecipeBuilder
     private final Advancement.Builder advancementBuilder;
     private final List<ICondition> conditions = new ArrayList<>();
 
-    private WorkbenchRecipeBuilder(IItemProvider item, int count)
+    private WorkbenchRecipeBuilder(ItemLike item, int count)
     {
         this.result = item.asItem();
         this.count = count;
         this.ingredients = new ArrayList<>();
-        this.advancementBuilder = Advancement.Builder.builder();
+        this.advancementBuilder = Advancement.Builder.advancement();
     }
 
-    public static WorkbenchRecipeBuilder crafting(IItemProvider item)
+    public static WorkbenchRecipeBuilder crafting(ItemLike item)
     {
         return new WorkbenchRecipeBuilder(item, 1);
     }
 
-    public static WorkbenchRecipeBuilder crafting(IItemProvider item, int count)
+    public static WorkbenchRecipeBuilder crafting(ItemLike item, int count)
     {
         return new WorkbenchRecipeBuilder(item, count);
     }
 
-    public WorkbenchRecipeBuilder addIngredient(IItemProvider item, int count)
+    public WorkbenchRecipeBuilder addIngredient(ItemLike item, int count)
     {
         this.ingredients.add(WorkbenchIngredient.of(item, count));
         return this;
@@ -64,9 +64,9 @@ public class WorkbenchRecipeBuilder
         return this;
     }
 
-    public WorkbenchRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn)
+    public WorkbenchRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn)
     {
-        this.advancementBuilder.withCriterion(name, criterionIn);
+        this.advancementBuilder.addCriterion(name, criterionIn);
         return this;
     }
 
@@ -76,17 +76,17 @@ public class WorkbenchRecipeBuilder
         return this;
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer)
+    public void build(Consumer<FinishedRecipe> consumer)
     {
         ResourceLocation resourcelocation = Registry.ITEM.getKey(this.result);
         this.build(consumer, resourcelocation);
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id)
+    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id)
     {
         this.validate(id);
-        this.advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
-        consumer.accept(new WorkbenchRecipeBuilder.Result(id, this.result, this.count, this.ingredients, this.conditions, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath())));
+        this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+        consumer.accept(new WorkbenchRecipeBuilder.Result(id, this.result, this.count, this.ingredients, this.conditions, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath())));
     }
 
     /**
@@ -100,7 +100,7 @@ public class WorkbenchRecipeBuilder
         }
     }
 
-    public static class Result implements IFinishedRecipe
+    public static class Result implements FinishedRecipe
     {
         private final ResourceLocation id;
         private final Item item;
@@ -110,7 +110,7 @@ public class WorkbenchRecipeBuilder
         private final Advancement.Builder advancement;
         private final ResourceLocation advancementId;
 
-        public Result(ResourceLocation id, IItemProvider item, int count, List<WorkbenchIngredient> ingredients, List<ICondition> conditions, Advancement.Builder advancement, ResourceLocation advancementId)
+        public Result(ResourceLocation id, ItemLike item, int count, List<WorkbenchIngredient> ingredients, List<ICondition> conditions, Advancement.Builder advancement, ResourceLocation advancementId)
         {
             this.id = id;
             this.item = item.asItem();
@@ -122,7 +122,7 @@ public class WorkbenchRecipeBuilder
         }
 
         @Override
-        public void serialize(JsonObject json)
+        public void serializeRecipeData(JsonObject json)
         {
             JsonArray conditions = new JsonArray();
             this.conditions.forEach(condition -> conditions.add(CraftingHelper.serialize(condition)));
@@ -132,7 +132,7 @@ public class WorkbenchRecipeBuilder
             }
 
             JsonArray materials = new JsonArray();
-            this.ingredients.forEach(ingredient -> materials.add(ingredient.serialize()));
+            this.ingredients.forEach(ingredient -> materials.add(ingredient.toJson()));
             json.add("materials", materials);
 
             JsonObject resultObject = new JsonObject();
@@ -145,25 +145,25 @@ public class WorkbenchRecipeBuilder
         }
 
         @Override
-        public ResourceLocation getID()
+        public ResourceLocation getId()
         {
             return this.id;
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer()
+        public RecipeSerializer<?> getType()
         {
             return ModRecipeSerializers.WORKBENCH.get();
         }
 
         @Override
-        public JsonObject getAdvancementJson()
+        public JsonObject serializeAdvancement()
         {
-            return this.advancement.serialize();
+            return this.advancement.serializeToJson();
         }
 
         @Override
-        public ResourceLocation getAdvancementID()
+        public ResourceLocation getAdvancementId()
         {
             return this.advancementId;
         }

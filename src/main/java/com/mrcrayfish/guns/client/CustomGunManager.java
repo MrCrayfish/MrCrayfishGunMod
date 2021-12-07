@@ -4,11 +4,11 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.init.ModItems;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,9 +37,9 @@ public class CustomGunManager
             customGunMap.forEach((id, gun) ->
             {
                 ItemStack stack = new ItemStack(ModItems.PISTOL.get());
-                stack.setDisplayName(new TranslationTextComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
-                CompoundNBT tag = stack.getOrCreateTag();
-                tag.put("Model", gun.getModel().write(new CompoundNBT()));
+                stack.setHoverName(new TranslatableComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
+                CompoundTag tag = stack.getOrCreateTag();
+                tag.put("Model", gun.getModel().save(new CompoundTag()));
                 tag.put("Gun", gun.getGun().serializeNBT());
                 tag.putBoolean("Custom", true);
                 tag.putInt("AmmoCount", gun.getGun().getGeneral().getMaxAmmo());

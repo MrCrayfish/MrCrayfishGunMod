@@ -1,27 +1,28 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
+//import groovy.json.JsonOutput
+//import groovy.json.JsonSlurper
 
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = "1.1.0-1.16.5"
+version = "1.1.0-1.17.1"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
@@ -30,12 +31,13 @@ mixin {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
+    mappings channel: 'official', version: '1.17.1'
 
     runs {
         client {
             workingDirectory project.file('run')
             property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             arg '-mixin.config=cgm.mixins.json'
@@ -49,6 +51,7 @@ minecraft {
         server {
             workingDirectory project.file('run')
             property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             arg '-mixin.config=cgm.mixins.json'
@@ -62,6 +65,7 @@ minecraft {
         data {
             workingDirectory project.file('run')
             property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             args '--mod', 'cgm', '--all', '--output', file('src/generated/resources/')
@@ -75,36 +79,38 @@ minecraft {
     }
 }
 
-processResources {
-    doLast {
-        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
-            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
-        }
-    }
-}
+//processResources {
+//    doLast {
+//        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
+//            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+//        }
+//    }
+//}
 
 repositories {
+    mavenLocal()
     maven {
-        url = "https://www.cursemaven.com"
+        name "Progwml6 maven"
+        url "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
+        name "ModMaven"
+        url "https://modmaven.k-4u.nl"
     }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.0'
-    compile fg.deobf('curse.maven:obfuscate-289380:3336021')
-    compile fg.deobf('curse.maven:controllable-317269:3519536')
-    compile fg.deobf('curse.maven:configured-457570:3546348')
-    compile fg.deobf('curse.maven:catalogue-459701:3529457')
-    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.137:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.137")
+    minecraft 'net.minecraftforge:forge:1.17.1-37.1.0'
+    //implementation fg.deobf('curse.maven:controllable-317269:3528563')
+    //implementation fg.deobf('curse.maven:configured-457570:3546348')
+    //implementation fg.deobf('curse.maven:catalogue-459701:3529459')
+    compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.3.0.39:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.17.1:8.3.0.39")
+
+    // Local Maven
+    implementation fg.deobf('com.mrcrayfish:Framework:0.1.0-1.17.1')
+    implementation fg.deobf('com.mrcrayfish:Posture:1.0.0-1.17.1')
+    implementation fg.deobf('com.mrcrayfish:Controllable:0.15.0-1.17.1')
 }
 
 jar {

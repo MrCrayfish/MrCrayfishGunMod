@@ -3,10 +3,10 @@ package com.mrcrayfish.guns.item.attachment.impl;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class Attachment
 {
     private final IGunModifier[] modifiers;
-    private List<ITextComponent> perks = null;
+    private List<Component> perks = null;
 
     Attachment(IGunModifier... modifiers)
     {
@@ -37,7 +37,7 @@ public abstract class Attachment
         return this.modifiers;
     }
 
-    void setPerks(List<ITextComponent> perks)
+    void setPerks(List<Component> perks)
     {
         if(this.perks == null)
         {
@@ -45,7 +45,7 @@ public abstract class Attachment
         }
     }
 
-    List<ITextComponent> getPerks()
+    List<Component> getPerks()
     {
         return this.perks;
     }
@@ -59,17 +59,17 @@ public abstract class Attachment
         if(stack.getItem() instanceof IAttachment<?>)
         {
             IAttachment<?> attachment = (IAttachment<?>) stack.getItem();
-            List<ITextComponent> perks = attachment.getProperties().getPerks();
+            List<Component> perks = attachment.getProperties().getPerks();
             if(perks != null && perks.size() > 0)
             {
-                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title").mergeStyle(TextFormatting.GRAY, TextFormatting.BOLD));
+                event.getToolTip().add(new TranslatableComponent("perk.cgm.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
                 event.getToolTip().addAll(perks);
                 return;
             }
 
             IGunModifier[] modifiers = attachment.getProperties().getModifiers();
-            List<ITextComponent> positivePerks = new ArrayList<>();
-            List<ITextComponent> negativePerks = new ArrayList<>();
+            List<Component> positivePerks = new ArrayList<>();
+            List<Component> negativePerks = new ArrayList<>();
 
             /* Test for fire sound volume */
             float inputSound = 1.0F;
@@ -121,11 +121,11 @@ public abstract class Attachment
             }
             if(additionalDamage > 0.0F)
             {
-                addPerk(positivePerks, true, "perk.cgm.additional_damage.positive", ItemStack.DECIMALFORMAT.format(additionalDamage / 2.0));
+                addPerk(positivePerks, true, "perk.cgm.additional_damage.positive", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0));
             }
             else if(additionalDamage < 0.0F)
             {
-                addPerk(negativePerks, false, "perk.cgm.additional_damage.negative", ItemStack.DECIMALFORMAT.format(additionalDamage / 2.0));
+                addPerk(negativePerks, false, "perk.cgm.additional_damage.negative", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0));
             }
 
             /* Test for modified damage */
@@ -244,14 +244,14 @@ public abstract class Attachment
             attachment.getProperties().setPerks(positivePerks);
             if(positivePerks.size() > 0)
             {
-                event.getToolTip().add(new TranslationTextComponent("perk.cgm.title").mergeStyle(TextFormatting.GRAY, TextFormatting.BOLD));
+                event.getToolTip().add(new TranslatableComponent("perk.cgm.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
                 event.getToolTip().addAll(positivePerks);
             }
         }
     }
 
-    private static void addPerk(List<ITextComponent> components, boolean positive, String id, Object... params)
+    private static void addPerk(List<Component> components, boolean positive, String id, Object... params)
     {
-        components.add(new TranslationTextComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", new TranslationTextComponent(id, params).mergeStyle(TextFormatting.WHITE)).mergeStyle(positive ? TextFormatting.DARK_AQUA : TextFormatting.GOLD));
+        components.add(new TranslatableComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", new TranslatableComponent(id, params).withStyle(ChatFormatting.WHITE)).withStyle(positive ? ChatFormatting.DARK_AQUA : ChatFormatting.GOLD));
     }
 }

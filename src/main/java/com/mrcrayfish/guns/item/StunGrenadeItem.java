@@ -3,10 +3,10 @@ package com.mrcrayfish.guns.item;
 import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
 import com.mrcrayfish.guns.entity.ThrowableStunGrenadeEntity;
 import com.mrcrayfish.guns.init.ModSounds;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
@@ -19,7 +19,7 @@ public class StunGrenadeItem extends GrenadeItem
     }
 
     @Override
-    public ThrowableGrenadeEntity create(World world, LivingEntity entity, int timeLeft)
+    public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft)
     {
         return new ThrowableStunGrenadeEntity(world, entity, 20 * 2);
     }
@@ -31,8 +31,8 @@ public class StunGrenadeItem extends GrenadeItem
     }
 
     @Override
-    protected void onThrown(World world, ThrowableGrenadeEntity entity)
+    protected void onThrown(Level world, ThrowableGrenadeEntity entity)
     {
-        world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 }

@@ -7,13 +7,13 @@ import com.mrcrayfish.guns.common.headshot.NoChildHeadshotBox;
 import com.mrcrayfish.guns.common.headshot.NoChildRotatedHeadshotBox;
 import com.mrcrayfish.guns.common.headshot.RotatedHeadshotBox;
 import com.mrcrayfish.guns.interfaces.IHeadshotBox;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,25 +31,25 @@ import java.util.WeakHashMap;
 public class BoundingBoxManager
 {
     private static Map<EntityType<?>, IHeadshotBox<?>> headshotBoxes = new HashMap<>();
-    private static WeakHashMap<PlayerEntity, LinkedList<AxisAlignedBB>> playerBoxes = new WeakHashMap<>();
+    private static WeakHashMap<Player, LinkedList<AABB>> playerBoxes = new WeakHashMap<>();
 
     static
     {
         /* Player */
         registerHeadshotBox(EntityType.PLAYER, (entity) -> {
-            AxisAlignedBB headBox = new AxisAlignedBB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
+            AABB headBox = new AABB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
             double scale = 30.0 / 32.0;
             if(entity.isSwimming())
             {
-                headBox = headBox.offset(0, 3 * 0.0625, 0);
-                Vector3d pos = Vector3d.fromPitchYaw(entity.rotationPitch, entity.renderYawOffset).normalize().scale(0.8);
-                headBox = headBox.offset(pos);
+                headBox = headBox.move(0, 3 * 0.0625, 0);
+                Vec3 pos = Vec3.directionFromRotation(entity.getXRot(), entity.yBodyRot).normalize().scale(0.8);
+                headBox = headBox.move(pos);
             }
             else
             {
-                headBox = headBox.offset(0, entity.isSneaking() ? 20 * 0.0625 : 24 * 0.0625, 0);
+                headBox = headBox.move(0, entity.isShiftKeyDown() ? 20 * 0.0625 : 24 * 0.0625, 0);
             }
-            return new AxisAlignedBB(headBox.minX * scale, headBox.minY * scale, headBox.minZ * scale, headBox.maxX * scale, headBox.maxY * scale, headBox.maxZ * scale);
+            return new AABB(headBox.minX * scale, headBox.minY * scale, headBox.minZ * scale, headBox.maxX * scale, headBox.maxY * scale, headBox.maxZ * scale);
         });
 
         registerHeadshotBox(EntityType.ZOMBIE, new ChildHeadshotBox<>(8.0, 24.0, 0.75, 0.5));
@@ -121,7 +121,7 @@ public class BoundingBoxManager
                 playerBoxes.remove(event.player);
                 return;
             }
-            LinkedList<AxisAlignedBB> boxes = playerBoxes.computeIfAbsent(event.player, player -> new LinkedList<>());
+            LinkedList<AABB> boxes = playerBoxes.computeIfAbsent(event.player, player -> new LinkedList<>());
             boxes.addFirst(event.player.getBoundingBox());
             if(boxes.size() > 20)
             {
@@ -136,12 +136,12 @@ public class BoundingBoxManager
         playerBoxes.remove(event.getPlayer());
     }
 
-    public static AxisAlignedBB getBoundingBox(PlayerEntity entity, int ping)
+    public static AABB getBoundingBox(Player entity, int ping)
     {
         if(playerBoxes.containsKey(entity))
         {
-            LinkedList<AxisAlignedBB> boxes = playerBoxes.get(entity);
-            int index = MathHelper.clamp(ping, 0, boxes.size() - 1);
+            LinkedList<AABB> boxes = playerBoxes.get(entity);
+            int index = Mth.clamp(ping, 0, boxes.size() - 1);
             return boxes.get(index);
         }
         return entity.getBoundingBox();

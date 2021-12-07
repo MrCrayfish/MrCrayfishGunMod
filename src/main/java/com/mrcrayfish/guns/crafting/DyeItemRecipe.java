@@ -2,14 +2,14 @@ package com.mrcrayfish.guns.crafting;
 
 import com.mrcrayfish.guns.init.ModRecipeSerializers;
 import com.mrcrayfish.guns.item.IColored;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class DyeItemRecipe extends SpecialRecipe
+public class DyeItemRecipe extends CustomRecipe
 {
     public DyeItemRecipe(ResourceLocation id)
     {
@@ -25,14 +25,14 @@ public class DyeItemRecipe extends SpecialRecipe
     }
 
     @Override
-    public boolean matches(CraftingInventory inventory, World worldIn)
+    public boolean matches(CraftingContainer inventory, Level worldIn)
     {
         ItemStack item = ItemStack.EMPTY;
         List<ItemStack> dyes = new ArrayList<>();
 
-        for(int i = 0; i < inventory.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getContainerSize(); ++i)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 if(stack.getItem() instanceof IColored)
@@ -58,14 +58,14 @@ public class DyeItemRecipe extends SpecialRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inventory)
+    public ItemStack assemble(CraftingContainer inventory)
     {
         ItemStack item = ItemStack.EMPTY;
         List<DyeItem> dyes = new ArrayList<>();
 
-        for(int i = 0; i < inventory.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getContainerSize(); ++i)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 if(stack.getItem() instanceof IColored)
@@ -91,30 +91,30 @@ public class DyeItemRecipe extends SpecialRecipe
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return width * height >= 2;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer()
+    public RecipeSerializer<?> getSerializer()
     {
         return ModRecipeSerializers.DYE_ITEM.get();
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inventory)
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inventory)
     {
-        NonNullList<ItemStack> remainingItems = NonNullList.withSize(inventory.getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> remainingItems = NonNullList.withSize(inventory.getContainerSize(), ItemStack.EMPTY);
         for(int i = 0; i < remainingItems.size(); ++i)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             remainingItems.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(stack));
         }
         return remainingItems;

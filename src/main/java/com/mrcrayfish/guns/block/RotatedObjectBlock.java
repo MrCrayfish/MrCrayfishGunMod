@@ -1,42 +1,42 @@
 package com.mrcrayfish.guns.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
 
 import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class RotatedObjectBlock extends HorizontalBlock
+public abstract class RotatedObjectBlock extends HorizontalDirectionalBlock
 {
     public RotatedObjectBlock(Block.Properties properties)
     {
         super(properties);
-        this.setDefaultState(this.getStateContainer().getBaseState().with(HORIZONTAL_FACING, Direction.NORTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
 
     @Override
-    public boolean isTransparent(BlockState state)
+    public boolean useShapeForLightOcclusion(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
-        return this.getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing());
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
-        super.fillStateContainer(builder);
-        builder.add(HORIZONTAL_FACING);
+        super.createBlockStateDefinition(builder);
+        builder.add(FACING);
     }
 }

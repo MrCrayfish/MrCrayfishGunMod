@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.event;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
@@ -14,7 +14,7 @@ public class GunFireEvent extends PlayerEvent
 {
     private final ItemStack stack;
 
-    public GunFireEvent(PlayerEntity player, ItemStack stack)
+    public GunFireEvent(Player player, ItemStack stack)
     {
         super(player);
         this.stack = stack;
@@ -33,7 +33,7 @@ public class GunFireEvent extends PlayerEvent
      */
     public boolean isClient()
     {
-        return this.getPlayer().getEntityWorld().isRemote();
+        return this.getPlayer().getCommandSenderWorld().isClientSide();
     }
 
     /**
@@ -44,7 +44,7 @@ public class GunFireEvent extends PlayerEvent
     @Cancelable
     public static class Pre extends GunFireEvent
     {
-        public Pre(PlayerEntity player, ItemStack stack)
+        public Pre(Player player, ItemStack stack)
         {
             super(player, stack);
         }
@@ -57,7 +57,7 @@ public class GunFireEvent extends PlayerEvent
      */
     public static class Post extends GunFireEvent
     {
-        public Post(PlayerEntity player, ItemStack stack)
+        public Post(Player player, ItemStack stack)
         {
             super(player, stack);
         }

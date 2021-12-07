@@ -33,23 +33,23 @@ import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.MouseSettingsScreen;
-import net.minecraft.client.gui.widget.list.OptionsRowList;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.gui.components.OptionsList;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.MouseSettingsScreen;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
@@ -84,43 +84,43 @@ public class ClientHandler
         KeyBinds.register();
 
         setupRenderLayers();
-        registerEntityRenders();
         registerColors();
         registerModelOverrides();
         registerScreenFactories();
 
-        IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        if(resourceManager instanceof IReloadableResourceManager)
+        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+        if(resourceManager instanceof ReloadableResourceManager)
         {
-            ((IReloadableResourceManager) resourceManager).addReloadListener((stage, rm, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) ->
+            ((ReloadableResourceManager) resourceManager).registerReloadListener((stage, rm, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) ->
             {
-                return CompletableFuture.runAsync(SpecialModels::clearCache).thenCompose(stage::markCompleteAwaitingOthers);
+                return CompletableFuture.runAsync(SpecialModels::clearCache).thenCompose(stage::wait);
             });
         }
     }
 
     private static void setupRenderLayers()
     {
-        RenderTypeLookup.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.getCutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.cutout());
     }
 
-    private static void registerEntityRenders()
+    @SubscribeEvent
+    public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event)
     {
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.PROJECTILE.get(), ProjectileRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.GRENADE.get(), GrenadeRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.MISSILE.get(), MissileRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
+        event.registerEntityRenderer(ModEntities.PROJECTILE.get(), ProjectileRenderer::new);
+        event.registerEntityRenderer(ModEntities.GRENADE.get(), GrenadeRenderer::new);
+        event.registerEntityRenderer(ModEntities.MISSILE.get(), MissileRenderer::new);
+        event.registerEntityRenderer(ModEntities.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
+        event.registerEntityRenderer(ModEntities.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
     }
 
     private static void registerColors()
     {
-        IItemColor color = (stack, index) -> {
+        ItemColor color = (stack, index) -> {
             if(!((IColored) stack.getItem()).canColor(stack))
             {
                 return -1;
             }
-            if(index == 0 && stack.hasTag() && stack.getTag().contains("Color", Constants.NBT.TAG_INT))
+            if(index == 0 && stack.hasTag() && stack.getTag().contains("Color", Tag.TAG_INT))
             {
                 return stack.getTag().getInt("Color");
             }
@@ -146,8 +146,8 @@ public class ClientHandler
 
     private static void registerScreenFactories()
     {
-        ScreenManager.registerFactory(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
-        ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
+        MenuScreens.register(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
+        MenuScreens.register(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
     }
 
     @SubscribeEvent
@@ -158,13 +158,13 @@ public class ClientHandler
             MouseSettingsScreen screen = (MouseSettingsScreen) event.getGui();
             if(mouseOptionsField == null)
             {
-                mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "field_213045_b");
+                mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "list");
                 mouseOptionsField.setAccessible(true);
             }
             try
             {
-                OptionsRowList list = (OptionsRowList) mouseOptionsField.get(screen);
-                list.addOption(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
+                OptionsList list = (OptionsList) mouseOptionsField.get(screen);
+                list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
             }
             catch(IllegalAccessException e)
             {
@@ -177,9 +177,9 @@ public class ClientHandler
     public static void onKeyPressed(InputEvent.KeyInputEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && mc.currentScreen == null)
+        if(mc.player != null && mc.screen == null)
         {
-            if(KeyBinds.KEY_ATTACHMENTS.isPressed())
+            if(KeyBinds.KEY_ATTACHMENTS.consumeClick())
             {
                 PacketHandler.getPlayChannel().sendToServer(new MessageAttachments());
             }

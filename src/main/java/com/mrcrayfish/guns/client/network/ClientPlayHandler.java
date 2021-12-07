@@ -17,22 +17,22 @@ import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
 import com.mrcrayfish.guns.particles.BulletHoleData;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -54,13 +54,13 @@ public class ClientPlayHandler
             GunRenderingHandler.get().showMuzzleFlashForPlayer(message.getShooterId());
         }
 
-        if(message.getShooterId() == mc.player.getEntityId())
+        if(message.getShooterId() == mc.player.getId())
         {
-            Minecraft.getInstance().getSoundHandler().play(new SimpleSound(message.getId(), SoundCategory.PLAYERS, message.getVolume(), message.getPitch(), false, 0, ISound.AttenuationType.NONE, 0, 0, 0, true));
+            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS, message.getVolume(), message.getPitch(), false, 0, SoundInstance.Attenuation.NONE, 0, 0, 0, true));
         }
         else
         {
-            Minecraft.getInstance().getSoundHandler().play(new GunShotSound(message.getId(), SoundCategory.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload()));
+            Minecraft.getInstance().getSoundManager().play(new GunShotSound(message.getId(), SoundSource.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload()));
         }
     }
 
@@ -70,7 +70,7 @@ public class ClientPlayHandler
         {
             return;
         }
-        World world = Minecraft.getInstance().world;
+        Level world = Minecraft.getInstance().level;
         if(world != null)
         {
             for(int i = 0; i < 10; i++)
@@ -82,12 +82,12 @@ public class ClientPlayHandler
 
     public static void handleMessageBulletTrail(MessageBulletTrail message)
     {
-        World world = Minecraft.getInstance().world;
+        Level world = Minecraft.getInstance().level;
         if(world != null)
         {
             int[] entityIds = message.getEntityIds();
-            Vector3d[] positions = message.getPositions();
-            Vector3d[] motions = message.getMotions();
+            Vec3[] positions = message.getPositions();
+            Vec3[] motions = message.getMotions();
             ItemStack item = message.getItem();
             int trailColor = message.getTrailColor();
             double trailLengthMultiplier = message.getTrailLengthMultiplier();
@@ -95,7 +95,7 @@ public class ClientPlayHandler
             double gravity = message.getGravity();
             int shooterId = message.getShooterId();
             boolean enchanted = message.isEnchanted();
-            IParticleData data = message.getParticleData();
+            ParticleOptions data = message.getParticleData();
             for(int i = 0; i < message.getCount(); i++)
             {
                 BulletTrailRenderingHandler.get().add(new BulletTrail(entityIds[i], positions[i], motions[i], item, trailColor, trailLengthMultiplier, life, gravity, shooterId, enchanted, data));
@@ -106,8 +106,8 @@ public class ClientPlayHandler
     public static void handleExplosionStunGrenade(MessageStunGrenade message)
     {
         Minecraft mc = Minecraft.getInstance();
-        ParticleManager particleManager = mc.particles;
-        World world = mc.world;
+        ParticleEngine particleManager = mc.particleEngine;
+        Level world = mc.level;
         double x = message.getX();
         double y = message.getY();
         double z = message.getZ();
@@ -115,42 +115,42 @@ public class ClientPlayHandler
         /* Spawn lingering smoke particles */
         for(int i = 0; i < 30; i++)
         {
-            spawnParticle(particleManager, ParticleTypes.CLOUD, x, y, z, world.rand, 0.2);
+            spawnParticle(particleManager, ParticleTypes.CLOUD, x, y, z, world.random, 0.2);
         }
 
         /* Spawn fast moving smoke/spark particles */
         for(int i = 0; i < 30; i++)
         {
-            Particle smoke = spawnParticle(particleManager, ParticleTypes.SMOKE, x, y, z, world.rand, 4.0);
-            smoke.setMaxAge((int) ((8 / (Math.random() * 0.1 + 0.4)) * 0.5));
-            spawnParticle(particleManager, ParticleTypes.CRIT, x, y, z, world.rand, 4.0);
+            Particle smoke = spawnParticle(particleManager, ParticleTypes.SMOKE, x, y, z, world.random, 4.0);
+            smoke.setLifetime((int) ((8 / (Math.random() * 0.1 + 0.4)) * 0.5));
+            spawnParticle(particleManager, ParticleTypes.CRIT, x, y, z, world.random, 4.0);
         }
     }
 
-    private static Particle spawnParticle(ParticleManager manager, IParticleData data, double x, double y, double z, Random rand, double velocityMultiplier)
+    private static Particle spawnParticle(ParticleEngine manager, ParticleOptions data, double x, double y, double z, Random rand, double velocityMultiplier)
     {
-        return manager.addParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
+        return manager.createParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
 
     public static void handleProjectileHitBlock(MessageProjectileHitBlock message)
     {
         Minecraft mc = Minecraft.getInstance();
-        World world = mc.world;
+        Level world = mc.level;
         if(world != null)
         {
             BlockState state = world.getBlockState(message.getPos());
-            double holeX = message.getX() + 0.005 * message.getFace().getXOffset();
-            double holeY = message.getY() + 0.005 * message.getFace().getYOffset();
-            double holeZ = message.getZ() + 0.005 * message.getFace().getZOffset();
-            double distance = Math.sqrt(mc.player.getDistanceSq(message.getX(), message.getY(), message.getZ()));
+            double holeX = message.getX() + 0.005 * message.getFace().getStepX();
+            double holeY = message.getY() + 0.005 * message.getFace().getStepY();
+            double holeZ = message.getZ() + 0.005 * message.getFace().getStepZ();
+            double distance = Math.sqrt(mc.player.distanceToSqr(message.getX(), message.getY(), message.getZ()));
             world.addParticle(new BulletHoleData(message.getFace(), message.getPos()), false, holeX, holeY, holeZ, 0, 0, 0);
             if(distance < 16.0)
             {
-                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
+                world.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
             }
             if(distance < 32.0)
             {
-                world.playSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F, false);
+                world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.75F, 2.0F, false);
             }
         }
     }
@@ -158,7 +158,7 @@ public class ClientPlayHandler
     public static void handleProjectileHitEntity(MessageProjectileHitEntity message)
     {
         Minecraft mc = Minecraft.getInstance();
-        World world = mc.world;
+        Level world = mc.level;
         if(world == null)
             return;
 
@@ -166,7 +166,7 @@ public class ClientPlayHandler
         if(event == null)
             return;
 
-        mc.getSoundHandler().play(SimpleSound.master(event, 1.0F, 1.0F + world.rand.nextFloat() * 0.2F));
+        mc.getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F, 1.0F + world.random.nextFloat() * 0.2F));
     }
 
     @Nullable
@@ -177,7 +177,7 @@ public class ClientPlayHandler
             if(Config.CLIENT.sounds.playSoundWhenCritical.get())
             {
                 SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(Config.CLIENT.sounds.criticalSound.get()));
-                return event != null ? event : SoundEvents.ENTITY_PLAYER_ATTACK_CRIT;
+                return event != null ? event : SoundEvents.PLAYER_ATTACK_CRIT;
             }
         }
         else if(headshot)
@@ -185,12 +185,12 @@ public class ClientPlayHandler
             if(Config.CLIENT.sounds.playSoundWhenHeadshot.get())
             {
                 SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(Config.CLIENT.sounds.headshotSound.get()));
-                return event != null ? event : SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK;
+                return event != null ? event : SoundEvents.PLAYER_ATTACK_KNOCKBACK;
             }
         }
         else if(player)
         {
-            return SoundEvents.ENTITY_PLAYER_HURT;
+            return SoundEvents.PLAYER_HURT;
         }
         return null;
     }

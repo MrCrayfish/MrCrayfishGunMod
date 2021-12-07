@@ -1,29 +1,29 @@
 package com.mrcrayfish.guns.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class ThrowableItemEntity extends ThrowableEntity implements IEntityAdditionalSpawnData
+public abstract class ThrowableItemEntity extends ThrowableProjectile implements IEntityAdditionalSpawnData
 {
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
@@ -32,17 +32,17 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     /* The max life of the entity. If -1, will stay alive forever and will need to be explicitly removed. */
     private int maxLife = 20 * 10;
 
-    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, World worldIn)
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level worldIn)
     {
         super(entityType, worldIn);
     }
 
-    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, LivingEntity player)
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity player)
     {
         super(entityType, player, world);
     }
 
-    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, double x, double y, double z)
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, double x, double y, double z)
     {
         super(entityType, x, y, z, world);
     }
@@ -68,7 +68,7 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     }
 
     @Override
-    protected float getGravityVelocity()
+    protected float getGravity()
     {
         return this.gravityVelocity;
     }
@@ -82,9 +82,9 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     public void tick()
     {
         super.tick();
-        if(this.shouldBounce && this.ticksExisted >= this.maxLife)
+        if(this.shouldBounce && this.tickCount >= this.maxLife)
         {
-            this.remove();
+            this.remove(RemovalReason.KILLED);
             this.onDeath();
         }
     }
@@ -92,46 +92,46 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     public void onDeath() {}
 
     @Override
-    protected void onImpact(RayTraceResult result)
+    protected void onHit(HitResult result)
     {
         switch(result.getType())
         {
             case BLOCK:
-                BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
+                BlockHitResult blockResult = (BlockHitResult) result;
                 if(this.shouldBounce)
                 {
-                    BlockPos resultPos = blockResult.getPos();
-                    BlockState state = this.world.getBlockState(resultPos);
-                    SoundEvent event = state.getBlock().getSoundType(state, this.world, resultPos, this).getStepSound();
-                    double speed = this.getMotion().length();
+                    BlockPos resultPos = blockResult.getBlockPos();
+                    BlockState state = this.level.getBlockState(resultPos);
+                    SoundEvent event = state.getBlock().getSoundType(state, this.level, resultPos, this).getStepSound();
+                    double speed = this.getDeltaMovement().length();
                     if(speed > 0.1)
                     {
-                        this.world.playSound(null, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
+                        this.level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundSource.AMBIENT, 1.0F, 1.0F);
                     }
-                    this.bounce(blockResult.getFace());
+                    this.bounce(blockResult.getDirection());
                 }
                 else
                 {
-                    this.remove();
+                    this.remove(RemovalReason.KILLED);
                     this.onDeath();
                 }
                 break;
             case ENTITY:
-                EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
+                EntityHitResult entityResult = (EntityHitResult) result;
                 Entity entity = entityResult.getEntity();
                 if(this.shouldBounce)
                 {
-                    double speed = this.getMotion().length();
+                    double speed = this.getDeltaMovement().length();
                     if(speed > 0.1)
                     {
-                        entity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), 1.0F);
+                        entity.hurt(DamageSource.thrown(this, this.getOwner()), 1.0F);
                     }
-                    this.bounce(Direction.getFacingFromVector(this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ()).getOpposite());
-                    this.setMotion(this.getMotion().mul(0.25, 1.0, 0.25));
+                    this.bounce(Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite());
+                    this.setDeltaMovement(this.getDeltaMovement().multiply(0.25, 1.0, 0.25));
                 }
                 else
                 {
-                    this.remove();
+                    this.remove(RemovalReason.KILLED);
                     this.onDeath();
                 }
                 break;
@@ -145,45 +145,45 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
         switch(direction.getAxis())
         {
             case X:
-                this.setMotion(this.getMotion().mul(-0.5, 0.75, 0.75));
+                this.setDeltaMovement(this.getDeltaMovement().multiply(-0.5, 0.75, 0.75));
                 break;
             case Y:
-                this.setMotion(this.getMotion().mul(0.75, -0.25, 0.75));
-                if(this.getMotion().getY() < this.getGravityVelocity())
+                this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, -0.25, 0.75));
+                if(this.getDeltaMovement().y() < this.getGravity())
                 {
-                    this.setMotion(this.getMotion().mul(1, 0, 1));
+                    this.setDeltaMovement(this.getDeltaMovement().multiply(1, 0, 1));
                 }
                 break;
             case Z:
-                this.setMotion(this.getMotion().mul(0.75, 0.75, -0.5));
+                this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, 0.75, -0.5));
                 break;
         }
     }
 
     @Override
-    public boolean hasNoGravity()
+    public boolean isNoGravity()
     {
         return false;
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer)
+    public void writeSpawnData(FriendlyByteBuf buffer)
     {
         buffer.writeBoolean(this.shouldBounce);
         buffer.writeFloat(this.gravityVelocity);
-        buffer.writeItemStack(this.item);
+        buffer.writeItem(this.item);
     }
 
     @Override
-    public void readSpawnData(PacketBuffer buffer)
+    public void readSpawnData(FriendlyByteBuf buffer)
     {
         this.shouldBounce = buffer.readBoolean();
         this.gravityVelocity = buffer.readFloat();
-        this.item = buffer.readItemStack();
+        this.item = buffer.readItem();
     }
 
     @Override
-    public IPacket<?> createSpawnPacket()
+    public Packet<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

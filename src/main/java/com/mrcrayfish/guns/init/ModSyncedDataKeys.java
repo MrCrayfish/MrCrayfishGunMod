@@ -1,10 +1,10 @@
 package com.mrcrayfish.guns.init;
 
+import com.mrcrayfish.framework.api.FrameworkAPI;
+import com.mrcrayfish.framework.api.data.sync.Serializers;
+import com.mrcrayfish.framework.api.data.sync.SyncedDataKey;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.obfuscate.common.data.Serializers;
-import com.mrcrayfish.obfuscate.common.data.SyncedDataKey;
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish
@@ -31,8 +31,8 @@ public class ModSyncedDataKeys
 
     public static void register()
     {
-        SyncedPlayerData.instance().registerKey(AIMING);
-        SyncedPlayerData.instance().registerKey(SHOOTING);
-        SyncedPlayerData.instance().registerKey(RELOADING);
+        FrameworkAPI.registerSyncedDataKey(AIMING);
+        FrameworkAPI.registerSyncedDataKey(SHOOTING);
+        FrameworkAPI.registerSyncedDataKey(RELOADING);
     }
 }

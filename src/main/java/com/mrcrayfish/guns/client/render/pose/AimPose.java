@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.client.render.pose;
 
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.math.Vector3f;
 
 /**
  * Author: MrCrayfish

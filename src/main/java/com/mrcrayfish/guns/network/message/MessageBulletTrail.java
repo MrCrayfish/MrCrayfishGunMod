@@ -3,14 +3,14 @@ package com.mrcrayfish.guns.network.message;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -20,8 +20,8 @@ import java.util.function.Supplier;
 public class MessageBulletTrail implements IMessage
 {
     private int[] entityIds;
-    private Vector3d[] positions;
-    private Vector3d[] motions;
+    private Vec3[] positions;
+    private Vec3[] motions;
     private ItemStack item;
     private int trailColor;
     private double trailLengthMultiplier;
@@ -29,21 +29,21 @@ public class MessageBulletTrail implements IMessage
     private double gravity;
     private int shooterId;
     private boolean enchanted;
-    private IParticleData particleData;
+    private ParticleOptions particleData;
 
     public MessageBulletTrail() {}
 
-    public <T extends IParticleData> MessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId, T particleData)
+    public <T extends ParticleOptions> MessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId, T particleData)
     {
-        this.positions = new Vector3d[spawnedProjectiles.length];
-        this.motions = new Vector3d[spawnedProjectiles.length];
+        this.positions = new Vec3[spawnedProjectiles.length];
+        this.motions = new Vec3[spawnedProjectiles.length];
         this.entityIds = new int[spawnedProjectiles.length];
         for(int i = 0; i < spawnedProjectiles.length; i++)
         {
             ProjectileEntity projectile = spawnedProjectiles[i];
-            this.positions[i] = projectile.getPositionVec();
-            this.motions[i] = projectile.getMotion();
-            this.entityIds[i] = projectile.getEntityId();
+            this.positions[i] = projectile.position();
+            this.motions[i] = projectile.getDeltaMovement();
+            this.entityIds[i] = projectile.getId();
         }
         this.item = spawnedProjectiles[0].getItem();
         this.enchanted = spawnedProjectiles[0].getWeapon().isEnchanted();
@@ -56,24 +56,24 @@ public class MessageBulletTrail implements IMessage
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeInt(this.entityIds.length);
         for(int i = 0; i < this.entityIds.length; i++)
         {
             buffer.writeInt(this.entityIds[i]);
 
-            Vector3d position = this.positions[i];
+            Vec3 position = this.positions[i];
             buffer.writeDouble(position.x);
             buffer.writeDouble(position.y);
             buffer.writeDouble(position.z);
 
-            Vector3d motion = this.motions[i];
+            Vec3 motion = this.motions[i];
             buffer.writeDouble(motion.x);
             buffer.writeDouble(motion.y);
             buffer.writeDouble(motion.z);
         }
-        buffer.writeItemStack(this.item);
+        buffer.writeItem(this.item);
         buffer.writeVarInt(this.trailColor);
         buffer.writeDouble(this.trailLengthMultiplier);
         buffer.writeInt(this.life);
@@ -81,39 +81,39 @@ public class MessageBulletTrail implements IMessage
         buffer.writeInt(this.shooterId);
         buffer.writeBoolean(this.enchanted);
         buffer.writeInt(Registry.PARTICLE_TYPE.getId(this.particleData.getType()));
-        this.particleData.write(buffer);
+        this.particleData.writeToNetwork(buffer);
     }
 
     @Override
-    public void decode(PacketBuffer buffer)
+    public void decode(FriendlyByteBuf buffer)
     {
         int size = buffer.readInt();
         this.entityIds = new int[size];
-        this.positions = new Vector3d[size];
-        this.motions = new Vector3d[size];
+        this.positions = new Vec3[size];
+        this.motions = new Vec3[size];
         for(int i = 0; i < size; i++)
         {
             this.entityIds[i] = buffer.readInt();
-            this.positions[i] = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-            this.motions[i] = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+            this.positions[i] = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+            this.motions[i] = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
         }
-        this.item = buffer.readItemStack();
+        this.item = buffer.readItem();
         this.trailColor = buffer.readVarInt();
         this.trailLengthMultiplier = buffer.readDouble();
         this.life = buffer.readInt();
         this.gravity = buffer.readDouble();
         this.shooterId = buffer.readInt();
         this.enchanted = buffer.readBoolean();
-        ParticleType<?> type = Registry.PARTICLE_TYPE.getByValue(buffer.readInt());
+        ParticleType<?> type = Registry.PARTICLE_TYPE.byId(buffer.readInt());
         if (type == null) {
             type = ParticleTypes.BARRIER;
         }
         this.particleData = this.readParticle(buffer, type);
     }
 
-    private <T extends IParticleData> T readParticle(PacketBuffer buffer, ParticleType<T> type)
+    private <T extends ParticleOptions> T readParticle(FriendlyByteBuf buffer, ParticleType<T> type)
     {
-        return type.getDeserializer().read(type, buffer);
+        return type.getDeserializer().fromNetwork(type, buffer);
     }
 
     @Override
@@ -133,12 +133,12 @@ public class MessageBulletTrail implements IMessage
         return this.entityIds;
     }
 
-    public Vector3d[] getPositions()
+    public Vec3[] getPositions()
     {
         return this.positions;
     }
 
-    public Vector3d[] getMotions()
+    public Vec3[] getMotions()
     {
         return this.motions;
     }
@@ -178,7 +178,7 @@ public class MessageBulletTrail implements IMessage
         return this.enchanted;
     }
 
-    public IParticleData getParticleData()
+    public ParticleOptions getParticleData()
     {
         return this.particleData;
     }

@@ -1,12 +1,12 @@
 package com.mrcrayfish.guns.util.math;
 
 import com.mrcrayfish.guns.entity.ProjectileEntity;
-import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.world.phys.EntityHitResult;
 
 /**
  * Author: MrCrayfish
  */
-public class ExtendedEntityRayTraceResult extends EntityRayTraceResult
+public class ExtendedEntityRayTraceResult extends EntityHitResult
 {
     private final boolean headshot;
 

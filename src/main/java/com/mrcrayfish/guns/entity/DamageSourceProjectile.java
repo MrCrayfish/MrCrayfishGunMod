@@ -1,12 +1,12 @@
 package com.mrcrayfish.guns.entity;
 
 import com.mrcrayfish.guns.Reference;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IndirectEntityDamageSource;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -33,10 +33,10 @@ public class DamageSourceProjectile extends IndirectEntityDamageSource
     }
 
     @Override
-    public ITextComponent getDeathMessage(LivingEntity entityLivingBaseIn)
+    public Component getLocalizedDeathMessage(LivingEntity entityLivingBaseIn)
     {
-        ITextComponent textComponent = this.getTrueSource() == null ? this.damageSourceEntity.getDisplayName() : this.getTrueSource().getDisplayName();
-        String deathKey = String.format("death.attack.%s.%s.%s", Reference.MOD_ID, this.damageType, DEATH_TYPES[RAND.nextInt(DEATH_TYPES.length)]);
-        return new TranslationTextComponent(deathKey, entityLivingBaseIn.getDisplayName(), textComponent);
+        Component textComponent = this.getEntity() == null ? this.entity.getDisplayName() : this.getEntity().getDisplayName();
+        String deathKey = String.format("death.attack.%s.%s.%s", Reference.MOD_ID, this.msgId, DEATH_TYPES[RAND.nextInt(DEATH_TYPES.length)]);
+        return new TranslatableComponent(deathKey, entityLivingBaseIn.getDisplayName(), textComponent);
     }
 }

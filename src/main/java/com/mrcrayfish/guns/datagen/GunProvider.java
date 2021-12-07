@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.Gun;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * Author: MrCrayfish
  */
-public abstract class GunProvider implements IDataProvider
+public abstract class GunProvider implements DataProvider
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
@@ -44,7 +44,7 @@ public abstract class GunProvider implements IDataProvider
     }
 
     @Override
-    public void act(DirectoryCache cache)
+    public void run(HashCache cache)
     {
         this.gunMap.clear();
         this.registerGuns();
@@ -55,8 +55,8 @@ public abstract class GunProvider implements IDataProvider
             {
                 JsonObject object = gun.toJsonObject();
                 String rawJson = GSON.toJson(object);
-                String hash = HASH_FUNCTION.hashUnencodedChars(rawJson).toString();
-                if(!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path))
+                String hash = SHA1.hashUnencodedChars(rawJson).toString();
+                if(!Objects.equals(cache.getHash(path), hash) || !Files.exists(path))
                 {
                     Files.createDirectories(path.getParent());
                     try(BufferedWriter writer = Files.newBufferedWriter(path))
@@ -64,7 +64,7 @@ public abstract class GunProvider implements IDataProvider
                         writer.write(rawJson);
                     }
                 }
-                cache.recordHash(path, hash);
+                cache.putNew(path, hash);
             }
             catch(IOException e)
             {

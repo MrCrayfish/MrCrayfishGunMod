@@ -3,10 +3,10 @@ package com.mrcrayfish.guns.client.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.util.OptifineHelper;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderState;
-import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.RenderStateShard;
+import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,7 +22,7 @@ import static org.lwjgl.opengl.GL11.*;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
-public class ScreenTextureState extends RenderState.TexturingState
+public class ScreenTextureState extends RenderStateShard.TexturingStateShard
 {
     private static ScreenTextureState instance = null;
 
@@ -71,25 +71,25 @@ public class ScreenTextureState extends RenderState.TexturingState
         if(OptifineHelper.isShadersEnabled())
             return;
 
-        MainWindow mainWindow = Minecraft.getInstance().getMainWindow();
+        Window mainWindow = Minecraft.getInstance().getWindow();
 
         // OpenGL will spit out an error (GL_INVALID_VALUE) if the window is minimised (or draw calls stop)
         // It seems just testing the width or height if it's zero is enough to prevent it
-        if(mainWindow.getWidth() <= 0 || mainWindow.getHeight() <= 0)
+        if(mainWindow.getScreenWidth() <= 0 || mainWindow.getScreenHeight() <= 0)
             return;
 
         RenderSystem.bindTexture(this.getTextureId());
-        if(mainWindow.getWidth() != this.lastWindowWidth || mainWindow.getHeight() != this.lastWindowHeight)
+        if(mainWindow.getScreenWidth() != this.lastWindowWidth || mainWindow.getScreenHeight() != this.lastWindowHeight)
         {
             // When window resizes the texture needs to be re-initialized and copied, so both are done in the same call
-            this.lastWindowWidth = mainWindow.getWidth();
-            this.lastWindowHeight = mainWindow.getHeight();
-            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, mainWindow.getFramebufferWidth(), mainWindow.getFramebufferHeight(), 0);
+            this.lastWindowWidth = mainWindow.getScreenWidth();
+            this.lastWindowHeight = mainWindow.getScreenHeight();
+            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, mainWindow.getWidth(), mainWindow.getHeight(), 0);
         }
         else
         {
             // Copy sub-image is faster than copy because the texture does not need to be initialized
-            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, mainWindow.getFramebufferWidth(), mainWindow.getFramebufferHeight());
+            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, mainWindow.getWidth(), mainWindow.getHeight());
         }
     }
 }

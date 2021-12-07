@@ -2,9 +2,9 @@ package com.mrcrayfish.guns.client.render.gun;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.item.GunItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -72,9 +72,9 @@ public class ModelOverrides
         }
     }
 
-    private static void tick(PlayerEntity player)
+    private static void tick(Player player)
     {
-        ItemStack heldItem = player.getHeldItemMainhand();
+        ItemStack heldItem = player.getMainHandItem();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
             IOverrideModel model = ModelOverrides.getModel(heldItem);

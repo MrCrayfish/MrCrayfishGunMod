@@ -1,10 +1,10 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 public class MessageGunSound implements IMessage
 {
     private ResourceLocation id;
-    private SoundCategory category;
+    private SoundSource category;
     private float x;
     private float y;
     private float z;
@@ -26,7 +26,7 @@ public class MessageGunSound implements IMessage
 
     public MessageGunSound() {}
 
-    public MessageGunSound(ResourceLocation id, SoundCategory category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle, boolean reload)
+    public MessageGunSound(ResourceLocation id, SoundSource category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle, boolean reload)
     {
         this.id = id;
         this.category = category;
@@ -41,10 +41,10 @@ public class MessageGunSound implements IMessage
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
-        buffer.writeString(this.id.toString());
-        buffer.writeEnumValue(this.category);
+        buffer.writeUtf(this.id.toString());
+        buffer.writeEnum(this.category);
         buffer.writeFloat(this.x);
         buffer.writeFloat(this.y);
         buffer.writeFloat(this.z);
@@ -56,10 +56,10 @@ public class MessageGunSound implements IMessage
     }
 
     @Override
-    public void decode(PacketBuffer buffer)
+    public void decode(FriendlyByteBuf buffer)
     {
-        this.id = ResourceLocation.tryCreate(buffer.readString());
-        this.category = buffer.readEnumValue(SoundCategory.class);
+        this.id = ResourceLocation.tryParse(buffer.readUtf());
+        this.category = buffer.readEnum(SoundSource.class);
         this.x = buffer.readFloat();
         this.y = buffer.readFloat();
         this.z = buffer.readFloat();
@@ -82,7 +82,7 @@ public class MessageGunSound implements IMessage
         return this.id;
     }
 
-    public SoundCategory getCategory()
+    public SoundSource getCategory()
     {
         return this.category;
     }

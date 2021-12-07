@@ -1,17 +1,17 @@
 package com.mrcrayfish.guns.common;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import com.mrcrayfish.guns.client.render.pose.BazookaPose;
 import com.mrcrayfish.guns.client.render.pose.MiniGunPose;
 import com.mrcrayfish.guns.client.render.pose.OneHandedPose;
 import com.mrcrayfish.guns.client.render.pose.TwoHandedPose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,36 +46,36 @@ public class GripType
      * A common method to set up a transformation of the weapon onto the players' back.
      *
      * @param player      the player the weapon is being rendered on
-     * @param matrixStack the matrixstack get
+     * @param poseStack the matrixstack get
      * @return if the weapon can render
      */
-    public static boolean applyBackTransforms(PlayerEntity player, MatrixStack matrixStack)
+    public static boolean applyBackTransforms(Player player, PoseStack poseStack)
     {
-        if(player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == Items.ELYTRA)
+        if(player.getItemBySlot(EquipmentSlot.CHEST).getItem() == Items.ELYTRA)
         {
             return false;
         }
 
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
 
         if(player.isCrouching())
         {
-            matrixStack.translate(0 * 0.0625, -7 * 0.0625, -4 * 0.0625);
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(30F));
+            poseStack.translate(0 * 0.0625, -7 * 0.0625, -4 * 0.0625);
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(30F));
         }
         else
         {
-            matrixStack.translate(0 * 0.0625, -5 * 0.0625, -2 * 0.0625);
+            poseStack.translate(0 * 0.0625, -5 * 0.0625, -2 * 0.0625);
         }
 
-        if(!player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty())
+        if(!player.getItemBySlot(EquipmentSlot.CHEST).isEmpty())
         {
-            matrixStack.translate(0, 0, -1 * 0.0625);
+            poseStack.translate(0, 0, -1 * 0.0625);
         }
 
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(-45F));
-        matrixStack.scale(0.5F, 0.5F, 0.5F);
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-45F));
+        poseStack.scale(0.5F, 0.5F, 0.5F);
 
         return true;
     }

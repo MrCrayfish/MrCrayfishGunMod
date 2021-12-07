@@ -7,13 +7,13 @@ import com.google.gson.JsonElement;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -27,7 +27,7 @@ import java.util.Map;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
-public class CustomGunLoader extends JsonReloadListener
+public class CustomGunLoader extends SimpleJsonResourceReloadListener
 {
     private static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
@@ -47,7 +47,7 @@ public class CustomGunLoader extends JsonReloadListener
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> objects, IResourceManager manager, IProfiler profiler)
+    protected void apply(Map<ResourceLocation, JsonElement> objects, ResourceManager manager, ProfilerFiller profiler)
     {
         ImmutableMap.Builder<ResourceLocation, CustomGun> builder = ImmutableMap.builder();
         objects.forEach((resourceLocation, object) ->
@@ -82,12 +82,12 @@ public class CustomGunLoader extends JsonReloadListener
      *
      * @param buffer a packet buffer get
      */
-    public void writeCustomGuns(PacketBuffer buffer)
+    public void writeCustomGuns(FriendlyByteBuf buffer)
     {
         buffer.writeVarInt(this.customGunMap.size());
         this.customGunMap.forEach((id, gun) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeCompoundTag(gun.serializeNBT());
+            buffer.writeNbt(gun.serializeNBT());
         });
     }
 
@@ -97,7 +97,7 @@ public class CustomGunLoader extends JsonReloadListener
      * @param buffer a packet buffer get
      * @return a map of registered guns from the server
      */
-    public static ImmutableMap<ResourceLocation, CustomGun> readCustomGuns(PacketBuffer buffer)
+    public static ImmutableMap<ResourceLocation, CustomGun> readCustomGuns(FriendlyByteBuf buffer)
     {
         int size = buffer.readVarInt();
         if(size > 0)
@@ -107,7 +107,7 @@ public class CustomGunLoader extends JsonReloadListener
             {
                 ResourceLocation id = buffer.readResourceLocation();
                 CustomGun customGun = new CustomGun();
-                customGun.deserializeNBT(buffer.readCompoundTag());
+                customGun.deserializeNBT(buffer.readNbt());
                 builder.put(id, customGun);
             }
             return builder.build();

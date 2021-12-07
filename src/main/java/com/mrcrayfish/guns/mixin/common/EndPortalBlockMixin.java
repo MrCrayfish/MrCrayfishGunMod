@@ -1,13 +1,13 @@
 package com.mrcrayfish.guns.mixin.common;
 
 import com.mrcrayfish.guns.item.GunItem;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.EndPortalBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.EndPortalBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,10 +19,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EndPortalBlock.class)
 public class EndPortalBlockMixin
 {
-    @Inject(method = "onEntityCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/world/server/ServerWorld;)Lnet/minecraft/entity/Entity;"))
-    private void beforeChangeDimension(BlockState state, World worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci)
+    @Inject(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;"))
+    private void beforeChangeDimension(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci)
     {
-        if(worldIn.getDimensionKey() == World.THE_END && entityIn instanceof ItemEntity)
+        if(worldIn.dimension() == Level.END && entityIn instanceof ItemEntity)
         {
             ItemStack stack = ((ItemEntity) entityIn).getItem();
             if(stack.getItem() instanceof GunItem)

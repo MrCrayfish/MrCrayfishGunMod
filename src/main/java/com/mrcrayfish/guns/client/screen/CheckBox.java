@@ -1,11 +1,13 @@
 package com.mrcrayfish.guns.client.screen;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -13,13 +15,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Author: MrCrayfish
  */
 @OnlyIn(Dist.CLIENT)
-public class CheckBox extends Widget
+public class CheckBox extends AbstractWidget
 {
     private static final ResourceLocation GUI = new ResourceLocation("cgm:textures/gui/components.png");
 
     private boolean toggled = false;
 
-    public CheckBox(int left, int top, ITextComponent title)
+    public CheckBox(int left, int top, Component title)
     {
         super(left, top, 8, 8, title);
     }
@@ -35,22 +37,27 @@ public class CheckBox extends Widget
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
     {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        Minecraft minecraft = Minecraft.getInstance();
-        minecraft.getTextureManager().bindTexture(GUI);
-        this.blit(matrixStack, this.x, this.y, 0, 0, 8, 8);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, GUI);
+        this.blit(poseStack, this.x, this.y, 0, 0, 8, 8);
         if(this.toggled)
         {
-            this.blit(matrixStack, this.x, this.y - 1, 8, 0, 9, 8);
+            this.blit(poseStack, this.x, this.y - 1, 8, 0, 9, 8);
         }
-        drawString(matrixStack, minecraft.fontRenderer, this.getMessage(), this.x + 12, this.y, 0xFFFFFF);
+        drawString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.x + 12, this.y, 0xFFFFFF);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY)
     {
         this.toggled = !this.toggled;
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput output) 
+    {
+        this.defaultButtonNarrationText(output);
     }
 }

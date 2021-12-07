@@ -4,10 +4,11 @@ import com.google.common.collect.Maps;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Util;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.Util;
+import net.minecraft.world.item.context.UseOnContext;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
@@ -26,9 +27,9 @@ public class ShootTracker
      * an awkward experience as the cooldown applies to the item after the packet has traveled to the
      * server then back to the client. To fix this and still apply security, we just handle the
      * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
-     * applied on the client in {@link GunItem#onItemRightClick} and {@link GunItem#onUsingTick}.
+     * applied on the client in {@link GunItem#onItemUseFirst(ItemStack, UseOnContext)} and {@link GunItem#onUsingTick}.
      */
-    private static final Map<PlayerEntity, ShootTracker> SHOOT_TRACKER_MAP = new WeakHashMap<>();
+    private static final Map<Player, ShootTracker> SHOOT_TRACKER_MAP = new WeakHashMap<>();
 
     private final Map<Item, Pair<Long, Integer>> cooldownMap = Maps.newHashMap();
 
@@ -38,7 +39,7 @@ public class ShootTracker
      * @param player the player instance
      * @return a cooldown tracker get
      */
-    public static ShootTracker getShootTracker(PlayerEntity player)
+    public static ShootTracker getShootTracker(Player player)
     {
         return SHOOT_TRACKER_MAP.computeIfAbsent(player, player1 -> new ShootTracker());
     }
@@ -54,7 +55,7 @@ public class ShootTracker
     {
         int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
         rate = GunModifierHelper.getModifiedRate(weapon, rate);
-        this.cooldownMap.put(item, Pair.of(Util.milliTime(), rate * 50));
+        this.cooldownMap.put(item, Pair.of(Util.getMillis(), rate * 50));
     }
 
     /**
@@ -72,7 +73,7 @@ public class ShootTracker
         if(pair != null)
         {
             /* Give a 50 millisecond leeway as most of the time the cooldown has finished, just not exactly to the millisecond */
-            return Util.milliTime() - pair.getLeft() < pair.getRight() - 50;
+            return Util.getMillis() - pair.getLeft() < pair.getRight() - 50;
         }
         return false;
     }
@@ -89,7 +90,7 @@ public class ShootTracker
         Pair<Long, Integer> pair = this.cooldownMap.get(item);
         if(pair != null)
         {
-            return pair.getRight() - (Util.milliTime() - pair.getLeft());
+            return pair.getRight() - (Util.getMillis() - pair.getLeft());
         }
         return 0;
     }

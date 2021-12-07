@@ -6,9 +6,9 @@ import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.Hand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemCooldowns;
+import net.minecraft.world.InteractionHand;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -73,17 +73,18 @@ public class RecoilHandler
         if(mc.player == null)
             return;
 
-        float recoilAmount = this.cameraRecoil * mc.getTickLength() * 0.1F;
+        float recoilAmount = this.cameraRecoil * mc.getDeltaFrameTime() * 0.1F;
         float startProgress = this.progressCameraRecoil / this.cameraRecoil;
         float endProgress = (this.progressCameraRecoil + recoilAmount) / this.cameraRecoil;
 
+        float pitch = mc.player.getXRot();
         if(startProgress < 0.2F)
         {
-            mc.player.rotationPitch -= ((endProgress - startProgress) / 0.2F) * this.cameraRecoil;
+            mc.player.setXRot(pitch - ((endProgress - startProgress) / 0.2F) * this.cameraRecoil);
         }
         else
         {
-            mc.player.rotationPitch += ((endProgress - startProgress) / 0.8F) * this.cameraRecoil;
+            mc.player.setXRot(pitch + ((endProgress - startProgress) / 0.8F) * this.cameraRecoil);
         }
 
         this.progressCameraRecoil += recoilAmount;
@@ -98,7 +99,7 @@ public class RecoilHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onRenderOverlay(RenderHandEvent event)
     {
-        if(event.getHand() != Hand.MAIN_HAND)
+        if(event.getHand() != InteractionHand.MAIN_HAND)
             return;
 
         ItemStack heldItem = event.getItemStack();
@@ -107,8 +108,8 @@ public class RecoilHandler
 
         GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-        CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldown = tracker.getCooldown(gunItem, Minecraft.getInstance().getRenderPartialTicks());
+        ItemCooldowns tracker = Minecraft.getInstance().player.getCooldowns();
+        float cooldown = tracker.getCooldownPercent(gunItem, Minecraft.getInstance().getFrameTime());
         cooldown = cooldown >= modifiedGun.getGeneral().getRecoilDurationOffset() ? (cooldown - modifiedGun.getGeneral().getRecoilDurationOffset()) / (1.0F - modifiedGun.getGeneral().getRecoilDurationOffset()) : 0.0F;
         if(cooldown >= 0.8)
         {

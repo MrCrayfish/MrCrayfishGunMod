@@ -2,13 +2,13 @@ package com.mrcrayfish.guns.common.network;
 
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.common.ShootTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
-import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
@@ -22,42 +22,36 @@ import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageBulletTrail;
 import com.mrcrayfish.guns.network.message.MessageGunSound;
 import com.mrcrayfish.guns.network.message.MessageShoot;
-import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
-import com.mrcrayfish.guns.util.InventoryUtil;
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.IAngerable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.IParticleData;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.util.Mth;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -65,7 +59,7 @@ import java.util.function.Predicate;
  */
 public class ServerPlayHandler
 {
-    private static final Predicate<LivingEntity> HOSTILE_ENTITIES = entity -> entity.getSoundCategory() == SoundCategory.HOSTILE && !(entity instanceof IAngerable) && !Config.COMMON.aggroMobs.exemptEntities.get().contains(entity.getType().getRegistryName().toString());
+    private static final Predicate<LivingEntity> HOSTILE_ENTITIES = entity -> entity.getSoundSource() == SoundSource.HOSTILE && !(entity instanceof NeutralMob) && !Config.COMMON.aggroMobs.exemptEntities.get().contains(entity.getType().getRegistryName().toString());
 
     /**
      * Fires the weapon the player is currently holding.
@@ -73,12 +67,12 @@ public class ServerPlayHandler
      *
      * @param player the player for who's weapon to fire
      */
-    public static void handleShoot(MessageShoot message, ServerPlayerEntity player)
+    public static void handleShoot(MessageShoot message, ServerPlayer player)
     {
         if(!player.isSpectator())
         {
-            World world = player.world;
-            ItemStack heldItem = player.getHeldItem(Hand.MAIN_HAND);
+            Level world = player.level;
+            ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
             if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
                 GunItem item = (GunItem) heldItem.getItem();
@@ -89,20 +83,20 @@ public class ServerPlayHandler
                         return;
 
                     /* Updates the yaw and pitch with the clients current yaw and pitch */
-                    player.rotationYaw = message.getRotationYaw();
-                    player.rotationPitch = message.getRotationPitch();
+                    player.setYRot(message.getRotationYaw());
+                    player.setXRot(message.getRotationPitch());
 
                     ShootTracker tracker = ShootTracker.getShootTracker(player);
                     if(tracker.hasCooldown(item))
                     {
-                        GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
+                        GunMod.LOGGER.warn(player.getName().getContents() + "(" + player.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
                         return;
                     }
                     tracker.putCooldown(heldItem, item, modifiedGun);
 
-                    if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
+                    if(ModSyncedDataKeys.RELOADING.getValue(player))
                     {
-                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+                        ModSyncedDataKeys.RELOADING.setValue(player, false);
                     }
 
                     if(!modifiedGun.getGeneral().isAlwaysSpread() && modifiedGun.getGeneral().getSpread() > 0.0F)
@@ -119,15 +113,15 @@ public class ServerPlayHandler
                         ProjectileEntity projectileEntity = factory.create(world, player, heldItem, item, modifiedGun);
                         projectileEntity.setWeapon(heldItem);
                         projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
-                        world.addEntity(projectileEntity);
+                        world.addFreshEntity(projectileEntity);
                         spawnedProjectiles[i] = projectileEntity;
                         projectileEntity.tick();
                     }
                     if(!projectileProps.isVisible())
                     {
-                        IParticleData data = GunEnchantmentHelper.getParticle(heldItem);
-                        MessageBulletTrail messageBulletTrail = new MessageBulletTrail(spawnedProjectiles, projectileProps, player.getEntityId(), data);
-                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimensionKey())), messageBulletTrail);
+                        ParticleOptions data = GunEnchantmentHelper.getParticle(heldItem);
+                        MessageBulletTrail messageBulletTrail = new MessageBulletTrail(spawnedProjectiles, projectileProps, player.getId(), data);
+                        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(), Config.COMMON.network.projectileTrackingRange.get(), player.level.dimension())), messageBulletTrail);
                     }
 
                     MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
@@ -135,20 +129,20 @@ public class ServerPlayHandler
                     if(Config.COMMON.aggroMobs.enabled.get())
                     {
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.COMMON.aggroMobs.unsilencedRange.get());
-                        double x = player.getPosX();
-                        double y = player.getPosY() + 0.5;
-                        double z = player.getPosZ();
-                        AxisAlignedBB box = new AxisAlignedBB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
+                        double x = player.getX();
+                        double y = player.getY() + 0.5;
+                        double z = player.getZ();
+                        AABB box = new AABB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
                         radius *= radius;
                         double dx, dy, dz;
-                        for(LivingEntity entity : world.getEntitiesWithinAABB(LivingEntity.class, box, HOSTILE_ENTITIES))
+                        for(LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, box, HOSTILE_ENTITIES))
                         {
-                            dx = x - entity.getPosX();
-                            dy = y - entity.getPosY();
-                            dz = z - entity.getPosZ();
+                            dx = x - entity.getX();
+                            dy = y - entity.getY();
+                            dz = z - entity.getZ();
                             if(dx * dx + dy * dy + dz * dz <= radius)
                             {
-                                entity.setRevengeTarget(Config.COMMON.aggroMobs.angerHostileMobs.get() ? player : entity);
+                                entity.setLastHurtByMob(Config.COMMON.aggroMobs.angerHostileMobs.get() ? player : entity);
                             }
                         }
                     }
@@ -156,37 +150,37 @@ public class ServerPlayHandler
                     ResourceLocation fireSound = getFireSound(heldItem, modifiedGun);
                     if(fireSound != null)
                     {
-                        double posX = player.getPosX();
-                        double posY = player.getPosY() + player.getEyeHeight();
-                        double posZ = player.getPosZ();
+                        double posX = player.getX();
+                        double posY = player.getY() + player.getEyeHeight();
+                        double posZ = player.getZ();
                         float volume = GunModifierHelper.getFireSoundVolume(heldItem);
-                        float pitch = 0.9F + world.rand.nextFloat() * 0.2F;
+                        float pitch = 0.9F + world.random.nextFloat() * 0.2F;
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
-                        MessageGunSound messageSound = new MessageGunSound(fireSound, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId(), muzzle, false);
-                        PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(posX, posY, posZ, radius, player.world.getDimensionKey());
+                        MessageGunSound messageSound = new MessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getId(), muzzle, false);
+                        PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(posX, posY, posZ, radius, player.level.dimension());
                         PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> targetPoint), messageSound);
                     }
 
                     if(!player.isCreative())
                     {
-                        CompoundNBT tag = heldItem.getOrCreateTag();
+                        CompoundTag tag = heldItem.getOrCreateTag();
                         if(!tag.getBoolean("IgnoreAmmo"))
                         {
-                            int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
-                            if(level == 0 || player.world.rand.nextInt(4 - MathHelper.clamp(level, 1, 2)) != 0)
+                            int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
+                            if(level == 0 || player.level.random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0)
                             {
                                 tag.putInt("AmmoCount", Math.max(0, tag.getInt("AmmoCount") - 1));
                             }
                         }
                     }
 
-                    player.addStat(Stats.ITEM_USED.get(item));
+                    player.awardStat(Stats.ITEM_USED.get(item));
                 }
             }
             else
             {
-                world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
+                world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, 0.8F);
             }
         }
     }
@@ -217,13 +211,13 @@ public class ServerPlayHandler
      * @param id     the id of an item which is registered as a valid workstation recipe
      * @param pos    the block position of the workstation the player is using
      */
-    public static void handleCraft(ServerPlayerEntity player, ResourceLocation id, BlockPos pos)
+    public static void handleCraft(ServerPlayer player, ResourceLocation id, BlockPos pos)
     {
-        World world = player.world;
+        Level world = player.level;
 
-        if(player.openContainer instanceof WorkbenchContainer)
+        if(player.containerMenu instanceof WorkbenchContainer)
         {
-            WorkbenchContainer workbench = (WorkbenchContainer) player.openContainer;
+            WorkbenchContainer workbench = (WorkbenchContainer) player.containerMenu;
             if(workbench.getPos().equals(pos))
             {
                 WorkbenchRecipe recipe = WorkbenchRecipes.getRecipeById(world, id);
@@ -232,25 +226,25 @@ public class ServerPlayHandler
 
                 recipe.consumeMaterials(player);
 
-                WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
+                WorkbenchBlockEntity workbenchBlockEntity = workbench.getWorkbench();
 
                 /* Gets the color based on the dye */
                 ItemStack stack = recipe.getItem();
-                ItemStack dyeStack = workbenchTileEntity.getInventory().get(0);
+                ItemStack dyeStack = workbenchBlockEntity.getInventory().get(0);
                 if(dyeStack.getItem() instanceof DyeItem)
                 {
                     DyeItem dyeItem = (DyeItem) dyeStack.getItem();
-                    int color = dyeItem.getDyeColor().getColorValue();
+                    int color = dyeItem.getDyeColor().getTextColor();
 
                     if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor(stack))
                     {
                         IColored colored = (IColored) stack.getItem();
                         colored.setColor(stack, color);
-                        workbenchTileEntity.getInventory().set(0, ItemStack.EMPTY);
+                        workbenchBlockEntity.getInventory().set(0, ItemStack.EMPTY);
                     }
                 }
 
-                InventoryHelper.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack);
+                Containers.dropItemStack(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack);
             }
         }
     }
@@ -258,13 +252,13 @@ public class ServerPlayHandler
     /**
      * @param player
      */
-    public static void handleUnload(ServerPlayerEntity player)
+    public static void handleUnload(ServerPlayer player)
     {
-        ItemStack stack = player.getHeldItemMainhand();
+        ItemStack stack = player.getMainHandItem();
         if(stack.getItem() instanceof GunItem)
         {
-            CompoundNBT tag = stack.getTag();
-            if(tag != null && tag.contains("AmmoCount", Constants.NBT.TAG_INT))
+            CompoundTag tag = stack.getTag();
+            if(tag != null && tag.contains("AmmoCount", Tag.TAG_INT))
             {
                 int count = tag.getInt("AmmoCount");
                 tag.putInt("AmmoCount", 0);
@@ -299,24 +293,24 @@ public class ServerPlayHandler
      * @param player
      * @param stack
      */
-    private static void spawnAmmo(ServerPlayerEntity player, ItemStack stack)
+    private static void spawnAmmo(ServerPlayer player, ItemStack stack)
     {
-        player.inventory.addItemStackToInventory(stack);
+        player.getInventory().add(stack);
         if(stack.getCount() > 0)
         {
-            player.world.addEntity(new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), stack.copy()));
+            player.level.addFreshEntity(new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), stack.copy()));
         }
     }
 
     /**
      * @param player
      */
-    public static void handleAttachments(ServerPlayerEntity player)
+    public static void handleAttachments(ServerPlayer player)
     {
-        ItemStack heldItem = player.getHeldItemMainhand();
+        ItemStack heldItem = player.getMainHandItem();
         if(heldItem.getItem() instanceof GunItem)
         {
-            NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, playerInventory, player1) -> new AttachmentContainer(windowId, playerInventory, heldItem), new TranslationTextComponent("container.cgm.attachments")));
+            NetworkHooks.openGui(player, new SimpleMenuProvider((windowId, playerInventory, player1) -> new AttachmentContainer(windowId, playerInventory, heldItem), new TranslatableComponent("container.cgm.attachments")));
         }
     }
 }

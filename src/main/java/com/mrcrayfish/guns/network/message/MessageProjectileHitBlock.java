@@ -1,10 +1,10 @@
 package com.mrcrayfish.guns.network.message;
 
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -31,23 +31,23 @@ public class MessageProjectileHitBlock implements IMessage
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeDouble(this.x);
         buffer.writeDouble(this.y);
         buffer.writeDouble(this.z);
         buffer.writeBlockPos(this.pos);
-        buffer.writeEnumValue(this.face);
+        buffer.writeEnum(this.face);
     }
 
     @Override
-    public void decode(PacketBuffer buffer)
+    public void decode(FriendlyByteBuf buffer)
     {
         this.x = buffer.readDouble();
         this.y = buffer.readDouble();
         this.z = buffer.readDouble();
         this.pos = buffer.readBlockPos();
-        this.face = buffer.readEnumValue(Direction.class);
+        this.face = buffer.readEnum(Direction.class);
     }
 
     @Override

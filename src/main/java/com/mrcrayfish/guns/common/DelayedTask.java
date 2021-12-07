@@ -5,10 +5,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fmllegacy.LogicalSidedProvider;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,7 +47,7 @@ public class DelayedTask
             while(it.hasNext())
             {
                 Impl impl = it.next();
-                if(impl.executionTick <= server.getTickCounter())
+                if(impl.executionTick <= server.getTickCount())
                 {
                     impl.runnable.run();
                     it.remove();
@@ -65,11 +65,11 @@ public class DelayedTask
     public static void runAfter(int ticks, Runnable run)
     {
         MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
-        if(!server.isOnExecutionThread())
+        if(!server.isSameThread())
         {
             throw new IllegalStateException("Tried to add a delayed task off the main thread");
         }
-        tasks.add(new Impl(server.getTickCounter() + ticks, run));
+        tasks.add(new Impl(server.getTickCount() + ticks, run));
     }
 
     private static class Impl

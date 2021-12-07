@@ -3,11 +3,11 @@ package com.mrcrayfish.guns.entity;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
@@ -17,12 +17,12 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
     public float rotation;
     public float prevRotation;
 
-    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, World worldIn)
+    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level worldIn)
     {
         super(entityType, worldIn);
     }
 
-    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, World world, LivingEntity entity)
+    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity entity)
     {
         super(entityType, world, entity);
         this.setShouldBounce(true);
@@ -31,7 +31,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
         this.setMaxLife(20 * 3);
     }
 
-    public ThrowableGrenadeEntity(World world, LivingEntity entity, int timeLeft)
+    public ThrowableGrenadeEntity(Level world, LivingEntity entity, int timeLeft)
     {
         super(ModEntities.THROWABLE_GRENADE.get(), world, entity);
         this.setShouldBounce(true);
@@ -41,7 +41,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
     }
 
     @Override
-    protected void registerData()
+    protected void defineSynchedData()
     {
     }
 
@@ -50,14 +50,14 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity
     {
         super.tick();
         this.prevRotation = this.rotation;
-        double speed = this.getMotion().length();
+        double speed = this.getDeltaMovement().length();
         if (speed > 0.1)
         {
             this.rotation += speed * 50;
         }
-        if (this.world.isRemote)
+        if (this.level.isClientSide)
         {
-            this.world.addParticle(ParticleTypes.SMOKE, true, this.getPosX(), this.getPosY() + 0.25, this.getPosZ(), 0, 0, 0);
+            this.level.addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY() + 0.25, this.getZ(), 0, 0, 0);
         }
     }
 

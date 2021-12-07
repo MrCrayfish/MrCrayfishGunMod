@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.common.headshot;
 
 import com.mrcrayfish.guns.interfaces.IHeadshotBox;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 
@@ -31,11 +31,11 @@ public class BasicHeadshotBox<T extends LivingEntity> implements IHeadshotBox<T>
 
     @Nullable
     @Override
-    public AxisAlignedBB getHeadshotBox(T entity)
+    public AABB getHeadshotBox(T entity)
     {
         double halfWidth = this.headWidth / 2.0;
-        AxisAlignedBB headBox = new AxisAlignedBB(-halfWidth * 0.0625, 0, -halfWidth * 0.0625, halfWidth * 0.0625, this.headHeight * 0.0625, halfWidth * 0.0625);
-        headBox = headBox.offset(0, this.headYOffset * 0.0625, 0);
+        AABB headBox = new AABB(-halfWidth * 0.0625, 0, -halfWidth * 0.0625, halfWidth * 0.0625, this.headHeight * 0.0625, halfWidth * 0.0625);
+        headBox = headBox.move(0, this.headYOffset * 0.0625, 0);
         return headBox;
     }
 }

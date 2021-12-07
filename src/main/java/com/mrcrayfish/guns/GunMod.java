@@ -16,11 +16,11 @@ import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.network.PacketHandler;
+import net.minecraft.core.NonNullList;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -31,8 +31,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,10 +41,10 @@ public class GunMod
 {
     public static boolean controllableLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
+    public static final CreativeModeTab GROUP = new CreativeModeTab(Reference.MOD_ID)
     {
         @Override
-        public ItemStack createIcon()
+        public ItemStack makeIcon()
         {
             ItemStack stack = new ItemStack(ModItems.PISTOL.get());
             stack.getOrCreateTag().putInt("AmmoCount", ModItems.PISTOL.get().getGun().getGeneral().getMaxAmmo());
@@ -52,12 +52,12 @@ public class GunMod
         }
 
         @Override
-        public void fill(NonNullList<ItemStack> items)
+        public void fillItemList(NonNullList<ItemStack> items)
         {
-            super.fill(items);
+            super.fillItemList(items);
             CustomGunManager.fill(items);
         }
-    }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
+    }.setEnchantmentCategories(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
     public GunMod()
     {
