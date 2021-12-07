@@ -1,8 +1,10 @@
 package com.mrcrayfish.guns.client.screen;
 
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -93,45 +95,49 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     }
 
     @Override
-    protected void renderLabels(PoseStack postStack, int mouseX, int mouseY)
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
     {
         Minecraft minecraft = Minecraft.getInstance();
-        this.font.draw(postStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-        this.font.draw(postStack, this.playerInventory.getDisplayName(), (float)this.inventoryLabelX, (float)this.inventoryLabelY + 19, 4210752);
+        this.font.draw(poseStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+        this.font.draw(poseStack, this.playerInventory.getDisplayName(), (float)this.inventoryLabelX, (float)this.inventoryLabelY + 19, 4210752);
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         int left = (this.width - this.imageWidth) / 2;
         int top = (this.height - this.imageHeight) / 2;
         RenderUtil.scissor(left + 26, top + 17, 142, 70);
-        
-        //TODO TEST
-        postStack.pushPose();
+
+        PoseStack stack = RenderSystem.getModelViewStack();
+        stack.pushPose();
         {
-            postStack.translate(96, 50, 100);
-            postStack.translate(this.windowX + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseX - this.mouseClickedX : 0), 0, 0);
-            postStack.translate(0, this.windowY + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseY - this.mouseClickedY : 0), 0);
-            postStack.mulPose(Vector3f.XP.rotationDegrees(-30F));
-            postStack.mulPose(Vector3f.XP.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
-            postStack.mulPose(Vector3f.YP.rotationDegrees(this.windowRotationX + (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseX - this.mouseClickedX : 0)));
-            postStack.mulPose(Vector3f.YP.rotationDegrees(150F));
-            postStack.scale(this.windowZoom / 10F, this.windowZoom / 10F, this.windowZoom / 10F);
-            postStack.scale(90F, -90F, 90F);
-            postStack.mulPose(Vector3f.XP.rotationDegrees(5F));
-            postStack.mulPose(Vector3f.YP.rotationDegrees(90F));
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            stack.translate(96, 50, 100);
+            stack.translate(this.windowX + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseX - this.mouseClickedX : 0), 0, 0);
+            stack.translate(0, this.windowY + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseY - this.mouseClickedY : 0), 0);
+            stack.mulPose(Vector3f.XP.rotationDegrees(-30F));
+            stack.mulPose(Vector3f.XP.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
+            stack.mulPose(Vector3f.YP.rotationDegrees(this.windowRotationX + (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseX - this.mouseClickedX : 0)));
+            stack.mulPose(Vector3f.YP.rotationDegrees(150F));
+            stack.scale(this.windowZoom / 10F, this.windowZoom / 10F, this.windowZoom / 10F);
+            stack.scale(90F, -90F, 90F);
+            stack.mulPose(Vector3f.XP.rotationDegrees(5F));
+            stack.mulPose(Vector3f.YP.rotationDegrees(90F));
+            RenderSystem.applyModelViewMatrix();
             MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
-            GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemTransforms.TransformType.GROUND, postStack, buffer, 15728880, 0F);
+            GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemTransforms.TransformType.GROUND, new PoseStack(), buffer, 15728880, 0F);
             buffer.endBatch();
         }
-        postStack.popPose();
+        stack.popPose();
+        RenderSystem.applyModelViewMatrix();
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         if(this.showHelp)
         {
-            postStack.pushPose();
-            postStack.scale(0.5F, 0.5F, 0.5F);
-            minecraft.font.draw(postStack, I18n.get("container.cgm.attachments.window_help"), 56, 38, 0xFFFFFF);
-            postStack.popPose();
+            poseStack.pushPose();
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+            minecraft.font.draw(poseStack, I18n.get("container.cgm.attachments.window_help"), 56, 38, 0xFFFFFF);
+            poseStack.popPose();
         }
     }
 
