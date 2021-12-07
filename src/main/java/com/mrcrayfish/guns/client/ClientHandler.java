@@ -44,8 +44,8 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -151,11 +151,11 @@ public class ClientHandler
     }
 
     @SubscribeEvent
-    public static void onScreenInit(GuiScreenEvent.InitGuiEvent.Post event)
+    public static void onScreenInit(ScreenEvent.InitScreenEvent.Post event)
     {
-        if(event.getGui() instanceof MouseSettingsScreen)
+        if(event.getScreen() instanceof MouseSettingsScreen)
         {
-            MouseSettingsScreen screen = (MouseSettingsScreen) event.getGui();
+            MouseSettingsScreen screen = (MouseSettingsScreen) event.getScreen();
             if(mouseOptionsField == null)
             {
                 mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "list");

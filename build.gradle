@@ -5,7 +5,6 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        jcenter()
         mavenCentral()
     }
     dependencies {
@@ -16,13 +15,12 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = "1.1.0-1.17.1"
+version = "1.1.0-1.18"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
@@ -31,7 +29,7 @@ mixin {
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.18'
 
     runs {
         client {
@@ -100,17 +98,17 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.1.0'
+    minecraft 'net.minecraftforge:forge:1.18-38.0.15'
     //implementation fg.deobf('curse.maven:controllable-317269:3528563')
     //implementation fg.deobf('curse.maven:configured-457570:3546348')
     //implementation fg.deobf('curse.maven:catalogue-459701:3529459')
-    compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.3.0.39:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.17.1:8.3.0.39")
+    compileOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40")
 
     // Local Maven
-    implementation fg.deobf('com.mrcrayfish:Framework:0.1.0-1.17.1')
-    implementation fg.deobf('com.mrcrayfish:Posture:1.0.0-1.17.1')
-    implementation fg.deobf('com.mrcrayfish:Controllable:0.15.0-1.17.1')
+    implementation fg.deobf('com.mrcrayfish:Framework:0.2.1-1.18')
+    implementation fg.deobf('com.mrcrayfish:Posture:1.0.0-1.18')
+    implementation fg.deobf('com.mrcrayfish:Controllable:0.15.1-1.18')
 }
 
 jar {
@@ -128,20 +126,17 @@ jar {
     }
 }
 
-def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) {
-    type 'jar'
-    builtBy 'reobfJar'
-}
+jar.finalizedBy('reobfJar')
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact reobfArtifact
+            artifact jar
         }
     }
     repositories {
         maven {
-            url "file://C:/dev/maven/mcmodsrepo"
+            url "file:///X:/localmaven/mcmods"
         }
     }
 }

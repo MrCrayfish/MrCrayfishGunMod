@@ -19,9 +19,9 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
 
@@ -210,7 +210,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
     }
 
     @SubscribeEvent
-    public static void onServerStopped(FMLServerStoppedEvent event)
+    public static void onServerStopped(ServerStoppedEvent event)
     {
         NetworkGunManager.instance = null;
     }

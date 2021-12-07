@@ -4,7 +4,7 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 

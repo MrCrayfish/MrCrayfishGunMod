@@ -4,9 +4,9 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.effect.IncurableEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 /**
  * Author: MrCrayfish

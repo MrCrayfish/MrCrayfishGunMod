@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[37,)"
+loaderVersion="[38,)"
 license="GPL3"
 
 [[mods]]
@@ -15,19 +15,19 @@ description="MrCrayfish's Gun Mod adds in simple and straight forward weapons in
 [[dependencies.cgm]]
     modId="forge"
     mandatory=true
-    versionRange="[37,)"
+    versionRange="[38,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.17.1,1.18)"
+    versionRange="[1.18,1.19)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="framework"
     mandatory=true
-    versionRange="[0.1.0,)"
+    versionRange="[0.2.1,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]

@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.FOVModifierEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
@@ -132,7 +132,7 @@ public class AimingHandler
     }
 
     @SubscribeEvent
-    public void onFovUpdate(FOVUpdateEvent event)
+    public void onFovUpdate(FOVModifierEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON)

@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.network.message;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

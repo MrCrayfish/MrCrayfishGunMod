@@ -4,14 +4,14 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.network.message.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.FMLHandshakeHandler;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.function.Supplier;
 
 public class PacketHandler
 {
+    //TODO utilise framework
     public static final String PROTOCOL_VERSION = "1";
     private static final SimpleChannel HANDSHAKE_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MOD_ID, "handshake"), () -> PROTOCOL_VERSION, s -> true, s -> true);
     private static final SimpleChannel PLAY_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MOD_ID, "play"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);;
@@ -23,14 +23,14 @@ public class PacketHandler
                 .loginIndex(HandshakeMessages.LoginIndexedMessage::getLoginIndex, HandshakeMessages.LoginIndexedMessage::setLoginIndex)
                 .decoder(HandshakeMessages.C2SAcknowledge::decode)
                 .encoder(HandshakeMessages.C2SAcknowledge::encode)
-                .consumer(FMLHandshakeHandler.indexFirst((handler, msg, context) -> HandshakeHandler.handleAcknowledge(msg, context)))
+                .consumer(net.minecraftforge.network.HandshakeHandler.indexFirst((handler, msg, context) -> HandshakeHandler.handleAcknowledge(msg, context)))
                 .add();
 
         HANDSHAKE_CHANNEL.messageBuilder(HandshakeMessages.S2CUpdateGuns.class, 1)
                 .loginIndex(HandshakeMessages.LoginIndexedMessage::getLoginIndex, HandshakeMessages.LoginIndexedMessage::setLoginIndex)
                 .decoder(HandshakeMessages.S2CUpdateGuns::decode)
                 .encoder(HandshakeMessages.S2CUpdateGuns::encode)
-                .consumer(FMLHandshakeHandler.biConsumerFor((handler, msg, supplier) -> HandshakeHandler.handleUpdateGuns(msg, supplier)))
+                .consumer(net.minecraftforge.network.HandshakeHandler.biConsumerFor((handler, msg, supplier) -> HandshakeHandler.handleUpdateGuns(msg, supplier)))
                 .markAsLoginPacket()
                 .add();
 

@@ -2,13 +2,13 @@ package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.Reference;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmllegacy.LogicalSidedProvider;
-import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,13 +26,13 @@ public class DelayedTask
     public static List<Impl> tasks = new ArrayList<>();
 
     @SubscribeEvent
-    public static void onServerStart(FMLServerStartedEvent event)
+    public static void onServerStart(ServerStartedEvent event)
     {
         tasks.clear();
     }
 
     @SubscribeEvent
-    public static void onServerStopping(FMLServerStoppingEvent event)
+    public static void onServerStopping(ServerStoppingEvent event)
     {
         tasks.clear();
     }
@@ -42,7 +42,7 @@ public class DelayedTask
     {
         if(event.phase != TickEvent.Phase.START)
         {
-            MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
+            MinecraftServer server = (MinecraftServer) LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
             Iterator<Impl> it = tasks.iterator();
             while(it.hasNext())
             {
@@ -64,7 +64,7 @@ public class DelayedTask
      */
     public static void runAfter(int ticks, Runnable run)
     {
-        MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
+        MinecraftServer server = (MinecraftServer) LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
         if(!server.isSameThread())
         {
             throw new IllegalStateException("Tried to add a delayed task off the main thread");

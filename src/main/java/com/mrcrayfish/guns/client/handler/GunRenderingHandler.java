@@ -185,7 +185,7 @@ public class GunRenderingHandler
     public void onRenderOverlay(RenderHandEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        PoseStack poseStack = event.getMatrixStack();
+        PoseStack poseStack = event.getPoseStack();
         if(mc.options.bobView && mc.getCameraEntity() instanceof Player)
         {
             Player playerentity = (Player) mc.getCameraEntity();
@@ -322,7 +322,7 @@ public class GunRenderingHandler
 
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
-        this.renderReloadArm(poseStack, event.getBuffers(), event.getLight(), modifiedGun, heldItem, hand);
+        this.renderReloadArm(poseStack, event.getMultiBufferSource(), event.getPackedLight(), modifiedGun, heldItem, hand);
 
         /* Translate the item position based on the hand side */
         int offset = right ? 1 : -1;
@@ -336,12 +336,12 @@ public class GunRenderingHandler
         /* Renders the first persons arms from the grip type of the weapon */
         poseStack.pushPose();
         poseStack.translate(-0.56 * offset, 0.52, 0.72);
-        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, poseStack, event.getBuffers(), event.getLight(), event.getPartialTicks());
+        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, poseStack, event.getMultiBufferSource(), event.getPackedLight(), event.getPartialTicks());
         poseStack.popPose();
 
         /* Renders the weapon */
         ItemTransforms.TransformType transformType = right ? ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
-        this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
+        this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), packedLight, event.getPartialTicks());
 
         poseStack.popPose();
     }
@@ -574,7 +574,7 @@ public class GunRenderingHandler
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            gun.getGeneral().getGripType().getHeldAnimation().applyPlayerPreRender(player, InteractionHand.MAIN_HAND, AimingHandler.get().getAimProgress((Player) event.getEntity(), event.getPartialRenderTick()), event.getMatrixStack(), event.getBuffers());
+            gun.getGeneral().getGripType().getHeldAnimation().applyPlayerPreRender(player, InteractionHand.MAIN_HAND, AimingHandler.get().getAimProgress((Player) event.getEntity(), event.getPartialTick()), event.getPoseStack(), event.getMultiBufferSource());
         }
     }
 
@@ -587,12 +587,8 @@ public class GunRenderingHandler
         {
             switch(player.getMainArm().getOpposite())
             {
-                case LEFT:
-                    event.getPlayerModel().leftArmPose = HumanoidModel.ArmPose.EMPTY;
-                    break;
-                case RIGHT:
-                    event.getPlayerModel().rightArmPose = HumanoidModel.ArmPose.EMPTY;
-                    break;
+                case LEFT -> event.getPlayerModel().leftArmPose = HumanoidModel.ArmPose.EMPTY;
+                case RIGHT -> event.getPlayerModel().rightArmPose = HumanoidModel.ArmPose.EMPTY;
             }
         }
     }

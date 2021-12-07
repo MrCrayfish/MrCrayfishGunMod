@@ -56,6 +56,7 @@ public class SoundHandler
         this.playingSounds = ObfuscationReflectionHelper.findField(SoundEngine.class, "instanceToChannel");
     }
 
+    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void deafenPlayer(TickEvent.ClientTickEvent event)
     {
@@ -138,7 +139,7 @@ public class SoundHandler
     {
         if(this.soundEngine == null)
         {
-            this.soundEngine = event.getManager();
+            this.soundEngine = event.getEngine();
         }
 
         if(!this.isDeafened || Minecraft.getInstance().player == null || event.getSound() instanceof TickableSoundInstance)
@@ -156,7 +157,7 @@ public class SoundHandler
         // Reduce volume to full value when duration is above threshold
         // When below threshold, fade to original sound level as duration approaches 0
         event.getSound().resolve(Minecraft.getInstance().getSoundManager());
-        event.setResultSound(new SoundMuted(event.getSound(), duration, isStunGrenade));
+        event.setSound(new SoundMuted(event.getSound(), duration, isStunGrenade));
     }
 
     private boolean isStunGrenade(ResourceLocation loc)

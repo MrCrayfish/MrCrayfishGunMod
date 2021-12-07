@@ -1,14 +1,14 @@
 package com.mrcrayfish.guns.client.render;
 
+import com.mojang.blaze3d.platform.TextureUtil;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.util.OptifineHelper;
-import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
-import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.common.Mod;
@@ -65,7 +65,7 @@ public class ScreenTextureState extends RenderStateShard.TexturingStateShard
         return this.textureId;
     }
 
-    private void onRenderWorldLast(RenderWorldLastEvent event)
+    private void onRenderWorldLast(RenderLevelLastEvent event)
     {
         // Yep scopes will never work with shaders
         if(OptifineHelper.isShadersEnabled())

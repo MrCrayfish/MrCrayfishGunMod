@@ -10,7 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -106,7 +106,7 @@ public class MessageBulletTrail implements IMessage
         this.enchanted = buffer.readBoolean();
         ParticleType<?> type = Registry.PARTICLE_TYPE.byId(buffer.readInt());
         if (type == null) {
-            type = ParticleTypes.BARRIER;
+            type = ParticleTypes.CRIT;
         }
         this.particleData = this.readParticle(buffer, type);
     }
