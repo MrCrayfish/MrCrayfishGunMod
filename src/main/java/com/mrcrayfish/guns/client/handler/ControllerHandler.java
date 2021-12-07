@@ -22,6 +22,7 @@ import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -129,16 +130,15 @@ public class ControllerHandler
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
             {
-                //TODO change action description to a translation
-                event.getActions().put(GunButtonBindings.AIM, new Action(new TextComponent("Aim"), Action.Side.RIGHT));
-                event.getActions().put(GunButtonBindings.SHOOT, new Action(new TextComponent("Shoot"), Action.Side.RIGHT));
+                event.getActions().put(GunButtonBindings.AIM, new Action(new TranslatableComponent("cgm.action.aim"), Action.Side.RIGHT));
+                event.getActions().put(GunButtonBindings.SHOOT, new Action(new TranslatableComponent("cgm.action.shoot"), Action.Side.RIGHT));
 
                 GunItem gunItem = (GunItem) heldItem.getItem();
                 Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                 CompoundTag tag = heldItem.getTag();
                 if(tag != null && tag.getInt("AmmoCount") < GunEnchantmentHelper.getAmmoCapacity(heldItem, modifiedGun))
                 {
-                    event.getActions().put(GunButtonBindings.RELOAD, new Action(new TextComponent("Reload"), Action.Side.LEFT));
+                    event.getActions().put(GunButtonBindings.RELOAD, new Action(new TranslatableComponent("cgm.action.reload"), Action.Side.LEFT));
                 }
 
                 ItemStack scopeStack = Gun.getScopeStack(heldItem);
@@ -148,7 +148,7 @@ public class ControllerHandler
                     Scope scope = iscope.getProperties();
                     if(scope.isStable())
                     {
-                        event.getActions().put(GunButtonBindings.STEADY_AIM, new Action(new TextComponent("Hold Breath"), Action.Side.RIGHT));
+                        event.getActions().put(GunButtonBindings.STEADY_AIM, new Action(new TranslatableComponent("cgm.action.steady_aim"), Action.Side.RIGHT));
                     }
                 }
             }

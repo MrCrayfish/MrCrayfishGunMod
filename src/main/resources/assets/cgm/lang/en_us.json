@@ -137,5 +137,9 @@
     "cgm.button.attachments": "Modify Attachments",
     "cgm.button.steadyAim": "Steady Aim",
     "cgm.category.workbench.title": "Assembling",
-    "cgm.category.workbench.materials": "Materials"
+    "cgm.category.workbench.materials": "Materials",
+    "cgm.action.aim": "Aim",
+    "cgm.action.shoot": "Shoot",
+    "cgm.action.reload": "Reload",
+    "cgm.action.steady_aim": "Steady Aim"
 }
