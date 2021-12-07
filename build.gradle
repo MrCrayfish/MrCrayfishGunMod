@@ -88,6 +88,9 @@ minecraft {
 repositories {
     mavenLocal()
     maven {
+        url "https://www.cursemaven.com"
+    }
+    maven {
         name "Progwml6 maven"
         url "https://dvs1.progwml6.com/files/maven/"
     }
@@ -99,16 +102,15 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.18-38.0.15'
-    //implementation fg.deobf('curse.maven:controllable-317269:3528563')
-    //implementation fg.deobf('curse.maven:configured-457570:3546348')
-    //implementation fg.deobf('curse.maven:catalogue-459701:3529459')
+    implementation fg.deobf('curse.maven:framework-549225:3548677')
+    implementation fg.deobf('curse.maven:controllable-317269:3546297')
+    implementation fg.deobf('curse.maven:configured-457570:3546349')
+    implementation fg.deobf('curse.maven:catalogue-459701:3543625')
     compileOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40")
 
     // Local Maven
-    implementation fg.deobf('com.mrcrayfish:Framework:0.2.1-1.18')
     implementation fg.deobf('com.mrcrayfish:Posture:1.0.0-1.18')
-    implementation fg.deobf('com.mrcrayfish:Controllable:0.15.1-1.18')
 }
 
 jar {
