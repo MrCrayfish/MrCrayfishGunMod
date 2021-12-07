@@ -43,7 +43,8 @@ public class ScreenTextureState extends RenderStateShard.TexturingStateShard
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableTexture();
-            RenderSystem.bindTexture(instance().getTextureId());
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderTexture(0, instance().getTextureId());
         }, () ->
         {
             RenderSystem.disableDepthTest();
@@ -58,7 +59,7 @@ public class ScreenTextureState extends RenderStateShard.TexturingStateShard
         {
             this.textureId = TextureUtil.generateTextureId();
             // Texture params only need to be set once, not once per frame
-            RenderSystem.bindTexture(this.textureId);
+            RenderSystem.setShaderTexture(0, this.textureId);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         }
