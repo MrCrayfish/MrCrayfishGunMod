@@ -59,7 +59,7 @@ public class ScreenTextureState extends RenderStateShard.TexturingStateShard
         {
             this.textureId = TextureUtil.generateTextureId();
             // Texture params only need to be set once, not once per frame
-            RenderSystem.setShaderTexture(0, this.textureId);
+            RenderSystem.bindTexture(this.textureId);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         }
