@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  */
 public class SimpleModel implements IOverrideModel
 {
-    public final Supplier<BakedModel> modelSupplier;
+    protected final Supplier<BakedModel> modelSupplier;
 
     public SimpleModel(Supplier<BakedModel> modelSupplier)
     {

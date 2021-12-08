@@ -726,7 +726,7 @@ public class GunRenderingHandler
                             }
                             else
                             {
-                                RenderUtil.renderModel(attachmentStack, stack, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+                                RenderUtil.renderModelWithTransforms(attachmentStack, stack, transformType, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
                             }
 
                             poseStack.popPose();

@@ -12,34 +12,44 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.Supplier;
+
 /**
  * Author: MrCrayfish
  */
-public class BazookaModel implements IOverrideModel
+public class BazookaModel extends SimpleModel
 {
     private static final ResourceLocation RED_DOT_RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/effect/red_dot_reticle.png");
     private static final ResourceLocation RED_DOT_RETICLE_GLOW = new ResourceLocation(Reference.MOD_ID, "textures/effect/red_dot_reticle_glow.png");
     private static final ResourceLocation VIGNETTE = new ResourceLocation(Reference.MOD_ID, "textures/effect/scope_vignette.png");
 
+    public BazookaModel(Supplier<BakedModel> modelSupplier)
+    {
+        super(modelSupplier);
+    }
+
     @Override
     public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay)
     {
-        RenderUtil.renderModel(stack, parent, poseStack, renderTypeBuffer, light, overlay);
+        RenderUtil.renderItemWithoutTransforms(this.modelSupplier.get(), stack, parent, poseStack, renderTypeBuffer, light, overlay);
 
         if(transformType.firstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             poseStack.pushPose();
             {
+                poseStack.translate(0.5, 0.5, 0.5);
+
                 Matrix4f matrix = poseStack.last().pose();
                 Matrix3f normal = poseStack.last().normal();
 
-                double size = 1.4 / 16.0;
+                double size = 1.2 / 16.0;
                 poseStack.translate(-size / 2 - 3.5 * 0.0625, -3.7 * 0.0625 - size / 2, -7 * 0.0625);
 
                 VertexConsumer builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(VIGNETTE));

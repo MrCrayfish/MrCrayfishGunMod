@@ -117,7 +117,8 @@ public class ClientHandler
 
     private static void registerColors()
     {
-        ItemColor color = (stack, index) -> {
+        ItemColor color = (stack, index) ->
+        {
             if(!((IColored) stack.getItem()).canColor(stack))
             {
                 return -1;
@@ -128,7 +129,8 @@ public class ClientHandler
             }
             return -1;
         };
-        ForgeRegistries.ITEMS.forEach(item -> {
+        ForgeRegistries.ITEMS.forEach(item ->
+        {
             if(item instanceof IColored)
             {
                 Minecraft.getInstance().getItemColors().register(color, item);
@@ -138,19 +140,21 @@ public class ClientHandler
 
     private static void registerModelOverrides()
     {
+        /* Weapons */
         ModelOverrides.register(ModItems.ASSAULT_RIFLE.get(), new SimpleModel(SpecialModels.ASSAULT_RIFLE::getModel));
-        ModelOverrides.register(ModItems.BAZOOKA.get(), new SimpleModel(SpecialModels.BAZOOKA::getModel));
+        ModelOverrides.register(ModItems.BAZOOKA.get(), new BazookaModel(SpecialModels.BAZOOKA::getModel));
+        ModelOverrides.register(ModItems.GRENADE_LAUNCHER.get(), new GrenadeLauncherModel());
         ModelOverrides.register(ModItems.HEAVY_RIFLE.get(), new SimpleModel(SpecialModels.HEAVY_RIFLE::getModel));
         ModelOverrides.register(ModItems.MACHINE_PISTOL.get(), new SimpleModel(SpecialModels.MACHINE_PISTOL::getModel));
+        ModelOverrides.register(ModItems.MINI_GUN.get(), new MiniGunModel());
         ModelOverrides.register(ModItems.PISTOL.get(), new SimpleModel(SpecialModels.PISTOL::getModel));
         ModelOverrides.register(ModItems.RIFLE.get(), new SimpleModel(SpecialModels.RIFLE::getModel));
         ModelOverrides.register(ModItems.SHOTGUN.get(), new SimpleModel(SpecialModels.SHOTGUN::getModel));
-        ModelOverrides.register(ModItems.MINI_GUN.get(), new MiniGunModel());
+
+        /* Attachments */
         ModelOverrides.register(ModItems.SHORT_SCOPE.get(), new ShortScopeModel());
         ModelOverrides.register(ModItems.MEDIUM_SCOPE.get(), new MediumScopeModel());
         ModelOverrides.register(ModItems.LONG_SCOPE.get(), new LongScopeModel());
-        ModelOverrides.register(ModItems.BAZOOKA.get(), new BazookaModel());
-        ModelOverrides.register(ModItems.GRENADE_LAUNCHER.get(), new GrenadeLauncherModel());
     }
 
     private static void registerScreenFactories()
