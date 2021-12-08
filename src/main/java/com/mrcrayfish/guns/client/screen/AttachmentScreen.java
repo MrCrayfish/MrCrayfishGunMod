@@ -122,6 +122,8 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             stack.scale(90F, -90F, 90F);
             stack.mulPose(Vector3f.XP.rotationDegrees(5F));
             stack.mulPose(Vector3f.YP.rotationDegrees(90F));
+            RenderUtil.applyTransformType(this.minecraft.player.getMainHandItem(), stack, ItemTransforms.TransformType.GROUND, this.minecraft.player);
+            stack.translate(-0.5, -0.5, -0.5);
             RenderSystem.applyModelViewMatrix();
             MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
             GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemTransforms.TransformType.GROUND, new PoseStack(), buffer, 15728880, 0F);
