@@ -51,10 +51,10 @@ public class MiniGunModel implements IOverrideModel
     public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay)
     {
         Rotations rotations = this.rotationMap.computeIfAbsent(entity, uuid -> new Rotations());
-        RenderUtil.renderModel(SpecialModels.MINI_GUN_BASE.getModel(), stack,poseStack, renderTypeBuffer, light, overlay);
-        RenderUtil.renderModel(SpecialModels.MINI_GUN_BARRELS.getModel(), ItemTransforms.TransformType.NONE, () -> {
+        RenderUtil.renderItemWithoutTransforms(SpecialModels.MINI_GUN_BASE.getModel(), stack, parent, poseStack, renderTypeBuffer, light, overlay);
+        RenderUtil.renderItemWithoutTransforms(SpecialModels.MINI_GUN_BARRELS.getModel(), stack, parent, poseStack, renderTypeBuffer, light, overlay, () -> {
             RenderUtil.rotateZ(poseStack, 0.5F, 0.125F, rotations.prevRotation + (rotations.rotation - rotations.prevRotation) * partialTicks);
-        }, stack, parent, poseStack, renderTypeBuffer, light, overlay);
+        });
     }
 
     private class Rotations

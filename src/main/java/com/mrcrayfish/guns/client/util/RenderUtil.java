@@ -181,17 +181,21 @@ public class RenderUtil
         }
     }
 
-    /**
-     * @param model
-     * @param stack
-     * @param parent
-     * @param transform
-     * @param poseStack
-     * @param buffer
-     * @param light
-     * @param overlay
-     */
-    private static void renderModel(BakedModel model, ItemStack stack, ItemStack parent, @Nullable Transform transform, PoseStack poseStack, VertexConsumer buffer, int light, int overlay)
+    public static void renderItemWithoutTransforms(BakedModel model, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
+    {
+        RenderType renderType = getRenderType(stack, false);
+        VertexConsumer builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
+        renderModel(model, stack, parent, null, poseStack, builder, light, overlay);
+    }
+
+    public static void renderItemWithoutTransforms(BakedModel model, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable Transform transform)
+    {
+        RenderType renderType = getRenderType(stack, false);
+        VertexConsumer builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
+        renderModel(model, stack, parent, transform, poseStack, builder, light, overlay);
+    }
+
+    public static void renderModel(BakedModel model, ItemStack stack, ItemStack parent, @Nullable Transform transform, PoseStack poseStack, VertexConsumer buffer, int light, int overlay)
     {
         if(transform != null)
         {
@@ -207,15 +211,6 @@ public class RenderUtil
         renderQuads(poseStack, buffer, model.getQuads(null, null, random), stack, parent, light, overlay);
     }
 
-    /**
-     * @param poseStack
-     * @param buffer
-     * @param quads
-     * @param stack
-     * @param parent
-     * @param light
-     * @param overlay
-     */
     private static void renderQuads(PoseStack poseStack, VertexConsumer buffer, List<BakedQuad> quads, ItemStack stack, ItemStack parent, int light, int overlay)
     {
         PoseStack.Pose entry = poseStack.last();
@@ -288,7 +283,7 @@ public class RenderUtil
         }
     }
 
-    private static RenderType getRenderType(ItemStack stack, boolean entity)
+    public static RenderType getRenderType(ItemStack stack, boolean entity)
     {
         Item item = stack.getItem();
         if(item instanceof BlockItem)

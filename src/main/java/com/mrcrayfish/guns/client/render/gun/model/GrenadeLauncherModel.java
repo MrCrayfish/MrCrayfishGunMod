@@ -18,10 +18,10 @@ import com.mojang.math.Vector3f;
 public class GrenadeLauncherModel implements IOverrideModel
 {
     @Override
-    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay)
+    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
-        RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_BASE.getModel(), stack, poseStack, renderTypeBuffer, light, overlay);
-        
+        RenderUtil.renderItemWithoutTransforms(SpecialModels.GRENADE_LAUNCHER_BASE.getModel(), stack, parent, poseStack, source, light, overlay);
+
         if(entity.equals(Minecraft.getInstance().player))
         {
             poseStack.pushPose();
@@ -31,7 +31,7 @@ public class GrenadeLauncherModel implements IOverrideModel
             cooldown = (float) easeInOutBack(cooldown);
             poseStack.mulPose(Vector3f.ZN.rotationDegrees(45F * cooldown));
             poseStack.translate(0, 5.8 * 0.0625, 0);
-            RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_CYLINDER.getModel(), stack, poseStack, renderTypeBuffer, light, overlay);
+            RenderUtil.renderItemWithoutTransforms(SpecialModels.GRENADE_LAUNCHER_CYLINDER.getModel(), stack, parent, poseStack, source, light, overlay);
             poseStack.popPose();
         }
     }

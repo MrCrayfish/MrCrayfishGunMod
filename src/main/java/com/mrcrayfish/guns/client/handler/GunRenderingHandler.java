@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -259,6 +260,7 @@ public class GunRenderingHandler
 
         LivingEntity entity = Minecraft.getInstance().player;
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(overrideModel.isEmpty() ? heldItem : overrideModel, entity.level, entity, 0);
+        // YEP THIS IS THE ISSUE
         float scaleX = model.getTransforms().firstPersonRightHand.scale.x();
         float scaleY = model.getTransforms().firstPersonRightHand.scale.y();
         float scaleZ = model.getTransforms().firstPersonRightHand.scale.z();
@@ -409,6 +411,7 @@ public class GunRenderingHandler
         if(heldItem.isEmpty())
             return;
 
+        //TODO reimplement
         /*if(player.isUsingItem() && player.getUsedItemHand() == InteractionHand.MAIN_HAND && heldItem.getItem() instanceof GrenadeItem)
         {
             if(!((GrenadeItem) heldItem.getItem()).canCook())
@@ -519,7 +522,7 @@ public class GunRenderingHandler
         }
     }*/
 
-    private void applyWeaponScale(ItemStack heldItem, PoseStack stack)
+    public void applyWeaponScale(ItemStack heldItem, PoseStack stack)
     {
         if(heldItem.getTag() != null)
         {
@@ -652,7 +655,11 @@ public class GunRenderingHandler
                 }
             }
 
-            RenderUtil.applyTransformType(model.isEmpty() ? stack : model, poseStack, transformType, entity);
+            if(transformType.firstPerson())
+            {
+                RenderUtil.applyTransformType(stack, poseStack, transformType, entity);
+                poseStack.translate(-0.5, -0.5, -0.5);
+            }
 
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, poseStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, poseStack, renderTypeBuffer, light, partialTicks);
@@ -676,12 +683,18 @@ public class GunRenderingHandler
         }
         else
         {
-            RenderUtil.renderModel(stack, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, entity);
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
+            if(entity != null)
+            {
+                model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level, entity, 0);
+            }
+            RenderUtil.renderItemWithoutTransforms(model, stack, ItemStack.EMPTY, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
         }
     }
 
     private void renderAttachments(LivingEntity entity, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {
+        poseStack.translate(0.5, 0.5, 0.5);
         if(stack.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);

@@ -1,11 +1,14 @@
 package com.mrcrayfish.guns.item;
 
+import com.mrcrayfish.guns.client.GunItemStackRenderer;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -19,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -26,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 public class GunItem extends Item implements IColored
 {
@@ -188,5 +193,18 @@ public class GunItem extends Item implements IColored
     public int getEnchantmentValue()
     {
         return 5;
+    }
+
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer)
+    {
+        consumer.accept(new IItemRenderProperties()
+        {
+            @Override
+            public BlockEntityWithoutLevelRenderer getItemStackRenderer()
+            {
+                return new GunItemStackRenderer();
+            }
+        });
     }
 }

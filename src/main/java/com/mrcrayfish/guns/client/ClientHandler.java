@@ -22,6 +22,7 @@ import com.mrcrayfish.guns.client.render.gun.model.LongScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.MediumScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.MiniGunModel;
 import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
+import com.mrcrayfish.guns.client.render.gun.model.SimpleModel;
 import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
 import com.mrcrayfish.guns.client.settings.GunOptions;
@@ -42,6 +43,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Unit;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -91,9 +93,9 @@ public class ClientHandler
         ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
         if(resourceManager instanceof ReloadableResourceManager)
         {
-            ((ReloadableResourceManager) resourceManager).registerReloadListener((stage, rm, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) ->
+            ((ReloadableResourceManager) resourceManager).registerReloadListener((stage, manager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) ->
             {
-                return CompletableFuture.runAsync(SpecialModels::clearCache).thenCompose(stage::wait);
+                return stage.wait(Unit.INSTANCE).thenRunAsync(SpecialModels::clearCache);
             });
         }
     }
@@ -136,6 +138,13 @@ public class ClientHandler
 
     private static void registerModelOverrides()
     {
+        ModelOverrides.register(ModItems.ASSAULT_RIFLE.get(), new SimpleModel(SpecialModels.ASSAULT_RIFLE::getModel));
+        ModelOverrides.register(ModItems.BAZOOKA.get(), new SimpleModel(SpecialModels.BAZOOKA::getModel));
+        ModelOverrides.register(ModItems.HEAVY_RIFLE.get(), new SimpleModel(SpecialModels.HEAVY_RIFLE::getModel));
+        ModelOverrides.register(ModItems.MACHINE_PISTOL.get(), new SimpleModel(SpecialModels.MACHINE_PISTOL::getModel));
+        ModelOverrides.register(ModItems.PISTOL.get(), new SimpleModel(SpecialModels.PISTOL::getModel));
+        ModelOverrides.register(ModItems.RIFLE.get(), new SimpleModel(SpecialModels.RIFLE::getModel));
+        ModelOverrides.register(ModItems.SHOTGUN.get(), new SimpleModel(SpecialModels.SHOTGUN::getModel));
         ModelOverrides.register(ModItems.MINI_GUN.get(), new MiniGunModel());
         ModelOverrides.register(ModItems.SHORT_SCOPE.get(), new ShortScopeModel());
         ModelOverrides.register(ModItems.MEDIUM_SCOPE.get(), new MediumScopeModel());
