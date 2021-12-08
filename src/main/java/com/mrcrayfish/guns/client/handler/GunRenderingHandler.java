@@ -481,47 +481,6 @@ public class GunRenderingHandler
         }*/
     }
 
-    /*@SubscribeEvent
-    public void onRenderHeldItem(RenderItemEvent.Held.Pre event)
-    {
-        InteractionHand hand = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? event.getHandSide() == HumanoidArm.RIGHT ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND : event.getHandSide() == HumanoidArm.LEFT ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-        LivingEntity entity = event.getEntity();
-        ItemStack heldItem = entity.getItemInHand(hand);
-
-        if(hand == InteractionHand.OFF_HAND)
-        {
-            if(heldItem.getItem() instanceof GunItem)
-            {
-                event.setCanceled(true);
-                return;
-            }
-
-            if(entity.getMainHandItem().getItem() instanceof GunItem)
-            {
-                Gun modifiedGun = ((GunItem) entity.getMainHandItem().getItem()).getModifiedGun(entity.getMainHandItem());
-                if(!modifiedGun.getGeneral().getGripType().getHeldAnimation().canRenderOffhandItem())
-                {
-                    event.setCanceled(true);
-                    return;
-                }
-            }
-        }
-
-        if(heldItem.getItem() instanceof GunItem)
-        {
-            event.setCanceled(true);
-
-            this.applyWeaponScale(heldItem, event.getMatrixStack());
-
-            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            if(entity instanceof Player)
-            {
-                gun.getGeneral().getGripType().getHeldAnimation().applyHeldItemTransforms((Player) entity, hand, AimingHandler.get().getAimProgress((Player) entity, event.getPartialTicks()), event.getMatrixStack(), event.getRenderTypeBuffer());
-            }
-            this.renderWeapon(entity, heldItem, event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks());
-        }
-    }*/
-
     public void applyWeaponScale(ItemStack heldItem, PoseStack stack)
     {
         if(heldItem.getTag() != null)
@@ -655,7 +614,7 @@ public class GunRenderingHandler
                 }
             }
 
-            if(transformType.firstPerson())
+            if(transformType.firstPerson() || transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
             {
                 RenderUtil.applyTransformType(stack, poseStack, transformType, entity);
                 poseStack.translate(-0.5, -0.5, -0.5);
