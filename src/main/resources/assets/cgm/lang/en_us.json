@@ -57,7 +57,7 @@
     "cgm.option_list.no_items": "No Items",
     "cgm.options.adsSensitivity": "ADS Sensitivity",
     "cgm.options.adsSensitivity.format": "ADS Sensitivity: %s",
-    "cgm.options.crosshair.format": "Crosshair: %s",
+    "cgm.options.crosshair": "Crosshair",
     "cgm.crosshair.arrow": "Arrow",
     "cgm.crosshair.better_default": "Better Default",
     "cgm.crosshair.box": "Box",
