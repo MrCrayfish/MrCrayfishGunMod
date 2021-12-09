@@ -260,7 +260,6 @@ public class GunRenderingHandler
 
         LivingEntity entity = Minecraft.getInstance().player;
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(overrideModel.isEmpty() ? heldItem : overrideModel, entity.level, entity, 0);
-        // YEP THIS IS THE ISSUE
         float scaleX = model.getTransforms().firstPersonRightHand.scale.x();
         float scaleY = model.getTransforms().firstPersonRightHand.scale.y();
         float scaleZ = model.getTransforms().firstPersonRightHand.scale.z();
@@ -614,11 +613,7 @@ public class GunRenderingHandler
                 }
             }
 
-            if(transformType.firstPerson() || transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-            {
-                RenderUtil.applyTransformType(stack, poseStack, transformType, entity);
-                poseStack.translate(-0.5, -0.5, -0.5);
-            }
+            RenderUtil.applyTransformType(stack, poseStack, transformType, entity);
 
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, poseStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, poseStack, renderTypeBuffer, light, partialTicks);
@@ -642,18 +637,12 @@ public class GunRenderingHandler
         }
         else
         {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
-            if(entity != null)
-            {
-                model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level, entity, 0);
-            }
-            RenderUtil.renderItemWithoutTransforms(model, stack, ItemStack.EMPTY, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+            RenderUtil.renderModel(stack, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, entity);
         }
     }
 
     private void renderAttachments(LivingEntity entity, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {
-        poseStack.translate(0.5, 0.5, 0.5);
         if(stack.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
@@ -685,7 +674,7 @@ public class GunRenderingHandler
                             }
                             else
                             {
-                                RenderUtil.renderModelWithTransforms(attachmentStack, stack, transformType, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+                                RenderUtil.renderModel(attachmentStack, stack, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
                             }
 
                             poseStack.popPose();

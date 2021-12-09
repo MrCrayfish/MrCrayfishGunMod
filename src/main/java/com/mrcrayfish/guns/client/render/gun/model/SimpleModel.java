@@ -26,6 +26,6 @@ public class SimpleModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
-        RenderUtil.renderItemWithoutTransforms(this.modelSupplier.get(), stack, parent, poseStack, buffer, light, overlay);
+        RenderUtil.renderModel(this.modelSupplier.get(), transformType, null, stack, parent, poseStack, buffer, light, overlay);
     }
 }
