@@ -111,6 +111,8 @@ dependencies {
 
     // Local Maven
     implementation fg.deobf('com.mrcrayfish:Posture:1.0.0-1.18')
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {
