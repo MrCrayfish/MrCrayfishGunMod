@@ -65,7 +65,7 @@ public class RenderUtil
         poseStack.translate(-xOffset, -yOffset, 0);
     }
 
-    public static void renderModel(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable LivingEntity entity)
+    public static void renderGun(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable LivingEntity entity)
     {
         renderModel(stack, ItemTransforms.TransformType.NONE, poseStack, buffer, light, overlay, entity);
     }
@@ -187,7 +187,7 @@ public class RenderUtil
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(child);
         model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, false);
         poseStack.translate(-0.5D, -0.5D, -0.5D);
-        renderModel(model, ItemTransforms.TransformType.NONE, null, child, parent, poseStack, buffer, light, overlay);
+        renderItemWithoutTransforms(model, child, parent, poseStack, buffer, light, overlay);
         poseStack.popPose();
     }
 

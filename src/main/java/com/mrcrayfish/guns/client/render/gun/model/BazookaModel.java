@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
@@ -36,9 +37,9 @@ public class BazookaModel extends SimpleModel
     }
 
     @Override
-    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay)
+    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
-        RenderUtil.renderItemWithoutTransforms(this.modelSupplier.get(), stack, parent, poseStack, renderTypeBuffer, light, overlay);
+        RenderUtil.renderModel(this.modelSupplier.get(), transformType, null, stack, parent, poseStack, buffer, light, overlay);
 
         if(transformType.firstPerson() && entity.equals(Minecraft.getInstance().player))
         {
@@ -52,7 +53,7 @@ public class BazookaModel extends SimpleModel
                 double size = 1.2 / 16.0;
                 poseStack.translate(-size / 2 - 3.5 * 0.0625, -3.7 * 0.0625 - size / 2, -7 * 0.0625);
 
-                VertexConsumer builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(VIGNETTE));
+                VertexConsumer builder = buffer.getBuffer(RenderType.entityTranslucent(VIGNETTE));
                 builder.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(1.0F, 1.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.vertex(matrix, (float) size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0, 1.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.vertex(matrix, (float) size, (float) size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0, 0).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -78,7 +79,7 @@ public class BazookaModel extends SimpleModel
                 float blue = ((reticleGlowColor >> 0) & 0xFF) / 255F;
                 float alpha = (float) (1.0F * AimingHandler.get().getNormalisedAdsProgress());
 
-                builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(RED_DOT_RETICLE_GLOW));
+                builder = buffer.getBuffer(RenderType.entityTranslucent(RED_DOT_RETICLE_GLOW));
                 builder.vertex(matrix, 0, (float) (size / scale), 0).color(red, green, blue, alpha).uv(0.0F, 0.9375F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.vertex(matrix, 0, 0, 0).color(red, green, blue, alpha).uv(0.0F, 0.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.vertex(matrix, (float) (size / scale), 0, 0).color(red, green, blue, alpha).uv(0.9375F, 0.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -86,7 +87,7 @@ public class BazookaModel extends SimpleModel
 
                 alpha = (float) (0.75F * AimingHandler.get().getNormalisedAdsProgress());
 
-                builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(RED_DOT_RETICLE));
+                builder = buffer.getBuffer(RenderType.entityTranslucent(RED_DOT_RETICLE));
                 builder.vertex(matrix, 0, (float) (size / scale), 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0.0F, 0.9375F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0.0F, 0.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.vertex(matrix, (float) (size / scale), 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0.9375F, 0.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();

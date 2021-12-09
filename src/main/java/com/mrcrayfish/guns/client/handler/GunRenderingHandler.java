@@ -31,7 +31,6 @@ import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -637,7 +636,7 @@ public class GunRenderingHandler
         }
         else
         {
-            RenderUtil.renderModel(stack, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, entity);
+            RenderUtil.renderGun(stack, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, entity);
         }
     }
 
