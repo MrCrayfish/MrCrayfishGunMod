@@ -1,5 +1,7 @@
 package com.mrcrayfish.guns.client.handler;
 
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
@@ -13,6 +15,7 @@ import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import com.mrcrayfish.guns.item.GrenadeItem;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IBarrel;
@@ -24,9 +27,12 @@ import com.mrcrayfish.guns.util.OptifineHelper;
 import com.mrcrayfish.posture.api.event.PlayerModelEvent;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -409,8 +415,7 @@ public class GunRenderingHandler
         if(heldItem.isEmpty())
             return;
 
-        //TODO reimplement
-        /*if(player.isUsingItem() && player.getUsedItemHand() == InteractionHand.MAIN_HAND && heldItem.getItem() instanceof GrenadeItem)
+        if(player.isUsingItem() && player.getUsedItemHand() == InteractionHand.MAIN_HAND && heldItem.getItem() instanceof GrenadeItem)
         {
             if(!((GrenadeItem) heldItem.getItem()).canCook())
                 return;
@@ -421,32 +426,30 @@ public class GunRenderingHandler
                 float cookTime = 1.0F - ((float) (duration - 10) / (float) (player.getUseItem().getUseDuration() - 10));
                 if(cookTime > 0.0F)
                 {
-                    double scale = 3;
+                    float scale = 3;
                     Window window = mc.getWindow();
                     int i = (int) ((window.getGuiScaledHeight() / 2 - 7 - 60) / scale);
                     int j = (int) Math.ceil((window.getGuiScaledWidth() / 2 - 8 * scale) / scale);
 
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
-                    mc.getTextureManager().bind(GuiComponent.GUI_ICONS_LOCATION);
+                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                    RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
 
-                    RenderSystem.pushMatrix();
-                    {
-                        RenderSystem.scaled(scale, scale, scale);
-                        int progress = (int) Math.ceil((cookTime) * 17.0F) - 1;
-                        PoseStack poseStack = new PoseStack();
-                        Screen.blit(poseStack, j, i, 36, 94, 16, 4, 256, 256);
-                        Screen.blit(poseStack, j, i, 52, 94, progress, 4, 256, 256);
-                    }
-                    RenderSystem.popMatrix();
+                    PoseStack stack = new PoseStack();
+                    stack.scale(scale, scale, scale);
+                    int progress = (int) Math.ceil((cookTime) * 17.0F) - 1;
+                    Screen.blit(stack, j, i, 36, 94, 16, 4, 256, 256);
+                    Screen.blit(stack, j, i, 52, 94, progress, 4, 256, 256);
 
                     RenderSystem.disableBlend();
                 }
             }
             return;
-        }*/
+        }
 
-        /*if(Config.CLIENT.display.cooldownIndicator.get() && heldItem.getItem() instanceof GunItem)
+        if(Config.CLIENT.display.cooldownIndicator.get() && heldItem.getItem() instanceof GunItem)
         {
             Gun gun = ((GunItem) heldItem.getItem()).getGun();
             if(!gun.getGeneral().isAuto())
@@ -454,29 +457,27 @@ public class GunRenderingHandler
                 float coolDown = player.getCooldowns().getCooldownPercent(heldItem.getItem(), event.renderTickTime);
                 if(coolDown > 0.0F)
                 {
-                    double scale = 3;
+                    float scale = 3;
                     Window window = mc.getWindow();
                     int i = (int) ((window.getGuiScaledHeight() / 2 - 7 - 60) / scale);
                     int j = (int) Math.ceil((window.getGuiScaledWidth() / 2 - 8 * scale) / scale);
 
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
-                    mc.getTextureManager().bind(GuiComponent.GUI_ICONS_LOCATION);
+                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                    RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
 
-                    RenderSystem.pushMatrix();
-                    {
-                        RenderSystem.scaled(scale, scale, scale);
-                        int progress = (int) Math.ceil((coolDown + 0.05) * 17.0F) - 1;
-                        PoseStack poseStack = new PoseStack();
-                        Screen.blit(poseStack, j, i, 36, 94, 16, 4, 256, 256);
-                        Screen.blit(poseStack, j, i, 52, 94, progress, 4, 256, 256);
-                    }
-                    RenderSystem.popMatrix();
+                    PoseStack stack = new PoseStack();
+                    stack.scale(scale, scale, scale);
+                    int progress = (int) Math.ceil((coolDown + 0.05) * 17.0F) - 1;
+                    Screen.blit(stack, j, i, 36, 94, 16, 4, 256, 256);
+                    Screen.blit(stack, j, i, 52, 94, progress, 4, 256, 256);
 
                     RenderSystem.disableBlend();
                 }
             }
-        }*/
+        }
     }
 
     public void applyWeaponScale(ItemStack heldItem, PoseStack stack)
