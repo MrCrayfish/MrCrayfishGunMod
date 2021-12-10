@@ -6,6 +6,7 @@
     "refmap": "cgm.refmap.json",
     "mixins": [
         "client.PlayerItemInHandLayerMixin",
+        "client.PlayerModelMixin",
         "common.EndPortalBlockMixin",
         "common.LivingEntityMixin",
         "common.SittingPhaseMixin"

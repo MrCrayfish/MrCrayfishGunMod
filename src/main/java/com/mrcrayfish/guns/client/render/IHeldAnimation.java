@@ -20,13 +20,13 @@ public interface IHeldAnimation
     /**
      * Allows for modifications of the player model. This is where arms should be aligned to hold
      * the weapon correctly. This also gives you access to the current aiming progress.
-     *
-     * @param model an get of the player model
+     *  @param model an get of the player model
+     * @param head
      * @param hand the hand which is currently being used
      * @param aimProgress the current animation progress of looking down the weapons sight
      */
     @OnlyIn(Dist.CLIENT)
-    default void applyPlayerModelRotation(Player player, PlayerModel model, InteractionHand hand, float aimProgress) {}
+    default void applyPlayerModelRotation(Player player, ModelPart rightArm, ModelPart leftArm, ModelPart head, InteractionHand hand, float aimProgress) {}
 
     /**
      * Allows for transformations of the player model. This is where the entire player model can

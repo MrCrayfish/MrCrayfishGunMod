@@ -2,15 +2,7 @@ package com.mrcrayfish.guns.client;
 
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.handler.AimingHandler;
-import com.mrcrayfish.guns.client.handler.BulletTrailRenderingHandler;
-import com.mrcrayfish.guns.client.handler.ControllerHandler;
-import com.mrcrayfish.guns.client.handler.CrosshairHandler;
-import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
-import com.mrcrayfish.guns.client.handler.RecoilHandler;
-import com.mrcrayfish.guns.client.handler.ReloadHandler;
-import com.mrcrayfish.guns.client.handler.ShootingHandler;
-import com.mrcrayfish.guns.client.handler.SoundHandler;
+import com.mrcrayfish.guns.client.handler.*;
 import com.mrcrayfish.guns.client.render.entity.GrenadeRenderer;
 import com.mrcrayfish.guns.client.render.entity.MissileRenderer;
 import com.mrcrayfish.guns.client.render.entity.ProjectileRenderer;
@@ -50,6 +42,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -75,6 +68,7 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(ReloadHandler.get());
         MinecraftForge.EVENT_BUS.register(ShootingHandler.get());
         MinecraftForge.EVENT_BUS.register(SoundHandler.get());
+        MinecraftForge.EVENT_BUS.register(new PlayerModelHandler());
 
         /* Only register controller events if Controllable is loaded otherwise it will crash */
         if(GunMod.controllableLoaded)

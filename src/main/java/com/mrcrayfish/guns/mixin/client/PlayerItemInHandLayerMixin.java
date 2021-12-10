@@ -2,15 +2,18 @@ package com.mrcrayfish.guns.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
-import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -68,8 +71,6 @@ public class PlayerItemInHandLayerMixin
         poseStack.mulPose(Vector3f.XP.rotationDegrees(-90F));
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
         poseStack.translate(((float) (arm == HumanoidArm.LEFT ? -1 : 1) / 16F), 0.125, -0.625);
-        //RenderUtil.applyTransformType(stack, poseStack, transformType, player);
-        //poseStack.translate(-0.5, -0.5, -0.5);
         GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
         Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
         gun.getGeneral().getGripType().getHeldAnimation().applyHeldItemTransforms(player, hand, AimingHandler.get().getAimProgress(player, deltaTicks), poseStack, source);

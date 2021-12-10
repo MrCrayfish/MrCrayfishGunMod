@@ -52,13 +52,13 @@ public class BazookaPose extends WeaponPose
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyPlayerModelRotation(Player player, PlayerModel model, InteractionHand hand, float aimProgress)
+    public void applyPlayerModelRotation(Player player, ModelPart rightArm, ModelPart leftArm, ModelPart head, InteractionHand hand, float aimProgress)
     {
         if(Config.CLIENT.display.oldAnimations.get())
         {
             boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
-            ModelPart mainArm = right ? model.rightArm : model.leftArm;
-            ModelPart secondaryArm = right ? model.leftArm : model.rightArm;
+            ModelPart mainArm = right ? rightArm : leftArm;
+            ModelPart secondaryArm = right ? leftArm : rightArm;
             mainArm.xRot = (float) Math.toRadians(-90F);
             mainArm.yRot = (float) Math.toRadians(-35F) * (right ? 1F : -1F);
             mainArm.zRot = (float) Math.toRadians(0F);
@@ -68,7 +68,7 @@ public class BazookaPose extends WeaponPose
         }
         else
         {
-            super.applyPlayerModelRotation(player, model, hand, aimProgress);
+            super.applyPlayerModelRotation(player, rightArm, leftArm, head, hand, aimProgress);
         }
     }
 

@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -24,7 +25,6 @@ import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import com.mrcrayfish.guns.util.OptifineHelper;
-import com.mrcrayfish.posture.api.event.PlayerModelEvent;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -32,6 +32,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -47,6 +48,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -492,111 +494,6 @@ public class GunRenderingHandler
             }
         }
     }
-
-    @SubscribeEvent
-    public void onSetupAngles(PlayerModelEvent.Pose.Post event)
-    {
-        // Dirty hack to reject first person arms
-        if(event.getAgeInTicks() == 0F)
-        {
-            event.getPlayerModel().rightArm.xRot = 0;
-            event.getPlayerModel().rightArm.yRot = 0;
-            event.getPlayerModel().rightArm.zRot = 0;
-            event.getPlayerModel().leftArm.xRot = 0;
-            event.getPlayerModel().leftArm.yRot = 0;
-            event.getPlayerModel().leftArm.zRot = 0;
-            return;
-        }
-
-        Player player = event.getPlayer();
-        ItemStack heldItem = player.getMainHandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
-        {
-            PlayerModel<?> model = event.getPlayerModel();
-            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            gun.getGeneral().getGripType().getHeldAnimation().applyPlayerModelRotation(player, model, InteractionHand.MAIN_HAND, AimingHandler.get().getAimProgress((Player) event.getEntity(), event.getDeltaTicks()));
-            copyModelAngles(model.rightArm, model.rightSleeve);
-            copyModelAngles(model.leftArm, model.leftSleeve);
-        }
-    }
-
-    private static void copyModelAngles(ModelPart source, ModelPart dest)
-    {
-        dest.xRot = source.xRot;
-        dest.yRot = source.yRot;
-        dest.zRot = source.zRot;
-    }
-
-    @SubscribeEvent
-    public void onRenderPlayer(RenderPlayerEvent.Pre event)
-    {
-        Player player = event.getPlayer();
-        ItemStack heldItem = player.getMainHandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
-        {
-            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            gun.getGeneral().getGripType().getHeldAnimation().applyPlayerPreRender(player, InteractionHand.MAIN_HAND, AimingHandler.get().getAimProgress((Player) event.getEntity(), event.getPartialTick()), event.getPoseStack(), event.getMultiBufferSource());
-        }
-    }
-
-    @SubscribeEvent
-    public void onModelRender(PlayerModelEvent.Render.Pre event)
-    {
-        Player player = event.getPlayer();
-        ItemStack offHandStack = player.getOffhandItem();
-        if(offHandStack.getItem() instanceof GunItem)
-        {
-            switch(player.getMainArm().getOpposite())
-            {
-                case LEFT -> event.getPlayerModel().leftArmPose = HumanoidModel.ArmPose.EMPTY;
-                case RIGHT -> event.getPlayerModel().rightArmPose = HumanoidModel.ArmPose.EMPTY;
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onRenderPlayer(PlayerModelEvent.Render.Post event)
-    {
-        PoseStack poseStack = event.getPoseStack();
-        Player player = event.getPlayer();
-        ItemStack heldItem = player.getOffhandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
-        {
-            poseStack.pushPose();
-            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            if(gun.getGeneral().getGripType().getHeldAnimation().applyOffhandTransforms(player, event.getPlayerModel(), heldItem, poseStack, event.getDeltaTicks()))
-            {
-                MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-                this.renderWeapon(player, heldItem, ItemTransforms.TransformType.FIXED, poseStack, buffer, event.getLight(), event.getDeltaTicks());
-            }
-            poseStack.popPose();
-        }
-    }
-
-    /*@SubscribeEvent
-    public void onRenderEntityItem(RenderItemEvent.Entity.Pre event)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(event.getItem().getItem() instanceof GunItem )
-        {
-            this.applyWeaponScale(event.getItem(), event.getMatrixStack());
-        }
-        event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
-    }
-
-    @SubscribeEvent
-    public void onRenderEntityItem(RenderItemEvent.Gui.Pre event)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
-    }
-
-    @SubscribeEvent
-    public void onRenderItemFrame(RenderItemEvent.ItemFrame.Pre event)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
-    }*/
 
     public boolean renderWeapon(LivingEntity entity, ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {

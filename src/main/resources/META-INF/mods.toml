@@ -31,12 +31,6 @@ description="MrCrayfish's Gun Mod adds in simple and straight forward weapons in
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
-    modId="posture"
-    mandatory=true
-    versionRange="[1.0.0,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.cgm]]
     modId="controllable"
     mandatory=false
     versionRange="[0.14.1,)"

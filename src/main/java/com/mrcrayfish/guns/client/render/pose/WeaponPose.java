@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
@@ -60,18 +59,18 @@ public abstract class WeaponPose implements IHeldAnimation
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyPlayerModelRotation(Player player, PlayerModel model, InteractionHand hand, float aimProgress)
+    public void applyPlayerModelRotation(Player player, ModelPart rightArm, ModelPart leftArm, ModelPart head, InteractionHand hand, float aimProgress)
     {
         Minecraft mc = Minecraft.getInstance();
         boolean right = mc.options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
-        ModelPart mainArm = right ? model.rightArm : model.leftArm;
-        ModelPart secondaryArm = right ? model.leftArm : model.rightArm;
+        ModelPart mainArm = right ? rightArm : leftArm;
+        ModelPart secondaryArm = right ? leftArm : rightArm;
 
         float angle = this.getPlayerPitch(player);
         float angleAbs = Math.abs(angle);
         float zoom = this.hasAimPose() ? aimProgress : 0F;
         AimPose targetPose = angle > 0.0 ? this.downPose : this.upPose;
-        this.applyAimPose(targetPose, mainArm, secondaryArm, angleAbs, zoom, right ? 1 : -1, model.crouching);
+        this.applyAimPose(targetPose, mainArm, secondaryArm, angleAbs, zoom, right ? 1 : -1, player.isCrouching());
     }
 
     /**

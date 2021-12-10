@@ -24,12 +24,12 @@ public class OneHandedPose implements IHeldAnimation
 {
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyPlayerModelRotation(Player player, PlayerModel model, InteractionHand hand, float aimProgress)
+    public void applyPlayerModelRotation(Player player, ModelPart rightArm, ModelPart leftArm, ModelPart head, InteractionHand hand, float aimProgress)
     {
         boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
-        ModelPart arm = right ? model.rightArm : model.leftArm;
-        IHeldAnimation.copyModelAngles(model.head, arm);
-        arm.xRot += Math.toRadians(-70F);
+        ModelPart arm = right ? rightArm : leftArm;
+        IHeldAnimation.copyModelAngles(head, arm);
+        arm.xRot += (float) Math.toRadians(-70F);
     }
 
     @Override

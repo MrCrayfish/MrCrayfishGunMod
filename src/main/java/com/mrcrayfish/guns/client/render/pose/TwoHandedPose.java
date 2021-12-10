@@ -52,20 +52,20 @@ public class TwoHandedPose extends WeaponPose
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyPlayerModelRotation(Player player, PlayerModel model, InteractionHand hand, float aimProgress)
+    public void applyPlayerModelRotation(Player player, ModelPart rightArm, ModelPart leftArm, ModelPart head, InteractionHand hand, float aimProgress)
     {
         if(Config.CLIENT.display.oldAnimations.get())
         {
             Minecraft mc = Minecraft.getInstance();
             boolean right = mc.options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
-            ModelPart mainArm = right ? model.rightArm : model.leftArm;
-            ModelPart secondaryArm = right ? model.leftArm : model.rightArm;
-            mainArm.xRot = model.head.xRot;
-            mainArm.yRot = model.head.yRot;
-            mainArm.zRot = model.head.zRot;
-            secondaryArm.xRot = model.head.xRot;
-            secondaryArm.yRot = model.head.yRot;
-            secondaryArm.zRot = model.head.zRot;
+            ModelPart mainArm = right ? rightArm : leftArm;
+            ModelPart secondaryArm = right ? leftArm : rightArm;
+            mainArm.xRot = head.xRot;
+            mainArm.yRot = head.yRot;
+            mainArm.zRot = head.zRot;
+            secondaryArm.xRot = head.xRot;
+            secondaryArm.yRot = head.yRot;
+            secondaryArm.zRot = head.zRot;
             mainArm.xRot = (float) Math.toRadians(-55F + aimProgress * -30F);
             mainArm.yRot = (float) Math.toRadians((-45F + aimProgress * -20F) * (right ? 1F : -1F));
             secondaryArm.xRot = (float) Math.toRadians(-42F + aimProgress * -48F);
@@ -73,9 +73,9 @@ public class TwoHandedPose extends WeaponPose
         }
         else
         {
-            super.applyPlayerModelRotation(player, model, hand, aimProgress);
+            super.applyPlayerModelRotation(player, rightArm, leftArm, head, hand, aimProgress);
             float angle = this.getPlayerPitch(player);
-            model.head.xRot = (float) Math.toRadians(angle > 0.0 ? angle * 70F : angle * 90F);
+            head.xRot = (float) Math.toRadians(angle > 0.0 ? angle * 70F : angle * 90F);
         }
     }
 

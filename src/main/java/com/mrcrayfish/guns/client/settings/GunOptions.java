@@ -59,7 +59,6 @@ public class GunOptions
         ResourceLocation id = value.getLocation();
         return new TranslatableComponent(id.getNamespace() + ".crosshair." + id.getPath());
     }).setRenderer((button, poseStack, partialTicks) -> {
-        poseStack.pushPose();
         poseStack.translate(button.x, button.y, 0);
         poseStack.translate(button.getWidth() + 2, 2, 0);
         Crosshair crosshair = CrosshairHandler.get().getCurrentCrosshair();
@@ -76,6 +75,5 @@ public class GunOptions
                 crosshair.render(Minecraft.getInstance(), poseStack, 16, 16, partialTicks);
             }
         }
-        poseStack.popPose();
     });*/
 }
