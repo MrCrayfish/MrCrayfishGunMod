@@ -99,8 +99,8 @@ public class GunRenderingHandler
     private Field equippedProgressMainHandField;
     private Field prevEquippedProgressMainHandField;
 
-    private float immersiveWeaponRoll;
     private float immersiveRoll;
+    private float prevImmersiveRoll;
     
     private GunRenderingHandler() {}
 
@@ -113,6 +113,7 @@ public class GunRenderingHandler
         this.updateSprinting();
         this.updateMuzzleFlash();
         this.updateOffhandTranslate();
+        this.updateImmersiveCamera();
     }
 
     private void updateSprinting()
@@ -251,9 +252,10 @@ public class GunRenderingHandler
 
         if(Config.CLIENT.experimental.immersiveCamera.get() && mc.player != null)
         {
-            float targetAngle = heldItem.getItem() instanceof GunItem ? mc.player.input.leftImpulse * 2F : 0F;
-            this.immersiveWeaponRoll = Mth.approach(this.immersiveWeaponRoll, targetAngle, 0.25F);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.immersiveWeaponRoll));
+            float roll = Mth.lerp(event.getPartialTicks(), this.prevImmersiveRoll, this.immersiveRoll);
+            roll = (float) Math.sin((roll * Math.PI) / 2.0);
+            roll *= 5F;
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(roll));
         }
 
         ItemStack overrideModel = ItemStack.EMPTY;
@@ -757,9 +759,10 @@ public class GunRenderingHandler
         return 0.0F;
     }
 
-    @SubscribeEvent
-    public void onCameraSetup(EntityViewRenderEvent.CameraSetup event)
+    private void updateImmersiveCamera()
     {
+        this.prevImmersiveRoll = this.immersiveRoll;
+
         if(!Config.CLIENT.experimental.immersiveCamera.get())
             return;
 
@@ -768,8 +771,20 @@ public class GunRenderingHandler
             return;
 
         ItemStack heldItem = mc.player.getMainHandItem();
-        float targetAngle = heldItem.getItem() instanceof GunItem ? mc.player.input.leftImpulse * 5F: 0F;
-        this.immersiveRoll = Mth.approach(this.immersiveRoll, targetAngle, 0.4F);
-        event.setRoll(-this.immersiveRoll);
+        float targetAngle = heldItem.getItem() instanceof GunItem ? mc.player.input.leftImpulse: 0F;
+        float speed = mc.player.input.leftImpulse != 0 ? 0.075F : 0.15F;
+        this.immersiveRoll = Mth.lerp(speed, this.immersiveRoll, targetAngle);
+    }
+
+    @SubscribeEvent
+    public void onCameraSetup(EntityViewRenderEvent.CameraSetup event)
+    {
+        if(!Config.CLIENT.experimental.immersiveCamera.get())
+            return;
+
+        float roll = (float) Mth.lerp(event.getPartialTicks(), this.prevImmersiveRoll, this.immersiveRoll);
+        roll = (float) Math.sin((roll * Math.PI) / 2.0);
+        roll *= 10F;
+        event.setRoll(-roll);
     }
 }
