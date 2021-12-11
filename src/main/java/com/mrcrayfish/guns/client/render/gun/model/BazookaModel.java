@@ -45,8 +45,6 @@ public class BazookaModel extends SimpleModel
         {
             poseStack.pushPose();
             {
-                poseStack.translate(0.5, 0.5, 0.5);
-
                 Matrix4f matrix = poseStack.last().pose();
                 Matrix3f normal = poseStack.last().normal();
 
