@@ -75,7 +75,6 @@ public class GunMod
         ModRecipeSerializers.REGISTER.register(bus);
         ModSounds.REGISTER.register(bus);
         ModTileEntities.REGISTER.register(bus);
-        ModSyncedDataKeys.register();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
@@ -84,20 +83,23 @@ public class GunMod
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
-        CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"), WorkbenchIngredient.Serializer.INSTANCE);
-        ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
-        ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
-        PacketHandler.init();
-
-        if(Config.COMMON.gameplay.improvedHitboxes.get())
+        event.enqueueWork(() ->
         {
-            MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
-        }
+            ModSyncedDataKeys.register();
+            CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"), WorkbenchIngredient.Serializer.INSTANCE);
+            ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
+            ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
+            PacketHandler.init();
+            if(Config.COMMON.gameplay.improvedHitboxes.get())
+            {
+                MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
+            }
+        });
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        ClientHandler.setup();
+        event.enqueueWork(ClientHandler::setup);
     }
 
     private void onGatherData(GatherDataEvent event)
