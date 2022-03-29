@@ -2,14 +2,14 @@ package com.mrcrayfish.guns.crafting;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import java.util.Collection;
@@ -74,7 +74,7 @@ public class WorkbenchIngredient extends Ingredient
         return new WorkbenchIngredient(new Ingredient.ItemValue(stack), count);
     }
 
-    public static WorkbenchIngredient of(Tag<Item> tag, int count)
+    public static WorkbenchIngredient of(TagKey<Item> tag, int count)
     {
         return new WorkbenchIngredient(new Ingredient.TagValue(tag), count);
     }
