@@ -173,7 +173,7 @@ public class GunRenderingHandler
             return;
 
         this.sprintTransition = 0;
-        this.sprintCooldown = 8;
+        this.sprintCooldown = 20;
 
         ItemStack heldItem = event.getStack();
         GunItem gunItem = (GunItem) heldItem.getItem();
