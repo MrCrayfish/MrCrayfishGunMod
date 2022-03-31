@@ -7,7 +7,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -29,10 +28,7 @@ import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -48,14 +44,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LightLayer;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -101,6 +95,8 @@ public class GunRenderingHandler
 
     private float immersiveRoll;
     private float prevImmersiveRoll;
+    private float fallSway;
+    private float prevFallSway;
     
     private GunRenderingHandler() {}
 
@@ -173,7 +169,7 @@ public class GunRenderingHandler
             return;
 
         this.sprintTransition = 0;
-        this.sprintCooldown = 20;
+        this.sprintCooldown = 20; //TODO make a config option
 
         ItemStack heldItem = event.getStack();
         GunItem gunItem = (GunItem) heldItem.getItem();
@@ -195,17 +191,19 @@ public class GunRenderingHandler
     {
         Minecraft mc = Minecraft.getInstance();
         PoseStack poseStack = event.getPoseStack();
-        if(mc.options.bobView && mc.getCameraEntity() instanceof Player)
+        if(mc.options.bobView && mc.getCameraEntity() instanceof Player player)
         {
-            Player playerentity = (Player) mc.getCameraEntity();
-            float deltaDistanceWalked = playerentity.walkDist - playerentity.walkDistO;
-            float distanceWalked = -(playerentity.walkDist + deltaDistanceWalked * event.getPartialTicks());
-            float cameraYaw = Mth.lerp(event.getPartialTicks(), playerentity.oBob, playerentity.bob);
+            float deltaDistanceWalked = player.walkDist - player.walkDistO;
+            float distanceWalked = -(player.walkDist + deltaDistanceWalked * event.getPartialTicks());
+            float cameraYaw = Mth.lerp(event.getPartialTicks(), player.oBob, player.bob);
 
             /* Reverses the original bobbing rotations and translations so it can be controlled */
             poseStack.mulPose(Vector3f.XP.rotationDegrees(-(Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(-(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
             poseStack.translate((double) -(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
+
+            /* Slows down the bob by half */
+            cameraYaw *= 0.5;
 
             /* The new controlled bobbing */
             double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress();
@@ -249,14 +247,6 @@ public class GunRenderingHandler
 
         /* Cancel it because we are doing our own custom render */
         event.setCanceled(true);
-
-        if(Config.CLIENT.experimental.immersiveCamera.get() && mc.player != null)
-        {
-            float roll = Mth.lerp(event.getPartialTicks(), this.prevImmersiveRoll, this.immersiveRoll);
-            roll = (float) Math.sin((roll * Math.PI) / 2.0);
-            roll *= 5F;
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(roll));
-        }
 
         ItemStack overrideModel = ItemStack.EMPTY;
         if(heldItem.getTag() != null)
@@ -334,11 +324,12 @@ public class GunRenderingHandler
          * any recoil or reload rotations as the animations would be borked if applied after. */
         this.renderReloadArm(poseStack, event.getMultiBufferSource(), event.getPackedLight(), modifiedGun, heldItem, hand);
 
-        /* Translate the item position based on the hand side */
+        // Values are based on vanilla translations for first person
         int offset = right ? 1 : -1;
         poseStack.translate(0.56 * offset, -0.52, -0.72);
 
         /* Applies recoil and reload rotations */
+        this.applySwayTransforms(poseStack, mc.player, translateX, translateY, translateZ, event.getPartialTicks());
         this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTicks());
         this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
         this.applyReloadTransforms(poseStack, event.getPartialTicks());
@@ -354,6 +345,43 @@ public class GunRenderingHandler
         this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), packedLight, event.getPartialTicks());
 
         poseStack.popPose();
+    }
+
+    private void applySwayTransforms(PoseStack poseStack, LocalPlayer player, float x, float y, float z, float partialTicks)
+    {
+        poseStack.translate(x, y, z);
+        
+        if(!Config.CLIENT.display.oldAnimations.get())
+        {
+            poseStack.translate(0, -0.25, 0.25);
+            float aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
+            aiming = (float) (1 - Math.cos((aiming * Math.PI) / 2.0));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(aiming * 10F));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(aiming * 5F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(aiming * 5F));
+            poseStack.translate(0, 0.25, -0.25);
+        }
+
+        if(Config.CLIENT.display.weaponSway.get() && player != null)
+        {
+            poseStack.translate(0, -0.25, 0.25);
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, this.prevFallSway, this.fallSway)));
+            poseStack.translate(0, 0.25, -0.25);
+
+            float bobPitch = Mth.rotLerp(partialTicks, player.xBobO, player.xBob);
+            float headPitch = Mth.rotLerp(partialTicks, player.xRotO, player.getXRot());
+            float swayPitch = headPitch - bobPitch;
+            swayPitch *= 1.0 - 0.5 * AimingHandler.get().getNormalisedAdsProgress();
+            poseStack.mulPose(Vector3f.XN.rotationDegrees(swayPitch * Config.CLIENT.display.swaySensitivity.get().floatValue()));
+
+            float bobYaw = Mth.rotLerp(partialTicks, player.yBobO, player.yBob);
+            float headYaw = Mth.rotLerp(partialTicks, player.yHeadRotO, player.yHeadRot);
+            float swayYaw = headYaw - bobYaw;
+            swayYaw *= 1.0 - 0.5 * AimingHandler.get().getNormalisedAdsProgress();
+            poseStack.mulPose(Vector3f.YN.rotationDegrees(swayYaw * Config.CLIENT.display.swaySensitivity.get().floatValue()));
+        }
+
+        poseStack.translate(-x, -y, -z);
     }
 
     private void applySprintingTransforms(Gun modifiedGun, HumanoidArm hand, PoseStack poseStack, float partialTicks)
@@ -391,11 +419,11 @@ public class GunRenderingHandler
         float recoilSwayAmount = (float) (2F + 1F * (1.0 - AimingHandler.get().getNormalisedAdsProgress()));
         float recoilSway = (float) ((RecoilHandler.get().getGunRecoilRandom() * recoilSwayAmount - recoilSwayAmount / 2F) * recoilNormal);
         poseStack.translate(0, 0, kick * kickReduction);
-        poseStack.translate(0, 0, 0.35);
+        poseStack.translate(0, 0, 0.15);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(recoilSway * recoilReduction));
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(recoilSway * recoilReduction));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(recoilLift * recoilReduction));
-        poseStack.translate(0, 0, -0.35);
+        poseStack.translate(0, 0, -0.15);
     }
 
     @SubscribeEvent
@@ -762,9 +790,7 @@ public class GunRenderingHandler
     private void updateImmersiveCamera()
     {
         this.prevImmersiveRoll = this.immersiveRoll;
-
-        if(!Config.CLIENT.experimental.immersiveCamera.get())
-            return;
+        this.prevFallSway = this.fallSway;
 
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null)
@@ -772,19 +798,21 @@ public class GunRenderingHandler
 
         ItemStack heldItem = mc.player.getMainHandItem();
         float targetAngle = heldItem.getItem() instanceof GunItem ? mc.player.input.leftImpulse: 0F;
-        float speed = mc.player.input.leftImpulse != 0 ? 0.075F : 0.15F;
+        float speed = mc.player.input.leftImpulse != 0 ? 0.1F : 0.15F;
         this.immersiveRoll = Mth.lerp(speed, this.immersiveRoll, targetAngle);
+
+        float deltaY = (float) Mth.clamp((mc.player.yo - mc.player.getY()), -1.0, 1.0);
+        deltaY *= 1.0 - AimingHandler.get().getNormalisedAdsProgress();
+        deltaY *= 1.0 - (Mth.abs(mc.player.getXRot()) / 90.0F);
+        this.fallSway = Mth.approach(this.fallSway, deltaY * 15F, 10.0F);
     }
 
     @SubscribeEvent
     public void onCameraSetup(EntityViewRenderEvent.CameraSetup event)
     {
-        if(!Config.CLIENT.experimental.immersiveCamera.get())
-            return;
-
         float roll = (float) Mth.lerp(event.getPartialTicks(), this.prevImmersiveRoll, this.immersiveRoll);
         roll = (float) Math.sin((roll * Math.PI) / 2.0);
-        roll *= 10F;
+        roll *= 1.5F;
         event.setRoll(-roll);
     }
 }

@@ -13,6 +13,7 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +52,7 @@ public class AimingHandler
         return instance;
     }
 
-    private static final double MAX_AIM_PROGRESS = 4;
+    private static final double MAX_AIM_PROGRESS = 5;
     private final AimTracker localTracker = new AimTracker();
     private final Map<Player, AimTracker> aimingMap = new WeakHashMap<>();
     private double normalisedAdsProgress;
@@ -138,10 +139,9 @@ public class AimingHandler
         if(mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON)
         {
             ItemStack heldItem = mc.player.getMainHandItem();
-            if(heldItem.getItem() instanceof GunItem)
+            if(heldItem.getItem() instanceof GunItem gunItem)
             {
-                GunItem gunItem = (GunItem) heldItem.getItem();
-                if(AimingHandler.get().isAiming() && !ModSyncedDataKeys.RELOADING.getValue(mc.player))
+                if(AimingHandler.get().getNormalisedAdsProgress() != 0 && !ModSyncedDataKeys.RELOADING.getValue(mc.player))
                 {
                     Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                     if(modifiedGun.getModules().getZoom() != null)
@@ -279,7 +279,7 @@ public class AimingHandler
 
         public double getNormalProgress(float partialTicks)
         {
-            return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
+            return Mth.clamp((this.previousAim + (this.currentAim - this.previousAim) * partialTicks) / MAX_AIM_PROGRESS, 0.0, 1.0);
         }
     }
 }
