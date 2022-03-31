@@ -2,18 +2,14 @@ package com.mrcrayfish.guns.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,12 +30,10 @@ public class PlayerItemInHandLayerMixin
     @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"), cancellable = true)
     private void renderArmWithItemHead(LivingEntity entity, ItemStack stack, ItemTransforms.TransformType transformType, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci)
     {
-        InteractionHand hand = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? arm == HumanoidArm.RIGHT ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND : arm == HumanoidArm.LEFT ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-        ItemStack heldItem = entity.getItemInHand(hand);
-
+        InteractionHand hand = Minecraft.getInstance().options.mainHand == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         if(hand == InteractionHand.OFF_HAND)
         {
-            if(heldItem.getItem() instanceof GunItem)
+            if(stack.getItem() instanceof GunItem)
             {
                 ci.cancel();
                 return;
@@ -56,11 +50,11 @@ public class PlayerItemInHandLayerMixin
             }
         }
 
-        if(heldItem.getItem() instanceof GunItem)
+        if(stack.getItem() instanceof GunItem)
         {
             ci.cancel();
             PlayerItemInHandLayer<?, ?> layer = (PlayerItemInHandLayer<?, ?>) (Object) this;
-            renderArmWithGun(layer, (Player) entity, stack, transformType, hand, arm, poseStack, source, light, Minecraft.getInstance().getDeltaFrameTime());
+            renderArmWithGun(layer, (Player) entity, stack, transformType, hand, arm, poseStack, source, light, Minecraft.getInstance().getFrameTime());
         }
     }
 
