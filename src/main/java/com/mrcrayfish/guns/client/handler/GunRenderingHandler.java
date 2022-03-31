@@ -327,6 +327,7 @@ public class GunRenderingHandler
         poseStack.translate(0.56 * offset, -0.52, -0.72);
 
         /* Applies recoil and reload rotations */
+        this.applyAimingTransforms(poseStack, translateX, translateY, translateZ, offset);
         this.applySwayTransforms(poseStack, mc.player, translateX, translateY, translateZ, event.getPartialTicks());
         this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTicks());
         this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
@@ -343,24 +344,29 @@ public class GunRenderingHandler
 
         poseStack.popPose();
     }
-
-    private void applySwayTransforms(PoseStack poseStack, LocalPlayer player, float x, float y, float z, float partialTicks)
+    
+    private void applyAimingTransforms(PoseStack poseStack, float x, float y, float z, int offset)
     {
-        poseStack.translate(x, y, z);
-        
         if(!Config.CLIENT.display.oldAnimations.get())
         {
+            poseStack.translate(x * offset, y, z);
             poseStack.translate(0, -0.25, 0.25);
             float aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
             aiming = (float) (1 - Math.cos((aiming * Math.PI) / 2.0));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(aiming * 10F));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(aiming * 10F * offset));
             poseStack.mulPose(Vector3f.XP.rotationDegrees(aiming * 5F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(aiming * 5F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(aiming * 5F * offset));
             poseStack.translate(0, 0.25, -0.25);
+            poseStack.translate(-x * offset, -y, -z);
         }
+    }
 
+    private void applySwayTransforms(PoseStack poseStack, LocalPlayer player, float x, float y, float z, float partialTicks)
+    {
         if(Config.CLIENT.display.weaponSway.get() && player != null)
         {
+            poseStack.translate(x, y, z);
+
             poseStack.translate(0, -0.25, 0.25);
             poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, this.prevFallSway, this.fallSway)));
             poseStack.translate(0, 0.25, -0.25);
@@ -376,9 +382,9 @@ public class GunRenderingHandler
             float swayYaw = headYaw - bobYaw;
             swayYaw *= 1.0 - 0.5 * AimingHandler.get().getNormalisedAdsProgress();
             poseStack.mulPose(Vector3f.YN.rotationDegrees(swayYaw * Config.CLIENT.display.swaySensitivity.get().floatValue()));
-        }
 
-        poseStack.translate(-x, -y, -z);
+            poseStack.translate(-x, -y, -z);
+        }
     }
 
     private void applySprintingTransforms(Gun modifiedGun, HumanoidArm hand, PoseStack poseStack, float partialTicks)
