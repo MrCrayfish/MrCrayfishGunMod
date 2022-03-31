@@ -240,7 +240,7 @@ public class GunRenderingHandler
             poseStack.translate(0, -1 * AimingHandler.get().getNormalisedAdsProgress(), 0);
         }
 
-        if(!(heldItem.getItem() instanceof GunItem))
+        if(!(heldItem.getItem() instanceof GunItem gunItem))
         {
             return;
         }
@@ -268,9 +268,7 @@ public class GunRenderingHandler
 
         poseStack.pushPose();
 
-        GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-
         if(AimingHandler.get().getNormalisedAdsProgress() > 0 && modifiedGun.canAimDownSight())
         {
             if(event.getHand() == InteractionHand.MAIN_HAND)
@@ -336,7 +334,6 @@ public class GunRenderingHandler
 
         /* Renders the first persons arms from the grip type of the weapon */
         poseStack.pushPose();
-        poseStack.translate(-0.56 * offset, 0.52, 0.72);
         modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, poseStack, event.getMultiBufferSource(), event.getPackedLight(), event.getPartialTicks());
         poseStack.popPose();
 

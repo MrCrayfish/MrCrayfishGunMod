@@ -10,6 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionHand;
@@ -120,44 +121,48 @@ public class TwoHandedPose extends WeaponPose
     @Override
     public void renderFirstPersonArms(LocalPlayer player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks)
     {
-        poseStack.translate(0, 0, -1);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
 
-        poseStack.pushPose();
-
-        float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
-        poseStack.translate(reloadProgress * 0.5, -reloadProgress, -reloadProgress * 0.5);
-
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
+        float translateX = model.getTransforms().firstPersonRightHand.translation.x();
         int side = hand.getOpposite() == HumanoidArm.RIGHT ? 1 : -1;
-        poseStack.translate(6 * side * 0.0625, -0.585, -0.5);
+        poseStack.translate(translateX * side, 0, 0);
 
-        if(Minecraft.getInstance().player.getModelName().equals("slim") && hand.getOpposite() == HumanoidArm.LEFT)
+        boolean slim = Minecraft.getInstance().player.getModelName().equals("slim");
+        float armWidth = slim ? 3.0F : 4.0F;
+
+        // Front arm holding the barrel
+        poseStack.pushPose();
         {
-            poseStack.translate(0.03125F * -side, 0, 0);
+            float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
+            poseStack.translate(reloadProgress * 0.5, -reloadProgress, -reloadProgress * 0.5);
+
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+            poseStack.translate(4.0 * 0.0625 * side, 0, 0);
+            poseStack.translate((armWidth / 2.0) * 0.0625 * side, 0, 0);
+            poseStack.translate(-0.3125 * side, -0.1, -0.4375);
+
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(80F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(15F * -side));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(15F * -side));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(-35F));
+
+            RenderUtil.renderFirstPersonArm(player, hand.getOpposite(), poseStack, buffer, light);
         }
-
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(80F));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(15F * -side));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(15F * -side));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-35F));
-        poseStack.scale(0.5F, 0.5F, 0.5F);
-
-        RenderUtil.renderFirstPersonArm(player, hand.getOpposite(), poseStack, buffer, light);
-
         poseStack.popPose();
 
-        double centerOffset = 2.5;
-        if(Minecraft.getInstance().player.getModelName().equals("slim"))
+        // Back arm holding the handle
+        poseStack.pushPose();
         {
-            centerOffset += hand == HumanoidArm.RIGHT ? 0.2 : 0.8;
+            poseStack.translate(0, 0.1, -0.675);
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+            poseStack.translate(-4.0 * 0.0625 * side, 0, 0);
+            poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(80F));
+
+            RenderUtil.renderFirstPersonArm(player, hand, poseStack, buffer, light);
         }
-        centerOffset = hand == HumanoidArm.RIGHT ? -centerOffset : centerOffset;
-        poseStack.translate(centerOffset * 0.0625, -0.4, -0.975);
-
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(80F));
-        poseStack.scale(0.5F, 0.5F, 0.5F);
-
-        RenderUtil.renderFirstPersonArm(player, hand, poseStack, buffer, light);
+        poseStack.popPose();
     }
 
     @Override
