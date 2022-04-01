@@ -189,32 +189,13 @@ public class GunRenderingHandler
     @SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
-        Minecraft mc = Minecraft.getInstance();
         PoseStack poseStack = event.getPoseStack();
-        if(mc.options.bobView && mc.getCameraEntity() instanceof Player player)
-        {
-            float deltaDistanceWalked = player.walkDist - player.walkDistO;
-            float distanceWalked = -(player.walkDist + deltaDistanceWalked * event.getPartialTicks());
-            float cameraYaw = Mth.lerp(event.getPartialTicks(), player.oBob, player.bob);
-
-            /* Reverses the original bobbing rotations and translations so it can be controlled */
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(-(Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(-(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
-            poseStack.translate((double) -(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
-
-            /* Slows down the bob by half */
-            cameraYaw *= 0.5;
-
-            /* The new controlled bobbing */
-            double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress();
-            poseStack.translate((double) (Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees((Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees((Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
-        }
+        this.applyBobbingTransforms(poseStack, event.getPartialTicks());
 
         boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? event.getHand() == InteractionHand.MAIN_HAND : event.getHand() == InteractionHand.OFF_HAND;
-        ItemStack heldItem = event.getItemStack();
+        HumanoidArm hand = right ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
 
+        ItemStack heldItem = event.getItemStack();
         if(event.getHand() == InteractionHand.OFF_HAND)
         {
             if(heldItem.getItem() instanceof GunItem)
@@ -257,8 +238,8 @@ public class GunRenderingHandler
             }
         }
 
-        LivingEntity entity = Minecraft.getInstance().player;
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(overrideModel.isEmpty() ? heldItem : overrideModel, entity.level, entity, 0);
+        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(overrideModel.isEmpty() ? heldItem : overrideModel, player.level, player, 0);
         float scaleX = model.getTransforms().firstPersonRightHand.scale.x();
         float scaleY = model.getTransforms().firstPersonRightHand.scale.y();
         float scaleZ = model.getTransforms().firstPersonRightHand.scale.z();
@@ -312,12 +293,6 @@ public class GunRenderingHandler
         //poseStack.translate(0, equipProgress * -0.6F, 0);
         poseStack.mulPose(Vector3f.XP.rotationDegrees(equipProgress * -50F));
 
-        HumanoidArm hand = right ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
-        Objects.requireNonNull(entity);
-        int blockLight = entity.isOnFire() ? 15 : entity.level.getBrightness(LightLayer.BLOCK, new BlockPos(entity.getEyePosition(event.getPartialTicks())));
-        blockLight += (this.entityIdForMuzzleFlash.contains(entity.getId()) ? 3 : 0);
-        int packedLight = LightTexture.pack(blockLight, entity.level.getBrightness(LightLayer.SKY, new BlockPos(entity.getEyePosition(event.getPartialTicks()))));
-
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
         this.renderReloadArm(poseStack, event.getMultiBufferSource(), event.getPackedLight(), modifiedGun, heldItem, hand);
@@ -328,7 +303,7 @@ public class GunRenderingHandler
 
         /* Applies recoil and reload rotations */
         this.applyAimingTransforms(poseStack, translateX, translateY, translateZ, offset);
-        this.applySwayTransforms(poseStack, mc.player, translateX, translateY, translateZ, event.getPartialTicks());
+        this.applySwayTransforms(poseStack, player, translateX, translateY, translateZ, event.getPartialTicks());
         this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTicks());
         this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
         this.applyReloadTransforms(poseStack, event.getPartialTicks());
@@ -340,11 +315,39 @@ public class GunRenderingHandler
 
         /* Renders the weapon */
         ItemTransforms.TransformType transformType = right ? ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
+        int blockLight = player.isOnFire() ? 15 : player.level.getBrightness(LightLayer.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTicks())));
+        blockLight += (this.entityIdForMuzzleFlash.contains(player.getId()) ? 3 : 0);
+        int packedLight = LightTexture.pack(blockLight, player.level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition(event.getPartialTicks()))));
         this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), packedLight, event.getPartialTicks());
 
         poseStack.popPose();
     }
-    
+
+    private void applyBobbingTransforms(PoseStack poseStack, float partialTicks)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.options.bobView && mc.getCameraEntity() instanceof Player player)
+        {
+            float deltaDistanceWalked = player.walkDist - player.walkDistO;
+            float distanceWalked = -(player.walkDist + deltaDistanceWalked * partialTicks);
+            float cameraYaw = Mth.lerp(partialTicks, player.oBob, player.bob);
+
+            /* Reverses the original bobbing rotations and translations so it can be controlled */
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(-(Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(-(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
+            poseStack.translate((double) -(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
+
+            /* Slows down the bob by half */
+            cameraYaw *= 0.5;
+
+            /* The new controlled bobbing */
+            double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress();
+            poseStack.translate((double) (Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees((Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees((Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
+        }
+    }
+
     private void applyAimingTransforms(PoseStack poseStack, float x, float y, float z, int offset)
     {
         if(!Config.CLIENT.display.oldAnimations.get())
@@ -619,18 +622,16 @@ public class GunRenderingHandler
     {
         Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
         if(modifiedGun.getDisplay().getFlash() == null)
-        {
             return;
-        }
 
-        if(transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-        {
-            if(this.entityIdForMuzzleFlash.contains(entity.getId()))
-            {
-                float randomValue = this.entityIdToRandomValue.get(entity.getId());
-                this.drawMuzzleFlash(weapon, modifiedGun, randomValue, randomValue >= 0.5F, poseStack, buffer, partialTicks);
-            }
-        }
+        if(transformType != ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND && transformType != ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND && transformType != ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND && transformType != ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
+            return;
+
+        if(!this.entityIdForMuzzleFlash.contains(entity.getId()))
+            return;
+
+        float randomValue = this.entityIdToRandomValue.get(entity.getId());
+        this.drawMuzzleFlash(weapon, modifiedGun, randomValue, randomValue >= 0.5F, poseStack, buffer, partialTicks);
     }
 
     private void drawMuzzleFlash(ItemStack weapon, Gun modifiedGun, float random, boolean flip, PoseStack poseStack, MultiBufferSource buffer, float partialTicks)
