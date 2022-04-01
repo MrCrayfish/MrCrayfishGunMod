@@ -380,13 +380,13 @@ public class GunRenderingHandler
             float headPitch = Mth.rotLerp(partialTicks, player.xRotO, player.getXRot());
             float swayPitch = headPitch - bobPitch;
             swayPitch *= 1.0 - 0.5 * AimingHandler.get().getNormalisedAdsProgress();
-            poseStack.mulPose(Vector3f.XN.rotationDegrees(swayPitch * Config.CLIENT.display.swaySensitivity.get().floatValue()));
+            poseStack.mulPose(Config.CLIENT.display.swayType.get().getPitchRotation().rotationDegrees(swayPitch * Config.CLIENT.display.swaySensitivity.get().floatValue()));
 
             float bobYaw = Mth.rotLerp(partialTicks, player.yBobO, player.yBob);
             float headYaw = Mth.rotLerp(partialTicks, player.yHeadRotO, player.yHeadRot);
             float swayYaw = headYaw - bobYaw;
             swayYaw *= 1.0 - 0.5 * AimingHandler.get().getNormalisedAdsProgress();
-            poseStack.mulPose(Vector3f.YN.rotationDegrees(swayYaw * Config.CLIENT.display.swaySensitivity.get().floatValue()));
+            poseStack.mulPose(Config.CLIENT.display.swayType.get().getYawRotation().rotationDegrees(swayYaw * Config.CLIENT.display.swaySensitivity.get().floatValue()));
 
             poseStack.translate(-x, -y, -z);
         }
