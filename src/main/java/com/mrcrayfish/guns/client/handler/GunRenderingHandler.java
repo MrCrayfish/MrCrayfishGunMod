@@ -190,6 +190,7 @@ public class GunRenderingHandler
     public void onRenderOverlay(RenderHandEvent event)
     {
         PoseStack poseStack = event.getPoseStack();
+
         this.applyBobbingTransforms(poseStack, event.getPartialTicks());
 
         boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? event.getHand() == InteractionHand.MAIN_HAND : event.getHand() == InteractionHand.OFF_HAND;
@@ -287,6 +288,9 @@ public class GunRenderingHandler
                 poseStack.translate(xOffset * side * transition, yOffset * transition, zOffset * transition);
             }
         }
+
+        /* Applies a custom bobbing animation */
+        this.applyBobbingTransforms(poseStack, event.getPartialTicks());
 
         /* Applies equip progress animation translations */
         float equipProgress = this.getEquipProgress(event.getPartialTicks());
