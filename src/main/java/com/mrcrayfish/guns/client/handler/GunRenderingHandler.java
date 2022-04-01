@@ -78,10 +78,10 @@ public class GunRenderingHandler
     
     public static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/effect/muzzle_flash.png");
 
-    private Random random = new Random();
-    private Set<Integer> entityIdForMuzzleFlash = new HashSet<>();
-    private Set<Integer> entityIdForDrawnMuzzleFlash = new HashSet<>();
-    private Map<Integer, Float> entityIdToRandomValue = new HashMap<>();
+    private final Random random = new Random();
+    private final Set<Integer> entityIdForMuzzleFlash = new HashSet<>();
+    private final Set<Integer> entityIdForDrawnMuzzleFlash = new HashSet<>();
+    private final Map<Integer, Float> entityIdToRandomValue = new HashMap<>();
 
     private int sprintTransition;
     private int prevSprintTransition;
