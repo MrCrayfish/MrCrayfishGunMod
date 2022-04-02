@@ -8,6 +8,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -35,19 +36,22 @@ public class OneHandedPose implements IHeldAnimation
     @Override
     public void renderFirstPersonArms(LocalPlayer player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks)
     {
-        poseStack.translate(0, 0, -1);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
 
-        double centerOffset = 2.5;
-        if(Minecraft.getInstance().player.getModelName().equals("slim"))
-        {
-            centerOffset += hand == HumanoidArm.RIGHT ? 0.2 : 0.8;
-        }
-        centerOffset = hand == HumanoidArm.RIGHT ? -centerOffset : centerOffset;
-        poseStack.translate(centerOffset * 0.0625, -0.45, -1.0);
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
+        float translateX = model.getTransforms().firstPersonRightHand.translation.x();
+        int side = hand.getOpposite() == HumanoidArm.RIGHT ? 1 : -1;
+        poseStack.translate(translateX * side, 0, 0);
 
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(75F));
+        boolean slim = Minecraft.getInstance().player.getModelName().equals("slim");
+        float armWidth = slim ? 3.0F : 4.0F;
+
         poseStack.scale(0.5F, 0.5F, 0.5F);
+        poseStack.translate(-4.0 * 0.0625 * side, 0, 0);
+        poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
+
+        poseStack.translate(0, 0.15, -1.25);
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(75F));
 
         RenderUtil.renderFirstPersonArm(player, hand, poseStack, buffer, light);
     }
