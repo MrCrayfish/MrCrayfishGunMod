@@ -397,7 +397,7 @@ public class GunRenderingHandler
 
     private void applySprintingTransforms(Gun modifiedGun, HumanoidArm hand, PoseStack poseStack, float partialTicks)
     {
-        if(modifiedGun.getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation())
+        if(Config.CLIENT.display.sprintAnimation.get() && modifiedGun.getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation())
         {
             float leftHanded = hand == HumanoidArm.LEFT ? -1 : 1;
             float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;

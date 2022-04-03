@@ -71,6 +71,7 @@ public class Config
         public final ForgeConfigSpec.EnumValue<SwayType> swayType;
         public final ForgeConfigSpec.BooleanValue cameraRollEffect;
         public final ForgeConfigSpec.DoubleValue cameraRollAngle;
+        public final ForgeConfigSpec.BooleanValue sprintAnimation;
 
         public Display(ForgeConfigSpec.Builder builder)
         {
@@ -84,6 +85,7 @@ public class Config
                 this.swayType = builder.comment("The animation to use for sway. Directional follows the camera better while Drag is more immersive").defineEnum("swayType", SwayType.DRAG);
                 this.cameraRollEffect = builder.comment("If enabled, the camera will roll when strafing while holding a gun. This creates a more immersive feeling.").define("cameraRollEffect", true);
                 this.cameraRollAngle = builder.comment("When Camera Roll Effect is enabled, this is the absolute maximum angle the roll on the camera can approach.").defineInRange("cameraRollAngle", 1.5F, 0F, 45F);
+                this.sprintAnimation = builder.comment("Enables the sprinting animation on weapons for better immersion. This only applies to weapons that support a sprinting animation.").define("sprintingAnimation", true);
             }
             builder.pop();
         }
