@@ -321,6 +321,11 @@ public class GunRenderingHandler
         this.applyRecoilTransforms(matrixStack, heldItem, modifiedGun);
         this.applyReloadTransforms(matrixStack, event.getPartialTicks());
 
+        int blockLight = player.isBurning() ? 15 : player.world.getLightFor(LightType.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTicks())));
+        blockLight += (this.entityIdForMuzzleFlash.contains(player.getEntityId()) ? 3 : 0);
+        blockLight = Math.min(blockLight, 15);
+        int packedLight = LightTexture.packLight(blockLight, player.world.getLightFor(LightType.SKY, new BlockPos(player.getEyePosition(event.getPartialTicks()))));
+
         /* Renders the first persons arms from the grip type of the weapon */
         matrixStack.push();
         modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, matrixStack, event.getBuffers(), event.getLight(), event.getPartialTicks());
@@ -328,9 +333,6 @@ public class GunRenderingHandler
 
         /* Renders the weapon */
         ItemCameraTransforms.TransformType transformType = right ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
-        int blockLight = player.isBurning() ? 15 : player.world.getLightFor(LightType.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTicks())));
-        blockLight += (this.entityIdForMuzzleFlash.contains(player.getEntityId()) ? 3 : 0);
-        int packedLight = LightTexture.packLight(blockLight, player.world.getLightFor(LightType.SKY, new BlockPos(player.getEyePosition(event.getPartialTicks()))));
         this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
 
         matrixStack.pop();
