@@ -7,14 +7,14 @@
     "reloadAmount": 10,
     "recoilAngle": 1.0,
     "alwaysSpread": true,
-    "spread": 8.0
+    "spread": 7.0
   },
   "projectile": {
     "item": "cgm:basic_bullet",
     "damage": 5.0,
     "size": 0.2,
     "speed": 8.0,
-    "life": 100
+    "life": 30
   },
   "sounds": {
     "fire": "cgm:item.mini_gun.fire",
