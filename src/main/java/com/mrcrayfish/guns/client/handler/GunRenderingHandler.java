@@ -357,10 +357,10 @@ public class GunRenderingHandler
         Minecraft mc = Minecraft.getInstance();
         if(mc.gameSettings.viewBobbing && mc.getRenderViewEntity() instanceof PlayerEntity)
         {
-            PlayerEntity playerentity = (PlayerEntity) mc.getRenderViewEntity();
-            float deltaDistanceWalked = playerentity.distanceWalkedModified - playerentity.prevDistanceWalkedModified;
-            float distanceWalked = -(playerentity.distanceWalkedModified + deltaDistanceWalked * partialTicks);
-            float cameraYaw = MathHelper.lerp(partialTicks, playerentity.prevCameraYaw, playerentity.cameraYaw);
+            PlayerEntity player = (PlayerEntity) mc.getRenderViewEntity();
+            float deltaDistanceWalked = player.distanceWalkedModified - player.prevDistanceWalkedModified;
+            float distanceWalked = -(player.distanceWalkedModified + deltaDistanceWalked * partialTicks);
+            float cameraYaw = MathHelper.lerp(partialTicks, player.prevCameraYaw, player.cameraYaw);
 
             /* Reverses the original bobbing rotations and translations so it can be controlled */
             matrixStack.rotate(Vector3f.XP.rotationDegrees(-(Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
@@ -368,11 +368,11 @@ public class GunRenderingHandler
             matrixStack.translate((double) -(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
 
             /* Slows down the bob by half */
-            cameraYaw *= 0.5;
+            cameraYaw *= player.isSprinting() ? 8.0 : 4.0;
 
             /* The new controlled bobbing */
             double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress();
-            matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
+            //matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
             matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
         }
