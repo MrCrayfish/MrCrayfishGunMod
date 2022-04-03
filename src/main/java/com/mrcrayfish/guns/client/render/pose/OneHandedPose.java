@@ -40,8 +40,9 @@ public class OneHandedPose implements IHeldAnimation
 
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
         float translateX = model.getTransforms().firstPersonRightHand.translation.x();
+        float translateZ = model.getTransforms().firstPersonRightHand.translation.z();
         int side = hand.getOpposite() == HumanoidArm.RIGHT ? 1 : -1;
-        poseStack.translate(translateX * side, 0, 0);
+        poseStack.translate(translateX * side, 0, -translateZ);
 
         boolean slim = Minecraft.getInstance().player.getModelName().equals("slim");
         float armWidth = slim ? 3.0F : 4.0F;
@@ -50,7 +51,7 @@ public class OneHandedPose implements IHeldAnimation
         poseStack.translate(-4.0 * 0.0625 * side, 0, 0);
         poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
 
-        poseStack.translate(0, 0.15, -1.25);
+        poseStack.translate(0, 0.15, -1.3125);
         poseStack.mulPose(Vector3f.XP.rotationDegrees(75F));
 
         RenderUtil.renderFirstPersonArm(player, hand, poseStack, buffer, light);
