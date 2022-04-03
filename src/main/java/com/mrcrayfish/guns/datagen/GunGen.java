@@ -185,8 +185,8 @@ public class GunGen extends GunProvider
                 .setSilencedFireSound(ModSounds.ITEM_PISTOL_SILENCED_FIRE.get())
                 .setEnchantedFireSound(ModSounds.ITEM_PISTOL_ENCHANTED_FIRE.get())
                 .setMuzzleFlash(0.5, 0.0, 3.3, 2.64)
-                .setZoom(0.7F, 0.0, 4.5, 0.0)
-                .setScope(0.75F, 0.0, 3.7,6.0)
+                .setZoom(0.7F, 0.0, 4.5, -1.0)
+                .setScope(0.75F, 0.0, 3.7, 6.0)
                 .setBarrel(0.5F, 0.0, 3.3, 2.65)
                 .setStock(1.0F, 0.0, 3.3, 7.95)
                 .build());
