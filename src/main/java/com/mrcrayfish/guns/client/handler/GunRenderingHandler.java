@@ -86,6 +86,7 @@ public class GunRenderingHandler
     private int sprintTransition;
     private int prevSprintTransition;
     private int sprintCooldown;
+    private float sprintIntensity;
 
     private float offhandTranslate;
     private float prevOffhandTranslate;
@@ -339,13 +340,13 @@ public class GunRenderingHandler
             /* Reverses the original bobbing rotations and translations so it can be controlled */
             poseStack.mulPose(Vector3f.XP.rotationDegrees(-(Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(-(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
-            poseStack.translate((double) -(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
+            poseStack.translate(-(Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), -(-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
 
             /* Slows down the bob by half */
             cameraYaw *= player.isSprinting() ? 8.0 : 4.0;
 
             /* The new controlled bobbing */
-            double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress();
+            double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress() * this.sprintIntensity;
             //poseStack.translate((double) (Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
             poseStack.mulPose(Vector3f.ZP.rotationDegrees((Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
             poseStack.mulPose(Vector3f.XP.rotationDegrees((Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
@@ -814,6 +815,9 @@ public class GunRenderingHandler
         deltaY *= 1.0 - AimingHandler.get().getNormalisedAdsProgress();
         deltaY *= 1.0 - (Mth.abs(mc.player.getXRot()) / 90.0F);
         this.fallSway = Mth.approach(this.fallSway, deltaY * 60F * Config.CLIENT.display.swaySensitivity.get().floatValue(), 10.0F);
+
+        float intensity = mc.player.isSprinting() ? 0.75F : 1.0F;
+        this.sprintIntensity = Mth.approach(this.sprintIntensity, intensity, 0.1F);
     }
 
     @SubscribeEvent
