@@ -310,16 +310,18 @@ public class GunRenderingHandler
         this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
         this.applyReloadTransforms(poseStack, event.getPartialTicks());
 
+        int blockLight = player.isOnFire() ? 15 : player.level.getBrightness(LightLayer.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTicks())));
+        blockLight += (this.entityIdForMuzzleFlash.contains(player.getId()) ? 3 : 0);
+        blockLight = Math.min(blockLight, 15);
+        int packedLight = LightTexture.pack(blockLight, player.level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition(event.getPartialTicks()))));
+
         /* Renders the first persons arms from the grip type of the weapon */
         poseStack.pushPose();
-        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, poseStack, event.getMultiBufferSource(), event.getPackedLight(), event.getPartialTicks());
+        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, poseStack, event.getMultiBufferSource(), packedLight, event.getPartialTicks());
         poseStack.popPose();
 
         /* Renders the weapon */
         ItemTransforms.TransformType transformType = right ? ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
-        int blockLight = player.isOnFire() ? 15 : player.level.getBrightness(LightLayer.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTicks())));
-        blockLight += (this.entityIdForMuzzleFlash.contains(player.getId()) ? 3 : 0);
-        int packedLight = LightTexture.pack(blockLight, player.level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition(event.getPartialTicks()))));
         this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), packedLight, event.getPartialTicks());
 
         poseStack.popPose();
