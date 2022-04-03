@@ -816,9 +816,12 @@ public class GunRenderingHandler
     @SubscribeEvent
     public void onCameraSetup(EntityViewRenderEvent.CameraSetup event)
     {
-        float roll = (float) Mth.lerp(event.getPartialTicks(), this.prevImmersiveRoll, this.immersiveRoll);
-        roll = (float) Math.sin((roll * Math.PI) / 2.0);
-        roll *= 1.5F;
-        event.setRoll(-roll);
+        if(Config.CLIENT.display.cameraRollEffect.get())
+        {
+            float roll = (float) Mth.lerp(event.getPartialTicks(), this.prevImmersiveRoll, this.immersiveRoll);
+            roll = (float) Math.sin((roll * Math.PI) / 2.0);
+            roll *= Config.CLIENT.display.cameraRollAngle.get().floatValue();
+            event.setRoll(-roll);
+        }
     }
 }

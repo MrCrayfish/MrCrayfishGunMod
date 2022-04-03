@@ -73,7 +73,7 @@ public class RecoilHandler
         if(mc.player == null)
             return;
 
-        float recoilAmount = this.cameraRecoil * mc.getDeltaFrameTime() * 0.1F;
+        float recoilAmount = this.cameraRecoil * mc.getDeltaFrameTime() * 0.15F;
         float startProgress = this.progressCameraRecoil / this.cameraRecoil;
         float endProgress = (this.progressCameraRecoil + recoilAmount) / this.cameraRecoil;
 

@@ -69,6 +69,8 @@ public class Config
         public final ForgeConfigSpec.BooleanValue weaponSway;
         public final ForgeConfigSpec.DoubleValue swaySensitivity;
         public final ForgeConfigSpec.EnumValue<SwayType> swayType;
+        public final ForgeConfigSpec.BooleanValue cameraRollEffect;
+        public final ForgeConfigSpec.DoubleValue cameraRollAngle;
 
         public Display(ForgeConfigSpec.Builder builder)
         {
@@ -80,6 +82,8 @@ public class Config
                 this.weaponSway = builder.comment("If enabled, the weapon will sway when the player moves their look direction. This does not affect aiming and is only visual.").define("weaponSway", true);
                 this.swaySensitivity = builder.comment("The sensistivity of the visual weapon sway when the player moves their look direciton. The higher the value the more sway.").defineInRange("swaySensitivity", 0.3, 0.0, 1.0);
                 this.swayType = builder.comment("The animation to use for sway. Directional follows the camera better while Drag is more immersive").defineEnum("swayType", SwayType.DRAG);
+                this.cameraRollEffect = builder.comment("If enabled, the camera will roll when strafing while holding a gun. This creates a more immersive feeling.").define("cameraRollEffect", true);
+                this.cameraRollAngle = builder.comment("When Camera Roll Effect is enabled, this is the absolute maximum angle the roll on the camera can approach.").defineInRange("cameraRollAngle", 1.5F, 0F, 45F);
             }
             builder.pop();
         }
