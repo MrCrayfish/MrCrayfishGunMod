@@ -305,7 +305,7 @@ public class GunRenderingHandler
 
         /* Applies recoil and reload rotations */
         this.applyAimingTransforms(poseStack, translateX, translateY, translateZ, offset);
-        this.applySwayTransforms(poseStack, player, translateX, translateY, translateZ, event.getPartialTicks());
+        this.applySwayTransforms(poseStack, modifiedGun, player, translateX, translateY, translateZ, event.getPartialTicks());
         this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTicks());
         this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
         this.applyReloadTransforms(poseStack, event.getPartialTicks());
@@ -366,15 +366,16 @@ public class GunRenderingHandler
         }
     }
 
-    private void applySwayTransforms(PoseStack poseStack, LocalPlayer player, float x, float y, float z, float partialTicks)
+    private void applySwayTransforms(PoseStack poseStack, Gun modifiedGun, LocalPlayer player, float x, float y, float z, float partialTicks)
     {
         if(Config.CLIENT.display.weaponSway.get() && player != null)
         {
             poseStack.translate(x, y, z);
 
-            poseStack.translate(0, -0.25, 0.25);
+            double zOffset = modifiedGun.getGeneral().getGripType().getHeldAnimation().getFallSwayZOffset();
+            poseStack.translate(0, -0.25, zOffset);
             poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, this.prevFallSway, this.fallSway)));
-            poseStack.translate(0, 0.25, -0.25);
+            poseStack.translate(0, 0.25, -zOffset);
 
             float bobPitch = Mth.rotLerp(partialTicks, player.xBobO, player.xBob);
             float headPitch = Mth.rotLerp(partialTicks, player.xRotO, player.getXRot());

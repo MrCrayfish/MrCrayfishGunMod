@@ -109,4 +109,13 @@ public interface IHeldAnimation
         dest.yRot = source.yRot;
         dest.zRot = source.zRot;
     }
+
+    /**
+     *
+     * @return
+     */
+    default double getFallSwayZOffset()
+    {
+        return 0.35;
+    }
 }

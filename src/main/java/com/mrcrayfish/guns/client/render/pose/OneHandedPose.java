@@ -95,4 +95,10 @@ public class OneHandedPose implements IHeldAnimation
     {
         return true;
     }
+
+    @Override
+    public double getFallSwayZOffset()
+    {
+        return 0.5;
+    }
 }
