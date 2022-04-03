@@ -40,8 +40,9 @@ public class OneHandedPose implements IHeldAnimation
 
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, player.world, player);
         float translateX = model.getItemCameraTransforms().firstperson_right.translation.getX();
+        float translateZ = model.getItemCameraTransforms().firstperson_right.translation.getX();
         int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
-        matrixStack.translate(translateX * side, 0, 0);
+        matrixStack.translate(translateX * side, 0, -translateZ);
 
         boolean slim = player.getSkinType().equals("slim");
         float armWidth = slim ? 3.0F : 4.0F;
@@ -50,7 +51,7 @@ public class OneHandedPose implements IHeldAnimation
         matrixStack.translate(-4.0 * 0.0625 * side, 0, 0);
         matrixStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
 
-        matrixStack.translate(0, 0.15, -1.25);
+        matrixStack.translate(0, 0.15, -1.3125);
         matrixStack.rotate(Vector3f.XP.rotationDegrees(75F));
 
         RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
