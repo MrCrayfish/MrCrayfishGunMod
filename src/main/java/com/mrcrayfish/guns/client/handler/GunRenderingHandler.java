@@ -92,6 +92,7 @@ public class GunRenderingHandler
     private int sprintTransition;
     private int prevSprintTransition;
     private int sprintCooldown;
+    private float sprintIntensity;
 
     private float offhandTranslate;
     private float prevOffhandTranslate;
@@ -373,7 +374,7 @@ public class GunRenderingHandler
             cameraYaw *= player.isSprinting() ? 8.0 : 4.0;
 
             /* The new controlled bobbing */
-            double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress();
+            double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress() * this.sprintIntensity;
             //matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
             matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
@@ -982,6 +983,9 @@ public class GunRenderingHandler
         deltaY *= 1.0 - AimingHandler.get().getNormalisedAdsProgress();
         deltaY *= 1.0 - (MathHelper.abs(mc.player.rotationPitch) / 90.0F);
         this.fallSway = MathHelper.approach(this.fallSway, deltaY * 60F * Config.CLIENT.display.swaySensitivity.get().floatValue(), 10.0F);
+
+        float intensity = mc.player.isSprinting() ? 0.75F : 1.0F;
+        this.sprintIntensity = MathHelper.approach(this.sprintIntensity, intensity, 0.1F);
     }
 
     @SubscribeEvent
