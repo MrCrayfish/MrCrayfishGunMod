@@ -27,8 +27,8 @@ public class BloodParticle extends SpriteTexturedParticle
     {
         super(world, x, y, z, 0.1, 0.1, 0.1);
         this.setColor(0.541F, 0.027F, 0.027F);
-        this.particleGravity = 1.25F;
-        this.particleScale = 0.125F;
+        this.particleGravity = 1.5F;
+        this.particleScale = 0.0625F;
         this.maxAge = (int)(12.0F / (this.rand.nextFloat() * 0.9F + 0.1F));
     }
 
