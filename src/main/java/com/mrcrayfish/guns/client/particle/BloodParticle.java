@@ -27,8 +27,8 @@ public class BloodParticle extends TextureSheetParticle
     {
         super(world, x, y, z, 0.1, 0.1, 0.1);
         this.setColor(0.541F, 0.027F, 0.027F);
-        this.gravity = 1.25F;
-        this.quadSize = 0.125F;
+        this.gravity = 1.5F;
+        this.quadSize = 0.0625F;
         this.lifetime = (int)(12.0F / (this.random.nextFloat() * 0.9F + 0.1F));
     }
 
