@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
 
 /**
@@ -66,7 +68,7 @@ public class ReloadTracker
 
     private boolean hasNoAmmo(Player player)
     {
-        return Gun.findAmmo(player, this.gun.getProjectile().getItem()).isEmpty();
+        return Gun.findAmmo(player, this.gun.getProjectile().getItem()).stack().isEmpty();
     }
 
     private boolean canReload(Player player)
@@ -78,7 +80,8 @@ public class ReloadTracker
 
     private void increaseAmmo(Player player)
     {
-        ItemStack ammo = Gun.findAmmo(player, this.gun.getProjectile().getItem());
+        AmmoContext context = Gun.findAmmo(player, this.gun.getProjectile().getItem());
+        ItemStack ammo = context.stack();
         if(!ammo.isEmpty())
         {
             int amount = Math.min(ammo.getCount(), this.gun.getGeneral().getReloadAmount());
@@ -90,6 +93,13 @@ public class ReloadTracker
                 tag.putInt("AmmoCount", tag.getInt("AmmoCount") + amount);
             }
             ammo.shrink(amount);
+
+            // Trigger that the container changed
+            Container container = context.container();
+            if(container != null)
+            {
+                container.setChanged();
+            }
         }
 
         ResourceLocation reloadSound = this.gun.getSounds().getReload();
