@@ -72,6 +72,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue cameraRollEffect;
         public final ForgeConfigSpec.DoubleValue cameraRollAngle;
         public final ForgeConfigSpec.BooleanValue sprintAnimation;
+        public final ForgeConfigSpec.DoubleValue bobbingIntensity;
 
         public Display(ForgeConfigSpec.Builder builder)
         {
@@ -86,6 +87,7 @@ public class Config
                 this.cameraRollEffect = builder.comment("If enabled, the camera will roll when strafing while holding a gun. This creates a more immersive feeling.").define("cameraRollEffect", true);
                 this.cameraRollAngle = builder.comment("When Camera Roll Effect is enabled, this is the absolute maximum angle the roll on the camera can approach.").defineInRange("cameraRollAngle", 1.5F, 0F, 45F);
                 this.sprintAnimation = builder.comment("Enables the sprinting animation on weapons for better immersion. This only applies to weapons that support a sprinting animation.").define("sprintingAnimation", true);
+                this.bobbingIntensity = builder.comment("The intensity of the custom bobbing animation while holding a gun").defineInRange("bobbingIntensity", 1.0, 0.0, 2.0);
             }
             builder.pop();
         }
