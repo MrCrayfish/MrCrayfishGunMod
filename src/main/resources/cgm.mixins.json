@@ -5,13 +5,13 @@
     "minVersion": "0.8",
     "refmap": "cgm.refmap.json",
     "mixins": [
-        "client.PlayerItemInHandLayerMixin",
-        "client.PlayerModelMixin",
         "common.EndPortalBlockMixin",
         "common.LivingEntityMixin",
         "common.SittingPhaseMixin"
     ],
     "client": [
+        "client.PlayerItemInHandLayerMixin",
+        "client.PlayerModelMixin",
         "client.GameRendererMixin",
         "client.LevelRendererMixin",
         "client.MouseHandlerMixin"
