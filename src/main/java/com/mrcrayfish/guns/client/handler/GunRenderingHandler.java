@@ -298,7 +298,7 @@ public class GunRenderingHandler
 
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
-        this.renderReloadArm(poseStack, event.getMultiBufferSource(), event.getPackedLight(), modifiedGun, heldItem, hand);
+        this.renderReloadArm(poseStack, event.getMultiBufferSource(), event.getPackedLight(), modifiedGun, heldItem, hand, translateX);
 
         // Values are based on vanilla translations for first person
         int offset = right ? 1 : -1;
@@ -690,7 +690,7 @@ public class GunRenderingHandler
         poseStack.popPose();
     }
 
-    private void renderReloadArm(PoseStack poseStack, MultiBufferSource buffer, int light, Gun modifiedGun, ItemStack stack, HumanoidArm hand)
+    private void renderReloadArm(PoseStack poseStack, MultiBufferSource buffer, int light, Gun modifiedGun, ItemStack stack, HumanoidArm hand, float translateX)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || mc.player.tickCount < ReloadHandler.get().getStartReloadTick() || ReloadHandler.get().getReloadTimer() != 5)
@@ -702,6 +702,9 @@ public class GunRenderingHandler
 
         poseStack.pushPose();
 
+        int side = hand.getOpposite() == HumanoidArm.RIGHT ? 1 : -1;
+        poseStack.translate(translateX * side, 0, 0);
+
         float interval = GunEnchantmentHelper.getReloadInterval(stack);
         float reload = ((mc.player.tickCount - ReloadHandler.get().getStartReloadTick() + mc.getFrameTime()) % interval) / interval;
         float percent = 1.0F - reload;
@@ -712,8 +715,7 @@ public class GunRenderingHandler
         percent *= 2F;
         percent = percent < 0.5 ? 2 * percent * percent : -1 + (4 - 2 * percent) * percent;
 
-        int side = hand.getOpposite() == HumanoidArm.RIGHT ? 1 : -1;
-        poseStack.translate(-2.75 * side * 0.0625, -0.5625, -0.5625);
+        poseStack.translate(3.5 * side * 0.0625, -0.5625, -0.5625);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
         poseStack.translate(0, -0.35 * (1.0 - percent), 0);
         poseStack.translate(side * 0.0625, 0, 0);
