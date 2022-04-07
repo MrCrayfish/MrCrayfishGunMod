@@ -119,7 +119,7 @@ public class GunGen extends GunProvider
 
         this.addGun(new ResourceLocation(Reference.MOD_ID, "machine_pistol"), Gun.Builder.create()
                 .setAuto(true)
-                .setFireRate(1)
+                .setFireRate(2)
                 .setGripType(GripType.ONE_HANDED)
                 .setMaxAmmo(80)
                 .setReloadAmount(20)
@@ -129,7 +129,7 @@ public class GunGen extends GunProvider
                 .setAlwaysSpread(true)
                 .setSpread(6.0F)
                 .setAmmo(ModItems.BASIC_BULLET.get())
-                .setDamage(1.5F)
+                .setDamage(3.0F)
                 .setProjectileSize(0.2F)
                 .setProjectileSpeed(10.0)
                 .setProjectileLife(20)
