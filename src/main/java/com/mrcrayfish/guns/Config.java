@@ -397,6 +397,7 @@ public class Config
         public final ForgeConfigSpec.DoubleValue gunShotMaxDistance;
         public final ForgeConfigSpec.DoubleValue reloadMaxDistance;
         public final ForgeConfigSpec.BooleanValue enableCameraRecoil;
+        public final ForgeConfigSpec.IntValue cooldownThreshold;
 
         public Server(ForgeConfigSpec.Builder builder)
         {
@@ -420,6 +421,7 @@ public class Config
                 builder.pop();
 
                 this.enableCameraRecoil = builder.comment("If true, enables camera recoil when firing a weapon").define("enableCameraRecoil", true);
+                this.cooldownThreshold = builder.comment("The maximum amount of cooldown time remaining before the server will accept another shoot packet from a client. This allows for a litle slack since the server may be lagging").defineInRange("cooldownThreshold", 0, 75, 1000);
             }
             builder.pop();
         }

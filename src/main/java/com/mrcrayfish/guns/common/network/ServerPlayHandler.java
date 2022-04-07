@@ -8,7 +8,6 @@ import com.mrcrayfish.guns.common.ShootTracker;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
-import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
@@ -25,20 +24,17 @@ import com.mrcrayfish.guns.network.message.MessageShoot;
 import com.mrcrayfish.guns.tileentity.WorkbenchTileEntity;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
-import com.mrcrayfish.guns.util.InventoryUtil;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.stats.Stats;
@@ -57,7 +53,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -93,7 +88,7 @@ public class ServerPlayHandler
                     player.rotationPitch = message.getRotationPitch();
 
                     ShootTracker tracker = ShootTracker.getShootTracker(player);
-                    if(tracker.hasCooldown(item))
+                    if(tracker.hasCooldown(item) && tracker.getRemaining(item) > Config.SERVER.cooldownThreshold.get())
                     {
                         GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
                         return;
