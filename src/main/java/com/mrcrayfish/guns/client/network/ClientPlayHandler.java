@@ -145,7 +145,7 @@ public class ClientPlayHandler
             double holeZ = message.getZ() + 0.005 * message.getFace().getZOffset();
             double distance = Math.sqrt(mc.player.getDistanceSq(message.getX(), message.getY(), message.getZ()));
             world.addParticle(new BulletHoleData(message.getFace(), message.getPos()), false, holeX, holeY, holeZ, 0, 0, 0);
-            if(distance < 16.0)
+            if(distance < Config.CLIENT.particle.impactParticleDistance.get())
             {
                 for(int i = 0; i < 4; i++)
                 {

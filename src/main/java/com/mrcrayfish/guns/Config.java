@@ -104,6 +104,7 @@ public class Config
         public final ForgeConfigSpec.IntValue bulletHoleLifeMax;
         public final ForgeConfigSpec.DoubleValue bulletHoleFadeThreshold;
         public final ForgeConfigSpec.BooleanValue enableBlood;
+        public final ForgeConfigSpec.DoubleValue impactParticleDistance;
 
         public Particle(ForgeConfigSpec.Builder builder)
         {
@@ -113,6 +114,7 @@ public class Config
                 this.bulletHoleLifeMax = builder.comment("The maximum duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLifeMax", 200, 0, Integer.MAX_VALUE);
                 this.bulletHoleFadeThreshold = builder.comment("The percentage of the maximum life that must pass before particles begin fading away. 0 makes the particles always fade and 1 removes facing completely").defineInRange("bulletHoleFadeThreshold", 0.98, 0, 1.0);
                 this.enableBlood = builder.comment("If true, blood will will spawn from entities that are hit from a projectile").define("enableBlood", false);
+                this.impactParticleDistance = builder.comment("The maximum distance impact particles can be seen from the player").defineInRange("impactParticleDistance", 32.0, 0.0, 64.0);
             }
             builder.pop();
         }
