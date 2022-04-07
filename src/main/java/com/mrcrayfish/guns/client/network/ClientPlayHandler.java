@@ -158,7 +158,7 @@ public class ClientPlayHandler
             }
             if(distance <= Config.CLIENT.sounds.impactSoundDistance.get())
             {
-                world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.75F, 2.0F, false);
+                world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 2.0F, 2.0F, false);
             }
         }
     }
