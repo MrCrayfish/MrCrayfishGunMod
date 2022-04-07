@@ -156,7 +156,7 @@ public class ClientPlayHandler
                     world.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), motion.x, motion.y, motion.z);
                 }
             }
-            if(distance < 32.0)
+            if(distance <= Config.CLIENT.sounds.impactSoundDistance.get())
             {
                 world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.75F, 2.0F, false);
             }
