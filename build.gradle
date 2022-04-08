@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.1.0-1.16.5"
+version = "1.2.0-1.16.5"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
