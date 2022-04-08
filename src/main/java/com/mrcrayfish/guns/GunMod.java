@@ -102,7 +102,7 @@ public class GunMod
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        event.enqueueWork(ClientHandler::setup);
+        ClientHandler.setup();
     }
 
     private void onGatherData(GatherDataEvent event)
