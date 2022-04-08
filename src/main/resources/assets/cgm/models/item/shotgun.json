@@ -381,7 +381,7 @@
 			"scale": [1.1, 1.1, 1.1]
 		},
 		"firstperson_righthand": {
-			"translation": [-3.5, 8.5, 0],
+			"translation": [-5.0, 8.5, 0],
 			"scale": [0.8, 0.8, 0.8]
 		},
 		"ground": {
