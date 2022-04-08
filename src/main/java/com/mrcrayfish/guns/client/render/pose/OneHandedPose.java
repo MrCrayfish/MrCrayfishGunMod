@@ -40,7 +40,7 @@ public class OneHandedPose implements IHeldAnimation
 
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player);
         float translateX = model.getTransforms().firstPersonRightHand.translation.x();
-        float translateZ = model.getTransforms().firstPersonRightHand.translation.x();
+        float translateZ = model.getTransforms().firstPersonRightHand.translation.z();
         int side = hand.getOpposite() == HandSide.RIGHT ? 1 : -1;
         matrixStack.translate(translateX * side, 0, -translateZ);
 
