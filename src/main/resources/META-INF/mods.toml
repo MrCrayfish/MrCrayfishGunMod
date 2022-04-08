@@ -4,7 +4,7 @@ license="GPL3"
 
 [[mods]]
 modId="cgm"
-version="1.2.0"
+version="1.2.1"
 displayName="MrCrayfish's Gun Mod"
 updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/cgm/update.json"
 displayURL="https://mrcrayfish.com/"
