@@ -337,6 +337,7 @@ public class GunRenderingHandler
         matrixStack.translate(0.56 * offset, -0.52, -0.72);
 
         /* Applies recoil and reload rotations */
+        this.applyAimingTransforms(matrixStack, translateX, translateY, translateZ, offset);
         this.applySwayTransforms(matrixStack, mc.player, translateX, translateY, translateZ, event.getPartialTicks());
         this.applySprintingTransforms(modifiedGun, hand, matrixStack, event.getPartialTicks());
         this.applyRecoilTransforms(matrixStack, heldItem, modifiedGun);
@@ -354,23 +355,28 @@ public class GunRenderingHandler
         matrixStack.pop();
     }
 
-    private void applySwayTransforms(MatrixStack matrixStack, ClientPlayerEntity player, float x, float y, float z, float partialTicks)
+    private void applyAimingTransforms(MatrixStack matrixStack, float x, float y, float z, int offset)
     {
-        matrixStack.translate(x, y, z);
-
         if(!Config.CLIENT.display.oldAnimations.get())
         {
+            matrixStack.translate(x * offset, y, z);
             matrixStack.translate(0, -0.25, 0.25);
             float aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
             aiming = (float) (1 - Math.cos((aiming * Math.PI) / 2.0));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(aiming * 10F));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(aiming * 10F * offset));
             matrixStack.rotate(Vector3f.XP.rotationDegrees(aiming * 5F));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(aiming * 5F));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(aiming * 5F * offset));
             matrixStack.translate(0, 0.25, -0.25);
+            matrixStack.translate(-x * offset, -y, -z);
         }
+    }
 
+    private void applySwayTransforms(MatrixStack matrixStack, ClientPlayerEntity player, float x, float y, float z, float partialTicks)
+    {
         if(Config.CLIENT.display.weaponSway.get() && player != null)
         {
+            matrixStack.translate(x, y, z);
+
             matrixStack.translate(0, -0.25, 0.25);
             matrixStack.rotate(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, this.prevFallSway, this.fallSway)));
             matrixStack.translate(0, 0.25, -0.25);
@@ -386,9 +392,9 @@ public class GunRenderingHandler
             float swayYaw = headYaw - armYaw;
             swayYaw *= 1.0 - 0.5 * AimingHandler.get().getNormalisedAdsProgress();
             matrixStack.rotate(Vector3f.YN.rotationDegrees(swayYaw * Config.CLIENT.display.swaySensitivity.get().floatValue()));
-        }
 
-        matrixStack.translate(-x, -y, -z);
+            matrixStack.translate(-x, -y, -z);
+        }
     }
 
     private void applySprintingTransforms(Gun modifiedGun, HandSide hand, MatrixStack matrixStack, float partialTicks)
