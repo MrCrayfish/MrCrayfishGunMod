@@ -372,6 +372,7 @@ public class GunRenderingHandler
 
             /* Slows down the bob by half */
             cameraYaw *= player.isSprinting() ? 8.0 : 4.0;
+            cameraYaw *= Config.CLIENT.display.bobbingIntensity.get();
 
             /* The new controlled bobbing */
             double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress() * this.sprintIntensity;
