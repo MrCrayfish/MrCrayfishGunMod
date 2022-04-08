@@ -392,13 +392,13 @@ public class GunRenderingHandler
             float headPitch = MathHelper.interpolateAngle(partialTicks, player.prevRotationPitch, player.rotationPitch);
             float swayPitch = headPitch - armPitch;
             swayPitch *= 1.0 - 0.5 * AimingHandler.get().getNormalisedAdsProgress();
-            matrixStack.rotate(Vector3f.XN.rotationDegrees(swayPitch * Config.CLIENT.display.swaySensitivity.get().floatValue()));
+            matrixStack.rotate(Config.CLIENT.display.swayType.get().getPitchRotation().rotationDegrees(swayPitch * Config.CLIENT.display.swaySensitivity.get().floatValue()));
 
             float armYaw = MathHelper.interpolateAngle(partialTicks, player.prevRenderArmYaw, player.renderArmYaw);
             float headYaw = MathHelper.interpolateAngle(partialTicks, player.prevRotationYawHead, player.rotationYawHead);
             float swayYaw = headYaw - armYaw;
             swayYaw *= 1.0 - 0.5 * AimingHandler.get().getNormalisedAdsProgress();
-            matrixStack.rotate(Vector3f.YN.rotationDegrees(swayYaw * Config.CLIENT.display.swaySensitivity.get().floatValue()));
+            matrixStack.rotate(Config.CLIENT.display.swayType.get().getYawRotation().rotationDegrees(swayYaw * Config.CLIENT.display.swaySensitivity.get().floatValue()));
 
             matrixStack.translate(-x, -y, -z);
         }
