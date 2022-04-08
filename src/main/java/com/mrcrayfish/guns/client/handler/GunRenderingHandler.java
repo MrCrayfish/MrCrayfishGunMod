@@ -196,29 +196,8 @@ public class GunRenderingHandler
     @SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
-        Minecraft mc = Minecraft.getInstance();
         MatrixStack matrixStack = event.getMatrixStack();
-        if(mc.gameSettings.viewBobbing && mc.getRenderViewEntity() instanceof PlayerEntity)
-        {
-            PlayerEntity playerentity = (PlayerEntity) mc.getRenderViewEntity();
-            float deltaDistanceWalked = playerentity.distanceWalkedModified - playerentity.prevDistanceWalkedModified;
-            float distanceWalked = -(playerentity.distanceWalkedModified + deltaDistanceWalked * event.getPartialTicks());
-            float cameraYaw = MathHelper.lerp(event.getPartialTicks(), playerentity.prevCameraYaw, playerentity.cameraYaw);
-
-            /* Reverses the original bobbing rotations and translations so it can be controlled */
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-(Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(-(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
-            matrixStack.translate((double) -(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
-
-            /* Slows down the bob by half */
-            cameraYaw *= 0.5;
-
-            /* The new controlled bobbing */
-            double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress();
-            matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
-        }
+        this.applyBobbingTransforms(matrixStack, event.getPartialTicks());
 
         boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? event.getHand() == Hand.MAIN_HAND : event.getHand() == Hand.OFF_HAND;
         ItemStack heldItem = event.getItemStack();
@@ -265,8 +244,8 @@ public class GunRenderingHandler
             }
         }
 
-        LivingEntity entity = Minecraft.getInstance().player;
-        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(overrideModel.isEmpty() ? heldItem : overrideModel, entity.world, entity);
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(overrideModel.isEmpty() ? heldItem : overrideModel, player.world, player);
         float scaleX = model.getItemCameraTransforms().firstperson_right.scale.getX();
         float scaleY = model.getItemCameraTransforms().firstperson_right.scale.getY();
         float scaleZ = model.getItemCameraTransforms().firstperson_right.scale.getZ();
@@ -323,10 +302,7 @@ public class GunRenderingHandler
         matrixStack.rotate(Vector3f.XP.rotationDegrees(equipProgress * -50F));
 
         HandSide hand = right ? HandSide.RIGHT : HandSide.LEFT;
-        Objects.requireNonNull(entity);
-        int blockLight = entity.isBurning() ? 15 : entity.world.getLightFor(LightType.BLOCK, new BlockPos(entity.getEyePosition(event.getPartialTicks())));
-        blockLight += (this.entityIdForMuzzleFlash.contains(entity.getEntityId()) ? 3 : 0);
-        int packedLight = LightTexture.packLight(blockLight, entity.world.getLightFor(LightType.SKY, new BlockPos(entity.getEyePosition(event.getPartialTicks()))));
+        Objects.requireNonNull(player);
 
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
@@ -338,7 +314,7 @@ public class GunRenderingHandler
 
         /* Applies recoil and reload rotations */
         this.applyAimingTransforms(matrixStack, translateX, translateY, translateZ, offset);
-        this.applySwayTransforms(matrixStack, mc.player, translateX, translateY, translateZ, event.getPartialTicks());
+        this.applySwayTransforms(matrixStack, player, translateX, translateY, translateZ, event.getPartialTicks());
         this.applySprintingTransforms(modifiedGun, hand, matrixStack, event.getPartialTicks());
         this.applyRecoilTransforms(matrixStack, heldItem, modifiedGun);
         this.applyReloadTransforms(matrixStack, event.getPartialTicks());
@@ -350,6 +326,9 @@ public class GunRenderingHandler
 
         /* Renders the weapon */
         ItemCameraTransforms.TransformType transformType = right ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
+        int blockLight = player.isBurning() ? 15 : player.world.getLightFor(LightType.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTicks())));
+        blockLight += (this.entityIdForMuzzleFlash.contains(player.getEntityId()) ? 3 : 0);
+        int packedLight = LightTexture.packLight(blockLight, player.world.getLightFor(LightType.SKY, new BlockPos(player.getEyePosition(event.getPartialTicks()))));
         this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
 
         matrixStack.pop();
@@ -368,6 +347,32 @@ public class GunRenderingHandler
             matrixStack.rotate(Vector3f.YP.rotationDegrees(aiming * 5F * offset));
             matrixStack.translate(0, 0.25, -0.25);
             matrixStack.translate(-x * offset, -y, -z);
+        }
+    }
+
+    private void applyBobbingTransforms(MatrixStack matrixStack, float partialTicks)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.gameSettings.viewBobbing && mc.getRenderViewEntity() instanceof PlayerEntity)
+        {
+            PlayerEntity playerentity = (PlayerEntity) mc.getRenderViewEntity();
+            float deltaDistanceWalked = playerentity.distanceWalkedModified - playerentity.prevDistanceWalkedModified;
+            float distanceWalked = -(playerentity.distanceWalkedModified + deltaDistanceWalked * partialTicks);
+            float cameraYaw = MathHelper.lerp(partialTicks, playerentity.prevCameraYaw, playerentity.cameraYaw);
+
+            /* Reverses the original bobbing rotations and translations so it can be controlled */
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-(Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(-(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
+            matrixStack.translate((double) -(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
+
+            /* Slows down the bob by half */
+            cameraYaw *= 0.5;
+
+            /* The new controlled bobbing */
+            double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress();
+            matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
         }
     }
 
