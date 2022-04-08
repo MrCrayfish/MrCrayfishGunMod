@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -54,8 +53,7 @@ public interface IHeldAnimation
     default void applyHeldItemTransforms(PlayerEntity player, Hand hand, float aimProgress, MatrixStack matrixStack, IRenderTypeBuffer buffer) {}
 
     /**
-     *
-     * @param player
+     *  @param player
      * @param hand
      * @param stack
      * @param matrixStack
@@ -63,7 +61,7 @@ public interface IHeldAnimation
      * @param light
      * @param partialTicks
      */
-    default void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks) {}
+    default void renderFirstPersonArms(PlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks) {}
 
     /**
      *

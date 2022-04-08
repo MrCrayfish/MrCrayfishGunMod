@@ -34,7 +34,7 @@ public class OneHandedPose implements IHeldAnimation
     }
 
     @Override
-    public void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
+    public void renderFirstPersonArms(PlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
     {
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
 
@@ -44,7 +44,8 @@ public class OneHandedPose implements IHeldAnimation
         int side = hand.getOpposite() == HandSide.RIGHT ? 1 : -1;
         matrixStack.translate(translateX * side, 0, -translateZ);
 
-        boolean slim = player.getModelName().equals("slim");
+        ClientPlayerEntity clientPlayer = (ClientPlayerEntity) player;
+        boolean slim = clientPlayer.getModelName().equals("slim");
         float armWidth = slim ? 3.0F : 4.0F;
 
         matrixStack.scale(0.5F, 0.5F, 0.5F);
@@ -54,7 +55,7 @@ public class OneHandedPose implements IHeldAnimation
         matrixStack.translate(0, 0.15, -1.3125);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(75F));
 
-        RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
+        RenderUtil.renderFirstPersonArm(clientPlayer, hand, matrixStack, buffer, light);
     }
 
     @Override

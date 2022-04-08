@@ -119,7 +119,7 @@ public class TwoHandedPose extends WeaponPose
     }
 
     @Override
-    public void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
+    public void renderFirstPersonArms(PlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
     {
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
 
@@ -128,7 +128,8 @@ public class TwoHandedPose extends WeaponPose
         int side = hand.getOpposite() == HandSide.RIGHT ? 1 : -1;
         matrixStack.translate(translateX * side, 0, 0);
 
-        boolean slim = player.getModelName().equals("slim");
+        ClientPlayerEntity clientPlayer = (ClientPlayerEntity) player;
+        boolean slim = clientPlayer.getModelName().equals("slim");
         float armWidth = slim ? 3.0F : 4.0F;
 
         // Front arm holding the barrel
@@ -147,7 +148,7 @@ public class TwoHandedPose extends WeaponPose
             matrixStack.mulPose(Vector3f.ZP.rotationDegrees(15F * -side));
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-35F));
 
-            RenderUtil.renderFirstPersonArm(player, hand.getOpposite(), matrixStack, buffer, light);
+            RenderUtil.renderFirstPersonArm(clientPlayer, hand.getOpposite(), matrixStack, buffer, light);
         }
         matrixStack.popPose();
 
@@ -160,7 +161,7 @@ public class TwoHandedPose extends WeaponPose
             matrixStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(80F));
 
-            RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
+            RenderUtil.renderFirstPersonArm(clientPlayer, hand, matrixStack, buffer, light);
         }
         matrixStack.popPose();
     }
