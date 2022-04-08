@@ -109,4 +109,13 @@ public interface IHeldAnimation
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
     }
+
+    /**
+     *
+     * @return
+     */
+    default double getFallSwayZOffset()
+    {
+        return 0.35;
+    }
 }
