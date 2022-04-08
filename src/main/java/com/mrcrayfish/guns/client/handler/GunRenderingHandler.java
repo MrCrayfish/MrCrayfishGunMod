@@ -978,7 +978,7 @@ public class GunRenderingHandler
         float deltaY = (float) MathHelper.clamp((mc.player.prevPosY - mc.player.getPosY()), -1.0, 1.0);
         deltaY *= 1.0 - AimingHandler.get().getNormalisedAdsProgress();
         deltaY *= 1.0 - (MathHelper.abs(mc.player.rotationPitch) / 90.0F);
-        this.fallSway = MathHelper.approach(this.fallSway, deltaY * 15F, 10.0F);
+        this.fallSway = MathHelper.approach(this.fallSway, deltaY * 60F * Config.CLIENT.display.swaySensitivity.get().floatValue(), 10.0F);
     }
 
     @SubscribeEvent
