@@ -111,11 +111,8 @@ public class ReloadHandler
                         Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
                         if(tag.getInt("AmmoCount") >= GunEnchantmentHelper.getAmmoCapacity(stack, gun))
                             return;
-                        if(Gun.findAmmo(player, gun.getProjectile().getItem()).getStack().isEmpty())
-                            return;
                         if(MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                             return;
-                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, true);
                         PacketHandler.getPlayChannel().sendToServer(new MessageReload(true));
                         this.reloadingSlot = player.inventory.selected;
                         MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack));
