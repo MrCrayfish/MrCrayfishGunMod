@@ -97,6 +97,7 @@ dependencies {
     compileOnly fg.deobf('curse.maven:controllable-317269:3519536')
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.152:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.152")
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 
 jar {
