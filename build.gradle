@@ -103,6 +103,7 @@ dependencies {
     compile fg.deobf('curse.maven:controllable-317269:3519536')
     compile fg.deobf('curse.maven:configured-457570:3546348')
     compile fg.deobf('curse.maven:catalogue-459701:3529457')
+    compile fg.deobf('curse.maven:backpacked-352835:3735958')
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.152:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.152")
 }

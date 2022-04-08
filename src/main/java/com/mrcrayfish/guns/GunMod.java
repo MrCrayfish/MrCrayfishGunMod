@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 public class GunMod
 {
     public static boolean controllableLoaded = false;
+    public static boolean backpackedLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
     public static final ItemGroup GROUP = new ItemGroup(Reference.MOD_ID)
     {
@@ -79,6 +80,7 @@ public class GunMod
         bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
         controllableLoaded = ModList.get().isLoaded("controllable");
+        backpackedLoaded = ModList.get().isLoaded("backpacked");
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)

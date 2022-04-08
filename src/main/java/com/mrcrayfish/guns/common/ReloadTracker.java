@@ -10,6 +10,7 @@ import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
@@ -22,6 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
 
 /**
@@ -68,7 +70,7 @@ public class ReloadTracker
 
     private boolean hasNoAmmo(PlayerEntity player)
     {
-        return Gun.findAmmo(player, this.gun.getProjectile().getItem()).isEmpty();
+        return Gun.findAmmo(player, this.gun.getProjectile().getItem()).getStack().isEmpty();
     }
 
     private boolean canReload(PlayerEntity player)
@@ -80,7 +82,8 @@ public class ReloadTracker
 
     private void increaseAmmo(PlayerEntity player)
     {
-        ItemStack ammo = Gun.findAmmo(player, this.gun.getProjectile().getItem());
+        AmmoContext context = Gun.findAmmo(player, this.gun.getProjectile().getItem());
+        ItemStack ammo = context.getStack();
         if(!ammo.isEmpty())
         {
             int amount = Math.min(ammo.getCount(), this.gun.getGeneral().getReloadAmount());
@@ -92,6 +95,13 @@ public class ReloadTracker
                 tag.putInt("AmmoCount", tag.getInt("AmmoCount") + amount);
             }
             ammo.shrink(amount);
+
+            // Trigger that the container changed
+            IInventory inventory = context.getInventory();
+            if(inventory != null)
+            {
+                inventory.markDirty();
+            }
         }
 
         ResourceLocation reloadSound = this.gun.getSounds().getReload();
