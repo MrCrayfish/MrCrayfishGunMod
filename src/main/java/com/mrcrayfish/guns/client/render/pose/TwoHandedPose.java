@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -120,44 +121,48 @@ public class TwoHandedPose extends WeaponPose
     @Override
     public void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
     {
-        matrixStack.translate(0, 0, -1);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
 
-        matrixStack.push();
-
-        float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
-        matrixStack.translate(reloadProgress * 0.5, -reloadProgress, -reloadProgress * 0.5);
-
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, player.world, player);
+        float translateX = model.getItemCameraTransforms().firstperson_right.translation.getX();
         int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
-        matrixStack.translate(6 * side * 0.0625, -0.585, -0.5);
+        matrixStack.translate(translateX * side, 0, 0);
 
-        if(Minecraft.getInstance().player.getSkinType().equals("slim") && hand.opposite() == HandSide.LEFT)
+        boolean slim = player.getSkinType().equals("slim");
+        float armWidth = slim ? 3.0F : 4.0F;
+
+        // Front arm holding the barrel
+        matrixStack.push();
         {
-            matrixStack.translate(0.03125F * -side, 0, 0);
+            float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
+            matrixStack.translate(reloadProgress * 0.5, -reloadProgress, -reloadProgress * 0.5);
+
+            matrixStack.scale(0.5F, 0.5F, 0.5F);
+            matrixStack.translate(4.0 * 0.0625 * side, 0, 0);
+            matrixStack.translate((armWidth / 2.0) * 0.0625 * side, 0, 0);
+            matrixStack.translate(-0.3125 * side, -0.1, -0.4375);
+
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(15F * -side));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(15F * -side));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-35F));
+
+            RenderUtil.renderFirstPersonArm(player, hand.opposite(), matrixStack, buffer, light);
         }
-
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(15F * -side));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(15F * -side));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(-35F));
-        matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-        RenderUtil.renderFirstPersonArm(player, hand.opposite(), matrixStack, buffer, light);
-
         matrixStack.pop();
 
-        double centerOffset = 2.5;
-        if(Minecraft.getInstance().player.getSkinType().equals("slim"))
+        // Back arm holding the handle
+        matrixStack.push();
         {
-            centerOffset += hand == HandSide.RIGHT ? 0.2 : 0.8;
+            matrixStack.translate(0, 0.1, -0.675);
+            matrixStack.scale(0.5F, 0.5F, 0.5F);
+            matrixStack.translate(-4.0 * 0.0625 * side, 0, 0);
+            matrixStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
+
+            RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
         }
-        centerOffset = hand == HandSide.RIGHT ? -centerOffset : centerOffset;
-        matrixStack.translate(centerOffset * 0.0625, -0.4, -0.975);
-
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
-        matrixStack.scale(0.5F, 0.5F, 0.5F);
-
-        RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
+        matrixStack.pop();
     }
 
     @Override

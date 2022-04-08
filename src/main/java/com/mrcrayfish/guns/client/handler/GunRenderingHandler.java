@@ -344,7 +344,6 @@ public class GunRenderingHandler
 
         /* Renders the first persons arms from the grip type of the weapon */
         matrixStack.push();
-        matrixStack.translate(-0.56 * offset, 0.52, 0.72);
         modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, matrixStack, event.getBuffers(), event.getLight(), event.getPartialTicks());
         matrixStack.pop();
 
