@@ -119,7 +119,7 @@ public class TwoHandedPose extends WeaponPose
     }
 
     @Override
-    public void renderFirstPersonArms(LocalPlayer player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks)
+    public void renderFirstPersonArms(Player player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks)
     {
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
 
@@ -147,7 +147,7 @@ public class TwoHandedPose extends WeaponPose
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(15F * -side));
             poseStack.mulPose(Vector3f.XP.rotationDegrees(-35F));
 
-            RenderUtil.renderFirstPersonArm(player, hand.getOpposite(), poseStack, buffer, light);
+            RenderUtil.renderFirstPersonArm((LocalPlayer) player, hand.getOpposite(), poseStack, buffer, light);
         }
         poseStack.popPose();
 
@@ -160,7 +160,7 @@ public class TwoHandedPose extends WeaponPose
             poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
             poseStack.mulPose(Vector3f.XP.rotationDegrees(80F));
 
-            RenderUtil.renderFirstPersonArm(player, hand, poseStack, buffer, light);
+            RenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
         }
         poseStack.popPose();
     }

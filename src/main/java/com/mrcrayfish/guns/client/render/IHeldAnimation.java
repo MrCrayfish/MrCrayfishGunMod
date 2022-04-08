@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -54,8 +53,7 @@ public interface IHeldAnimation
     default void applyHeldItemTransforms(Player player, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer) {}
 
     /**
-     *
-     * @param player
+     *  @param player
      * @param hand
      * @param stack
      * @param poseStack
@@ -63,7 +61,7 @@ public interface IHeldAnimation
      * @param light
      * @param partialTicks
      */
-    default void renderFirstPersonArms(LocalPlayer player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks) {}
+    default void renderFirstPersonArms(Player player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks) {}
 
     /**
      *
