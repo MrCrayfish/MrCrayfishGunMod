@@ -13,7 +13,7 @@ public class InventoryUtil
     public static int getItemStackAmount(PlayerEntity player, ItemStack find)
     {
         int count = 0;
-        for(ItemStack stack : player.inventory.mainInventory)
+        for(ItemStack stack : player.inventory.items)
         {
             if(!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find))
             {
@@ -26,9 +26,9 @@ public class InventoryUtil
     public static boolean removeItemStack(PlayerEntity player, ItemStack find)
     {
         int amount = find.getCount();
-        for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+        for(int i = 0; i < player.inventory.getContainerSize(); i++)
         {
-            ItemStack stack = player.inventory.getStackInSlot(i);
+            ItemStack stack = player.inventory.getItem(i);
             if(!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find))
             {
                 if(amount - stack.getCount() < 0)
@@ -39,7 +39,7 @@ public class InventoryUtil
                 else
                 {
                     amount -= stack.getCount();
-                    player.inventory.mainInventory.set(i, ItemStack.EMPTY);
+                    player.inventory.items.set(i, ItemStack.EMPTY);
                     if(amount == 0)
                     {
                         return true;
@@ -56,7 +56,7 @@ public class InventoryUtil
         {
             return false;
         }
-        else if(source.getDamage() != target.getDamage())
+        else if(source.getDamageValue() != target.getDamageValue())
         {
             return false;
         }
@@ -73,7 +73,7 @@ public class InventoryUtil
     public static boolean hasWorkstationIngredient(PlayerEntity player, WorkbenchIngredient find)
     {
         int count = 0;
-        for(ItemStack stack : player.inventory.mainInventory)
+        for(ItemStack stack : player.inventory.items)
         {
             if(!stack.isEmpty() && find.test(stack))
             {
@@ -86,9 +86,9 @@ public class InventoryUtil
     public static boolean removeWorkstationIngredient(PlayerEntity player, WorkbenchIngredient find)
     {
         int amount = find.getCount();
-        for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+        for(int i = 0; i < player.inventory.getContainerSize(); i++)
         {
-            ItemStack stack = player.inventory.getStackInSlot(i);
+            ItemStack stack = player.inventory.getItem(i);
             if(!stack.isEmpty() && find.test(stack))
             {
                 if(amount - stack.getCount() < 0)
@@ -99,7 +99,7 @@ public class InventoryUtil
                 else
                 {
                     amount -= stack.getCount();
-                    player.inventory.mainInventory.set(i, ItemStack.EMPTY);
+                    player.inventory.items.set(i, ItemStack.EMPTY);
                     if(amount == 0) return true;
                 }
             }

@@ -41,13 +41,13 @@ public class BoundingBoxManager
             double scale = 30.0 / 32.0;
             if(entity.isSwimming())
             {
-                headBox = headBox.offset(0, 3 * 0.0625, 0);
-                Vector3d pos = Vector3d.fromPitchYaw(entity.rotationPitch, entity.renderYawOffset).normalize().scale(0.8);
-                headBox = headBox.offset(pos);
+                headBox = headBox.move(0, 3 * 0.0625, 0);
+                Vector3d pos = Vector3d.directionFromRotation(entity.xRot, entity.yBodyRot).normalize().scale(0.8);
+                headBox = headBox.move(pos);
             }
             else
             {
-                headBox = headBox.offset(0, entity.isSneaking() ? 20 * 0.0625 : 24 * 0.0625, 0);
+                headBox = headBox.move(0, entity.isShiftKeyDown() ? 20 * 0.0625 : 24 * 0.0625, 0);
             }
             return new AxisAlignedBB(headBox.minX * scale, headBox.minY * scale, headBox.minZ * scale, headBox.maxX * scale, headBox.maxY * scale, headBox.maxZ * scale);
         });

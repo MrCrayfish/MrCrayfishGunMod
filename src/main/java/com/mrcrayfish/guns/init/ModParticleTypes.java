@@ -20,7 +20,7 @@ public class ModParticleTypes
     public static final RegistryObject<ParticleType<BulletHoleData>> BULLET_HOLE = REGISTER.register("bullet_hole",() -> new ParticleType<BulletHoleData>(false, BulletHoleData.DESERIALIZER)
     {
         @Override
-        public Codec<BulletHoleData> func_230522_e_()
+        public Codec<BulletHoleData> codec()
         {
             return BulletHoleData.CODEC;
         }
@@ -29,7 +29,7 @@ public class ModParticleTypes
     public static final RegistryObject<ParticleType<TrailData>> TRAIL = REGISTER.register("trail", () -> new ParticleType<TrailData>(false, TrailData.DESERIALIZER)
     {
         @Override
-        public Codec<TrailData> func_230522_e_()
+        public Codec<TrailData> codec()
         {
             return TrailData.CODEC;
         }

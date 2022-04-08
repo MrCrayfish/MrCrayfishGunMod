@@ -37,7 +37,7 @@ public class MessageProjectileHitBlock implements IMessage
         buffer.writeDouble(this.y);
         buffer.writeDouble(this.z);
         buffer.writeBlockPos(this.pos);
-        buffer.writeEnumValue(this.face);
+        buffer.writeEnum(this.face);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MessageProjectileHitBlock implements IMessage
         this.y = buffer.readDouble();
         this.z = buffer.readDouble();
         this.pos = buffer.readBlockPos();
-        this.face = buffer.readEnumValue(Direction.class);
+        this.face = buffer.readEnum(Direction.class);
     }
 
     @Override

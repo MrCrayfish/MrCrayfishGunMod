@@ -7,6 +7,8 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * A basic stock attachment item implementation with color support
  *

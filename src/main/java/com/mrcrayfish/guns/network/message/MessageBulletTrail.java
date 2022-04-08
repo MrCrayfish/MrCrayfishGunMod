@@ -41,9 +41,9 @@ public class MessageBulletTrail implements IMessage
         for(int i = 0; i < spawnedProjectiles.length; i++)
         {
             ProjectileEntity projectile = spawnedProjectiles[i];
-            this.positions[i] = projectile.getPositionVec();
-            this.motions[i] = projectile.getMotion();
-            this.entityIds[i] = projectile.getEntityId();
+            this.positions[i] = projectile.position();
+            this.motions[i] = projectile.getDeltaMovement();
+            this.entityIds[i] = projectile.getId();
         }
         this.item = spawnedProjectiles[0].getItem();
         this.enchanted = spawnedProjectiles[0].getWeapon().isEnchanted();
@@ -73,7 +73,7 @@ public class MessageBulletTrail implements IMessage
             buffer.writeDouble(motion.y);
             buffer.writeDouble(motion.z);
         }
-        buffer.writeItemStack(this.item);
+        buffer.writeItem(this.item);
         buffer.writeVarInt(this.trailColor);
         buffer.writeDouble(this.trailLengthMultiplier);
         buffer.writeInt(this.life);
@@ -81,7 +81,7 @@ public class MessageBulletTrail implements IMessage
         buffer.writeInt(this.shooterId);
         buffer.writeBoolean(this.enchanted);
         buffer.writeInt(Registry.PARTICLE_TYPE.getId(this.particleData.getType()));
-        this.particleData.write(buffer);
+        this.particleData.writeToNetwork(buffer);
     }
 
     @Override
@@ -97,14 +97,14 @@ public class MessageBulletTrail implements IMessage
             this.positions[i] = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
             this.motions[i] = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
         }
-        this.item = buffer.readItemStack();
+        this.item = buffer.readItem();
         this.trailColor = buffer.readVarInt();
         this.trailLengthMultiplier = buffer.readDouble();
         this.life = buffer.readInt();
         this.gravity = buffer.readDouble();
         this.shooterId = buffer.readInt();
         this.enchanted = buffer.readBoolean();
-        ParticleType<?> type = Registry.PARTICLE_TYPE.getByValue(buffer.readInt());
+        ParticleType<?> type = Registry.PARTICLE_TYPE.byId(buffer.readInt());
         if (type == null) {
             type = ParticleTypes.BARRIER;
         }
@@ -113,7 +113,7 @@ public class MessageBulletTrail implements IMessage
 
     private <T extends IParticleData> T readParticle(PacketBuffer buffer, ParticleType<T> type)
     {
-        return type.getDeserializer().read(type, buffer);
+        return type.getDeserializer().fromNetwork(type, buffer);
     }
 
     @Override

@@ -24,14 +24,14 @@ public class TrailData implements IParticleData
     public static final IParticleData.IDeserializer<TrailData> DESERIALIZER = new IParticleData.IDeserializer<TrailData>()
     {
         @Override
-        public TrailData deserialize(ParticleType<TrailData> particleType, StringReader reader) throws CommandSyntaxException
+        public TrailData fromCommand(ParticleType<TrailData> particleType, StringReader reader) throws CommandSyntaxException
         {
             reader.expect(' ');
             return new TrailData(reader.readBoolean());
         }
 
         @Override
-        public TrailData read(ParticleType<TrailData> particleType, PacketBuffer buffer)
+        public TrailData fromNetwork(ParticleType<TrailData> particleType, PacketBuffer buffer)
         {
             return new TrailData(buffer.readBoolean());
         }
@@ -56,13 +56,13 @@ public class TrailData implements IParticleData
     }
 
     @Override
-    public void write(PacketBuffer buffer)
+    public void writeToNetwork(PacketBuffer buffer)
     {
         buffer.writeBoolean(this.enchanted);
     }
 
     @Override
-    public String getParameters()
+    public String writeToString()
     {
         return ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()) + " " + this.enchanted;
     }

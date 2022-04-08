@@ -51,7 +51,7 @@ public class MessageReload implements IMessage
                 if(!this.reload)
                     return;
 
-                ItemStack gun = player.getHeldItemMainhand();
+                ItemStack gun = player.getMainHandItem();
                 if(MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun)))
                 {
                     SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);

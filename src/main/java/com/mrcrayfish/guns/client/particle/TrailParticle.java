@@ -20,11 +20,11 @@ public class TrailParticle extends RisingParticle
     protected TrailParticle(ClientWorld world, double x, double y, double z, float scale, float red, float green, float blue, IAnimatedSprite spriteWithAge)
     {
         super(world, x, y, z, 0.0F, 0.0F, 0.0F, 0.0, 0.0, 0.0, scale, spriteWithAge, 0.2F, 0, 0.0D, false);
-        this.maxAge = 4;
-        this.particleRed = red;
-        this.particleGreen = green;
-        this.particleBlue = blue;
-        this.particleAlpha = 0.25F;
+        this.lifetime = 4;
+        this.rCol = red;
+        this.gCol = green;
+        this.bCol = blue;
+        this.alpha = 0.25F;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -39,7 +39,7 @@ public class TrailParticle extends RisingParticle
 
         @Nullable
         @Override
-        public Particle makeParticle(TrailData data, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        public Particle createParticle(TrailData data, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
         {
             float red = data.isEnchanted() ? 0.611F : 0.5F;
             float green = data.isEnchanted() ? 0.443F : 0.5F;

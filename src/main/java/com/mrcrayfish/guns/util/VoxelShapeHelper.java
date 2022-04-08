@@ -17,9 +17,9 @@ public class VoxelShapeHelper
         VoxelShape result = VoxelShapes.empty();
         for(VoxelShape shape : shapes)
         {
-            result = VoxelShapes.combine(result, shape, IBooleanFunction.OR);
+            result = VoxelShapes.joinUnoptimized(result, shape, IBooleanFunction.OR);
         }
-        return result.simplify();
+        return result.optimize();
     }
 
     public static VoxelShape[] getRotatedShapes(VoxelShape source)
@@ -33,8 +33,8 @@ public class VoxelShapeHelper
 
     public static VoxelShape rotate(VoxelShape source, Direction direction)
     {
-        double[] adjustedValues = adjustValues(direction, source.getStart(Direction.Axis.X), source.getStart(Direction.Axis.Z), source.getEnd(Direction.Axis.X), source.getEnd(Direction.Axis.Z));
-        return VoxelShapes.create(adjustedValues[0], source.getStart(Direction.Axis.Y), adjustedValues[1], adjustedValues[2], source.getEnd(Direction.Axis.Y), adjustedValues[3]);
+        double[] adjustedValues = adjustValues(direction, source.min(Direction.Axis.X), source.min(Direction.Axis.Z), source.max(Direction.Axis.X), source.max(Direction.Axis.Z));
+        return VoxelShapes.box(adjustedValues[0], source.min(Direction.Axis.Y), adjustedValues[1], adjustedValues[2], source.max(Direction.Axis.Y), adjustedValues[3]);
     }
 
     private static double[] adjustValues(Direction direction, double var1, double var2, double var3, double var4)

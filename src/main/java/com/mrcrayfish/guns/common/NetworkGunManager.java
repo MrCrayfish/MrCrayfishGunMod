@@ -66,7 +66,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
             ResourceLocation id = item.getRegistryName();
             if(id != null)
             {
-                List<ResourceLocation> resources = new ArrayList<>(manager.getAllResourceLocations("guns", (fileName) -> fileName.endsWith(id.getPath() + ".json")));
+                List<ResourceLocation> resources = new ArrayList<>(manager.listResources("guns", (fileName) -> fileName.endsWith(id.getPath() + ".json")));
                 resources.sort((r1, r2) -> {
                     if(r1.getNamespace().equals(r2.getNamespace())) return 0;
                     return r2.getNamespace().equals(Reference.MOD_ID) ? 1 : -1;
@@ -134,7 +134,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
         buffer.writeVarInt(this.registeredGuns.size());
         this.registeredGuns.forEach((id, gun) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeCompoundTag(gun.serializeNBT());
+            buffer.writeNbt(gun.serializeNBT());
         });
 }
 
@@ -153,7 +153,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
             for(int i = 0; i < size; i++)
             {
                 ResourceLocation id = buffer.readResourceLocation();
-                Gun gun = Gun.create(buffer.readCompoundTag());
+                Gun gun = Gun.create(buffer.readNbt());
                 builder.put(id, gun);
             }
             return builder.build();

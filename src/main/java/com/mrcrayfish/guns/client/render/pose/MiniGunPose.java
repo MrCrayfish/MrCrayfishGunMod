@@ -55,15 +55,15 @@ public class MiniGunPose extends WeaponPose
     {
         if(Config.CLIENT.display.oldAnimations.get())
         {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
-            ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
-            mainArm.rotateAngleX = (float) Math.toRadians(-15F);
-            mainArm.rotateAngleY = (float) Math.toRadians(-45F) * (right ? 1F : -1F);
-            mainArm.rotateAngleZ = (float) Math.toRadians(0F);
-            secondaryArm.rotateAngleX = (float) Math.toRadians(-45F);
-            secondaryArm.rotateAngleY = (float) Math.toRadians(30F) * (right ? 1F : -1F);
-            secondaryArm.rotateAngleZ = (float) Math.toRadians(0F);
+            boolean right = Minecraft.getInstance().options.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+            ModelRenderer mainArm = right ? model.rightArm : model.leftArm;
+            ModelRenderer secondaryArm = right ? model.leftArm : model.rightArm;
+            mainArm.xRot = (float) Math.toRadians(-15F);
+            mainArm.yRot = (float) Math.toRadians(-45F) * (right ? 1F : -1F);
+            mainArm.zRot = (float) Math.toRadians(0F);
+            secondaryArm.xRot = (float) Math.toRadians(-45F);
+            secondaryArm.yRot = (float) Math.toRadians(30F) * (right ? 1F : -1F);
+            secondaryArm.zRot = (float) Math.toRadians(0F);
         }
         else
         {
@@ -76,9 +76,9 @@ public class MiniGunPose extends WeaponPose
     {
         if(Config.CLIENT.display.oldAnimations.get())
         {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            player.prevRenderYawOffset = player.prevRotationYaw + 45F * (right ? 1F : -1F);
-            player.renderYawOffset = player.rotationYaw + 45F * (right ? 1F : -1F);
+            boolean right = Minecraft.getInstance().options.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+            player.yBodyRotO = player.yRotO + 45F * (right ? 1F : -1F);
+            player.yBodyRot = player.yRot + 45F * (right ? 1F : -1F);
         }
         else
         {

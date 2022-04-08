@@ -19,10 +19,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EndPortalBlock.class)
 public class EndPortalBlockMixin
 {
-    @Inject(method = "onEntityCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/world/server/ServerWorld;)Lnet/minecraft/entity/Entity;"))
+    @Inject(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/world/server/ServerWorld;)Lnet/minecraft/entity/Entity;"))
     private void beforeChangeDimension(BlockState state, World worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci)
     {
-        if(worldIn.getDimensionKey() == World.THE_END && entityIn instanceof ItemEntity)
+        if(worldIn.dimension() == World.END && entityIn instanceof ItemEntity)
         {
             ItemStack stack = ((ItemEntity) entityIn).getItem();
             if(stack.getItem() instanceof GunItem)

@@ -22,10 +22,10 @@ import java.util.Optional;
 public class WorkbenchRecipeSerializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<WorkbenchRecipe>
 {
     @Override
-    public WorkbenchRecipe read(ResourceLocation recipeId, JsonObject parent)
+    public WorkbenchRecipe fromJson(ResourceLocation recipeId, JsonObject parent)
     {
         ImmutableList.Builder<WorkbenchIngredient> builder = ImmutableList.builder();
-        JsonArray input = JSONUtils.getJsonArray(parent, "materials");
+        JsonArray input = JSONUtils.getAsJsonArray(parent, "materials");
         for(int i = 0; i < input.size(); i++)
         {
             JsonObject object = input.get(i).getAsJsonObject();
@@ -35,33 +35,33 @@ public class WorkbenchRecipeSerializer extends net.minecraftforge.registries.For
         {
             throw new JsonSyntaxException("Missing result item entry");
         }
-        JsonObject resultObject = JSONUtils.getJsonObject(parent, "result");
-        ItemStack resultItem = ShapedRecipe.deserializeItem(resultObject);
+        JsonObject resultObject = JSONUtils.getAsJsonObject(parent, "result");
+        ItemStack resultItem = ShapedRecipe.itemFromJson(resultObject);
         return new WorkbenchRecipe(recipeId, resultItem, builder.build());
     }
 
     @Nullable
     @Override
-    public WorkbenchRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+    public WorkbenchRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
     {
-        ItemStack result = buffer.readItemStack();
+        ItemStack result = buffer.readItem();
         ImmutableList.Builder<WorkbenchIngredient> builder = ImmutableList.builder();
         int size = buffer.readVarInt();
         for(int i = 0; i < size; i++)
         {
-            builder.add((WorkbenchIngredient) Ingredient.read(buffer));
+            builder.add((WorkbenchIngredient) Ingredient.fromNetwork(buffer));
         }
         return new WorkbenchRecipe(recipeId, result, builder.build());
     }
 
     @Override
-    public void write(PacketBuffer buffer, WorkbenchRecipe recipe)
+    public void toNetwork(PacketBuffer buffer, WorkbenchRecipe recipe)
     {
-        buffer.writeItemStack(recipe.getItem());
+        buffer.writeItem(recipe.getItem());
         buffer.writeVarInt(recipe.getMaterials().size());
         for(WorkbenchIngredient ingredient : recipe.getMaterials())
         {
-            ingredient.write(buffer);
+            ingredient.toNetwork(buffer);
         }
     }
 }

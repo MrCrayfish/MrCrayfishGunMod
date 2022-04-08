@@ -44,7 +44,7 @@ public abstract class GunProvider implements IDataProvider
     }
 
     @Override
-    public void act(DirectoryCache cache)
+    public void run(DirectoryCache cache)
     {
         this.gunMap.clear();
         this.registerGuns();
@@ -55,8 +55,8 @@ public abstract class GunProvider implements IDataProvider
             {
                 JsonObject object = gun.toJsonObject();
                 String rawJson = GSON.toJson(object);
-                String hash = HASH_FUNCTION.hashUnencodedChars(rawJson).toString();
-                if(!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path))
+                String hash = SHA1.hashUnencodedChars(rawJson).toString();
+                if(!Objects.equals(cache.getHash(path), hash) || !Files.exists(path))
                 {
                     Files.createDirectories(path.getParent());
                     try(BufferedWriter writer = Files.newBufferedWriter(path))
@@ -64,7 +64,7 @@ public abstract class GunProvider implements IDataProvider
                         writer.write(rawJson);
                     }
                 }
-                cache.recordHash(path, hash);
+                cache.putNew(path, hash);
             }
             catch(IOException e)
             {

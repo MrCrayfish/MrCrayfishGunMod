@@ -58,25 +58,25 @@ public class TwoHandedPose extends WeaponPose
         if(Config.CLIENT.display.oldAnimations.get())
         {
             Minecraft mc = Minecraft.getInstance();
-            boolean right = mc.gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            ModelRenderer mainArm = right ? model.bipedRightArm : model.bipedLeftArm;
-            ModelRenderer secondaryArm = right ? model.bipedLeftArm : model.bipedRightArm;
-            mainArm.rotateAngleX = model.bipedHead.rotateAngleX;
-            mainArm.rotateAngleY = model.bipedHead.rotateAngleY;
-            mainArm.rotateAngleZ = model.bipedHead.rotateAngleZ;
-            secondaryArm.rotateAngleX = model.bipedHead.rotateAngleX;
-            secondaryArm.rotateAngleY = model.bipedHead.rotateAngleY;
-            secondaryArm.rotateAngleZ = model.bipedHead.rotateAngleZ;
-            mainArm.rotateAngleX = (float) Math.toRadians(-55F + aimProgress * -30F);
-            mainArm.rotateAngleY = (float) Math.toRadians((-45F + aimProgress * -20F) * (right ? 1F : -1F));
-            secondaryArm.rotateAngleX = (float) Math.toRadians(-42F + aimProgress * -48F);
-            secondaryArm.rotateAngleY = (float) Math.toRadians((-15F + aimProgress * 5F) * (right ? 1F : -1F));
+            boolean right = mc.options.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+            ModelRenderer mainArm = right ? model.rightArm : model.leftArm;
+            ModelRenderer secondaryArm = right ? model.leftArm : model.rightArm;
+            mainArm.xRot = model.head.xRot;
+            mainArm.yRot = model.head.yRot;
+            mainArm.zRot = model.head.zRot;
+            secondaryArm.xRot = model.head.xRot;
+            secondaryArm.yRot = model.head.yRot;
+            secondaryArm.zRot = model.head.zRot;
+            mainArm.xRot = (float) Math.toRadians(-55F + aimProgress * -30F);
+            mainArm.yRot = (float) Math.toRadians((-45F + aimProgress * -20F) * (right ? 1F : -1F));
+            secondaryArm.xRot = (float) Math.toRadians(-42F + aimProgress * -48F);
+            secondaryArm.yRot = (float) Math.toRadians((-15F + aimProgress * 5F) * (right ? 1F : -1F));
         }
         else
         {
             super.applyPlayerModelRotation(player, model, hand, aimProgress);
             float angle = this.getPlayerPitch(player);
-            model.bipedHead.rotateAngleX = (float) Math.toRadians(angle > 0.0 ? angle * 70F : angle * 90F);
+            model.head.xRot = (float) Math.toRadians(angle > 0.0 ? angle * 70F : angle * 90F);
         }
     }
 
@@ -86,9 +86,9 @@ public class TwoHandedPose extends WeaponPose
     {
         if(Config.CLIENT.display.oldAnimations.get())
         {
-            boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-            player.prevRenderYawOffset = player.prevRotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
-            player.renderYawOffset = player.rotationYaw + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
+            boolean right = Minecraft.getInstance().options.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+            player.yBodyRotO = player.yRotO + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
+            player.yBodyRot = player.yRot + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
         }
         else
         {
@@ -104,12 +104,12 @@ public class TwoHandedPose extends WeaponPose
         {
             if(hand == Hand.MAIN_HAND)
             {
-                boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+                boolean right = Minecraft.getInstance().options.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
                 matrixStack.translate(0, 0, 0.05);
                 float invertRealProgress = 1.0F - aimProgress;
-                matrixStack.rotate(Vector3f.ZP.rotationDegrees((25F * invertRealProgress) * (right ? 1F : -1F)));
-                matrixStack.rotate(Vector3f.YP.rotationDegrees((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
-                matrixStack.rotate(Vector3f.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
+                matrixStack.mulPose(Vector3f.ZP.rotationDegrees((25F * invertRealProgress) * (right ? 1F : -1F)));
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
+                matrixStack.mulPose(Vector3f.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
             }
         }
         else
@@ -121,18 +121,18 @@ public class TwoHandedPose extends WeaponPose
     @Override
     public void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
     {
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
 
-        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, player.world, player);
-        float translateX = model.getItemCameraTransforms().firstperson_right.translation.getX();
-        int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player);
+        float translateX = model.getTransforms().firstPersonRightHand.translation.x();
+        int side = hand.getOpposite() == HandSide.RIGHT ? 1 : -1;
         matrixStack.translate(translateX * side, 0, 0);
 
-        boolean slim = player.getSkinType().equals("slim");
+        boolean slim = player.getModelName().equals("slim");
         float armWidth = slim ? 3.0F : 4.0F;
 
         // Front arm holding the barrel
-        matrixStack.push();
+        matrixStack.pushPose();
         {
             float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
             matrixStack.translate(reloadProgress * 0.5, -reloadProgress, -reloadProgress * 0.5);
@@ -142,27 +142,27 @@ public class TwoHandedPose extends WeaponPose
             matrixStack.translate((armWidth / 2.0) * 0.0625 * side, 0, 0);
             matrixStack.translate(-0.3125 * side, -0.1, -0.4375);
 
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(15F * -side));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(15F * -side));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-35F));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(80F));
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(15F * -side));
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(15F * -side));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-35F));
 
-            RenderUtil.renderFirstPersonArm(player, hand.opposite(), matrixStack, buffer, light);
+            RenderUtil.renderFirstPersonArm(player, hand.getOpposite(), matrixStack, buffer, light);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
 
         // Back arm holding the handle
-        matrixStack.push();
+        matrixStack.pushPose();
         {
             matrixStack.translate(0, 0.1, -0.675);
             matrixStack.scale(0.5F, 0.5F, 0.5F);
             matrixStack.translate(-4.0 * 0.0625 * side, 0, 0);
             matrixStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(80F));
 
             RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override

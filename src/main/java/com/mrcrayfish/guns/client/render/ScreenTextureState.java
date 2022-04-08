@@ -71,25 +71,25 @@ public class ScreenTextureState extends RenderState.TexturingState
         if(OptifineHelper.isShadersEnabled())
             return;
 
-        MainWindow mainWindow = Minecraft.getInstance().getMainWindow();
+        MainWindow mainWindow = Minecraft.getInstance().getWindow();
 
         // OpenGL will spit out an error (GL_INVALID_VALUE) if the window is minimised (or draw calls stop)
         // It seems just testing the width or height if it's zero is enough to prevent it
-        if(mainWindow.getWidth() <= 0 || mainWindow.getHeight() <= 0)
+        if(mainWindow.getScreenWidth() <= 0 || mainWindow.getScreenHeight() <= 0)
             return;
 
         RenderSystem.bindTexture(this.getTextureId());
-        if(mainWindow.getWidth() != this.lastWindowWidth || mainWindow.getHeight() != this.lastWindowHeight)
+        if(mainWindow.getScreenWidth() != this.lastWindowWidth || mainWindow.getScreenHeight() != this.lastWindowHeight)
         {
             // When window resizes the texture needs to be re-initialized and copied, so both are done in the same call
-            this.lastWindowWidth = mainWindow.getWidth();
-            this.lastWindowHeight = mainWindow.getHeight();
-            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, mainWindow.getFramebufferWidth(), mainWindow.getFramebufferHeight(), 0);
+            this.lastWindowWidth = mainWindow.getScreenWidth();
+            this.lastWindowHeight = mainWindow.getScreenHeight();
+            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, mainWindow.getWidth(), mainWindow.getHeight(), 0);
         }
         else
         {
             // Copy sub-image is faster than copy because the texture does not need to be initialized
-            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, mainWindow.getFramebufferWidth(), mainWindow.getFramebufferHeight());
+            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, mainWindow.getWidth(), mainWindow.getHeight());
         }
     }
 }

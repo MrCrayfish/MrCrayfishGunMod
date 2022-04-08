@@ -4,6 +4,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 
+import net.minecraft.enchantment.Enchantment.Rarity;
+
 /**
  * Author: MrCrayfish
  */
@@ -18,13 +20,13 @@ public abstract class GunEnchantment extends Enchantment
     }
 
     @Override
-    protected boolean canApplyTogether(Enchantment enchantment)
+    protected boolean checkCompatibility(Enchantment enchantment)
     {
         if(enchantment instanceof GunEnchantment)
         {
             return ((GunEnchantment) enchantment).type != this.type;
         }
-        return super.canApplyTogether(enchantment);
+        return super.checkCompatibility(enchantment);
     }
 
     public enum Type

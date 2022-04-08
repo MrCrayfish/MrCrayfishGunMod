@@ -31,7 +31,7 @@ public class ModEntities
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, World, T> function)
     {
-        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).size(0.25F, 0.25F).setTrackingRange(100).setUpdateInterval(1).disableSummoning().immuneToFire().setShouldReceiveVelocityUpdates(true).build(id);
+        EntityType<T> type = EntityType.Builder.of(function::apply, EntityClassification.MISC).sized(0.25F, 0.25F).setTrackingRange(100).setUpdateInterval(1).noSummon().fireImmune().setShouldReceiveVelocityUpdates(true).build(id);
         return REGISTER.register(id, () -> type);
     }
 
@@ -49,11 +49,11 @@ public class ModEntities
      */
     private static <T extends ProjectileEntity> RegistryObject<EntityType<T>> registerProjectile(String id, BiFunction<EntityType<T>, World, T> function)
     {
-        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC)
-            .size(0.25F, 0.25F)
+        EntityType<T> type = EntityType.Builder.of(function::apply, EntityClassification.MISC)
+            .sized(0.25F, 0.25F)
             .setTrackingRange(0)
-            .disableSummoning()
-            .immuneToFire()
+            .noSummon()
+            .fireImmune()
             .setShouldReceiveVelocityUpdates(false)
             .setCustomClientFactory((spawnEntity, world) -> null)
             .build(id);

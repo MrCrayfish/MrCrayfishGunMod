@@ -2,6 +2,8 @@ package com.mrcrayfish.guns.enchantment;
 
 import net.minecraft.inventory.EquipmentSlotType;
 
+import net.minecraft.enchantment.Enchantment.Rarity;
+
 /**
  * Author: MrCrayfish
  */
@@ -13,14 +15,14 @@ public class FireStarterEnchantment extends GunEnchantment
     }
 
     @Override
-    public int getMinEnchantability(int level)
+    public int getMinCost(int level)
     {
         return 15;
     }
 
     @Override
-    public int getMaxEnchantability(int level)
+    public int getMaxCost(int level)
     {
-        return super.getMinEnchantability(level) + 30;
+        return super.getMinCost(level) + 30;
     }
 }

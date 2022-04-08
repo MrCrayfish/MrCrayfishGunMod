@@ -49,14 +49,14 @@ public class GunItem extends Item implements IColored
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
         Gun modifiedGun = this.getModifiedGun(stack);
 
         Item ammo = ForgeRegistries.ITEMS.getValue(modifiedGun.getProjectile().getItem());
         if(ammo != null)
         {
-            tooltip.add(new TranslationTextComponent("info.cgm.ammo_type", new TranslationTextComponent(ammo.getTranslationKey()).mergeStyle(TextFormatting.WHITE)).mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent("info.cgm.ammo_type", new TranslationTextComponent(ammo.getDescriptionId()).withStyle(TextFormatting.WHITE)).withStyle(TextFormatting.GRAY));
         }
 
         String additionalDamageText = "";
@@ -70,11 +70,11 @@ public class GunItem extends Item implements IColored
 
                 if(additionalDamage > 0)
                 {
-                    additionalDamageText = TextFormatting.GREEN + " +" + ItemStack.DECIMALFORMAT.format(additionalDamage);
+                    additionalDamageText = TextFormatting.GREEN + " +" + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
                 }
                 else if(additionalDamage < 0)
                 {
-                    additionalDamageText = TextFormatting.RED + " " + ItemStack.DECIMALFORMAT.format(additionalDamage);
+                    additionalDamageText = TextFormatting.RED + " " + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
                 }
             }
         }
@@ -82,22 +82,22 @@ public class GunItem extends Item implements IColored
         float damage = modifiedGun.getProjectile().getDamage();
         damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
-        tooltip.add(new TranslationTextComponent("info.cgm.damage", TextFormatting.WHITE + ItemStack.DECIMALFORMAT.format(damage) + additionalDamageText).mergeStyle(TextFormatting.GRAY));
+        tooltip.add(new TranslationTextComponent("info.cgm.damage", TextFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage) + additionalDamageText).withStyle(TextFormatting.GRAY));
 
         if(tagCompound != null)
         {
             if(tagCompound.getBoolean("IgnoreAmmo"))
             {
-                tooltip.add(new TranslationTextComponent("info.cgm.ignore_ammo").mergeStyle(TextFormatting.AQUA));
+                tooltip.add(new TranslationTextComponent("info.cgm.ignore_ammo").withStyle(TextFormatting.AQUA));
             }
             else
             {
                 int ammoCount = tagCompound.getInt("AmmoCount");
-                tooltip.add(new TranslationTextComponent("info.cgm.ammo", TextFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).mergeStyle(TextFormatting.GRAY));
+                tooltip.add(new TranslationTextComponent("info.cgm.ammo", TextFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).withStyle(TextFormatting.GRAY));
             }
         }
 
-        tooltip.add(new TranslationTextComponent("info.cgm.attachment_help", new KeybindTextComponent("key.cgm.attachments").getString().toUpperCase(Locale.ENGLISH)).mergeStyle(TextFormatting.YELLOW));
+        tooltip.add(new TranslationTextComponent("info.cgm.attachment_help", new KeybindTextComponent("key.cgm.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(TextFormatting.YELLOW));
     }
 
     @Override
@@ -107,9 +107,9 @@ public class GunItem extends Item implements IColored
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> stacks)
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> stacks)
     {
-        if(this.isInGroup(group))
+        if(this.allowdedIn(group))
         {
             ItemStack stack = new ItemStack(this);
             stack.getOrCreateTag().putInt("AmmoCount", this.gun.getGeneral().getMaxAmmo());
@@ -170,7 +170,7 @@ public class GunItem extends Item implements IColored
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
-        if(enchantment.type == EnchantmentTypes.SEMI_AUTO_GUN)
+        if(enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN)
         {
             Gun modifiedGun = this.getModifiedGun(stack);
             return !modifiedGun.getGeneral().isAuto();
@@ -185,7 +185,7 @@ public class GunItem extends Item implements IColored
     }
 
     @Override
-    public int getItemEnchantability()
+    public int getEnchantmentValue()
     {
         return 5;
     }

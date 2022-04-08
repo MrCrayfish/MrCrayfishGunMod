@@ -38,7 +38,7 @@ public class GunModPlugin implements IModPlugin
     @Override
     public void registerRecipes(IRecipeRegistration registration)
     {
-        ClientWorld world = Objects.requireNonNull(Minecraft.getInstance().world);
+        ClientWorld world = Objects.requireNonNull(Minecraft.getInstance().level);
         registration.addRecipes(WorkbenchRecipes.getAll(world), WorkbenchCategory.ID);
     }
 

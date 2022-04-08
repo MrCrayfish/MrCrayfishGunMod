@@ -42,9 +42,9 @@ public class ReloadTracker
 
     private ReloadTracker(PlayerEntity player)
     {
-        this.startTick = player.ticksExisted;
-        this.slot = player.inventory.currentItem;
-        this.stack = player.inventory.getCurrentItem();
+        this.startTick = player.tickCount;
+        this.slot = player.inventory.selected;
+        this.stack = player.inventory.getSelected();
         this.gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
     }
 
@@ -56,7 +56,7 @@ public class ReloadTracker
      */
     private boolean isSameWeapon(PlayerEntity player)
     {
-        return !this.stack.isEmpty() && player.inventory.currentItem == this.slot && player.inventory.getCurrentItem() == this.stack;
+        return !this.stack.isEmpty() && player.inventory.selected == this.slot && player.inventory.getSelected() == this.stack;
     }
 
     /**
@@ -75,7 +75,7 @@ public class ReloadTracker
 
     private boolean canReload(PlayerEntity player)
     {
-        int deltaTicks = player.ticksExisted - this.startTick;
+        int deltaTicks = player.tickCount - this.startTick;
         int interval = GunEnchantmentHelper.getReloadInterval(this.stack);
         return deltaTicks > 0 && deltaTicks % interval == 0;
     }
@@ -100,7 +100,7 @@ public class ReloadTracker
             IInventory inventory = context.getInventory();
             if(inventory != null)
             {
-                inventory.markDirty();
+                inventory.setChanged();
             }
         }
 
@@ -108,22 +108,22 @@ public class ReloadTracker
         if(reloadSound != null)
         {
             double radius = Config.SERVER.reloadMaxDistance.get();
-            MessageGunSound message = new MessageGunSound(reloadSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) player.getPosY() + 1.0F, (float) player.getPosZ(), 1.0F, 1.0F, player.getEntityId(), false, true);
-            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), (player.getPosY() + 1.0), player.getPosZ(), radius, player.world.getDimensionKey())), message);
+            MessageGunSound message = new MessageGunSound(reloadSound, SoundCategory.PLAYERS, (float) player.getX(), (float) player.getY() + 1.0F, (float) player.getZ(), 1.0F, 1.0F, player.getId(), false, true);
+            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getX(), (player.getY() + 1.0), player.getZ(), radius, player.level.dimension())), message);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.START && !event.player.world.isRemote)
+        if(event.phase == TickEvent.Phase.START && !event.player.level.isClientSide)
         {
             PlayerEntity player = event.player;
             if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
                 if(!RELOAD_TRACKER_MAP.containsKey(player))
                 {
-                    if(!(player.inventory.getCurrentItem().getItem() instanceof GunItem))
+                    if(!(player.inventory.getSelected().getItem() instanceof GunItem))
                     {
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                         return;
@@ -153,8 +153,8 @@ public class ReloadTracker
                             if(cockSound != null && finalPlayer.isAlive())
                             {
                                 double radius = Config.SERVER.reloadMaxDistance.get();
-                                MessageGunSound messageSound = new MessageGunSound(cockSound, SoundCategory.PLAYERS, (float) finalPlayer.getPosX(), (float) (finalPlayer.getPosY() + 1.0), (float) finalPlayer.getPosZ(), 1.0F, 1.0F, finalPlayer.getEntityId(), false, true);
-                                PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(finalPlayer.getPosX(), (finalPlayer.getPosY() + 1.0), finalPlayer.getPosZ(), radius, finalPlayer.world.getDimensionKey())), messageSound);
+                                MessageGunSound messageSound = new MessageGunSound(cockSound, SoundCategory.PLAYERS, (float) finalPlayer.getX(), (float) (finalPlayer.getY() + 1.0), (float) finalPlayer.getZ(), 1.0F, 1.0F, finalPlayer.getId(), false, true);
+                                PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(finalPlayer.getX(), (finalPlayer.getY() + 1.0), finalPlayer.getZ(), radius, finalPlayer.level.dimension())), messageSound);
                             }
                         });
                     }

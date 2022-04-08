@@ -68,7 +68,7 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     }
 
     @Override
-    protected float getGravityVelocity()
+    protected float getGravity()
     {
         return this.gravityVelocity;
     }
@@ -82,7 +82,7 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     public void tick()
     {
         super.tick();
-        if(this.shouldBounce && this.ticksExisted >= this.maxLife)
+        if(this.shouldBounce && this.tickCount >= this.maxLife)
         {
             this.remove();
             this.onDeath();
@@ -92,7 +92,7 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     public void onDeath() {}
 
     @Override
-    protected void onImpact(RayTraceResult result)
+    protected void onHit(RayTraceResult result)
     {
         switch(result.getType())
         {
@@ -100,15 +100,15 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
                 BlockRayTraceResult blockResult = (BlockRayTraceResult) result;
                 if(this.shouldBounce)
                 {
-                    BlockPos resultPos = blockResult.getPos();
-                    BlockState state = this.world.getBlockState(resultPos);
-                    SoundEvent event = state.getBlock().getSoundType(state, this.world, resultPos, this).getStepSound();
-                    double speed = this.getMotion().length();
+                    BlockPos resultPos = blockResult.getBlockPos();
+                    BlockState state = this.level.getBlockState(resultPos);
+                    SoundEvent event = state.getBlock().getSoundType(state, this.level, resultPos, this).getStepSound();
+                    double speed = this.getDeltaMovement().length();
                     if(speed > 0.1)
                     {
-                        this.world.playSound(null, result.getHitVec().x, result.getHitVec().y, result.getHitVec().z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
+                        this.level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundCategory.AMBIENT, 1.0F, 1.0F);
                     }
-                    this.bounce(blockResult.getFace());
+                    this.bounce(blockResult.getDirection());
                 }
                 else
                 {
@@ -121,13 +121,13 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
                 Entity entity = entityResult.getEntity();
                 if(this.shouldBounce)
                 {
-                    double speed = this.getMotion().length();
+                    double speed = this.getDeltaMovement().length();
                     if(speed > 0.1)
                     {
-                        entity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), 1.0F);
+                        entity.hurt(DamageSource.thrown(this, this.getOwner()), 1.0F);
                     }
-                    this.bounce(Direction.getFacingFromVector(this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ()).getOpposite());
-                    this.setMotion(this.getMotion().mul(0.25, 1.0, 0.25));
+                    this.bounce(Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite());
+                    this.setDeltaMovement(this.getDeltaMovement().multiply(0.25, 1.0, 0.25));
                 }
                 else
                 {
@@ -145,23 +145,23 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
         switch(direction.getAxis())
         {
             case X:
-                this.setMotion(this.getMotion().mul(-0.5, 0.75, 0.75));
+                this.setDeltaMovement(this.getDeltaMovement().multiply(-0.5, 0.75, 0.75));
                 break;
             case Y:
-                this.setMotion(this.getMotion().mul(0.75, -0.25, 0.75));
-                if(this.getMotion().getY() < this.getGravityVelocity())
+                this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, -0.25, 0.75));
+                if(this.getDeltaMovement().y() < this.getGravity())
                 {
-                    this.setMotion(this.getMotion().mul(1, 0, 1));
+                    this.setDeltaMovement(this.getDeltaMovement().multiply(1, 0, 1));
                 }
                 break;
             case Z:
-                this.setMotion(this.getMotion().mul(0.75, 0.75, -0.5));
+                this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, 0.75, -0.5));
                 break;
         }
     }
 
     @Override
-    public boolean hasNoGravity()
+    public boolean isNoGravity()
     {
         return false;
     }
@@ -171,7 +171,7 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     {
         buffer.writeBoolean(this.shouldBounce);
         buffer.writeFloat(this.gravityVelocity);
-        buffer.writeItemStack(this.item);
+        buffer.writeItem(this.item);
     }
 
     @Override
@@ -179,11 +179,11 @@ public abstract class ThrowableItemEntity extends ThrowableEntity implements IEn
     {
         this.shouldBounce = buffer.readBoolean();
         this.gravityVelocity = buffer.readFloat();
-        this.item = buffer.readItemStack();
+        this.item = buffer.readItem();
     }
 
     @Override
-    public IPacket<?> createSpawnPacket()
+    public IPacket<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

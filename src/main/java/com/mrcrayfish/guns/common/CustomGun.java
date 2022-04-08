@@ -28,7 +28,7 @@ public class CustomGun implements INBTSerializable<CompoundNBT>
     public CompoundNBT serializeNBT()
     {
         CompoundNBT compound = new CompoundNBT();
-        compound.put("Model", this.model.write(new CompoundNBT()));
+        compound.put("Model", this.model.save(new CompoundNBT()));
         compound.put("Gun", this.gun.serializeNBT());
         return compound;
     }
@@ -36,7 +36,7 @@ public class CustomGun implements INBTSerializable<CompoundNBT>
     @Override
     public void deserializeNBT(CompoundNBT compound)
     {
-        this.model = ItemStack.read(compound.getCompound("Model"));
+        this.model = ItemStack.of(compound.getCompound("Model"));
         this.gun = Gun.create(compound.getCompound("Gun"));
     }
 }

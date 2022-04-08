@@ -70,14 +70,14 @@ public class BulletTrail
         }
 
         Entity shooter = this.getShooter();
-        if(shooter instanceof PlayerEntity && ((PlayerEntity) shooter).isUser())
+        if(shooter instanceof PlayerEntity && ((PlayerEntity) shooter).isLocalPlayer())
         {
-            World world = shooter.world;
-            world.addOptionalParticle(this.particleData, true, this.position.getX(), this.position.getY(), this.position.getZ(), this.motion.x, this.motion.y, this.motion.z);
+            World world = shooter.level;
+            world.addAlwaysVisibleParticle(this.particleData, true, this.position.x(), this.position.y(), this.position.z(), this.motion.x, this.motion.y, this.motion.z);
         }
 
-        Entity entity = Minecraft.getInstance().getRenderViewEntity();
-        double distance = entity != null ? Math.sqrt(entity.getDistanceSq(this.position)) : Double.MAX_VALUE;
+        Entity entity = Minecraft.getInstance().getCameraEntity();
+        double distance = entity != null ? Math.sqrt(entity.distanceToSqr(this.position)) : Double.MAX_VALUE;
         if(this.age >= this.maxAge || distance > 256)
         {
             this.dead = true;
@@ -150,10 +150,10 @@ public class BulletTrail
     {
         if(this.shooter == null)
         {
-            World world = Minecraft.getInstance().world;
+            World world = Minecraft.getInstance().level;
             if(world != null)
             {
-                Entity entity = world.getEntityByID(this.shooterId);
+                Entity entity = world.getEntity(this.shooterId);
                 if(entity != null)
                 {
                     this.shooter = new WeakReference<>(entity);
@@ -174,8 +174,8 @@ public class BulletTrail
 
     public boolean isTrailVisible()
     {
-        Entity entity = Minecraft.getInstance().getRenderViewEntity();
-        return entity != null && entity.getEntityId() != this.shooterId;
+        Entity entity = Minecraft.getInstance().getCameraEntity();
+        return entity != null && entity.getId() != this.shooterId;
     }
 
     @Override

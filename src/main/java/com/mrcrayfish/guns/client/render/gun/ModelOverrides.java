@@ -74,7 +74,7 @@ public class ModelOverrides
 
     private static void tick(PlayerEntity player)
     {
-        ItemStack heldItem = player.getHeldItemMainhand();
+        ItemStack heldItem = player.getMainHandItem();
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
         {
             IOverrideModel model = ModelOverrides.getModel(heldItem);

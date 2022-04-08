@@ -90,7 +90,7 @@ public class CrosshairHandler
     {
         if(this.currentCrosshair == null && this.registeredCrosshairs.size() > 0)
         {
-            ResourceLocation id = ResourceLocation.tryCreate(Config.CLIENT.display.crosshair.get());
+            ResourceLocation id = ResourceLocation.tryParse(Config.CLIENT.display.crosshair.get());
             this.currentCrosshair = id != null ? this.idToCrosshair.getOrDefault(id, Crosshair.DEFAULT) : Crosshair.DEFAULT;
         }
         return this.currentCrosshair;
@@ -118,21 +118,21 @@ public class CrosshairHandler
         if(mc.player == null)
             return;
 
-        ItemStack heldItem = mc.player.getHeldItemMainhand();
+        ItemStack heldItem = mc.player.getMainHandItem();
         if(!(heldItem.getItem() instanceof GunItem))
             return;
 
         event.setCanceled(true);
 
-        if(!mc.gameSettings.getPointOfView().func_243192_a())
+        if(!mc.options.getCameraType().isFirstPerson())
             return;
 
         MatrixStack stack = event.getMatrixStack();
-        stack.push();
-        int scaledWidth = event.getWindow().getScaledWidth();
-        int scaledHeight = event.getWindow().getScaledHeight();
+        stack.pushPose();
+        int scaledWidth = event.getWindow().getGuiScaledWidth();
+        int scaledHeight = event.getWindow().getGuiScaledHeight();
         crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTicks());
-        stack.pop();
+        stack.popPose();
     }
 
     @SubscribeEvent

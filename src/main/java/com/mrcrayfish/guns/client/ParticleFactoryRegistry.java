@@ -21,9 +21,9 @@ public class ParticleFactoryRegistry
     @SubscribeEvent
     public static void onRegisterParticleFactory(ParticleFactoryRegisterEvent event)
     {
-        ParticleManager particleManager = Minecraft.getInstance().particles;
-        particleManager.registerFactory(ModParticleTypes.BULLET_HOLE.get(), (typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed) -> new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos()));
-        particleManager.registerFactory(ModParticleTypes.BLOOD.get(), BloodParticle.Factory::new);
-        particleManager.registerFactory(ModParticleTypes.TRAIL.get(), TrailParticle.Factory::new);
+        ParticleManager particleManager = Minecraft.getInstance().particleEngine;
+        particleManager.register(ModParticleTypes.BULLET_HOLE.get(), (typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed) -> new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos()));
+        particleManager.register(ModParticleTypes.BLOOD.get(), BloodParticle.Factory::new);
+        particleManager.register(ModParticleTypes.TRAIL.get(), TrailParticle.Factory::new);
     }
 }

@@ -20,7 +20,7 @@ public class ProjectileRenderer extends EntityRenderer<ProjectileEntity>
     }
 
     @Override
-    public ResourceLocation getEntityTexture(ProjectileEntity entity)
+    public ResourceLocation getTextureLocation(ProjectileEntity entity)
     {
         return null;
     }
@@ -28,27 +28,27 @@ public class ProjectileRenderer extends EntityRenderer<ProjectileEntity>
     @Override
     public void render(ProjectileEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        if(!entity.getProjectile().isVisible() || entity.ticksExisted <= 1)
+        if(!entity.getProjectile().isVisible() || entity.tickCount <= 1)
         {
             return;
         }
 
-        matrixStack.push();
+        matrixStack.pushPose();
 
         if(!RenderUtil.getModel(entity.getItem()).isGui3d())
         {
-            matrixStack.rotate(this.renderManager.getCameraOrientation());
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
-            Minecraft.getInstance().getItemRenderer().renderItem(entity.getItem(), ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
+            matrixStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+            Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemCameraTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
         }
         else
         {
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(entityYaw));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(entity.rotationPitch));
-            Minecraft.getInstance().getItemRenderer().renderItem(entity.getItem(), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(entity.xRot));
+            Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

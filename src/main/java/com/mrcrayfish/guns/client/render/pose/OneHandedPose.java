@@ -27,24 +27,24 @@ public class OneHandedPose implements IHeldAnimation
     @OnlyIn(Dist.CLIENT)
     public void applyPlayerModelRotation(PlayerEntity player, PlayerModel model, Hand hand, float aimProgress)
     {
-        boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
-        ModelRenderer arm = right ? model.bipedRightArm : model.bipedLeftArm;
-        IHeldAnimation.copyModelAngles(model.bipedHead, arm);
-        arm.rotateAngleX += Math.toRadians(-70F);
+        boolean right = Minecraft.getInstance().options.mainHand == HandSide.RIGHT ? hand == Hand.MAIN_HAND : hand == Hand.OFF_HAND;
+        ModelRenderer arm = right ? model.rightArm : model.leftArm;
+        IHeldAnimation.copyModelAngles(model.head, arm);
+        arm.xRot += Math.toRadians(-70F);
     }
 
     @Override
     public void renderFirstPersonArms(ClientPlayerEntity player, HandSide hand, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, float partialTicks)
     {
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
 
-        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, player.world, player);
-        float translateX = model.getItemCameraTransforms().firstperson_right.translation.getX();
-        float translateZ = model.getItemCameraTransforms().firstperson_right.translation.getX();
-        int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player);
+        float translateX = model.getTransforms().firstPersonRightHand.translation.x();
+        float translateZ = model.getTransforms().firstPersonRightHand.translation.x();
+        int side = hand.getOpposite() == HandSide.RIGHT ? 1 : -1;
         matrixStack.translate(translateX * side, 0, -translateZ);
 
-        boolean slim = player.getSkinType().equals("slim");
+        boolean slim = player.getModelName().equals("slim");
         float armWidth = slim ? 3.0F : 4.0F;
 
         matrixStack.scale(0.5F, 0.5F, 0.5F);
@@ -52,7 +52,7 @@ public class OneHandedPose implements IHeldAnimation
         matrixStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
 
         matrixStack.translate(0, 0.15, -1.3125);
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(75F));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(75F));
 
         RenderUtil.renderFirstPersonArm(player, hand, matrixStack, buffer, light);
     }
@@ -60,14 +60,14 @@ public class OneHandedPose implements IHeldAnimation
     @Override
     public boolean applyOffhandTransforms(PlayerEntity player, PlayerModel model, ItemStack stack, MatrixStack matrixStack, float partialTicks)
     {
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180F));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
 
         if(player.isCrouching())
         {
             matrixStack.translate(-4.5 * 0.0625, -15 * 0.0625, -4 * 0.0625);
         }
-        else if(!player.getItemStackFromSlot(EquipmentSlotType.LEGS).isEmpty())
+        else if(!player.getItemBySlot(EquipmentSlotType.LEGS).isEmpty())
         {
             matrixStack.translate(-4.0 * 0.0625, -13 * 0.0625, 1 * 0.0625);
         }
@@ -76,9 +76,9 @@ public class OneHandedPose implements IHeldAnimation
             matrixStack.translate(-3.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
         }
 
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(75F));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(model.bipedRightLeg.rotateAngleX) / 10F)));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(90F));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(75F));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(model.rightLeg.xRot) / 10F)));
         matrixStack.scale(0.5F, 0.5F, 0.5F);
 
         return true;

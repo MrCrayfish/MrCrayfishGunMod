@@ -1,18 +1,15 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
@@ -30,12 +27,13 @@ mixin {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
+    mappings channel: 'official', version: '1.16.5'
 
     runs {
         client {
             workingDirectory project.file('run')
             property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             arg '-mixin.config=cgm.mixins.json'
@@ -49,6 +47,7 @@ minecraft {
         server {
             workingDirectory project.file('run')
             property 'mixin.env.disableRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             arg '-mixin.config=cgm.mixins.json'
@@ -75,14 +74,6 @@ minecraft {
     }
 }
 
-processResources {
-    doLast {
-        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
-            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
-        }
-    }
-}
-
 repositories {
     maven {
         url = "https://www.cursemaven.com"
@@ -99,11 +90,11 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.20'
-    compile fg.deobf('curse.maven:obfuscate-289380:3336021')
-    compile fg.deobf('curse.maven:controllable-317269:3519536')
-    compile fg.deobf('curse.maven:configured-457570:3546348')
-    compile fg.deobf('curse.maven:catalogue-459701:3529457')
-    compile fg.deobf('curse.maven:backpacked-352835:3735958')
+    implementation fg.deobf('curse.maven:obfuscate-289380:3740120')
+    implementation fg.deobf('curse.maven:configured-457570:3546348')
+    implementation fg.deobf('curse.maven:catalogue-459701:3529457')
+    implementation fg.deobf('curse.maven:backpacked-352835:3735958')
+    compileOnly fg.deobf('curse.maven:controllable-317269:3519536')
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.152:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.152")
 }

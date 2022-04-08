@@ -16,6 +16,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+import net.minecraft.item.crafting.Ingredient.IItemList;
+import net.minecraft.item.crafting.Ingredient.SingleItemList;
+
 /**
  * Author: MrCrayfish
  */
@@ -51,13 +54,13 @@ public class WorkbenchIngredient extends Ingredient
 
     public static WorkbenchIngredient fromJson(JsonObject object)
     {
-        Ingredient.IItemList value = deserializeItemList(object);
-        int count = JSONUtils.getInt(object, "count", 1);
+        Ingredient.IItemList value = valueFromJson(object);
+        int count = JSONUtils.getAsInt(object, "count", 1);
         return new WorkbenchIngredient(Stream.of(value), count);
     }
 
     @Override
-    public JsonElement serialize()
+    public JsonElement toJson()
     {
         JsonObject object = this.itemList.serialize();
         object.addProperty("count", this.count);
@@ -93,7 +96,7 @@ public class WorkbenchIngredient extends Ingredient
         {
             int itemCount = buffer.readVarInt();
             int count = buffer.readVarInt();
-            Stream<Ingredient.SingleItemList> values = Stream.generate(() -> new SingleItemList(buffer.readItemStack())).limit(itemCount);
+            Stream<Ingredient.SingleItemList> values = Stream.generate(() -> new SingleItemList(buffer.readItem())).limit(itemCount);
             return new WorkbenchIngredient(values, count);
         }
 
@@ -106,11 +109,11 @@ public class WorkbenchIngredient extends Ingredient
         @Override
         public void write(PacketBuffer buffer, WorkbenchIngredient ingredient)
         {
-            buffer.writeVarInt(ingredient.getMatchingStacks().length);
+            buffer.writeVarInt(ingredient.getItems().length);
             buffer.writeVarInt(ingredient.count);
-            for(ItemStack stack : ingredient.getMatchingStacks())
+            for(ItemStack stack : ingredient.getItems())
             {
-                buffer.writeItemStack(stack);
+                buffer.writeItem(stack);
             }
         }
     }
@@ -130,7 +133,7 @@ public class WorkbenchIngredient extends Ingredient
         }
 
         @Override
-        public Collection<ItemStack> getStacks()
+        public Collection<ItemStack> getItems()
         {
             return Collections.emptyList();
         }

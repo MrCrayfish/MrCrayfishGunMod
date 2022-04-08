@@ -35,7 +35,7 @@ public class BasicHeadshotBox<T extends LivingEntity> implements IHeadshotBox<T>
     {
         double halfWidth = this.headWidth / 2.0;
         AxisAlignedBB headBox = new AxisAlignedBB(-halfWidth * 0.0625, 0, -halfWidth * 0.0625, halfWidth * 0.0625, this.headHeight * 0.0625, halfWidth * 0.0625);
-        headBox = headBox.offset(0, this.headYOffset * 0.0625, 0);
+        headBox = headBox.move(0, this.headYOffset * 0.0625, 0);
         return headBox;
     }
 }

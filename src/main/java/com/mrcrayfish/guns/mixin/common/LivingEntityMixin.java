@@ -19,13 +19,13 @@ public class LivingEntityMixin
 {
     private DamageSource source;
 
-    @Inject(method = "attackEntityFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyKnockback(FDD)V"))
+    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;knockback(FDD)V"))
     private void capture(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir)
     {
         this.source = source;
     }
 
-    @ModifyArgs(method = "attackEntityFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyKnockback(FDD)V"))
+    @ModifyArgs(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;knockback(FDD)V"))
     private void modifyApplyKnockbackArgs(Args args)
     {
         if(this.source instanceof DamageSourceProjectile)

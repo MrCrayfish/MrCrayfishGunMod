@@ -67,7 +67,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         this.inventory = helper.createDrawable(BACKGROUND, 7, 101, 162, 36);
         this.dyeSlot = helper.createDrawable(BACKGROUND, 7, 101, 18, 18);
         this.icon = helper.createDrawableIngredient(new ItemStack(ModBlocks.WORKBENCH.get()));
-        this.title = I18n.format(TITLE_KEY);
+        this.title = I18n.get(TITLE_KEY);
         this.dyes = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
     }
 
@@ -116,7 +116,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         }
         recipe.getMaterials().forEach(material ->
         {
-            itemInputs.add(Arrays.stream(material.getMatchingStacks()).map(stack -> {
+            itemInputs.add(Arrays.stream(material.getItems()).map(stack -> {
                 ItemStack copy = stack.copy();
                 copy.setCount(material.getCount());
                 return copy;
@@ -155,29 +155,29 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         this.inventory.draw(matrixStack, 0, this.window.getHeight() + 2 + 11 + 2);
         this.dyeSlot.draw(matrixStack, 140, 51);
 
-        Minecraft.getInstance().fontRenderer.drawString(matrixStack, I18n.format(MATERIALS_KEY), 0, 78, 0x7E7E7E);
+        Minecraft.getInstance().font.draw(matrixStack, I18n.get(MATERIALS_KEY), 0, 78, 0x7E7E7E);
 
         ItemStack output = recipe.getItem();
-        IFormattableTextComponent displayName = output.getDisplayName().deepCopy();
+        IFormattableTextComponent displayName = output.getHoverName().copy();
         if(output.getCount() > 1)
         {
-            displayName.append(new StringTextComponent(" x " + output.getCount()).mergeStyle(TextFormatting.GOLD, TextFormatting.BOLD));
+            displayName.append(new StringTextComponent(" x " + output.getCount()).withStyle(TextFormatting.GOLD, TextFormatting.BOLD));
         }
         int titleX = this.window.getWidth() / 2;
-        AbstractGui.drawCenteredString(matrixStack, Minecraft.getInstance().fontRenderer, displayName, titleX, 5, Color.WHITE.getRGB());
+        AbstractGui.drawCenteredString(matrixStack, Minecraft.getInstance().font, displayName, titleX, 5, Color.WHITE.getRGB());
 
         RenderSystem.pushMatrix();
         {
-            RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
+            RenderSystem.multMatrix(matrixStack.last().pose());
             RenderSystem.translatef(81, 40, 1050);
             RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
 
             MatrixStack matrixstack = new MatrixStack();
             matrixstack.translate(0.0D, 0.0D, 1000.0D);
             matrixstack.scale(40F, 40F, 40F);
-            matrixstack.rotate(Vector3f.XP.rotationDegrees(-5F));
-            float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-            matrixstack.rotate(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.ticksExisted + partialTicks));
+            matrixstack.mulPose(Vector3f.XP.rotationDegrees(-5F));
+            float partialTicks = Minecraft.getInstance().getFrameTime();
+            matrixstack.mulPose(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
 
             RenderSystem.enableRescaleNormal();
             RenderSystem.enableAlphaTest();
@@ -187,19 +187,19 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             IBakedModel model = RenderUtil.getModel(output);
-            boolean notSideLit = !model.isSideLit();
+            boolean notSideLit = !model.usesBlockLight();
             if(notSideLit)
             {
-                RenderHelper.setupGuiFlatDiffuseLighting();
+                RenderHelper.setupForFlatItems();
             }
 
-            IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-            Minecraft.getInstance().getItemRenderer().renderItem(output, ItemCameraTransforms.TransformType.FIXED, false, matrixstack, buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
-            buffer.finish();
+            IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+            Minecraft.getInstance().getItemRenderer().render(output, ItemCameraTransforms.TransformType.FIXED, false, matrixstack, buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
+            buffer.endBatch();
 
             if(notSideLit)
             {
-                RenderHelper.setupGui3DDiffuseLighting();
+                RenderHelper.setupFor3DItems();
             }
 
             RenderSystem.disableAlphaTest();

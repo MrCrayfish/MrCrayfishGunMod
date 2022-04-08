@@ -38,7 +38,7 @@ public class RotatedHeadshotBox<T extends LivingEntity> extends BasicHeadshotBox
         AxisAlignedBB headBox = super.getHeadshotBox(entity);
         if(headBox != null)
         {
-            headBox = headBox.offset(Vector3d.fromPitchYaw(this.rotatePitch ? entity.rotationPitch : 0.0F, this.rotateYaw ? entity.renderYawOffset : 0.0F).normalize().scale(this.headZOffset * 0.0625));
+            headBox = headBox.move(Vector3d.directionFromRotation(this.rotatePitch ? entity.xRot : 0.0F, this.rotateYaw ? entity.yBodyRot : 0.0F).normalize().scale(this.headZOffset * 0.0625));
             return headBox;
         }
         return null;

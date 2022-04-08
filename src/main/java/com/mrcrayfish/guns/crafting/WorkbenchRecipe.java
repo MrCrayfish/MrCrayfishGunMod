@@ -46,19 +46,19 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
     }
 
     @Override
-    public ItemStack getCraftingResult(WorkbenchTileEntity inv)
+    public ItemStack assemble(WorkbenchTileEntity inv)
     {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return this.item.copy();
     }

@@ -27,7 +27,7 @@ public class GrenadeItem extends AmmoItem
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack)
+    public UseAction getUseAnimation(ItemStack stack)
     {
         return UseAction.BOW;
     }
@@ -45,21 +45,21 @@ public class GrenadeItem extends AmmoItem
 
         int duration = this.getUseDuration(stack) - count;
         if(duration == 10)
-            player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+            player.level.playLocalSound(player.getX(), player.getY(), player.getZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
-        ItemStack stack = playerIn.getHeldItem(handIn);
-        playerIn.setActiveHand(handIn);
-        return ActionResult.resultConsume(stack);
+        ItemStack stack = playerIn.getItemInHand(handIn);
+        playerIn.startUsingItem(handIn);
+        return ActionResult.consume(stack);
     }
 
     @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
+    public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity entityLiving)
     {
-        if(this.canCook() && !worldIn.isRemote())
+        if(this.canCook() && !worldIn.isClientSide())
         {
             if(!(entityLiving instanceof PlayerEntity) || !((PlayerEntity) entityLiving).isCreative())
                 stack.shrink(1);
@@ -67,16 +67,16 @@ public class GrenadeItem extends AmmoItem
             grenade.onDeath();
             if(entityLiving instanceof PlayerEntity)
             {
-                ((PlayerEntity) entityLiving).addStat(Stats.ITEM_USED.get(this));
+                ((PlayerEntity) entityLiving).awardStat(Stats.ITEM_USED.get(this));
             }
         }
         return stack;
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft)
+    public void releaseUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft)
     {
-        if(!worldIn.isRemote())
+        if(!worldIn.isClientSide())
         {
             int duration = this.getUseDuration(stack) - timeLeft;
             if(duration >= 10)
@@ -84,12 +84,12 @@ public class GrenadeItem extends AmmoItem
                 if(!(entityLiving instanceof PlayerEntity) || !((PlayerEntity) entityLiving).isCreative())
                     stack.shrink(1);
                 ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
-                grenade.func_234612_a_(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
-                worldIn.addEntity(grenade);
+                grenade.shootFromRotation(entityLiving, entityLiving.xRot, entityLiving.yRot, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+                worldIn.addFreshEntity(grenade);
                 this.onThrown(worldIn, grenade);
                 if(entityLiving instanceof PlayerEntity)
                 {
-                    ((PlayerEntity) entityLiving).addStat(Stats.ITEM_USED.get(this));
+                    ((PlayerEntity) entityLiving).awardStat(Stats.ITEM_USED.get(this));
                 }
             }
         }
