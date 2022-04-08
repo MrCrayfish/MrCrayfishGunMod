@@ -25,6 +25,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -53,7 +54,7 @@ public class AimingHandler
         return instance;
     }
 
-    private static final double MAX_AIM_PROGRESS = 4;
+    private static final double MAX_AIM_PROGRESS = 5;
     private final AimTracker localTracker = new AimTracker();
     private final Map<PlayerEntity, AimTracker> aimingMap = new WeakHashMap<>();
     private double normalisedAdsProgress;
@@ -143,7 +144,7 @@ public class AimingHandler
             if(heldItem.getItem() instanceof GunItem)
             {
                 GunItem gunItem = (GunItem) heldItem.getItem();
-                if(AimingHandler.get().isAiming() && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
+                if(AimingHandler.get().getNormalisedAdsProgress() != 0 && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
                 {
                     Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                     if(modifiedGun.getModules().getZoom() != null)
@@ -286,7 +287,7 @@ public class AimingHandler
 
         public double getNormalProgress(float partialTicks)
         {
-            return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
+            return MathHelper.clamp((this.previousAim + (this.currentAim - this.previousAim) * partialTicks) / MAX_AIM_PROGRESS, 0.0, 1.0);
         }
     }
 }
