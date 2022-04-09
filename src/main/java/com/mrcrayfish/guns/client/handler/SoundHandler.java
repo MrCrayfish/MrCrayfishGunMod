@@ -53,7 +53,7 @@ public class SoundHandler
 
     private void initReflection()
     {
-        this.playingSounds = ObfuscationReflectionHelper.findField(SoundEngine.class, "instanceToChannel");
+        this.playingSounds = ObfuscationReflectionHelper.findField(SoundEngine.class, "field_217942_m");
     }
 
     @SubscribeEvent

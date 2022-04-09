@@ -158,7 +158,7 @@ public class ClientHandler
             MouseSettingsScreen screen = (MouseSettingsScreen) event.getGui();
             if(mouseOptionsField == null)
             {
-                mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "list");
+                mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "field_213045_b");
                 mouseOptionsField.setAccessible(true);
             }
             try

@@ -946,12 +946,12 @@ public class GunRenderingHandler
     {
         if(this.equippedProgressMainHandField == null)
         {
-            this.equippedProgressMainHandField = ObfuscationReflectionHelper.findField(FirstPersonRenderer.class, "mainHandHeight");
+            this.equippedProgressMainHandField = ObfuscationReflectionHelper.findField(FirstPersonRenderer.class, "field_187469_f");
             this.equippedProgressMainHandField.setAccessible(true);
         }
         if(this.prevEquippedProgressMainHandField == null)
         {
-            this.prevEquippedProgressMainHandField = ObfuscationReflectionHelper.findField(FirstPersonRenderer.class, "oMainHandHeight");
+            this.prevEquippedProgressMainHandField = ObfuscationReflectionHelper.findField(FirstPersonRenderer.class, "field_187470_g");
             this.prevEquippedProgressMainHandField.setAccessible(true);
         }
         FirstPersonRenderer firstPersonRenderer = Minecraft.getInstance().getItemInHandRenderer();
