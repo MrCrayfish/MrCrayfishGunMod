@@ -136,10 +136,13 @@ public class Config
 
     public static class Experimental
     {
+        public final ForgeConfigSpec.BooleanValue fixChunkFrustumCulling;
+
         public Experimental(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Experimental options").push("experimental");
             {
+                this.fixChunkFrustumCulling = builder.comment("Fixes an issue when the FOV changes, it doesn't update the frustum culling of chunks").define("fixChunkFrustumCulling", false);
             }
             builder.pop();
         }
