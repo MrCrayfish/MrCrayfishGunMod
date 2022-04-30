@@ -214,17 +214,15 @@ public class AimingHandler
         Minecraft mc = Minecraft.getInstance();
         if(mc.hitResult != null && mc.level != null)
         {
-            if(mc.hitResult instanceof BlockHitResult)
+            if(mc.hitResult instanceof BlockHitResult result)
             {
-                BlockHitResult result = (BlockHitResult) mc.hitResult;
                 BlockState state = mc.level.getBlockState(result.getBlockPos());
                 Block block = state.getBlock();
                 // Forge should add a tag for intractable blocks so modders can know which blocks can be interacted with :)
                 return block instanceof EntityBlock || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || state.is(BlockTags.DOORS) || state.is(BlockTags.TRAPDOORS) || state.is(Tags.Blocks.CHESTS) || state.is(Tags.Blocks.FENCE_GATES);
             }
-            else if(mc.hitResult instanceof EntityHitResult)
+            else if(mc.hitResult instanceof EntityHitResult result)
             {
-                EntityHitResult result = (EntityHitResult) mc.hitResult;
                 return result.getEntity() instanceof ItemFrame;
             }
         }
