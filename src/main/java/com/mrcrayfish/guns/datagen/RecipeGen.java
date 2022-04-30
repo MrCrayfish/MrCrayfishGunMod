@@ -114,23 +114,23 @@ public class RecipeGen extends RecipeProvider
                 .build(consumer);
 
         // Ammo
-        WorkbenchRecipeBuilder.crafting(ModItems.BASIC_BULLET.get(), 32) // Why is the basic bullet the same price as the advanced?
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+        WorkbenchRecipeBuilder.crafting(ModItems.BASIC_BULLET.get(), 64)
+                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
-                .addCriterion("has_iron_nugget", has(Tags.Items.NUGGETS_IRON))
+                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
                 .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
                 .build(consumer);
-        WorkbenchRecipeBuilder.crafting(ModItems.ADVANCED_AMMO.get(), 16)
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+        WorkbenchRecipeBuilder.crafting(ModItems.ADVANCED_AMMO.get(), 32)
+                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
-                .addCriterion("has_iron_nugget", has(Tags.Items.NUGGETS_IRON))
+                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
                 .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
                 .build(consumer);
-        WorkbenchRecipeBuilder.crafting(ModItems.SHELL.get(), 24)
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+        WorkbenchRecipeBuilder.crafting(ModItems.SHELL.get(), 48)
+                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_GOLD, 1))
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
-                .addCriterion("has_iron_nugget", has(Tags.Items.NUGGETS_IRON))
+                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
                 .addCriterion("has_gold_nugget", has(Tags.Items.NUGGETS_GOLD))
                 .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
                 .build(consumer);

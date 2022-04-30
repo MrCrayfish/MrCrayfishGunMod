@@ -2,7 +2,7 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "tag": "forge:nuggets/iron",
+      "item": "minecraft:copper_ingot",
       "count": 4
     },
     {
@@ -16,6 +16,6 @@
   ],
   "result": {
     "item": "cgm:shell",
-    "count": 24
+    "count": 48
   }
 }
