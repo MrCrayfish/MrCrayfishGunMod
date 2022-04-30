@@ -12,11 +12,15 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.CooldownTracker;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -75,16 +79,46 @@ public class ShootingHandler
         }
 
         ItemStack heldItem = player.getMainHandItem();
-        if(heldItem.getItem() instanceof GunItem)
+        if(heldItem.getItem() instanceof GunItem && event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
         {
-            int button = event.getButton();
-            if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onMouseClick(InputEvent.ClickInputEvent event)
+    {
+        if(event.isCanceled())
+            return;
+
+        Minecraft mc = Minecraft.getInstance();
+        PlayerEntity player = mc.player;
+        if(player == null)
+            return;
+
+        if(event.getKeyBinding() == mc.options.keyAttack)
+        {
+            ItemStack heldItem = player.getMainHandItem();
+            if(heldItem.getItem() instanceof GunItem)
             {
+                event.setSwingHand(false);
                 event.setCanceled(true);
-            }
-            if(event.getAction() == GLFW.GLFW_PRESS && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
-            {
                 fire(player, heldItem);
+            }
+        }
+    }
+
+    /* Prevents the right click animation playing when interacting with a block while holding a weapon */
+    @SubscribeEvent
+    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event)
+    {
+        if(event.getSide() == LogicalSide.CLIENT)
+        {
+            ItemStack heldItem = event.getItemStack();
+            if(heldItem.getItem() instanceof GunItem)
+            {
+                event.setCancellationResult(ActionResultType.CONSUME);
+                event.setCanceled(true);
             }
         }
     }
