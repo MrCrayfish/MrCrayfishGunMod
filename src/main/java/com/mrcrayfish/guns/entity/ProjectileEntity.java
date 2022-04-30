@@ -655,7 +655,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     /**
-     * A custom implementation of {@link net.minecraft.world.IWorldReader#rayTraceBlocks(RayTraceContext)}
+     * A custom implementation of {@link net.minecraft.world.IWorldReader#clip(RayTraceContext)}
      * that allows you to pass a predicate to ignore certain blocks when checking for collisions.
      *
      * @param world     the world to perform the ray trace
@@ -772,9 +772,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         World world = entity.level;
         if(world.isClientSide())
             return;
-
+        DamageSource source = entity instanceof ProjectileEntity ? DamageSource.explosion(((ProjectileEntity) entity).getShooter()) : null;
         Explosion.Mode mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.Mode.BREAK : Explosion.Mode.NONE;
-        Explosion explosion = new ProjectileExplosion(world, entity, null, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
+        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 
         if(net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
             return;
