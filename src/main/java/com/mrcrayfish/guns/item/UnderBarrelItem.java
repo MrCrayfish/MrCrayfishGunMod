@@ -14,7 +14,7 @@ import net.minecraft.item.Item.Properties;
  *
  * Author: MrCrayfish
  */
-public class UnderBarrelItem extends Item implements IUnderBarrel, IColored
+public class UnderBarrelItem extends AttachmentItem implements IUnderBarrel, IColored
 {
     private final UnderBarrel underBarrel;
     private final boolean colored;

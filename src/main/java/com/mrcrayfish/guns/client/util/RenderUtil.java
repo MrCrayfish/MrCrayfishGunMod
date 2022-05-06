@@ -115,24 +115,20 @@ public class RenderUtil
             matrixStack.translate(-0.5D, -0.5D, -0.5D);
             if(!model.isCustomRenderer() && (stack.getItem() != Items.TRIDENT || flag))
             {
-                boolean flag1;
+                boolean entity = true;
                 if(transformType != ItemCameraTransforms.TransformType.GUI && !transformType.firstPerson() && stack.getItem() instanceof BlockItem)
                 {
                     Block block = ((BlockItem) stack.getItem()).getBlock();
-                    flag1 = !(block instanceof BreakableBlock) && !(block instanceof StainedGlassPaneBlock);
-                }
-                else
-                {
-                    flag1 = true;
+                    entity = !(block instanceof BreakableBlock) && !(block instanceof StainedGlassPaneBlock);
                 }
 
                 if(model.isLayered())
                 {
-                    net.minecraftforge.client.ForgeHooksClient.drawItemLayered(Minecraft.getInstance().getItemRenderer(), model, stack, matrixStack, buffer, light, overlay, flag1);
+                    net.minecraftforge.client.ForgeHooksClient.drawItemLayered(Minecraft.getInstance().getItemRenderer(), model, stack, matrixStack, buffer, light, overlay, entity);
                 }
                 else
                 {
-                    RenderType renderType = getRenderType(stack, !flag1);
+                    RenderType renderType = getRenderType(stack, entity);
                     IVertexBuilder builder;
                     if(stack.getItem() == Items.COMPASS && stack.hasFoil())
                     {
@@ -147,7 +143,7 @@ public class RenderUtil
                             entry.pose().multiply(0.75F);
                         }
 
-                        if(flag1)
+                        if(entity)
                         {
                             builder = ItemRenderer.getCompassFoilBufferDirect(buffer, renderType, entry);
                         }
@@ -158,7 +154,7 @@ public class RenderUtil
 
                         matrixStack.popPose();
                     }
-                    else if(flag1)
+                    else if(entity)
                     {
                         builder = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
                     }
@@ -166,7 +162,6 @@ public class RenderUtil
                     {
                         builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
                     }
-
                     renderModel(model, stack, parent, transform, matrixStack, builder, light, overlay);
                 }
             }
@@ -189,7 +184,7 @@ public class RenderUtil
      * @param light
      * @param overlay
      */
-    private static void renderModel(IBakedModel model, ItemStack stack, ItemStack parent, @Nullable Transform transform, MatrixStack matrixStack, IVertexBuilder buffer, int light, int overlay)
+    public static void renderModel(IBakedModel model, ItemStack stack, ItemStack parent, @Nullable Transform transform, MatrixStack matrixStack, IVertexBuilder buffer, int light, int overlay)
     {
         if(transform != null)
         {

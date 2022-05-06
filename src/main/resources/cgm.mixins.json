@@ -1,21 +1,22 @@
 {
-  "required": true,
-  "package": "com.mrcrayfish.guns.mixin",
-  "compatibilityLevel": "JAVA_8",
-  "minVersion": "0.8",
-  "refmap": "cgm.refmap.json",
-  "mixins": [
-    "common.EndPortalBlockMixin",
-    "common.LivingEntityMixin",
-    "common.PlayerListMixin",
-    "common.SittingPhaseMixin"
-  ],
-  "client": [
-    "client.GameRendererMixin",
-    "client.MouseHelperMixin",
-    "client.WorldRendererMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "package": "com.mrcrayfish.guns.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "minVersion": "0.8",
+    "refmap": "cgm.refmap.json",
+    "mixins": [
+        "common.EndPortalBlockMixin",
+        "common.LivingEntityMixin",
+        "common.PlayerListMixin",
+        "common.SittingPhaseMixin"
+    ],
+    "client": [
+        "client.GameRendererMixin",
+        "client.MouseHelperMixin",
+        "client.RenderTypeLookupMixin",
+        "client.WorldRendererMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }

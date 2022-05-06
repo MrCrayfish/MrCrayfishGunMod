@@ -30,6 +30,8 @@ import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.item.IColored;
+import com.mrcrayfish.guns.item.attachment.IAttachment;
+import com.mrcrayfish.guns.item.attachment.impl.Attachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
 import net.minecraft.client.Minecraft;
@@ -39,6 +41,7 @@ import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
@@ -124,9 +127,18 @@ public class ClientHandler
             {
                 return stack.getTag().getInt("Color");
             }
+            if(index == 0 && stack.getItem() instanceof IAttachment)
+            {
+                ItemStack renderingWeapon = GunRenderingHandler.get().getRenderingWeapon();
+                if(renderingWeapon != null)
+                {
+                    return Minecraft.getInstance().getItemColors().getColor(renderingWeapon, index);
+                }
+            }
             return -1;
         };
-        ForgeRegistries.ITEMS.forEach(item -> {
+        ForgeRegistries.ITEMS.forEach(item ->
+        {
             if(item instanceof IColored)
             {
                 Minecraft.getInstance().getItemColors().register(color, item);

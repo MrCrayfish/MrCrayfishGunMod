@@ -56,11 +56,13 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -105,8 +107,17 @@ public class GunRenderingHandler
     private float prevImmersiveRoll;
     private float fallSway;
     private float prevFallSway;
+
+    @Nullable
+    private ItemStack renderingWeapon;
     
     private GunRenderingHandler() {}
+
+    @Nullable
+    public ItemStack getRenderingWeapon()
+    {
+        return this.renderingWeapon;
+    }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event)
@@ -721,9 +732,11 @@ public class GunRenderingHandler
 
             RenderUtil.applyTransformType(model.isEmpty() ? stack : model, matrixStack, transformType, entity);
 
+            this.renderingWeapon = stack;
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, matrixStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, matrixStack, renderTypeBuffer, light, partialTicks);
             this.renderMuzzleFlash(entity, matrixStack, renderTypeBuffer, stack, transformType, partialTicks);
+            this.renderingWeapon = null;
 
             matrixStack.popPose();
             return true;
@@ -780,7 +793,8 @@ public class GunRenderingHandler
                             }
                             else
                             {
-                                RenderUtil.renderModel(attachmentStack, stack, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+                                IBakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(attachmentStack);
+                                Minecraft.getInstance().getItemRenderer().render(attachmentStack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, bakedModel);
                             }
 
                             matrixStack.popPose();

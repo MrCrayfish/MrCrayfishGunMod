@@ -10,6 +10,7 @@ import com.mrcrayfish.guns.util.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -38,8 +39,9 @@ public class ShortScopeModel implements IOverrideModel
             matrixStack.scale(1.0F, 1.0F, (float) zScale);
         }
 
-        RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
-        
+        IBakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, overlay, bakedModel);
+
         if(transformType.firstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             matrixStack.pushPose();
