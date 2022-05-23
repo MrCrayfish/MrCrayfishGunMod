@@ -1,24 +1,27 @@
 package com.tac.guns.util;
 
+import com.tac.guns.GunMod;
 import com.tac.guns.common.Gun;
 import com.tac.guns.init.ModEnchantments;
+import com.tac.guns.item.GunItem;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import org.apache.logging.log4j.Level;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class GunEnchantmentHelper
 {
     public static int getReloadInterval(ItemStack weapon)
     {
-        int interval = 10;
-        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.QUICK_HANDS.get(), weapon);
-        if(level > 0)
-        {
-            interval -= 3 * level;
-        }
+        int interval = ((GunItem)weapon.getItem()).getGun().getReloads().getinterReloadPauseTicks();//10;
+        //int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.QUICK_HANDS.get(), weapon);
+        //if(level > 0)
+        //{
+        //    interval -= 3 * level;
+        //}
         return Math.max(interval, 1);
     }
 
@@ -42,9 +45,13 @@ public class GunEnchantmentHelper
 
     public static int getAmmoCapacity(ItemStack weapon, Gun modifiedGun)
     {
-        int capacity = modifiedGun.getGeneral().getMaxAmmo();
+        int capacity = modifiedGun.getReloads().isOpenBolt() ? modifiedGun.getReloads().getMaxAmmo() : modifiedGun.getReloads().getMaxAmmo()+1;
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), weapon);
-        if(level > 0)
+        if(level > 0 && level < modifiedGun.getReloads().getMaxAdditionalAmmoPerOC().length+1)
+        {
+            capacity += modifiedGun.getReloads().getMaxAdditionalAmmoPerOC()[level-1];
+        }
+        else if(level > 0)
         {
             capacity += (capacity / 2) * level;
         }

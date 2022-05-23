@@ -3,7 +3,7 @@ package com.tac.guns.enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class PuncturingEnchantment extends GunEnchantment
 {

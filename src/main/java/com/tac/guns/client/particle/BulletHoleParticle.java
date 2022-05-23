@@ -21,7 +21,7 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class BulletHoleParticle extends SpriteTexturedParticle
 {

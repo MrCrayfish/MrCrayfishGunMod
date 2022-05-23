@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:m82a2"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 180
+    },
+	{
+      "item": "minecraft:diamond",
+      "count": 6
+    }
+  ]
+}

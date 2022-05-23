@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class ProjectileExplosion extends Explosion
 {

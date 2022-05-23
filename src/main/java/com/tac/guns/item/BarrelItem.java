@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 /**
  * A basic barrel attachment item implementation with color support
  *
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class BarrelItem extends Item implements IBarrel, IColored
 {

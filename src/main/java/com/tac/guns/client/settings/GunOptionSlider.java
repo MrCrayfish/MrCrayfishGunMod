@@ -5,7 +5,7 @@ import net.minecraft.client.gui.widget.OptionSlider;
 import net.minecraft.client.settings.SliderPercentageOption;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class GunOptionSlider extends OptionSlider
 {

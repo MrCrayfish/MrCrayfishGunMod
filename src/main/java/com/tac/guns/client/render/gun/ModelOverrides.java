@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ModelOverrides
@@ -66,7 +66,7 @@ public class ModelOverrides
     @SubscribeEvent
     public static void onClientPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.START && event.side == LogicalSide.CLIENT)
+        if(event.phase == TickEvent.Phase.START && event.side == LogicalSide.CLIENT) //  && event.type == TickEvent.Type.RENDER
         {
             tick(event.player);
         }

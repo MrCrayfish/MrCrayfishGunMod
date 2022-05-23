@@ -13,7 +13,7 @@ import net.minecraft.world.World;
  * grenade launcher uses this to spawn a grenade entity with custom physics. Use {@link ProjectileManager}
  * to register a factory.
  *
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IProjectileFactory
 {

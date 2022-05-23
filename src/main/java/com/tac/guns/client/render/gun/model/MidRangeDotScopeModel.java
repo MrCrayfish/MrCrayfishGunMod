@@ -23,7 +23,7 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.common.util.Constants;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class MidRangeDotScopeModel implements IOverrideModel
 {

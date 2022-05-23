@@ -1,0 +1,77 @@
+{
+  "general": {
+    "rate": 3,
+    "rateSelector": [
+      0,
+      1
+    ],
+    "gripType": "tac:one_handed_m1911",
+    "recoilAngle": 6.5,
+    "horizontalRecoilAngle": 2.25,
+    "recoilKick": 2.5,
+    "recoilAdsReduction": 0.25,
+    "weaponRecoilDuration": 0.9,
+    "recoilDuration": 0.25,
+    "cameraRecoilModifier": 4.25,
+    "alwaysSpread": true,
+    "spread": 3.35,
+    "weightKilo": 1.3
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 15,
+    "reloadMagTimer": 45,
+    "additionalReloadEmptyMagTimer": 6,
+    "maxAdditionalAmmoPerOC": [
+      5,
+      8,
+      13
+    ],
+    "preReloadPauseTicks": 6
+  },
+  "projectile": {
+    "item": "tac:9mm_round",
+    "visible": false,
+    "damage": 6.0,
+    "size": 0.2,
+    "speed": 19.5,
+    "life": 4
+  },
+  "sounds": {
+    "fire": "tac:item.fire_m92fs",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.fire_m92fss"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 11.15,
+      "zOffset": -12.09,
+      "size": 0.7
+    },
+    "weaponType": 2
+  },
+  "modules": {
+    "zoom": [
+      {
+        "fovModifier": 0.9,
+        "yOffset": 12.56,
+        "zOffset": -10.0
+      }
+    ],
+    "attachments": {
+      "pistolBarrel": {
+        "yOffset": -100829.84,
+        "zOffset": -11.55,
+        "scale": 1.00
+      },
+      "pistolScope": {
+        "yOffset": 10.9625,
+        "zOffset": 4.715,
+        "scale": 1.80,
+        "doRenderMount": true,
+        "doOnSlideMovement": true
+      }
+    }
+  }
+}

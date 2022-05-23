@@ -4,15 +4,16 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
+import com.tac.guns.common.Gun;
 import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.common.container.WorkbenchContainer;
 import com.tac.guns.crafting.WorkbenchRecipe;
 import com.tac.guns.crafting.WorkbenchRecipes;
 import com.tac.guns.init.ModItems;
-import com.tac.guns.item.GunItem;
-import com.tac.guns.item.IAmmo;
-import com.tac.guns.item.IColored;
+import com.tac.guns.item.*;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageCraft;
@@ -47,7 +48,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 {
@@ -110,7 +111,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         if(!weapons.isEmpty())
         {
             ItemStack icon = new ItemStack(ModItems.AR15_HELLMOUTH.get());
-            icon.getOrCreateTag().putInt("AmmoCount", ModItems.AR15_HELLMOUTH.get().getGun().getGeneral().getMaxAmmo());
+            icon.getOrCreateTag().putInt("AmmoCount", ModItems.AR15_HELLMOUTH.get().getGun().getReloads().getMaxAmmo());
             this.tabs.add(new Tab(icon, "weapons", weapons));
         }
 
@@ -410,6 +411,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         RenderUtil.scissor(startX + 8, startY + 17, 160, 70);
 
+        IRenderTypeBuffer.Impl buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
         RenderSystem.pushMatrix();
         {
             RenderSystem.translatef(startX + 88, startY + 60, 100);
@@ -424,8 +426,15 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            IRenderTypeBuffer.Impl buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
-            Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.FIXED, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
+            buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
+
+            if(ModelOverrides.hasModel(currentItem) && currentItem.getItem() instanceof ScopeItem || currentItem.getItem() instanceof OldScopeItem || currentItem.getItem() instanceof PistolScopeItem) {
+                matrixStack.scale(2,2,2);
+                GunRenderingHandler.get().renderScope(this.minecraft.player, currentItem, ItemCameraTransforms.TransformType.HEAD, matrixStack, buffer, 15728880, 0F); // GROUND, matrixStack, buffer, 15728880, 0F);
+                matrixStack.scale(0.5f,0.5f,0.5f);
+            }else
+                Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.FIXED, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
+
             buffer.finish();
 
             RenderSystem.disableAlphaTest();
@@ -472,7 +481,9 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
                     stack.setCount(stack.getCount() - count);
                 }
 
+                //GunRenderingHandler.get().renderWeapon(minecraft.player, stack, ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, )
                 Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63, null);
+                //GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getHeldItemMainhand(), ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, 15728880, 0F); // GROUND, matrixStack, buffer, 15728880, 0F);
             }
         }
     }

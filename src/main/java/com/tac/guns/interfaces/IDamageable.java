@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 /**
  * An interface for notifying a block it has been hit by a projectile.
  *
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IDamageable
 {

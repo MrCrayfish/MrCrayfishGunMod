@@ -16,7 +16,7 @@ import java.util.WeakHashMap;
 /**
  * A simple class to track and control weapon cooldowns
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class ShootTracker
 {

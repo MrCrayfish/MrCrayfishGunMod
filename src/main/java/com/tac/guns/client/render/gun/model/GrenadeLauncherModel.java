@@ -13,7 +13,7 @@ import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.math.vector.Vector3f;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class GrenadeLauncherModel implements IOverrideModel
 {

@@ -41,7 +41,32 @@ public class ModSounds
 	public static final RegistryObject<SoundEvent> MDS_FIRE = register("item.modern_sniper_fire");
 	public static final RegistryObject<SoundEvent> MTAR_FIRE = register("item.mtar_fire");
 	public static final RegistryObject<SoundEvent> MTAR_FIREs = register("item.mtar_fire_s");
+	public static final RegistryObject<SoundEvent> FAL_FIRE = register("item.fal_fire");
+	public static final RegistryObject<SoundEvent> MP5_FIRE = register("item.mp5_fire");
+	public static final RegistryObject<SoundEvent> MP5_FIREs = register("item.mp5_fires");
+	public static final RegistryObject<SoundEvent> REM700_FIRE = register("item.remington_700");
+	public static final RegistryObject<SoundEvent> REM700_FIREs = register("item.remington_700s");
+	public static final RegistryObject<SoundEvent> M870_FIRE = register("item.m870");
+	public static final RegistryObject<SoundEvent> MP9_FIREs = register("item.mp9s");
+	public static final RegistryObject<SoundEvent> P226_FIREs = register("item.p226s");
+	public static final RegistryObject<SoundEvent> SAIGA_FIRE = register("item.saiga");
+	public static final RegistryObject<SoundEvent> SIG552_FIRE = register("item.sig552");
+	public static final RegistryObject<SoundEvent> SIG552_FIREs = register("item.sig552s");
+	public static final RegistryObject<SoundEvent> P226_FIRE = register("item.p226");
 
+	public static final RegistryObject<SoundEvent> AA12_FIRE = register("item.aa12");
+	public static final RegistryObject<SoundEvent> AWP_FIRE = register("item.ai_awp");
+	public static final RegistryObject<SoundEvent> HK416_FIRE = register("item.hk416");
+	public static final RegistryObject<SoundEvent> M24_FIRE = register("item.m24");
+	public static final RegistryObject<SoundEvent> M1928_FIRE = register("item.m1928");
+	public static final RegistryObject<SoundEvent> MK14_FIRE = register("item.mk14");
+	public static final RegistryObject<SoundEvent> RPG7_FIRE = register("item.rpg7");
+	public static final RegistryObject<SoundEvent> STEN_FIRE = register("item.sten");
+	public static final RegistryObject<SoundEvent> VECTOR_FIRE = register("item.vector");
+
+
+
+	//public static final RegistryObject<SoundEvent> COCK = register("item.pistol.cock");
 	public static final RegistryObject<SoundEvent> HEADSHOT_EXTENDED_PLAYFUL = register("item.headshot");
 
 	private static RegistryObject<SoundEvent> register(String key)

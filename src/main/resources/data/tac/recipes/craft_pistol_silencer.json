@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:pistol_silencer"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 14
+    },
+    {
+      "item": "minecraft:white_wool",
+      "count": 4
+    }
+  ]
+}

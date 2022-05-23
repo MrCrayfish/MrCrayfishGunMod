@@ -3,29 +3,39 @@
     "boltAction": true,
     "rate": 30,
     "gripType": "tac:two_handed_mosin",
-    "maxAmmo": 10,
-    "reloadAmount": 1,
-    "recoilAngle": 15.5,
+    "recoilAngle": 1.225,
+    "recoilKick": 0.85,
     "horizontalRecoilAngle": 0.125,
-    "recoilKick": 1.25,
-    "recoilAdsReduction": 0.85,
+    "recoilAdsReduction": 0.25,
+    "weaponRecoilDuration": 0.735,
+    "recoilDuration": 0.125,
+    "cameraRecoilModifier": 2.0,
     "alwaysSpread": true,
-    "spread": 0.15
+    "spread": 0.15,
+    "weightKilo": 5.3
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 10,
+    "reloadMagTimer": 80,
+    "additionalReloadEmptyMagTimer": 38,
+    "maxAdditionalAmmoPerOC": [2, 5, 8],
+    "preReloadPauseTicks": 14
   },
   "projectile": {
-    "item": "tac:win_30-30",
+    "item": "tac:bullet_308",
     "visible": false,
     "gravity": true,
-    "damage": 27.5,
+    "damage": 26,
     "size": 0.3,
-    "speed": 110.0,
-    "life": 6
+    "speed": 93.0,
+    "life": 5
   },
   "sounds": {
-    "fire": "tac:item.modern_sniper_fire",
+    "fire": "tac:item.remington_700",
     "reload": "tac:item.pistol.reload",
-    "cock": "tac:item.assault_rifle.cock",
-    "silencedFire": "tac:item.assault_rifle.silenced_fire"
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.remington_700s"
   },
   "display": {
     "flash": {
@@ -38,7 +48,7 @@
   },
   "modules": {
     "zoom": [{
-      "fovModifier": 0.65,
+      "fovModifier": 0.7,
       "yOffset": 7.16,
       "zOffset": -6.4
     }],

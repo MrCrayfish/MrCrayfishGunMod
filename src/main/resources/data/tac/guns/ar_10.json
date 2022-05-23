@@ -4,26 +4,35 @@
     "rate": 4,
     "rateSelector": [0,1],
     "gripType": "tac:two_handed_ak47",
-    "maxAmmo": 20,
-    "reloadAmount": 4,
-    "recoilAngle": 18.025,
-    "horizontalRecoilAngle": 2.075,
-    "recoilKick": 2.350,
-    "recoilAdsReduction": 0.525,
+    "recoilAngle": 4.625,
+    "horizontalRecoilAngle": 2.475,
+    "recoilKick": 1.375,
+    "recoilAdsReduction": 0.3,
+    "weaponRecoilDuration": 0.95,
+    "cameraRecoilModifier": 0.675,
     "alwaysSpread": true,
-    "spread": 4.50
+    "spread": 1.325,
+    "weightKilo": 5.2
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 20,
+    "reloadMagTimer": 75,
+    "additionalReloadEmptyMagTimer": 16,
+    "maxAdditionalAmmoPerOC": [5, 10, 15],
+    "preReloadPauseTicks": 7
   },
   "projectile": {
     "item": "tac:bullet_308",
     "visible": true,
-    "damage": 12,
+    "damage": 15,
     "size": 0.1,
     "speed": 46.5,
     "life": 5,
     "ricochet": true
   },
   "sounds": {
-    "fire": "tac:item.dmr_fire",
+    "fire": "tac:item.mk14",
     "reload": "tac:item.pistol.reload",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.dmr_fire_s"
@@ -37,12 +46,13 @@
     "hipfireScale": 0.95,
     "hipfireMoveScale": 0.55,
     "hipfireRecoilScale": 0.525,
-    "weaponType": 0
+    "weaponType": 0,
+    "showDynamicHipfire": false
   },
   "modules": {
     "zoom": [
       {
-        "fovModifier": 0.65,
+        "fovModifier": 0.7,
         "yOffset": 12.675,
         "zOffset": -4.75
       },

@@ -10,6 +10,7 @@
     "common.SittingPhaseMixin"
   ],
   "client": [
+    "client.FirstPersonRendererMixin",
     "client.GameRendererMixin",
     "client.MouseHelperMixin",
     "client.WorldRendererMixin"

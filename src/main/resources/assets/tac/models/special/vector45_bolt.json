@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"2": "tac:items/vector_light_part",
 		"particle": "tac:items/vector_light_part"
@@ -7,7 +7,7 @@
 	"elements": [
 		{
 			"from": [7.4375, 11.5, 2.5],
-			"to": [8.1875, 12, 4.5],
+			"to": [8.1875, 12.03125, 4.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 13, 5]},
 			"faces": {
 				"north": {"uv": [0, 0, 0.75, 0.5], "texture": "#2", "tintindex": 0},
@@ -20,7 +20,7 @@
 		},
 		{
 			"from": [7.0625, 11.8125, 0.625],
-			"to": [7.4375, 12, 2],
+			"to": [7.375, 12.03125, 2],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 13, 5]},
 			"faces": {
 				"north": {"uv": [0, 0, 0.375, 0.1875], "texture": "#2", "tintindex": 0},
@@ -33,7 +33,7 @@
 		},
 		{
 			"from": [7.20845, 11.8125, 1.92124],
-			"to": [7.45845, 12, 2.92124],
+			"to": [7.52095, 12.03125, 2.92124],
 			"rotation": {"angle": 22.5, "axis": "y", "origin": [7.33345, 11.90625, 2.32749]},
 			"faces": {
 				"east": {"uv": [0, 0, 1, 0.1875], "texture": "#2", "tintindex": 0},

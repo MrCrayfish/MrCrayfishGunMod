@@ -18,7 +18,9 @@ public class Config
         public final Display display;
         public final Particle particle;
         public final Controls controls;
+
         public final WeaponGUI weaponGUI;
+        public final Quality quality;
 
         public Client(ForgeConfigSpec.Builder builder)
         {
@@ -28,6 +30,7 @@ public class Config
                 this.display = new Display(builder);
                 this.particle = new Particle(builder);
                 this.controls = new Controls(builder);
+                this.quality = new Quality(builder);
                 this.weaponGUI = new WeaponGUI(builder);
             }
             builder.pop();
@@ -75,7 +78,7 @@ public class Config
                 this.oldAnimations = builder.comment("If true, uses the old animation poses for weapons. This is only for nostalgic reasons and not recommended to switch back.").define("oldAnimations", false);
                 this.crosshair = builder.comment("The custom crosshair to use for weapons. Go to (Options > Controls > Mouse Settings > Crosshair) in game to change this!").define("crosshair", Crosshair.DEFAULT.getLocation().toString());
 
-                this.weaponAmmoBar = builder.comment("Show % of your ammo in your gun via a colored durability bar!, Set to false to remove bar entirely for more realistic gameplay!").define("weaponAmmoBar", true);
+                this.weaponAmmoBar = builder.comment("Show % of your ammo in your gun via a colored durability bar!, Set to false to remove bar entirely for more realistic gameplay!").define("weaponAmmoBar", false);
             }
             builder.pop();
         }
@@ -88,16 +91,18 @@ public class Config
         public final WeaponTypeIcon weaponTypeIcon;
         public final WeaponFireMode weaponFireMode;
         public final WeaponAmmoCounter weaponAmmoCounter;
+        public final WeaponReloadTimer weaponReloadTimer;
 
         public WeaponGUI(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for HUD additions").push("weaponGui");
             {
-                this.weaponGui = builder.comment("Show your ammunition as a number, weapon icon, and fire mode all on the HUD.").define("weaponGui", true);
+                this.weaponGui = builder.comment("Show your ammunition as numbers, reloading timer, weapon icon, and fire mode all on the HUD.").define("weaponGui", true);
 
                 this.weaponTypeIcon = new WeaponTypeIcon(builder);
                 this.weaponFireMode = new WeaponFireMode(builder);
                 this.weaponAmmoCounter = new WeaponAmmoCounter(builder);
+                this.weaponReloadTimer = new WeaponReloadTimer(builder);
             }
             builder.pop();
         }
@@ -107,8 +112,8 @@ public class Config
         public final ForgeConfigSpec.BooleanValue showWeaponIcon;
         public final ForgeConfigSpec.DoubleValue weaponIconSize;
 
-        public final ForgeConfigSpec.IntValue x;
-        public final ForgeConfigSpec.IntValue y;
+        public final ForgeConfigSpec.DoubleValue x;
+        public final ForgeConfigSpec.DoubleValue y;
 
         public WeaponTypeIcon(ForgeConfigSpec.Builder builder)
         {
@@ -117,19 +122,20 @@ public class Config
                 this.showWeaponIcon = builder.comment("Display the weapon type Icon on your HUD.").define("showWeaponIcon", true);
                 this.weaponIconSize = builder.comment("Size of the weapon type Icon on your HUD").defineInRange("weaponIconSize", 1.0, 0.01, 4.0);
 
-                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0, -500d, 500d);
+                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0, -500d, 500d);
             }
             builder.pop();
         }
     }
+
     public static class WeaponAmmoCounter
     {
         public final ForgeConfigSpec.BooleanValue showWeaponAmmoCounter;
         public final ForgeConfigSpec.DoubleValue weaponAmmoCounterSize;
 
-        public final ForgeConfigSpec.IntValue x;
-        public final ForgeConfigSpec.IntValue y;
+        public final ForgeConfigSpec.DoubleValue x;
+        public final ForgeConfigSpec.DoubleValue y;
 
         public WeaponAmmoCounter(ForgeConfigSpec.Builder builder)
         {
@@ -138,8 +144,8 @@ public class Config
                 this.showWeaponAmmoCounter = builder.comment("Display the amount of ammunition your weapon holds and can hold on your HUD.").define("showWeaponAmmoCounter", true);
                 this.weaponAmmoCounterSize = builder.comment("Size of the weapon ammunition counter on your HUD").defineInRange("weaponAmmoCounterSize", 1.0, 0.01, 4.0);
 
-                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0,-500d, 500d);
+                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0,-500d, 500d);
             }
             builder.pop();
         }
@@ -149,8 +155,8 @@ public class Config
         public final ForgeConfigSpec.BooleanValue showWeaponFireMode;
         public final ForgeConfigSpec.DoubleValue weaponFireModeSize;
 
-        public final ForgeConfigSpec.IntValue x;
-        public final ForgeConfigSpec.IntValue y;
+        public final ForgeConfigSpec.DoubleValue x;
+        public final ForgeConfigSpec.DoubleValue y;
 
         public WeaponFireMode(ForgeConfigSpec.Builder builder)
         {
@@ -159,8 +165,29 @@ public class Config
                 this.showWeaponFireMode = builder.comment("Display the weapon's fire mode on your HUD.").define("showWeaponFireMode", true);
                 this.weaponFireModeSize = builder.comment("Size of the weapon's fire mode on your HUD").defineInRange("weaponFireModeSize", 1.0, 0.01, 4.0);
 
-                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0, -500d, 500d);
+                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0, -500d, 500d);
+            }
+            builder.pop();
+        }
+    }
+    public static class WeaponReloadTimer
+    {
+        public final ForgeConfigSpec.BooleanValue showWeaponReloadTimer;
+        public final ForgeConfigSpec.DoubleValue weaponReloadTimerSize;
+
+        public final ForgeConfigSpec.DoubleValue x;
+        public final ForgeConfigSpec.DoubleValue y;
+
+        public WeaponReloadTimer(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Configuration for HUD reloading timer bar").push("weaponReloadTimer");
+            {
+                this.showWeaponReloadTimer = builder.comment("Display the amount of ammunition your weapon holds and can hold on your HUD.").define("showWeaponAmmoCounter", true);
+                this.weaponReloadTimerSize = builder.comment("Size of the weapon ammunition counter on your HUD").defineInRange("weaponAmmoCounterSize", 1.0, 0.01, 4.0);
+
+                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0,-500d, 500d);
+                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0,-500d, 500d);
             }
             builder.pop();
         }
@@ -193,11 +220,40 @@ public class Config
     {
         public final ForgeConfigSpec.DoubleValue aimDownSightSensitivity;
 
+        public final ForgeConfigSpec.BooleanValue toggleAim;
+        public final ForgeConfigSpec.IntValue toggleAimDelay;
+
         public Controls(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Properties relating to controls").push("controls");
             {
-                this.aimDownSightSensitivity = builder.comment("A value to multiple the mouse sensitivity by when aiming down weapon sights. Go to (Options > Controls > Mouse Settings > ADS Sensitivity) in game to change this!").defineInRange("aimDownSightSensitivity", 0.75, 0.0, 1.0);
+                this.aimDownSightSensitivity = builder.comment("A value to multiple the mouse sensitivity by when aiming down weapon sights. Go to (Options > Controls > Mouse Settings > ADS Sensitivity) in game to change this!").defineInRange("aimDownSightSensitivity", 0.75, 0.0, 2.0);
+
+                this.toggleAim = builder.comment("Click to toggle aim on and off in game, instead of holding your aim button, the only way to utilize the toggleAim Keybind at this point!").define("toggleAim", false);
+                this.toggleAimDelay = builder.comment("The delay in ticks before being able to activate your toggleAim again, recommended to leave alone or increase past default!").defineInRange("toggleAimDelay", 8, 1, 60);
+            }
+            builder.pop();
+        }
+    }
+
+    /**
+     * Gameplay related config options
+     */
+    public static class Quality
+    {
+        public final ForgeConfigSpec.BooleanValue reducedGuiWeaponQuality;
+        //public final ForgeConfigSpec.BooleanValue reducedGuiScopeQuality;
+        //public final ForgeConfigSpec.BooleanValue reducedGuiAmmunitionQuality;
+        //public final ForgeConfigSpec.BooleanValue reducedEffects;
+
+        public Quality(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Properties relating to improving graphical performance (Currently unsupported, do not attempt to change these settings until announcements are made about these features!)").push("quality");
+            {
+                this.reducedGuiWeaponQuality = builder.comment("If enabled all main weapons will be unloaded and replaced with lower quality and legacy models, not all guns maybe replaced with this mode!").define("reducedGuiWeaponQuality", false);
+                //this.reducedGuiScopeQuality = builder.comment("If enabled all main scopes will be unloaded and replaced with lower quality and legacy models, not all scopes maybe replaced with this mode!").define("reducedScopeQuality", false);
+                //this.reducedGuiAmmunitionQuality = builder.comment("If enabled all main ammunition will be unloaded and replaced with lower quality and legacy models, not all ammo types maybe replaced with this mode!").define("reducedAmmunitionQuality", false);
+                //this.reducedEffects = builder.comment("If enabled all main effects will be disabled such as muzzle flash / smoke and more!").define("reducedEffects", false);
             }
             builder.pop();
         }
@@ -215,6 +271,7 @@ public class Config
         public final Grenades grenades;
         public final StunGrenades stunGrenades;
         public final ProjectileSpread projectileSpread;
+        public final Development development;
 
 
         public Common(ForgeConfigSpec.Builder builder)
@@ -228,7 +285,7 @@ public class Config
                 this.grenades = new Grenades(builder);
                 this.stunGrenades = new StunGrenades(builder);
                 this.projectileSpread = new ProjectileSpread(builder);
-
+                this.development = new Development(builder);
             }
             builder.pop();
         }
@@ -251,10 +308,12 @@ public class Config
 
         public final ForgeConfigSpec.BooleanValue realisticLowPowerFovHandling;
         public final ForgeConfigSpec.BooleanValue realisticIronSightFovHandling;
-
         public final ForgeConfigSpec.BooleanValue realisticAimedBreathing;
-
         public final ForgeConfigSpec.BooleanValue safetyExistence;
+
+        public final ForgeConfigSpec.BooleanValue gameplayEnchancedScopeOffset;
+        public final ForgeConfigSpec.BooleanValue scopeDoubleRender;
+        public final ForgeConfigSpec.BooleanValue redDotSquish2D;
 
         public Gameplay(ForgeConfigSpec.Builder builder)
         {
@@ -275,15 +334,31 @@ public class Config
                 this.realisticLowPowerFovHandling = builder.comment("Optics with 0 fov modification will not affect the players fov at all").define("realisticLowPowerFovHandling", false);
                 this.realisticIronSightFovHandling = builder.comment("Iron sights fov modification will not affect the players fov at all").define("realisticIronSightFovHandling", false);
 
-                this.realisticAimedBreathing = builder.comment("Aiming will present a breathing animation, moving the weapon over time, crouch to lower it's effects").define("realisticAimedBreathing", true);
+                this.realisticAimedBreathing = builder.comment("Aiming will present a breathing animation, moving the weapon over time, crouch to lower it's effects").define("realisticAimedBreathing", false);
 
-
+                this.gameplayEnchancedScopeOffset = builder.comment("Scopes are brought closer to the shooter to help fill FOV with a scope view at all times").define("gameplayEnchancedScopeOffset", true);
+                this.scopeDoubleRender = builder.comment("Enable scope double render, saves on some performance and compatability issues with Optifine").define("scopeDoubleRender", true);
+                this.redDotSquish2D = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to render in 2d when aimed like the scopeDoubleRender(false) effect.").define("redDotSquish2D", true);
             }
             builder.pop();
         }
     }
 
-    public static class GunHandlingCustomization
+    public static class Development
+    {
+        public final ForgeConfigSpec.BooleanValue permanentCrosshair;
+
+        public Development(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Development").push("development");
+            {
+                this.permanentCrosshair = builder.comment("If enabled any crosshair will continue to render on aim.").define("permanentCrosshair", false);
+            }
+            builder.pop();
+        }
+    }
+
+    /*public static class GunHandlingCustomization
     {
         public ForgeConfigSpec.IntValue M1928_trigMax;
         public ForgeConfigSpec.IntValue AK47_trigMax;
@@ -315,7 +390,7 @@ public class Config
             }
             builder.pop();
         }
-    }
+    }*/
 
     /**
      * Network related config options
@@ -507,7 +582,6 @@ public class Config
         public final ForgeConfigSpec.DoubleValue gunShotMaxDistance;
         public final ForgeConfigSpec.BooleanValue enableCameraRecoil;
 
-        public final GunHandlingCustomization gunHandlingCustomization;
 
         public Server(ForgeConfigSpec.Builder builder)
         {
@@ -520,7 +594,6 @@ public class Config
                     this.soundPercentage = builder.comment("Volume of most game sounds when deafened will play at this percent, before eventually fading back to %100.").defineInRange("soundPercentage", 0.05, 0.0, 1.0);
                     this.soundFadeThreshold = builder.comment("After the duration drops to this many ticks, the ringing volume will gradually fade to 0 and other sound volumes will fade back to %100.").defineInRange("soundFadeThreshold", 90, 0, Integer.MAX_VALUE);
                     this.ringVolume = builder.comment("Volume of the ringing sound when deafened will play at this volume, before eventually fading to 0.").defineInRange("ringVolume", 1.0, 0.0, 1.0);
-                    this.gunHandlingCustomization = new GunHandlingCustomization(builder);
                 }
                 builder.pop();
 

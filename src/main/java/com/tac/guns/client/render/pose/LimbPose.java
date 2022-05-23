@@ -1,7 +1,7 @@
 package com.tac.guns.client.render.pose;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class LimbPose
 {

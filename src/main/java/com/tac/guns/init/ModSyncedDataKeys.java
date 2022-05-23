@@ -7,7 +7,7 @@ import com.tac.guns.Reference;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class ModSyncedDataKeys
 {

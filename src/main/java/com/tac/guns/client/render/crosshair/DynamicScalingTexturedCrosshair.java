@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -58,7 +59,12 @@ public class DynamicScalingTexturedCrosshair extends TexturedCrosshair implement
     @Override
     public void render(Minecraft mc, MatrixStack stack, int windowWidth, int windowHeight, float partialTicks){
         ClientPlayerEntity playerEntity = mc.player;
-        if(playerEntity.getHeldItemMainhand().getItem() instanceof TimelessGunItem) {
+        if(playerEntity == null)
+            return;
+        if(playerEntity.getHeldItemMainhand().getItem() == null || playerEntity.getHeldItemMainhand().getItem() == Items.AIR)
+            return;
+        if(playerEntity.getHeldItemMainhand().getItem() instanceof TimelessGunItem)
+        {
             TimelessGunItem gunItem = (TimelessGunItem) playerEntity.getHeldItemMainhand().getItem();
             if (gunItem.getGun().getDisplay().isDynamicHipfire()) {
                 float alpha = 1.0F - (float) AimingHandler.get().getNormalisedAdsProgress();
@@ -126,17 +132,16 @@ public class DynamicScalingTexturedCrosshair extends TexturedCrosshair implement
     @Override
     public void onGunFired()
     {
-        Minecraft mc = Minecraft.getInstance();
+        /*Minecraft mc = Minecraft.getInstance();
         ClientPlayerEntity playerEntity = mc.player;
 
         TimelessGunItem gunItem = (TimelessGunItem) playerEntity.getHeldItemMainhand().getItem();
         float gunRecoil = GunModifierHelper.getRecoilModifier(playerEntity.getHeldItemMainhand());
-
+        float gunRecoilH = GunModifierHelper.getHorizontalRecoilModifier(playerEntity.getHeldItemMainhand());
+*/
         // Calculating average Vertical and Horizontal recoil along with reducing modifier to a useful metric
-        float recoil = ( ( (gunItem.getGun().getGeneral().getRecoilAngle() - gunRecoil) +
-                (gunItem.getGun().getGeneral().getHorizontalRecoilAngle() - gunRecoil) ) / 15 ) + 1F * (gunItem.getGun().getDisplay().getHipfireRecoilScale());
+        //float recoil = -((gunRecoilH + gunRecoil)) * (gunItem.getGun().getDisplay().getHipfireRecoilScale());
         // The +1 is used to ensure we have a "Percentage", only for testing and may be reverted
-
-        this.scale *= recoil;
+        this.scale *= 1.25f;//recoil;
     }
 }

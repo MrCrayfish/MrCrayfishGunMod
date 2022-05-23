@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class DamageSourceProjectile extends IndirectEntityDamageSource
 {

@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
  * {@link com.tac.guns.common.BoundingBoxManager#registerHeadshotBox(EntityType, IHeadshotBox)}
  * in order for projectiles to be able to perform a headshot on the given entity.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IHeadshotBox<T extends Entity>
 {

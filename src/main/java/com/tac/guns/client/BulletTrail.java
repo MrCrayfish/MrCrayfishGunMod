@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class BulletTrail
 {

@@ -7,14 +7,25 @@
       2
     ],
     "gripType": "tac:two_handed_m60",
-    "maxAmmo": 100,
-    "reloadAmount": 10,
-    "recoilAngle": 1.50,
-    "horizontalRecoilAngle": 0.30,
-    "recoilKick": 1.5,
-    "recoilAdsReduction": 0.68,
+    "recoilAngle": 0.525,
+    "horizontalRecoilAngle": 0.225,
+    "recoilKick": 0.29,
+    "recoilAdsReduction": 0.228,
+    "weaponRecoilDuration": 0.5,
+    "cameraRecoilModifier": 0.4975,
+    "recoilDuration": 0.1125,
     "alwaysSpread": true,
-    "spread": 3.76
+    "spread": 2.86,
+    "weightKilo": 11.25
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 100,
+    "reloadMagTimer": 142,
+    "additionalReloadEmptyMagTimer": -10,
+    "maxAdditionalAmmoPerOC": [50, 75, 100],
+    "preReloadPauseTicks": 26,
+    "openBolt": true
   },
   "projectile": {
     "item": "tac:bullet_308",
@@ -32,15 +43,15 @@
   },
   "display": {
     "flash": {
-      "yOffset": 5.3,
-      "zOffset": -19.95,
+      "yOffset": 5.4,
+      "zOffset": -24.0,
       "size": 0.8
     },
     "weaponType": 1
   },
   "modules": {
     "zoom": [{
-      "fovModifier": 0.7,
+      "fovModifier": 0.8,
       "yOffset": 8.7,
       "zOffset": 2.7
     }],

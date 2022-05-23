@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 /**
  * A basic item class that implements {@link IAmmo} to indicate this item is ammunition
  *
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class AmmoItem extends Item implements IAmmo
 {

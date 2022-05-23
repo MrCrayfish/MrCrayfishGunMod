@@ -8,7 +8,7 @@ import com.tac.guns.item.attachment.impl.Barrel;
  * See {@link GunModifiers} for examples of how this can be implemented. Implementations can then
  * be passed to "create" method of attachment objects. See {@link Barrel#create(float, IGunModifier...)}
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IGunModifier
 {
@@ -55,6 +55,17 @@ public interface IGunModifier
      * @return additional damage to add on top of the weapon damage
      */
     default float additionalDamage()
+    {
+        return 0.0F;
+    }
+
+    /**
+     * Adds additional headshot damage to the weapon. This can be positive or negative number, with negative
+     * reducing the headshot damage of the weapon.
+     *
+     * @return additional headshot damage to add on top of the base headshot damage for this weapon
+     */
+    default float additionalHeadshotDamage()
     {
         return 0.0F;
     }
@@ -207,6 +218,23 @@ public interface IGunModifier
      * @return additional chance to include when determining critical hit
      */
     default float criticalChance()
+    {
+        return 0F;
+    }
+
+    /**
+     * Modifies the weight of a weapon.
+     *
+     * @return the percentage modifier towards default weapon weight
+     */
+    default float modifyWeaponWeight() {return 0F;}
+
+    /**
+     * Add additional gravity to the projectile without changing the base gravity.
+     *
+     * @return additional gravity to add to the projectile
+     */
+    default float additionalWeaponWeight()
     {
         return 0F;
     }

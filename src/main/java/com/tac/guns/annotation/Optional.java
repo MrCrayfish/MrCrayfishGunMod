@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * An annotation to mark that a field is optional
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

@@ -12,7 +12,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class GunEnumOption<E extends Enum<E> & IStringSerializable> extends AbstractOption
 {

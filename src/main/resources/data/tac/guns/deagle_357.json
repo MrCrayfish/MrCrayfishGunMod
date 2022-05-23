@@ -1,0 +1,65 @@
+{
+  "general": {
+    "rate": 5,
+    "rateSelector": [
+      0,
+      1
+    ],
+    "gripType": "tac:one_handed_m1911",
+    "recoilAngle": 10.475,
+    "horizontalRecoilAngle": 4.725,
+    "recoilKick": 2.05,
+    "recoilAdsReduction": 0.35,
+    "weaponRecoilDuration": 0.915,
+    "cameraRecoilModifier": 2.075,
+    "recoilDuration": 0.12,
+    "alwaysSpread": true,
+    "spread": 2.11,
+    "weightKilo": 2.2
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 7,
+    "reloadMagTimer": 60,
+    "additionalReloadEmptyMagTimer": 16,
+    "maxAdditionalAmmoPerOC": [1, 3, 6],
+    "preReloadPauseTicks": 4
+  },
+  "projectile": {
+    "item": "tac:magnumround",
+    "visible": false,
+    "damage": 14.5,
+    "size": 0.2,
+    "speed": 24.0,
+    "life": 6
+  },
+  "sounds": {
+    "fire": "tac:item.deagle",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.deagles"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 11.15,
+      "zOffset": -13.32,
+      "size": 1.1
+    },
+    "weaponType": 2
+  },
+  "modules": {
+    "zoom": [{
+      "fovModifier": 0.8,
+      "yOffset": 13.385,
+      "zOffset": -22.75
+    }],
+    "attachments":
+    {
+      "barrel": {
+        "yOffset": -100829.84,
+        "zOffset": -11.55,
+        "scale": 1.00
+      }
+    }
+  }
+}

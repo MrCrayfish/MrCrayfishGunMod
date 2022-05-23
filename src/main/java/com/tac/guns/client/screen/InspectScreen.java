@@ -21,14 +21,14 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class InspectScreen extends ContainerScreen<InspectionContainer>
 {
-    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("tac:textures/gui/attachments.png");
+    //private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("tac:textures/gui/attachments.png");
 
     private final PlayerInventory playerInventory;
-    private final IInventory weaponInventory;
+    //private final IInventory weaponInventory;
 
     private boolean showHelp = true;
     private int windowZoom = 20;
@@ -42,7 +42,7 @@ public class InspectScreen extends ContainerScreen<InspectionContainer>
     {
         super(screenContainer, playerInventory, titleIn);
         this.playerInventory = playerInventory;
-        this.weaponInventory = screenContainer.getWeaponInventory();
+        //this.weaponInventory = screenContainer.getWeaponInventory();
         this.ySize = -270; //186
     }
 
@@ -113,13 +113,13 @@ public class InspectScreen extends ContainerScreen<InspectionContainer>
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-        if(this.showHelp)
+        /*if(this.showHelp)
         {
             RenderSystem.pushMatrix();
             RenderSystem.scalef(0.5F, 0.5F, 0.5F);
             minecraft.fontRenderer.drawString(matrixStack, I18n.format("container.tac.attachments.window_help"), 56, 38, 0xFFFFFF);
             RenderSystem.popMatrix();
-        }
+        }*/
     }
 
     @Override

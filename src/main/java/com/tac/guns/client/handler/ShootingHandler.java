@@ -20,7 +20,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class  ShootingHandler
 {
@@ -33,6 +33,14 @@ public class  ShootingHandler
             instance = new ShootingHandler();
         }
         return instance;
+    }
+
+    public boolean isShooting() {
+        return shooting;
+    }
+
+    public void setShooting(boolean shooting) {
+        this.shooting = shooting;
     }
 
     private boolean shooting;
@@ -134,6 +142,9 @@ public class  ShootingHandler
         {
             this.shooting = false;
         }
+
+        if (this.shooting)
+            player.setSprinting(false);
     }
 
     @SubscribeEvent

@@ -2,51 +2,62 @@
   "general": {
     "auto": true,
     "rate": 2,
-    "rateSelector": [
-      0,
-      1,
-      2
-    ],
-    "gripType": "tac:two_handed_m1928",
-    "maxAmmo": 30,
-    "reloadAmount": 5,
-    "recoilAngle": 1.35,
-    "horizontalRecoilAngle": 0.925,
-    "recoilKick": 0.25,
-    "recoilAdsReduction": 0.68,
+    "rateSelector": [0,1,2],
+    "gripType": "tac:two_handed_ak47",
+    "recoilAngle": 1.225,
+    "horizontalRecoilAngle": 1.125,
+    "recoilKick": 0.900,
+    "recoilAdsReduction": 0.35,
+    "weaponRecoilDuration": 0.325,
+    "cameraRecoilModifier": 1.105,
+    "recoilDuration": 0.275,
     "alwaysSpread": true,
-    "spread": 4.45
+    "spread": 3.05,
+    "weightKilo": 5.1
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 30,
+    "reloadMagTimer": 48,
+    "additionalReloadEmptyMagTimer": 15,
+    "maxAdditionalAmmoPerOC": [20, 30, 45],
+    "preReloadPauseTicks": 16,
+    "openBolt": true
   },
   "projectile": {
     "item": "tac:round45",
-    "visible": false,
-    "damage": 4.5,
-    "size": 0.2,
-    "speed": 17.5,
-    "life": 350
+    "visible": true,
+    "damage": 5.25,
+    "size": 0.1,
+    "speed": 14.5,
+    "life": 6,
+    "ricochet": true
   },
   "sounds": {
-    "fire": "tac:item.fire_m1911",
+    "fire": "tac:item.m1928",
     "reload": "tac:item.pistol.reload",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.fire_m1911s"
+    "silencedFire": "tac:item.fire_m16s"
   },
   "display": {
     "flash": {
-      "yOffset": 8.8,
-      "zOffset": -17.95,
-      "size": 0.7
+      "yOffset": 9.35,
+      "zOffset": -18.55,
+      "size": 0.38
     },
+    "hipfireScale": 0.70,
+    "hipfireMoveScale": 0.55,
+    "hipfireRecoilScale": 1.31,
     "weaponType": 4
   },
   "modules": {
-    "zoom": [{
-      "fovModifier": 0.6,
-      "yOffset": 10.1,
-      "zOffset": -3.6
-    }],
-    "attachments": {
-
-    }
+    "zoom": [
+      {
+        "fovModifier": 0.8,
+        "yOffset": 10.385,
+        "zOffset": -4.75
+      }
+    ],
+    "attachments": {}
   }
 }

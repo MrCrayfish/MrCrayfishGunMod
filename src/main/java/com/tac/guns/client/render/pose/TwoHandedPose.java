@@ -5,6 +5,7 @@ import com.tac.guns.Config;
 import com.tac.guns.client.handler.ReloadHandler;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.GripType;
+import com.tac.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -19,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class TwoHandedPose extends WeaponPose
 {
@@ -125,7 +126,7 @@ public class TwoHandedPose extends WeaponPose
 
         matrixStack.push();
 
-        float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
+        float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks, stack);
         matrixStack.translate(reloadProgress * 0.5, -reloadProgress, -reloadProgress * 0.5);
 
         int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;

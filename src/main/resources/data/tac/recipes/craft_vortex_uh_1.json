@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:vortex_uh_1"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 16
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 15
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 1
+    }
+  ]
+}

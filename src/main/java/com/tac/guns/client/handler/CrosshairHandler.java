@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class CrosshairHandler
 {
@@ -125,7 +125,8 @@ public class CrosshairHandler
         if(!(heldItem.getItem() instanceof GunItem))
             return;
 
-        event.setCanceled(true);
+        if(!Config.COMMON.development.permanentCrosshair.get())
+            event.setCanceled(true);
 
         if(!mc.gameSettings.getPointOfView().func_243192_a())
             return;
@@ -145,7 +146,7 @@ public class CrosshairHandler
             return;
 
         Crosshair crosshair = this.getCurrentCrosshair();
-        if(crosshair == null || crosshair.isDefault())
+        if((crosshair == null|| crosshair.isDefault()))
             return;
 
         crosshair.tick();

@@ -8,21 +8,31 @@
       2
     ],
     "gripType": "tac:two_handed_vector",
-    "maxAmmo": 25,
-    "reloadAmount": 5,
-    "recoilAngle": 1.655,
-    "recoilKick": 1.225,
-    "horizontalRecoilAngle": 0.75,
-    "recoilAdsReduction": 0.60,
+    "recoilAngle": 1.285,
+    "recoilKick": 0.875,
+    "horizontalRecoilAngle": 1.075,
+    "recoilAdsReduction": 0.2325,
+    "weaponRecoilDuration": 0.225,
+    "cameraRecoilModifier": 0.825,
+    "recoilDuration": 0.235,
     "alwaysSpread": true,
-    "spread": 2.45
+    "spread": 3.125,
+    "weightKilo": 3.15
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 30,
+    "reloadMagTimer": 49,
+    "additionalReloadEmptyMagTimer": 24,
+    "maxAdditionalAmmoPerOC": [10, 20, 30],
+    "preReloadPauseTicks": 12
   },
   "projectile": {
     "item": "tac:nato_556_bullet",
     "visible": false,
     "damage": 7,
     "size": 0.2,
-    "speed": 38.5,
+    "speed": 30.5,
     "life": 6
   },
   "sounds": {
@@ -33,7 +43,7 @@
   },
   "display": {
     "flash": {
-      "yOffset": 9.35,
+      "yOffset": 8.15,
       "zOffset": -19.55,
       "size": 1.10
     },
@@ -41,15 +51,25 @@
   },
   "modules": {
     "zoom": [{
-      "fovModifier": 0.70,
-      "yOffset": 12.9,
-      "zOffset": 1.45
+      "fovModifier": 0.8,
+      "yOffset": 12.125,
+      "zOffset": 2.25
     }],
     "attachments": {
       "scope": {
-        "yOffset": 11.30,
-        "zOffset": -2.4,
+        "yOffset": 10.55,
+        "zOffset": -1.25,
         "scale": 1.00
+      },
+      "barrel": {
+        "yOffset": -100829.84,
+        "zOffset": -11.55,
+        "scale": 1.00
+      },
+      "underBarrel": {
+        "yOffset": 7.799,
+        "zOffset": -2.35,
+        "scale": 0.00
       }
     }
   }

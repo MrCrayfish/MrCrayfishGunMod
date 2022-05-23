@@ -4,15 +4,12 @@ license="GPL3"
 
 [[mods]]
 modId="tac"
-version="1.0.0"
+version="0.2.0"
 displayName="Timeless and Classics"
 updateJSONURL=""
-displayURL="https://mrcrayfish.com/"
-authors="MrCrayfish"
+displayURL=""
+authors="Timeless Development Tema"
 description='''
-MrCrayfish's Gun Mod adds in simple and straight forward weapons into Minecraft. They can be
-configured with many different attachments to add extra stats to your weapon and coloured to your
-personal liking. This mod adds ten weapons into the game!
 '''
 
 [[dependencies.tac]]
@@ -31,5 +28,11 @@ personal liking. This mod adds ten weapons into the game!
     modId="obfuscate"
     mandatory=true
     versionRange="[0.6.0,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.tac]]
+    modId="chiselsandbits"
+    mandatory=false
+    versionRange="[1.0.63,)"
     ordering="NONE"
     side="BOTH"

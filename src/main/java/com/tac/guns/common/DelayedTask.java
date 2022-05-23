@@ -18,7 +18,7 @@ import java.util.List;
  * A simple system to run synchronized delayed tasks. See {@link #runAfter(int, Runnable)} to add
  * a delayed task.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class DelayedTask

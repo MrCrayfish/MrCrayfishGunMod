@@ -9,13 +9,13 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class StunGrenadeItem extends GrenadeItem
 {
-    public StunGrenadeItem(Item.Properties properties, int maxCookTime)
+    public StunGrenadeItem(Item.Properties properties, int maxCookTime, float speed)
     {
-        super(properties, maxCookTime);
+        super(properties, maxCookTime, 1, speed);
     }
 
     @Override

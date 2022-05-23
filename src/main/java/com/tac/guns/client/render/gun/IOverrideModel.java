@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
  * A simple interface to render custom models. This can only be used for overriding the models of
  * weapons or attachments.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IOverrideModel
 {

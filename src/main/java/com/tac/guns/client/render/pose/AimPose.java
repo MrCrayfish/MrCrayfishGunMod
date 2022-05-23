@@ -3,7 +3,7 @@ package com.tac.guns.client.render.pose;
 import net.minecraft.util.math.vector.Vector3f;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class AimPose
 {

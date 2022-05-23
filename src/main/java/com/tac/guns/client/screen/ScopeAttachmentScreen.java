@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class ScopeAttachmentScreen extends ContainerScreen<AttachmentContainer>
 {
@@ -94,7 +94,7 @@ public class ScopeAttachmentScreen extends ContainerScreen<AttachmentContainer>
     }
 
 
-    @Override
+    /*@Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
     {
         Minecraft minecraft = Minecraft.getInstance();
@@ -103,7 +103,7 @@ public class ScopeAttachmentScreen extends ContainerScreen<AttachmentContainer>
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         int left = (this.width - this.xSize) / 2;
         int top = (this.height - this.ySize) / 2;
-        RenderUtil.scissor(left + 26, top + 17, 142, 70);
+        RenderUtil.scissor(left + 8, top + 17, 212, 70);
 
         RenderSystem.pushMatrix();
         {
@@ -127,7 +127,7 @@ public class ScopeAttachmentScreen extends ContainerScreen<AttachmentContainer>
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             IRenderTypeBuffer.Impl buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
-            //GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getHeldItemMainhand(), ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, 15728880, 0F);
+            GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getHeldItemMainhand(), ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, 15728880, 0F);
             buffer.finish();
 
             RenderSystem.disableAlphaTest();
@@ -144,7 +144,7 @@ public class ScopeAttachmentScreen extends ContainerScreen<AttachmentContainer>
             minecraft.fontRenderer.drawString(matrixStack, I18n.format("container.tac.attachments.window_help"), 56, 38, 0xFFFFFF);
             RenderSystem.popMatrix();
         }
-    }
+    }*/
 
     @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)

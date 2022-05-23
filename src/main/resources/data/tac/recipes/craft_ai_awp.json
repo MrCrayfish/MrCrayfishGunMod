@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:ai_awp"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 130
+    },
+	{
+      "item": "minecraft:diamond",
+      "count": 4
+    }
+  ]
+}

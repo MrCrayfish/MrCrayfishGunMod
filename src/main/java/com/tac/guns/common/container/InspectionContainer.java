@@ -11,7 +11,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class InspectionContainer extends Container
 {

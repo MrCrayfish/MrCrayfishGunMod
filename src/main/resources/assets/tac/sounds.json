@@ -143,10 +143,179 @@
          { "name": "tac:item/mtar_fire_s" }
       ]
    },
+   "item.fal_fire": {
+      "subtitle": "subtitle.tac.fal_fire",
+      "sounds": [
+         { "name": "tac:item/fal_fire" }
+      ]
+   },
+   "item.mp5_fire": {
+      "subtitle": "subtitle.tac.mp5_fire",
+      "sounds": [
+         { "name": "tac:item/mp5_fire" }
+      ]
+   },
+   "item.mp5_fires": {
+      "subtitle": "subtitle.tac.mp5_fires",
+      "sounds": [
+         { "name": "tac:item/mp5s" }
+      ]
+   },
+   "item.remington_700": {
+   "subtitle": "subtitle.tac.remington_700",
+   "sounds": [
+      { "name": "tac:item/remington_700" }
+   ]
+},
+   "item.remington_700s": {
+      "subtitle": "subtitle.tac.remington_700s",
+      "sounds": [
+         { "name": "tac:item/remington_700s" }
+      ]
+   },
+   "item.m870": {
+      "subtitle": "subtitle.tac.m870",
+      "sounds": [
+         { "name": "tac:item/m870" }
+      ]
+   },
+   "item.mp9s": {
+      "subtitle": "subtitle.tac.mp9s",
+      "sounds": [
+         { "name": "tac:item/mp9s" }
+      ]
+   },
+   "item.p226s": {
+      "subtitle": "subtitle.tac.p226s",
+      "sounds": [
+         { "name": "tac:item/p226s" }
+      ]
+   },
+   "item.saiga": {
+      "subtitle": "subtitle.tac.saiga",
+      "sounds": [
+         { "name": "tac:item/saiga" }
+      ]
+   },
+   "item.sig552": {
+      "subtitle": "subtitle.tac.sig552",
+      "sounds": [
+         { "name": "tac:item/sig552" }
+      ]
+   },
+   "item.sig552s": {
+      "subtitle": "subtitle.tac.sig552s",
+      "sounds": [
+         { "name": "tac:item/sig552s" }
+      ]
+   },
+   "item.m82a3": {
+      "subtitle": "subtitle.tac.m82a3",
+      "sounds": [
+         { "name": "tac:item/m82a3" }
+      ]
+   },
+   "item.deagle": {
+      "subtitle": "subtitle.tac.deagle",
+      "sounds": [
+         { "name": "tac:item/deagle_fire" }
+      ]
+   },
+   "item.deagles": {
+      "subtitle": "subtitle.tac.deagles",
+      "sounds": [
+         { "name": "tac:item/deagle_fire_suppressed" }
+      ]
+   },
+   "item.m1917": {
+      "subtitle": "subtitle.tac.m1917",
+      "sounds": [
+         { "name": "tac:item/m1917_fire" }
+      ]
+   },
+   "item.p226": {
+      "subtitle": "subtitle.tac.p226",
+      "sounds": [
+         { "name": "tac:item/p226" }
+      ]
+   },
+   "item.aa12": {
+      "subtitle": "subtitle.tac.aa12",
+      "sounds": [
+         { "name": "tac:item/aa12" }
+      ]
+   },
+   "item.ai_awp": {
+      "subtitle": "subtitle.tac.ai_awp",
+      "sounds": [
+         { "name": "tac:item/ai_awp" }
+      ]
+   },
+   "item.hk416": {
+      "subtitle": "subtitle.tac.hk416",
+      "sounds": [
+         { "name": "tac:item/hk416" }
+      ]
+   },
+   "item.m24": {
+      "subtitle": "subtitle.tac.m24",
+      "sounds": [
+         { "name": "tac:item/m24" }
+      ]
+   },
+   "item.m1928": {
+      "subtitle": "subtitle.tac.m1928",
+      "sounds": [
+         { "name": "tac:item/m1928" }
+      ]
+   },
+   "item.mk14": {
+      "subtitle": "subtitle.tac.mk14",
+      "sounds": [
+         { "name": "tac:item/mk14" }
+      ]
+   },
+   "item.rpg7": {
+      "subtitle": "subtitle.tac.rpg7",
+      "sounds": [
+         { "name": "tac:item/rpg7" }
+      ]
+   },
+   "item.sten": {
+      "subtitle": "subtitle.tac.sten",
+      "sounds": [
+         { "name": "tac:item/sten" }
+      ]
+   },
+   "item.vector": {
+      "subtitle": "subtitle.tac.vector",
+      "sounds": [
+         { "name": "tac:item/vector" }
+      ]
+   },
+   "item.m45": {
+      "subtitle": "subtitle.tac.m45",
+      "sounds": [
+         { "name": "tac:item/m45" }
+      ]
+   },
+
    "item.headshot": {
       "subtitle": "subtitle.tac.headshot",
       "sounds": [
          { "name": "tac:item/headshot" }
+      ]
+   },
+   "item.pistol.reload": {
+      "subtitle": "subtitle.tac.reload",
+      "sounds": [
+         { "name": "tac:item/reload" }
+      ]
+   },
+   "item.pistol.cock": {
+      "subtitle": "subtitle.tac.cock",
+      "sounds": [
+         { "name": "tac:item/cock" }
       ]
    }
 }

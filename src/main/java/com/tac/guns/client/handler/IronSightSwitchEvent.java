@@ -35,7 +35,8 @@ public class IronSightSwitchEvent
     {
     }
 
-    @SubscribeEvent
+    //Disabled, mod conflicts mess with the Array handling big time!
+    /*@SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
         if(Minecraft.getInstance().player == null)
@@ -46,7 +47,7 @@ public class IronSightSwitchEvent
         {
             PacketHandler.getPlayChannel().sendToServer(new MessageIronSightSwitch());
         }
-    }
+    }*/
 
 }
 

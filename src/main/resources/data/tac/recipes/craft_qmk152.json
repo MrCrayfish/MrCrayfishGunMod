@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:qmk152"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 24
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 20
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 2
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "type": "tac:workbench",
   "result": {
-    "item": "762x25",
+    "item": "tac:762x25",
     "count": 24
   },
   "materials": [

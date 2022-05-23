@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
  * A simple class that handles interpolating between different poses depending on the rotation pitch
  * of the player. Used for pointing the weapon in the same direction the playing is looking.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public abstract class WeaponPose implements IHeldAnimation
 {

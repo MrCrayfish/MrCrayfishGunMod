@@ -1,0 +1,12 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:spas_12"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 60
+    }
+  ]
+}

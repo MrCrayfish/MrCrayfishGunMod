@@ -6,7 +6,7 @@ import com.tac.guns.interfaces.IGunModifier;
  * An attachment class related to barrels. Barrels need to specify the length in order to render
  * the muzzle flash correctly. Use {@link #create(float, IGunModifier...)} to create an get.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class Barrel extends Attachment
 {

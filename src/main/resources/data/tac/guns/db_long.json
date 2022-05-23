@@ -4,15 +4,26 @@
     "rateSelector": [
       1
     ],
-    "gripType": "tac:two_handed_ak47",
-    "maxAmmo": 2,
-    "reloadAmount": 1,
-    "recoilAngle": 7.385,
+    "gripType": "tac:two_handed_mosin",
+    "recoilAngle": 6.085,
     "recoilKick": 1.155,
     "recoilAdsReduction": 0.28,
+    "weaponRecoilDuration": 0.725,
+    "cameraRecoilModifier": 1.175,
+    "recoilDuration": 0.16,
     "alwaysSpread": true,
     "spread": 11.25,
-    "projectileAmount": 11
+    "projectileAmount": 11,
+    "weightKilo": 3.0
+  },
+  "reloads": {
+    "magFed": false,
+    "maxAmmo": 2,
+    "reloadAmount": 1,
+    "preReloadPauseTicks": 6,
+    "interReloadPauseTicks": 14,
+    "maxAdditionalAmmoPerOC": [0, 0, 0],
+    "openBolt": true
   },
   "projectile": {
     "item": "tac:10_gauge_round",
@@ -39,7 +50,7 @@
   },
   "modules": {
     "zoom": [{
-      "fovModifier": 0.75,
+      "fovModifier": 0.8,
       "yOffset": 8.18,
       "zOffset": 1.2
     }],

@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class SpreadTracker

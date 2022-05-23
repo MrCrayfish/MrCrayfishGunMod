@@ -6,7 +6,7 @@ import com.tac.guns.interfaces.IGunModifier;
  * An attachment class related to under barrels. Use {@link #create(IGunModifier...)} to create an
  * get.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class UnderBarrel extends Attachment
 {

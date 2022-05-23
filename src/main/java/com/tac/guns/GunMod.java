@@ -7,15 +7,19 @@ import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.pose.*;
 import com.tac.guns.common.BoundingBoxManager;
 import com.tac.guns.common.GripType;
+import com.tac.guns.common.ProjectileManager;
 import com.tac.guns.datagen.*;
 import com.tac.guns.enchantment.EnchantmentTypes;
+import com.tac.guns.entity.MissileEntity;
 import com.tac.guns.init.*;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
+import com.tac.guns.tileentity.FlashLightSource;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -42,6 +46,8 @@ public class GunMod
 {
     public static boolean controllableLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+    public static boolean cabLoaded = false;
+
     public static final ItemGroup GROUP = new  ItemGroup(Reference.MOD_ID)
     {
         @Override
@@ -58,13 +64,14 @@ public class GunMod
             CustomGunManager.fill(items);
         }
     }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
+
     public static final ItemGroup PISTOL = new  ItemGroup("Pistols")
     {
         @Override
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.M1911.get());
-            stack.getOrCreateTag().putInt("AmmoCount", 8);//ModItems.M1911.get().getGun().getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.M1911.get().getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -81,7 +88,7 @@ public class GunMod
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.VECTOR45.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.VECTOR45.get().getGun().getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.VECTOR45.get().getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -98,7 +105,7 @@ public class GunMod
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.AK47.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.AK47.get().getGun().getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.AK47.get().getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -115,7 +122,7 @@ public class GunMod
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.M24.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.M24.get().getGun().getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.M24.get().getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -132,7 +139,7 @@ public class GunMod
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.MOSBERG590.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.MOSBERG590.get().getGun().getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.MOSBERG590.get().getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -149,7 +156,7 @@ public class GunMod
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.M60.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.M60.get().getGun().getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.M60.get().getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -166,6 +173,23 @@ public class GunMod
         public ItemStack createIcon()
         {
             ItemStack stack = new ItemStack(ModItems.BULLET_308.get());
+            return stack;
+        }
+
+        @Override
+        public void fill(NonNullList<ItemStack> items)
+        {
+            super.fill(items);
+            CustomGunManager.fill(items);
+        }
+    };
+    public static final ItemGroup EXPLOSIVES = new  ItemGroup(Reference.MOD_ID)
+    {
+        @Override
+        public ItemStack createIcon()
+        {
+            ItemStack stack = new ItemStack(ModItems.RPG7.get());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.RPG7.get().getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -197,15 +221,12 @@ public class GunMod
         bus.addListener(this::onClientSetup);
         bus.addListener(this::dataSetup);
         controllableLoaded = ModList.get().isLoaded("controllable");
-
-        /*MixinEnvironment.getDefaultEnvironment()
-                .addConfiguration("tac.mixins.json");*/
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
         //ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
-        //ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
+        ProjectileManager.getInstance().registerFactory(ModItems.RPG7_MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.RPG7_MISSILE.get(), worldIn, entity, weapon, item, modifiedGun, 1.5F));
         PacketHandler.init();
 
         if(Config.COMMON.gameplay.improvedHitboxes.get())
@@ -221,6 +242,7 @@ public class GunMod
         GripType.registerType(new GripType(new ResourceLocation("tac", "two_handed_ak47"), new TwoHandedPoseHighRes_ak47()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "two_handed_m60"), new TwoHandedPoseHighRes_m60()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "two_handed_vector"), new TwoHandedPoseHighRes_vector()));
+        GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1873"), new OneHandedPoseHighRes_m1873()));
     }
 
     private void dataSetup(GatherDataEvent event)

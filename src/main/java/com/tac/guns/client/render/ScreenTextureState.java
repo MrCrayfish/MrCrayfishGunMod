@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
  * A texture state that represents the buffer after the world has been rendered but before the HUD
  * is rendered. Used for rendering scopes. This object is restricted to one get.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ScreenTextureState extends RenderState.TexturingState
@@ -67,9 +67,9 @@ public class ScreenTextureState extends RenderState.TexturingState
 
     private void onRenderWorldLast(RenderWorldLastEvent event)
     {
-        // Yep scopes will never work with shaders
+/*        // Yep scopes will never work with shaders
         if(OptifineHelper.isShadersEnabled())
-            return;
+            return;*/
 
         MainWindow mainWindow = Minecraft.getInstance().getMainWindow();
 

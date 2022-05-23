@@ -4,7 +4,7 @@ import java.io.InvalidObjectException;
 import java.lang.reflect.Field;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class Validator
 {

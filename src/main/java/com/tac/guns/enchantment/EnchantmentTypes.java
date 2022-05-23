@@ -5,7 +5,7 @@ import com.tac.guns.item.GunItem;
 import net.minecraft.enchantment.EnchantmentType;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class EnchantmentTypes
 {

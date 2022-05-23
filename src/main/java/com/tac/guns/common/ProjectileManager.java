@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * A class to manage custom projectile factories
  *
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class ProjectileManager
 {

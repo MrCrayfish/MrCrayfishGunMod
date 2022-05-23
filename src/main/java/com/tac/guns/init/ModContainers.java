@@ -2,6 +2,7 @@ package com.tac.guns.init;
 
 import com.tac.guns.Reference;
 import com.tac.guns.common.container.AttachmentContainer;
+import com.tac.guns.common.container.ColorBenchContainer;
 import com.tac.guns.common.container.InspectionContainer;
 import com.tac.guns.common.container.WorkbenchContainer;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
@@ -13,7 +14,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class ModContainers
 {
@@ -27,6 +28,8 @@ public class ModContainers
     public static final RegistryObject<ContainerType<AttachmentContainer>> ATTACHMENTS = register("attachments", AttachmentContainer::new);
     
     public static final RegistryObject<ContainerType<InspectionContainer>> INSPECTION = register("inspection", InspectionContainer::new);
+
+    public static final RegistryObject<ContainerType<ColorBenchContainer>> COLOR_BENCH = register("color_bench", ColorBenchContainer::new);
 
     private static <T extends Container> RegistryObject<ContainerType<T>> register(String id, ContainerType.IFactory<T> factory)
     {

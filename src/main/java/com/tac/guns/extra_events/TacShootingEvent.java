@@ -8,15 +8,29 @@ package com.tac.guns.extra_events;
 
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
+import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
-import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.item.GunItem;
+import com.tac.guns.network.PacketHandler;
+import com.tac.guns.network.message.MessageGunSound;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.KeybindTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.glfw.GLFW;
 
+import java.util.Locale;
 
 
 /**
@@ -38,9 +52,8 @@ public class TacShootingEvent {
     public static void preShoot(GunFireEvent.Pre event)
     {
         // Our gun?
-        if(!(event.getStack().getItem() instanceof TimelessGunItem))
+        if(!(event.getStack().getItem() instanceof GunItem))
             return;
-
         HandleFireMode(event);
     }
 
@@ -48,7 +61,7 @@ public class TacShootingEvent {
     {
         ItemStack gunItem = event.getStack();
         int[] gunItemFireModes = gunItem.getTag().getIntArray("supportedFireModes");
-        Gun gun = ((TimelessGunItem) gunItem.getItem()).getModifiedGun(gunItem.getStack()); // Quick patch up, will create static method for handling null supported modes
+        Gun gun = ((GunItem) gunItem.getItem()).getModifiedGun(gunItem.getStack()); // Quick patch up, will create static method for handling null supported modes
 
         if(gunItem.getTag().get("CurrentFireMode") == null) // If user has not checked fire modes yet, default to first mode
         {
@@ -68,10 +81,16 @@ public class TacShootingEvent {
                 gunItem.getTag().remove("CurrentFireMode");
                 gunItem.getTag().putInt("CurrentFireMode", gunItemFireModes[currentFireMode+1]);
             }
-            else
+            else // Safety clicks
             {
-                event.getPlayer().sendStatusMessage(new TranslationTextComponent("info." + Reference.MOD_ID + ".gun_safety_lock"),true);
+                event.getPlayer().sendStatusMessage(new TranslationTextComponent("info." + Reference.MOD_ID + ".gun_safety_lock", new KeybindTextComponent("key.tac.fireSelect").getString().toUpperCase(Locale.ENGLISH)).mergeStyle(TextFormatting.GREEN) ,true);
                 event.setCanceled(true);
+            }
+
+            ResourceLocation fireModeSound = gun.getSounds().getCock(); // Use cocking sound for now
+            if(fireModeSound != null && event.getPlayer().isAlive())
+            {
+                event.getPlayer().playSound(new SoundEvent(fireModeSound), 1.0F, 1.0F);
             }
         }
     }

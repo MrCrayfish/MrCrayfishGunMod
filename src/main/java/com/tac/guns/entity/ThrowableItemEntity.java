@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public abstract class ThrowableItemEntity extends ThrowableEntity implements IEntityAdditionalSpawnData
 {

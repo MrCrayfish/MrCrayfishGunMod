@@ -7,7 +7,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class RotatedHeadshotBox<T extends LivingEntity> extends BasicHeadshotBox<T>
 {

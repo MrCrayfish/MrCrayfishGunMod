@@ -3,6 +3,7 @@ package com.tac.guns.client.render.pose;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.client.handler.ReloadHandler;
 import com.tac.guns.client.util.RenderUtil;
+import com.tac.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -22,12 +23,12 @@ public class TwoHandedPoseHighRes_m60 extends TwoHandedPose {
 		
 		matrixStack.push();
 		
-		float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
+		float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks, stack);
 		matrixStack.translate(reloadProgress * 1.5, -reloadProgress, -reloadProgress * 1.5);
 		
 		int side = hand.opposite() == HandSide.RIGHT ? 1 : -1;
-		matrixStack.translate(10.5 * side * 0.0625, -1.121, -0.04);
-		
+		matrixStack.translate(7.75 * side * 0.0625, -1.121, -0.04);
+		//0.0135
 		if (Minecraft.getInstance().player.getSkinType().equals("slim") && hand.opposite() == HandSide.LEFT) {
 			matrixStack.translate(0.03125F * -side, 0, 0);
 		}
@@ -47,7 +48,7 @@ public class TwoHandedPoseHighRes_m60 extends TwoHandedPose {
 			centerOffset += hand == HandSide.RIGHT ? 0.2 : 0.8;
 		}
 		centerOffset = hand == HandSide.RIGHT ? -centerOffset : centerOffset;
-		matrixStack.translate(centerOffset * 0.0905, -0.815, -1.075);
+		matrixStack.translate(centerOffset * 0.0705, -0.815, -1.075);
 		
 		matrixStack.rotate(Vector3f.XP.rotationDegrees(80F));
 		matrixStack.scale(1F, 1F, 1F);

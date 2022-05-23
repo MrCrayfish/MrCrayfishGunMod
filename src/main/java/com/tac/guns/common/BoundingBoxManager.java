@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class BoundingBoxManager
 {

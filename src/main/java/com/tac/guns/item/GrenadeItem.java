@@ -13,16 +13,20 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class GrenadeItem extends AmmoItem
 {
     protected int maxCookTime;
+    private float power;
+    private float speed;
 
-    public GrenadeItem(Item.Properties properties, int maxCookTime)
+    public GrenadeItem(Item.Properties properties, int maxCookTime, float power, float speed)
     {
         super(properties);
         this.maxCookTime = maxCookTime;
+        this.power = power;
+        this.speed = speed;
     }
 
     @Override
@@ -43,7 +47,7 @@ public class GrenadeItem extends AmmoItem
         if(!this.canCook()) return;
 
         int duration = this.getUseDuration(stack) - count;
-        if(duration == 10)
+        if(duration == 5)
             player.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundCategory.PLAYERS, 1.0F, 1.0F, false);
     }
 
@@ -74,12 +78,12 @@ public class GrenadeItem extends AmmoItem
         if(!worldIn.isRemote())
         {
             int duration = this.getUseDuration(stack) - timeLeft;
-            if(duration >= 10)
+            if(duration >= 5)
             {
                 if(!(entityLiving instanceof PlayerEntity) || !((PlayerEntity) entityLiving).isCreative())
                     stack.shrink(1);
                 ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
-                grenade.func_234612_a_(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+                grenade.func_234612_a_(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0.0F, Math.min(1.0F, duration / 20F)*this.speed, 1.5F);
                 worldIn.addEntity(grenade);
                 this.onThrown(worldIn, grenade);
             }
@@ -88,8 +92,10 @@ public class GrenadeItem extends AmmoItem
 
     public ThrowableGrenadeEntity create(World world, LivingEntity entity, int timeLeft)
     {
-        return new ThrowableGrenadeEntity(world, entity, timeLeft);
+        return null;
     }
+
+    /*return new ThrowableGrenadeEntity(world, entity, timeLeft, this.power);*/
 
     public boolean canCook()
     {

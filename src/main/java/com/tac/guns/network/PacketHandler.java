@@ -51,12 +51,14 @@ public class PacketHandler
         registerPlayMessage(MessageAim.class, MessageAim::new, LogicalSide.SERVER);
         registerPlayMessage(MessageReload.class, MessageReload::new, LogicalSide.SERVER);
         registerPlayMessage(MessageShoot.class, MessageShoot::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageLightChange.class, MessageLightChange::new, LogicalSide.SERVER);
         registerPlayMessage(MessageUnload.class, MessageUnload::new, LogicalSide.SERVER);
         registerPlayMessage(MessageStunGrenade.class, MessageStunGrenade::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageCraft.class, MessageCraft::new, LogicalSide.SERVER);
         registerPlayMessage(MessageBulletTrail.class, MessageBulletTrail::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageAttachments.class, MessageAttachments::new, LogicalSide.SERVER);
         registerPlayMessage(MessageInspection.class, MessageInspection::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageColorBench.class, MessageColorBench::new, LogicalSide.SERVER);
         registerPlayMessage(MessageUpdateGuns.class, MessageUpdateGuns::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageBlood.class, MessageBlood::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageShooting.class, MessageShooting::new, LogicalSide.SERVER);
@@ -65,7 +67,9 @@ public class PacketHandler
         registerPlayMessage(MessageProjectileHitEntity.class, MessageProjectileHitEntity::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageRemoveProjectile.class, MessageRemoveProjectile::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageFireMode.class, MessageFireMode::new, LogicalSide.SERVER);
-        registerPlayMessage(MessageIronSightSwitch.class, MessageIronSightSwitch::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageIronSightSwitch.class, MessageIronSightSwitch::new, LogicalSide.CLIENT);
+
+        registerPlayMessage(MessageUpdatePlayerMovement.class, MessageUpdatePlayerMovement::new, LogicalSide.SERVER);
     }
 
     /**

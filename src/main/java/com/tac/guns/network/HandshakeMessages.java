@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import java.util.function.IntSupplier;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class HandshakeMessages
 {

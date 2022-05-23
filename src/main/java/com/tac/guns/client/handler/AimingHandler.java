@@ -2,14 +2,17 @@ package com.tac.guns.client.handler;
 
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
+import com.tac.guns.client.KeyBinds;
 import com.tac.guns.client.render.crosshair.Crosshair;
 import com.tac.guns.common.Gun;
 import com.tac.guns.init.ModBlocks;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.attachment.impl.Attachment;
 import com.tac.guns.item.attachment.impl.Scope;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAim;
+import com.tac.guns.network.message.MessageUnload;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
@@ -29,9 +32,11 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Level;
@@ -42,7 +47,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class AimingHandler
 {
@@ -62,6 +67,8 @@ public class AimingHandler
     private final Map<PlayerEntity, AimTracker> aimingMap = new WeakHashMap<>();
     private double normalisedAdsProgress;
     private boolean aiming = false;
+    private boolean toggledAim = false;
+    private int toggledAimAwaiter = 0;
 
     private AimingHandler() {}
 
@@ -77,14 +84,14 @@ public class AimingHandler
 */
         PlayerEntity player = event.player;
         AimTracker tracker = getAimTracker(player);
-        if(tracker != null)
-        {
+        if(tracker != null) {
             tracker.handleAiming(player, player.getHeldItem(Hand.MAIN_HAND));
-            if(!tracker.isAiming())
-            {
+            if (!tracker.isAiming()) {
                 this.aimingMap.remove(player);
             }
         }
+        if (this.aiming)
+            player.setSprinting(false);
     }
 
     @Nullable
@@ -122,6 +129,9 @@ public class AimingHandler
         if(player == null)
             return;
 
+        if(this.toggledAimAwaiter > 0)
+            this.toggledAimAwaiter--;
+
         if(this.isAiming())
         {
             if(!this.aiming)
@@ -141,7 +151,7 @@ public class AimingHandler
         this.localTracker.handleAiming(player, player.getHeldItem(Hand.MAIN_HAND));
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onFovUpdate(FOVUpdateEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
@@ -161,7 +171,7 @@ public class AimingHandler
                         if(scope != null)
                         {
                             if(!Config.COMMON.gameplay.realisticLowPowerFovHandling.get() || (scope.getAdditionalZoom() > 0 && Config.COMMON.gameplay.realisticLowPowerFovHandling.get()))
-                            {    newFov -= scope.getAdditionalZoom(); event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));}
+                            {    newFov -= scope.getAdditionalZoom() * (Config.COMMON.gameplay.scopeDoubleRender.get() ? 1:2); event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));}
                         }
                         else if(!Config.COMMON.gameplay.realisticIronSightFovHandling.get())
                             event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));
@@ -216,7 +226,7 @@ public class AimingHandler
         CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
         float cooldown = tracker.getCooldown(heldItem.getItem(), Minecraft.getInstance().getRenderPartialTicks());
 
-        if(gun.getGeneral().isBoltAction() && (cooldown < 0.8 && cooldown > 0))
+        if(gun.getGeneral().isBoltAction() && (cooldown < 0.8 && cooldown > 0) && Gun.getScope(heldItem) != null)
         {
             return false;
         }
@@ -227,13 +237,80 @@ public class AimingHandler
         if(SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
             return false;
 
-        boolean zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
-        if(GunMod.controllableLoaded)
+        boolean zooming;
+
+        if(!Config.CLIENT.controls.toggleAim.get())
         {
-            // zooming |= ControllerHandler.isAiming();
+            zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+
+            if (GunMod.controllableLoaded) {
+                // zooming |= ControllerHandler.isAiming();
+            }
         }
+        else
+            zooming = this.toggledAim;
 
         return zooming;
+    }
+
+    @SubscribeEvent
+    public void onKeyPressed(InputEvent.KeyInputEvent event)
+    {
+        if(!Config.CLIENT.controls.toggleAim.get())
+            return;
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return;
+        if(!(mc.player.getHeldItemMainhand().getItem() instanceof GunItem))
+            return;
+        if(this.toggledAimAwaiter > 0)
+            return;
+
+        boolean isLeftClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        boolean isRightClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+
+        if(isLeftClickAim || isRightClickAim)
+            return;
+
+        if (KeyBinds.KEY_ADS.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS) {
+            forceToggleAim();
+            this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
+        }
+    }
+
+    @SubscribeEvent
+    public void onKeyPressed(InputEvent.RawMouseEvent event)
+    {
+        if(!Config.CLIENT.controls.toggleAim.get())
+            return;
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return;
+        if(!(mc.player.getHeldItemMainhand().getItem() instanceof GunItem))
+            return;
+        if(this.toggledAimAwaiter > 0)
+            return;
+        if(event.getAction() != GLFW.GLFW_PRESS)
+            return;
+
+        if(event.getButton() == KeyBinds.KEY_ADS.getKey().getKeyCode())
+        {
+            forceToggleAim();
+            this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
+        }
+    }
+
+    public boolean isToggledAim()
+    {
+        return this.toggledAim;
+    }
+
+    public void forceToggleAim()
+    {
+        if (this.toggledAim)
+            this.toggledAim = false;
+        else
+            this.toggledAim = true;
     }
 
     public boolean isLookingAtInteractableBlock()

@@ -14,7 +14,7 @@ import org.apache.commons.lang3.Validate;
 import java.util.function.Supplier;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class MessageUpdateGuns implements IMessage, NetworkGunManager.IGunProvider
 {

@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"3": "tac:items/m60_body",
 		"4": "tac:items/detailed_wood",
@@ -4245,16 +4245,17 @@
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"thirdperson_lefthand": {
-			"translation": [0, 3, -5.25],
-			"scale": [0.6, 0.6, 0.6]
+			"translation": [0, 3, -5.5],
+			"scale": [0.625, 0.625, 0.625]
 		},
 		"firstperson_righthand": {
-			"translation": [-4.75, 8, -4.25]
+			"translation": [-4, 7.5, -5.5]
 		},
 		"firstperson_lefthand": {
-			"translation": [-3.75, 6.25, -6.5]
+			"translation": [-4, 7.5, -5.5]
 		},
 		"ground": {
+			"translation": [0, 3, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"gui": {
@@ -4263,7 +4264,7 @@
 		},
 		"fixed": {
 			"rotation": [0, 90, 0],
-			"translation": [0, 3.25, -2],
+			"translation": [0, 3.75, -2],
 			"scale": [1.25, 1.25, 1.25]
 		}
 	},
@@ -4278,7 +4279,15 @@
 			"name": "Handguard",
 			"origin": [8, 4.4375, 17.4375],
 			"color": 6,
-			"children": [26, 27, 28, 29, 30, 31, 32, 33,
+			"children": [
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
 				{
 					"name": "group",
 					"origin": [8, 4.4375, 17.4375],
@@ -4291,7 +4300,10 @@
 			"name": "Bolt",
 			"origin": [9, 4.4375, 17.4375],
 			"color": 7,
-			"children": [89, 90, 91,
+			"children": [
+				89,
+				90,
+				91,
 				{
 					"name": "octagon",
 					"origin": [8, 8, 8],
@@ -4322,7 +4334,37 @@
 			"name": "stock",
 			"origin": [8, 0.5, 18.5],
 			"color": 4,
-			"children": [147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176,
+			"children": [
+				147,
+				148,
+				149,
+				150,
+				151,
+				152,
+				153,
+				154,
+				155,
+				156,
+				157,
+				158,
+				159,
+				160,
+				161,
+				162,
+				163,
+				164,
+				165,
+				166,
+				167,
+				168,
+				169,
+				170,
+				171,
+				172,
+				173,
+				174,
+				175,
+				176,
 				{
 					"name": "group",
 					"origin": [8, 2.53125, 29.5625],
@@ -4384,13 +4426,21 @@
 			"name": "deco",
 			"origin": [7.6875, -0.64568, 26.2533],
 			"color": 0,
-			"children": [307, 308, 309, 310, 311,
+			"children": [
+				307,
+				308,
+				309,
+				310,
+				311,
 				{
 					"name": "group",
 					"origin": [8, 3.4683, 23.83074],
 					"color": 0,
 					"children": [312, 313, 314]
-				}, 315, 316]
+				},
+				315,
+				316
+			]
 		},
 		{
 			"name": "trigger",

@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
 		"4": "tac:items/mosin_barrel",
@@ -2113,22 +2113,23 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"translation": [0, 0, -6.5],
+			"translation": [0, 0.75, -7],
 			"scale": [0.65, 0.65, 0.65]
 		},
 		"thirdperson_lefthand": {
-			"rotation": [60, 0, 0],
-			"translation": [0, 5, -3],
+			"translation": [0, 0.75, -7],
 			"scale": [0.65, 0.65, 0.65]
 		},
 		"firstperson_righthand": {
-			"translation": [-3, 2.5, -8.25],
+			"translation": [-4, 3.25, -9.5],
 			"scale": [1.15, 1.15, 1.15]
 		},
 		"firstperson_lefthand": {
-			"translation": [-3, 2.5, -6]
+			"translation": [-4, 3.25, -9.5],
+			"scale": [1.15, 1.15, 1.15]
 		},
 		"ground": {
+			"translation": [0, 3, 0],
 			"scale": [0.65, 0.65, 0.65]
 		},
 		"gui": {
@@ -2152,7 +2153,22 @@
 			"name": "body_black",
 			"origin": [6.21079, 8.08123, 12.25],
 			"color": 0,
-			"children": [28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,
+			"children": [
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
 				{
 					"name": "group",
 					"origin": [-3.22097, -0.15847, -0.125],
@@ -2164,7 +2180,19 @@
 					"origin": [-3.22097, -0.15847, -0.125],
 					"color": 0,
 					"children": [48, 49, 50, 51, 52]
-				}, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
+				},
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63
+			]
 		},
 		{
 			"name": "trigger_megazine",

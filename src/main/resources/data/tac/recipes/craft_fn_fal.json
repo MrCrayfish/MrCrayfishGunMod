@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:fn_fal"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 108
+    },
+    {
+      "item": "minecraft:spruce_log",
+      "count": 10
+    }
+  ]
+}

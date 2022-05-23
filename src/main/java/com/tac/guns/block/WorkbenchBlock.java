@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class WorkbenchBlock extends RotatedObjectBlock
 {

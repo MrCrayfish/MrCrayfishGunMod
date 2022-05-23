@@ -8,14 +8,19 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple interface to allow items to be colored. Implementing this on an item will automatically
  * register an {@link IItemColor} into {@link ItemColors}. If the item this is implemented on is an
  * attachment, it will colored automatically by the color of the weapon if the item does not explicitly
  * have a color set.
+ *
+ * Timeless changes - IColored will now also provide methods for the 8 new color segments.
+ *
+ *
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs, Timeless Development team (ClusmyAlien)
  */
 public interface IColored
 {
@@ -34,7 +39,7 @@ public interface IColored
      * Gets whether or not this item has a color applied
      *
      * @param stack the ItemStack of the colored item
-     * @return If this item has a color applied
+     * @return If this item has any color or color segment applied
      */
     default boolean hasColor(ItemStack stack)
     {

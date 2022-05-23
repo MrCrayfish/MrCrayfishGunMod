@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"3": "tac:items/detailed_wood",
 		"5": "tac:items/dp28_barrel",
@@ -4608,21 +4608,21 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"translation": [0, 1, -1.75],
+			"translation": [0, 1, -1.25],
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"thirdperson_lefthand": {
-			"translation": [0, 1, -1.75],
+			"translation": [0, 1, -1.25],
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"translation": [-4.25, 4, -0.5]
+			"translation": [-4.5, 3, -1]
 		},
 		"firstperson_lefthand": {
-			"translation": [-2.5, 2.25, -0.75]
+			"translation": [-4, 3.5, 1.25]
 		},
 		"ground": {
-			"translation": [0, 1, 0],
+			"translation": [0, 5, 0],
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"gui": {
@@ -4696,7 +4696,40 @@
 			"name": "sight",
 			"origin": [0, 0, 0],
 			"color": 6,
-			"children": [189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221,
+			"children": [
+				189,
+				190,
+				191,
+				192,
+				193,
+				194,
+				195,
+				196,
+				197,
+				198,
+				199,
+				200,
+				201,
+				202,
+				203,
+				204,
+				205,
+				206,
+				207,
+				208,
+				209,
+				210,
+				211,
+				212,
+				213,
+				214,
+				215,
+				216,
+				217,
+				218,
+				219,
+				220,
+				221,
 				{
 					"name": "sight",
 					"origin": [0, 0, 0],
@@ -4721,12 +4754,34 @@
 			"name": "upper",
 			"origin": [0, 0, 0],
 			"color": 0,
-			"children": [314, 315, 316, 317, 318, 319, 320, 321, 322, 323,
+			"children": [
+				314,
+				315,
+				316,
+				317,
+				318,
+				319,
+				320,
+				321,
+				322,
+				323,
 				{
 					"name": "group",
 					"origin": [8.00186, 9.75, 11.71875],
 					"color": 3,
-					"children": [324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335,
+					"children": [
+						324,
+						325,
+						326,
+						327,
+						328,
+						329,
+						330,
+						331,
+						332,
+						333,
+						334,
+						335,
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],

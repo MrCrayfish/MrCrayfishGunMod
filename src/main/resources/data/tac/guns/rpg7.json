@@ -1,0 +1,59 @@
+{
+  "general": {
+    "rate": 30,
+    "rateSelector": [
+      0,
+      1
+    ],
+    "gripType": "tac:one_handed_m1911",
+    "recoilAngle": 1.15,
+    "recoilKick": 1.65,
+    "horizontalRecoilAngle": 0.0,
+    "recoilAdsReduction": 0.125,
+    "alwaysSpread": true,
+    "spread": 0.95,
+    "weightKilo": 7.7
+  },
+  "reloads": {
+    "magFed": false,
+    "maxAmmo": 1,
+    "reloadAmount": 1,
+    "preReloadPauseTicks": 0,
+    "interReloadPauseTicks": 120,
+    "openBolt": true
+  },
+  "projectile": {
+    "item": "tac:rpg7_missile",
+    "visible": true,
+    "gravity": true,
+    "damage": 26,
+    "size": 0.2,
+    "speed": 6.375,
+    "life": 60,
+    "damageReduceOverLife": false,
+    "ricochet": false
+  },
+  "sounds": {
+    "fire": "tac:item.rpg7",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.assault_rifle.silenced_fire"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 8.1,
+      "zOffset": -22.80,
+      "size": 0.0
+    },
+    "weaponType": 5
+  },
+  "modules": {
+    "zoom": [{
+      "fovModifier": 0.6,
+      "xOffset": 0.885,
+      "yOffset": 8.41,
+      "zOffset": 0.35
+    }],
+    "attachments": { }
+  }
+}

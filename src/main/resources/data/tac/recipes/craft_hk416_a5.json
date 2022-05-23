@@ -1,0 +1,12 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:hk416_a5"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 74
+    }
+  ]
+}

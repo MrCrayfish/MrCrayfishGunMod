@@ -10,7 +10,11 @@
     },
     {
       "item": "minecraft:glass_pane",
-      "count": 16
+      "count": 28
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 3
     }
   ]
 }

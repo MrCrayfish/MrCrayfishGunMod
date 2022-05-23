@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"5": "tac:items/glock_barrel_17",
 		"6": "tac:items/glock_slide_17",
@@ -5109,10 +5109,13 @@
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"translation": [-3, -0.25, -4.5],
-			"scale": [1, 1, 0.6]
+			"translation": [-4, 0, -7.5]
+		},
+		"firstperson_lefthand": {
+			"translation": [-4, 0, -7.5]
 		},
 		"ground": {
+			"translation": [0, 3, 0],
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"gui": {
@@ -5122,7 +5125,7 @@
 		},
 		"fixed": {
 			"rotation": [0, 90, 0],
-			"translation": [-0.75, -0.75, -2],
+			"translation": [-0.75, -2, -2],
 			"scale": [1.1, 1.1, 1.1]
 		}
 	},
@@ -5238,7 +5241,7 @@
 							"children": [304, 305, 306, 307]
 						},
 						{
-							"name": "推弹器",
+							"name": "æŽ¨å¼¹å™¨",
 							"origin": [8.98438, 0.20313, 0],
 							"color": 0,
 							"children": [

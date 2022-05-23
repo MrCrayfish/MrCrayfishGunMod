@@ -7,14 +7,24 @@
       1
     ],
     "gripType": "tac:two_handed_mosin",
+    "recoilAngle": 2.675,
+    "recoilKick": 1.95,
+    "horizontalRecoilAngle": 0.125,
+    "recoilAdsReduction": 0.40,
+    "weaponRecoilDuration": 0.85,
+    "recoilDuration": 0.125,
+    "cameraRecoilModifier": 2.0,
+    "alwaysSpread": true,
+    "spread": 1.00,
+    "weightKilo": 4.1
+  },
+  "reloads": {
+    "magFed": false,
     "maxAmmo": 6,
     "reloadAmount": 1,
-    "recoilAngle": 8.0,
-    "recoilKick": 1.8,
-    "horizontalRecoilAngle": 0.15,
-    "recoilAdsReduction": 0.75,
-    "alwaysSpread": true,
-    "spread": 1.00
+    "preReloadPauseTicks": 16,
+    "interReloadPauseTicks": 24,
+    "openBolt": true
   },
   "projectile": {
     "item": "tac:win_30-30",
@@ -28,22 +38,29 @@
   "sounds": {
     "fire": "tac:item.fire_mosin-nagant",
     "reload": "tac:item.pistol.reload",
-    "cock": "tac:item.assault_rifle.cock",
+    "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.assault_rifle.silenced_fire"
   },
   "display": {
     "flash": {
-      "yOffset": 5.1,
-      "zOffset": -29.90,
-      "size": 1.3
+      "yOffset": 7.25,
+      "zOffset": -24.80,
+      "size": 1.05
     },
     "weaponType": 5
   },
   "modules": {
     "zoom": [{
-      "fovModifier": 0.60,
+      "fovModifier": 0.7,
       "yOffset": 8.4,
       "zOffset": -5.7
-    }]
+    }],
+    "attachments": {
+      "oldScope": {
+        "yOffset": 7.375,
+        "zOffset": 6.0,
+        "scale": 1.0
+      }
+    }
   }
 }

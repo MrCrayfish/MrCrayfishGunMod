@@ -4,7 +4,7 @@ import com.tac.guns.entity.ProjectileEntity;
 import net.minecraft.util.math.EntityRayTraceResult;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class ExtendedEntityRayTraceResult extends EntityRayTraceResult
 {

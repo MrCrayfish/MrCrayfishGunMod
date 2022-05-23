@@ -3,7 +3,7 @@ package com.tac.guns.interfaces;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IResourceLocation
 {

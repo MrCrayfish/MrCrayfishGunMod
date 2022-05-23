@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"4": "tac:items/db_back",
 		"5": "tac:items/db_front",
@@ -997,21 +997,21 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"translation": [0, 2, -1.25],
+			"translation": [0, 2, -2],
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"thirdperson_lefthand": {
-			"rotation": [37.5, 0, 0],
-			"translation": [0, 6, 1.5]
+			"translation": [0, 2, -2],
+			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"translation": [-2.75, 5, -1.5]
+			"translation": [-4, 5.25, -1.5]
 		},
 		"firstperson_lefthand": {
-			"translation": [-3, 8, 0]
+			"translation": [-4, 5.25, -1.5]
 		},
 		"ground": {
-			"translation": [0, 4.5, 0],
+			"translation": [0, 5, 0],
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"gui": {
@@ -1045,12 +1045,21 @@
 					"origin": [7.99, 0.9825, 10.17661],
 					"color": 4,
 					"children": [5, 6, 7, 8, 9, 10, 11, 12, 13]
-				}, 14,
+				},
+				14,
 				{
 					"name": "barrel1",
 					"origin": [8, 8, 8],
 					"color": 4,
-					"children": [15, 16, 17, 18, 19, 20, 21, 22,
+					"children": [
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
@@ -1063,7 +1072,15 @@
 					"name": "barrel2",
 					"origin": [8, 8, 8],
 					"color": 4,
-					"children": [27, 28, 29, 30, 31, 32, 33, 34,
+					"children": [
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34,
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],

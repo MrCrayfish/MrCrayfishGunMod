@@ -9,7 +9,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class MessageGunSound implements IMessage
 {
@@ -22,10 +22,11 @@ public class MessageGunSound implements IMessage
     private float pitch;
     private int shooterId;
     private boolean muzzle;
+    private boolean reload;
 
     public MessageGunSound() {}
 
-    public MessageGunSound(ResourceLocation id, SoundCategory category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle)
+    public MessageGunSound(ResourceLocation id, SoundCategory category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle, boolean reload)
     {
         this.id = id;
         this.category = category;
@@ -36,6 +37,7 @@ public class MessageGunSound implements IMessage
         this.pitch = pitch;
         this.shooterId = shooterId;
         this.muzzle = muzzle;
+        this.reload = reload;
     }
 
     @Override
@@ -50,6 +52,7 @@ public class MessageGunSound implements IMessage
         buffer.writeFloat(this.pitch);
         buffer.writeInt(this.shooterId);
         buffer.writeBoolean(this.muzzle);
+        buffer.writeBoolean(this.reload);
     }
 
     @Override
@@ -64,6 +67,7 @@ public class MessageGunSound implements IMessage
         this.pitch = buffer.readFloat();
         this.shooterId = buffer.readInt();
         this.muzzle = buffer.readBoolean();
+        this.reload = buffer.readBoolean();
     }
 
     @Override
@@ -116,5 +120,9 @@ public class MessageGunSound implements IMessage
     public boolean showMuzzleFlash()
     {
         return this.muzzle;
+    }
+
+    public boolean isReload() {
+        return this.reload;
     }
 }

@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 /**
  * The base attachment interface
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IAttachment<T extends Attachment>
 {
@@ -23,14 +23,21 @@ public interface IAttachment<T extends Attachment>
 
     enum Type
     {
-        SCOPE("scope", "Scope"),
-        BARREL("barrel", "Barrel"),
-        STOCK("stock", "Stock"),
-        UNDER_BARREL("under_barrel", "Under_Barrel"),
+        SCOPE("scope", "Scope"),            // 1
+        BARREL("barrel", "Barrel"),            // 2
+        STOCK("stock", "Stock"),            // 3
+        UNDER_BARREL("under_barrel", "Under_Barrel"),            // 4
+        SIDE_RAIL("side_rail", "Side_Rail"),            // 5
 
-        SCOPE_RETICLE_COLOR("reticle_color", "Reticle_Color"),
-        SCOPE_BODY_COLOR("body_color", "Body_Color"),
-        SCOPE_GLASS_COLOR("glass_color", "Glass_Color");
+        OLD_SCOPE("oldScope", "OldScope"),            // 6
+        PISTOL_SCOPE("pistolScope", "PistolScope"),            // 7
+        PISTOL_BARREL("pistolBarrel", "PistolBarrel"),            // 8
+
+        SCOPE_RETICLE_COLOR("reticle_color", "Reticle_Color"), // Scope Attachment Type             // 9
+        SCOPE_BODY_COLOR("body_color", "Body_Color"),          // Scope Attachment Type            // 10
+        SCOPE_GLASS_COLOR("glass_color", "Glass_Color");       // Scope Attachment Type            // 11
+        //
+        // 11 - 6 = 5
 
         private String translationKey;
         private String tagKey;

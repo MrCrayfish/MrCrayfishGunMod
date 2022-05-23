@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 /**
  * A basic under barrel attachment item implementation with color support
  *
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class UnderBarrelItem extends Item implements IUnderBarrel, IColored
 {

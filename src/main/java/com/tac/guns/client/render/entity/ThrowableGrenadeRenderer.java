@@ -16,7 +16,7 @@ import net.minecraft.util.math.vector.Vector3f;
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class ThrowableGrenadeRenderer extends EntityRenderer<ThrowableGrenadeEntity>
 {

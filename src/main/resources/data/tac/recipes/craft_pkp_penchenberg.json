@@ -1,0 +1,12 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:pkp_penchenberg"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 168
+    }
+  ]
+}

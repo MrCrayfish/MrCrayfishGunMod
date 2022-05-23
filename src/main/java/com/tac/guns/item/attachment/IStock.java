@@ -7,7 +7,7 @@ import com.tac.guns.item.attachment.impl.Stock;
  * custom item class otherwise {@link com.tac.guns.item.StockItem} can be used instead of
  * this interface.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IStock extends IAttachment<Stock>
 {

@@ -3,6 +3,7 @@ package com.tac.guns.client.util;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tac.guns.common.Gun;
+import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.attachment.IAttachment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BreakableBlock;
@@ -84,6 +85,7 @@ public class RenderUtil
         IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, world, entity);
         renderModel(model, transformType, stack, matrixStack, buffer, light, overlay);
     }
+
 
     public static void renderModel(IBakedModel model, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, int overlay)
     {
@@ -200,6 +202,33 @@ public class RenderUtil
         renderQuads(matrixStack, buffer, model.getQuads(null, null, random), stack, parent, light, overlay);
     }
 
+    /*
+    private static void renderQuads(MatrixStack matrixStack, IVertexBuilder buffer, List<BakedQuad> quads, ItemStack stack, ItemStack parent, int light, int overlay)
+    {
+        MatrixStack.Entry entry = matrixStack.getLast();
+        for(BakedQuad quad : quads)
+        {
+            boolean keepColor = true;
+            int color = -1;
+            if(quad.hasTintIndex())
+            {
+                //if(getItemStackColor(stack, parent, IAttachment.Type.SCOPE_BODY_COLOR, quad.getTintIndex()) != 0)
+                    color = getItemStackColor(stack, parent, IAttachment.Type.SCOPE_BODY_COLOR, quad.getTintIndex());
+
+                if(stack.getItem() instanceof ScopeItem && getItemStackColor(stack, parent, IAttachment.Type.SCOPE_GLASS_COLOR, quad.getTintIndex()) != 0) {
+                    color = getItemStackColor(stack, parent, IAttachment.Type.SCOPE_GLASS_COLOR, quad.getTintIndex());
+                    overlay=1;
+                    keepColor = false;
+                }
+            }
+            float red = (float) (color >> 16 & 255) / 255.0F;
+            float green = (float) (color >> 8 & 255) / 255.0F;
+            float blue = (float) (color & 255) / 255.0F;
+            buffer.addVertexData(entry, quad, red, green, blue, light, overlay, keepColor);
+        }
+    }
+     */
+
     /**
      * @param matrixStack
      * @param buffer
@@ -214,15 +243,25 @@ public class RenderUtil
         MatrixStack.Entry entry = matrixStack.getLast();
         for(BakedQuad quad : quads)
         {
+            float alpha = 1f;
+            boolean keepColor = true;
             int color = -1;
             if(quad.hasTintIndex())
             {
                 color = getItemStackColor(stack, parent, IAttachment.Type.SCOPE_BODY_COLOR, quad.getTintIndex());
+                keepColor = true;
+            }
+            if(quad.hasTintIndex() && stack.getItem() instanceof ScopeItem && quad.getTintIndex() == 1)
+            {
+                color = getItemStackColor(stack, parent, IAttachment.Type.SCOPE_GLASS_COLOR, quad.getTintIndex());
+                alpha = 2f;
+                keepColor = false;
             }
             float red = (float) (color >> 16 & 255) / 255.0F;
             float green = (float) (color >> 8 & 255) / 255.0F;
             float blue = (float) (color & 255) / 255.0F;
-            buffer.addVertexData(entry, quad, red, green, blue, light, overlay, true);
+
+            buffer.addVertexData(entry, quad, red, green, blue, alpha, light, overlay, keepColor);
         }
     }
 
@@ -270,6 +309,22 @@ public class RenderUtil
         }
     }
 
+    public static void applyTransformTypeIB(IBakedModel model, MatrixStack matrixStack, ItemCameraTransforms.TransformType transformType, LivingEntity entity)
+    {
+        /*IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, entity.world, entity);*/
+        boolean leftHanded = transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+        ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
+
+        /* Flips the model and normals if left handed. */
+        if(leftHanded)
+        {
+            Matrix4f scale = Matrix4f.makeScale(-1, 1, 1);
+            Matrix3f normal = new Matrix3f(scale);
+            matrixStack.getLast().getMatrix().mul(scale);
+            matrixStack.getLast().getNormal().mul(normal);
+        }
+    }
+
     public interface Transform
     {
         void apply();
@@ -296,7 +351,7 @@ public class RenderUtil
         }
     }
 
-    private static RenderType getRenderType(ItemStack stack, boolean entity)
+    public static RenderType getRenderType(ItemStack stack, boolean entity)
     {
         Item item = stack.getItem();
         if(item instanceof BlockItem)

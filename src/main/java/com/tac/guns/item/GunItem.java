@@ -112,7 +112,7 @@ public class GunItem extends Item implements IColored
         if(this.isInGroup(group))
         {
             ItemStack stack = new ItemStack(this);
-            stack.getOrCreateTag().putInt("AmmoCount", this.gun.getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt("AmmoCount", this.gun.getReloads().getMaxAmmo());
             stacks.add(stack);
         }
     }

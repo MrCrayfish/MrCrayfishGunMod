@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"2": "tac:items/m1911_upper"
 	},
@@ -1090,7 +1090,7 @@
 			"faces": {
 				"north": {"uv": [3.24495, 15, 2, 15.31461], "rotation": 180, "texture": "#2", "tintindex": 0},
 				"east": {"uv": [2, 15.31461, 2.13042, 15], "texture": "#2", "tintindex": 0},
-				"south": {"uv": [0, 0, -1.24495, 0.31461], "rotation": 180, "texture": "#2", "tintindex": 0},
+				"south": {"uv": [2.24495, 0.5, 1, 0.81461], "rotation": 180, "texture": "#2", "tintindex": 0},
 				"west": {"uv": [2, 15.31461, 2.13042, 15], "texture": "#2", "tintindex": 0},
 				"up": {"uv": [3.24495, 15, 2, 15.13042], "texture": "#2", "tintindex": 0}
 			}

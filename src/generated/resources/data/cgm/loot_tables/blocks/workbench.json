@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "cgm:workbench"
+          "name": "tac:workbench"
         }
       ],
       "conditions": [

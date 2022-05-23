@@ -6,7 +6,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import javax.annotation.Nullable;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class NoChildRotatedHeadshotBox<T extends LivingEntity> extends RotatedHeadshotBox<T>
 {

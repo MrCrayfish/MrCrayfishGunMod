@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"2": "tac:items/light_enfield_barrel",
 		"4": "tac:items/ppsh_bolt",
@@ -2887,19 +2887,27 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"translation": [0, 1.5, -3.75],
+			"translation": [0, 1.5, -2],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 1.5, -2],
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"translation": [-2.25, 4, 0]
+			"translation": [-4, 4.75, -1.5]
+		},
+		"firstperson_lefthand": {
+			"translation": [-4, 4.75, -1.5]
 		},
 		"ground": {
+			"translation": [0, 3, 0],
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"gui": {
 			"rotation": [30, -145, 0],
-			"translation": [0.75, 0.5, 0],
-			"scale": [0.65, 0.65, 0.65]
+			"translation": [0, 0.5, 0],
+			"scale": [0.55, 0.55, 0.55]
 		},
 		"fixed": {
 			"rotation": [0, 90, 0],

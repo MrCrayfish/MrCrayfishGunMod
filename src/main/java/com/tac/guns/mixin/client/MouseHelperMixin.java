@@ -17,15 +17,13 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import sun.security.util.ArrayUtil;
 
-import javax.lang.model.type.ArrayType;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 @Mixin(MouseHelper.class)
 public class MouseHelperMixin
@@ -45,9 +43,12 @@ public class MouseHelperMixin
 
                         Scope scope = Gun.getScope(heldItem);
                         if (scope != null) {
-                            newFov -= scope.getAdditionalZoom();
+                            newFov -= scope.getAdditionalZoom();// * (Config.COMMON.gameplay.scopeDoubleRender.get() ? 1:1.25);
+
+                            additionalAdsSensitivity = MathHelper.clamp(1.0F - (1.0F / newFov) / 10F, 0.0F, 1.0F) * (Config.COMMON.gameplay.scopeDoubleRender.get() && scope.getAdditionalZoom() > 0 ? 1F:0.7F);
                         }
-                        additionalAdsSensitivity = MathHelper.clamp(1.0F - (1.0F / newFov) / 10F, 0.0F, 1.0F);
+                        else
+                            additionalAdsSensitivity = MathHelper.clamp(1.0F - (1.0F / newFov) / 10F, 0.0F, 1.0F);
                     }
                 }
             }

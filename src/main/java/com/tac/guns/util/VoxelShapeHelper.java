@@ -8,7 +8,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import java.util.Collection;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class VoxelShapeHelper
 {

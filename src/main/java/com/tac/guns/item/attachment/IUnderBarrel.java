@@ -7,7 +7,7 @@ import com.tac.guns.item.attachment.impl.UnderBarrel;
  * extends a custom item class otherwise {@link com.tac.guns.item.UnderBarrelItem} can be
  * used instead of this interface.
  * <p>
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public interface IUnderBarrel extends IAttachment<UnderBarrel>
 {

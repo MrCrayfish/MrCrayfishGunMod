@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Author: MrCrayfish
+ * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>

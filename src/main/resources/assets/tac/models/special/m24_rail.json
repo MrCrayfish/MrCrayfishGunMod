@@ -1,5 +1,5 @@
 {
-	"credit": "Models are primarially made by NekoCrane and adjusted by ClumsyAlien!",
+	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "tac:items/glock_barrel_17",
 		"particle": "tac:items/glock_barrel_17"
@@ -518,8 +518,7 @@
 				"east": {"uv": [0, 0, 3.5, 0], "texture": "#0"},
 				"south": {"uv": [0, 0, 0.45, 0], "texture": "#0"},
 				"west": {"uv": [0, 0, 3.5, 0], "texture": "#0"},
-				"up": {"uv": [0.45, 3.5, 0, 0], "texture": "#0"},
-				"down": {"uv": [0.45, 3.5, 0, 0], "texture": "#0"}
+				"up": {"uv": [0.45, 3.5, 0, 0], "texture": "#0"}
 			}
 		},
 		{
@@ -540,7 +539,6 @@
 			"rotation": {"angle": -45, "axis": "z", "origin": [8.04891, 4.8747, 15.21596]},
 			"faces": {
 				"west": {"uv": [0, 0, 3.5, 0], "texture": "#0"},
-				"up": {"uv": [0.075, 3.5, 0, 0], "texture": "#0"},
 				"down": {"uv": [0.075, 3.5, 0, 0], "texture": "#0"}
 			}
 		},
@@ -574,7 +572,6 @@
 			"rotation": {"angle": 45, "axis": "z", "origin": [8.04891, 4.8747, 15.21596]},
 			"faces": {
 				"east": {"uv": [3.5, 0, 7, 0], "texture": "#0"},
-				"up": {"uv": [0.15, 3.5, 0.075, 0], "texture": "#0"},
 				"down": {"uv": [0.15, 3.5, 0.075, 0], "texture": "#0"}
 			}
 		},
