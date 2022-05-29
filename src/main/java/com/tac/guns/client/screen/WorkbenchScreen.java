@@ -7,7 +7,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
-import com.tac.guns.common.Gun;
 import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.common.container.WorkbenchContainer;
 import com.tac.guns.crafting.WorkbenchRecipe;
@@ -110,8 +109,8 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         if(!weapons.isEmpty())
         {
-            ItemStack icon = new ItemStack(ModItems.AR15_HELLMOUTH.get());
-            icon.getOrCreateTag().putInt("AmmoCount", ModItems.AR15_HELLMOUTH.get().getGun().getReloads().getMaxAmmo());
+            ItemStack icon = new ItemStack(ModItems.AR_15_HELLMOUTH.get());
+            icon.getOrCreateTag().putInt("AmmoCount", ModItems.AR_15_HELLMOUTH.get().getGun().getReloads().getMaxAmmo());
             this.tabs.add(new Tab(icon, "weapons", weapons));
         }
 

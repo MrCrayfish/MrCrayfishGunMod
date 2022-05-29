@@ -6,6 +6,8 @@ import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.pose.*;
 import com.tac.guns.common.BoundingBoxManager;
+import com.tac.guns.common.tooling.CommandsHandler;
+import com.tac.guns.common.tooling.CommandsManager;
 import com.tac.guns.common.GripType;
 import com.tac.guns.common.ProjectileManager;
 import com.tac.guns.datagen.*;
@@ -14,12 +16,10 @@ import com.tac.guns.entity.MissileEntity;
 import com.tac.guns.init.*;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.tileentity.FlashLightSource;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,7 +36,6 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.lang.reflect.Field;
 import java.util.Locale;
@@ -243,6 +242,9 @@ public class GunMod
         GripType.registerType(new GripType(new ResourceLocation("tac", "two_handed_m60"), new TwoHandedPoseHighRes_m60()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "two_handed_vector"), new TwoHandedPoseHighRes_vector()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1873"), new OneHandedPoseHighRes_m1873()));
+
+        MinecraftForge.EVENT_BUS.register(CommandsManager.class);
+        MinecraftForge.EVENT_BUS.register(CommandsHandler.class);
     }
 
     private void dataSetup(GatherDataEvent event)

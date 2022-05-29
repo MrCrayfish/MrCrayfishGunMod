@@ -347,12 +347,14 @@ public class Config
     public static class Development
     {
         public final ForgeConfigSpec.BooleanValue permanentCrosshair;
+        public final ForgeConfigSpec.BooleanValue guiElementEditor;
 
         public Development(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Development").push("development");
             {
                 this.permanentCrosshair = builder.comment("If enabled any crosshair will continue to render on aim.").define("permanentCrosshair", false);
+                this.guiElementEditor = builder.comment("If enabled, arrow keys will enable movement of a selected GUI Element over the current instance, data is shown on each adjustment").define("guiElementEditor", false);
             }
             builder.pop();
         }

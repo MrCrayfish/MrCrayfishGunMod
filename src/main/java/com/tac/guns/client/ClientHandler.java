@@ -3,6 +3,8 @@ package com.tac.guns.client;
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.*;
+import com.tac.guns.client.handler.command.GuiEditor;
+import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
@@ -13,6 +15,7 @@ import com.tac.guns.client.screen.*;
 import com.tac.guns.client.settings.GunOptions;
 import com.tac.guns.common.BoundingBoxManager;
 import com.tac.guns.common.FloodLightSource.FloodLightSource;
+import com.tac.guns.common.Gun;
 import com.tac.guns.init.ModBlocks;
 import com.tac.guns.init.ModContainers;
 import com.tac.guns.init.ModEntities;
@@ -80,6 +83,8 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDay memory part of the Timeless dev team, amazing work!!!!!!!!!!!
 
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
+        MinecraftForge.EVENT_BUS.register(GuiEditor.get());
+        MinecraftForge.EVENT_BUS.register(GunEditor.get());
 
         KeyBinds.register();
 
@@ -151,7 +156,7 @@ public class ClientHandler
         ScreenManager.registerFactory(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
         ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
         ScreenManager.registerFactory(ModContainers.INSPECTION.get(), InspectScreen::new);
-        ScreenManager.registerFactory(ModContainers.COLOR_BENCH.get(), ColorBenchAttachmentScreen::new);
+        //ScreenManager.registerFactory(ModContainers.COLOR_BENCH.get(), ColorBenchAttachmentScreen::new);
     }
 
     @SubscribeEvent

@@ -251,6 +251,12 @@ public class ClientPlayHandler
         BulletTrailRenderingHandler.get().remove(message.getEntityId());
     }
 
+    /*public static void handleDevelopingGuns(MessageUpdateGuns message)
+    {
+        NetworkGunManager.updateRegisteredGuns(message);
+        CustomGunManager.updateCustomGuns(message);
+    }*/
+
     public static void handleUpdateGuns(MessageUpdateGuns message)
     {
         NetworkGunManager.updateRegisteredGuns(message);

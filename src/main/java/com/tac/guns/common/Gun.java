@@ -3,6 +3,7 @@ package com.tac.guns.common;
 import com.tac.guns.Reference;
 import com.tac.guns.annotation.Ignored;
 import com.tac.guns.annotation.Optional;
+import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IScope;
 import com.tac.guns.item.attachment.impl.Scope;
@@ -1435,7 +1436,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
         public double getXOffset()
         {
-            return this.xOffset;
+            return this.xOffset + GunEditor.get().getxMod();
         }
 
         public double getYOffset()

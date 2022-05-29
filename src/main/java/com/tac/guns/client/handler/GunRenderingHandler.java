@@ -329,7 +329,7 @@ public class GunRenderingHandler {
         matrixStack.push();
 
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-        int gunZoom = heldItem.getTag().getInt("currentZoom");
+        //int gunZoom = heldItem.getTag().getInt("currentZoom");
 
         if (AimingHandler.get().getNormalisedAdsProgress() > 0 && modifiedGun.canAimDownSight())
         {
@@ -373,9 +373,9 @@ public class GunRenderingHandler {
                 }
                 else if (!ArrayUtils.isEmpty(modifiedGun.getModules().getZoom()))
                 {
-                    xOffset = -translateX + modifiedGun.getModules().getZoom()[gunZoom].getXOffset() * 0.0625 * scaleX;
-                    yOffset = -translateY + (8 - modifiedGun.getModules().getZoom()[gunZoom].getYOffset()) * 0.0625 * scaleY;
-                    zOffset = -translateZ + modifiedGun.getModules().getZoom()[gunZoom].getZOffset() * 0.0625 * scaleZ;
+                    xOffset = -translateX + modifiedGun.getModules().getZoom()[0].getXOffset() * 0.0625 * scaleX;
+                    yOffset = -translateY + (8 - modifiedGun.getModules().getZoom()[0].getYOffset()) * 0.0625 * scaleY;
+                    zOffset = -translateZ + modifiedGun.getModules().getZoom()[0].getZOffset() * 0.0625 * scaleZ;
                 } 
 
 
@@ -404,7 +404,7 @@ public class GunRenderingHandler {
                     if (entity.getMotion().getX() != 0.0 || entity.getMotion().getY() != 0.0 || entity.getMotion().getZ() != 0.0)
                         scopeJitterOffset *= 6.5;
                     if (scope == null)
-                        scopeJitterOffset *= modifiedGun.getModules().getZoom()[gunZoom].getStabilityOffset();
+                        scopeJitterOffset *= modifiedGun.getModules().getZoom()[0].getStabilityOffset();
                     else
                         scopeJitterOffset *= scope.getStabilityOffset();
 

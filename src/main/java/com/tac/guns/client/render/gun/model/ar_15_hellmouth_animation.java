@@ -39,7 +39,7 @@ import net.minecraft.world.lighting.LightEngine;
 /**
  * Author: Mr. Pineapple
  */
-public class ar15_hellmouth_animation implements IOverrideModel {
+public class ar_15_hellmouth_animation implements IOverrideModel {
 
     @Override
     public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay)
