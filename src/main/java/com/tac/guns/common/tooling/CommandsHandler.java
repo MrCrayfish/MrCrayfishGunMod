@@ -42,7 +42,7 @@ public class CommandsHandler
             }
             if (TimelessGunItem.class.isAssignableFrom(object.get().getClass()))
             {
-                instance.catGlobals.get(1).put(field.getName().toLowerCase(Locale.ENGLISH), new HashMap<String, Object>());
+                instance.catGlobals.get(1).put(field.getTagName().toLowerCase(Locale.ENGLISH), new HashMap<String, Object>());
             }
         }*/
 

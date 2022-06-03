@@ -347,14 +347,16 @@ public class Config
     public static class Development
     {
         public final ForgeConfigSpec.BooleanValue permanentCrosshair;
-        public final ForgeConfigSpec.BooleanValue guiElementEditor;
+        public final ForgeConfigSpec.BooleanValue enableTDev;
+        public final ForgeConfigSpec.ConfigValue<String> TDevPath;
 
         public Development(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Development").push("development");
             {
                 this.permanentCrosshair = builder.comment("If enabled any crosshair will continue to render on aim.").define("permanentCrosshair", false);
-                this.guiElementEditor = builder.comment("If enabled, arrow keys will enable movement of a selected GUI Element over the current instance, data is shown on each adjustment").define("guiElementEditor", false);
+                this.enableTDev = builder.comment("If enabled, /tdev will both be registered (Upon restart), and function! Used as well to speed up tag checks").define("enableTDev", false);
+                this.TDevPath = builder.comment("Directory to build all TaC sub-directories, these will contain export data from /tdev functions").define("tDevPath", "");
             }
             builder.pop();
         }

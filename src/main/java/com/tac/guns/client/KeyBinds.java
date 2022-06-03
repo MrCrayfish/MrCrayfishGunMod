@@ -1,5 +1,6 @@
 package com.tac.guns.client;
 
+import com.tac.guns.Config;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -22,6 +23,15 @@ public class KeyBinds
     public static final KeyBinding KEY_ADS = new KeyBinding("key.tac.aim_sights", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.tac");
     public static final KeyBinding COLOR_BENCH = new KeyBinding("key.tac.color_bench", GLFW.GLFW_KEY_V, "key.categories.tac");
 
+    // ALL DEVELOPMENT TEMPS.
+    public static final KeyBinding SHIFTY = new KeyBinding("key.tac.ss", GLFW.GLFW_KEY_LEFT_SHIFT, "key.categories.tac");
+    public static final KeyBinding CONTROLLY = new KeyBinding("key.tac.cc", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.tac");
+    public static final KeyBinding ALTY = new KeyBinding("key.tac.aa", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.tac");
+    public static final KeyBinding SHIFTYR = new KeyBinding("key.tac.ssr", GLFW.GLFW_KEY_RIGHT_SHIFT, "key.categories.tac");
+    public static final KeyBinding CONTROLLYR = new KeyBinding("key.tac.ccr", GLFW.GLFW_KEY_RIGHT_CONTROL, "key.categories.tac");
+    public static final KeyBinding ALTYR = new KeyBinding("key.tac.aar", GLFW.GLFW_KEY_RIGHT_ALT, "key.categories.tac");
+
+    public static final KeyBinding SIZE_OPT = new KeyBinding("key.tac.sizer", GLFW.GLFW_KEY_PERIOD, "key.categories.tac");
     public static void register()
     {
         ClientRegistry.registerKeyBinding(KEY_RELOAD);
@@ -33,5 +43,15 @@ public class KeyBinds
         ClientRegistry.registerKeyBinding(KEY_ADS);
         ClientRegistry.registerKeyBinding(COLOR_BENCH);
         ClientRegistry.registerKeyBinding(KEY_ACTIVATE_SIDE_RAIL);
+        if(Config.COMMON.development.enableTDev.get())
+        {
+            ClientRegistry.registerKeyBinding(SHIFTY);
+            ClientRegistry.registerKeyBinding(CONTROLLY);
+            ClientRegistry.registerKeyBinding(ALTY);
+            ClientRegistry.registerKeyBinding(SHIFTYR);
+            ClientRegistry.registerKeyBinding(CONTROLLYR);
+            ClientRegistry.registerKeyBinding(ALTYR);
+            ClientRegistry.registerKeyBinding(SIZE_OPT);
+        }
     }
 }

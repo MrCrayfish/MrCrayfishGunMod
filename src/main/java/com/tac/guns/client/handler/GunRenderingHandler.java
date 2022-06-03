@@ -9,12 +9,14 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.client.GunRenderType;
+import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.render.IHeldAnimation;
 import com.tac.guns.client.render.animation.GunAnimationController;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.tooling.CommandsHandler;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.init.ModSyncedDataKeys;
@@ -22,6 +24,7 @@ import com.tac.guns.item.GrenadeItem;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.TransitionalTypes.ITimelessAnimated;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IBarrel;
 import com.tac.guns.item.attachment.impl.Barrel;
@@ -108,10 +111,21 @@ public class GunRenderingHandler {
     public void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END)
             return;
-
         this.updateSprinting();
         this.updateMuzzleFlash();
         this.updateOffhandTranslate();
+        if(CommandsHandler.get().getCatCurrentIndex() == 1 && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash)
+        {
+            if(Minecraft.getInstance().player == null)
+                return;
+            if(!(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof TimelessGunItem))
+                return;
+            GunItem gun = ((TimelessGunItem)Minecraft.getInstance().player.getHeldItemMainhand().getItem());
+            Gun modifiedGun = gun.getModifiedGun(Minecraft.getInstance().player.getHeldItemMainhand());
+            if (modifiedGun.getDisplay().getFlash() != null || GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) {
+                this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getEntityId());
+            }
+        }
     }
 
     private void updateSprinting() {
@@ -867,7 +881,7 @@ public class GunRenderingHandler {
         if (modifiedGun.canAttachType(IAttachment.Type.BARREL) && GunModifierHelper.isSilencedFire(weapon)) return;
 
         if (transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
-            if (this.entityIdForMuzzleFlash.contains(entity.getEntityId())) {
+            if (this.entityIdForMuzzleFlash.contains(entity.getEntityId()) ) {
                 float randomValue = this.entityIdToRandomValue.get(entity.getEntityId());
                 this.drawMuzzleFlash(weapon, modifiedGun, randomValue, randomValue >= 0.5F, matrixStack, buffer);
             }

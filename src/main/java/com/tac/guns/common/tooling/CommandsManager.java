@@ -17,8 +17,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.ArrayList;
-
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
  * CommandsManager is used in order to have more control over more elements over such as GUI editing, along with soon to come other development commands using
@@ -60,35 +58,58 @@ public class CommandsManager
                 }))
 
                 .then(Commands.literal("tac_weapons_category")
-                        .then(Commands.literal("setMode").then(Commands.argument("modeName", MessageArgument.message())//
+                        .then(Commands.literal("setMode")
+                                .then(Commands.argument("modeName", MessageArgument.message())//
                                 .executes(commandContext ->
                                 {
-                                    GunEditor.TaCDevModes mode;
+
+                                    CommandsHandler.get().setCatCurrentIndex(1);
+                                    GunEditor.TaCWeaponDevModes mode;
                                     try {
-                                        mode = GunEditor.TaCDevModes.valueOf(MessageArgument.getMessage(commandContext, "modeName").getUnformattedComponentText());
+                                        mode = GunEditor.TaCWeaponDevModes.valueOf(MessageArgument.getMessage(commandContext, "modeName").getUnformattedComponentText());
                                     }
                                     catch (Exception e)
                                     {
                                         sendMessage(commandContext,  "FAILED TO SET MODE, PLEASE CHOOSE FROM THE FOLLOWING\n" + GunEditor.formattedModeContext());
                                         return 1;
                                     }
-                                    CommandsHandler.get().setCatCurrentIndex(1);
                                     GunEditor.get().setMode(mode);
-                                    sendMessage(commandContext,  "Set Category to a TaC Default \n Weapon's ---"+mode.getName()+"--- | Editing mode");
+                                    sendMessage(commandContext,  "Set Category to a TaC Default \n Weapon's ---"+mode.getTagName()+"--- | Editing mode");
                                     return 1;
-                                })))
+                                }))
+                                .executes(commandContext ->
+                                {
+                                    CommandsHandler.get().setCatCurrentIndex(1);
+                                    sendMessage(commandContext,  "FAILED TO SET MODE, PLEASE CHOOSE FROM THE FOLLOWING\n" + GunEditor.formattedModeContext());
+                                    return 1;
+                                }))
+                        .then(Commands.literal("export")
+                                .executes(commandContext ->
+                                {
+                                    CommandsHandler.get().setCatCurrentIndex(1);
+                                    try {
+                                        GunEditor.get().exportData();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        sendMessage(commandContext,  "FAILED TO EXPORT, THIS IS A GENERIC ERROR, REPORT WITH A LOG PLEASE.\n" + GunEditor.formattedModeContext());
+                                        return 1;
+                                    }
+                                    sendMessage(commandContext,  "Exported all weapon data, with adjustments!");
+                                    return 1;
+                                }))
                     .executes(commandContext -> {
                         CommandsHandler.get().setCatCurrentIndex(1);
                         sendMessage(commandContext,  "Set Category to a TaC Default | Weapon |");
                         return 1;
                 }))
 
-                .then(Commands.literal("tac_colorBench_category")
+                /*.then(Commands.literal("tac_colorBench_category")
                         .executes(commandContext -> {
                             CommandsHandler.get().setCatCurrentIndex(2);
                             sendMessage(commandContext,  "Set Category to a TaC Default | ColorBench | Editing mode.");
                             return 1;
-                }))
+                }))*/
                 .executes(commandContext -> sendMessage(commandContext, "The tdev command palette is for making on the fly adjustments within the current game instance, to as many pieces as developed, this REQUIRES code dev to utilize correctly. NEVER release with code listening to this class!"));  // blank: didn't match a literal or the custommessage argument
 
         dispatcher.register(tacCommander);

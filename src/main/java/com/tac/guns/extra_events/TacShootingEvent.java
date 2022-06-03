@@ -12,6 +12,7 @@ import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.TransitionalTypes.MBPGunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageGunSound;
 import net.minecraft.client.Minecraft;
@@ -49,13 +50,31 @@ public class TacShootingEvent {
     */
 
     @SubscribeEvent
-    public static void preShoot(GunFireEvent.Pre event)
+    public static void preShoot(GunFireEvent. Pre event)
     {
         // Our gun?
         if(!(event.getStack().getItem() instanceof GunItem))
             return;
         HandleFireMode(event);
     }
+    @SubscribeEvent
+    public void onShootTick(GunFireEvent.Pre event)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null)
+            return;
+        if (!(event.getPlayer().getHeldItemMainhand().getItem() instanceof MBPGunItem))
+            return;
+        if(mc.world.isRaining()) {
+            event.setCanceled(true);
+            event.getPlayer().sendStatusMessage(new TranslationTextComponent("info." + Reference.MOD_ID + ".gun_waterlock"), true);
+        }
+        if(mc.player.isInWater()) {
+            event.setCanceled(true);
+            event.getPlayer().sendStatusMessage(new TranslationTextComponent("info." + Reference.MOD_ID + ".gun_waterlock"), true);
+        }
+    }
+
 
     private static void HandleFireMode(GunFireEvent.Pre event)
     {

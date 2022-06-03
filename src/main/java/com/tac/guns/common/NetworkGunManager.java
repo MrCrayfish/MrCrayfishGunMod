@@ -63,7 +63,8 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
             if(id != null)
             {
                 ResourceLocation resourceLocation = new ResourceLocation(String.format("%s:guns/%s.json", id.getNamespace(), id.getPath()));
-                try(IResource resource = resourceManager.getResource(resourceLocation); InputStream is = resource.getInputStream(); Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)))
+                try(IResource resource = resourceManager.getResource(resourceLocation); InputStream is = resource.getInputStream();
+                    Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)))
                 {
                     Gun gun = JSONUtils.fromJson(GSON_INSTANCE, reader, Gun.class);
                     if(gun != null && Validator.isValidObject(gun))

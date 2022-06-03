@@ -35,7 +35,7 @@ public class GuiEditor
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null)
             return;
-        if (!Config.COMMON.development.guiElementEditor.get())
+        if (!Config.COMMON.development.enableTDev.get())
             return;
 
         // Check our index, TaC will have documentation on which index is being read standard, and how to check
