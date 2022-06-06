@@ -67,7 +67,6 @@ public class PacketHandler
         registerPlayMessage(MessageProjectileHitEntity.class, MessageProjectileHitEntity::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageRemoveProjectile.class, MessageRemoveProjectile::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageFireMode.class, MessageFireMode::new, LogicalSide.SERVER);
-        registerPlayMessage(MessageIronSightSwitch.class, MessageIronSightSwitch::new, LogicalSide.CLIENT);
 
         registerPlayMessage(MessageUpdatePlayerMovement.class, MessageUpdatePlayerMovement::new, LogicalSide.SERVER);
     }

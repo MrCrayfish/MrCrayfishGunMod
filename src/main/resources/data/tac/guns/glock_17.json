@@ -2,7 +2,7 @@
   "general": {
     "rate": 3,
     "rateSelector": [
-      0 ,
+      0,
       1
     ],
     "gripType": "tac:one_handed_m1911",
@@ -52,13 +52,11 @@
     "weaponType": 2
   },
   "modules": {
-    "zoom": [
-      {
-        "fovModifier": 0.9,
-        "yOffset": 11.965,
-        "zOffset": -10.6
-      }
-    ],
+    "zoom": {
+      "fovModifier": 0.9,
+      "yOffset": 11.965,
+      "zOffset": -10.6
+    },
     "attachments": {
       "pistolBarrel": {
         "yOffset": -100829.84,

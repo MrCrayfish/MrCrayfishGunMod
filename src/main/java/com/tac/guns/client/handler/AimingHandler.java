@@ -164,9 +164,9 @@ public class AimingHandler
                 if(AimingHandler.get().isAiming() && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING))
                 {
                     Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-                    if(!ArrayUtils.isEmpty(modifiedGun.getModules().getZoom()))
+                    if(modifiedGun.getModules().getZoom() != null)
                     {
-                        float newFov = modifiedGun.getModules().getZoom()[heldItem.getTag().getInt("currentZoom")].getFovModifier();
+                        float newFov = modifiedGun.getModules().getZoom().getFovModifier();
                         Scope scope = Gun.getScope(heldItem);
                         if(scope != null)
                         {

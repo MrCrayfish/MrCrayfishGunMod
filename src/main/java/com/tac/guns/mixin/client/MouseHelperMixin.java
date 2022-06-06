@@ -38,8 +38,8 @@ public class MouseHelperMixin
                 GunItem gunItem = (GunItem) heldItem.getItem();
                 if (AimingHandler.get().isAiming() && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING)) {
                     Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-                    if (!ArrayUtils.isEmpty(modifiedGun.getModules().getZoom() )) {
-                        float newFov = modifiedGun.getModules().getZoom()[heldItem.getTag().getInt("currentZoom")].getFovModifier();
+                    if (modifiedGun.getModules().getZoom() != null) {
+                        float newFov = modifiedGun.getModules().getZoom().getFovModifier();
 
                         Scope scope = Gun.getScope(heldItem);
                         if (scope != null) {

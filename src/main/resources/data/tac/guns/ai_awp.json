@@ -23,7 +23,11 @@
     "maxAmmo": 5,
     "reloadMagTimer": 56,
     "additionalReloadEmptyMagTimer": 10,
-    "maxAdditionalAmmoPerOC": [3, 5, 7],
+    "maxAdditionalAmmoPerOC": [
+      3,
+      5,
+      7
+    ],
     "preReloadPauseTicks": 10
   },
   "projectile": {
@@ -51,11 +55,11 @@
     "showDynamicHipfire": false
   },
   "modules": {
-    "zoom": [{
+    "zoom": {
       "fovModifier": 0.7,
       "yOffset": 8.515,
       "zOffset": -5.7
-    }],
+    },
     "attachments": {
       "scope": {
         "yOffset": 7.6,

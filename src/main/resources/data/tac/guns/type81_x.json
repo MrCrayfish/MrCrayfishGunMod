@@ -50,14 +50,13 @@
     "weaponType": 0
   },
   "modules": {
-    "zoom": [
+    "zoom":
       {
       "fovModifier": 0.8,
       "yOffset": 11.015,
       "zOffset": -4.225
       }
-    ],
-    "attachments": {
+    ,"attachments": {
       "Disabledscope": {
         "yOffset": 10.51,
         "zOffset": 5.85,

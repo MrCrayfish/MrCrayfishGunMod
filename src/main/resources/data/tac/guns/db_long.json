@@ -22,7 +22,11 @@
     "reloadAmount": 1,
     "preReloadPauseTicks": 6,
     "interReloadPauseTicks": 14,
-    "maxAdditionalAmmoPerOC": [0, 0, 0],
+    "maxAdditionalAmmoPerOC": [
+      0,
+      0,
+      0
+    ],
     "openBolt": true
   },
   "projectile": {
@@ -49,11 +53,11 @@
     "weaponType": 3
   },
   "modules": {
-    "zoom": [{
+    "zoom": {
       "fovModifier": 0.8,
       "yOffset": 8.18,
       "zOffset": 1.2
-    }],
+    },
     "attachments": {}
   }
 }

@@ -2,7 +2,11 @@
   "general": {
     "auto": true,
     "rate": 2,
-    "rateSelector": [0,1,2],
+    "rateSelector": [
+      0,
+      1,
+      2
+    ],
     "gripType": "tac:two_handed_ak47",
     "recoilAngle": 3.025,
     "horizontalRecoilAngle": 1.525,
@@ -20,7 +24,11 @@
     "maxAmmo": 30,
     "reloadMagTimer": 58,
     "additionalReloadEmptyMagTimer": 24,
-    "maxAdditionalAmmoPerOC": [10, 20, 30],
+    "maxAdditionalAmmoPerOC": [
+      10,
+      20,
+      30
+    ],
     "preReloadPauseTicks": 8
   },
   "projectile": {
@@ -50,13 +58,11 @@
     "weaponType": 0
   },
   "modules": {
-    "zoom": [
-      {
-        "fovModifier": 0.8,
-        "yOffset": 13.0125,
-        "zOffset": -4.5
-      }
-    ],
+    "zoom": {
+      "fovModifier": 0.8,
+      "yOffset": 13.0125,
+      "zOffset": -4.5
+    },
     "attachments": {
       "barrel": {
         "yOffset": -100829.84,

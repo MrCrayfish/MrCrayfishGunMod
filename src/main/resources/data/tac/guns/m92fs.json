@@ -51,13 +51,11 @@
     "weaponType": 2
   },
   "modules": {
-    "zoom": [
-      {
-        "fovModifier": 0.9,
-        "yOffset": 12.56,
-        "zOffset": -13.5
-      }
-    ],
+    "zoom": {
+      "fovModifier": 0.9,
+      "yOffset": 12.56,
+      "zOffset": -13.5
+    },
     "attachments": {
       "pistolBarrel": {
         "yOffset": -100829.84,

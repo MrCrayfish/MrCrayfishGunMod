@@ -2,15 +2,7 @@ package com.tac.guns.client.handler;
 
 
 import com.tac.guns.Reference;
-import com.tac.guns.client.KeyBinds;
-import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageFireMode;
-import com.tac.guns.network.message.MessageIronSightSwitch;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.glfw.GLFW;
 
 
 /**

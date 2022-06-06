@@ -825,45 +825,37 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private int weaponType = 0;
 
         @Optional
-        @Nullable
         private float hipfireScale = 0.75F;
 
         @Optional
-        @Nullable
         private float hipfireMoveScale = 0.5F;
 
         @Optional
-        @Nullable
         private float hipfireRecoilScale = 1.0F;
 
         @Optional
-        @Nullable
         private boolean showDynamicHipfire = true;
 
-        @Nullable
         public float getHipfireScale()
         {
             return this.hipfireScale;
         }
 
-        @Nullable
         public float getHipfireMoveScale()
         {
             return this.hipfireMoveScale;
         }
 
-        @Nullable
         public float getHipfireRecoilScale()
         {
             return this.hipfireRecoilScale;
         }
 
-        @Nullable
         public boolean isDynamicHipfire()
         {
             return this.showDynamicHipfire;
         }
-        @Nullable
+
         public int getWeaponType()
         {
             return this.weaponType;
@@ -919,11 +911,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
              */
             public double getSize() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.size + GunEditor.get().getSizeMod() : this.size;}
             @Override
-            public double getXOffset() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? super.getXOffset() + GunEditor.get().getxMod() : super.getXOffset();}
+            public double getXOffset() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.xOffset + GunEditor.get().getxMod() : this.xOffset;}
             @Override
-            public double getYOffset() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? super.getYOffset() + GunEditor.get().getyMod() : super.getYOffset();}
+            public double getYOffset() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.yOffset + GunEditor.get().getyMod() : this.yOffset;}
             @Override
-            public double getZOffset() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? super.getZOffset() + GunEditor.get().getzMod() : super.getZOffset();}
+            public double getZOffset() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.zOffset + GunEditor.get().getzMod() : this.zOffset;}
 
             /**
              * @return The size/scale of the muzzle smoke render
@@ -1020,27 +1012,19 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     public static class Modules implements INBTSerializable<CompoundNBT>
     {
         @Optional
-        @Nullable
-        private Zoom[] zoom = new Zoom[]{};
+        private Zoom zoom = new Zoom();
 
         private Attachments attachments = new Attachments();
 
-        @Ignored
-        private int zoomOptions;
-
-        @Nullable
-
-        public Zoom[] getZoom()
+        public Zoom getZoom()
         {
-            return this.zoom;
+            return this.zoom.copy();
         }
 
         public Attachments getAttachments()
         {
             return this.attachments;
         }
-
-        public int getZoomOptions(){return this.zoomOptions;}
 
         public static class Zoom extends Positioned
         {
@@ -1367,32 +1351,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
         }
 
-        /*@Override
+        @Override
         public CompoundNBT serializeNBT()
         {
             CompoundNBT tag = new CompoundNBT();
-            //if(!ArrayUtils.isEmpty(this.zoom))
-            //GunMod.LOGGER.log(Level.FATAL, zoom.length);
-            if(this.zoom != null) {
-                //GunMod.LOGGER.log(Level.FATAL, this.zoom[0].getFovModifier());
-                tag.put("Zoom", zoom.clone()[0].serializeNBT());
-            }
-            *//*if(this.zoom != null)
-            {
-
-
-                *//**//*int zoomIterator = 0;
-                for(Zoom sight : this.zoom)
-                {
-
-                    GunMod.LOGGER.log(Level.FATAL, sight.fovModifier);
-                    tag.put("Zoom" + Integer.toString(zoomIterator), sight.serializeNBT());
-                    zoomIterator++;
-                }
-                tag.putInt("ZoomIterator",zoomIterator);*//**//*
-                Zoom test = zoom[0].copy();
-                tag.put("Zoom0",test.serializeNBT());
-            }*//*
+            tag.put("Zoom", this.zoom.serializeNBT());
             tag.put("Attachments", this.attachments.serializeNBT());
             return tag;
         }
@@ -1400,70 +1363,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Override
         public void deserializeNBT(CompoundNBT tag)
         {
-*//*            if(tag.contains("ZoomIterator", Constants.NBT.TAG_ANY_NUMERIC))
-            {
-                this.zoomOptions = tag.getInt("ZoomIterator");
-            }*//*
             if(tag.contains("Zoom", Constants.NBT.TAG_COMPOUND))
             {
-                this.zoom[0].deserializeNBT(tag.getCompound("Zoom"));
+                this.zoom.deserializeNBT(tag.getCompound("Zoom"));
             }
-
-
-            if(tag.contains("Attachments", Constants.NBT.TAG_COMPOUND))
-            {
-                this.attachments.deserializeNBT(tag.getCompound("Attachments"));
-            }
-        }
-
-        public Modules copy()
-        {
-            Modules modules = new Modules();
-            modules.zoomOptions = this.zoomOptions;
-            modules.zoom = this.zoom.clone();
-            modules.attachments = this.attachments.copy();
-            return modules;
-        }*/
-        @Override
-        public CompoundNBT serializeNBT()
-        {
-            CompoundNBT tag = new CompoundNBT();
-
-            int zoomIterator = 0;
-
-            if(!ArrayUtils.isEmpty(this.zoom))
-            {
-                for(Zoom sight : this.zoom)
-                {
-                    tag.put("Zoom" + zoomIterator, sight.serializeNBT());
-                    zoomIterator++;
-                }
-            }
-            tag.putInt("ZoomIterator",zoomIterator);
-            tag.put("Attachments", this.attachments.serializeNBT());
-            return tag;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundNBT tag)
-        {
-            if(ArrayUtils.isEmpty(this.getZoom()))
-            {
-
-                ArrayList<Zoom> zoomArr = new ArrayList<Zoom>(){};
-
-                int zoomItor = tag.getInt("ZoomIterator");
-
-                for(int itor = 0; itor <= zoomItor; itor++)
-                {
-                    Zoom zoom = new Zoom();
-                    zoom.deserializeNBT(tag.getCompound("Zoom" + itor));
-                    zoomArr.add(zoom);
-                }
-
-                this.zoom = zoomArr.toArray(this.zoom).clone();
-            }
-
             if(tag.contains("Attachments", Constants.NBT.TAG_COMPOUND))
             {
                 this.attachments.deserializeNBT(tag.getCompound("Attachments"));
@@ -1472,10 +1375,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public Modules copy()
         {
             Modules modules = new Modules();
-            if(this.zoom != null)
-            {
-                modules.zoom = this.zoom.clone();
-            }
+            modules.zoom = this.zoom.copy();
             modules.attachments = this.attachments.copy();
             return modules;
         }
@@ -1484,11 +1384,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     {
 /*        public Positioned(CompoundNBT tag) {this.deserializeNBT(tag);}*/
         @Optional
-        protected double xOffset;
+        protected double xOffset = 0;
         @Optional
-        protected double yOffset;
+        protected double yOffset = 0;
         @Optional
-        protected double zOffset;
+        protected double zOffset = 0;
 
         @Override
         public CompoundNBT serializeNBT()

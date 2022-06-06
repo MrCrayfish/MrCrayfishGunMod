@@ -385,11 +385,11 @@ public class GunRenderingHandler {
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
                     zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
                 }
-                else if (!ArrayUtils.isEmpty(modifiedGun.getModules().getZoom()))
+                else if (modifiedGun.getModules().getZoom() != null)
                 {
-                    xOffset = -translateX + modifiedGun.getModules().getZoom()[0].getXOffset() * 0.0625 * scaleX;
-                    yOffset = -translateY + (8 - modifiedGun.getModules().getZoom()[0].getYOffset()) * 0.0625 * scaleY;
-                    zOffset = -translateZ + modifiedGun.getModules().getZoom()[0].getZOffset() * 0.0625 * scaleZ;
+                    xOffset = -translateX + modifiedGun.getModules().getZoom().getXOffset() * 0.0625 * scaleX;
+                    yOffset = -translateY + (8 - modifiedGun.getModules().getZoom().getYOffset()) * 0.0625 * scaleY;
+                    zOffset = -translateZ + modifiedGun.getModules().getZoom().getZOffset() * 0.0625 * scaleZ;
                 } 
 
 
@@ -418,7 +418,7 @@ public class GunRenderingHandler {
                     if (entity.getMotion().getX() != 0.0 || entity.getMotion().getY() != 0.0 || entity.getMotion().getZ() != 0.0)
                         scopeJitterOffset *= 6.5;
                     if (scope == null)
-                        scopeJitterOffset *= modifiedGun.getModules().getZoom()[0].getStabilityOffset();
+                        scopeJitterOffset *= modifiedGun.getModules().getZoom().getStabilityOffset();
                     else
                         scopeJitterOffset *= scope.getStabilityOffset();
 

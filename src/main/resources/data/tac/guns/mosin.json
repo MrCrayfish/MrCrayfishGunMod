@@ -50,11 +50,11 @@
     "weaponType": 5
   },
   "modules": {
-    "zoom": [{
+    "zoom":{
       "fovModifier": 0.7,
       "yOffset": 10.1,
       "zOffset": -8.85
-    }],
+    },
     "attachments": { }
   }
 }

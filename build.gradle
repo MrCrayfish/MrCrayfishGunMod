@@ -94,6 +94,7 @@ dependencies {
     implementation fg.deobf('curse.maven:obfuscate-289380:3169370')
     implementation fg.deobf('curse.maven:chisel-and-bits-231095:3593643')
     implementation fg.deobf('curse.maven:flashlight-addon-227874:3381556')
+    implementation fg.deobf('curse.maven:extra-player-render-481042:3305584')
     implementation 'com.google.code.gson:gson:2.9.0'
     compile ('com.fasterxml.jackson.core:jackson-databind:2.12.4')
 }

@@ -75,6 +75,7 @@ public class CommandsManager
                                     }
                                     GunEditor.get().setMode(mode);
                                     sendMessage(commandContext,  "Set Category to a TaC Default \n Weapon's ---"+mode.getTagName()+"--- | Editing mode");
+                                    GunEditor.get().setResetMode(true);
                                     return 1;
                                 }))
                                 .executes(commandContext ->

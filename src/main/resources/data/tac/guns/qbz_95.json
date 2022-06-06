@@ -50,12 +50,11 @@
     "weaponType": 0
   },
   "modules": {
-    "zoom": [{
+    "zoom":{
       "fovModifier": 0.8,
       "yOffset": 14.71,
       "zOffset": -0.95
-    }],
-    "attachments": {
+    },"attachments": {
       "barrel": {
         "yOffset": -100829.84,
         "zOffset": -21.55,

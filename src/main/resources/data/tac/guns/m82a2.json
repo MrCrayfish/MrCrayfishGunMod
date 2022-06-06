@@ -21,7 +21,11 @@
     "maxAmmo": 5,
     "reloadMagTimer": 66,
     "additionalReloadEmptyMagTimer": 20,
-    "maxAdditionalAmmoPerOC": [2, 3, 5],
+    "maxAdditionalAmmoPerOC": [
+      2,
+      3,
+      5
+    ],
     "preReloadPauseTicks": 13
   },
   "projectile": {
@@ -48,13 +52,12 @@
     "weaponType": 5
   },
   "modules": {
-    "zoom": [{
+    "zoom": {
       "fovModifier": 0.8,
       "yOffset": 11.7625,
       "zOffset": -7.5
-    }],
-    "attachments":
-    {
+    },
+    "attachments": {
       "scope": {
         "yOffset": 10.275,
         "zOffset": 10.05,

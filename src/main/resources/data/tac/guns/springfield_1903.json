@@ -11,11 +11,11 @@
     "recoilKick": 1.95,
     "horizontalRecoilAngle": 0.125,
     "recoilAdsReduction": 0.40,
-    "weaponRecoilDuration": 0.85,
+    "weaponRecoilDuration": 0.87,
     "recoilDuration": 0.125,
     "cameraRecoilModifier": 2.0,
     "alwaysSpread": true,
-    "spread": 1.00,
+    "spread": 0.70,
     "weightKilo": 4.1
   },
   "reloads": {
@@ -50,12 +50,11 @@
     "weaponType": 5
   },
   "modules": {
-    "zoom": [{
+    "zoom":{
       "fovModifier": 0.7,
       "yOffset": 8.4,
       "zOffset": -5.7
-    }],
-    "attachments": {
+    },"attachments": {
       "oldScope": {
         "yOffset": 7.375,
         "zOffset": 6.0,

@@ -13,7 +13,6 @@
     "weaponRecoilDuration": 0.525,
     "recoilDuration": 0.1025,
     "cameraRecoilModifier": 1.325,
-    "recoilDuration": 0.17,
     "alwaysSpread": true,
     "spread": 7.05,
     "weightKilo": 1.5
@@ -53,11 +52,11 @@
     "weaponType": 4
   },
   "modules": {
-    "zoom": [{
+    "zoom":{
       "fovModifier": 0.9,
       "yOffset": 15.660,
       "zOffset": -9.0
-    }],
+    },
     "attachments": { }
   }
 }
