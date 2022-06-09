@@ -22,6 +22,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -77,7 +78,7 @@ public class ReloadTracker
 
     private boolean hasNoAmmo(PlayerEntity player)
     {
-        return Gun.findAmmo(player, this.gun.getProjectile().getItem())[0].isEmpty();
+        return Gun.findAmmo(player, this.gun.getProjectile().getItem()).length == 0 ? true : Gun.findAmmo(player, this.gun.getProjectile().getItem())[0].isEmpty();
     }
 
     private boolean canReload(PlayerEntity player)

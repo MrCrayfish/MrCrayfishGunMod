@@ -917,7 +917,7 @@ public class GunEditor
         {
             if(this.map.get(name) == null) {LOGGER.log(Level.ERROR, "WEAPON EDITOR FAILED TO EXPORT THIS BROKEN DATA. CONTACT CLUMSYALIEN."); return;}
             LOGGER.log(Level.FATAL, gun.serializeNBT().getCompound("Modules").getCompound("Attachments").toString());
-            GsonBuilder gsonB = new GsonBuilder().setLenient().addSerializationExclusionStrategy(Gun.strategy).setPrettyPrinting().disableJdkUnsafe().setNumberToNumberStrategy(ToNumberPolicy.DOUBLE).setObjectToNumberStrategy(ToNumberPolicy.DOUBLE).serializeSpecialFloatingPointValues();;
+            GsonBuilder gsonB = new GsonBuilder().setLenient().addSerializationExclusionStrategy(Gun.strategy).setPrettyPrinting();//.setNumberToNumberStrategy(ToNumberPolicy.DOUBLE).setObjectToNumberStrategy(ToNumberPolicy.DOUBLE).serializeSpecialFloatingPointValues();;
 
             String jsonString = gsonB.create().toJson(gun);//gson.toJson(ch.getCatGlobal(1).get(this.previousWeaponTag));
             jsonString += "\nSCOPE"+gsonB.create().toJson(gun.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("Scope").toString());

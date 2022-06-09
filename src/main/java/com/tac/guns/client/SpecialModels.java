@@ -402,6 +402,10 @@ public enum SpecialModels
     M1014("m1014"),
     M1014_BOLT("m1014_bolt"),
     M1014_SHELL("m1014_shell"),
+    M249("m249"),
+    M249_BOLT("m249_bolt"),
+    M249_TACTICAL_GRIP("m249_tactical_grip"),
+    M249_LIGHT_GRIP("m249_light_grip"),
     //Everything from this point on is all scope additions
 
     MINI_DOT_BASE("optics/mini_dot_base"),

@@ -598,4 +598,11 @@ public class GunModifiers
             return speed*0.925;
         }
     };
+    public static final IGunModifier M249_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.75;
+        }
+    };
 }
