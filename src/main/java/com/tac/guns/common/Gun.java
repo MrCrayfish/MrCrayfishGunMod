@@ -19,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 import javax.annotation.Nullable;
@@ -216,7 +215,6 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.weightKilo = this.weightKilo;
             return general;
         }
-
         /**
          * @return If this gun is automatic or not
          */
@@ -224,7 +222,6 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             return this.auto;
         }
-
         /**
          * @return If the gun exits aim during Cooldown
          */
@@ -232,15 +229,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             return this.boltAction;
         }
-
         /**
          * @return The fire rate of this weapon in ticks
          */
         public int getRate()
         {
-            return this.rate;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (int) (this.rate + GunEditor.get().getRateMod()) : (int)this.rate;
         }
-
         /**
          * @return The fire modes supported by the weapon, [0,1,2,3,4,5] [Safety, Single, Three round burst, Auto, Special 1, Special 2]
          */
@@ -248,7 +243,6 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             return this.rateSelector;
         }
-
         /**
          * @return The type of grip this weapon uses
          */
@@ -256,71 +250,47 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             return this.gripType;
         }
-
         /**
          * @return The amount of recoil this gun produces upon firing in degrees
          */
         public float getRecoilAngle()
         {
-            return this.recoilAngle;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.recoilAngle + GunEditor.get().getRecoilAngleMod() : (this.recoilAngle/1.5f);
         }
-
         /**
          * @return The amount of kick this gun produces upon firing
          */
         public float getRecoilKick()
         {
-            return this.recoilKick/1.5f;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.recoilKick + GunEditor.get().getRecoilKickMod() : (this.recoilKick/1.5f);
         }
-
         /**
          * @return The amount of horizontal kick this gun produces upon firing
          */
-        public float getHorizontalRecoilAngle()
-        {
-            return this.horizontalRecoilAngle/1.5f;
-        }
-
+        public float getHorizontalRecoilAngle() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.horizontalRecoilAngle + GunEditor.get().getHorizontalRecoilAngleMod() : (this.horizontalRecoilAngle/1.5f);}
         /**
          * @return How much to divide out of camera recoil, use for either softening camera shake while keeping high recoil feeling weapons
          */
-        public float getCameraRecoilModifier()
-        {
-            return this.cameraRecoilModifier;
-        }
-
+        public float getCameraRecoilModifier() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.cameraRecoilModifier + GunEditor.get().getCameraRecoilModifierMod() : this.cameraRecoilModifier;}
         /**
          * @return The duration offset for recoil. This reduces the duration of recoil animation
          */
-        public float getRecoilDuration()
-        {
-            return this.recoilDuration;
-        }
-
+        public float getRecoilDuration() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.recoilDuration + GunEditor.get().getRecoilDurationMod() : this.recoilDuration;}
         /**
          * @return Recoil (the weapon) up until the weapon cooldown is under this value (0.1 == 10% recoil time left, use to help scale with high firerate weapons and their weapon recoil feel)
          */
-        public float getWeaponRecoilDuration()
-        {
-            return this.weaponRecoilDuration;
-        }
-
+        public float getWeaponRecoilDuration() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.weaponRecoilDuration + GunEditor.get().getWeaponRecoilDurationMod() : this.weaponRecoilDuration;}
         /**
          * @return The amount of reduction applied when aiming down this weapon's sight
          */
-        public float getRecoilAdsReduction()
-        {
-            return this.recoilAdsReduction;
-        }
-
+        public float getRecoilAdsReduction() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.recoilAdsReduction + GunEditor.get().getRecoilAdsReductionMod() : this.recoilAdsReduction;}
         /**
          * @return The amount of projectiles this weapon fires
          */
         public int getProjectileAmount()
         {
-            return this.projectileAmount;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (int) (this.projectileAmount + GunEditor.get().getProjectileAmountMod()) : this.projectileAmount;
         }
-
         /**
          * @return If this weapon should always spread it's projectiles according to {@link #getSpread()}
          */
@@ -328,23 +298,21 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             return this.alwaysSpread;
         }
-
         /**
          * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
          * the fired projectile.
          */
         public float getSpread()
         {
-            return this.spread;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.spread + GunEditor.get().getSpreadMod() : this.spread;
         }
-
         /**
          * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
          * the fired projectile.
          */
         public float getWeightKilo()
         {
-            return this.weightKilo;//*1.25f;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.weightKilo + GunEditor.get().getWeightKiloMod() : this.weightKilo;//*1.25f;
         }
     }
 
@@ -459,23 +427,20 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         /**
          * @return The amount of ammo to add to the weapon each reload cycle
          */
-        public int getReloadAmount()
-        {
-            return this.reloadAmount;
-        }
+        public int getReloadAmount() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.reloadAmount + GunEditor.get().getReloadAmountMod()) : this.reloadAmount;}
         /**
          * @return The amount of ammo to add to the weapon each reload cycle
          */
         public int getReloadMagTimer()
         {
-            return this.reloadMagTimer;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.reloadMagTimer + GunEditor.get().getReloadMagTimerMod()) : this.reloadMagTimer;
         }
         /**
          * @return The amount of ammo to add to the weapon each reload cycle
          */
         public int getAdditionalReloadEmptyMagTimer()
         {
-            return this.additionalReloadEmptyMagTimer;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.additionalReloadEmptyMagTimer + GunEditor.get().getAdditionalReloadEmptyMagTimerMod()) : this.additionalReloadEmptyMagTimer;
         }
         /**
          * @return The amount of ammo to add to the weapon each reload cycle
@@ -486,12 +451,12 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public int getPreReloadPauseTicks()
         {
-            return this.preReloadPauseTicks;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.preReloadPauseTicks + GunEditor.get().getPreReloadPauseTicksMod()) : this.preReloadPauseTicks;
         }
         /**
          * @return The amount of ammo to add to the weapon each reload cycle
          */
-        public int getinterReloadPauseTicks() {return this.interReloadPauseTicks;}
+        public int getinterReloadPauseTicks() {return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.interReloadPauseTicks + GunEditor.get().getInterReloadPauseTicksMod()) : this.interReloadPauseTicks;}
         /**
          * @return Does this gun reload all ammunition following a single timer and replenish
          */
@@ -631,7 +596,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public float getDamage()
         {
-            return this.damage;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.projectile) ? (this.damage + GunEditor.get().getDamageMod()) : this.damage;
         }
 
         /**
@@ -639,7 +604,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public float getSize()
         {
-            return this.size;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.projectile) ? (this.size + GunEditor.get().getDamageMod()) : this.size;
         }
 
         /**
@@ -647,7 +612,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public double getSpeed()
         {
-            return this.speed;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.projectile) ?(this.speed + GunEditor.get().getSpeedMod()) : this.speed;
         }
 
         /**
@@ -655,7 +620,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public int getLife()
         {
-            return this.life;
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.projectile) ? (int) (this.life + GunEditor.get().getLifeMod()) : this.life;
         }
 
         /**
@@ -1013,7 +978,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     {
         @Optional
         private Zoom zoom = new Zoom();
-
+        @Optional
         private Attachments attachments = new Attachments();
 
         public Zoom getZoom()
@@ -1666,7 +1631,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         return this.canAttachType(IAttachment.Type.SCOPE) || this.canAttachType(IAttachment.Type.OLD_SCOPE) || this.canAttachType(IAttachment.Type.PISTOL_SCOPE) || this.modules.zoom != null;
     }
 
-    public static ItemStack getScopeStack(ItemStack gun)
+   /* public static ItemStack getScopeStack(ItemStack gun)
     {
         CompoundNBT compound = gun.getTag();
         if(compound != null && compound.contains("Attachments", Constants.NBT.TAG_COMPOUND))
@@ -1680,9 +1645,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 return ItemStack.read(attachment.getCompound("OldScope"));
             }
+            else if(attachment.contains("PistolScope", Constants.NBT.TAG_COMPOUND))
+            {
+                return ItemStack.read(attachment.getCompound("PistolScope"));
+            }
         }
         return ItemStack.EMPTY;
-    }
+    }*/
 
     public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, IAttachment.Type type)
     {

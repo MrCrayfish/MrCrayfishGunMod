@@ -99,6 +99,14 @@ public class CommandsManager
                                     sendMessage(commandContext,  "Exported all weapon data, with adjustments!");
                                     return 1;
                                 }))
+                        .then(Commands.literal("reset")
+                                .executes(commandContext ->
+                                {
+                                    CommandsHandler.get().setCatCurrentIndex(1);
+                                    GunEditor.get().resetData();
+                                    sendMessage(commandContext,  "Modified data within this current category, for this weapon has been reset!");
+                                    return 1;
+                                }))
                     .executes(commandContext -> {
                         CommandsHandler.get().setCatCurrentIndex(1);
                         sendMessage(commandContext,  "Set Category to a TaC Default | Weapon |");

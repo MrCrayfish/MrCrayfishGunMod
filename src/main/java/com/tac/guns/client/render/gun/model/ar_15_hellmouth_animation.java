@@ -37,62 +37,26 @@ import net.minecraft.world.lighting.LightEngine;
  */
 
 /**
- * Author: Mr. Pineapple
+ * Author: Timeless Development, and associates.
  */
 public class ar_15_hellmouth_animation implements IOverrideModel {
 
     @Override
     public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay)
     {
-        //if(ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GUI) && Config.CLIENT.quality.reducedGuiWeaponQuality.get())
-        /*if(ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GUI))// && Config.CLIENT.quality.reducedGuiWeaponQuality.get())
-        {
-            matrices.push();
-            matrices.rotate(Vector3f.XP.rotationDegrees(-60.0F));
-            matrices.rotate(Vector3f.YP.rotationDegrees(255.0F));
-            *//*matrices.rotate(Vector3f.YP.rotationDegrees(225.0F));*//*
-            matrices.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
-            //matrices.rotate(Vector3f.ZP.rotationDegrees(-45.0F));
-            matrices.translate(1,0,0);
-            matrices.scale(1.375F,1.375F,1.375F);
-
-            RenderType renderType = RenderUtil.getRenderType(stack, true);
-            renderBuffer.getBuffer(renderType).lightmap(15728880);
-            RenderUtil.renderModel(stack, stack, matrices, renderBuffer, light, overlay);
-            matrices.pop();
-            return;
-        }
-        if(ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GROUND) && Minecraft.getInstance().currentScreen == null)// && Config.CLIENT.quality.reducedGuiWeaponQuality.get())
-        {
-            matrices.push();
-            matrices.rotate(Vector3f.XP.rotationDegrees(-60.0F));
-            matrices.rotate(Vector3f.YP.rotationDegrees(255.0F));
-            *//*matrices.rotate(Vector3f.YP.rotationDegrees(225.0F));*//*
-            matrices.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
-            //matrices.rotate(Vector3f.ZP.rotationDegrees(-45.0F));
-            matrices.translate(1,0,0);
-            matrices.scale(1.375F,1.375F,1.375F);//matrices.scale(1.375F,1.375F,1.375F);
-            RenderUtil.renderModel(stack, stack, matrices, renderBuffer, light, overlay);
-            matrices.pop();
-            return;
-        }*/
-
         if(Gun.getScope(stack) == null && stack.hasTag())
         {
-            if(stack.getTag().getInt("currentZoom") == 0)
-                RenderUtil.renderModel(SpecialModels.AR_15_CQB_IRONS.getModel(), stack, matrices, renderBuffer, light, overlay);
-            else if(stack.getTag().getInt("currentZoom") == 1)
-                RenderUtil.renderModel(SpecialModels.AR_15_CQB_IRONS_2.getModel(), stack, matrices, renderBuffer, light, overlay);
+            RenderUtil.renderModel(SpecialModels.AR_15_CQB_IRONS.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
         if(Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.LIGHT_STOCK.orElse(ItemStack.EMPTY.getItem()))
         {
             RenderUtil.renderModel(SpecialModels.AR15_HELLMOUTH_BUTT_LIGHTWEIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
-        if(Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.TACTICAL_STOCK.orElse(ItemStack.EMPTY.getItem()))
+        else if(Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.TACTICAL_STOCK.orElse(ItemStack.EMPTY.getItem()))
         {
             RenderUtil.renderModel(SpecialModels.AR15_HELLMOUTH_BUTT_TACTICAL.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
-        if(Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.WEIGHTED_STOCK.orElse(ItemStack.EMPTY.getItem()))
+        else if(Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.WEIGHTED_STOCK.orElse(ItemStack.EMPTY.getItem()))
         {
             RenderUtil.renderModel(SpecialModels.AR15_HELLMOUTH_BUTT_HEAVY.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
@@ -149,7 +113,7 @@ public class ar_15_hellmouth_animation implements IOverrideModel {
         {
             RenderUtil.renderModel(SpecialModels.AR15_HELLMOUTH_TACTICAL_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
-        if(Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.LIGHT_GRIP.orElse(ItemStack.EMPTY.getItem()))
+        else if(Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.LIGHT_GRIP.orElse(ItemStack.EMPTY.getItem()))
         {
             RenderUtil.renderModel(SpecialModels.AR15_HELLMOUTH_LIGHTWEIGHT_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
         }

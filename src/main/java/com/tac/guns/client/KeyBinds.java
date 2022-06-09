@@ -30,8 +30,18 @@ public class KeyBinds
     public static final KeyBinding SHIFTYR = new KeyBinding("key.tac.ssr", GLFW.GLFW_KEY_RIGHT_SHIFT, "key.categories.tac");
     public static final KeyBinding CONTROLLYR = new KeyBinding("key.tac.ccr", GLFW.GLFW_KEY_RIGHT_CONTROL, "key.categories.tac");
     public static final KeyBinding ALTYR = new KeyBinding("key.tac.aar", GLFW.GLFW_KEY_RIGHT_ALT, "key.categories.tac");
-
     public static final KeyBinding SIZE_OPT = new KeyBinding("key.tac.sizer", GLFW.GLFW_KEY_PERIOD, "key.categories.tac");
+
+
+    public static final KeyBinding P = new KeyBinding("key.tac.p", GLFW.GLFW_KEY_P, "key.categories.tac");
+    public static final KeyBinding L = new KeyBinding("key.tac.l", GLFW.GLFW_KEY_L, "key.categories.tac");
+    public static final KeyBinding O = new KeyBinding("key.tac.o", GLFW.GLFW_KEY_O, "key.categories.tac");
+    public static final KeyBinding K = new KeyBinding("key.tac.k", GLFW.GLFW_KEY_K, "key.categories.tac");
+    public static final KeyBinding M = new KeyBinding("key.tac.m", GLFW.GLFW_KEY_M, "key.categories.tac");
+    public static final KeyBinding I = new KeyBinding("key.tac.i", GLFW.GLFW_KEY_I, "key.categories.tac");
+    public static final KeyBinding J = new KeyBinding("key.tac.j", GLFW.GLFW_KEY_J, "key.categories.tac");
+    public static final KeyBinding N = new KeyBinding("key.tac.n", GLFW.GLFW_KEY_N, "key.categories.tac");
+
     public static void register()
     {
         ClientRegistry.registerKeyBinding(KEY_RELOAD);
@@ -52,6 +62,15 @@ public class KeyBinds
             ClientRegistry.registerKeyBinding(CONTROLLYR);
             ClientRegistry.registerKeyBinding(ALTYR);
             ClientRegistry.registerKeyBinding(SIZE_OPT);
+
+            ClientRegistry.registerKeyBinding(P);
+            ClientRegistry.registerKeyBinding(L);
+            ClientRegistry.registerKeyBinding(O);
+            ClientRegistry.registerKeyBinding(K);
+            ClientRegistry.registerKeyBinding(M);
+            ClientRegistry.registerKeyBinding(I);
+            ClientRegistry.registerKeyBinding(J);
+            ClientRegistry.registerKeyBinding(N);
         }
     }
 }

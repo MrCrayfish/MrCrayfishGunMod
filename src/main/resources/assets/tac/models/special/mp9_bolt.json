@@ -1,0 +1,75 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [128, 128],
+	"textures": {
+		"1": "tac:items/mp9_uv"
+	},
+	"elements": [
+		{
+			"from": [8.49417, 8.13486, 7.78125],
+			"to": [8.63644, 9.07186, 10.15625],
+			"rotation": {"angle": 22.5, "axis": "z", "origin": [7.80667, 8.23643, 9.41406]},
+			"faces": {
+				"north": {"uv": [9.25, 5.875, 9.3125, 6], "texture": "#1"},
+				"east": {"uv": [2.125, 5.625, 2.4375, 5.75], "texture": "#1"},
+				"south": {"uv": [9.25, 6.5, 9.3125, 6.625], "texture": "#1"},
+				"west": {"uv": [2.625, 5.625, 2.9375, 5.75], "texture": "#1"},
+				"up": {"uv": [6.5625, 7.0625, 6.5, 6.75], "texture": "#1"},
+				"down": {"uv": [6.8125, 6.75, 6.75, 7.0625], "texture": "#1"}
+			}
+		},
+		{
+			"from": [8.48112, 8.19046, 7.78125],
+			"to": [8.61214, 8.46013, 10.15625],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8.396, 8.87771, 8.5]},
+			"faces": {
+				"north": {"uv": [11.25, 8.25, 11.3125, 8.3125], "texture": "#1"},
+				"east": {"uv": [6.75, 5.375, 7.0625, 5.4375], "texture": "#1"},
+				"south": {"uv": [8.5, 11.25, 8.5625, 11.3125], "texture": "#1"},
+				"west": {"uv": [0.875, 6.875, 1.1875, 6.9375], "texture": "#1"},
+				"down": {"uv": [3.0625, 6.875, 3, 7.1875], "texture": "#1"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 0.75, 0.25],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 0.75, 0.25],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"firstperson_righthand": {
+			"translation": [-0.5, 3.25, -6.5],
+			"scale": [1.5, 1.5, 1.5]
+		},
+		"firstperson_lefthand": {
+			"translation": [-0.5, 3.25, -6.5],
+			"scale": [1.5, 1.5, 1.5]
+		},
+		"ground": {
+			"translation": [0, 5, 0],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"gui": {
+			"rotation": [30, -145, 0],
+			"translation": [2.75, 1, 0]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [-2.25, 0.75, -2],
+			"scale": [1.1, 1.1, 1.1]
+		}
+	},
+	"groups": [
+		{
+			"name": "bolt",
+			"origin": [7.93167, 9.92393, 3.41406],
+			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
+			"children": [0, 1]
+		}
+	]
+}

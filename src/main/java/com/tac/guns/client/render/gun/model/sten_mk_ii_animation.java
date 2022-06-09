@@ -23,7 +23,7 @@ import net.minecraft.util.math.vector.Vector3f;
  */
 
 /**
- * Author: Mr. Pineapple
+ * Author: Timeless Development, and associates.
  */
 public class sten_mk_ii_animation implements IOverrideModel {
 

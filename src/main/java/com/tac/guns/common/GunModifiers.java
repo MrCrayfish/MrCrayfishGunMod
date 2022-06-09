@@ -480,4 +480,122 @@ public class GunModifiers
         @Override
         public float additionalWeaponWeight() { return 0.125F; }
     };
+
+    //////////////////////// SPECIFICS PER WEAPON
+    public static final IGunModifier DE_LISLE_MOD = new IGunModifier()
+    {
+        @Override
+        public boolean silencedFire()
+        {
+            return true;
+        }
+
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 0.175F;
+        }
+
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 0.175;
+        }
+
+        @Override
+        public double modifyMuzzleFlashSize(double size)
+        {
+            return size * 0F;
+        }
+
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.805;
+        }
+    };
+    public static final IGunModifier M1_GARAND_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.125;
+        }
+
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.735;
+        }
+    };
+    public static final IGunModifier SIG_MCX_SPEAR_MOD = new IGunModifier()
+    {
+        @Override
+        public boolean silencedFire()
+        {
+            return true;
+        }
+
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 0.375F;
+        }
+
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 0.325;
+        }
+
+        @Override
+        public double modifyMuzzleFlashSize(double size)
+        {
+            return size * 0F;
+        }
+
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.75;
+        }
+    };
+    public static final IGunModifier MP9_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {return speed*1.125;}
+    };
+    public static final IGunModifier SKS_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.125;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.85;
+        }
+    };
+    public static final IGunModifier SKS_TAC_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.125;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.95;
+        }
+    };
+    public static final IGunModifier M1014_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.25;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.925;
+        }
+    };
 }

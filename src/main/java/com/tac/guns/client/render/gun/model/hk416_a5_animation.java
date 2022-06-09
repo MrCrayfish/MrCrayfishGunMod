@@ -26,7 +26,7 @@ import net.minecraft.util.math.vector.Vector3f;
  */
 
 /**
- * Author: Mr. Pineapple
+ * Author: Timeless Development, and associates.
  */
 public class hk416_a5_animation implements IOverrideModel {
 

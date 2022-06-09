@@ -22,6 +22,7 @@ import com.tac.guns.network.message.MessageAttachments;
 import com.tac.guns.network.message.MessageInspection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.MouseSettingsScreen;
 import net.minecraft.client.gui.screen.VideoSettingsScreen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -177,7 +178,15 @@ public class ClientHandler
                 Minecraft.getInstance().displayGuiScreen(new TaCSettingsScreen(screen, Minecraft.getInstance().gameSettings));
             })));
         }
+        /*if(event.getGui() instanceof MainMenuScreen)
+        {
+            MainMenuScreen screen = (MainMenuScreen) event.getGui();
 
+            event.addWidget((new Button(screen.width / 2 - 215, 10, 75, 20, new TranslationTextComponent("tac.options.gui_settings"), (p_213126_1_) -> {
+                Minecraft.getInstance().displayGuiScreen(new TaCSettingsScreen(screen, Minecraft.getInstance().gameSettings));
+            })));
+        }
+*/
     }
 
     @SubscribeEvent

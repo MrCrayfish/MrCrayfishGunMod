@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
  */
 
 /**
- * Author: Mr. Pineapple
+ * Author: Timeless Development, and associates.
  */
 public class mk18_animation implements IOverrideModel {
 

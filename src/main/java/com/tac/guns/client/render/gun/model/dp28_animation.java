@@ -21,7 +21,7 @@ import net.minecraft.util.math.vector.Vector3f;
  */
 
 /**
- * Author: Mr. Pineapple
+ * Author: Timeless Development, and associates.
  */
 public class dp28_animation implements IOverrideModel {
 

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Level;
  */
 
 /**
- * Author: Mr. Pineapple
+ * Author: Timeless Development, and associates.
  */
 public class m1873_animation implements IOverrideModel {
 

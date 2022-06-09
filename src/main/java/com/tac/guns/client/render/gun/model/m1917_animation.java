@@ -20,7 +20,7 @@ import net.minecraft.util.math.vector.Vector3f;
  */
 
 /**
- * Author: ClumsyAlien, based off Mr. Pineapple
+ * Author: ClumsyAlien, based off Timeless Development, and associates.
  */
 public class m1917_animation implements IOverrideModel {
 
