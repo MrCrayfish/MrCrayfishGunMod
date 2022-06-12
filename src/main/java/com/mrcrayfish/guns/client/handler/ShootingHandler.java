@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.compat.PlayerReviveHelper;
 import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -12,8 +13,8 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemCooldowns;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -69,6 +70,9 @@ public class ShootingHandler
         if(player == null)
             return;
 
+        if(PlayerReviveHelper.isBleeding(player))
+            return;
+
         if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && AimingHandler.get().isLookingAtInteractableBlock())
         {
             if(player.getMainHandItem().getItem() instanceof GunItem && !AimingHandler.get().isLookingAtInteractableBlock())
@@ -96,6 +100,9 @@ public class ShootingHandler
         if(player == null)
             return;
 
+        if(PlayerReviveHelper.isBleeding(player))
+            return;
+
         if(event.getKeyMapping() == mc.options.keyAttack)
         {
             ItemStack heldItem = player.getMainHandItem();
@@ -103,7 +110,7 @@ public class ShootingHandler
             {
                 event.setSwingHand(false);
                 event.setCanceled(true);
-                fire(player, heldItem);
+                this.fire(player, heldItem);
             }
         }
     }
@@ -137,7 +144,7 @@ public class ShootingHandler
         if(player != null)
         {
             ItemStack heldItem = player.getMainHandItem();
-            if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
+            if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()) && !PlayerReviveHelper.isBleeding(player))
             {
                 boolean shooting = GLFW.glfwGetMouseButton(mc.getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
                 if(GunMod.controllableLoaded)
@@ -183,6 +190,9 @@ public class ShootingHandler
         Player player = mc.player;
         if(player != null)
         {
+            if(PlayerReviveHelper.isBleeding(player))
+                return;
+
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
             {
@@ -191,7 +201,7 @@ public class ShootingHandler
                     Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
                     if(gun.getGeneral().isAuto())
                     {
-                        fire(player, heldItem);
+                        this.fire(player, heldItem);
                     }
                 }
             }

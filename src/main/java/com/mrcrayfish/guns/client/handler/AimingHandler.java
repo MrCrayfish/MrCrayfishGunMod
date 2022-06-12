@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.compat.PlayerReviveHelper;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
@@ -184,6 +185,9 @@ public class AimingHandler
             return false;
 
         if(mc.screen != null)
+            return false;
+
+        if(PlayerReviveHelper.isBleeding(mc.player))
             return false;
 
         ItemStack heldItem = mc.player.getMainHandItem();
