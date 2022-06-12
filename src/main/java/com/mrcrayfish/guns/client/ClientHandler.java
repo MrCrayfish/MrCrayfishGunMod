@@ -98,7 +98,7 @@ public class ClientHandler
     {
         ItemColor color = (stack, index) ->
         {
-            if(!((IColored) stack.getItem()).canColor(stack))// if(!IColored.isDyeable(stack))
+            if(!IColored.isDyeable(stack))
             {
                 return -1;
             }

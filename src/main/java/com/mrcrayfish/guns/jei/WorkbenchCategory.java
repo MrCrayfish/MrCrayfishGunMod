@@ -97,7 +97,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
     public void setRecipe(IRecipeLayoutBuilder builder, WorkbenchRecipe recipe, IFocusGroup focuses)
     {
         ItemStack output = recipe.getItem();
-        if(output.getItem() instanceof IColored colored && colored.canColor(output))
+        if(IColored.isDyeable(output))
         {
             builder.addSlot(RecipeIngredientRole.INPUT, 141, 52).addItemStacks(Stream.of(this.dyes).map(ItemStack::new).collect(Collectors.toList()));
         }
