@@ -103,7 +103,7 @@ public class ShootingHandler
         if(PlayerReviveHelper.isBleeding(player))
             return;
 
-        if(event.getKeyMapping() == mc.options.keyAttack)
+        if(event.isAttack())
         {
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
@@ -111,6 +111,7 @@ public class ShootingHandler
                 event.setSwingHand(false);
                 event.setCanceled(true);
                 this.fire(player, heldItem);
+                mc.options.keyAttack.setDown(false);
             }
         }
     }
