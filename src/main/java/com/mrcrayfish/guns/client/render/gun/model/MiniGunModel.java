@@ -7,7 +7,9 @@ import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,13 +54,14 @@ public class MiniGunModel implements IOverrideModel
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
         Rotations rotations = this.rotationMap.computeIfAbsent(entity, uuid -> new Rotations());
-        RenderUtil.renderModel(SpecialModels.MINI_GUN_BASE.getModel(), stack,matrixStack, renderTypeBuffer, light, overlay);
-        RenderUtil.renderModel(SpecialModels.MINI_GUN_BARRELS.getModel(), ItemCameraTransforms.TransformType.NONE, () -> {
-            RenderUtil.rotateZ(matrixStack, 0.5F, 0.125F, rotations.prevRotation + (rotations.rotation - rotations.prevRotation) * partialTicks);
-        }, stack, parent, matrixStack, renderTypeBuffer, light, overlay);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, overlay, SpecialModels.MINI_GUN_BASE.getModel());
+        matrixStack.pushPose();
+        RenderUtil.rotateZ(matrixStack, 0.0F, -0.375F, rotations.prevRotation + (rotations.rotation - rotations.prevRotation) * partialTicks);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, overlay, SpecialModels.MINI_GUN_BARRELS.getModel());
+        matrixStack.popPose();
     }
 
-    private class Rotations
+    private static class Rotations
     {
         private int rotation;
         private int prevRotation;

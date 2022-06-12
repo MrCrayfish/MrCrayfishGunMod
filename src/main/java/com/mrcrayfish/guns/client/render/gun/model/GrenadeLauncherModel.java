@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -20,8 +21,9 @@ public class GrenadeLauncherModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
-        RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_BASE.getModel(), stack, matrixStack, renderTypeBuffer, light, overlay);
-        
+        IBakedModel bakedModel = SpecialModels.GRENADE_LAUNCHER_BASE.getModel();
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, overlay, bakedModel);
+
         if(entity.equals(Minecraft.getInstance().player))
         {
             matrixStack.pushPose();
