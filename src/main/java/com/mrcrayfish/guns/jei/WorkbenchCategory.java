@@ -106,13 +106,9 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
     {
         List<List<ItemStack>> itemInputs = new ArrayList<>();
         ItemStack output = recipe.getItem();
-        if(output.getItem() instanceof IColored)
+        if(IColored.isDyeable(output))
         {
-            IColored colored = (IColored) output.getItem();
-            if(colored.canColor(output))
-            {
-                itemInputs.add(Stream.of(this.dyes).map(ItemStack::new).collect(Collectors.toList()));
-            }
+            itemInputs.add(Stream.of(this.dyes).map(ItemStack::new).collect(Collectors.toList()));
         }
         recipe.getMaterials().forEach(material ->
         {
@@ -132,14 +128,10 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         IGuiItemStackGroup stacks = layout.getItemStacks();
         ItemStack output = recipe.getItem();
         int offset = 0;
-        if(output.getItem() instanceof IColored)
+        if(IColored.isDyeable(output))
         {
-            IColored colored = (IColored) output.getItem();
-            if(colored.canColor(output))
-            {
-                stacks.init(0, true, 140, 51);
-                offset = 1;
-            }
+            stacks.init(0, true, 140, 51);
+            offset = 1;
         }
         for(int i = 0; i < ingredients.getInputs(VanillaTypes.ITEM).size(); i++)
         {

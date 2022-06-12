@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.container.WorkbenchContainer;
@@ -229,7 +230,7 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
         if(this.currentTab != null)
         {
             ItemStack item = this.displayStack;
-            if(item.getItem() instanceof IColored && ((IColored) item.getItem()).canColor(item))
+            if(IColored.isDyeable(item))
             {
                 IColored colored = (IColored) item.getItem();
                 if(!this.workbench.getItem(0).isEmpty())

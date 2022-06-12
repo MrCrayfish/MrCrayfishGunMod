@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.item;
 
+import com.mrcrayfish.guns.Config;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.DyeItem;
@@ -92,7 +93,7 @@ public interface IColored
         int maxColor = 0;
         int colorCount = 0;
         IColored coloredItem = null;
-        if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor(stack))
+        if(IColored.isDyeable(stack))
         {
             coloredItem = (IColored) stack.getItem();
             resultStack = stack.copy();
@@ -143,5 +144,15 @@ public interface IColored
             coloredItem.setColor(resultStack, finalColor);
             return resultStack;
         }
+    }
+
+    static boolean isDyeable(ItemStack stack)
+    {
+        if(stack.getItem() instanceof IColored)
+        {
+            IColored colored = ((IColored) stack.getItem());
+            return colored.canColor(stack) || Config.SERVER.experimental.forceDyeableAttachments.get();
+        }
+        return false;
     }
 }

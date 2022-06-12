@@ -401,6 +401,7 @@ public class Config
         public final ForgeConfigSpec.DoubleValue reloadMaxDistance;
         public final ForgeConfigSpec.BooleanValue enableCameraRecoil;
         public final ForgeConfigSpec.IntValue cooldownThreshold;
+        public final Experimental experimental;
 
         public Server(ForgeConfigSpec.Builder builder)
         {
@@ -425,8 +426,22 @@ public class Config
 
                 this.enableCameraRecoil = builder.comment("If true, enables camera recoil when firing a weapon").define("enableCameraRecoil", true);
                 this.cooldownThreshold = builder.comment("The maximum amount of cooldown time remaining before the server will accept another shoot packet from a client. This allows for a litle slack since the server may be lagging").defineInRange("cooldownThreshold", 0, 75, 1000);
+
+                this.experimental = new Experimental(builder);
             }
             builder.pop();
+        }
+
+        public static class Experimental
+        {
+            public final ForgeConfigSpec.BooleanValue forceDyeableAttachments;
+
+            public Experimental(ForgeConfigSpec.Builder builder)
+            {
+                builder.push("experimental");
+                this.forceDyeableAttachments = builder.comment("Forces all attachments to be dyeable regardless if they have an affect on the model. This is useful if your server uses custom models for attachments and the models have dyeable elements").define("forceDyeableAttachments", false);
+                builder.pop();
+            }
         }
     }
 

@@ -237,7 +237,7 @@ public class ServerPlayHandler
                     DyeItem dyeItem = (DyeItem) dyeStack.getItem();
                     int color = dyeItem.getDyeColor().getColorValue();
 
-                    if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor(stack))
+                    if(IColored.isDyeable(stack))
                     {
                         IColored colored = (IColored) stack.getItem();
                         colored.setColor(stack, color);
