@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.client.render.gun.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.GunModel;
 import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
 import com.mrcrayfish.guns.client.handler.RecoilHandler;
@@ -14,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.HumanoidArm;
@@ -39,7 +41,8 @@ public class LongScopeModel implements IOverrideModel
             poseStack.scale(1.0F, 1.0F, (float) zScale);
         }
 
-        RenderUtil.renderModel(stack, parent, poseStack, renderTypeBuffer, light, overlay);
+        BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, GunModel.wrap(bakedModel));
 
         if(this.isFirstPerson(transformType) && entity.equals(Minecraft.getInstance().player))
         {

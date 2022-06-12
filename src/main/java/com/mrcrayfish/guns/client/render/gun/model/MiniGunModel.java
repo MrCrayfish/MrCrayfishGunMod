@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,13 +52,14 @@ public class MiniGunModel implements IOverrideModel
     public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay)
     {
         Rotations rotations = this.rotationMap.computeIfAbsent(entity, uuid -> new Rotations());
-        RenderUtil.renderModel(SpecialModels.MINI_GUN_BASE.getModel(), stack, poseStack, renderTypeBuffer, light, overlay);
-        RenderUtil.renderModel(SpecialModels.MINI_GUN_BARRELS.getModel(), ItemTransforms.TransformType.NONE, () -> {
-            RenderUtil.rotateZ(poseStack, 0.5F, 0.125F, rotations.prevRotation + (rotations.rotation - rotations.prevRotation) * partialTicks);
-        }, stack, parent, poseStack, renderTypeBuffer, light, overlay);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, SpecialModels.MINI_GUN_BASE.getModel());
+        poseStack.pushPose();
+        RenderUtil.rotateZ(poseStack, 0.0F, -0.375F, rotations.prevRotation + (rotations.rotation - rotations.prevRotation) * partialTicks);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, SpecialModels.MINI_GUN_BARRELS.getModel());
+        poseStack.popPose();
     }
 
-    private class Rotations
+    private static class Rotations
     {
         private int rotation;
         private int prevRotation;

@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.*;
@@ -97,7 +98,7 @@ public class ClientHandler
     {
         ItemColor color = (stack, index) ->
         {
-            if(!((IColored) stack.getItem()).canColor(stack))
+            if(!((IColored) stack.getItem()).canColor(stack))// if(!IColored.isDyeable(stack))
             {
                 return -1;
             }

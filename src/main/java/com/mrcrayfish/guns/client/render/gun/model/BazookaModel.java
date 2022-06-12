@@ -5,8 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.GunModel;
+import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
-import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
@@ -39,7 +39,7 @@ public class BazookaModel extends SimpleModel
     @Override
     public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
-        RenderUtil.renderModel(this.modelSupplier.get(), transformType, null, stack, parent, poseStack, buffer, light, overlay);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, buffer, light, overlay, GunModel.wrap(this.modelSupplier.get()));
 
         if(transformType.firstPerson() && entity.equals(Minecraft.getInstance().player))
         {

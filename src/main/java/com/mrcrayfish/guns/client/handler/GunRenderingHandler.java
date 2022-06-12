@@ -589,7 +589,8 @@ public class GunRenderingHandler
         }
         else
         {
-            RenderUtil.renderGun(stack, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, entity);
+            BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
+            Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, bakedModel);
         }
     }
 
