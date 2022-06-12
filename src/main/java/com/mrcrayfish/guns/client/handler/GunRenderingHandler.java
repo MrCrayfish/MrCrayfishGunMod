@@ -55,6 +55,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,8 +99,17 @@ public class GunRenderingHandler
     private float prevImmersiveRoll;
     private float fallSway;
     private float prevFallSway;
-    
+
+    @Nullable
+    private ItemStack renderingWeapon;
+
     private GunRenderingHandler() {}
+
+    @Nullable
+    public ItemStack getRenderingWeapon()
+    {
+        return this.renderingWeapon;
+    }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event)
@@ -555,9 +565,11 @@ public class GunRenderingHandler
 
             RenderUtil.applyTransformType(stack, poseStack, transformType, entity);
 
+            this.renderingWeapon = stack;
             this.renderGun(entity, transformType, model.isEmpty() ? stack : model, poseStack, renderTypeBuffer, light, partialTicks);
             this.renderAttachments(entity, transformType, stack, poseStack, renderTypeBuffer, light, partialTicks);
             this.renderMuzzleFlash(entity, poseStack, renderTypeBuffer, stack, transformType, partialTicks);
+            this.renderingWeapon = null;
 
             poseStack.popPose();
             return true;
@@ -614,7 +626,8 @@ public class GunRenderingHandler
                             }
                             else
                             {
-                                RenderUtil.renderModel(attachmentStack, stack, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+                                BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(attachmentStack);
+                                Minecraft.getInstance().getItemRenderer().render(attachmentStack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, bakedModel);
                             }
 
                             poseStack.popPose();

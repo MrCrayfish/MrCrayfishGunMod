@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
  *
  * Author: MrCrayfish
  */
-public class ScopeItem extends Item implements IScope, IColored
+public class ScopeItem extends AttachmentItem implements IScope, IColored
 {
     private final Scope scope;
     private final boolean colored;

@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
  *
  * Author: MrCrayfish
  */
-public class BarrelItem extends Item implements IBarrel, IColored
+public class BarrelItem extends AttachmentItem implements IBarrel, IColored
 {
     private final Barrel barrel;
     private final boolean colored;

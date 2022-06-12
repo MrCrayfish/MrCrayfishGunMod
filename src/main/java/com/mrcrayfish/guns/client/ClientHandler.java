@@ -3,10 +3,6 @@ package com.mrcrayfish.guns.client;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.*;
-import com.mrcrayfish.guns.client.render.entity.GrenadeRenderer;
-import com.mrcrayfish.guns.client.render.entity.MissileRenderer;
-import com.mrcrayfish.guns.client.render.entity.ProjectileRenderer;
-import com.mrcrayfish.guns.client.render.entity.ThrowableGrenadeRenderer;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.BazookaModel;
 import com.mrcrayfish.guns.client.render.gun.model.GrenadeLauncherModel;
@@ -20,9 +16,9 @@ import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
 import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModContainers;
-import com.mrcrayfish.guns.init.ModEntities;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.item.IColored;
+import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.MessageAttachments;
 import net.minecraft.client.Minecraft;
@@ -36,19 +32,17 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: MrCrayfish
@@ -110,6 +104,14 @@ public class ClientHandler
             if(index == 0 && stack.hasTag() && stack.getTag().contains("Color", Tag.TAG_INT))
             {
                 return stack.getTag().getInt("Color");
+            }
+            if(index == 0 && stack.getItem() instanceof IAttachment)
+            {
+                ItemStack renderingWeapon = GunRenderingHandler.get().getRenderingWeapon();
+                if(renderingWeapon != null)
+                {
+                    return Minecraft.getInstance().getItemColors().getColor(renderingWeapon, index);
+                }
             }
             return -1;
         };
