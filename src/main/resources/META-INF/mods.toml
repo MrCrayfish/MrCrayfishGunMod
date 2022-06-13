@@ -27,19 +27,19 @@ description="MrCrayfish's Gun Mod adds in simple and straight forward weapons in
 [[dependencies.cgm]]
     modId="framework"
     mandatory=true
-    versionRange="[0.2.3,)"
+    versionRange="[0.3.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="controllable"
     mandatory=false
-    versionRange="[0.14.1,)"
+    versionRange="[0.16.1,)"
     ordering="AFTER"
     side="CLIENT"
 [[dependencies.cgm]]
     modId="backpacked"
     mandatory=false
-    versionRange="[2.0.0,)"
+    versionRange="[2.1.7,)"
     ordering="AFTER"
     side="CLIENT"
 
