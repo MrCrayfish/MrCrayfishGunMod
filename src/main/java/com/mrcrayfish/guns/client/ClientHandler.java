@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.*;
@@ -164,7 +163,7 @@ public class ClientHandler
             try
             {
                 OptionsList list = (OptionsList) mouseOptionsField.get(screen);
-                list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
+                //list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
             }
             catch(IllegalAccessException e)
             {

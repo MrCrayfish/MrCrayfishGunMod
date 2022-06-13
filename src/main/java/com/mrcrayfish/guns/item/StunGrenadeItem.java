@@ -3,9 +3,9 @@ package com.mrcrayfish.guns.item;
 import com.mrcrayfish.guns.entity.ThrowableGrenadeEntity;
 import com.mrcrayfish.guns.entity.ThrowableStunGrenadeEntity;
 import com.mrcrayfish.guns.init.ModSounds;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 
 /**

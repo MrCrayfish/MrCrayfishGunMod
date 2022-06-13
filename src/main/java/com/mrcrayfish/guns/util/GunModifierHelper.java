@@ -3,8 +3,8 @@ package com.mrcrayfish.guns.util;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Author: MrCrayfish

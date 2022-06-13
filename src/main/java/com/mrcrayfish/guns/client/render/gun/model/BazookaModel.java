@@ -6,7 +6,6 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.GunModel;
-import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;

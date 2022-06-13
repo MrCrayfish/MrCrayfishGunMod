@@ -57,7 +57,7 @@ public class ShortScopeModel implements IOverrideModel
 
                 if(!OptifineHelper.isShadersEnabled())
                 {
-                    builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(VIGNETTE));
+                    builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucentEmissive(VIGNETTE));
                     builder.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(1.0F, 1.0F).overlayCoords(overlay).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                     builder.vertex(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 1.0F).overlayCoords(overlay).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                     builder.vertex(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 0.0F).overlayCoords(overlay).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -86,7 +86,7 @@ public class ShortScopeModel implements IOverrideModel
 
                 if(!OptifineHelper.isShadersEnabled())
                 {
-                    builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(RED_DOT_RETICLE_GLOW));
+                    builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucentEmissive(RED_DOT_RETICLE_GLOW));
                     builder.vertex(matrix, 0, (float) (size / scale), 0).color(red, green, blue, alpha).uv(0.0F, 0.9375F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                     builder.vertex(matrix, 0, 0, 0).color(red, green, blue, alpha).uv(0.0F, 0.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                     builder.vertex(matrix, (float) (size / scale), 0, 0).color(red, green, blue, alpha).uv(0.9375F, 0.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -95,7 +95,7 @@ public class ShortScopeModel implements IOverrideModel
 
                 alpha = (float) (0.75F * AimingHandler.get().getNormalisedAdsProgress());
 
-                builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(RED_DOT_RETICLE));
+                builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucentEmissive(RED_DOT_RETICLE));
                 builder.vertex(matrix, 0, (float) (size / scale), 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0.0F, 0.9375F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0.0F, 0.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
                 builder.vertex(matrix, (float) (size / scale), 0, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(0.9375F, 0.0F).overlayCoords(overlay).uv2(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();

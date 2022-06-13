@@ -1,15 +1,15 @@
 package com.mrcrayfish.guns.common.container;
 
+import com.mrcrayfish.guns.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipes;
 import com.mrcrayfish.guns.init.ModContainers;
-import com.mrcrayfish.guns.blockentity.WorkbenchBlockEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.BlockPos;
 
 /**
  * Author: MrCrayfish

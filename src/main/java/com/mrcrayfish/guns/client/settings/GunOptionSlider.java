@@ -1,9 +1,5 @@
 package com.mrcrayfish.guns.client.settings;
 
-import net.minecraft.client.Options;
-import net.minecraft.client.gui.components.SliderButton;
-import net.minecraft.client.ProgressOption;
-
 /**
  * Author: MrCrayfish
  */

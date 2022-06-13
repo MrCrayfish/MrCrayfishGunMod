@@ -1,14 +1,15 @@
 package com.mrcrayfish.guns.crafting;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.guns.init.ModRecipeSerializers;
 import com.mrcrayfish.guns.blockentity.WorkbenchBlockEntity;
+import com.mrcrayfish.guns.init.ModRecipeSerializers;
+import com.mrcrayfish.guns.init.ModRecipeTypes;
 import com.mrcrayfish.guns.util.InventoryUtil;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 /**
@@ -76,7 +77,7 @@ public class WorkbenchRecipe implements Recipe<WorkbenchBlockEntity>
     @Override
     public net.minecraft.world.item.crafting.RecipeType<?> getType()
     {
-        return ModRecipeType.WORKBENCH;
+        return ModRecipeTypes.WORKBENCH.get();
     }
 
     public boolean hasMaterials(Player player)

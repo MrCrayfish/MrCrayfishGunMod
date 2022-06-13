@@ -21,7 +21,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.WeakHashMap;
 
 /**

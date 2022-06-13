@@ -2,12 +2,9 @@ package com.mrcrayfish.guns.item;
 
 import com.mrcrayfish.guns.item.attachment.IStock;
 import com.mrcrayfish.guns.item.attachment.impl.Stock;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-
-import net.minecraft.world.item.Item.Properties;
 
 /**
  * A basic stock attachment item implementation with color support

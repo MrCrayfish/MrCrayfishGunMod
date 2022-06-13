@@ -153,7 +153,7 @@ public class AimingHandler
                         {
                             newFov -= scope.getAdditionalZoom();
                         }
-                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));
+                        event.setNewFov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));
                     }
                 }
             }
@@ -172,7 +172,7 @@ public class AimingHandler
     @SubscribeEvent(receiveCanceled = true)
     public void onRenderOverlay(RenderGameOverlayEvent event)
     {
-        this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTicks());
+        this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTick());
     }
 
     public boolean isAiming()

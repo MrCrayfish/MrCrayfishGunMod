@@ -1,11 +1,11 @@
 package com.mrcrayfish.guns.client.particle;
 
 import com.mrcrayfish.guns.particles.TrailData;
-import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.BaseAshSmokeParticle;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.BaseAshSmokeParticle;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SpriteSet;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

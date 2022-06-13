@@ -22,6 +22,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public final class Gun implements INBTSerializable<CompoundTag>
 {
@@ -1363,7 +1364,7 @@ public final class Gun implements INBTSerializable<CompoundTag>
 
     public static boolean isAmmo(ItemStack stack, ResourceLocation id)
     {
-        return stack != null && stack.getItem().getRegistryName().equals(id);
+        return stack != null && Objects.equals(ForgeRegistries.ITEMS.getKey(stack.getItem()), id);
     }
 
     public static boolean hasAmmo(ItemStack gunStack)
@@ -1465,7 +1466,7 @@ public final class Gun implements INBTSerializable<CompoundTag>
 
         public Builder setAmmo(Item item)
         {
-            this.gun.projectile.item = item.getRegistryName();
+            this.gun.projectile.item = ForgeRegistries.ITEMS.getKey(item);
             return this;
         }
 
@@ -1525,31 +1526,31 @@ public final class Gun implements INBTSerializable<CompoundTag>
 
         public Builder setFireSound(SoundEvent sound)
         {
-            this.gun.sounds.fire = sound.getRegistryName();
+            this.gun.sounds.fire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
         public Builder setReloadSound(SoundEvent sound)
         {
-            this.gun.sounds.reload = sound.getRegistryName();
+            this.gun.sounds.reload = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
         public Builder setCockSound(SoundEvent sound)
         {
-            this.gun.sounds.cock = sound.getRegistryName();
+            this.gun.sounds.cock = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
         public Builder setSilencedFireSound(SoundEvent sound)
         {
-            this.gun.sounds.silencedFire = sound.getRegistryName();
+            this.gun.sounds.silencedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
         public Builder setEnchantedFireSound(SoundEvent sound)
         {
-            this.gun.sounds.enchantedFire = sound.getRegistryName();
+            this.gun.sounds.enchantedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 

@@ -9,7 +9,7 @@ import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,7 +47,7 @@ public class CustomGunManager
             customGunMap.forEach((id, gun) ->
             {
                 ItemStack stack = new ItemStack(ModItems.PISTOL.get());
-                stack.setHoverName(new TranslatableComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
+                stack.setHoverName(Component.translatable("item." + id.getNamespace() + "." + id.getPath() + ".name"));
                 CompoundTag tag = stack.getOrCreateTag();
                 tag.put("Model", gun.getModel().save(new CompoundTag()));
                 tag.put("Gun", gun.getGun().serializeNBT());

@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.client.network;
 
-import com.mojang.math.Vector3d;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.BulletTrail;
 import com.mrcrayfish.guns.client.CustomGunManager;
@@ -18,26 +17,28 @@ import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
 import com.mrcrayfish.guns.particles.BulletHoleData;
-import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -48,7 +49,7 @@ public class ClientPlayHandler
     public static void handleMessageGunSound(MessageGunSound message)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null)
+        if(mc.player == null || mc.level == null)
             return;
 
         if(message.showMuzzleFlash())
@@ -58,11 +59,11 @@ public class ClientPlayHandler
 
         if(message.getShooterId() == mc.player.getId())
         {
-            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS, message.getVolume(), message.getPitch(), false, 0, SoundInstance.Attenuation.NONE, 0, 0, 0, true));
+            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS, message.getVolume(), message.getPitch(), mc.level.getRandom(), false, 0, SoundInstance.Attenuation.NONE, 0, 0, 0, true));
         }
         else
         {
-            Minecraft.getInstance().getSoundManager().play(new GunShotSound(message.getId(), SoundSource.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload()));
+            Minecraft.getInstance().getSoundManager().play(new GunShotSound(message.getId(), SoundSource.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload(), mc.level.getRandom()));
         }
     }
 
@@ -109,7 +110,7 @@ public class ClientPlayHandler
     {
         Minecraft mc = Minecraft.getInstance();
         ParticleEngine particleManager = mc.particleEngine;
-        Level world = mc.level;
+        Level world = Objects.requireNonNull(mc.level);
         double x = message.getX();
         double y = message.getY();
         double z = message.getZ();
@@ -129,7 +130,7 @@ public class ClientPlayHandler
         }
     }
 
-    private static Particle spawnParticle(ParticleEngine manager, ParticleOptions data, double x, double y, double z, Random rand, double velocityMultiplier)
+    private static Particle spawnParticle(ParticleEngine manager, ParticleOptions data, double x, double y, double z, RandomSource rand, double velocityMultiplier)
     {
         return manager.createParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
@@ -163,7 +164,7 @@ public class ClientPlayHandler
         }
     }
 
-    private static double getRandomDir(Random random)
+    private static double getRandomDir(RandomSource random)
     {
         return -0.25 + random.nextDouble() * 0.5;
     }

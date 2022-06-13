@@ -3,10 +3,9 @@ package com.mrcrayfish.guns.item.attachment.impl;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -62,7 +61,7 @@ public abstract class Attachment
             List<Component> perks = attachment.getProperties().getPerks();
             if(perks != null && perks.size() > 0)
             {
-                event.getToolTip().add(new TranslatableComponent("perk.cgm.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
+                event.getToolTip().add(Component.translatable("perk.cgm.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
                 event.getToolTip().addAll(perks);
                 return;
             }
@@ -244,7 +243,7 @@ public abstract class Attachment
             attachment.getProperties().setPerks(positivePerks);
             if(positivePerks.size() > 0)
             {
-                event.getToolTip().add(new TranslatableComponent("perk.cgm.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
+                event.getToolTip().add(Component.translatable("perk.cgm.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
                 event.getToolTip().addAll(positivePerks);
             }
         }
@@ -252,6 +251,6 @@ public abstract class Attachment
 
     private static void addPerk(List<Component> components, boolean positive, String id, Object... params)
     {
-        components.add(new TranslatableComponent(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", new TranslatableComponent(id, params).withStyle(ChatFormatting.WHITE)).withStyle(positive ? ChatFormatting.DARK_AQUA : ChatFormatting.GOLD));
+        components.add(Component.translatable(positive ? "perk.cgm.entry.positive" : "perk.cgm.entry.negative", Component.translatable(id, params).withStyle(ChatFormatting.WHITE)).withStyle(positive ? ChatFormatting.DARK_AQUA : ChatFormatting.GOLD));
     }
 }

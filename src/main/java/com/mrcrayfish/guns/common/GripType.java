@@ -1,17 +1,17 @@
 package com.mrcrayfish.guns.common;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import com.mrcrayfish.guns.client.render.pose.BazookaPose;
 import com.mrcrayfish.guns.client.render.pose.MiniGunPose;
 import com.mrcrayfish.guns.client.render.pose.OneHandedPose;
 import com.mrcrayfish.guns.client.render.pose.TwoHandedPose;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.Items;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Vector3f;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 
 import java.util.HashMap;
 import java.util.Map;

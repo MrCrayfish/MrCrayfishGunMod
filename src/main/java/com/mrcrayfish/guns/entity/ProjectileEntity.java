@@ -33,6 +33,7 @@ import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -617,7 +618,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return Math.max(0F, damage);
     }
 
-    private float getCriticalDamage(ItemStack weapon, Random rand, float damage)
+    private float getCriticalDamage(ItemStack weapon, RandomSource rand, float damage)
     {
         float chance = GunModifierHelper.getCriticalChance(weapon);
         if(rand.nextFloat() < chance)

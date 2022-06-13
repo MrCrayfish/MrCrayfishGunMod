@@ -29,8 +29,6 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
@@ -65,7 +63,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         this.inventory = helper.createDrawable(BACKGROUND, 7, 101, 162, 36);
         this.dyeSlot = helper.createDrawable(BACKGROUND, 7, 101, 18, 18);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(ModBlocks.WORKBENCH.get()));
-        this.title = new TranslatableComponent(TITLE_KEY);
+        this.title = Component.translatable(TITLE_KEY);
         this.dyes = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
     }
 
@@ -121,7 +119,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         MutableComponent displayName = output.getHoverName().copy();
         if(output.getCount() > 1)
         {
-            displayName.append(new TextComponent(" x " + output.getCount()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+            displayName.append(Component.literal(" x " + output.getCount()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
         }
         int titleX = this.window.getWidth() / 2;
         GuiComponent.drawCenteredString(poseStack, Minecraft.getInstance().font, displayName, titleX, 5, 0xFFFFFFFF);

@@ -1,10 +1,8 @@
 package com.mrcrayfish.guns.client.screen;
 
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.math.Matrix4f;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -16,11 +14,10 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.Container;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -83,12 +80,12 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
                 IAttachment.Type type = IAttachment.Type.values()[i];
                 if(!this.menu.getSlot(i).isActive())
                 {
-                    this.renderComponentTooltip(poseStack, Arrays.asList(new TranslatableComponent("slot.cgm.attachment." + type.getTranslationKey()), new TranslatableComponent("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Arrays.asList(Component.translatable("slot.cgm.attachment." + type.getTranslationKey()), Component.translatable("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
                 }
                 else if(this.weaponInventory.getItem(i).isEmpty())
                 {
 
-                    this.renderComponentTooltip(poseStack, Collections.singletonList(new TranslatableComponent("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Collections.singletonList(Component.translatable("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
                 }
             }
         }

@@ -31,8 +31,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,6 +38,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -144,7 +143,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         {
             return true;
         }
-        ResourceLocation id = stack.getItem().getRegistryName();
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         Objects.requireNonNull(id);
         for(GunItem gunItem : NetworkGunManager.getClientRegisteredGuns())
         {
@@ -164,7 +163,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         {
             this.topPos += 28;
         }
-        this.addRenderableWidget(new Button(this.leftPos + 9, this.topPos + 18, 15, 20, new TextComponent("<"), button ->
+        this.addRenderableWidget(new Button(this.leftPos + 9, this.topPos + 18, 15, 20, Component.literal("<"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             if(index - 1 < 0)
@@ -176,7 +175,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 this.loadItem(index - 1);
             }
         }));
-        this.addRenderableWidget(new Button(this.leftPos + 153, this.topPos + 18, 15, 20, new TextComponent(">"), button ->
+        this.addRenderableWidget(new Button(this.leftPos + 153, this.topPos + 18, 15, 20, Component.literal(">"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             if(index + 1 >= this.currentTab.getRecipes().size())
@@ -188,7 +187,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 this.loadItem(index + 1);
             }
         }));
-        this.btnCraft = this.addRenderableWidget(new Button(this.leftPos + 195, this.topPos + 16, 74, 20, new TranslatableComponent("gui.cgm.workbench.assemble"), button ->
+        this.btnCraft = this.addRenderableWidget(new Button(this.leftPos + 195, this.topPos + 16, 74, 20, Component.translatable("gui.cgm.workbench.assemble"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
@@ -196,7 +195,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getBlockPos()));
         }));
         this.btnCraft.active = false;
-        this.checkBoxMaterials = this.addRenderableWidget(new CheckBox(this.leftPos + 172, this.topPos + 51, new TranslatableComponent("gui.cgm.workbench.show_remaining")));
+        this.checkBoxMaterials = this.addRenderableWidget(new CheckBox(this.leftPos + 172, this.topPos + 51, Component.translatable("gui.cgm.workbench.show_remaining")));
         this.checkBoxMaterials.setToggled(WorkbenchScreen.showRemaining);
         this.loadItem(this.currentTab.getCurrentIndex());
     }
@@ -314,7 +313,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         {
             if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY - 28, 28, 28))
             {
-                this.renderTooltip(poseStack, new TranslatableComponent(this.tabs.get(i).getTabKey()), mouseX, mouseY);
+                this.renderTooltip(poseStack, Component.translatable(this.tabs.get(i).getTabKey()), mouseX, mouseY);
                 return;
             }
         }

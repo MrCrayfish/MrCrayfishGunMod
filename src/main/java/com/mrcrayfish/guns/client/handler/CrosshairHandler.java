@@ -10,8 +10,8 @@ import com.mrcrayfish.guns.client.render.crosshair.TexturedCrosshair;
 import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent;
@@ -135,11 +135,11 @@ public class CrosshairHandler
         if(!mc.options.getCameraType().isFirstPerson())
             return;
 
-        PoseStack stack = event.getMatrixStack();
+        PoseStack stack = event.getPoseStack();
         stack.pushPose();
         int scaledWidth = event.getWindow().getGuiScaledWidth();
         int scaledHeight = event.getWindow().getGuiScaledHeight();
-        crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTicks());
+        crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTick());
         stack.popPose();
     }
 

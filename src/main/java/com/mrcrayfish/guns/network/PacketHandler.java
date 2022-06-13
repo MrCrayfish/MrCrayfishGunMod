@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.network;
 
-import com.mrcrayfish.framework.api.FrameworkAPI;
+import com.mrcrayfish.framework.api.event.FrameworkEvent;
 import com.mrcrayfish.framework.api.network.FrameworkChannelBuilder;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.CustomGunManager;
@@ -39,9 +39,9 @@ public class PacketHandler
         return PLAY_CHANNEL;
     }
 
-    public static void init()
+    public static void onFrameworkRegister(FrameworkEvent.Register event)
     {
-        FrameworkAPI.registerLoginData(new ResourceLocation(Reference.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
-        FrameworkAPI.registerLoginData(new ResourceLocation(Reference.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
+        event.registerLoginData(new ResourceLocation(Reference.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
+        event.registerLoginData(new ResourceLocation(Reference.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
     }
 }

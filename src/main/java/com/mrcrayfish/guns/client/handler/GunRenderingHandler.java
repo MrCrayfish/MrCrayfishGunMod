@@ -202,7 +202,7 @@ public class GunRenderingHandler
     {
         PoseStack poseStack = event.getPoseStack();
 
-        boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? event.getHand() == InteractionHand.MAIN_HAND : event.getHand() == InteractionHand.OFF_HAND;
+        boolean right = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? event.getHand() == InteractionHand.MAIN_HAND : event.getHand() == InteractionHand.OFF_HAND;
         HumanoidArm hand = right ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
 
         ItemStack heldItem = event.getItemStack();
@@ -214,7 +214,7 @@ public class GunRenderingHandler
                 return;
             }
 
-            float offhand = 1.0F - Mth.lerp(event.getPartialTicks(), this.prevOffhandTranslate, this.offhandTranslate);
+            float offhand = 1.0F - Mth.lerp(event.getPartialTick(), this.prevOffhandTranslate, this.offhandTranslate);
             poseStack.translate(0, offhand * -0.6F, 0);
 
             Player player = Minecraft.getInstance().player;
@@ -299,10 +299,10 @@ public class GunRenderingHandler
         }
 
         /* Applies custom bobbing animations */
-        this.applyBobbingTransforms(poseStack, event.getPartialTicks());
+        this.applyBobbingTransforms(poseStack, event.getPartialTick());
 
         /* Applies equip progress animation translations */
-        float equipProgress = this.getEquipProgress(event.getPartialTicks());
+        float equipProgress = this.getEquipProgress(event.getPartialTick());
         //poseStack.translate(0, equipProgress * -0.6F, 0);
         poseStack.mulPose(Vector3f.XP.rotationDegrees(equipProgress * -50F));
 
@@ -316,24 +316,24 @@ public class GunRenderingHandler
 
         /* Applies recoil and reload rotations */
         this.applyAimingTransforms(poseStack, translateX, translateY, translateZ, offset);
-        this.applySwayTransforms(poseStack, modifiedGun, player, translateX, translateY, translateZ, event.getPartialTicks());
-        this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTicks());
+        this.applySwayTransforms(poseStack, modifiedGun, player, translateX, translateY, translateZ, event.getPartialTick());
+        this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTick());
         this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
-        this.applyReloadTransforms(poseStack, event.getPartialTicks());
+        this.applyReloadTransforms(poseStack, event.getPartialTick());
 
-        int blockLight = player.isOnFire() ? 15 : player.level.getBrightness(LightLayer.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTicks())));
+        int blockLight = player.isOnFire() ? 15 : player.level.getBrightness(LightLayer.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTick())));
         blockLight += (this.entityIdForMuzzleFlash.contains(player.getId()) ? 3 : 0);
         blockLight = Math.min(blockLight, 15);
-        int packedLight = LightTexture.pack(blockLight, player.level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition(event.getPartialTicks()))));
+        int packedLight = LightTexture.pack(blockLight, player.level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition(event.getPartialTick()))));
 
         /* Renders the first persons arms from the grip type of the weapon */
         poseStack.pushPose();
-        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, poseStack, event.getMultiBufferSource(), packedLight, event.getPartialTicks());
+        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, poseStack, event.getMultiBufferSource(), packedLight, event.getPartialTick());
         poseStack.popPose();
 
         /* Renders the weapon */
         ItemTransforms.TransformType transformType = right ? ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
-        this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), packedLight, event.getPartialTicks());
+        this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), packedLight, event.getPartialTick());
 
         poseStack.popPose();
     }
@@ -341,7 +341,7 @@ public class GunRenderingHandler
     private void applyBobbingTransforms(PoseStack poseStack, float partialTicks)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.options.bobView && mc.getCameraEntity() instanceof Player player)
+        if(mc.options.bobView().get() && mc.getCameraEntity() instanceof Player player)
         {
             float deltaDistanceWalked = player.walkDist - player.walkDistO;
             float distanceWalked = -(player.walkDist + deltaDistanceWalked * partialTicks);
@@ -800,7 +800,7 @@ public class GunRenderingHandler
             this.prevEquippedProgressMainHandField = ObfuscationReflectionHelper.findField(ItemInHandRenderer.class, "f_109303_");
             this.prevEquippedProgressMainHandField.setAccessible(true);
         }
-        ItemInHandRenderer firstPersonRenderer = Minecraft.getInstance().getItemInHandRenderer();
+        ItemInHandRenderer firstPersonRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer();
         try
         {
             float equippedProgressMainHand = (float) this.equippedProgressMainHandField.get(firstPersonRenderer);
@@ -842,7 +842,7 @@ public class GunRenderingHandler
     {
         if(Config.CLIENT.display.cameraRollEffect.get())
         {
-            float roll = (float) Mth.lerp(event.getPartialTicks(), this.prevImmersiveRoll, this.immersiveRoll);
+            float roll = (float) Mth.lerp(event.getPartialTick(), this.prevImmersiveRoll, this.immersiveRoll);
             roll = (float) Math.sin((roll * Math.PI) / 2.0);
             roll *= Config.CLIENT.display.cameraRollAngle.get().floatValue();
             event.setRoll(-roll);

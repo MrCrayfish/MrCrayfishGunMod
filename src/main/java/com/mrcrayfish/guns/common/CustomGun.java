@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.common;
 
 import com.mrcrayfish.guns.annotation.Ignored;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**

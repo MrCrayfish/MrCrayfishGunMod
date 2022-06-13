@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class SyncedBlockEntity extends BlockEntity
 {

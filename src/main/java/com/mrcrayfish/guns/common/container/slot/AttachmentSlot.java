@@ -5,12 +5,12 @@ import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.init.ModSounds;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 /**
  * Author: MrCrayfish

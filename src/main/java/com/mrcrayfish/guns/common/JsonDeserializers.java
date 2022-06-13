@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.common;
 
 import com.google.gson.JsonDeserializer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
 /**

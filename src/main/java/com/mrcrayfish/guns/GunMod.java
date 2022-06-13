@@ -4,7 +4,6 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
-import com.mrcrayfish.guns.crafting.ModRecipeType;
 import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.datagen.BlockTagGen;
 import com.mrcrayfish.guns.datagen.GunGen;
@@ -76,11 +75,14 @@ public class GunMod
         ModItems.REGISTER.register(bus);
         ModParticleTypes.REGISTER.register(bus);
         ModRecipeSerializers.REGISTER.register(bus);
+        ModRecipeTypes.REGISTER.register(bus);
         ModSounds.REGISTER.register(bus);
         ModTileEntities.REGISTER.register(bus);
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
+        bus.addListener(PacketHandler::onFrameworkRegister);
+        bus.addListener(ModSyncedDataKeys::onFrameworkRegister);
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
@@ -90,12 +92,9 @@ public class GunMod
     {
         event.enqueueWork(() ->
         {
-            ModRecipeType.init();
-            ModSyncedDataKeys.register();
             CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"), WorkbenchIngredient.Serializer.INSTANCE);
             ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
             ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
-            PacketHandler.init();
             if(Config.COMMON.gameplay.improvedHitboxes.get())
             {
                 MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
@@ -113,11 +112,11 @@ public class GunMod
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         BlockTagGen blockTagGen = new BlockTagGen(generator, existingFileHelper);
-        generator.addProvider(new RecipeGen(generator));
-        generator.addProvider(new LootTableGen(generator));
-        generator.addProvider(blockTagGen);
-        generator.addProvider(new ItemTagGen(generator, blockTagGen, existingFileHelper));
-        generator.addProvider(new LanguageGen(generator));
-        generator.addProvider(new GunGen(generator));
+        generator.addProvider(event.includeServer(), new RecipeGen(generator));
+        generator.addProvider(event.includeServer(), new LootTableGen(generator));
+        generator.addProvider(event.includeServer(), blockTagGen);
+        generator.addProvider(event.includeServer(), new ItemTagGen(generator, blockTagGen, existingFileHelper));
+        generator.addProvider(event.includeServer(), new LanguageGen(generator));
+        generator.addProvider(event.includeServer(), new GunGen(generator));
     }
 }

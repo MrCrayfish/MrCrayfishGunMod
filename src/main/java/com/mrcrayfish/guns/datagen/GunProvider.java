@@ -5,9 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.Gun;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +45,7 @@ public abstract class GunProvider implements DataProvider
     }
 
     @Override
-    public void run(HashCache cache)
+    public void run(CachedOutput cache)
     {
         this.gunMap.clear();
         this.registerGuns();
@@ -54,17 +55,7 @@ public abstract class GunProvider implements DataProvider
             try
             {
                 JsonObject object = gun.toJsonObject();
-                String rawJson = GSON.toJson(object);
-                String hash = SHA1.hashUnencodedChars(rawJson).toString();
-                if(!Objects.equals(cache.getHash(path), hash) || !Files.exists(path))
-                {
-                    Files.createDirectories(path.getParent());
-                    try(BufferedWriter writer = Files.newBufferedWriter(path))
-                    {
-                        writer.write(rawJson);
-                    }
-                }
-                cache.putNew(path, hash);
+                DataProvider.saveStable(cache, object, path);
             }
             catch(IOException e)
             {
