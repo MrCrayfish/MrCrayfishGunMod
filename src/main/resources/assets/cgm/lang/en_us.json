@@ -142,5 +142,8 @@
     "cgm.action.aim": "Aim",
     "cgm.action.shoot": "Shoot",
     "cgm.action.reload": "Reload",
-    "cgm.action.steady_aim": "Steady Aim"
+    "cgm.action.steady_aim": "Steady Aim",
+    "cgm.button.config.tooltip": "Config Options",
+    "cgm.chat.open_curseforge_page": "Open CurseForge Page",
+    "cgm.chat.install_configured": "Install %s to access config options"
 }
