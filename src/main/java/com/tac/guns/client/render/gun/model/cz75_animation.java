@@ -3,6 +3,8 @@ package com.tac.guns.client.render.gun.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
+import com.tac.guns.client.render.animation.Animations;
+import com.tac.guns.client.render.animation.CZ75AnimationController;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -19,6 +21,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
+import net.minecraft.util.HandSide;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 
 /*
@@ -46,35 +50,35 @@ public class cz75_animation implements IOverrideModel
             matrices.pop();
             return;
         }
-
+        CZ75AnimationController controller = CZ75AnimationController.getInstance();
         GunItem gunItem = ((GunItem) stack.getItem());
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.CZ75.getModel(),CZ75AnimationController.INDEX_BODY,transformType,matrices);
+            if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.get()) {
+                RenderUtil.renderModel(SpecialModels.CZ75_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.get()) {
+                RenderUtil.renderModel(SpecialModels.CZ75_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.get()) {
+                RenderUtil.renderModel(SpecialModels.CZ75_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            RenderUtil.renderModel(SpecialModels.CZ75.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
 
-        if(Gun.getAttachment(IAttachment.Type.BARREL,stack).getItem() == ModItems.SILENCER.get())
+        matrices.push();
         {
-            RenderUtil.renderModel(SpecialModels.CZ75_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+            controller.applySpecialModelTransform(SpecialModels.CZ75.getModel(),CZ75AnimationController.INDEX_MAG,transformType,matrices);
+            if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
+                RenderUtil.renderModel(SpecialModels.CZ75_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else {
+                RenderUtil.renderModel(SpecialModels.CZ75_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
         }
-        else if(Gun.getAttachment(IAttachment.Type.BARREL,stack).getItem() == ModItems.MUZZLE_COMPENSATOR.get())
-        {
-            RenderUtil.renderModel(SpecialModels.CZ75_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else if(Gun.getAttachment(IAttachment.Type.BARREL,stack).getItem() == ModItems.MUZZLE_BRAKE.get())
-        {
-            RenderUtil.renderModel(SpecialModels.CZ75_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        if(EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0)
-        {
-            RenderUtil.renderModel(SpecialModels.CZ75_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else
-        {
-            RenderUtil.renderModel(SpecialModels.CZ75_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-
-        RenderUtil.renderModel(SpecialModels.CZ75.getModel(), stack, matrices, renderBuffer, light, overlay);
-
+        matrices.pop();
         //Always push
         matrices.push();
-
+        controller.applySpecialModelTransform(SpecialModels.CZ75.getModel(),CZ75AnimationController.INDEX_SLIDE,transformType,matrices);
         CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
         float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
 
@@ -102,6 +106,19 @@ public class cz75_animation implements IOverrideModel
         RenderUtil.renderModel(SpecialModels.CZ75_SLIDE.getModel(), stack, matrices, renderBuffer, light, overlay);
 
         //Always pop
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applyRightHandTransform(matrices);
+            RenderUtil.renderFirstPersonArm(Minecraft.getInstance().player, HandSide.RIGHT, matrices, renderBuffer, light);
+        }
+        matrices.pop();
+        matrices.push();
+        {
+            controller.applyLeftHandTransform(matrices);
+            RenderUtil.renderFirstPersonArm(Minecraft.getInstance().player, HandSide.LEFT, matrices, renderBuffer, light);
+        }
         matrices.pop();
     }
      

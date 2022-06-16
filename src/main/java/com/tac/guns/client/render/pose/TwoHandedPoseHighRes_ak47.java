@@ -23,8 +23,6 @@ public class TwoHandedPoseHighRes_ak47 extends TwoHandedPose {
 	{
 
 		matrixStack.push();
-		GunAnimationController controller = GunAnimationController.fromItem(stack.getItem());
-		if(controller != null) controller.applyLeftHandTransform(stack, player, matrixStack);
 		matrixStack.translate(0, 0, -1);
 		matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
 
@@ -59,7 +57,6 @@ public class TwoHandedPoseHighRes_ak47 extends TwoHandedPose {
 		matrixStack.pop();
 
 		matrixStack.push();
-		if(controller != null) controller.applyRightHandTransform(stack, player, matrixStack);
 		matrixStack.translate(0, 0, -1);
 		matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
 

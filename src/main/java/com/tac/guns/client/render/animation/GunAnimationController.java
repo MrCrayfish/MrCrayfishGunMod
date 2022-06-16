@@ -1,12 +1,16 @@
 package com.tac.guns.client.render.animation;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.tac.guns.client.util.RenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,22 +67,26 @@ public abstract class GunAnimationController {
         if( isFirstPerson ) Animations.popNode();
     }
 
-    public void applyRightHandTransform(ItemStack heldItem, LivingEntity entity, MatrixStack matrixStack)
+    public void applyRightHandTransform(MatrixStack matrixStack)
     {
-        if(isAnimationRunning()) {
-            Animations.pushNode(previousAnimation, getRightHandNodeIndex());
-            Animations.applyAnimationTransform(heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, entity, matrixStack);
-            matrixStack.translate(-0.56, 0.52, 0.72);
+        if(this.getPreviousAnimation() != null) {
+            Animations.pushNode(this.getPreviousAnimation(),this.getRightHandNodeIndex());
+            matrixStack.translate(-0.5,-0.5,-0.5);
+            Matrix4f animationTransition = new Matrix4f(Animations.peekNodeModel().computeGlobalTransform(null));
+            animationTransition.transpose();
+            matrixStack.getLast().getMatrix().mul(animationTransition);
             Animations.popNode();
         }
     }
 
-    public void applyLeftHandTransform(ItemStack heldItem, LivingEntity entity, MatrixStack matrixStack)
+    public void applyLeftHandTransform(MatrixStack matrixStack)
     {
-        if(isAnimationRunning()) {
-            Animations.pushNode(previousAnimation, getLeftHandNodeIndex());
-            Animations.applyAnimationTransform(heldItem, ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, entity, matrixStack);
-            matrixStack.translate(-0.56, 0.52, 0.72);
+        if(this.getPreviousAnimation() != null) {
+            Animations.pushNode(this.getPreviousAnimation(),this.getLeftHandNodeIndex());
+            matrixStack.translate(-0.5,-0.5,-0.5);
+            Matrix4f animationTransition = new Matrix4f(Animations.peekNodeModel().computeGlobalTransform(null));
+            animationTransition.transpose();
+            matrixStack.getLast().getMatrix().mul(animationTransition);
             Animations.popNode();
         }
     }
