@@ -27,12 +27,22 @@
 package de.javagl.jgltf.model.animation;
 
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Simple utility class to run an {@link AnimationManager} in an own thread
  */
 public final class AnimationRunner
 {
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(5, new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r);
+        }
+    });
     /**
      * The {@link AnimationManager}
      */
@@ -46,7 +56,7 @@ public final class AnimationRunner
     /**
      * The animation thread
      */
-    private Thread animationThread;
+    //private Thread animationThread;
     
     /**
      * The step size, in milliseconds
@@ -75,9 +85,10 @@ public final class AnimationRunner
         {
             return;
         }
-        animationThread = new Thread(this::runAnimations, "animationThread");
-        animationThread.setDaemon(true);
-        animationThread.start();
+        //animationThread = new Thread(this::runAnimations, "animationThread");
+        //animationThread.setDaemon(true);
+        //animationThread.start();
+        executorService.execute(this::runAnimations);
         running = true;
     }
     
@@ -92,7 +103,7 @@ public final class AnimationRunner
             return;
         }
         running = false;
-        animationThread = null;
+        //animationThread = null;
     }
 
     /**
@@ -133,5 +144,8 @@ public final class AnimationRunner
             }
         }
     }
-    
+
+    public AnimationManager getAnimationManager() {
+        return animationManager;
+    }
 }

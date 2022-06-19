@@ -43,7 +43,7 @@
   "sounds": {
     "fire": "tac:item.sig552",
     "reload": "tac:item.pistol.reload",
-    "cock": "tac:item.pistol.cock",
+    "cock": "tac:animation.hk416_a5_reload_empty",
     "silencedFire": "tac:item.sig552s"
   },
   "display": {

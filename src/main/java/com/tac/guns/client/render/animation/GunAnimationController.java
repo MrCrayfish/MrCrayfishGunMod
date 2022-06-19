@@ -18,6 +18,7 @@ import java.util.Map;
 public abstract class GunAnimationController {
     public enum AnimationLabel{
         RELOAD_NORMAL,
+        RELOAD_EMPTY,
         INSPECT,
         DRAW,
     }
@@ -67,10 +68,17 @@ public abstract class GunAnimationController {
         if( isFirstPerson ) Animations.popNode();
     }
 
+    public void applyTransform(ItemStack itemStack, int index, ItemCameraTransforms.TransformType transformType, LivingEntity entity, MatrixStack matrixStack){
+        boolean isFirstPerson = transformType.isFirstPerson();
+        if( isFirstPerson ) Animations.pushNode(previousAnimation, index);
+        Animations.applyAnimationTransform(itemStack, ItemCameraTransforms.TransformType.NONE, entity, matrixStack);
+        if( isFirstPerson ) Animations.popNode();
+    }
+
     public void applyRightHandTransform(MatrixStack matrixStack)
     {
-        if(this.getPreviousAnimation() != null) {
-            Animations.pushNode(this.getPreviousAnimation(),this.getRightHandNodeIndex());
+        if(previousAnimation != null) {
+            Animations.pushNode(previousAnimation,getRightHandNodeIndex());
             matrixStack.translate(-0.5,-0.5,-0.5);
             Matrix4f animationTransition = new Matrix4f(Animations.peekNodeModel().computeGlobalTransform(null));
             animationTransition.transpose();
@@ -81,8 +89,8 @@ public abstract class GunAnimationController {
 
     public void applyLeftHandTransform(MatrixStack matrixStack)
     {
-        if(this.getPreviousAnimation() != null) {
-            Animations.pushNode(this.getPreviousAnimation(),this.getLeftHandNodeIndex());
+        if(previousAnimation != null) {
+            Animations.pushNode(previousAnimation,getLeftHandNodeIndex());
             matrixStack.translate(-0.5,-0.5,-0.5);
             Matrix4f animationTransition = new Matrix4f(Animations.peekNodeModel().computeGlobalTransform(null));
             animationTransition.transpose();

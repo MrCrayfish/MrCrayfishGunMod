@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class CZ75AnimationController extends GunAnimationController {
 
-    public static int INDEX_BODY = 6;
+    public static int INDEX_BODY = 5;
 
     public static int INDEX_SLIDE = 2;
 
@@ -18,7 +18,11 @@ public class CZ75AnimationController extends GunAnimationController {
 
     public static int INDEX_RIGHT_HAND = 1;
 
-    public static final AnimationMeta RELOAD_NORM = new AnimationMeta(new ResourceLocation("tac","animations/cz75_reload.gltf"));
+    public static final AnimationMeta RELOAD_NORM = new AnimationMeta(new ResourceLocation("tac","animations/cz75_reload_norm.gltf"));
+
+    public static final AnimationMeta DRAW = new AnimationMeta(new ResourceLocation("tac","animations/cz75_draw.gltf"));
+
+    public static final AnimationMeta RELOAD_EMPTY = new AnimationMeta(new ResourceLocation("tac","animations/cz75_reload_empty.gltf"));
 
     private static final CZ75AnimationController instance = new CZ75AnimationController();
 
@@ -26,6 +30,8 @@ public class CZ75AnimationController extends GunAnimationController {
     public AnimationMeta getAnimationFromLabel(AnimationLabel label) {
         switch (label){
             case RELOAD_NORMAL: return RELOAD_NORM;
+            case RELOAD_EMPTY: return RELOAD_EMPTY;
+            case DRAW: return DRAW;
             default: return null;
         }
     }
@@ -33,6 +39,8 @@ public class CZ75AnimationController extends GunAnimationController {
     private CZ75AnimationController() {
         try {
             Animations.load(RELOAD_NORM);
+            Animations.load(RELOAD_EMPTY);
+            Animations.load(DRAW);
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }

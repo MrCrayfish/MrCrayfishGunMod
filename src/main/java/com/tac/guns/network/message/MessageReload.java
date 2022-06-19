@@ -1,15 +1,19 @@
 package com.tac.guns.network.message;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import com.tac.guns.client.audio.GunShotSound;
 import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.network.PacketHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.EntityTickableSound;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -68,7 +72,9 @@ public class MessageReload implements IMessage
                 if(reloadSound != null)
                 {
                     MessageGunSound message = new MessageGunSound(reloadSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) player.getPosY() + 1.0F, (float) player.getPosZ(), 1.0F, 1.0F, player.getEntityId(), false, true);
-                    PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), (player.getPosY() + 1.0), player.getPosZ(), 16.0, player.world.getDimensionKey())), message);
+                    PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player,player.getPosX(), (player.getPosY() + 1.0), player.getPosZ(), 16.0, player.world.getDimensionKey())), message);
+                    SoundEvent soundEvent = new SoundEvent(message.getId());
+                    Minecraft.getInstance().getSoundHandler().play(new EntityTickableSound(soundEvent, SoundCategory.PLAYERS, player));
                 }
             }
         });

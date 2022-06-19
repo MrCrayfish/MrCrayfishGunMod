@@ -3,6 +3,7 @@ package com.tac.guns.client.render.gun.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
+import com.tac.guns.client.render.animation.Mp7AnimationController;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -44,37 +45,37 @@ public class mp7_animation implements IOverrideModel {
             matrices.pop();
             return;
         }
-        
-        if(Gun.getScope(stack) == null)
+        Mp7AnimationController controller = Mp7AnimationController.getInstance();
+        matrices.push();
         {
-            RenderUtil.renderModel(SpecialModels.MP7_SIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
+            controller.applySpecialModelTransform(SpecialModels.MP7.getModel(),Mp7AnimationController.INDEX_BODY,transformType,matrices);
+            if (Gun.getScope(stack) == null) {
+                RenderUtil.renderModel(SpecialModels.MP7_SIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.MP7_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.MP7_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.MP7_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            RenderUtil.renderModel(SpecialModels.MP7.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
-
-        if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem()))
-        {
-            RenderUtil.renderModel(SpecialModels.MP7_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem()))
-        {
-            RenderUtil.renderModel(SpecialModels.MP7_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.orElse(ItemStack.EMPTY.getItem()))
-        {
-            RenderUtil.renderModel(SpecialModels.MP7_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-
-        if(EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0)
-        {
-            RenderUtil.renderModel(SpecialModels.MP7_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else
-        {
-            RenderUtil.renderModel(SpecialModels.MP7_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-
-        RenderUtil.renderModel(SpecialModels.MP7.getModel(), stack, matrices, renderBuffer, light, overlay);
+        matrices.pop();
 
         matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.MP7.getModel(),Mp7AnimationController.INDEX_MAG,transformType,matrices);
+            if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
+                RenderUtil.renderModel(SpecialModels.MP7_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else {
+                RenderUtil.renderModel(SpecialModels.MP7_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+        }
+        matrices.pop();
+
+        matrices.push();
+        controller.applySpecialModelTransform(SpecialModels.MP7.getModel(),Mp7AnimationController.INDEX_BODY,transformType,matrices);
         CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
         float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
 
@@ -97,5 +98,7 @@ public class mp7_animation implements IOverrideModel {
         matrices.translate(0, 0, 0.025F);
         RenderUtil.renderModel(SpecialModels.MP7_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
         matrices.pop();
+
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
 }

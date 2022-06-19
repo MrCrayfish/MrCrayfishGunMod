@@ -108,18 +108,7 @@ public class cz75_animation implements IOverrideModel
         //Always pop
         matrices.pop();
 
-        matrices.push();
-        {
-            controller.applyRightHandTransform(matrices);
-            RenderUtil.renderFirstPersonArm(Minecraft.getInstance().player, HandSide.RIGHT, matrices, renderBuffer, light);
-        }
-        matrices.pop();
-        matrices.push();
-        {
-            controller.applyLeftHandTransform(matrices);
-            RenderUtil.renderFirstPersonArm(Minecraft.getInstance().player, HandSide.LEFT, matrices, renderBuffer, light);
-        }
-        matrices.pop();
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
      
 
