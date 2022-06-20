@@ -38,8 +38,6 @@ public class FirstPersonRendererMixin {
             if (!nbt.contains("UUID")) {
                 int h1 = mainHandItemStack.hashCode();
                 nbt.putUniqueId("UUID", UUID.randomUUID());
-                if(mainHandItemStack.hashCode() != h1) Minecraft.getInstance().player.sendChatMessage("no");
-                else Minecraft.getInstance().player.sendChatMessage("yes");
             }
             UUID uuid = nbt.getUniqueId("UUID");
             if (nbt1 != null) {
