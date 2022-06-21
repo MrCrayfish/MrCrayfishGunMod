@@ -59,8 +59,7 @@ public class GunEditor
     public void setMode(TaCWeaponDevModes mode) {this.mode = mode;}
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event)
-    {
+    public void onClientTick(TickEvent.ClientTickEvent event) {
         if(!Config.COMMON.development.enableTDev.get())
             return;
         Minecraft mc = Minecraft.getInstance();
@@ -92,10 +91,8 @@ public class GunEditor
             ensureData(getMapItem(gunItem.getTranslationKey(),gunItem.getGun()), gunItem.getGun().copy());
         }
     }
-
     @SubscribeEvent
-    public void onKeyPressed(InputEvent.KeyInputEvent event)
-    {
+    public void onKeyPressed(InputEvent.KeyInputEvent event) {
         if(!Config.COMMON.development.enableTDev.get())
             return;
         Minecraft mc = Minecraft.getInstance();
@@ -107,7 +104,7 @@ public class GunEditor
         if(ch == null || ch.getCatCurrentIndex() != 1)
             return;
         TimelessGunItem gunItem = (TimelessGunItem) mc.player.getHeldItemMainhand().getItem();
-        if(ch.getCatGlobal(1) != null && this.mode != null)
+        if(ch.catInGlobal(1) && this.mode != null)
         {
             //TODO: HANDLE FOR PER MODULE, BEFORE APPLICATION, SAVE DATA ON INSTANCE TO SERIALIZE LATER.
             switch (this.mode) {
@@ -152,7 +149,9 @@ public class GunEditor
         }
 
     }
+
     public double getRateMod() {return rateMod;}
+    public double getBurstRateMod() {return burstRateMod;}
     public float getRecoilAngleMod() {return recoilAngleMod;}
     public float getRecoilKickMod() {return recoilKickMod;}
     public float getHorizontalRecoilAngleMod() {return horizontalRecoilAngleMod;}
@@ -164,6 +163,7 @@ public class GunEditor
     public float getSpreadMod() {return spreadMod;}
     public float getWeightKiloMod() {return weightKiloMod;}
     private double rateMod = 0;
+    private double burstRateMod = 0;
     private float recoilAngleMod = 0;
     private float recoilKickMod = 0;
     private float horizontalRecoilAngleMod = 0;
@@ -301,8 +301,16 @@ public class GunEditor
         }
         else if(KeyBinds.J.isKeyDown())
         {
-            player.sendStatusMessage(new TranslationTextComponent("Rate in Ticks: "+gunTmp.getGeneral().getRate()),true);
-            if (isUp) {
+            player.sendStatusMessage(new TranslationTextComponent("Rate in Ticks: "+gunTmp.getGeneral().getRate()+" | Burst Rate in Ticks:: "+gunTmp.getGeneral().getBurstRate()),true);
+            if (isLeft) {
+                this.burstRateMod += 0.5 * stepModifier;
+                player.sendStatusMessage(new TranslationTextComponent("Burst Rate in Ticks: "+gunTmp.getGeneral().getBurstRate()).mergeStyle(TextFormatting.GREEN), true);
+            }
+            else if (isRight) {
+                this.burstRateMod -= 0.5 * stepModifier;
+                player.sendStatusMessage(new TranslationTextComponent("Burst Rate in Ticks: "+gunTmp.getGeneral().getBurstRate()).mergeStyle(TextFormatting.DARK_RED), true);
+            }
+            else if (isUp) {
                 this.rateMod += 0.5;
                 player.sendStatusMessage(new TranslationTextComponent("Rate in Ticks: "+gunTmp.getGeneral().getRate()).mergeStyle(TextFormatting.GREEN), true);
             }

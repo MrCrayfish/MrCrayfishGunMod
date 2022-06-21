@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:de_lisle"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 34
+    },
+    {
+      "item": "minecraft:spruce_log",
+      "count": 6
+    }
+  ]
+}

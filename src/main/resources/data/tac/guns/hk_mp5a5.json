@@ -2,10 +2,12 @@
   "general": {
     "auto": true,
     "rate": 2,
+    "burstRate": 7,
     "rateSelector": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "gripType": "tac:two_handed_ak47",
     "recoilAngle": 2.375,

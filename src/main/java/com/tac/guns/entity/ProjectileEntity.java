@@ -26,10 +26,6 @@ import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.math.ExtendedEntityRayTraceResult;
 import com.tac.guns.world.ProjectileExplosion;
-import mod.chiselsandbits.api.ChiselsAndBitsAPI;
-import mod.chiselsandbits.api.IChiselsAndBitsAPI;
-import mod.chiselsandbits.api.chiseling.ChiselingOperation;
-import mod.chiselsandbits.multistate.mutator.ChiselAdaptingWorldMutator;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -565,7 +561,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.life -= 1;
     }
 
-    private static boolean deleteBitOnHit(BlockPos blockPos, BlockState blockState, double x, double y, double z)//(IParticleData data, double x, double y, double z, Random rand, double velocityMultiplier)
+    /*private static boolean deleteBitOnHit(BlockPos blockPos, BlockState blockState, double x, double y, double z)//(IParticleData data, double x, double y, double z, Random rand, double velocityMultiplier)
     {
         Minecraft mc = Minecraft.getInstance();
         //IChiselsAndBitsAPI.getInstance()
@@ -575,10 +571,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         //ChiselsAndBitsAPI.getInstance().getMutatorFactory().in(mc.world, blockPos).clearInBlockTarget(BlockPos.ZERO, new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z)));//Math.abs(x),Math.abs(y),Math.abs(z) //clearInBlockTarget(BlockPos.ZERO, new Vector3d(Math.abs(x)/bitSize,Math.abs(y)/bitSize,Math.abs(z)/bitSize));
 
-        /*ChiselsAndBitsAPI.getInstance().getMutatorFactory().covering(, blockPos).overrideInAreaTarget(Blocks.AIR.getDefaultState(), new Vector3d(0,0,0));*/
+        *//*ChiselsAndBitsAPI.getInstance().getMutatorFactory().covering(, blockPos).overrideInAreaTarget(Blocks.AIR.getDefaultState(), new Vector3d(0,0,0));*//*
         //chiselAdaptingWorldMutator.clearInAreaTarget(new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z)));//(BlockPos.ZERO, new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z)));//setInBlockTarget(Blocks.AIR.getDefaultState(), BlockPos.ZERO, new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z))); //clearInBlockTarget(blockPos, new Vector3d(Math.abs(x)/1000,Math.abs(y)/1000,Math.abs(z)/1000));// clearInBlockTarget(blockPos, new Vector3d(x,y,z));
         return true;
-    }
+    }*/
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {

@@ -2,12 +2,14 @@
   "general": {
     "auto": true,
     "rate": 1,
+    "burstCount": 2,
+    "burstRate": 4,
     "rateSelector": [
       0,
-      2
+      2,
+      3
     ],
     "gripType": "tac:two_handed_vector",
-    "maxAmmo": 20,
     "recoilAngle": 2.225,
     "horizontalRecoilAngle": 0.85,
     "recoilKick": 1.185,
@@ -21,20 +23,20 @@
   },
   "reloads": {
     "magFed": true,
-    "maxAmmo": 20,
+    "maxAmmo": 13,
     "reloadMagTimer": 36,
     "additionalReloadEmptyMagTimer": 10,
-    "maxAdditionalAmmoPerOC": [10, 15, 20],
+    "maxAdditionalAmmoPerOC": [5, 10, 17],
     "preReloadPauseTicks": 9,
     "openBolt": false
   },
   "projectile": {
     "item": "tac:round45",
     "visible": false,
-    "damage": 3.0,
+    "damage": 3.5,
     "size": 0.2,
-    "speed": 22.5,
-    "life": 3
+    "speed": 20.5,
+    "life": 6
   },
   "sounds": {
     "fire": "tac:item.vector",

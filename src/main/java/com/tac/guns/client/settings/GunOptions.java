@@ -38,6 +38,13 @@ public class GunOptions
         Config.CLIENT.controls.toggleAim.set(value);
         Config.saveClientConfig();
     });
+
+    public static final BooleanOption BURST_MECH = new BooleanOption("tac.options.burstPress", (settings) -> {
+        return Config.CLIENT.controls.burstPress.get();
+    }, (settings, value) -> {
+        Config.CLIENT.controls.burstPress.set(value);
+        Config.saveClientConfig();
+    });
     // this.minecraft.displayGuiScreen
 
 

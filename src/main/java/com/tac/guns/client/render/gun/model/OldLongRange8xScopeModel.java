@@ -7,6 +7,8 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.item.attachment.IAttachment;
@@ -53,19 +55,17 @@ public class OldLongRange8xScopeModel implements IOverrideModel
 
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
-
+            ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "old8x" ? new ScopeData("") : ScopeEditor.get().getScopeData();
             if(entity.getPrimaryHand() == HandSide.LEFT)
             {
                 matrixStack.scale(-1, 1, 1);
             }
 
-            float scopeSize = 0.975F;
-            float scopePrevSize = 1.20F;
+            float scopeSize = (0.975F+0.0885F) + scopeData.getDrZoomSizeMod();
+            float scopePrevSize = 1.20F + scopeData.getReticleSizeMod();
             float size = scopeSize / 16.0F;
             float reticleSize = scopePrevSize / 16.0F;
-
-//            float crop = 0.4375F;
-            float crop = 0.4565F;
+            float crop = 0.4565F + scopeData.getDrZoomCropMod();
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
 
@@ -78,7 +78,7 @@ public class OldLongRange8xScopeModel implements IOverrideModel
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
                 //matrixStack.translate(-size / 2, 0.0595 , 4.55 * 0.0625);
-                matrixStack.translate(-size / 2, 0.0888  , 4.445 * 0.0625);//4.815 * 0.0625);
+                matrixStack.translate((-size / 2)  + scopeData.getDrXZoomMod(), (0.0888-0.00355) + scopeData.getDrYZoomMod(), ((4.445 + scopeData.getDrZZoomMod())-0.54) * 0.0625);//4.815 * 0.0625);
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
@@ -113,7 +113,7 @@ public class OldLongRange8xScopeModel implements IOverrideModel
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
 
                 matrixStack.scale(10.0f,10.0f,10.0f);
-                matrixStack.translate(-0.00455715, -0.004415, 0.0000);
+                matrixStack.translate((-0.00455715)+ scopeData.getReticleXMod(), (-0.004415) + scopeData.getReticleYMod(), 0.0000+ scopeData.getReticleZMod());
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing
                 boolean aimed = false;

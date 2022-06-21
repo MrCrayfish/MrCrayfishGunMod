@@ -1,27 +1,28 @@
 {
   "general": {
+    "auto": true,
     "rate": 7,
     "rateSelector": [
       1
     ],
     "gripType": "tac:two_handed_mosin",
-    "recoilAngle": 6.085,
-    "recoilKick": 1.155,
-    "recoilAdsReduction": 0.28,
-    "weaponRecoilDuration": 0.725,
-    "cameraRecoilModifier": 1.175,
-    "recoilDuration": 0.16,
+    "recoilAngle": 4.75,
+    "horizontalRecoilAngle": 0.775,
+    "recoilKick": 1.4625,
+    "recoilAdsReduction": 0.175,
+    "cameraRecoilModifier": 0.25,
+    "weaponRecoilDuration": 0.975,
+    "recoilDuration": 0.125,
     "alwaysSpread": true,
-    "spread": 11.25,
+    "spread": 8.5,
     "projectileAmount": 11,
     "weightKilo": 3.0
   },
   "reloads": {
-    "magFed": false,
+    "magFed": true,
     "maxAmmo": 2,
-    "reloadAmount": 1,
-    "preReloadPauseTicks": 6,
-    "interReloadPauseTicks": 14,
+    "reloadMagTimer": 34,
+    "additionalReloadEmptyMagTimer": 0,
     "maxAdditionalAmmoPerOC": [
       0,
       0,
@@ -46,17 +47,17 @@
   },
   "display": {
     "flash": {
-      "yOffset": 5.75,
-      "zOffset": -23.55,
-      "size": 1.70
+      "yOffset": 9.17,
+      "zOffset": -21.05,
+      "size": 1.7
     },
     "weaponType": 3
   },
   "modules": {
     "zoom": {
       "fovModifier": 0.8,
-      "yOffset": 8.18,
-      "zOffset": 1.2
+      "yOffset": 9.94,
+      "zOffset": 0.68
     },
     "attachments": {}
   }

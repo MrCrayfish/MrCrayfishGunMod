@@ -8,21 +8,21 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 3.225,
-    "horizontalRecoilAngle": 1.375,
+    "recoilAngle": 3.025,
+    "horizontalRecoilAngle": 1.275,
     "recoilKick": 0.8275,
     "recoilAdsReduction": 0.245,
     "weaponRecoilDuration": 0.8675,
     "cameraRecoilModifier": 0.8925,
     "recoilDuration": 0.2275,
     "alwaysSpread": true,
-    "spread": 1.2,
+    "spread": 1.08,
     "weightKilo": 5.2
   },
   "reloads": {
     "magFed": true,
     "maxAmmo": 20,
-    "reloadMagTimer": 50,
+    "reloadMagTimer": 55,
     "additionalReloadEmptyMagTimer": 20,
     "maxAdditionalAmmoPerOC": [
       0,
@@ -32,12 +32,12 @@
     "preReloadPauseTicks": 5
   },
   "projectile": {
-    "item": "tac:bullet_308",
+    "item": "tac:bullet68",
     "visible": true,
-    "damage": 8.5,
-    "size": 0.1,
-    "speed": 44.5,
-    "life": 10,
+    "damage": 10.0,
+    "size": 0.125,
+    "speed": 51.5,
+    "life": 8,
     "ricochet": true
   },
   "sounds": {
@@ -63,7 +63,7 @@
     "attachments": {
       "scope": {
         "yOffset": 11.365,
-        "zOffset": 6.805,
+        "zOffset": 8.465,
         "scale": 1.00
       }
     }

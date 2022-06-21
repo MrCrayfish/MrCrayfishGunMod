@@ -9,6 +9,7 @@ import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
+import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.util.OptifineHelper;
 import net.minecraft.client.MainWindow;
@@ -60,11 +61,12 @@ public class VortexLPVO_1_4xScopeModel implements IOverrideModel
                 matrixStack.scale(-1, 1, 1);
             }
 
+            ScopeItem scopeItem = (ScopeItem)stack.getItem();
             float scopePrevSize = 0.965F;
             float scopeSize = 1.13750F;
             float size = scopeSize / 16.0F;
             float reticleSize = scopePrevSize / 16.0F;
-            float crop = 0.4175F;
+            float crop = scopeItem.getProperties().getAdditionalZoom().getDrCropZoom();
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
 

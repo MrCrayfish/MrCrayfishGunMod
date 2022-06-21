@@ -73,6 +73,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private int rate;
         @Optional
+        private int burstRate = 4;
+        @Optional
+        private int burstCount = 3;
+        @Optional
         private int[] rateSelector = new int[]{0,1};
         @Optional
         private float recoilAngle = 1.0F;
@@ -106,6 +110,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putBoolean("Auto", this.auto);
             tag.putBoolean("BoltAction", this.boltAction);
             tag.putInt("Rate", this.rate);
+            tag.putInt("BurstRate", this.burstRate);
+            tag.putInt("BurstCount", this.burstCount);
             tag.putIntArray("RateSelector", this.rateSelector);
             tag.putString("GripType", this.gripType.getId().toString());
             tag.putFloat("RecoilAngle", this.recoilAngle); // x2 for quick camera recoil reduction balancing
@@ -136,6 +142,14 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             if(tag.contains("Rate", Constants.NBT.TAG_ANY_NUMERIC))
             {
                 this.rate = tag.getInt("Rate");
+            }
+            if(tag.contains("BurstRate", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.burstRate = tag.getInt("BurstRate");
+            }
+            if(tag.contains("BurstCount", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.burstCount = tag.getInt("BurstCount");
             }
             if(tag.contains("RateSelector", Constants.NBT.TAG_INT_ARRAY))
             {
@@ -200,6 +214,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.auto = this.auto;
             general.boltAction = this.boltAction;
             general.rate = this.rate;
+            general.burstRate = this.burstRate;
+            general.burstCount = this.burstCount;
             general.rateSelector = this.rateSelector;
             general.gripType = this.gripType;
             general.recoilAngle = this.recoilAngle;
@@ -237,7 +253,18 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (int) (this.rate + GunEditor.get().getRateMod()) : (int)this.rate;
         }
         /**
-         * @return The fire modes supported by the weapon, [0,1,2,3,4,5] [Safety, Single, Three round burst, Auto, Special 1, Special 2]
+         * @return The fire rate of this weapon in ticks
+         */
+        public int getBurstRate()
+        {
+            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (int) (this.burstRate + GunEditor.get().getBurstRateMod()) : (int)this.burstRate;
+        }
+        public int getBurstCount()
+        {
+            return this.burstCount;
+        }
+        /**
+         * @return The fire modes supported by the weapon, [0,1,2,3,4,5] [Safety, Single, Auto, Three round burst, Special 1, Special 2]
          */
         public int[] getRateSelector()
         {

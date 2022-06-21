@@ -16,8 +16,10 @@ public class ModSounds
 	public static final RegistryObject<SoundEvent> ENTITY_STUN_GRENADE_RING = register("entity.stun_grenade.ring");
 	public static final RegistryObject<SoundEvent> UI_WEAPON_ATTACH = register("ui.weapon.attach");
 
+	public static final RegistryObject<SoundEvent> M1_PING = register("item.m1ping");
+
 	// Register the name of the sound via the Object name for each block in our sounds.json, these are all sounds for TaC, unlike above which remain from CGM
-	public static final RegistryObject<SoundEvent> M1911_FIRE = register("item.fire_m1911");
+	/*public static final RegistryObject<SoundEvent> M1911_FIRE = register("item.fire_m1911");
 	public static final RegistryObject<SoundEvent> M1911_FIRES = register("item.fire_m1911s");
 	public static final RegistryObject<SoundEvent> MOSIN_NAGANT_FIRE = register("item.fire_mosin-nagant");
 	public static final RegistryObject<SoundEvent> FIRE_30 = register("item.fire_30-30");
@@ -61,8 +63,8 @@ public class ModSounds
 	public static final RegistryObject<SoundEvent> M1928_FIRE = register("item.m1928");
 	public static final RegistryObject<SoundEvent> MK14_FIRE = register("item.mk14");
 	public static final RegistryObject<SoundEvent> RPG7_FIRE = register("item.rpg7");
-	public static final RegistryObject<SoundEvent> STEN_FIRE = register("item.sten");
-	public static final RegistryObject<SoundEvent> VECTOR_FIRE = register("item.vector");
+	*//*public static final RegistryObject<SoundEvent> STEN_FIRE = register("item.sten");
+	public static final RegistryObject<SoundEvent> VECTOR_FIRE = register("item.vector");*/
 
 
 

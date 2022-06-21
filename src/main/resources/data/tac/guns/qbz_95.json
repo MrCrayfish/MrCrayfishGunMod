@@ -2,10 +2,12 @@
   "general": {
     "auto": true,
     "rate": 2,
+    "burstRate": 8,
     "rateSelector": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "gripType": "tac:two_handed_ak47",
     "recoilAngle": 2.05,
@@ -16,8 +18,8 @@
     "weaponRecoilDuration": 0.2825,
     "cameraRecoilModifier": 1.0,
     "recoilDuration": 0.225,
-    "spread": 2.665,
-    "weightKilo": 3.75
+    "spread": 1.865,
+    "weightKilo": 3.9
   },
   "reloads": {
     "magFed": true,
@@ -30,8 +32,8 @@
   "projectile": {
     "item": "tac:58x42",
     "visible": false,
-    "damage": 7.25,
-    "size": 0.2,
+    "damage": 7.3,
+    "size": 0.175,
     "speed": 46.5,
     "life": 8
   },

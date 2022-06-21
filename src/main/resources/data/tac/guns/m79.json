@@ -6,13 +6,13 @@
       1
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 1.35,
-    "recoilKick": 1.65,
+    "recoilAngle": 1.65,
+    "recoilKick": 1.45,
     "horizontalRecoilAngle": 0.0,
     "recoilAdsReduction": 0.125,
     "alwaysSpread": true,
     "spread": 1.45,
-    "weightKilo": 7.7
+    "weightKilo": 4.1
   },
   "reloads": {
     "magFed": false,
@@ -23,18 +23,18 @@
     "openBolt": true
   },
   "projectile": {
-    "item": "tac:grenade",
+    "item": "tac:grenade40mm",
     "visible": true,
     "gravity": true,
     "damage": 22,
     "size": 0.2,
-    "speed": 4.375,
+    "speed": 5.225,
     "life": 60,
     "damageReduceOverLife": false,
     "ricochet": false
   },
   "sounds": {
-    "fire": "tac:item.rpg7",
+    "fire": "tac:item.m203",
     "reload": "tac:item.pistol.reload",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.assault_rifle.silenced_fire"
@@ -50,9 +50,8 @@
   "modules": {
     "zoom":{
       "fovModifier": 0.6,
-      "xOffset": 0.885,
-      "yOffset": 8.41,
-      "zOffset": 0.35
+      "yOffset": 14.48,
+      "zOffset": 4.95
     },
     "attachments": { }
   }

@@ -300,6 +300,32 @@
       ]
    },
 
+   "item.sks": {
+      "subtitle": "subtitle.tac.sks",
+      "sounds": [
+         { "name": "tac:item/sks" }
+      ]
+   },
+   "item.m590": {
+      "subtitle": "subtitle.tac.m590",
+      "sounds": [
+         { "name": "tac:item/m590" }
+      ]
+   },
+   "item.m203": {
+      "subtitle": "subtitle.tac.m203",
+      "sounds": [
+         { "name": "tac:item/m203" }
+      ]
+   },
+
+   "item.m1ping": {
+      "subtitle": "subtitle.tac.m1ping",
+      "sounds": [
+         { "name": "tac:item/m1ping" }
+      ]
+   },
+
    "item.headshot": {
       "subtitle": "subtitle.tac.headshot",
       "sounds": [

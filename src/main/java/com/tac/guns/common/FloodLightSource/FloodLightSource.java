@@ -1,11 +1,5 @@
 package com.tac.guns.common.FloodLightSource;
 
-import atomicstryker.dynamiclights.server.DynamicLights;
-import atomicstryker.dynamiclights.server.IDynamicLightSource;
-import atomicstryker.dynamiclights.server.ItemConfigHelper;
-import com.electronwill.nightconfig.core.Config;
-import com.tac.guns.GunMod;
-import com.tac.guns.client.handler.ScopeJitterHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
@@ -36,9 +30,9 @@ import org.apache.logging.log4j.Level;
 //@Mod(modid = "dynamiclights_floodlights", name = "Dynamic Lights Flood Light", version = "1.0.3", dependencies = "required-after:dynamiclights")
 public class FloodLightSource
 {
-    private PlayerEntity thePlayer;
-    /*Property itemsList = ;
-    private static ItemConfigHelper itemsMap = new ItemConfigHelper(Property);*/
+    /*private PlayerEntity thePlayer;
+    *//*Property itemsList = ;
+    private static ItemConfigHelper itemsMap = new ItemConfigHelper(Property);*//*
     private PartialLightSource[] partialLights;
     private boolean enabled = true;
     private boolean simpleMode = true;
@@ -62,7 +56,7 @@ public class FloodLightSource
             this.thePlayer = mc.player;
             if (this.thePlayer != null && this.thePlayer.isAlive())
             {
-                int lightLevel = 15;/*Math.max(*//*getLightFromItemStack(this.thePlayer.getHeldItemMainhand()), getLightFromItemStack(thePlayer.getHeldItemOffhand()*//*)*///);
+                int lightLevel = 15;*//*Math.max(*//**//*getLightFromItemStack(this.thePlayer.getHeldItemMainhand()), getLightFromItemStack(thePlayer.getHeldItemOffhand()*//**//*)*//*//);
                 RayTraceResult mop = this.thePlayer.pick(24,0F,false);// rayTraceBlocks(posvec, look);
                 boolean doLight = true;
                 if(mop != null)
@@ -77,20 +71,20 @@ public class FloodLightSource
 //                {
                 handleLight(partialLights[0], lightLevel, doLight);
                 setLightsEnabled(false);
-                /*
-                    *//*if (!simpleMode)
+                *//*
+                    *//**//*if (!simpleMode)
                     {
                         handleLight(partialLights[1], lightLevel, doLight);
                         handleLight(partialLights[2], lightLevel, doLight);
                         handleLight(partialLights[3], lightLevel, doLight);
                         handleLight(partialLights[4], lightLevel, doLight);
-                    }*//*
+                    }*//**//*
                     setLightsEnabled(true);
                 }
                 else
                 {
                     setLightsEnabled(true);
-                }*/
+                }*//*
           }
         }
     }
@@ -151,18 +145,18 @@ public class FloodLightSource
     private void checkDummyInit(World world, Vector3d pos)
     {
         if (partialLights[0] == null)
-        {/*
+        {*//*
             for (int i = 0; i < partialLights.length; i++)
             {
                 partialLights[i] = new PartialLightSource(new DummyEntity(world, pos, i));
                 DynamicLights.addLightSource(partialLights[i]);
-            }*/
+            }*//*
             partialLights[0] = new PartialLightSource(new DummyEntity(world, pos, 1));
             DynamicLights.addLightSource(partialLights[0]);
         }
     }
 
-    /*private int getLightFromItemStack(ItemStack stack)
+    *//*private int getLightFromItemStack(ItemStack stack)
     {
         if (stack != null)
         {
@@ -170,7 +164,7 @@ public class FloodLightSource
             return r < 0 ? 0 : r;
         }
         return 0;
-    }*/
+    }*//*
 
     private class PartialLightSource implements IDynamicLightSource
     {
@@ -232,5 +226,5 @@ public class FloodLightSource
             return new EntitySize(0f, 0f, true);
         }
     }
-
+*/
 }

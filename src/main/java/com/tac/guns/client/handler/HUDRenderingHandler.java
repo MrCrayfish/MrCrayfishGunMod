@@ -23,6 +23,7 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Objects;
@@ -44,7 +45,8 @@ public class HUDRenderingHandler extends AbstractGui {
             {
                     new ResourceLocation(Reference.MOD_ID, "textures/gui/safety.png"),
                     new ResourceLocation(Reference.MOD_ID, "textures/gui/semi.png"),
-                    new ResourceLocation(Reference.MOD_ID, "textures/gui/full.png")
+                    new ResourceLocation(Reference.MOD_ID, "textures/gui/full.png"),
+                    new ResourceLocation(Reference.MOD_ID, "textures/gui/burst.png"),
             };
     private static final ResourceLocation[] RELOAD_ICONS = new ResourceLocation[]
             {
@@ -63,7 +65,7 @@ public class HUDRenderingHandler extends AbstractGui {
         if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
-        if (Minecraft.getInstance().player == null || !(Minecraft.getInstance().player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof GunItem)) {
+        if (Minecraft.getInstance().player == null || !(Minecraft.getInstance().player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof TimelessGunItem)) {
             return;
         }
         if(!Config.CLIENT.weaponGUI.weaponGui.get()) {
@@ -72,7 +74,8 @@ public class HUDRenderingHandler extends AbstractGui {
 
         ClientPlayerEntity player = Minecraft.getInstance().player;
         ItemStack heldItem = player.getHeldItemMainhand();
-        Gun gun = ((TimelessGunItem) heldItem.getItem()).getGun();
+        TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
+        Gun gun = gunItem.getGun();
         MatrixStack stack = event.getMatrixStack();
         float anchorPointX = event.getWindow().getScaledWidth() / 12F * 11F;
         float anchorPointY = event.getWindow().getScaledHeight() / 10F * 9F;
@@ -113,7 +116,7 @@ public class HUDRenderingHandler extends AbstractGui {
             buffer.finishDrawing();
             WorldVertexBufferUploader.draw(buffer);
         }
-        if(Config.CLIENT.weaponGUI.weaponFireMode.showWeaponFireMode.get()) {
+        if(Config.CLIENT.weaponGUI.weaponFireMode.showWeaponFireMode.get()/* && !ArrayUtils.isEmpty(gunItem.getSupportedFireModes())*/) {
             // FireMode rendering
             RenderSystem.enableAlphaTest();
             buffer = Tessellator.getInstance().getBuffer();
@@ -131,9 +134,7 @@ public class HUDRenderingHandler extends AbstractGui {
                     fireMode = gun.getGeneral().getRateSelector()[0];
                 else
                     fireMode = Objects.requireNonNull(player.getHeldItemMainhand().getTag()).getInt("CurrentFireMode");
-
-                /*if (fireMode > 2 || fireMode < 0) // Weapons with unsupported modes will render as "default"
-                    Minecraft.getInstance().getTextureManager().bindTexture(FIREMODE_ICONS[2]);*/
+                //int fireMode = gunItem.getSupportedFireModes()[gunItem.getCurrFireMode()];
                 if (!Config.COMMON.gameplay.safetyExistence.get() && fireMode == 0)
                     Minecraft.getInstance().getTextureManager().bindTexture(FIREMODE_ICONS[0]); // Render true firemode
                 else
@@ -177,13 +178,11 @@ public class HUDRenderingHandler extends AbstractGui {
             // Text rendering
             stack.push();
             {
-
                 stack.translate(
                         (anchorPointX - (counterSize*32) / 2) + (-Config.CLIENT.weaponGUI.weaponAmmoCounter.x.get().floatValue()),
                         (anchorPointY - (counterSize*32) / 4) + (-Config.CLIENT.weaponGUI.weaponAmmoCounter.y.get().floatValue()),
                         0
                 );
-
                 if(player.getHeldItemMainhand().getTag() != null) {
                     String text = player.getHeldItemMainhand().getTag().getInt("AmmoCount") + " / " + GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
                     stack.scale(counterSize, counterSize, counterSize);
