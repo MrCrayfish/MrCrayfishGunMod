@@ -62,7 +62,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         this.window = helper.createDrawable(BACKGROUND, 7, 15, 162, 72);
         this.inventory = helper.createDrawable(BACKGROUND, 7, 101, 162, 36);
         this.dyeSlot = helper.createDrawable(BACKGROUND, 7, 101, 18, 18);
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(ModBlocks.WORKBENCH.get()));
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.WORKBENCH.get()));
         this.title = Component.translatable(TITLE_KEY);
         this.dyes = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
     }
@@ -145,21 +145,5 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         }
         stack.popPose();
         RenderSystem.applyModelViewMatrix();
-    }
-
-    // TODO remove in 1.19?
-    @Override
-    @SuppressWarnings("removal")
-    public ResourceLocation getUid()
-    {
-        return GunModPlugin.WORKBENCH.getUid();
-    }
-
-    // TODO remove in 1.19?
-    @Override
-    @SuppressWarnings("removal")
-    public Class<? extends WorkbenchRecipe> getRecipeClass()
-    {
-        return GunModPlugin.WORKBENCH.getRecipeClass();
     }
 }

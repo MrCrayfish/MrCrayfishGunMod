@@ -90,14 +90,15 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.17'
+    minecraft 'net.minecraftforge:forge:1.19-41.0.44'
     implementation fg.deobf('curse.maven:framework-549225:3828731')
     implementation fg.deobf('curse.maven:configured-457570:3822820')
     implementation fg.deobf('curse.maven:catalogue-459701:3822882')
-    implementation fg.deobf('curse.maven:backpacked-352835:3829212')
-    compileOnly fg.deobf('curse.maven:controllable-317269:3824786')
-    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.4.171:api")
-    //runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.4.171")
+    implementation fg.deobf('curse.maven:backpacked-352835:3834884')
+    compileOnly fg.deobf('curse.maven:controllable-317269:3836705')
+    compileOnly fg.deobf("mezz.jei:jei-1.19-common-api:11.0.0.206")
+    compileOnly fg.deobf("mezz.jei:jei-1.19-forge-api:11.0.0.206")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.19-forge:11.0.0.206")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

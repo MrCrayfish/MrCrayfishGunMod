@@ -63,14 +63,14 @@ public class RecoilHandler
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
-        if(!Config.SERVER.enableCameraRecoil.get())
-            return;
-
         if(event.phase != TickEvent.Phase.END || this.cameraRecoil <= 0)
             return;
 
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null)
+            return;
+
+        if(!Config.SERVER.enableCameraRecoil.get())
             return;
 
         float recoilAmount = this.cameraRecoil * mc.getDeltaFrameTime() * 0.15F;
