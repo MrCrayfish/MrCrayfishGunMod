@@ -440,11 +440,53 @@ public enum SpecialModels
 
     AK47_EXTENDED_MAG("ak47_extended_mag"),
     AK47_STANDARD_MAG("ak47_standard_mag"),
+
+    M16A4_BODY("m16a4"),
+    M16A4_BOLT("m16a4_bolt"),
+    M16A4_COMPENSATOR("m16a4_c_muzzle"),
+    M16A4_DEFAULT_HANDGUARD("m16a4_default_guard"),
+    M16A4_DEFAULT_BARREL("m16a4_d_muzzle"),
+    M16A4_EXTENDED_HANDGUARD("m16a4_tac_guard"),
+    M16A4_EXTENDED_MAG("m16a4_extended_mag"),
+    M16A4_SUPPRESSOR("m16a4_s_muzzle"),
+    M16A4_STANDARD_MAG("m16a4_standard_mag"),
+    M16A4_CARRY("m16a4_handle"),
+    M16A4_BRAKE("m16a4_b_muzzle"),
+    M16A4_TAC_GRIP("m16a4_tac_grip"),
+    M16A4_LIGHT_GRIP("m16a4_light_grip"),
+
+
+    SCAR_H_BODY("scar_h"),
+    SCAR_H_BOLT("scar_h_bolt"),
+    SCAR_H_COMPENSATOR("scar_h_c_muzzle"),
+    SCAR_H_DEFAULT_BARREL("scar_h_d_muzzle"),
+    SCAR_H_EXTENDED_MAG("scar_h_extended_mag"),
+    SCAR_H_SUPPRESSOR("scar_h_s_muzzle"),
+    SCAR_H_STANDARD_MAG("scar_h_standard_mag"),
+    SCAR_H_FS("scar_h_fs"),
+    SCAR_H_FSU("scar_h_fsu"),
+    SCAR_H_BRAKE("scar_h_b_muzzle"),
+    SCAR_H_TAC_GRIP("scar_h_tac_grip"),
+    SCAR_H_LIGHT_GRIP("scar_h_light_grip"),
+
+    SCAR_L_BODY("scar_l"),
+    SCAR_L_BOLT("scar_l_bolt"),
+    SCAR_L_COMPENSATOR("scar_l_c_muzzle"),
+    SCAR_L_DEFAULT_BARREL("scar_l_d_muzzle"),
+    SCAR_L_EXTENDED_MAG("scar_l_extended_mag"),
+    SCAR_L_SUPPRESSOR("scar_l_s_muzzle"),
+    SCAR_L_STANDARD_MAG("scar_l_standard_mag"),
+    SCAR_L_FS("scar_l_fs"),
+    SCAR_L_FSU("scar_l_fsu"),
+    SCAR_L_BRAKE("scar_l_b_muzzle"),
+    SCAR_L_TAC_GRIP("scar_l_tac_grip"),
+    SCAR_L_LIGHT_GRIP("scar_l_light_grip"),
     //Everything from this point on is all scope additions
 
     MINI_DOT_BASE("optics/mini_dot_base"),
     MICRO_HOLO_BASE("optics/micro_holo_base"),
-
+    LPVO_1_6_FRONT("optics/lpvo_1_6_front"),
+    LPVO_1_6("optics/lpvo_1_6"),
     //Everything from this point on is all LOD renders
 
     M1911_LOD("lods/m1911_lod");

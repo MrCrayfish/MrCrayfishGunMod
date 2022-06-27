@@ -672,4 +672,46 @@ public class GunModifiers
             return speed*0.80;
         }
     };
+
+    public static final IGunModifier M16A4_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.8;
+        }
+    };
+    public static final IGunModifier SCAR_H_MOD = new IGunModifier()
+    {
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 1.425F;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.15;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.675;
+        }
+    };
+    public static final IGunModifier SCAR_L_MOD = new IGunModifier()
+    {
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 1.125F;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.05;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.775;
+        }
+    };
 }

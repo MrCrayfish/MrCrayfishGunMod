@@ -7,6 +7,8 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.item.ScopeItem;
@@ -26,12 +28,15 @@ import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 
+import static com.tac.guns.client.SpecialModels.LPVO_1_6;
+import static com.tac.guns.client.SpecialModels.LPVO_1_6_FRONT;
+
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class VortexLPVO_1_4xScopeModel implements IOverrideModel
 {
-    private static final ResourceLocation RED_DOT_RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/items/timeless_scopes/bushnell_cqb.png");
+    private static final ResourceLocation RED_DOT_RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/items/timeless_scopes/razor_lpvo_reticle.png");
     //private static final ResourceLocation RED_DOT_RETICLE_GLOW = new ResourceLocation(Reference.MOD_ID, "textures/effect/red_dot_reticle_glow.png");
     //private static final ResourceLocation VIGNETTE = new ResourceLocation(Reference.MOD_ID, "textures/effect/scope_vignette.png");
 
@@ -46,27 +51,30 @@ public class VortexLPVO_1_4xScopeModel implements IOverrideModel
         }
 
         matrixStack.translate(0, 0.074, 0);
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
 
-        RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
+        if(AimingHandler.get().getNormalisedAdsProgress() < 0.525 || Config.COMMON.gameplay.scopeDoubleRender.get())
+            RenderUtil.renderModel(LPVO_1_6_FRONT.getModel(), stack, matrixStack, renderTypeBuffer, light, overlay);
+        RenderUtil.renderModel(LPVO_1_6.getModel(), stack, matrixStack, renderTypeBuffer, light, overlay);
+
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
 
         matrixStack.translate(0, -0.057, 0);
         matrixStack.pop();
         matrixStack.translate(0, 0.017, 0);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
-
+            ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "vlpvo6" ? new ScopeData("") : ScopeEditor.get().getScopeData();
             if(entity.getPrimaryHand() == HandSide.LEFT)
             {
                 matrixStack.scale(-1, 1, 1);
             }
 
             ScopeItem scopeItem = (ScopeItem)stack.getItem();
-            float scopePrevSize = 0.965F;
-            float scopeSize = 1.13750F;
+            float scopePrevSize = 0.965F + 1.5975033F + scopeData.getReticleSizeMod();
+            float scopeSize = 1.13750F + 0.36750045F + 0.3F + scopeData.getDrZoomSizeMod();
             float size = scopeSize / 16.0F;
             float reticleSize = scopePrevSize / 16.0F;
-            float crop = scopeItem.getProperties().getAdditionalZoom().getDrCropZoom();
+            float crop = scopeItem.getProperties().getAdditionalZoom().getDrCropZoom() + scopeData.getDrZoomCropMod();
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
 
@@ -77,7 +85,7 @@ public class VortexLPVO_1_4xScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
-                matrixStack.translate(-size / 2, 0.0685075 , Config.COMMON.gameplay.scopeDoubleRender.get() ? 4.65 * 0.0625 : 2.15 * 0.0625);
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), (0.0685075+0.01175-0.01225) + scopeData.getDrYZoomMod(), (Config.COMMON.gameplay.scopeDoubleRender.get() ? (4.65+0.52975-0.618+ scopeData.getDrZZoomMod()) * 0.0625 : (2.15+0.52975-0.618 + scopeData.getDrZZoomMod()) * 0.0625));
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
@@ -112,7 +120,7 @@ public class VortexLPVO_1_4xScopeModel implements IOverrideModel
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
 
                 matrixStack.scale(6f,6f,6f);
-                matrixStack.translate(-0.00327715, -0.003385, 0.0000);
+                matrixStack.translate((-0.00327715-0.0063525+0.000215)+ scopeData.getReticleXMod(), (-0.003385-0.00847125+0.0008) + scopeData.getReticleYMod(), (0.0000) + scopeData.getReticleZMod());
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing
                 boolean aimed = false;

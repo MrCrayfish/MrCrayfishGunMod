@@ -14,6 +14,7 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,11 +40,11 @@ public class CustomGunManager
                 ItemStack stack = new ItemStack(ModItems.AK47.get());
                 stack.setDisplayName(new TranslationTextComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
                 CompoundNBT tag = stack.getOrCreateTag();
-                tag.put("Model", gun.getModel().serializeNBT());
+               *//* tag.put("Model", gun.getModel().serializeNBT());
                 tag.put("Gun", gun.getGun().serializeNBT());
                 tag.putBoolean("Custom", true);
                 tag.putInt("AmmoCount", gun.getGun().getReloads().getMaxAmmo());
-                tag.putIntArray("supportedFireModes", gun.getGun().getGeneral().getRateSelector());
+                tag.putIntArray("supportedFireModes", gun.getGun().getGeneral().getRateSelector());*//*
                 items.add(stack);
             });
         }*/

@@ -11,6 +11,7 @@ import com.tac.guns.annotation.Validator;
 import com.tac.guns.item.GunItem;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResource;
@@ -30,10 +31,7 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -41,6 +39,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
 {
+
     private static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
@@ -50,9 +49,10 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
 
     private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
     private static NetworkGunManager instance;
-
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
+    public HashSet<UUID> Ids = new HashSet<>();
+    public Map<UUID, ItemStack> StackIds = new HashMap<>();
     @Override
     protected Map<GunItem, Gun> prepare(IResourceManager resourceManager, IProfiler profiler)
     {

@@ -39,14 +39,14 @@ public class GunOptions
         Config.saveClientConfig();
     });
 
-    public static final BooleanOption BURST_MECH = new BooleanOption("tac.options.burstPress", (settings) -> {
+   /* public static final BooleanOption BURST_MECH = new BooleanOption("tac.options.burstPress", (settings) -> {
         return Config.CLIENT.controls.burstPress.get();
     }, (settings, value) -> {
         Config.CLIENT.controls.burstPress.set(value);
         Config.saveClientConfig();
     });
     // this.minecraft.displayGuiScreen
-
+*/
 
     public static final AbstractOption CROSSHAIR = new GunListOption<>("tac.options.crosshair", () -> {
         return CrosshairHandler.get().getRegisteredCrosshairs();

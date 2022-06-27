@@ -67,11 +67,12 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
                 matrixStack.scale(-1, 1, 1);
             }
 
-            float scopePrevSize = 0.965F + scopeData.getReticleSizeMod();
-            float scopeSize = 1.005F + scopeData.getDrZoomSizeMod();
+            float scopePrevSize = 0.965F + 0.27F + scopeData.getReticleSizeMod();
+            float scopeSize = 1.005F+0.245F + scopeData.getDrZoomSizeMod();
             float size = scopeSize / 16.0F;
             float reticleSize = scopePrevSize / 16.0F;
-            float crop = 0.4365F + scopeData.getDrZoomCropMod();//0.43F
+            ScopeItem scopeItem = (ScopeItem)stack.getItem();
+            float crop = scopeItem.getProperties().getAdditionalZoom().getDrCropZoom() + scopeData.getDrZoomCropMod();//0.43F
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
 
@@ -83,7 +84,7 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
-                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.0936175 + scopeData.getDrYZoomMod() , Config.COMMON.gameplay.scopeDoubleRender.get() ? (3.915 + scopeData.getDrZZoomMod()) * 0.0625 : (3.075 + scopeData.getDrZZoomMod()) * 0.0625); //3.275
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.0936175-0.006 + scopeData.getDrYZoomMod() , Config.COMMON.gameplay.scopeDoubleRender.get() ? (3.915+0.3 + scopeData.getDrZZoomMod()) * 0.0625 : (3.075+0.3 + scopeData.getDrZZoomMod()) * 0.0625); //3.275
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
@@ -122,7 +123,7 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
 
                 matrixStack.scale(7.5f,7.5f,7.5f);
                 //matrixStack.translate(-0.00335715, -0.0039355, 0.0000);
-                matrixStack.translate(-0.00335715, -0.0035055, 0.0000);
+                matrixStack.translate(-0.00335715-0.00022-0.0008825 + scopeData.getReticleXMod(), -0.0035055-0.0006325 + scopeData.getReticleYMod(), 0.0000 + scopeData.getReticleZMod());
 
 
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));

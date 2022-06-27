@@ -8,6 +8,7 @@ import com.tac.guns.util.GunModifierHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -22,17 +23,13 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class GunItem extends Item implements IColored
 {
     private WeakHashMap<CompoundNBT, Gun> modifiedGunCache = new WeakHashMap<>();
 
     private Gun gun = new Gun();
-
     public GunItem(Item.Properties properties)
     {
         super(properties);

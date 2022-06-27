@@ -73,7 +73,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private int rate;
         @Optional
-        private int burstRate = 4;
+        private int burstRate = 8;
         @Optional
         private int burstCount = 3;
         @Optional

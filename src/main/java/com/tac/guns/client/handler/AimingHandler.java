@@ -252,6 +252,19 @@ public class AimingHandler
     }
 
     @SubscribeEvent
+    public void onKeyPressedSightSwitch(InputEvent.KeyInputEvent event)
+    {
+        if(event.getAction() != GLFW.GLFW_PRESS)
+            return;
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return;
+        if(!(mc.player.getHeldItemMainhand().getItem() instanceof GunItem) && Gun.getScope(mc.player.getHeldItemMainhand()) == null)
+            return;
+        if (KeyBinds.KEY_SIGHT_SWITCH.isKeyDown())
+            this.currentScopeZoomIndex++;
+    }
+    @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
         if(!Config.CLIENT.controls.toggleAim.get())
@@ -263,12 +276,6 @@ public class AimingHandler
             return;
         if(this.toggledAimAwaiter > 0)
             return;
-
-        if (KeyBinds.KEY_SIGHT_SWITCH.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS)
-        {
-            this.currentScopeZoomIndex++;
-            return;
-        }
 
         boolean isLeftClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_LEFT);
         boolean isRightClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_RIGHT);

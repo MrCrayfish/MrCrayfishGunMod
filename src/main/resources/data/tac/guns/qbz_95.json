@@ -2,7 +2,7 @@
   "general": {
     "auto": true,
     "rate": 2,
-    "burstRate": 8,
+    "burstRate": 18,
     "rateSelector": [
       0,
       1,

@@ -6,11 +6,11 @@
   "materials": [
     {
       "item": "minecraft:iron_ingot",
-      "count": 24
+      "count": 32
     },
     {
       "item": "minecraft:glass_pane",
-      "count": 28
+      "count": 48
     },
     {
       "item": "minecraft:redstone_block",

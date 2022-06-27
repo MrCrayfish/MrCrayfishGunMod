@@ -3,10 +3,12 @@ package com.tac.guns.client.handler;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.common.ReloadTracker;
 import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageGunSound;
 import com.tac.guns.network.message.MessageReload;
@@ -25,7 +27,12 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
+import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.UUID;
+
+import static com.tac.guns.GunMod.LOGGER;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -218,6 +225,22 @@ public class ReloadHandler
         PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
+            if(player.getHeldItemMainhand().getItem() instanceof TimelessGunItem && player.getHeldItemMainhand().getTag() != null)
+            {
+                if(!player.getHeldItemMainhand().getTag().contains("ID"))
+                {
+                    UUID id;
+                    while(true)
+                    {
+                        LOGGER.log(Level.FATAL, "NEW UUID GEN");
+                        id = UUID.randomUUID();
+                        if(NetworkGunManager.get().Ids.add(id))
+                            break;
+                    }
+                    player.getHeldItemMainhand().getTag().putUniqueId("ID",id);
+                    NetworkGunManager.get().StackIds.put(id, player.getHeldItemMainhand());
+                }
+            }
             if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
                 if(this.reloadingSlot != player.inventory.currentItem)

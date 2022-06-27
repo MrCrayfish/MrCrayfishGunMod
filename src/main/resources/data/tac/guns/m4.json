@@ -2,12 +2,11 @@
   "general": {
     "auto": true,
     "rate": 2,
-    "burstRate": 9,
+    "burstRate": 16,
     "rateSelector": [
       0,
       1,
-      2,
-      3
+      2
     ],
     "gripType": "tac:two_handed_ak47",
     "recoilAngle": 3.425,
@@ -25,7 +24,7 @@
     "magFed": true,
     "maxAmmo": 30,
     "reloadMagTimer": 45,
-    "additionalReloadEmptyMagTimer": 20,
+    "additionalReloadEmptyMagTimer": 10,
     "maxAdditionalAmmoPerOC": [
       10,
       20,

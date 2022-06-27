@@ -1,0 +1,90 @@
+{
+  "general": {
+    "auto": true,
+    "rate": 3,
+    "rateSelector": [
+      0,
+      1,
+      2
+    ],
+    "gripType": "tac:two_handed_ak47",
+    "recoilAngle": 2.775,
+    "horizontalRecoilAngle": 1.35,
+    "recoilKick": 0.825,
+    "recoilAdsReduction": 0.225,
+    "weaponRecoilDuration": 0.96,
+    "cameraRecoilModifier": 0.8,
+    "recoilDuration": 0.19,
+    "alwaysSpread": true,
+    "spread": 0.85,
+    "weightKilo": 5.60
+  },
+  "projectile": {
+    "item": "tac:bullet_308",
+    "visible": true,
+    "damage": 15,
+    "size": 0.2,
+    "speed": 31.5,
+    "life": 12
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 10,
+    "reloadMagTimer": 52,
+    "additionalReloadEmptyMagTimer": 18,
+    "maxAdditionalAmmoPerOC": [
+      5,
+      8,
+      10
+    ],
+    "preReloadPauseTicks": 6
+  },
+  "sounds": {
+    "fire": "tac:item.mk14",
+    "reload": "tac:item.pistol.reload",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.remington_700s"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 9.445,
+      "zOffset": -19.95,
+      "size": 0.8
+    },
+    "hipfireScale": 1.55,
+    "hipfireMoveScale": 0.71,
+    "hipfireRecoilScale": 0.95,
+    "showDynamicHipfire": true,
+    "weaponType": 0
+  },
+  "modules": {
+    "zoom": {
+      "fovModifier": 0.8,
+      "yOffset": 12.845,
+      "zOffset": -5.805
+    },
+    "attachments": {
+      "scope": {
+        "yOffset": 10.95,
+        "zOffset": 6.715,
+        "scale": 1.0
+      },
+      "underBarrel": {
+        "yOffset": 7.799,
+        "zOffset": -2.35,
+        "scale": 0.00
+      },
+      "sideRail": {
+        "yOffset": 7.799,
+        "zOffset": -2.35,
+        "scale": 0.00
+      },
+      "barrel": {
+        "yOffset": -100829.84,
+        "zOffset": -22.80,
+        "scale": 1.00
+      }
+    }
+  }
+}
+

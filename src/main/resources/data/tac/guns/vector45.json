@@ -3,7 +3,7 @@
     "auto": true,
     "rate": 1,
     "burstCount": 2,
-    "burstRate": 4,
+    "burstRate": 8,
     "rateSelector": [
       0,
       2,
@@ -33,7 +33,7 @@
   "projectile": {
     "item": "tac:round45",
     "visible": false,
-    "damage": 3.5,
+    "damage": 4.25,
     "size": 0.2,
     "speed": 20.5,
     "life": 6
