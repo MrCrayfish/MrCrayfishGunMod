@@ -714,4 +714,21 @@ public class GunModifiers
             return speed*0.775;
         }
     };
+    public static final IGunModifier MK47_MOD = new IGunModifier()
+    {
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 1.35F;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.25;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.885;
+        }
+    };
 }

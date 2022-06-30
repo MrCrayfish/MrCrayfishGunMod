@@ -399,7 +399,6 @@ public enum SpecialModels
     SKS_TACTICAL_SCOPE_RAIL("sks_tactical_srail"),
     SKS_TACTICAL_TACTICAL_GRIP("sks_tactical_tactical_grip"),
     SKS_TACTICAL_TACTICAL_STOCK("sks_tactical_tactical_stock"),
-
     M1014("m1014"),
     M1014_BOLT("m1014_bolt"),
     M1014_SHELL("m1014_shell"),
@@ -481,6 +480,21 @@ public enum SpecialModels
     SCAR_L_BRAKE("scar_l_b_muzzle"),
     SCAR_L_TAC_GRIP("scar_l_tac_grip"),
     SCAR_L_LIGHT_GRIP("scar_l_light_grip"),
+
+    MK47_BODY("mk47"),
+    MK47_BOLT("mk47_bolt"),
+    MK47_COMPENSATOR("mk47_c_muzzle"),
+    MK47_DEFAULT_BARREL("mk47_d_muzzle"),
+    MK47_EXTENDED_MAG("mk47_extended_mag"),
+    MK47_SUPPRESSOR("mk47_s_muzzle"),
+    MK47_STANDARD_MAG("mk47_standard_mag"),
+    MK47_FS("mk47_sightsf"),
+    MK47_FSU("mk47_sights"),
+    MK47_BRAKE("mk47_b_muzzle"),
+    MK47_TACTICAL_STOCK("mk47_tac_stock"),
+    MK47_LIGHT_STOCK("mk47_light_stock"),
+    MK47_HEAVY_STOCK("mk47_heavy_stock"),
+    KAR98_MOUNT("kar98_mount"),
     //Everything from this point on is all scope additions
 
     MINI_DOT_BASE("optics/mini_dot_base"),
