@@ -9,10 +9,9 @@ import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageGunSound;
-import com.tac.guns.network.message.MessageReload;
-import com.tac.guns.network.message.MessageUnload;
+import com.tac.guns.network.message.*;
 import com.tac.guns.util.GunEnchantmentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -29,6 +28,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
+import sun.nio.ch.Net;
 
 import java.util.UUID;
 
@@ -225,22 +225,6 @@ public class ReloadHandler
         PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
-            if(player.getHeldItemMainhand().getItem() instanceof TimelessGunItem && player.getHeldItemMainhand().getTag() != null)
-            {
-                if(!player.getHeldItemMainhand().getTag().contains("ID"))
-                {
-                    UUID id;
-                    while(true)
-                    {
-                        LOGGER.log(Level.FATAL, "NEW UUID GEN");
-                        id = UUID.randomUUID();
-                        if(NetworkGunManager.get().Ids.add(id))
-                            break;
-                    }
-                    player.getHeldItemMainhand().getTag().putUniqueId("ID",id);
-                    NetworkGunManager.get().StackIds.put(id, player.getHeldItemMainhand());
-                }
-            }
             if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
                 if(this.reloadingSlot != player.inventory.currentItem)
@@ -248,10 +232,31 @@ public class ReloadHandler
                     this.setReloading(false);
                 }
             }
-
             this.updateReloadTimer(player);
+            PacketHandler.getPlayChannel().sendToServer(new MessageUpdateGunID());
         }
     }
+    private boolean isInGame()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.loadingGui != null)
+            return false;
+        if(mc.currentScreen != null)
+            return false;
+        if(!mc.mouseHelper.isMouseGrabbed())
+            return false;
+        return mc.isGameFocused();
+    }
+    /*@SubscribeEvent
+    public void onPlayerUpdate(TickEvent.PlayerTickEvent event)
+    {
+        if(!isInGame())
+            return;
+        PlayerEntity player = event.player;
+        if(player == null)
+            return;
+
+    }*/
 
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
@@ -261,10 +266,10 @@ public class ReloadHandler
         {
             return;
         }
-
         ItemStack stack = player.getHeldItemMainhand();
         if(KeyBinds.KEY_RELOAD.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS && stack.getItem() instanceof GunItem)
         {
+            PacketHandler.getPlayChannel().sendToServer(new MessageUpdateGunID());
             if(!SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
                 this.setReloading(true);
@@ -276,6 +281,7 @@ public class ReloadHandler
         }
         if(KeyBinds.KEY_UNLOAD.isPressed() && event.getAction() == GLFW.GLFW_PRESS)
         {
+            PacketHandler.getPlayChannel().sendToServer(new MessageUpdateGunID());
             this.setReloading(false);
             PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
         }

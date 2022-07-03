@@ -6,11 +6,11 @@
   "materials": [
     {
       "item": "minecraft:iron_ingot",
-      "count": 136
+      "count": 84
     },
     {
       "item": "minecraft:spruce_log",
-      "count": 10
+      "count": 12
     }
   ]
 }

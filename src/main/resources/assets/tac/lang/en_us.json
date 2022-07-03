@@ -244,6 +244,7 @@
     "key.tac.color_bench": "NULL",
     "key.tac.fireSelect": "Fire Mode",
     "key.tac.inspect": "Inspect Weapon",
+    "key.tac.sight_switch": "Toggle Scope Zoom",
 
     "key.tac.attachments": "Modify Attachments",
 

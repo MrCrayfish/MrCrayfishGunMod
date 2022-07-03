@@ -3,9 +3,11 @@ package com.tac.guns.client.handler;
 import com.tac.guns.Reference;
 import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.init.ModBlocks;
 import com.tac.guns.init.ModItems;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageLightChange;
@@ -29,8 +31,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.UUID;
+
+import static com.tac.guns.GunMod.LOGGER;
 import static net.minecraftforge.eventbus.api.EventPriority.HIGHEST;
 
 /**
@@ -90,6 +96,23 @@ public class FlashlightHandler
         PlayerEntity player = event.player;
         if(player == null)
             return;
+
+        if(NetworkGunManager.get() != null && NetworkGunManager.get().StackIds != null) {
+            if (player.getHeldItemMainhand().getItem() instanceof TimelessGunItem && player.getHeldItemMainhand().getTag() != null) {
+                if (!player.getHeldItemMainhand().getTag().contains("ID")) {
+                    UUID id;
+                    while (true) {
+                        LOGGER.log(Level.INFO, "NEW UUID GEN FOR TAC GUN");
+                        id = UUID.randomUUID();
+                        if (NetworkGunManager.get().Ids.add(id))
+                            break;
+                    }
+                    player.getHeldItemMainhand().getTag().putUniqueId("ID", id);
+                    NetworkGunManager.get().StackIds.put(id, player.getHeldItemMainhand());
+                }
+            }
+        }
+
         if (event.phase == Phase.START && (player.getHeldItemMainhand() != null && this.active && Gun.getAttachment(IAttachment.Type.SIDE_RAIL, player.getHeldItemMainhand()) != null))
         {
             PacketHandler.getPlayChannel().sendToServer(new MessageLightChange(new int[]{32}));//(new int[]{2,32}));

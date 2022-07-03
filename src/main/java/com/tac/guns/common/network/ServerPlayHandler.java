@@ -33,6 +33,7 @@ import com.tac.guns.tileentity.WorkbenchTileEntity;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.InventoryUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
@@ -60,6 +61,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,6 +70,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import static com.tac.guns.GunMod.LOGGER;
 import static net.minecraft.entity.ai.attributes.Attributes.MOVEMENT_SPEED;
 
 
@@ -259,6 +262,25 @@ public class ServerPlayHandler
                         }
                     }
 
+                    if(stack.getItem() instanceof TimelessGunItem)
+                    {
+                        if(stack.getTag() == null)
+                        {
+                            stack.getOrCreateTag();
+                        }
+                        GunItem gunItem = (GunItem) stack.getItem();
+                        Gun gun = gunItem.getModifiedGun(stack);
+                        int[] gunItemFireModes = stack.getTag().getIntArray("supportedFireModes");
+                        if(ArrayUtils.isEmpty(gunItemFireModes))
+                        {
+                            gunItemFireModes = gun.getGeneral().getRateSelector();
+                            stack.getTag().putIntArray("supportedFireModes", gunItemFireModes);
+                        }
+                        else if(!Arrays.equals(gunItemFireModes, gun.getGeneral().getRateSelector()))
+                        {
+                            stack.getTag().putIntArray("supportedFireModes", gun.getGeneral().getRateSelector());
+                        }
+                    }
                     InventoryHelper.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack);
                 }
             }
@@ -368,6 +390,10 @@ public class ServerPlayHandler
         ItemStack heldItem = player.getHeldItemMainhand();
         if(heldItem.getItem() instanceof GunItem)
         {
+            if(heldItem.getTag() == null)
+            {
+                heldItem.getOrCreateTag();
+            }
             GunItem gunItem = (GunItem) heldItem.getItem();
             Gun gun = gunItem.getModifiedGun(heldItem.getStack());
             int[] gunItemFireModes = heldItem.getTag().getIntArray("supportedFireModes");
@@ -634,5 +660,27 @@ public class ServerPlayHandler
         MovementAdaptationsHandler.get().setPreviousWeight(gun.getGeneral().getWeightKilo());
         //DEBUGGING AND BALANCE TOOL
         //player.sendStatusMessage(new TranslationTextComponent("Speed is: " + player.getAttribute(MOVEMENT_SPEED).getValue()) ,true);
+    }
+
+    public static void handleGunID(ServerPlayerEntity player)
+    {
+        if(!player.isAlive())
+            return;
+        if(NetworkGunManager.get() != null && NetworkGunManager.get().StackIds != null) {
+            if (player.getHeldItemMainhand().getItem() instanceof TimelessGunItem && player.getHeldItemMainhand().getTag() != null) {
+                if (!player.getHeldItemMainhand().getTag().contains("ID")) {
+                    UUID id;
+                    while (true) {
+                        LOGGER.log(Level.INFO, "NEW UUID GEN FOR TAC GUN");
+                        id = UUID.randomUUID();
+                        if (NetworkGunManager.get().Ids.add(id))
+                            break;
+                    }
+                    player.getHeldItemMainhand().getTag().putUniqueId("ID", id);
+                    NetworkGunManager.get().StackIds.put(id, player.getHeldItemMainhand());
+                }
+            }
+        }
+
     }
 }

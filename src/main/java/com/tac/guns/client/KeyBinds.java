@@ -51,8 +51,8 @@ public class KeyBinds
         ClientRegistry.registerKeyBinding(KEY_INSPECT);
         ClientRegistry.registerKeyBinding(KEY_SIGHT_SWITCH);
         ClientRegistry.registerKeyBinding(KEY_ADS);
-        ClientRegistry.registerKeyBinding(COLOR_BENCH);
-        ClientRegistry.registerKeyBinding(KEY_ACTIVATE_SIDE_RAIL);
+        //ClientRegistry.registerKeyBinding(COLOR_BENCH);
+        //ClientRegistry.registerKeyBinding(KEY_ACTIVATE_SIDE_RAIL);
         if(Config.COMMON.development.enableTDev.get())
         {
             ClientRegistry.registerKeyBinding(SHIFTY);

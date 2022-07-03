@@ -5,12 +5,12 @@
   },
   "materials": [
     {
-      "item": "minecraft:iron_ingot",
-      "count": 180
+      "item": "minecraft:iron_block",
+      "count": 16
     },
 	{
       "item": "minecraft:diamond",
-      "count": 6
+      "count": 4
     }
   ]
 }
