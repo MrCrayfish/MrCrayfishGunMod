@@ -3,12 +3,10 @@ package com.tac.guns.mixin.client;
 import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.render.animation.Animations;
 import com.tac.guns.client.render.animation.GunAnimationController;
-import com.tac.guns.item.GunItem;
 import de.javagl.jgltf.model.animation.AnimationRunner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,19 +30,13 @@ public class FirstPersonRendererMixin {
         ItemStack mainHandItemStack = Minecraft.getInstance().player.getHeldItemMainhand();
         GunAnimationController controller = GunAnimationController.fromItem(mainHandItemStack.getItem());
         GunAnimationController controller1 = GunAnimationController.fromItem(this.prevItemStack.getItem());
-        CompoundNBT nbt = mainHandItemStack.getTag();
-        CompoundNBT nbt1 = prevItemStack.getTag();
-        if(nbt != null) {
-            if (!nbt.contains("UUID")) {
-                int h1 = mainHandItemStack.hashCode();
-                nbt.putUniqueId("UUID", UUID.randomUUID());
-            }
-            UUID uuid = nbt.getUniqueId("UUID");
-            if (nbt1 != null) {
-                if(nbt1.contains("UUID")) {
-                    UUID uuid1 = nbt1.getUniqueId("UUID");
-                    if (uuid.equals(uuid1)) return;
-                }
+        if(prevItemStack.hasTag()){
+            assert prevItemStack.getTag() != null;
+            UUID prevUuid = prevItemStack.getTag().getUniqueId("ID");
+            if(mainHandItemStack.hasTag()){
+                assert mainHandItemStack.getTag() != null;
+                UUID uuid = mainHandItemStack.getTag().getUniqueId("ID");
+                if(uuid.equals(prevUuid)) return;
             }
         }
         prevItemStack = mainHandItemStack;
