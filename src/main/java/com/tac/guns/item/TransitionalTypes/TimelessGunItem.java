@@ -32,10 +32,34 @@ import static net.minecraft.entity.ai.attributes.Attributes.MOVEMENT_SPEED;
 
 public class TimelessGunItem extends GunItem
 {
+    public Boolean isIntegratedOptic() {return integratedOptic;}
+    private Boolean integratedOptic = false;
+
+   /* public int getCurrFireMode() {return currFireMode;}
+    public void cycleFireMode()
+    {
+        if(this.supportedFireModes.length-1 > this.currFireMode)
+            this.currFireMode++;
+        else if(Config.COMMON.gameplay.safetyExistence.get())
+            this.currFireMode = 0;
+        else
+            this.currFireMode = 1;
+    }
+    private int currFireMode = Config.COMMON.gameplay.safetyExistence.get() ? 0 : 1;
+    public void setSupportedFireModes(int[] arr) {this.supportedFireModes=arr;}
+    public int[] getSupportedFireModes() {return supportedFireModes;}
+    private int[] supportedFireModes = new int[]{};*/
     public TimelessGunItem(Process<Item.Properties> properties, IGunModifier... modifiers)
     {
         super(properties.process(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
         this.modifiers = modifiers;
+    }
+
+    public TimelessGunItem(Process<Item.Properties> properties, Boolean integratedOptic, IGunModifier... modifiers)
+    {
+        super(properties.process(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+        this.modifiers = modifiers;
+        this.integratedOptic = integratedOptic;
     }
     
     public TimelessGunItem() {

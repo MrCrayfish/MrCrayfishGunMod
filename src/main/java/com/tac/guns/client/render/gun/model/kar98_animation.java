@@ -3,10 +3,12 @@ package com.tac.guns.client.render.gun.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
+import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
+import com.tac.guns.util.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -49,7 +51,10 @@ public class kar98_animation implements IOverrideModel {
         {
             RenderUtil.renderModel(SpecialModels.SMLE_III_MOUNT.getModel(), stack, matrices, renderBuffer, light, overlay);
         }*/
-
+        if((Gun.getScope(stack) != null) && (!(OptifineHelper.isShadersEnabled() || !Config.COMMON.gameplay.scopeDoubleRender.get()) || !(AimingHandler.get().getNormalisedAdsProgress() > 0.5)))
+        {
+            RenderUtil.renderModel(SpecialModels.KAR98_MOUNT.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
         RenderUtil.renderModel(SpecialModels.KAR98.getModel(), stack, matrices, renderBuffer, light, overlay);
         matrices.push();
 

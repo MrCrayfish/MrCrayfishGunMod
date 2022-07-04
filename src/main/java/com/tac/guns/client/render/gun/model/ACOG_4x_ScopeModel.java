@@ -7,8 +7,11 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
+import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.util.OptifineHelper;
 import net.minecraft.client.MainWindow;
@@ -25,6 +28,9 @@ import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
+import org.apache.logging.log4j.Level;
+
+import static com.tac.guns.GunMod.LOGGER;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -37,6 +43,7 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
         matrixStack.push();
+
         if ((OptifineHelper.isShadersEnabled()) || !Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
             double zScale = 0.05D + 0.75D * (1.0D - transition);
@@ -44,12 +51,6 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
                 matrixStack.translate(0,0,transition*0.18);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }
-
-        /*if (OptifineHelper.isShadersEnabled() || !Config.COMMON.gameplay.scopeDoubleRender.get()) {
-            double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
-            double zScale = 0.05D + 0.75D * (1.0D - transition);
-            matrixStack.scale(1.0F, 1.0F, (float)zScale);
-        }*/
 
         matrixStack.translate(0, 0.074, 0);
 
@@ -60,17 +61,18 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
         matrixStack.translate(0, 0.017, 0);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
-
+            ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "acog4x" ? new ScopeData("") : ScopeEditor.get().getScopeData();
             if(entity.getPrimaryHand() == HandSide.LEFT)
             {
                 matrixStack.scale(-1, 1, 1);
             }
 
-            float scopePrevSize = 0.965F;
-            float scopeSize = 1.005F;
+            float scopePrevSize = 0.965F + 0.27F + scopeData.getReticleSizeMod();
+            float scopeSize = 1.005F+0.245F + scopeData.getDrZoomSizeMod();
             float size = scopeSize / 16.0F;
             float reticleSize = scopePrevSize / 16.0F;
-            float crop = 0.4365F;//0.43F
+            ScopeItem scopeItem = (ScopeItem)stack.getItem();
+            float crop = scopeItem.getProperties().getAdditionalZoom().getDrCropZoom() + scopeData.getDrZoomCropMod();//0.43F
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
 
@@ -82,7 +84,7 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
-                matrixStack.translate(-size / 2, 0.0936175 , Config.COMMON.gameplay.scopeDoubleRender.get() ? 3.915 * 0.0625 : 3.075 * 0.0625); //3.275
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.0936175-0.006 + scopeData.getDrYZoomMod() , Config.COMMON.gameplay.scopeDoubleRender.get() ? (3.915+0.3 + scopeData.getDrZZoomMod()) * 0.0625 : (3.075+0.3 + scopeData.getDrZZoomMod()) * 0.0625); //3.275
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
@@ -121,7 +123,7 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
 
                 matrixStack.scale(7.5f,7.5f,7.5f);
                 //matrixStack.translate(-0.00335715, -0.0039355, 0.0000);
-                matrixStack.translate(-0.00335715, -0.0035055, 0.0000);
+                matrixStack.translate(-0.00335715-0.00022-0.0008825 + scopeData.getReticleXMod(), -0.0035055-0.0006325 + scopeData.getReticleYMod(), 0.0000 + scopeData.getReticleZMod());
 
 
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));

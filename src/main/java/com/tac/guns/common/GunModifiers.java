@@ -80,6 +80,16 @@ public class GunModifiers
         @Override
         public float additionalWeaponWeight() { return 0.425F; }
     };
+    public static final IGunModifier ELCAN_DR_14X_ADS = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 0.75F;
+        }
+        @Override
+        public float additionalWeaponWeight() { return 0.725F; }
+    };
     public static final IGunModifier QMK152_ADS = new IGunModifier()
     {
         @Override
@@ -603,6 +613,122 @@ public class GunModifiers
         @Override
         public double modifyAimDownSightSpeed(double speed) {
             return speed*0.75;
+        }
+    };
+    public static final IGunModifier QBZ_191_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.15;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.85;
+        }
+    };
+
+    public static final IGunModifier STEN_OSS_MOD = new IGunModifier()
+    {
+        @Override
+        public boolean silencedFire()
+        {
+            return true;
+        }
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 0.175F;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 0.205;
+        }
+        @Override
+        public double modifyMuzzleFlashSize(double size)
+        {
+            return size * 0F;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.85;
+        }
+    };
+    public static final IGunModifier ESPADON_MOD = new IGunModifier()
+    {
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 1.375F;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.205;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.80;
+        }
+    };
+
+    public static final IGunModifier M16A4_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.8;
+        }
+    };
+    public static final IGunModifier SCAR_H_MOD = new IGunModifier()
+    {
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 1.425F;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.15;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.675;
+        }
+    };
+    public static final IGunModifier SCAR_L_MOD = new IGunModifier()
+    {
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 1.125F;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.05;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.775;
+        }
+    };
+    public static final IGunModifier MK47_MOD = new IGunModifier()
+    {
+        @Override
+        public float modifyFireSoundVolume(float volume)
+        {
+            return volume * 1.35F;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.25;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.885;
         }
     };
 }

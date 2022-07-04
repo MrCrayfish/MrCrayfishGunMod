@@ -222,7 +222,7 @@ public class Config
 
         public final ForgeConfigSpec.BooleanValue toggleAim;
         public final ForgeConfigSpec.IntValue toggleAimDelay;
-
+        public final ForgeConfigSpec.BooleanValue burstPress;
         public Controls(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Properties relating to controls").push("controls");
@@ -231,6 +231,7 @@ public class Config
 
                 this.toggleAim = builder.comment("Click to toggle aim on and off in game, instead of holding your aim button, the only way to utilize the toggleAim Keybind at this point!").define("toggleAim", false);
                 this.toggleAimDelay = builder.comment("The delay in ticks before being able to activate your toggleAim again, recommended to leave alone or increase past default!").defineInRange("toggleAimDelay", 8, 1, 60);
+                this.burstPress = builder.comment("Press to use a burst fire a gun, or hold to continue a burst, un-clicking cancels your burst").define("burstPress", true);
             }
             builder.pop();
         }

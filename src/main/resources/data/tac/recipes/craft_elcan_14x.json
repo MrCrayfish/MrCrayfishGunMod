@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:elcan_14x"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 30
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 26
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 1
+    }
+  ]
+}

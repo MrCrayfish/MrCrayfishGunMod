@@ -1,0 +1,17 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:grenade40mm",
+    "count": 1
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 20
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 2
+    }
+  ]
+}

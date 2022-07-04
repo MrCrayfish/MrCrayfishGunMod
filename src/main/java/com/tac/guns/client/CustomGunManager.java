@@ -3,14 +3,18 @@ package com.tac.guns.client;
 import com.tac.guns.Reference;
 import com.tac.guns.common.CustomGun;
 import com.tac.guns.common.NetworkGunManager;
+import com.tac.guns.init.ModItems;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,20 +33,21 @@ public class CustomGunManager
 
     public static void fill(NonNullList<ItemStack> items)
     {
-        if(customGunMap != null)
+        /*if(customGunMap != null)
         {
             customGunMap.forEach((id, gun) ->
             {
-                /* ItemStack stack = new ItemStack(ModItems.PISTOL.get());
-                stack.setHoverName(new TranslationTextComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
+                ItemStack stack = new ItemStack(ModItems.AK47.get());
+                stack.setDisplayName(new TranslationTextComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
                 CompoundNBT tag = stack.getOrCreateTag();
-                tag.put("Model", gun.getModel().save(new CompoundNBT()));
+               *//* tag.put("Model", gun.getModel().serializeNBT());
                 tag.put("Gun", gun.getGun().serializeNBT());
                 tag.putBoolean("Custom", true);
-                tag.putInt("AmmoCount", gun.getGun().getGeneral().getMaxAmmo());
-                items.add(stack); */
+                tag.putInt("AmmoCount", gun.getGun().getReloads().getMaxAmmo());
+                tag.putIntArray("supportedFireModes", gun.getGun().getGeneral().getRateSelector());*//*
+                items.add(stack);
             });
-        }
+        }*/
     }
 
     @SubscribeEvent

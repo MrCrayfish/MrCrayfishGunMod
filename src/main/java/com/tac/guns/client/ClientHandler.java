@@ -4,6 +4,7 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.handler.*;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
+import com.tac.guns.client.handler.command.ScopeEditor;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
@@ -22,7 +23,6 @@ import com.tac.guns.network.message.MessageAttachments;
 import com.tac.guns.network.message.MessageInspection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.MouseSettingsScreen;
 import net.minecraft.client.gui.screen.VideoSettingsScreen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -66,15 +66,16 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(FireModeSwitchEvent.get()); // Technically now a handler but, yes I need some naming reworks
         MinecraftForge.EVENT_BUS.register(IronSightSwitchEvent.get()); // Still, as well an event, am uncertain on what to name it, in short handles upcoming advanced iron sights
         MinecraftForge.EVENT_BUS.register(AnimationSoundHandler.get());
+        MinecraftForge.EVENT_BUS.register(SightSwitchEvent.get()); // Still, as well an event, am uncertain on what to name it, in short handles upcoming advanced iron sights
         //MinecraftForge.EVENT_BUS.register(FlashlightHandler.get()); // Completely broken... Needs a full rework
         //MinecraftForge.EVENT_BUS.register(FloodLightSource.get());
 
-        MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDay memory part of the Timeless dev team, amazing work!!!!!!!!!!!
+        MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDayMemory part of the Timeless dev team, amazing work!!!!!!!!!!!
 
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
         MinecraftForge.EVENT_BUS.register(GuiEditor.get());
         MinecraftForge.EVENT_BUS.register(GunEditor.get());
-
+        MinecraftForge.EVENT_BUS.register(ScopeEditor.get());
         KeyBinds.register();
 
         setupRenderLayers();
@@ -125,7 +126,9 @@ public class ClientHandler
         ModelOverrides.register(ModItems.COYOTE_SIGHT.get(), new CoyoteSightModel());
         ModelOverrides.register(ModItems.LONGRANGE_8x_SCOPE.get(), new LongRange8xScopeModel());
         ModelOverrides.register(ModItems.VORTEX_LPVO_1_6.get(), new VortexLPVO_1_4xScopeModel());
+        ModelOverrides.register(ModItems.SLX_2X.get(), new SLX_2X_ScopeModel());
         ModelOverrides.register(ModItems.ACOG_4.get(), new ACOG_4x_ScopeModel());
+        ModelOverrides.register(ModItems.ELCAN_DR_14X.get(), new elcan_14x_ScopeModel());
         ModelOverrides.register(ModItems.AIMPOINT_T1_SIGHT.get(), new AimpointT1SightModel());
         ModelOverrides.register(ModItems.EOTECH_N_SIGHT.get(), new EotechNSightModel());
         ModelOverrides.register(ModItems.VORTEX_UH_1.get(), new VortexUh1SightModel());
@@ -163,7 +166,7 @@ public class ClientHandler
             {
                 OptionsRowList list = (OptionsRowList) mouseOptionsField.get(screen);
                 list.addOption(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
-                list.addOption(GunOptions.TOGGLE_ADS);
+                list.addOption(GunOptions.TOGGLE_ADS);/*, GunOptions.BURST_MECH);*/
             }
             catch(IllegalAccessException e)
             {

@@ -1,9 +1,12 @@
 package com.tac.guns.client.handler;
 
+import com.tac.guns.Config;
 import com.tac.guns.GunMod;
+import com.tac.guns.client.settings.GunOptions;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageShoot;
 import com.tac.guns.network.message.MessageShooting;
@@ -13,11 +16,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.UUID;
+
+import static com.tac.guns.GunMod.LOGGER;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -42,10 +53,28 @@ public class  ShootingHandler
     public void setShooting(boolean shooting) {
         this.shooting = shooting;
     }
+    public void setShootingError(boolean shootErr) {
+        this.shootErr = shootErr;
+    }
 
     private boolean shooting;
 
+    private boolean shootErr;
+    private boolean clickUp = false;
+    private int burstTracker = 0;
+    private int burstCooldown = 0;
     private ShootingHandler() {}
+
+    @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload event)
+    {
+        if(!isInGame())
+            return;
+        this.burstTracker = 0;
+        this.burstCooldown = 0;
+        this.clickUp = false;
+        this.shootErr = false;
+    }
 
     private boolean isInGame()
     {
@@ -92,7 +121,16 @@ public class  ShootingHandler
             }
             if(event.getAction() == GLFW.GLFW_PRESS && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
             {
-                fire(player, heldItem);
+                if(heldItem.getItem() instanceof TimelessGunItem && heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstCooldown == 0)
+                {
+                    if(this.burstCooldown == 0)
+                        fire(player, heldItem);
+                    this.burstTracker = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstCount()-1;
+                    this.burstCooldown = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstRate();
+                }
+                else if(this.burstCooldown == 0)
+                    fire(player, heldItem);
+
             }
         }
     }
@@ -113,7 +151,7 @@ public class  ShootingHandler
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
-                boolean shooting = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
+                boolean shooting = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS && !this.clickUp;
                 if(GunMod.controllableLoaded)
                 {
                     // shooting |= ControllerHandler.isShooting();
@@ -147,44 +185,141 @@ public class  ShootingHandler
             player.setSprinting(false);
     }
 
+    /*@SubscribeEvent
+    public void onHandleBurstShootonKeyPressed(InputEvent.RawMouseEvent event)
+    {
+        if(!this.isInGame())
+            return;
+
+        if(event.getAction() != GLFW.GLFW_PRESS)
+            return;
+
+        Minecraft mc = Minecraft.getInstance();
+        PlayerEntity player = mc.player;
+        if(player == null)
+            return;
+        if(!Config.CLIENT.controls.burstPress.get())
+            return;
+
+        if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            ItemStack heldItem = player.getHeldItemMainhand();
+            if (heldItem.getItem() instanceof TimelessGunItem) {
+                TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
+                Gun gun = gunItem.getGun();
+                if (heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstCooldown == 0)
+                {
+                //CooldownTracker tracker = player.getCooldownTracker();
+                    //if (!tracker.hasCooldown(heldItem.getItem())) {
+                        //fire(player, heldItem);
+                        this.burstTracker = gun.getGeneral().getBurstCount();
+                        this.burstCooldown = gun.getGeneral().getBurstRate();
+                    //}
+                }
+            }
+        }
+    }*/
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        if (!isInGame())
+            return;
+        Minecraft mc = Minecraft.getInstance();
+        PlayerEntity player = mc.player;
+        if (player != null)
+            if(this.burstCooldown > 0)
+                this.burstCooldown -= 1;
+    }
     @SubscribeEvent
     public void onPostClientTick(TickEvent.ClientTickEvent event)
     {
         if(event.phase != TickEvent.Phase.END)
             return;
-
         if(!isInGame())
             return;
-
         Minecraft mc = Minecraft.getInstance();
         PlayerEntity player = mc.player;
         if(player != null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
-            if(heldItem.getItem() instanceof GunItem)
+//            player.sendStatusMessage(new TranslationTextComponent(this.burstCooldown+"| | |"+this.burstTracker+"| | |"+heldItem.getTag().getInt("CurrentFireMode")), true);
+            if(heldItem.getItem() instanceof TimelessGunItem)
             {
-                if(GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS)
+                TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
+                if(heldItem.getTag().getInt("CurrentFireMode") == 3 && Config.CLIENT.controls.burstPress.get())
                 {
-                    Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-                    if(gun.getGeneral().isAuto() && heldItem.getTag().getInt("CurrentFireMode") == 2)
+                    //player.sendMessage(new TranslationTextComponent("base"), UUID.randomUUID());
+                    if(this.shootErr)
                     {
-                        fire(player, heldItem);
+                        if(this.burstTracker > 0)
+                            this.burstTracker++;
+                        this.shootErr = false;
                     }
+                    CooldownTracker tracker = player.getCooldownTracker();
+                    if(this.burstTracker > 0)
+                    {
+                        //player.sendMessage(new TranslationTextComponent("Bursting"), UUID.randomUUID());
+                        if(!tracker.hasCooldown(heldItem.getItem())) {
+                            fire(player, heldItem);
+                            this.burstTracker--;
+                        }
+                        //LOGGER.log(Level.FATAL, "At least catching");
+                    }
+                    //else {
+                        //player.sendMessage(new TranslationTextComponent("End"), UUID.randomUUID());
+                        //this.clickUp = true;
+                    //}
+                    /*else if(this.burstTracker > 0 && heldItem.getTag().getInt("AmmoCount") > 0)
+                    {
+                        LOGGER.log(Level.FATAL, "Reset without second fire");
+                        //if(!tracker.hasCooldown(heldItem.getItem()))
+                        //{
+                            this.burstTracker = 0;
+                            this.clickUp = true;
+                            this.burstCooldown = gun.getGeneral().getBurstRate();
+                        //}
+                    }*/
+                    return;
                 }
-                /*else // Added by ClumsyAlien, used for resetting for Burst fire, due to firing access being out of the "Pre Event"
-
-                // Might bring this back, but currently this is overloading MC tick listeners and is a pain to utilize
-
+                else if(GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS)
                 {
-                    if (heldItem.getTag().get("BulletCounter") == null)
-                    {
-                        heldItem.getTag().putInt("BulletCounter",0);
+                    Gun gun = ((TimelessGunItem) heldItem.getItem()).getModifiedGun(heldItem);
+                    if (gun.getGeneral().isAuto() && heldItem.getTag().getInt("CurrentFireMode") == 2) {
+                        fire(player, heldItem);
+                        return;
                     }
-                    else if (heldItem.getTag().getInt("BulletCounter") != 0)
-                    {
-                        heldItem.getTag().remove("BulletCounter");
+                    //if(this.burstTracker == 0 || this.burstCooldown == 0) {
+                    if (heldItem.getTag().getInt("CurrentFireMode") == 3 && !Config.CLIENT.controls.burstPress.get() && !this.clickUp && this.burstCooldown == 0) {
+                        if (this.shootErr) {
+                            if (this.burstTracker > 0)
+                                this.burstTracker--;
+                            this.shootErr = false;
+                        }
+                        CooldownTracker tracker = player.getCooldownTracker();
+                        if (this.burstTracker < gun.getGeneral().getBurstCount()-1) {
+                            if (!tracker.hasCooldown(heldItem.getItem())) {
+                                fire(player, heldItem);
+                                this.burstTracker++;
+                            }
+                        } else if (heldItem.getTag().getInt("AmmoCount") > 0 && this.burstTracker > 0) {
+                            if (!tracker.hasCooldown(heldItem.getItem())) {
+                                this.burstTracker = 0;
+                                this.clickUp = true;
+                                this.burstCooldown = gun.getGeneral().getBurstRate();
+                            }
+                        }
+                        return;
                     }
-                }*/
+                    //}
+                }
+                else if(this.clickUp || GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_RELEASE)
+                {
+                    if(heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstTracker > 0) {
+                        this.burstCooldown = gunItem.getGun().getGeneral().getBurstRate();
+                    }
+                    this.burstTracker = 0;
+                    this.clickUp = false;
+                }
+                // CONTINUER FOR BURST. USING BURST TRACKER AS A REVERSE ITOR WHEN BURST IS ON PRESS MODE.
             }
         }
     }

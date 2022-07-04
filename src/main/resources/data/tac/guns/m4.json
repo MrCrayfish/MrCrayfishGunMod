@@ -2,6 +2,7 @@
   "general": {
     "auto": true,
     "rate": 2,
+    "burstRate": 16,
     "rateSelector": [
       0,
       1,
@@ -23,7 +24,7 @@
     "magFed": true,
     "maxAmmo": 30,
     "reloadMagTimer": 45,
-    "additionalReloadEmptyMagTimer": 20,
+    "additionalReloadEmptyMagTimer": 10,
     "maxAdditionalAmmoPerOC": [
       10,
       20,

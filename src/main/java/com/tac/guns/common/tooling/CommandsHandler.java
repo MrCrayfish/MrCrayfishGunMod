@@ -1,5 +1,6 @@
 package com.tac.guns.common.tooling;
 
+import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.common.Gun;
@@ -31,43 +32,30 @@ public class CommandsHandler
         // ---MANUAL, CURRENT SYSTEM FOR IMPLEMENTING DEFAULT HANDLERS--- ///
 
         // WEAPON EDITING TRACKER
-        instance.catGlobals.put(1, new HashMap<String, Object>());
-
-        /*for (Field field : ModItems.class.getDeclaredFields()) {
-            RegistryObject<?> object;
-            try {
-                object = (RegistryObject<?>) field.get(null);
-            } catch (ClassCastException | IllegalAccessException e) {
-                continue;
-            }
-            if (TimelessGunItem.class.isAssignableFrom(object.get().getClass()))
-            {
-                instance.catGlobals.get(1).put(field.getTagName().toLowerCase(Locale.ENGLISH), new HashMap<String, Object>());
-            }
-        }*/
-
+        instance.catGlobals.put(1, true);
         // WEAPON EDITING TRACKER   |   END
 
-        instance.catGlobals.put(2, new HashMap<String, Object>()); // GUI EDITOR
+        instance.catGlobals.put(2, true); // GUI EDITOR
 
+        instance.catGlobals.put(3, true); // SCOPE EDITOR
         // ---MANUAL, CURRENT SYSTEM FOR IMPLEMENTING DEFAULT HANDLERS   |   END--- ///
         return instance;
     }
 
     private CommandsHandler() {}
 
-    private HashMap<Integer, HashMap<String, Object>> catGlobals = new HashMap<>();
+    private HashMap<Integer, Boolean> catGlobals = new HashMap<>(); // NEED A BETTER SOLUTION THEN JUST OBJECT, DIRTY!
     private int catCurrentIndex = 0;
 
     public void setCatCurrentIndex(int catCurrentIndex) {this.catCurrentIndex = catCurrentIndex;}
     public int getCatCurrentIndex() {return this.catCurrentIndex;}
     public boolean catInGlobal(int index) {return catGlobals.containsKey(Integer.valueOf(index));}
-    public HashMap<String, Object> getCatGlobal(int i) {return catGlobals.get(i);}
-    public boolean putCatGlobals(int index, HashMap<String, Object> data)
+    //public HashMap<String, Object> getCatGlobal(int i) {return catGlobals.get(i);}
+    /*public boolean putCatGlobals(int index, HashMap<String, Object> data)
     {
         if(this.catGlobals.containsKey(index))
             return false;
         this.catGlobals.put(index, data);
         return true;
-    }
+    }*/
 }

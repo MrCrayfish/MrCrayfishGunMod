@@ -7,6 +7,10 @@
     {
       "item": "minecraft:iron_ingot",
       "count": 72
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 2
     }
   ]
 }

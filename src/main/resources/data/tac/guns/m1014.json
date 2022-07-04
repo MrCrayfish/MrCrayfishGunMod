@@ -14,7 +14,7 @@
     "weaponRecoilDuration": 0.975,
     "recoilDuration": 0.125,
     "alwaysSpread": true,
-    "spread": 6.5,
+    "spread": 8.5,
     "projectileAmount": 10,
     "weightKilo": 4.8
   },

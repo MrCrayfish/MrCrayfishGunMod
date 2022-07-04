@@ -41,7 +41,7 @@
     "ricochet": true
   },
   "sounds": {
-    "fire": "tac:item.mk14",
+    "fire": "tac:item.sks",
     "reload": "tac:item.pistol.reload",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.dmr_fire_s"

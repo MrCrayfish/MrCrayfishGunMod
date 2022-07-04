@@ -134,7 +134,7 @@ public class GunRenderingHandler {
         this.prevSprintTransition = this.sprintTransition;
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && mc.player.isSprinting() && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.SHOOTING) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING) && !AimingHandler.get().isAiming() && this.sprintCooldown == 0) {
+        if (mc.player != null && (mc.player.isSprinting() && !mc.player.isCrouching()) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.SHOOTING) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING) && !AimingHandler.get().isAiming() && this.sprintCooldown == 0) {
             if (this.sprintTransition < 5) {
                 if (Minecraft.getInstance().player != null) {
                     ItemStack heldItem = Minecraft.getInstance().player.getHeldItemMainhand();
@@ -376,7 +376,7 @@ public class GunRenderingHandler {
                 /* Creates the required offsets to position the scope into the middle of the screen. */
                 if (modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null) {
                     double viewFinderOffset = isScopeOffsetType || OptifineHelper.isShadersEnabled() ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset();
-                    if(scope.getAdditionalZoom() > 0)
+                    if(scope.getAdditionalZoom().getFovZoom() > 0)
                         viewFinderOffset = isScopeRenderType ? (isScopeOffsetType || OptifineHelper.isShadersEnabled() ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset()) : (isScopeOffsetType || OptifineHelper.isShadersEnabled() ? scope.getViewFinderOffsetSpecialDR() : scope.getViewFinderOffsetDR()); // switches between either, but either must be populated
 
                     //if (OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.735;
@@ -432,7 +432,7 @@ public class GunRenderingHandler {
                     double scopeJitterOffset = 0.8;
                     if (entity.isCrouching())
                         scopeJitterOffset *= 0.30;
-                    if (entity.isSprinting())
+                    if (entity.isSprinting() && !entity.isCrouching())
                         scopeJitterOffset *= 4;
                     if (entity.getMotion().getX() != 0.0 || entity.getMotion().getY() != 0.0 || entity.getMotion().getZ() != 0.0)
                         scopeJitterOffset *= 6.5;

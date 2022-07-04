@@ -3,14 +3,15 @@ package com.tac.guns.client.handler;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.common.ReloadTracker;
 import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageGunSound;
-import com.tac.guns.network.message.MessageReload;
-import com.tac.guns.network.message.MessageUnload;
+import com.tac.guns.network.message.*;
 import com.tac.guns.util.GunEnchantmentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -25,7 +26,13 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
+import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
+import sun.nio.ch.Net;
+
+import java.util.UUID;
+
+import static com.tac.guns.GunMod.LOGGER;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -225,10 +232,31 @@ public class ReloadHandler
                     this.setReloading(false);
                 }
             }
-
             this.updateReloadTimer(player);
+            PacketHandler.getPlayChannel().sendToServer(new MessageUpdateGunID());
         }
     }
+    private boolean isInGame()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.loadingGui != null)
+            return false;
+        if(mc.currentScreen != null)
+            return false;
+        if(!mc.mouseHelper.isMouseGrabbed())
+            return false;
+        return mc.isGameFocused();
+    }
+    /*@SubscribeEvent
+    public void onPlayerUpdate(TickEvent.PlayerTickEvent event)
+    {
+        if(!isInGame())
+            return;
+        PlayerEntity player = event.player;
+        if(player == null)
+            return;
+
+    }*/
 
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
@@ -238,10 +266,10 @@ public class ReloadHandler
         {
             return;
         }
-
         ItemStack stack = player.getHeldItemMainhand();
         if(KeyBinds.KEY_RELOAD.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS && stack.getItem() instanceof GunItem)
         {
+            PacketHandler.getPlayChannel().sendToServer(new MessageUpdateGunID());
             if(!SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
             {
                 this.setReloading(true);
@@ -253,6 +281,7 @@ public class ReloadHandler
         }
         if(KeyBinds.KEY_UNLOAD.isPressed() && event.getAction() == GLFW.GLFW_PRESS)
         {
+            PacketHandler.getPlayChannel().sendToServer(new MessageUpdateGunID());
             this.setReloading(false);
             PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
         }

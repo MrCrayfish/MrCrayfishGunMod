@@ -33,10 +33,10 @@
   "projectile": {
     "item": "tac:9mm_round",
     "visible": false,
-    "damage": 4.25,
+    "damage": 3.5,
     "size": 0.2,
-    "speed": 17.5,
-    "life": 4
+    "speed": 13.5,
+    "life": 5
   },
   "sounds": {
     "fire": "tac:item.fire_m92fs",

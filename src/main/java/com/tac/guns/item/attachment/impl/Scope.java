@@ -1,6 +1,9 @@
 package com.tac.guns.item.attachment.impl;
 
 import com.tac.guns.Config;
+import com.tac.guns.client.handler.AimingHandler;
+import com.tac.guns.client.handler.command.data.ScopeData;
+import com.tac.guns.common.Gun;
 import com.tac.guns.interfaces.IGunModifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -8,13 +11,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * An attachment class related to scopes. Scopes need to at least specify the additional zoom (or fov)
  * they provide and the y-offset to the center of the scope for them to render correctly. Use
- * {@link #create(float, double, double, IGunModifier...)} to create an get.
+ * {@link #create(ScopeZoomData[], double, double, String, IGunModifier...)} to create an get.
  * <p>
  * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class Scope extends Attachment
 {
-    private float additionalZoom;
+    //private float additionalZoom;
     private double centerOffset;
     private boolean stable = false;
     private double stabilityOffset = 0d;
@@ -24,14 +27,18 @@ public class Scope extends Attachment
     private double viewFinderOffsetDR;
     private double viewFinderOffsetSpecialDR;
 
-    private static boolean isDoubleRender = Config.COMMON.gameplay.scopeDoubleRender.get();
+    private ScopeZoomData[] zoomData;
 
-    private Scope(float additionalZoom, double centerOffset, double stabilityOffset, IGunModifier... modifier)
+    public String getTagName() {return tagName;}
+    public void setTagName(String tagName) {this.tagName = tagName;}
+    private String tagName;
+    private Scope(ScopeZoomData[] additionalZoom, double centerOffset, double stabilityOffset, String tagName, IGunModifier... modifier)
     {
         super(modifier);
-        this.additionalZoom = additionalZoom;
+        this.zoomData = additionalZoom;
         this.centerOffset = centerOffset;
         this.stabilityOffset = stabilityOffset;
+        this.tagName = tagName;
     }
 
     /**
@@ -83,9 +90,16 @@ public class Scope extends Attachment
      * @return the scopes additional zoom
      */
     @OnlyIn(Dist.CLIENT)
-    public float getAdditionalZoom()
+    public ScopeZoomData getAdditionalZoom()
     {
-        return this.additionalZoom;
+        if(this.zoomData == null || AimingHandler.get() == null)
+            return new ScopeZoomData(0,0); // Null, loader might attempt to hit scope data when aimed is detected before init
+        if(this.zoomData.length <= AimingHandler.get().getCurrentScopeZoomIndex())
+        {
+            AimingHandler.get().resetCurrentScopeZoomIndex();
+            return this.zoomData[AimingHandler.get().getCurrentScopeZoomIndex()];//new ScopeZoomData(0, 0); // Skip Null
+        }
+        return this.zoomData[AimingHandler.get().getCurrentScopeZoomIndex()];
     }
 
     /**
@@ -159,8 +173,8 @@ public class Scope extends Attachment
      * @param modifiers      an array of gun modifiers
      * @return a scope get
      */
-    public static Scope create(float additionalZoom, double centerOffset, double stabilityOffset, IGunModifier... modifiers)
+    public static Scope create(ScopeZoomData[] additionalZoom, double centerOffset, double stabilityOffset, String tagName, IGunModifier... modifiers)
     {
-        return new Scope(additionalZoom, centerOffset, stabilityOffset, modifiers);
+        return new Scope(additionalZoom, centerOffset, stabilityOffset, tagName, modifiers);
     }
 }

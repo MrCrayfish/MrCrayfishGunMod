@@ -172,7 +172,7 @@ public class ReloadTracker
                 if(currentAmmo == 0 && !this.gun.getReloads().isOpenBolt())
                 {
                     if(ammoAmount < amount) {
-                        tag.putInt("AmmoCount", ammoAmount);
+                        tag.putInt("AmmoCount", currentAmmo+ammoAmount);
                         this.shrinkFromAmmoPool(ammoStacks, ammoAmount);
                     }
                     else {
@@ -182,7 +182,7 @@ public class ReloadTracker
                 }
                 else {
                     if(ammoAmount < amount) {
-                        tag.putInt("AmmoCount", ammoAmount);
+                        tag.putInt("AmmoCount", currentAmmo+ammoAmount);
                         this.shrinkFromAmmoPool(ammoStacks, ammoAmount);
                     }
                     else {

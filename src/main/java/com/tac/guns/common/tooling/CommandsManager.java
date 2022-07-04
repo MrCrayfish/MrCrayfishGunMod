@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tac.guns.client.handler.command.GunEditor;
+import com.tac.guns.client.handler.command.ScopeEditor;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.MessageArgument;
@@ -93,7 +94,7 @@ public class CommandsManager
                                     }
                                     catch (Exception e)
                                     {
-                                        sendMessage(commandContext,  "FAILED TO EXPORT, THIS IS A GENERIC ERROR, REPORT WITH A LOG PLEASE.\n" + GunEditor.formattedModeContext());
+                                        sendMessage(commandContext,  "FAILED TO EXPORT WEAPON DATA, THIS IS A GENERIC ERROR, REPORT WITH A LOG PLEASE.\n" + GunEditor.formattedModeContext());
                                         return 1;
                                     }
                                     sendMessage(commandContext,  "Exported all weapon data, with adjustments!");
@@ -112,7 +113,35 @@ public class CommandsManager
                         sendMessage(commandContext,  "Set Category to a TaC Default | Weapon |");
                         return 1;
                 }))
-
+                .then(Commands.literal("tac_scope_category")
+                        .then(Commands.literal("export")
+                                .executes(commandContext ->
+                                {
+                                    CommandsHandler.get().setCatCurrentIndex(2);
+                                    try {
+                                        ScopeEditor.get().exportData();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        sendMessage(commandContext,  "FAILED TO EXPORT SCOPE DATA, THIS IS A GENERIC ERROR, REPORT WITH A LOG PLEASE.");
+                                        return 1;
+                                    }
+                                    sendMessage(commandContext,  "Exported all scope data, with adjustments!");
+                                    return 1;
+                                }))
+                        .then(Commands.literal("reset")
+                                .executes(commandContext ->
+                                {
+                                    CommandsHandler.get().setCatCurrentIndex(2);
+                                    ScopeEditor.get().resetData();
+                                    sendMessage(commandContext,  "All modified data for this scope has been reset!");
+                                    return 1;
+                                }))
+                        .executes(commandContext -> {
+                            CommandsHandler.get().setCatCurrentIndex(2);
+                            sendMessage(commandContext,  "Set Category to a TaC Default | Scope |");
+                            return 1;
+                        }))
                 /*.then(Commands.literal("tac_colorBench_category")
                         .executes(commandContext -> {
                             CommandsHandler.get().setCatCurrentIndex(2);

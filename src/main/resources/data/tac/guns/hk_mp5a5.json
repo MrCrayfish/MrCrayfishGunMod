@@ -2,10 +2,12 @@
   "general": {
     "auto": true,
     "rate": 2,
+    "burstRate": 12,
     "rateSelector": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "gripType": "tac:two_handed_ak47",
     "recoilAngle": 2.375,
@@ -34,7 +36,7 @@
   "projectile": {
     "item": "tac:9mm_round",
     "visible": true,
-    "damage": 4.25,
+    "damage": 4.5,
     "size": 0.1,
     "speed": 25.5,
     "life": 4,

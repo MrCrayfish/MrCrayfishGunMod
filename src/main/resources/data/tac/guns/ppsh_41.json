@@ -30,7 +30,7 @@
   "projectile": {
     "item": "tac:762x25",
     "visible": false,
-    "damage": 2.75,
+    "damage": 3.25,
     "size": 0.2,
     "speed": 28.5,
     "life": 3

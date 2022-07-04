@@ -19,17 +19,17 @@
   },
   "reloads": {
     "magFed": true,
-    "maxAmmo": 20,
-    "reloadMagTimer": 28,
+    "maxAmmo": 32,
+    "reloadMagTimer": 26,
     "additionalReloadEmptyMagTimer": 11,
-    "maxAdditionalAmmoPerOC": [10, 15, 20],
+    "maxAdditionalAmmoPerOC": [0, 0, 0],
     "preReloadPauseTicks": 16,
     "openBolt": true
   },
   "projectile": {
     "item": "tac:9mm_round",
     "visible": false,
-    "damage": 2.0,
+    "damage": 3.0,
     "size": 0.2,
     "speed": 16.5,
     "life": 3
