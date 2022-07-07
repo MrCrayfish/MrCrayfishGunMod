@@ -6,6 +6,8 @@ import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.item.attachment.IAttachment;
@@ -34,12 +36,23 @@ public class EotechNSightModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay) {
         matrixStack.push();
+        /*if (Config.COMMON.gameplay.redDotSquish2D.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+            if(AimingHandler.get().getNormalisedAdsProgress() > 0.5) {
+                double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
+                double zScale = 0.05D + 0.95D * (1.0D - transition);
+                matrixStack.scale(1.0F, 1.0F, (float) zScale);
+            }
+        }*/
         if (Config.COMMON.gameplay.redDotSquish2D.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
-            double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
+            double prog = 0;
+            if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
+                prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;
+            }
+            double transition = 1.0D - Math.pow(1.0D - prog, 2.0D);
             double zScale = 0.05D + 0.95D * (1.0D - transition);
-            matrixStack.scale(1.0F, 1.0F, (float)zScale);
-        }
+            matrixStack.scale(1.0F, 1.0F, (float) zScale);
 
+        }
         matrixStack.translate(0, 0.055, 0);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
@@ -49,20 +62,21 @@ public class EotechNSightModel implements IOverrideModel
         matrixStack.translate(0, 0.006, 0);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
+            ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "eotechn" ? new ScopeData("") : ScopeEditor.get().getScopeData();
             matrixStack.push();
             {
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(-size / 2, 0.975 * 0.0625, 0.075 * 0.0625);
+                matrixStack.translate(-size / 2, (0.975 + 0.3995025 + scopeData.getReticleYMod()) * 0.0625, (0.075 + scopeData.getReticleZMod()) * 0.0625);
 
                 IVertexBuilder builder;
 
                 double invertProgress = (1.0 - AimingHandler.get().getNormalisedAdsProgress());
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
-                double scale = 4.5;
+                double scale = 4.5 -0.79499936 + scopeData.getReticleSizeMod();
                 matrixStack.translate(size / 2, size / 2, 0);
                 matrixStack.translate(-(size / scale) / 2, -(size / scale) / 2, 0);
                 matrixStack.translate(0, 0, 0.0001);
