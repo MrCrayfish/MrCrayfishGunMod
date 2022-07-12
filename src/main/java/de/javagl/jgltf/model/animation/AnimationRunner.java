@@ -27,7 +27,6 @@
 package de.javagl.jgltf.model.animation;
 
 import java.util.Objects;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -37,7 +36,7 @@ import java.util.concurrent.ThreadFactory;
  */
 public final class AnimationRunner
 {
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(5, new ThreadFactory() {
+    public static final ExecutorService executorService = Executors.newFixedThreadPool(5, new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {
             return new Thread(r);

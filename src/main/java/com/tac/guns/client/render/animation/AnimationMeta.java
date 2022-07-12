@@ -13,4 +13,7 @@ public class AnimationMeta {
         return resourceLocation;
     }
 
+    public boolean equals(AnimationMeta meta){
+        return meta.resourceLocation.equals(resourceLocation);
+    }
 }
