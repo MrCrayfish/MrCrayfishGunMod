@@ -1,16 +1,9 @@
 package com.tac.guns.network.message;
 
-import com.google.common.collect.ImmutableMap;
-import com.tac.guns.client.network.ClientPlayHandler;
-import com.tac.guns.common.CustomGun;
-import com.tac.guns.common.CustomGunLoader;
-import com.tac.guns.common.Gun;
 import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.common.network.ServerPlayHandler;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.commons.lang3.Validate;
 
@@ -21,7 +14,9 @@ import java.util.function.Supplier;
  */
 public class MessageUpdateGunID implements IMessage
 {
-    public MessageUpdateGunID() {}
+    private boolean regenerate;
+    public MessageUpdateGunID(boolean regenerate) {this.regenerate = regenerate;}
+    public MessageUpdateGunID(){this.regenerate=false;}
 
     @Override
     public void encode(PacketBuffer buffer)
@@ -41,7 +36,7 @@ public class MessageUpdateGunID implements IMessage
                 try
                 {
                     Validate.notNull(NetworkGunManager.get());
-                    ServerPlayHandler.handleGunID(player);
+                    ServerPlayHandler.handleGunID(player, regenerate);
                 }
                 catch (Exception e)
                 {

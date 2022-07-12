@@ -343,5 +343,11 @@
       "sounds": [
          { "name": "tac:item/cock" }
       ]
+   },
+   "animation.hk416_a5_reload_empty": {
+      "subtitle": "animation.hk416_a5_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/hk416_a5_reload_empty"}
+      ]
    }
 }

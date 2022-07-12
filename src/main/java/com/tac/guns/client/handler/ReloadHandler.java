@@ -3,13 +3,9 @@ package com.tac.guns.client.handler;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
-import com.tac.guns.common.NetworkGunManager;
-import com.tac.guns.common.ReloadTracker;
 import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
-import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
-import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.*;
 import com.tac.guns.util.GunEnchantmentHelper;
@@ -18,21 +14,13 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
-import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
-import sun.nio.ch.Net;
 
-import java.util.UUID;
-
-import static com.tac.guns.GunMod.LOGGER;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
