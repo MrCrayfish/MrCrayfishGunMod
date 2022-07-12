@@ -11,7 +11,9 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.render.IHeldAnimation;
+import com.tac.guns.client.render.animation.Animations;
 import com.tac.guns.client.render.animation.GunAnimationController;
+import com.tac.guns.client.render.animation.PistalAnimationController;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -98,7 +100,7 @@ public class GunRenderingHandler {
     private Set<Integer> entityIdForDrawnMuzzleFlash = new HashSet<>();
     private Map<Integer, Float> entityIdToRandomValue = new HashMap<>();
 
-    private int sprintTransition;
+    public int sprintTransition;
     private int prevSprintTransition;
     private int sprintCooldown;
 
@@ -140,7 +142,18 @@ public class GunRenderingHandler {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && (mc.player.isSprinting() && !mc.player.isCrouching()) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.SHOOTING) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING) && !AimingHandler.get().isAiming() && this.sprintCooldown == 0) {
             if (this.sprintTransition < 5) {
-                this.sprintTransition++;
+                if (Minecraft.getInstance().player != null) {
+                    ItemStack heldItem = Minecraft.getInstance().player.getHeldItemMainhand();
+                    if(heldItem.getItem() instanceof GunItem) {
+                        GunItem modifiedGun = (GunItem) heldItem.getItem();
+                        GunAnimationController controller = GunAnimationController.fromItem(modifiedGun.getItem());
+                        if(controller == null ||
+                                (modifiedGun.getGun().getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation() && !controller.isAnimationRunning()))
+                        {
+                            this.sprintTransition++;
+                        }
+                    }
+                }
             }
         } else if (this.sprintTransition > 0) {
             this.sprintTransition--;
@@ -178,7 +191,13 @@ public class GunRenderingHandler {
     @SubscribeEvent
     public void onGunReload(GunReloadEvent.Post event) {
         GunAnimationController controller = GunAnimationController.fromItem(event.getStack().getItem());
-        if(controller!=null) controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL);
+        if(controller!=null) {
+            if(Gun.hasAmmo(event.getStack())) {
+                controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL);
+            }else {
+                controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
+            }
+        }
     }
 
     @SubscribeEvent
@@ -247,7 +266,8 @@ public class GunRenderingHandler {
     @SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
-        boolean isAnimated = GunAnimationController.fromItem(event.getItemStack().getItem()) != null;
+        GunAnimationController controller = GunAnimationController.fromItem(event.getItemStack().getItem());
+        boolean isAnimated = controller != null;
         MatrixStack matrixStack = event.getMatrixStack();
 
         boolean right = Minecraft.getInstance().gameSettings.mainHand == HandSide.RIGHT ? event.getHand() == Hand.MAIN_HAND : event.getHand() == Hand.OFF_HAND;
@@ -276,7 +296,6 @@ public class GunRenderingHandler {
             float cameraYaw = MathHelper.lerp(event.getPartialTicks(), playerentity.prevCameraYaw, playerentity.cameraYaw);
 
             /* Reverses the original bobbing rotations and translations so it can be controlled */
-
             matrixStack.rotate(Vector3f.XP.rotationDegrees(-(Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F)));
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(-(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 3.0F)));
             matrixStack.translate((double) -(MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F), (double) -(-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)), 0.0D);
@@ -463,7 +482,7 @@ public class GunRenderingHandler {
         IHeldAnimation pose = modifiedGun.getGeneral().getGripType().getHeldAnimation();
         if(pose!=null) {
             if(!isAnimated) matrixStack.translate(-0.56, 0.52, 0.72);
-            pose.renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, matrixStack, event.getBuffers(), event.getLight(), event.getPartialTicks());
+            if(!isAnimated) pose.renderFirstPersonArms(Minecraft.getInstance().player, hand, heldItem, matrixStack, event.getBuffers(), event.getLight(), event.getPartialTicks());
         }
         matrixStack.pop();
 
@@ -475,24 +494,12 @@ public class GunRenderingHandler {
     }
     private void applySprintingTransforms(GunItem modifiedGun, HandSide hand, MatrixStack matrixStack, float partialTicks)
     {
-        GunAnimationController controller = GunAnimationController.fromItem(modifiedGun.getItem());
-        if(controller == null)
-        {
-            float leftHanded = hand == HandSide.LEFT ? -1 : 1;
-            float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
-            transition = (float) Math.sin((transition * Math.PI) / 2);
-            matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-25F * transition));
-        }
-        else if (modifiedGun.getGun().getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation() && !controller.isAnimationRunning()) {
-            float leftHanded = hand == HandSide.LEFT ? -1 : 1;
-            float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
-            transition = (float) Math.sin((transition * Math.PI) / 2);
-            matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-25F * transition));
-        }
+        float leftHanded = hand == HandSide.LEFT ? -1 : 1;
+        float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
+        transition = (float) Math.sin((transition * Math.PI) / 2);
+        matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-25F * transition));
     }
 
     private void applyReloadTransforms(MatrixStack matrixStack, HandSide hand, float partialTicks, ItemStack modifiedGun) {
@@ -856,7 +863,15 @@ public class GunRenderingHandler {
                         if (positioned != null) {
                             matrixStack.push();
                             GunAnimationController controller = GunAnimationController.fromItem(stack.getItem());
-                            if(controller!=null) controller.applyAttachmentsTransform(stack, transformType, entity, matrixStack);
+                            if(controller!=null){
+                                if(type!=null && type.equals(IAttachment.Type.PISTOL_SCOPE)){
+                                    if(controller instanceof PistalAnimationController) {
+                                        PistalAnimationController pcontroller = (PistalAnimationController) controller;
+                                        controller.applyTransform(stack,pcontroller.getSlideNodeIndex(),transformType,entity,matrixStack);
+                                    }
+                                }else
+                                    controller.applyAttachmentsTransform(stack, transformType, entity, matrixStack);
+                            }
                             double displayX = positioned.getXOffset() * 0.0625;
                             double displayY = positioned.getYOffset() * 0.0625;
                             double displayZ = positioned.getZOffset() * 0.0625;

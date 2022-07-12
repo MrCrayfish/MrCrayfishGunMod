@@ -124,11 +124,17 @@ public final class AnimationManager
      * 
      * @return The animation time
      */
-    float getCurrentTimeS()
+    public float getCurrentTimeS()
     {
         long timeNs = currentNs - startNs;
         float timeS = timeNs * 1e-9f;
         return timeS;
+    }
+
+    public void setCurrentTimeS(float timeS)
+    {
+        long timeNs =(long)(timeS * 1e9f);
+        currentNs = startNs + timeNs;
     }
     
     /**

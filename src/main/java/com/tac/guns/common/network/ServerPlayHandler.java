@@ -34,7 +34,6 @@ import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.InventoryUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
@@ -71,7 +70,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static com.tac.guns.GunMod.LOGGER;
 import static net.minecraft.entity.ai.attributes.Attributes.MOVEMENT_SPEED;
 
 
@@ -663,13 +661,13 @@ public class ServerPlayHandler
         //player.sendStatusMessage(new TranslationTextComponent("Speed is: " + player.getAttribute(MOVEMENT_SPEED).getValue()) ,true);
     }
 
-    public static void handleGunID(ServerPlayerEntity player)
+    public static void handleGunID(ServerPlayerEntity player, boolean regenerate)
     {
         if(!player.isAlive())
             return;
         if(NetworkGunManager.get() != null && NetworkGunManager.get().StackIds != null) {
             if (player.getHeldItemMainhand().getItem() instanceof TimelessGunItem && player.getHeldItemMainhand().getTag() != null) {
-                if (!player.getHeldItemMainhand().getTag().contains("ID")) {
+                if (regenerate||!player.getHeldItemMainhand().getTag().contains("ID")) {
                     UUID id;
                     while (true) {
                         LOGGER.log(Level.INFO, "NEW UUID GEN FOR TAC GUN");

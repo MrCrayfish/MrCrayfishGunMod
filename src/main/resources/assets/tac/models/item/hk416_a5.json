@@ -12285,10 +12285,11 @@
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"translation": [-4, 2.25, -5.25]
+			"translation": [-5, 2.75, -4.5]
 		},
 		"firstperson_lefthand": {
-			"translation": [-4, 2.25, -5.25]
+			"rotation": [0, 0, 5],
+			"translation": [-5, 2.75, -4.25]
 		},
 		"ground": {
 			"translation": [0, 3, 0],

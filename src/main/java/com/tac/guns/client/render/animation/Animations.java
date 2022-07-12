@@ -119,7 +119,7 @@ public class Animations {
         return initial;
     }
 
-    private static AnimationRunner getAnimationRunner(ResourceLocation resourceLocation){
+    public static AnimationRunner getAnimationRunner(ResourceLocation resourceLocation){
         return animationRunnerMap.get(resourceLocation.toString());
     }
 
