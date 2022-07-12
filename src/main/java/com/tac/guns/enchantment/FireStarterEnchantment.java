@@ -1,6 +1,7 @@
 package com.tac.guns.enchantment;
 
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -17,7 +18,10 @@ public class FireStarterEnchantment extends GunEnchantment
     {
         return 15;
     }
-
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack) {
+        return false;
+    }
     @Override
     public int getMaxEnchantability(int level)
     {

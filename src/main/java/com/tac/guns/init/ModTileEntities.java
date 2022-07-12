@@ -2,6 +2,7 @@ package com.tac.guns.init;
 
 import com.tac.guns.Reference;
 import com.tac.guns.tileentity.FlashLightSource;
+import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -20,6 +21,8 @@ public class ModTileEntities
     public static final DeferredRegister<TileEntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
 
     public static final RegistryObject<TileEntityType<WorkbenchTileEntity>> WORKBENCH = register("workbench", WorkbenchTileEntity::new, () -> new Block[]{ModBlocks.WORKBENCH.get()});
+
+    public static final RegistryObject<TileEntityType<UpgradeBenchTileEntity>> UPGRADE_BENCH = register("upgrade_bench", UpgradeBenchTileEntity::new, () -> new Block[]{ModBlocks.UPGRADE_BENCH.get()});
     public static final RegistryObject<TileEntityType<FlashLightSource>> LIGHT_SOURCE = register("flashlight",FlashLightSource::new, () -> new Block[]{ModBlocks.FLASHLIGHT_BLOCK.get()});
 
     private static <T extends TileEntity> RegistryObject<TileEntityType<T>> register(String id, Supplier<T> factoryIn, Supplier<Block[]> validBlocksSupplier)

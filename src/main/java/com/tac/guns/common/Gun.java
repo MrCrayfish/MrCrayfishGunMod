@@ -1009,10 +1009,12 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     public static class Modules implements INBTSerializable<CompoundNBT>
     {
         @Optional
+        @Nullable
         private Zoom zoom = new Zoom();
         @Optional
         private Attachments attachments = new Attachments();
 
+        @Nullable
         public Zoom getZoom()
         {
             return this.zoom.copy();

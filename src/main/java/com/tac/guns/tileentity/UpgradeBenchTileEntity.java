@@ -1,0 +1,79 @@
+package com.tac.guns.tileentity;
+
+import com.tac.guns.common.container.UpgradeBenchContainer;
+import com.tac.guns.common.container.WorkbenchContainer;
+import com.tac.guns.init.ModTileEntities;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.tileentity.inventory.IStorageBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.DyeItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.client.model.obj.OBJModel;
+
+import javax.annotation.Nullable;
+
+/**
+ * Author: Forked from MrCrayfish, continued by Timeless devs
+ */
+public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorageBlock
+{
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+
+    public UpgradeBenchTileEntity()
+    {
+        super(ModTileEntities.UPGRADE_BENCH.get());
+    }
+
+    @Override
+    public NonNullList<ItemStack> getInventory()
+    {
+        return this.inventory;
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT compound)
+    {
+        ItemStackHelper.saveAllItems(compound, this.inventory);
+        return super.write(compound);
+    }
+
+    @Override
+    public void read(BlockState state, CompoundNBT compound)
+    {
+        super.read(state, compound);
+        ItemStackHelper.loadAllItems(compound, this.inventory);
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack)
+    {
+        return index != 0 || (stack.getItem() instanceof TimelessGunItem && this.inventory.get(index).getCount() < 1);
+    }
+
+    @Override
+    public boolean isUsableByPlayer(PlayerEntity player)
+    {
+        return this.world.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5, this.pos.getY() + 0.5, this.pos.getZ() + 0.5) <= 64.0;
+    }
+
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        return new TranslationTextComponent("container.tac.upgradeBench");
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity)
+    {
+        return new UpgradeBenchContainer(windowId, playerInventory, this);
+    }
+}

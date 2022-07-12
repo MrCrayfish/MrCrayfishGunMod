@@ -113,7 +113,7 @@ public class TimelessGunItem extends GunItem
         if(tagCompound != null)
         {
             GunItem gun = (GunItem)stack.getItem();
-            float speed = 0.1f / (1+((gun.getModifiedGun(stack).getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(stack)) + GunModifierHelper.getAdditionalWeaponWeight(stack)) * 0.0275f));
+            float speed = 0.1f / (1+((gun.getGun().getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(stack)) + GunModifierHelper.getAdditionalWeaponWeight(stack)-GunEnchantmentHelper.getWeightModifier(stack)) * 0.0275f));
             speed = Math.max(Math.min(speed, 0.095F), 0.075F);
             if(speed > 0.09)
                 tooltip.add((new TranslationTextComponent("info.tac.lightWeightGun", new TranslationTextComponent(-((int)((0.1 - speed)*1000))+"%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_AQUA)));

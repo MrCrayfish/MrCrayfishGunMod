@@ -40,7 +40,29 @@ public class GunEnchantmentHelper
     public static double getAimDownSightSpeed(ItemStack weapon)
     {
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.LIGHTWEIGHT.get(), weapon);
-        return level > 0 ? 1.5 : 1.0;
+        if(level > 0)
+        {
+            return 1.0 + (0.075 * level);
+        }
+        return 1;
+    }
+    public static float getSpreadModifier(ItemStack weapon)
+    {
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RIFLING.get(), weapon);
+        if(level > 0)
+        {
+            return 1.0f - (0.0333f * level);
+        }
+        return 1f;
+    }
+    public static float getWeightModifier(ItemStack weapon)
+    {
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.LIGHTWEIGHT.get(), weapon);
+        if(level > 0)
+        {
+            return 0.4f * level;
+        }
+        return 0f;
     }
 
     public static int getAmmoCapacity(ItemStack weapon, Gun modifiedGun)
@@ -53,7 +75,7 @@ public class GunEnchantmentHelper
         }
         else if(level > 0)
         {
-            capacity += (capacity / 2) * level;
+            capacity += (capacity / 2) * level-3;
         }
         return capacity;
     }
@@ -63,7 +85,7 @@ public class GunEnchantmentHelper
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ACCELERATOR.get(), weapon);
         if(level > 0)
         {
-            return 1.0 + 0.15 * level;
+            return 1.0 + 0.075 * level;
         }
         return 1.0;
     }
@@ -73,11 +95,19 @@ public class GunEnchantmentHelper
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.ACCELERATOR.get(), weapon);
         if(level > 0)
         {
-            return damage + damage * (0.1F * level);
+            return damage + damage * (0.0875F * level);
         }
         return damage;
     }
-
+    public static float getBufferedRecoil(ItemStack weapon)
+    {
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.BUFFERED.get(), weapon);
+        if(level > 0)
+        {
+            return (1-(0.03F * level));
+        }
+        return 1;
+    }
     public static float getPuncturingChance(ItemStack weapon)
     {
         int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.PUNCTURING.get(), weapon);

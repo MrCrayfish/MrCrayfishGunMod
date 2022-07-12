@@ -3,6 +3,7 @@ package com.tac.guns.init;
 import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
 import com.tac.guns.block.FlashLightBlock;
+import com.tac.guns.block.UpgradeBenchBlock;
 import com.tac.guns.block.WorkbenchBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,11 +31,19 @@ public class ModBlocks
 
     public static final RegistryObject<Block> WORKBENCH = register("workbench", () -> new WorkbenchBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1.5F))
     {
-        @Override
+        /*@Override
         public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state)
         {
-            Block.spawnAsEntity((World) worldIn,pos,WORKBENCH.get().getItem(worldIn,pos,state));
-        }
+            Block.spawnAsEntity((World) worldIn,pos,this.getBlock().getItem(worldIn,pos,state));
+        }*/
+    },true);
+    public static final RegistryObject<Block> UPGRADE_BENCH = register("upgrade_bench", () -> new UpgradeBenchBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(3F))
+    {
+        /*@Override
+        public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state)
+        {
+            Block.spawnAsEntity((World) worldIn,pos, this.getBlock().getItem(worldIn,pos,state));
+        }*/
     },true);
     public static final RegistryObject<Block> FLASHLIGHT_BLOCK = register("flashlight", () -> new FlashLightBlock(),false);
 

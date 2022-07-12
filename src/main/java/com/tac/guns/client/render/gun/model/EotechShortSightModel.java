@@ -54,18 +54,34 @@ public class EotechShortSightModel implements IOverrideModel
                 matrixStack.scale(1.0F, 1.0F, (float) zScale);
 
         }
+        else if (transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+            double prog = 0;
+            if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
+                prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 1.1875;
+                double transition = 1.0D - Math.pow(1.0D - prog, 2.0D);
+                double zScale = 0.05D + 0.95D * (1.0D - transition);
+                matrixStack.scale(1.0F, 1.0F, (float) zScale);
+            }
+            else {
+                double transition = 1.0D - Math.pow(1.0D - prog, 2.0D);
+                double zScale = 0.05D + 0.95D * (1.0D - transition);
+                matrixStack.scale(1.0F, 1.0F, (float) zScale);
+            }
+
+        }
         int glassGlowColor = RenderUtil.getItemStackColor(stack, parent, IAttachment.Type.SCOPE_GLASS_COLOR, 2);
         float red = ((glassGlowColor >> 16) & 0xFF) / 255F;
         float green = ((glassGlowColor >> 8) & 0xFF) / 255F;
         float blue = ((glassGlowColor >> 0) & 0xFF) / 255F;
 
-        matrixStack.translate(0, 0.055, 0);
+        matrixStack.translate(0, 0.055, -0.15);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
         matrixStack.translate(0, -0.049, 0);
         matrixStack.pop();
-        matrixStack.translate(0, 0.006, 0);
+        matrixStack.push();
+        matrixStack.translate(0, 0.006, -0.15);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "eotechshort" ? new ScopeData("") : ScopeEditor.get().getScopeData();
@@ -84,7 +100,7 @@ public class EotechShortSightModel implements IOverrideModel
 
                 //matrixStack.translate(0, 0, -0.2);
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(-size / 2, (1.38 + scopeData.getReticleYMod()+0.47275) * 0.0625, (0.075 + scopeData.getReticleZMod()) * 0.0625);
+                matrixStack.translate(-size / 2, (1.38 + scopeData.getReticleYMod()+0.47275) * 0.0625, (0.075 + scopeData.getReticleZMod() + (!Config.COMMON.gameplay.redDotSquish2D.get() ? 1.2625 : 0)) * 0.0625);
                 IVertexBuilder builder;
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
@@ -156,5 +172,6 @@ public class EotechShortSightModel implements IOverrideModel
             }
             matrixStack.pop();
         }
+        matrixStack.pop();
     }
 }
