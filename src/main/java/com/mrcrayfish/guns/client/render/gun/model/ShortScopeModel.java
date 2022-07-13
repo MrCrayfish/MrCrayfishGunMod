@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -40,9 +41,6 @@ public class ShortScopeModel implements IOverrideModel
             poseStack.scale(1.0F, 1.0F, (float) zScale);
         }
 
-        BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
-        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, GunModel.wrap(bakedModel));
-
         if(transformType.firstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             poseStack.pushPose();
@@ -52,17 +50,6 @@ public class ShortScopeModel implements IOverrideModel
 
                 float size = 1.4F / 16.0F;
                 poseStack.translate(-size / 2, 0.85 * 0.0625, -0.3 * 0.0625);
-
-                VertexConsumer builder;
-
-                if(!OptifineHelper.isShadersEnabled())
-                {
-                    builder = renderTypeBuffer.getBuffer(RenderType.entityTranslucent(VIGNETTE));
-                    builder.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(1.0F, 1.0F).overlayCoords(overlay).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-                    builder.vertex(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 1.0F).overlayCoords(overlay).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-                    builder.vertex(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 0.0F).overlayCoords(overlay).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-                    builder.vertex(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(1.0F, 0.0F).overlayCoords(overlay).uv2(light).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
-                }
 
                 double invertProgress = (1.0 - AimingHandler.get().getNormalisedAdsProgress());
                 poseStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
@@ -83,6 +70,7 @@ public class ShortScopeModel implements IOverrideModel
                 float green = ((reticleGlowColor >> 8) & 0xFF) / 255F;
                 float blue = ((reticleGlowColor >> 0) & 0xFF) / 255F;
                 float alpha = (float) AimingHandler.get().getNormalisedAdsProgress();
+                VertexConsumer builder;
 
                 if(!OptifineHelper.isShadersEnabled())
                 {
@@ -103,5 +91,8 @@ public class ShortScopeModel implements IOverrideModel
             }
             poseStack.popPose();
         }
+
+        BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, GunModel.wrap(bakedModel));
     }
 }
