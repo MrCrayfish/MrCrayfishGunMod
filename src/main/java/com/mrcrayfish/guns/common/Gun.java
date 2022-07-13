@@ -2,9 +2,11 @@ package com.mrcrayfish.guns.common;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
+import com.mrcrayfish.guns.compat.BackpackHelper;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
@@ -1336,25 +1338,30 @@ public final class Gun implements INBTSerializable<CompoundTag>
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static ItemStack findAmmo(Player player, ResourceLocation id)
+    public static AmmoContext findAmmo(Player player, ResourceLocation id)
     {
         if(player.isCreative())
         {
             Item item = ForgeRegistries.ITEMS.getValue(id);
-            return item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
+            ItemStack ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
+            return new AmmoContext(ammo, null);
         }
         for(int i = 0; i < player.getInventory().getContainerSize(); ++i)
         {
             ItemStack stack = player.getInventory().getItem(i);
             if(isAmmo(stack, id))
             {
-                return stack;
+                return new AmmoContext(stack, player.getInventory());
             }
         }
-        return ItemStack.EMPTY;
+        if(GunMod.backpackedLoaded)
+        {
+            return BackpackHelper.findAmmo(player, id);
+        }
+        return AmmoContext.NONE;
     }
 
-    private static boolean isAmmo(ItemStack stack, ResourceLocation id)
+    public static boolean isAmmo(ItemStack stack, ResourceLocation id)
     {
         return stack != null && stack.getItem().getRegistryName().equals(id);
     }

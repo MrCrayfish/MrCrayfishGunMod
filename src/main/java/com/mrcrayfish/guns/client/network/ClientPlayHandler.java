@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client.network;
 
+import com.mojang.math.Vector3d;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.BulletTrail;
 import com.mrcrayfish.guns.client.CustomGunManager;
@@ -17,6 +18,7 @@ import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.network.message.MessageStunGrenade;
 import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
 import com.mrcrayfish.guns.particles.BulletHoleData;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -144,15 +146,26 @@ public class ClientPlayHandler
             double holeZ = message.getZ() + 0.005 * message.getFace().getStepZ();
             double distance = Math.sqrt(mc.player.distanceToSqr(message.getX(), message.getY(), message.getZ()));
             world.addParticle(new BulletHoleData(message.getFace(), message.getPos()), false, holeX, holeY, holeZ, 0, 0, 0);
-            if(distance < 16.0)
+            if(distance < Config.CLIENT.particle.impactParticleDistance.get())
             {
-                world.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
+                for(int i = 0; i < 4; i++)
+                {
+                    Vec3i normal = message.getFace().getNormal();
+                    Vec3 motion = new Vec3(normal.getX(), normal.getY(), normal.getZ());
+                    motion.add(getRandomDir(world.random), getRandomDir(world.random), getRandomDir(world.random));
+                    world.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), motion.x, motion.y, motion.z);
+                }
             }
-            if(distance < 32.0)
+            if(distance <= Config.CLIENT.sounds.impactSoundDistance.get())
             {
-                world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.75F, 2.0F, false);
+                world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 2.0F, 2.0F, false);
             }
         }
+    }
+
+    private static double getRandomDir(Random random)
+    {
+        return -0.25 + random.nextDouble() * 0.5;
     }
 
     public static void handleProjectileHitEntity(MessageProjectileHitEntity message)

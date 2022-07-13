@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item.Properties;
  *
  * Author: MrCrayfish
  */
-public class StockItem extends Item implements IStock, IColored
+public class StockItem extends AttachmentItem implements IStock, IColored
 {
     private final Stock stock;
     private final boolean colored;

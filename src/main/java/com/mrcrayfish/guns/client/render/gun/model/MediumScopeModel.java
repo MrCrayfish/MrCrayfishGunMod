@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.GunModel;
 import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -15,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -41,8 +43,9 @@ public class MediumScopeModel implements IOverrideModel
             poseStack.scale(1.0F, 1.0F, (float) zScale);
         }
 
-        RenderUtil.renderModel(stack, parent, poseStack, renderTypeBuffer, light, overlay);
-        
+        BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, GunModel.wrap(bakedModel));
+
         if(transformType.firstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             if(entity.getMainArm() == HumanoidArm.LEFT)

@@ -9,14 +9,14 @@
     "recoilAdsReduction": 0.4,
     "projectileAmount": 5,
     "alwaysSpread": true,
-    "spread": 12.0
+    "spread": 20.0
   },
   "projectile": {
     "item": "cgm:shell",
     "damage": 18.0,
     "size": 1.0,
     "speed": 10.0,
-    "life": 100
+    "life": 5
   },
   "sounds": {
     "fire": "cgm:item.shotgun.fire",

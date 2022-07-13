@@ -4,7 +4,7 @@ license="GPL3"
 
 [[mods]]
 modId="cgm"
-version="1.1.2"
+version="1.2.6"
 displayName="MrCrayfish's Gun Mod"
 updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/cgm/update.json"
 displayURL="https://mrcrayfish.com/"
@@ -15,25 +15,31 @@ description="MrCrayfish's Gun Mod adds in simple and straight forward weapons in
 [[dependencies.cgm]]
     modId="forge"
     mandatory=true
-    versionRange="[39,)"
+    versionRange="[39.0.45,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.1,1.19)"
+    versionRange="[1.18.2,1.19)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="framework"
     mandatory=true
-    versionRange="[0.2.1,)"
+    versionRange="[0.2.3,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="controllable"
     mandatory=false
     versionRange="[0.14.1,)"
+    ordering="AFTER"
+    side="CLIENT"
+[[dependencies.cgm]]
+    modId="backpacked"
+    mandatory=false
+    versionRange="[2.0.0,)"
     ordering="AFTER"
     side="CLIENT"
 

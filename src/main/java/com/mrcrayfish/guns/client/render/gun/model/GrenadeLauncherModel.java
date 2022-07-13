@@ -1,12 +1,14 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.guns.client.GunModel;
 import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemCooldowns;
@@ -20,7 +22,8 @@ public class GrenadeLauncherModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
-        RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_BASE.getModel(), transformType, null, stack, parent, poseStack, buffer, light, overlay);
+        BakedModel bakedModel = SpecialModels.GRENADE_LAUNCHER_BASE.getModel();
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, buffer, light, overlay, GunModel.wrap(bakedModel));
 
         if(entity.equals(Minecraft.getInstance().player))
         {

@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.GunMod;
-import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.compat.PlayerReviveHelper;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
@@ -14,6 +14,7 @@ import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +28,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVModifierEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -53,7 +53,7 @@ public class AimingHandler
         return instance;
     }
 
-    private static final double MAX_AIM_PROGRESS = 4;
+    private static final double MAX_AIM_PROGRESS = 5;
     private final AimTracker localTracker = new AimTracker();
     private final Map<Player, AimTracker> aimingMap = new WeakHashMap<>();
     private double normalisedAdsProgress;
@@ -140,10 +140,9 @@ public class AimingHandler
         if(mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON)
         {
             ItemStack heldItem = mc.player.getMainHandItem();
-            if(heldItem.getItem() instanceof GunItem)
+            if(heldItem.getItem() instanceof GunItem gunItem)
             {
-                GunItem gunItem = (GunItem) heldItem.getItem();
-                if(AimingHandler.get().isAiming() && !ModSyncedDataKeys.RELOADING.getValue(mc.player))
+                if(AimingHandler.get().getNormalisedAdsProgress() != 0 && !ModSyncedDataKeys.RELOADING.getValue(mc.player))
                 {
                     Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                     if(modifiedGun.getModules().getZoom() != null)
@@ -188,6 +187,9 @@ public class AimingHandler
         if(mc.screen != null)
             return false;
 
+        if(PlayerReviveHelper.isBleeding(mc.player))
+            return false;
+
         ItemStack heldItem = mc.player.getMainHandItem();
         if(!(heldItem.getItem() instanceof GunItem))
             return false;
@@ -216,17 +218,15 @@ public class AimingHandler
         Minecraft mc = Minecraft.getInstance();
         if(mc.hitResult != null && mc.level != null)
         {
-            if(mc.hitResult instanceof BlockHitResult)
+            if(mc.hitResult instanceof BlockHitResult result)
             {
-                BlockHitResult result = (BlockHitResult) mc.hitResult;
                 BlockState state = mc.level.getBlockState(result.getBlockPos());
                 Block block = state.getBlock();
                 // Forge should add a tag for intractable blocks so modders can know which blocks can be interacted with :)
-                return block instanceof EntityBlock || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || BlockTags.DOORS.contains(block) || BlockTags.TRAPDOORS.contains(block) || Tags.Blocks.CHESTS.contains(block) || Tags.Blocks.FENCE_GATES.contains(block);
+                return block instanceof EntityBlock || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || state.is(BlockTags.DOORS) || state.is(BlockTags.TRAPDOORS) || state.is(Tags.Blocks.CHESTS) || state.is(Tags.Blocks.FENCE_GATES);
             }
-            else if(mc.hitResult instanceof EntityHitResult)
+            else if(mc.hitResult instanceof EntityHitResult result)
             {
-                EntityHitResult result = (EntityHitResult) mc.hitResult;
                 return result.getEntity() instanceof ItemFrame;
             }
         }
@@ -281,7 +281,7 @@ public class AimingHandler
 
         public double getNormalProgress(float partialTicks)
         {
-            return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
+            return Mth.clamp((this.previousAim + (this.currentAim - this.previousAim) * partialTicks) / MAX_AIM_PROGRESS, 0.0, 1.0);
         }
     }
 }

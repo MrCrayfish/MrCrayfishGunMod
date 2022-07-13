@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns;
 
+import com.mrcrayfish.guns.client.SwayType;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,6 +44,7 @@ public class Config
         public final ForgeConfigSpec.ConfigValue<String> headshotSound;
         public final ForgeConfigSpec.BooleanValue playSoundWhenCritical;
         public final ForgeConfigSpec.ConfigValue<String> criticalSound;
+        public final ForgeConfigSpec.DoubleValue impactSoundDistance;
 
         public Sounds(ForgeConfigSpec.Builder builder)
         {
@@ -52,6 +54,7 @@ public class Config
                 this.headshotSound = builder.comment("The sound to play when a headshot occurs").define("headshotSound", "minecraft:entity.player.attack.knockback");
                 this.playSoundWhenCritical = builder.comment("If true, a sound will play when you successfully hit a critical on a entity with a gun").define("playSoundWhenCritical", true);
                 this.criticalSound = builder.comment("The sound to play when a critical occurs").define("criticalSound", "minecraft:entity.player.attack.crit");
+                this.impactSoundDistance = builder.comment("The maximum distance impact sounds from bullet can be heard").defineInRange("impactSoundDistance", 32.0, 0.0, 32.0);
             }
             builder.pop();
         }
@@ -65,6 +68,13 @@ public class Config
         public final ForgeConfigSpec.BooleanValue oldAnimations;
         public final ForgeConfigSpec.ConfigValue<String> crosshair;
         public final ForgeConfigSpec.BooleanValue cooldownIndicator;
+        public final ForgeConfigSpec.BooleanValue weaponSway;
+        public final ForgeConfigSpec.DoubleValue swaySensitivity;
+        public final ForgeConfigSpec.EnumValue<SwayType> swayType;
+        public final ForgeConfigSpec.BooleanValue cameraRollEffect;
+        public final ForgeConfigSpec.DoubleValue cameraRollAngle;
+        public final ForgeConfigSpec.BooleanValue sprintAnimation;
+        public final ForgeConfigSpec.DoubleValue bobbingIntensity;
 
         public Display(ForgeConfigSpec.Builder builder)
         {
@@ -73,6 +83,13 @@ public class Config
                 this.oldAnimations = builder.comment("If true, uses the old animation poses for weapons. This is only for nostalgic reasons and not recommended to switch back.").define("oldAnimations", false);
                 this.crosshair = builder.comment("The custom crosshair to use for weapons. Go to (Options > Controls > Mouse Settings > Crosshair) in game to change this!").define("crosshair", Crosshair.DEFAULT.getLocation().toString());
                 this.cooldownIndicator = builder.comment("If enabled, renders a cooldown indicator to make it easier to learn when you fire again.").define("cooldownIndicator", true);
+                this.weaponSway = builder.comment("If enabled, the weapon will sway when the player moves their look direction. This does not affect aiming and is only visual.").define("weaponSway", true);
+                this.swaySensitivity = builder.comment("The sensistivity of the visual weapon sway when the player moves their look direciton. The higher the value the more sway.").defineInRange("swaySensitivity", 0.3, 0.0, 1.0);
+                this.swayType = builder.comment("The animation to use for sway. Directional follows the camera better while Drag is more immersive").defineEnum("swayType", SwayType.DRAG);
+                this.cameraRollEffect = builder.comment("If enabled, the camera will roll when strafing while holding a gun. This creates a more immersive feeling.").define("cameraRollEffect", true);
+                this.cameraRollAngle = builder.comment("When Camera Roll Effect is enabled, this is the absolute maximum angle the roll on the camera can approach.").defineInRange("cameraRollAngle", 1.5F, 0F, 45F);
+                this.sprintAnimation = builder.comment("Enables the sprinting animation on weapons for better immersion. This only applies to weapons that support a sprinting animation.").define("sprintingAnimation", true);
+                this.bobbingIntensity = builder.comment("The intensity of the custom bobbing animation while holding a gun").defineInRange("bobbingIntensity", 1.0, 0.0, 2.0);
             }
             builder.pop();
         }
@@ -87,6 +104,7 @@ public class Config
         public final ForgeConfigSpec.IntValue bulletHoleLifeMax;
         public final ForgeConfigSpec.DoubleValue bulletHoleFadeThreshold;
         public final ForgeConfigSpec.BooleanValue enableBlood;
+        public final ForgeConfigSpec.DoubleValue impactParticleDistance;
 
         public Particle(ForgeConfigSpec.Builder builder)
         {
@@ -96,6 +114,7 @@ public class Config
                 this.bulletHoleLifeMax = builder.comment("The maximum duration in ticks before bullet holes will disappear").defineInRange("bulletHoleLifeMax", 200, 0, Integer.MAX_VALUE);
                 this.bulletHoleFadeThreshold = builder.comment("The percentage of the maximum life that must pass before particles begin fading away. 0 makes the particles always fade and 1 removes facing completely").defineInRange("bulletHoleFadeThreshold", 0.98, 0, 1.0);
                 this.enableBlood = builder.comment("If true, blood will will spawn from entities that are hit from a projectile").define("enableBlood", false);
+                this.impactParticleDistance = builder.comment("The maximum distance impact particles can be seen from the player").defineInRange("impactParticleDistance", 32.0, 0.0, 64.0);
             }
             builder.pop();
         }
@@ -117,13 +136,10 @@ public class Config
 
     public static class Experimental
     {
-        public final ForgeConfigSpec.BooleanValue immersiveCamera;
-
         public Experimental(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Experimental options").push("experimental");
             {
-                this.immersiveCamera = builder.comment("Makes the camera and weapons move more naturally in first person view").define("immersiveCamera", false);
             }
             builder.pop();
         }
@@ -402,6 +418,8 @@ public class Config
         public final ForgeConfigSpec.DoubleValue gunShotMaxDistance;
         public final ForgeConfigSpec.DoubleValue reloadMaxDistance;
         public final ForgeConfigSpec.BooleanValue enableCameraRecoil;
+        public final ForgeConfigSpec.IntValue cooldownThreshold;
+        public final Experimental experimental;
 
         public Server(ForgeConfigSpec.Builder builder)
         {
@@ -425,8 +443,23 @@ public class Config
                 builder.pop();
 
                 this.enableCameraRecoil = builder.comment("If true, enables camera recoil when firing a weapon").define("enableCameraRecoil", true);
+                this.cooldownThreshold = builder.comment("The maximum amount of cooldown time remaining before the server will accept another shoot packet from a client. This allows for a litle slack since the server may be lagging").defineInRange("cooldownThreshold", 0, 75, 1000);
+
+                this.experimental = new Experimental(builder);
             }
             builder.pop();
+        }
+
+        public static class Experimental
+        {
+            public final ForgeConfigSpec.BooleanValue forceDyeableAttachments;
+
+            public Experimental(ForgeConfigSpec.Builder builder)
+            {
+                builder.push("experimental");
+                this.forceDyeableAttachments = builder.comment("Forces all attachments to be dyeable regardless if they have an affect on the model. This is useful if your server uses custom models for attachments and the models have dyeable elements").define("forceDyeableAttachments", false);
+                builder.pop();
+            }
         }
     }
 

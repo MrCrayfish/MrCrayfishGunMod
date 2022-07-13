@@ -17,7 +17,7 @@ public class ModParticleTypes
 {
     public static final DeferredRegister<ParticleType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, Reference.MOD_ID);
 
-    public static final RegistryObject<ParticleType<BulletHoleData>> BULLET_HOLE = REGISTER.register("bullet_hole",() -> new ParticleType<BulletHoleData>(false, BulletHoleData.DESERIALIZER)
+    public static final RegistryObject<ParticleType<BulletHoleData>> BULLET_HOLE = REGISTER.register("bullet_hole",() -> new ParticleType<>(false, BulletHoleData.DESERIALIZER)
     {
         @Override
         public Codec<BulletHoleData> codec()
@@ -26,7 +26,7 @@ public class ModParticleTypes
         }
     });
     public static final RegistryObject<SimpleParticleType> BLOOD = REGISTER.register("blood", () -> new SimpleParticleType(true));
-    public static final RegistryObject<ParticleType<TrailData>> TRAIL = REGISTER.register("trail", () -> new ParticleType<TrailData>(false, TrailData.DESERIALIZER)
+    public static final RegistryObject<ParticleType<TrailData>> TRAIL = REGISTER.register("trail", () -> new ParticleType<>(false, TrailData.DESERIALIZER)
     {
         @Override
         public Codec<TrailData> codec()

@@ -108,13 +108,7 @@ public class ReloadHandler
                     {
                         Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
                         if(tag.getInt("AmmoCount") >= GunEnchantmentHelper.getAmmoCapacity(stack, gun))
-                        {
                             return;
-                        }
-                        if(Gun.findAmmo(player, gun.getProjectile().getItem()).isEmpty())
-                        {
-                            return;
-                        }
                         if(MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                             return;
                         ModSyncedDataKeys.RELOADING.setValue(player, true);

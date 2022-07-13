@@ -14,7 +14,7 @@
     "damage": 9.0,
     "size": 0.2,
     "speed": 10.0,
-    "life": 100
+    "life": 25
   },
   "sounds": {
     "fire": "cgm:item.pistol.fire",
@@ -32,6 +32,7 @@
   "modules": {
     "zoom": {
       "yOffset": 4.5,
+      "zOffset": -1.0,
       "fovModifier": 0.7
     },
     "attachments": {

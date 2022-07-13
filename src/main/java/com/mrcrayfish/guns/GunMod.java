@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
+import com.mrcrayfish.guns.crafting.ModRecipeType;
 import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.datagen.BlockTagGen;
 import com.mrcrayfish.guns.datagen.GunGen;
@@ -40,6 +41,8 @@ import org.apache.logging.log4j.Logger;
 public class GunMod
 {
     public static boolean controllableLoaded = false;
+    public static boolean backpackedLoaded = false;
+    public static boolean playerReviveLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
     public static final CreativeModeTab GROUP = new CreativeModeTab(Reference.MOD_ID)
     {
@@ -75,29 +78,34 @@ public class GunMod
         ModRecipeSerializers.REGISTER.register(bus);
         ModSounds.REGISTER.register(bus);
         ModTileEntities.REGISTER.register(bus);
-        ModSyncedDataKeys.register();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
         controllableLoaded = ModList.get().isLoaded("controllable");
+        backpackedLoaded = ModList.get().isLoaded("backpacked");
+        playerReviveLoaded = ModList.get().isLoaded("playerrevive");
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
-        CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"), WorkbenchIngredient.Serializer.INSTANCE);
-        ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
-        ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
-        PacketHandler.init();
-
-        if(Config.COMMON.gameplay.improvedHitboxes.get())
+        event.enqueueWork(() ->
         {
-            MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
-        }
+            ModRecipeType.init();
+            ModSyncedDataKeys.register();
+            CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"), WorkbenchIngredient.Serializer.INSTANCE);
+            ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
+            ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
+            PacketHandler.init();
+            if(Config.COMMON.gameplay.improvedHitboxes.get())
+            {
+                MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
+            }
+        });
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        ClientHandler.setup();
+        event.enqueueWork(ClientHandler::setup);
     }
 
     private void onGatherData(GatherDataEvent event)

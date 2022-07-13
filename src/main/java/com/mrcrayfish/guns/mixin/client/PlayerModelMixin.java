@@ -25,31 +25,30 @@ public class PlayerModelMixin<T extends LivingEntity>
 {
     @SuppressWarnings({"unchecked", "ConstantConditions"})
     @Inject(method = "setupAnim", at = @At(value = "TAIL"))
-    private void setupAnimTail(T entity, float p_103396_, float p_103397_, float p_103398_, float p_103399_, float p_103400_, CallbackInfo ci)
+    private void setupAnimTail(T entity, float animationPos, float animationSpeed, float animationBob, float deltaHeadYaw, float headPitch, CallbackInfo ci)
     {
         if(!(entity instanceof Player player))
             return;
-        
-        if(player.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson())
-        {
-            PlayerModel<T> model = (PlayerModel<T>) (Object) this;
-            model.rightArm.xRot = 0;
-            model.rightArm.yRot = 0;
-            model.rightArm.zRot = 0;
-            model.leftArm.xRot = 0;
-            model.leftArm.yRot = 0;
-            model.leftArm.zRot = 0;
-            copyModelAngles(model.rightArm, model.rightSleeve);
-            copyModelAngles(model.leftArm, model.leftSleeve);
-            return;
-        }
 
         PlayerModel<T> model = (PlayerModel<T>) (Object) this;
         ItemStack heldItem = player.getMainHandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
+        if(heldItem.getItem() instanceof GunItem gunItem)
         {
-            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            gun.getGeneral().getGripType().getHeldAnimation().applyPlayerModelRotation(player, model.rightArm, model.leftArm, model.head, InteractionHand.MAIN_HAND, AimingHandler.get().getAimProgress(player, Minecraft.getInstance().getDeltaFrameTime()));
+            if(player.isLocalPlayer() && animationPos == 0.0F)
+            {
+                model.rightArm.xRot = 0;
+                model.rightArm.yRot = 0;
+                model.rightArm.zRot = 0;
+                model.leftArm.xRot = 0;
+                model.leftArm.yRot = 0;
+                model.leftArm.zRot = 0;
+                copyModelAngles(model.rightArm, model.rightSleeve);
+                copyModelAngles(model.leftArm, model.leftSleeve);
+                return;
+            }
+
+            Gun gun = gunItem.getModifiedGun(heldItem);
+            gun.getGeneral().getGripType().getHeldAnimation().applyPlayerModelRotation(player, model.rightArm, model.leftArm, model.head, InteractionHand.MAIN_HAND, AimingHandler.get().getAimProgress(player, Minecraft.getInstance().getFrameTime()));
             copyModelAngles(model.rightArm, model.rightSleeve);
             copyModelAngles(model.leftArm, model.leftSleeve);
             copyModelAngles(model.head, model.hat);

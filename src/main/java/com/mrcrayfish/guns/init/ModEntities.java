@@ -31,8 +31,13 @@ public class ModEntities
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function)
     {
-        EntityType<T> type = EntityType.Builder.of(function::apply, MobCategory.MISC).sized(0.25F, 0.25F).setTrackingRange(100).setUpdateInterval(1).noSummon().fireImmune().setShouldReceiveVelocityUpdates(true).build(id);
-        return REGISTER.register(id, () -> type);
+        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
+                .sized(0.25F, 0.25F)
+                .setTrackingRange(100)
+                .setUpdateInterval(1)
+                .noSummon()
+                .fireImmune()
+                .setShouldReceiveVelocityUpdates(true).build(id));
     }
 
     /**
@@ -49,14 +54,13 @@ public class ModEntities
      */
     private static <T extends ProjectileEntity> RegistryObject<EntityType<T>> registerProjectile(String id, BiFunction<EntityType<T>, Level, T> function)
     {
-        EntityType<T> type = EntityType.Builder.of(function::apply, MobCategory.MISC)
-            .sized(0.25F, 0.25F)
-            .setTrackingRange(0)
-            .noSummon()
-            .fireImmune()
-            .setShouldReceiveVelocityUpdates(false)
-            .setCustomClientFactory((spawnEntity, world) -> null)
-            .build(id);
-        return REGISTER.register(id, () -> type);
+        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
+                .sized(0.25F, 0.25F)
+                .setTrackingRange(0)
+                .noSummon()
+                .fireImmune()
+                .setShouldReceiveVelocityUpdates(false)
+                .setCustomClientFactory((spawnEntity, world) -> null)
+                .build(id));
     }
 }

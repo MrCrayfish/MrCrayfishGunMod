@@ -117,24 +117,20 @@ public class RenderUtil
             poseStack.translate(-0.5D, -0.5D, -0.5D);
             if(!model.isCustomRenderer() && (stack.getItem() != Items.TRIDENT || flag))
             {
-                boolean flag1;
+                boolean entity = true;
                 if(transformType != ItemTransforms.TransformType.GUI && !transformType.firstPerson() && stack.getItem() instanceof BlockItem)
                 {
                     Block block = ((BlockItem) stack.getItem()).getBlock();
-                    flag1 = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
-                }
-                else
-                {
-                    flag1 = true;
+                    entity = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
                 }
 
                 if(model.isLayered())
                 {
-                    net.minecraftforge.client.ForgeHooksClient.drawItemLayered(Minecraft.getInstance().getItemRenderer(), model, stack, poseStack, buffer, light, overlay, flag1);
+                    net.minecraftforge.client.ForgeHooksClient.drawItemLayered(Minecraft.getInstance().getItemRenderer(), model, stack, poseStack, buffer, light, overlay, entity);
                 }
                 else
                 {
-                    RenderType renderType = getRenderType(stack, !flag1);
+                    RenderType renderType = getRenderType(stack, entity);
                     VertexConsumer builder;
                     if(stack.getItem() == Items.COMPASS && stack.hasFoil())
                     {
@@ -149,7 +145,7 @@ public class RenderUtil
                             entry.pose().multiply(0.75F);
                         }
 
-                        if(flag1)
+                        if(entity)
                         {
                             builder = ItemRenderer.getCompassFoilBufferDirect(buffer, renderType, entry);
                         }
@@ -160,7 +156,7 @@ public class RenderUtil
 
                         poseStack.popPose();
                     }
-                    else if(flag1)
+                    else if(entity)
                     {
                         builder = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
                     }

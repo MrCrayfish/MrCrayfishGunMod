@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.1.2-1.18.1"
+version = "1.2.6-1.18.2"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
@@ -29,7 +29,7 @@ mixin {
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.18.1'
+    mappings channel: 'official', version: '1.18.2'
 
     runs {
         client {
@@ -101,13 +101,14 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.1-39.0.0'
-    implementation fg.deobf('curse.maven:framework-549225:3548677')
-    implementation fg.deobf('curse.maven:controllable-317269:3546297')
-    implementation fg.deobf('curse.maven:configured-457570:3546349')
-    implementation fg.deobf('curse.maven:catalogue-459701:3543625')
-    compileOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40")
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
+    implementation fg.deobf('curse.maven:framework-549225:3723144')
+    implementation fg.deobf('curse.maven:configured-457570:3721946')
+    implementation fg.deobf('curse.maven:catalogue-459701:3721991')
+    implementation fg.deobf('curse.maven:backpacked-352835:3723045')
+    compileOnly fg.deobf('curse.maven:controllable-317269:3707285')
+    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.4.171:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.4.171")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

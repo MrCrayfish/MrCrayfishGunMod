@@ -15,7 +15,7 @@
     "damage": 15.0,
     "size": 0.0625,
     "speed": 20.0,
-    "life": 100,
+    "life": 30,
     "gravity": true
   },
   "sounds": {

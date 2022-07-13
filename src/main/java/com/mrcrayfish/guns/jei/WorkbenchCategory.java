@@ -1,47 +1,42 @@
 package com.mrcrayfish.guns.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.crafting.WorkbenchRecipe;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.item.IColored;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import com.mojang.blaze3d.platform.Lighting;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
-import com.mojang.math.Vector3f;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,21 +64,15 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         this.window = helper.createDrawable(BACKGROUND, 7, 15, 162, 72);
         this.inventory = helper.createDrawable(BACKGROUND, 7, 101, 162, 36);
         this.dyeSlot = helper.createDrawable(BACKGROUND, 7, 101, 18, 18);
-        this.icon = helper.createDrawableIngredient(new ItemStack(ModBlocks.WORKBENCH.get()));
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(ModBlocks.WORKBENCH.get()));
         this.title = new TranslatableComponent(TITLE_KEY);
         this.dyes = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
     }
 
     @Override
-    public ResourceLocation getUid()
+    public RecipeType<WorkbenchRecipe> getRecipeType()
     {
-        return ID;
-    }
-
-    @Override
-    public Class<? extends WorkbenchRecipe> getRecipeClass()
-    {
-        return WorkbenchRecipe.class;
+        return GunModPlugin.WORKBENCH;
     }
 
     @Override
@@ -105,54 +94,22 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
     }
 
     @Override
-    public void setIngredients(WorkbenchRecipe recipe, IIngredients ingredients)
+    public void setRecipe(IRecipeLayoutBuilder builder, WorkbenchRecipe recipe, IFocusGroup focuses)
     {
-        List<List<ItemStack>> itemInputs = new ArrayList<>();
         ItemStack output = recipe.getItem();
-        if(output.getItem() instanceof IColored)
+        if(IColored.isDyeable(output))
         {
-            IColored colored = (IColored) output.getItem();
-            if(colored.canColor(output))
-            {
-                itemInputs.add(Stream.of(this.dyes).map(ItemStack::new).collect(Collectors.toList()));
-            }
+            builder.addSlot(RecipeIngredientRole.INPUT, 141, 52).addItemStacks(Stream.of(this.dyes).map(ItemStack::new).collect(Collectors.toList()));
         }
-        recipe.getMaterials().forEach(material ->
+        for(int i = 0; i < recipe.getMaterials().size(); i++)
         {
-            itemInputs.add(Arrays.stream(material.getItems()).map(stack -> {
-                ItemStack copy = stack.copy();
-                copy.setCount(material.getCount());
-                return copy;
-            }).collect(Collectors.toList()));
-        });
-        ingredients.setInputLists(VanillaTypes.ITEM, itemInputs);
-        ingredients.setOutput(VanillaTypes.ITEM,recipe.getItem());
+            builder.addSlot(RecipeIngredientRole.INPUT, (i % 8) * 18 + 1, 88 + (i / 8) * 18).addIngredients(recipe.getMaterials().get(i));
+        }
+        builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addItemStack(output);
     }
 
     @Override
-    public void setRecipe(IRecipeLayout layout, WorkbenchRecipe recipe, IIngredients ingredients)
-    {
-        IGuiItemStackGroup stacks = layout.getItemStacks();
-        ItemStack output = recipe.getItem();
-        int offset = 0;
-        if(output.getItem() instanceof IColored)
-        {
-            IColored colored = (IColored) output.getItem();
-            if(colored.canColor(output))
-            {
-                stacks.init(0, true, 140, 51);
-                offset = 1;
-            }
-        }
-        for(int i = 0; i < ingredients.getInputs(VanillaTypes.ITEM).size(); i++)
-        {
-            stacks.init(offset + i, true, (i % 8) * 18, 87 + (i / 8) * 18);
-        }
-        stacks.set(ingredients);
-    }
-
-    @Override
-    public void draw(WorkbenchRecipe recipe, PoseStack poseStack, double mouseX, double mouseY)
+    public void draw(WorkbenchRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY)
     {
         this.window.draw(poseStack, 0, 0);
         this.inventory.draw(poseStack, 0, this.window.getHeight() + 2 + 11 + 2);
@@ -167,7 +124,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
             displayName.append(new TextComponent(" x " + output.getCount()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
         }
         int titleX = this.window.getWidth() / 2;
-        GuiComponent.drawCenteredString(poseStack, Minecraft.getInstance().font, displayName, titleX, 5, Color.WHITE.getRGB());
+        GuiComponent.drawCenteredString(poseStack, Minecraft.getInstance().font, displayName, titleX, 5, 0xFFFFFFFF);
 
         PoseStack stack = RenderSystem.getModelViewStack();
         stack.pushPose();
@@ -190,5 +147,21 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
         }
         stack.popPose();
         RenderSystem.applyModelViewMatrix();
+    }
+
+    // TODO remove in 1.19?
+    @Override
+    @SuppressWarnings("removal")
+    public ResourceLocation getUid()
+    {
+        return GunModPlugin.WORKBENCH.getUid();
+    }
+
+    // TODO remove in 1.19?
+    @Override
+    @SuppressWarnings("removal")
+    public Class<? extends WorkbenchRecipe> getRecipeClass()
+    {
+        return GunModPlugin.WORKBENCH.getRecipeClass();
     }
 }

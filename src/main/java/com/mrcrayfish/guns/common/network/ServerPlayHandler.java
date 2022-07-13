@@ -73,9 +73,8 @@ public class ServerPlayHandler
         {
             Level world = player.level;
             ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
-            if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
+            if(heldItem.getItem() instanceof GunItem item && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
-                GunItem item = (GunItem) heldItem.getItem();
                 Gun modifiedGun = item.getModifiedGun(heldItem);
                 if(modifiedGun != null)
                 {
@@ -87,7 +86,7 @@ public class ServerPlayHandler
                     player.setXRot(message.getRotationPitch());
 
                     ShootTracker tracker = ShootTracker.getShootTracker(player);
-                    if(tracker.hasCooldown(item))
+                    if(tracker.hasCooldown(item) && tracker.getRemaining(item) > Config.SERVER.cooldownThreshold.get())
                     {
                         GunMod.LOGGER.warn(player.getName().getContents() + "(" + player.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
                         return;
@@ -236,7 +235,7 @@ public class ServerPlayHandler
                     DyeItem dyeItem = (DyeItem) dyeStack.getItem();
                     int color = dyeItem.getDyeColor().getTextColor();
 
-                    if(stack.getItem() instanceof IColored && ((IColored) stack.getItem()).canColor(stack))
+                    if(IColored.isDyeable(stack))
                     {
                         IColored colored = (IColored) stack.getItem();
                         colored.setColor(stack, color);

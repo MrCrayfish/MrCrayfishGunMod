@@ -37,17 +37,16 @@ public class WorkbenchBlockEntity extends SyncedBlockEntity implements IStorageB
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound)
+    protected void saveAdditional(CompoundTag tag)
     {
-        ContainerHelper.saveAllItems(compound, this.inventory);
-        return super.save(compound);
+        ContainerHelper.saveAllItems(tag, this.inventory);
     }
 
     @Override
-    public void load(CompoundTag compound)
+    public void load(CompoundTag tag)
     {
-        super.load(compound);
-        ContainerHelper.loadAllItems(compound, this.inventory);
+        super.load(tag);
+        ContainerHelper.loadAllItems(tag, this.inventory);
     }
 
     @Override
