@@ -1,8 +1,9 @@
 {
-	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"textures": {
-		"particle": "cgm:items/short_scope",
-		"1": "cgm:items/short_scope"
+		"1": "cgm:items/short_scope",
+		"2": "cgm:effect/scope_vignette",
+		"particle": "cgm:items/short_scope"
 	},
 	"elements": [
 		{
@@ -121,6 +122,14 @@
 				"north": {"uv": [0, 4, 1, 6], "texture": "#1", "tintindex": 0},
 				"east": {"uv": [0, 0, 2, 2], "rotation": 90, "texture": "#1", "tintindex": 0},
 				"west": {"uv": [0, 0, 2, 2], "rotation": 270, "texture": "#1", "tintindex": 0}
+			}
+		},
+		{
+			"from": [7.3, 9, 8],
+			"to": [8.7, 10.1, 8],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#2"}
 			}
 		}
 	],

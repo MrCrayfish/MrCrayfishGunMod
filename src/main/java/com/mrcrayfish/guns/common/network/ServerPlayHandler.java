@@ -83,8 +83,8 @@ public class ServerPlayHandler
                         return;
 
                     /* Updates the yaw and pitch with the clients current yaw and pitch */
-                    player.setYRot(message.getRotationYaw());
-                    player.setXRot(message.getRotationPitch());
+                    player.setYRot(Mth.wrapDegrees(message.getRotationYaw()));
+                    player.setXRot(Mth.clamp(message.getRotationPitch(), -90F, 90F));
 
                     ShootTracker tracker = ShootTracker.getShootTracker(player);
                     if(tracker.hasCooldown(item) && tracker.getRemaining(item) > Config.SERVER.cooldownThreshold.get())
@@ -215,9 +215,8 @@ public class ServerPlayHandler
     {
         Level world = player.level;
 
-        if(player.containerMenu instanceof WorkbenchContainer)
+        if(player.containerMenu instanceof WorkbenchContainer workbench)
         {
-            WorkbenchContainer workbench = (WorkbenchContainer) player.containerMenu;
             if(workbench.getPos().equals(pos))
             {
                 WorkbenchRecipe recipe = WorkbenchRecipes.getRecipeById(world, id);

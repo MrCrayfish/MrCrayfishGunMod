@@ -10,11 +10,12 @@
         "common.SittingPhaseMixin"
     ],
     "client": [
-        "client.PlayerItemInHandLayerMixin",
-        "client.PlayerModelMixin",
         "client.GameRendererMixin",
         "client.LevelRendererMixin",
-        "client.MouseHandlerMixin"
+        "client.MinecraftMixin",
+        "client.MouseHandlerMixin",
+        "client.PlayerItemInHandLayerMixin",
+        "client.PlayerModelMixin"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -1,5 +1,7 @@
 package com.mrcrayfish.guns.client;
 
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -74,5 +76,17 @@ public class GunModel implements BakedModel
     {
         INSTANCE.setModel(model);
         return INSTANCE;
+    }
+
+    @Override
+    public boolean isLayered()
+    {
+        return true;
+    }
+
+    @Override
+    public List<Pair<BakedModel, RenderType>> getLayerModels(ItemStack itemStack, boolean fabulous)
+    {
+        return List.of(Pair.of(this.model, RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS)));
     }
 }

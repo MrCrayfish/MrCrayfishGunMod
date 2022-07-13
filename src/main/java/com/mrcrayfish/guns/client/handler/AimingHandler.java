@@ -175,6 +175,11 @@ public class AimingHandler
         this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTick());
     }
 
+    public boolean isZooming()
+    {
+        return this.aiming;
+    }
+
     public boolean isAiming()
     {
         Minecraft mc = Minecraft.getInstance();
@@ -204,7 +209,7 @@ public class AimingHandler
         if(ModSyncedDataKeys.RELOADING.getValue(mc.player))
             return false;
 
-        boolean zooming = GLFW.glfwGetMouseButton(mc.getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+        boolean zooming = mc.options.keyUse.isDown();
         if(GunMod.controllableLoaded)
         {
             zooming |= ControllerHandler.isAiming();

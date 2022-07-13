@@ -20,8 +20,10 @@ import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
 import com.mrcrayfish.guns.util.BufferUtil;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
+import com.mrcrayfish.guns.util.ReflectionUtil;
 import com.mrcrayfish.guns.util.math.ExtendedEntityRayTraceResult;
 import com.mrcrayfish.guns.world.ProjectileExplosion;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -32,6 +34,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -52,6 +55,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.TargetBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Material;
@@ -419,22 +423,21 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return;
         }
 
-        if(result instanceof BlockHitResult)
+        if(result instanceof BlockHitResult blockHitResult)
         {
-            BlockHitResult blockRayTraceResult = (BlockHitResult) result;
-            if(blockRayTraceResult.getType() == HitResult.Type.MISS)
+            if(blockHitResult.getType() == HitResult.Type.MISS)
             {
                 return;
             }
 
             Vec3 hitVec = result.getLocation();
-            BlockPos pos = blockRayTraceResult.getBlockPos();
+            BlockPos pos = blockHitResult.getBlockPos();
             BlockState state = this.level.getBlockState(pos);
             Block block = state.getBlock();
 
-            if(Config.COMMON.gameplay.enableGunGriefing.get() && (block instanceof HalfTransparentBlock || block instanceof IronBarsBlock) && state.getMaterial() == Material.GLASS)
+            if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && (block instanceof HalfTransparentBlock || block instanceof IronBarsBlock) && state.getMaterial() == Material.GLASS)
             {
-                this.level.destroyBlock(blockRayTraceResult.getBlockPos(), false);
+                this.level.destroyBlock(blockHitResult.getBlockPos(), false);
             }
 
             if(!state.getMaterial().isReplaceable())
@@ -447,13 +450,23 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 ((IDamageable) block).onBlockDamaged(this.level, state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1);
             }
 
-            this.onHitBlock(state, pos, blockRayTraceResult.getDirection(), hitVec.x, hitVec.y, hitVec.z);
+            this.onHitBlock(state, pos, blockHitResult.getDirection(), hitVec.x, hitVec.y, hitVec.z);
+
+            if(block instanceof TargetBlock targetBlock)
+            {
+                int power = ReflectionUtil.updateTargetBlock(targetBlock, this.level, state, blockHitResult, this);
+                if(this.shooter instanceof ServerPlayer serverPlayer)
+                {
+                    serverPlayer.awardStat(Stats.TARGET_HIT);
+                    CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
+                }
+            }
 
             int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
-            if(fireStarterLevel > 0 && Config.COMMON.gameplay.enableGunGriefing.get())
+            if(fireStarterLevel > 0 && Config.COMMON.gameplay.griefing.setFireToBlocks.get())
             {
-                BlockPos offsetPos = pos.relative(blockRayTraceResult.getDirection());
-                if(BaseFireBlock.canBePlacedAt(this.level, offsetPos, blockRayTraceResult.getDirection()))
+                BlockPos offsetPos = pos.relative(blockHitResult.getDirection());
+                if(BaseFireBlock.canBePlacedAt(this.level, offsetPos, blockHitResult.getDirection()))
                 {
                     BlockState fireState = BaseFireBlock.getState(this.level, offsetPos);
                     this.level.setBlock(offsetPos, fireState, 11);
@@ -463,13 +476,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return;
         }
 
-        if(result instanceof ExtendedEntityRayTraceResult)
+        if(result instanceof ExtendedEntityRayTraceResult entityHitResult)
         {
-            ExtendedEntityRayTraceResult entityRayTraceResult = (ExtendedEntityRayTraceResult) result;
-            Entity entity = entityRayTraceResult.getEntity();
+            Entity entity = entityHitResult.getEntity();
             if(entity.getId() == this.shooterId)
             {
                 return;
+            }
+
+            if(this.shooter instanceof Player player)
+            {
+                if(entity.hasIndirectPassenger(player))
+                {
+                    return;
+                }
             }
 
             int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
@@ -478,7 +498,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 entity.setSecondsOnFire(2);
             }
 
-            this.onHitEntity(entity, result.getLocation(), startVec, endVec, entityRayTraceResult.isHeadshot());
+            this.onHitEntity(entity, result.getLocation(), startVec, endVec, entityHitResult.isHeadshot());
 
             int collateralLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
             if(collateralLevel == 0)
@@ -774,7 +794,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return;
 
         DamageSource source = entity instanceof ProjectileEntity projectile ? DamageSource.explosion(projectile.getShooter()) : null;
-        Explosion.BlockInteraction mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE;
+        Explosion.BlockInteraction mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE;
         Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 
         if(net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
