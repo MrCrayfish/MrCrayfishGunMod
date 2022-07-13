@@ -66,7 +66,7 @@ public class GunEnchantmentHelper
         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), weapon);
         if(level > 0)
         {
-            capacity += (capacity / 2) * level;
+            capacity += Math.max(level, (capacity / 2) * level);
         }
         return capacity;
     }
