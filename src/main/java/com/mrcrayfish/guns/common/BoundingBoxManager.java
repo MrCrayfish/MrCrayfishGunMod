@@ -133,7 +133,7 @@ public class BoundingBoxManager
     @SubscribeEvent(receiveCanceled = true)
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        playerBoxes.remove(event.getPlayer());
+        playerBoxes.remove(event.getEntity());
     }
 
     public static AABB getBoundingBox(Player entity, int ping)

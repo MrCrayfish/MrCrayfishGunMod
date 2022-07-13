@@ -57,7 +57,7 @@ public class ShootingHandler
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onMouseClick(InputEvent.ClickInputEvent event)
+    public void onMouseClick(InputEvent.InteractionKeyMappingTriggered event)
     {
         if(event.isCanceled())
             return;

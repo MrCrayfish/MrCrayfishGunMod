@@ -26,12 +26,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.FOVModifierEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.ComputeFovModifierEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -134,7 +133,7 @@ public class AimingHandler
     }
 
     @SubscribeEvent
-    public void onFovUpdate(FOVModifierEvent event)
+    public void onFovUpdate(ComputeFovModifierEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON)
@@ -153,7 +152,7 @@ public class AimingHandler
                         {
                             newFov -= scope.getAdditionalZoom();
                         }
-                        event.setNewFov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));
+                        event.setNewFovModifier(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));
                     }
                 }
             }
@@ -161,7 +160,7 @@ public class AimingHandler
     }
 
     @SubscribeEvent
-    public void onClientTick(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    public void onClientTick(ClientPlayerNetworkEvent.LoggingOut event)
     {
         this.aimingMap.clear();
     }
@@ -170,7 +169,7 @@ public class AimingHandler
      * Prevents the crosshair from rendering when aiming down sight
      */
     @SubscribeEvent(receiveCanceled = true)
-    public void onRenderOverlay(RenderGameOverlayEvent event)
+    public void onRenderOverlay(RenderGuiOverlayEvent event)
     {
         this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTick());
     }

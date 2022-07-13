@@ -11,7 +11,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -33,12 +32,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 public class RenderUtil
 {
@@ -125,53 +123,46 @@ public class RenderUtil
                     entity = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
                 }
 
-                if(model.isLayered())
+                RenderType renderType = getRenderType(stack, entity);
+                VertexConsumer builder;
+                if(stack.getItem() == Items.COMPASS && stack.hasFoil())
                 {
-                    net.minecraftforge.client.ForgeHooksClient.drawItemLayered(Minecraft.getInstance().getItemRenderer(), model, stack, poseStack, buffer, light, overlay, entity);
-                }
-                else
-                {
-                    RenderType renderType = getRenderType(stack, entity);
-                    VertexConsumer builder;
-                    if(stack.getItem() == Items.COMPASS && stack.hasFoil())
+                    poseStack.pushPose();
+                    PoseStack.Pose entry = poseStack.last();
+                    if(transformType == ItemTransforms.TransformType.GUI)
                     {
-                        poseStack.pushPose();
-                        PoseStack.Pose entry = poseStack.last();
-                        if(transformType == ItemTransforms.TransformType.GUI)
-                        {
-                            entry.pose().multiply(0.5F);
-                        }
-                        else if(transformType.firstPerson())
-                        {
-                            entry.pose().multiply(0.75F);
-                        }
-
-                        if(entity)
-                        {
-                            builder = ItemRenderer.getCompassFoilBufferDirect(buffer, renderType, entry);
-                        }
-                        else
-                        {
-                            builder = ItemRenderer.getCompassFoilBuffer(buffer, renderType, entry);
-                        }
-
-                        poseStack.popPose();
+                        entry.pose().multiply(0.5F);
                     }
-                    else if(entity)
+                    else if(transformType.firstPerson())
                     {
-                        builder = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
+                        entry.pose().multiply(0.75F);
+                    }
+
+                    if(entity)
+                    {
+                        builder = ItemRenderer.getCompassFoilBufferDirect(buffer, renderType, entry);
                     }
                     else
                     {
-                        builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
+                        builder = ItemRenderer.getCompassFoilBuffer(buffer, renderType, entry);
                     }
 
-                    renderModel(model, stack, parent, transform, poseStack, builder, light, overlay);
+                    poseStack.popPose();
                 }
+                else if(entity)
+                {
+                    builder = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
+                }
+                else
+                {
+                    builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
+                }
+
+                renderModel(model, stack, parent, transform, poseStack, builder, light, overlay);
             }
             else
             {
-                RenderProperties.get(stack).getItemStackRenderer().renderByItem(stack, transformType, poseStack, buffer, light, overlay);
+                IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, transformType, poseStack, buffer, light, overlay);
             }
 
             poseStack.popPose();
@@ -231,7 +222,7 @@ public class RenderUtil
             float red = (float) (color >> 16 & 255) / 255.0F;
             float green = (float) (color >> 8 & 255) / 255.0F;
             float blue = (float) (color & 255) / 255.0F;
-            buffer.putBulkData(entry, quad, red, green, blue, light, overlay, true);
+            buffer.putBulkData(entry, quad, red, green, blue, light, overlay); //TODO check if right
         }
     }
 

@@ -74,7 +74,7 @@ public class WorkbenchBlock extends RotatedObjectBlock implements EntityBlock
             BlockEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof MenuProvider)
             {
-                NetworkHooks.openGui((ServerPlayer) playerEntity, (MenuProvider) tileEntity, pos);
+                NetworkHooks.openScreen((ServerPlayer) playerEntity, (MenuProvider) tileEntity, pos);
             }
         }
         return InteractionResult.SUCCESS;

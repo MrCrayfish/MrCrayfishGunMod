@@ -167,10 +167,10 @@ public class ReloadTracker
     @SubscribeEvent
     public static void onPlayerTick(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        MinecraftServer server = event.getPlayer().getServer();
+        MinecraftServer server = event.getEntity().getServer();
         if(server != null)
         {
-            server.execute(() -> RELOAD_TRACKER_MAP.remove(event.getPlayer()));
+            server.execute(() -> RELOAD_TRACKER_MAP.remove(event.getEntity()));
         }
     }
 }

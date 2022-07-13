@@ -71,8 +71,6 @@ public class ClientHandler
             GunButtonBindings.register();
         }
 
-        KeyBinds.register();
-
         setupRenderLayers();
         registerColors();
         registerModelOverrides();
@@ -150,11 +148,10 @@ public class ClientHandler
     }
 
     @SubscribeEvent
-    public static void onScreenInit(ScreenEvent.InitScreenEvent.Post event)
+    public static void onScreenInit(ScreenEvent.Init.Post event)
     {
-        if(event.getScreen() instanceof MouseSettingsScreen)
+        if(event.getScreen() instanceof MouseSettingsScreen screen)
         {
-            MouseSettingsScreen screen = (MouseSettingsScreen) event.getScreen();
             if(mouseOptionsField == null)
             {
                 mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "f_96218_");
@@ -173,7 +170,7 @@ public class ClientHandler
     }
 
     @SubscribeEvent
-    public static void onKeyPressed(InputEvent.KeyInputEvent event)
+    public static void onKeyPressed(InputEvent.InteractionKeyMappingTriggered event)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.screen == null)

@@ -70,7 +70,7 @@ public class MiniGunModel implements IOverrideModel
     }
 
     @SubscribeEvent
-    public void onClientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    public void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event)
     {
         this.rotationMap.clear();
     }

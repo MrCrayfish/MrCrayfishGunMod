@@ -81,14 +81,8 @@ public class GunModel implements BakedModel
     }
 
     @Override
-    public boolean isLayered()
+    public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous)
     {
-        return true;
-    }
-
-    @Override
-    public List<Pair<BakedModel, RenderType>> getLayerModels(ItemStack itemStack, boolean fabulous)
-    {
-        return List.of(Pair.of(this.model, RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS)));
+        return List.of(RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS));
     }
 }

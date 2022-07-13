@@ -59,7 +59,7 @@ public class CustomGunManager
     }
 
     @SubscribeEvent
-    public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event)
     {
         customGunMap = null;
     }

@@ -58,9 +58,9 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
     @SubscribeEvent
     public static void blindMobs(LivingSetAttackTargetEvent event)
     {
-        if(Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getTarget() != null && event.getEntityLiving() instanceof Mob && event.getEntityLiving().hasEffect(ModEffects.BLINDED.get()))
+        if(Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getTarget() != null && event.getEntity() instanceof Mob && event.getEntity().hasEffect(ModEffects.BLINDED.get()))
         {
-            ((Mob) event.getEntityLiving()).setTarget(null);
+            ((Mob) event.getEntity()).setTarget(null);
         }
     }
 

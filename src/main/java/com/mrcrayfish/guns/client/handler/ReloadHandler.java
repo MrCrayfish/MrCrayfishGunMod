@@ -69,7 +69,7 @@ public class ReloadHandler
     }
 
     @SubscribeEvent
-    public void onKeyPressed(InputEvent.KeyInputEvent event)
+    public void onKeyPressed(InputEvent.Key event)
     {
         Player player = Minecraft.getInstance().player;
         if(player == null)
