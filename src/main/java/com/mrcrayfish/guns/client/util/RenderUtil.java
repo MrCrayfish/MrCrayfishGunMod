@@ -247,9 +247,9 @@ public class RenderUtil
         return color;
     }
 
-    public static void applyTransformType(ItemStack stack, PoseStack poseStack, ItemTransforms.TransformType transformType, LivingEntity entity)
+    public static void applyTransformType(ItemStack stack, PoseStack poseStack, ItemTransforms.TransformType transformType, @Nullable LivingEntity entity)
     {
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level, entity, 0);
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity != null ? entity.level : null, entity, 0);
         boolean leftHanded = transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
         ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, leftHanded);
 

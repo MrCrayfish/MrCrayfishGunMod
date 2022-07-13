@@ -548,7 +548,7 @@ public class GunRenderingHandler
         }
     }
 
-    public boolean renderWeapon(LivingEntity entity, ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
+    public boolean renderWeapon(@Nullable LivingEntity entity, ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {
         if(stack.getItem() instanceof GunItem)
         {
@@ -577,7 +577,7 @@ public class GunRenderingHandler
         return false;
     }
 
-    private void renderGun(LivingEntity entity, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
+    private void renderGun(@Nullable LivingEntity entity, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {
         if(ModelOverrides.hasModel(stack))
         {
@@ -594,7 +594,7 @@ public class GunRenderingHandler
         }
     }
 
-    private void renderAttachments(LivingEntity entity, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
+    private void renderAttachments(@Nullable LivingEntity entity, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {
         if(stack.getItem() instanceof GunItem)
         {
@@ -639,7 +639,7 @@ public class GunRenderingHandler
         }
     }
 
-    private void renderMuzzleFlash(LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, ItemStack weapon, ItemTransforms.TransformType transformType, float partialTicks)
+    private void renderMuzzleFlash(@Nullable LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, ItemStack weapon, ItemTransforms.TransformType transformType, float partialTicks)
     {
         Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
         if(modifiedGun.getDisplay().getFlash() == null)
@@ -648,7 +648,7 @@ public class GunRenderingHandler
         if(transformType != ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND && transformType != ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND && transformType != ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND && transformType != ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
             return;
 
-        if(!this.entityIdForMuzzleFlash.contains(entity.getId()))
+        if(entity == null || !this.entityIdForMuzzleFlash.contains(entity.getId()))
             return;
 
         float randomValue = this.entityIdToRandomValue.get(entity.getId());

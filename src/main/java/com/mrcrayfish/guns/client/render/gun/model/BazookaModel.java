@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**
@@ -37,11 +38,11 @@ public class BazookaModel extends SimpleModel
     }
 
     @Override
-    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
+    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, @Nullable LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, buffer, light, overlay, GunModel.wrap(this.modelSupplier.get()));
 
-        if(transformType.firstPerson() && entity.equals(Minecraft.getInstance().player))
+        if(transformType.firstPerson() && entity != null && entity.equals(Minecraft.getInstance().player))
         {
             poseStack.pushPose();
             {

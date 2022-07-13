@@ -14,29 +14,33 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemCooldowns;
 import com.mojang.math.Vector3f;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
 public class GrenadeLauncherModel implements IOverrideModel
 {
     @Override
-    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
+    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, @Nullable LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         BakedModel bakedModel = SpecialModels.GRENADE_LAUNCHER_BASE.getModel();
         Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, buffer, light, overlay, GunModel.wrap(bakedModel));
 
-        if(entity.equals(Minecraft.getInstance().player))
+        float cooldown = 0F;
+        if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
-            poseStack.pushPose();
-            poseStack.translate(0, -5.8 * 0.0625, 0);
             ItemCooldowns tracker = Minecraft.getInstance().player.getCooldowns();
-            float cooldown = tracker.getCooldownPercent(stack.getItem(), Minecraft.getInstance().getFrameTime());
+            cooldown = tracker.getCooldownPercent(stack.getItem(), Minecraft.getInstance().getFrameTime());
             cooldown = (float) easeInOutBack(cooldown);
-            poseStack.mulPose(Vector3f.ZN.rotationDegrees(45F * cooldown));
-            poseStack.translate(0, 5.8 * 0.0625, 0);
-            RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_CYLINDER.getModel(), transformType, null, stack, parent, poseStack, buffer, light, overlay);
-            poseStack.popPose();
         }
+
+        poseStack.pushPose();
+        poseStack.translate(0, -5.8 * 0.0625, 0);
+        poseStack.mulPose(Vector3f.ZN.rotationDegrees(45F * cooldown));
+        poseStack.translate(0, 5.8 * 0.0625, 0);
+        RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_CYLINDER.getModel(), transformType, null, stack, parent, poseStack, buffer, light, overlay);
+        poseStack.popPose();
     }
 
     /**

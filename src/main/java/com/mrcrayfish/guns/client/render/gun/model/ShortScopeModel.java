@@ -22,6 +22,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
@@ -32,7 +34,7 @@ public class ShortScopeModel implements IOverrideModel
     private static final ResourceLocation VIGNETTE = new ResourceLocation(Reference.MOD_ID, "textures/effect/scope_vignette.png");
 
     @Override
-    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay)
+    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, @Nullable LivingEntity entity, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay)
     {
         if(OptifineHelper.isShadersEnabled())
         {
@@ -41,7 +43,7 @@ public class ShortScopeModel implements IOverrideModel
             poseStack.scale(1.0F, 1.0F, (float) zScale);
         }
 
-        if(transformType.firstPerson() && entity.equals(Minecraft.getInstance().player))
+        if(transformType.firstPerson() && entity != null && entity.equals(Minecraft.getInstance().player))
         {
             poseStack.pushPose();
             {
