@@ -471,6 +471,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 return;
             }
 
+            if(this.shooter instanceof Player player)
+            {
+                if(entity.hasIndirectPassenger(player))
+                {
+                    return;
+                }
+            }
+
             int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
             if(fireStarterLevel > 0)
             {
