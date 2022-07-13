@@ -297,6 +297,6 @@ public class RenderUtil
             Block block = ((BlockItem) item).getBlock();
             return ItemBlockRenderTypes.getRenderType(block.defaultBlockState(), !entity);
         }
-        return entity ? Sheets.translucentItemSheet() : RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS);
+        return RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS);
     }
 }

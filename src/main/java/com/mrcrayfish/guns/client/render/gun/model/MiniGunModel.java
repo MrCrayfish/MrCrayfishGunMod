@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.guns.client.GunModel;
 import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -52,10 +53,10 @@ public class MiniGunModel implements IOverrideModel
     public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, int overlay)
     {
         Rotations rotations = this.rotationMap.computeIfAbsent(entity, uuid -> new Rotations());
-        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, SpecialModels.MINI_GUN_BASE.getModel());
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, GunModel.wrap(SpecialModels.MINI_GUN_BASE.getModel()));
         poseStack.pushPose();
         RenderUtil.rotateZ(poseStack, 0.0F, -0.375F, rotations.prevRotation + (rotations.rotation - rotations.prevRotation) * partialTicks);
-        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, SpecialModels.MINI_GUN_BARRELS.getModel());
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, GunModel.wrap(SpecialModels.MINI_GUN_BARRELS.getModel()));
         poseStack.popPose();
     }
 
