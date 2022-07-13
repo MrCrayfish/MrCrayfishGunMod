@@ -95,21 +95,6 @@ public class ShootingHandler
         }
     }
 
-    /* Prevents the right click animation playing when interacting with a block while holding a weapon */
-    @SubscribeEvent
-    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event)
-    {
-        if(event.getSide() == LogicalSide.CLIENT)
-        {
-            ItemStack heldItem = event.getItemStack();
-            if(heldItem.getItem() instanceof GunItem)
-            {
-                //event.setCancellationResult(InteractionResult.CONSUME);
-                //event.setCanceled(true);
-            }
-        }
-    }
-
     @SubscribeEvent
     public void onHandleShooting(TickEvent.ClientTickEvent event)
     {
