@@ -56,39 +56,6 @@ public class ShootingHandler
         return mc.isWindowActive();
     }
 
-    @SubscribeEvent
-    public void onKeyPressed(InputEvent.RawMouseEvent event)
-    {
-        if(!this.isInGame())
-            return;
-
-        if(event.getAction() != GLFW.GLFW_PRESS)
-            return;
-
-        Minecraft mc = Minecraft.getInstance();
-        Player player = mc.player;
-        if(player == null)
-            return;
-
-        if(PlayerReviveHelper.isBleeding(player))
-            return;
-
-        if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && AimingHandler.get().isLookingAtInteractableBlock())
-        {
-            if(player.getMainHandItem().getItem() instanceof GunItem && !AimingHandler.get().isLookingAtInteractableBlock())
-            {
-                event.setCanceled(true);
-            }
-            return;
-        }
-
-        ItemStack heldItem = player.getMainHandItem();
-        if(heldItem.getItem() instanceof GunItem && event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
-        {
-            event.setCanceled(true);
-        }
-    }
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onMouseClick(InputEvent.ClickInputEvent event)
     {
@@ -106,12 +73,24 @@ public class ShootingHandler
         if(event.isAttack())
         {
             ItemStack heldItem = player.getMainHandItem();
-            if(heldItem.getItem() instanceof GunItem)
+            if(heldItem.getItem() instanceof GunItem gunItem)
             {
                 event.setSwingHand(false);
                 event.setCanceled(true);
                 this.fire(player, heldItem);
-                mc.options.keyAttack.setDown(false);
+                Gun gun = gunItem.getModifiedGun(heldItem);
+                if(!gun.getGeneral().isAuto())
+                {
+                    mc.options.keyAttack.setDown(false);
+                }
+            }
+        }
+        else if(event.isUseItem())
+        {
+            ItemStack heldItem = player.getMainHandItem();
+            if(heldItem.getItem() instanceof GunItem && AimingHandler.get().isZooming() && AimingHandler.get().isLookingAtInteractableBlock())
+            {
+                event.setCanceled(true);
             }
         }
     }
@@ -125,8 +104,8 @@ public class ShootingHandler
             ItemStack heldItem = event.getItemStack();
             if(heldItem.getItem() instanceof GunItem)
             {
-                event.setCancellationResult(InteractionResult.CONSUME);
-                event.setCanceled(true);
+                //event.setCancellationResult(InteractionResult.CONSUME);
+                //event.setCanceled(true);
             }
         }
     }
@@ -147,7 +126,7 @@ public class ShootingHandler
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()) && !PlayerReviveHelper.isBleeding(player))
             {
-                boolean shooting = GLFW.glfwGetMouseButton(mc.getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
+                boolean shooting = mc.options.keyAttack.isDown();
                 if(GunMod.controllableLoaded)
                 {
                     shooting |= ControllerHandler.isShooting();
@@ -197,7 +176,7 @@ public class ShootingHandler
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
             {
-                if(GLFW.glfwGetMouseButton(mc.getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS)
+                if(mc.options.keyAttack.isDown())
                 {
                     Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
                     if(gun.getGeneral().isAuto())
