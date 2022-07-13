@@ -431,7 +431,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             BlockState state = this.level.getBlockState(pos);
             Block block = state.getBlock();
 
-            if(Config.COMMON.gameplay.enableGunGriefing.get() && (block instanceof HalfTransparentBlock || block instanceof IronBarsBlock) && state.getMaterial() == Material.GLASS)
+            if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && (block instanceof HalfTransparentBlock || block instanceof IronBarsBlock) && state.getMaterial() == Material.GLASS)
             {
                 this.level.destroyBlock(blockRayTraceResult.getBlockPos(), false);
             }
@@ -449,7 +449,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             this.onHitBlock(state, pos, blockRayTraceResult.getDirection(), hitVec.x, hitVec.y, hitVec.z);
 
             int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
-            if(fireStarterLevel > 0 && Config.COMMON.gameplay.enableGunGriefing.get())
+            if(fireStarterLevel > 0 && Config.COMMON.gameplay.griefing.setFireToBlocks.get())
             {
                 BlockPos offsetPos = pos.relative(blockRayTraceResult.getDirection());
                 if(BaseFireBlock.canBePlacedAt(this.level, offsetPos, blockRayTraceResult.getDirection()))
@@ -773,7 +773,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return;
 
         DamageSource source = entity instanceof ProjectileEntity projectile ? DamageSource.explosion(projectile.getShooter()) : null;
-        Explosion.BlockInteraction mode = Config.COMMON.gameplay.enableGunGriefing.get() && !forceNone ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE;
+        Explosion.BlockInteraction mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE;
         Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 
         if(net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))

@@ -179,7 +179,7 @@ public class Config
      */
     public static class Gameplay
     {
-        public final ForgeConfigSpec.BooleanValue enableGunGriefing;
+        public final Griefing griefing;
         public final ForgeConfigSpec.DoubleValue growBoundingBoxAmount;
         public final ForgeConfigSpec.BooleanValue enableHeadShots;
         public final ForgeConfigSpec.DoubleValue headShotDamageMultiplier;
@@ -193,7 +193,7 @@ public class Config
         {
             builder.comment("Properties relating to gameplay").push("gameplay");
             {
-                this.enableGunGriefing = builder.comment("If enable, allows guns to shoot out glass and remove blocks on explosions").define("enableGunGriefing", true);
+                this.griefing = new Griefing(builder);
                 this.growBoundingBoxAmount = builder.comment("The extra amount to expand an entity's bounding box when checking for projectile collision. Setting this value higher will make it easier to hit entities").defineInRange("growBoundingBoxAmount", 0.3, 0.0, 1.0);
                 this.enableHeadShots = builder.comment("Enables the check for head shots for players. Projectiles that hit the head of a player will have increased damage.").define("enableHeadShots", true);
                 this.headShotDamageMultiplier = builder.comment("The value to multiply the damage by if projectile hit the players head").defineInRange("headShotDamageMultiplier", 1.25, 1.0, Double.MAX_VALUE);
@@ -202,6 +202,27 @@ public class Config
                 this.enableKnockback = builder.comment("If true, projectiles will cause knockback when an entity is hit. By default this is set to true to match the behaviour of Minecraft.").define("enableKnockback", true);
                 this.knockbackStrength = builder.comment("Sets the strengthof knockback when shot by a bullet projectile. Knockback must be enabled for this to take effect. If value is equal to zero, knockback will use default minecraft value").defineInRange("knockbackStrength", 0.15, 0.0, 1.0);
                 this.improvedHitboxes = builder.comment("If true, improves the accuracy of weapons by considering the ping of the player. This has no affect on singleplayer. This will add a little overhead if enabled.").define("improvedHitboxes", false);
+            }
+            builder.pop();
+        }
+    }
+
+    /**
+     * Gun griefing related config options
+     */
+    public static class Griefing
+    {
+        public final ForgeConfigSpec.BooleanValue enableBlockRemovalOnExplosions;
+        public final ForgeConfigSpec.BooleanValue enableGlassBreaking;
+        public final ForgeConfigSpec.BooleanValue setFireToBlocks;
+
+        public Griefing(ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Properties related to gun griefing").push("griefing");
+            {
+                this.enableBlockRemovalOnExplosions = builder.comment("If enabled, allows block removal on explosions").define("enableBlockRemovalOnExplosions", true);
+                this.enableGlassBreaking = builder.comment("If enabled, allows guns to shoot out glass").define("enableGlassBreaking", true);
+                this.setFireToBlocks = builder.comment("If true, allows guns enchanted with Fire Starter to light and spread fires on blocks").define("setFireToBlocks", true);
             }
             builder.pop();
         }
