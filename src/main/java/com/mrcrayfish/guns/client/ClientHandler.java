@@ -170,7 +170,7 @@ public class ClientHandler
     }
 
     @SubscribeEvent
-    public static void onKeyPressed(InputEvent.InteractionKeyMappingTriggered event)
+    public static void onKeyPressed(InputEvent.Key event)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.screen == null)
