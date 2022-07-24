@@ -74,14 +74,14 @@ public class EotechShortSightModel implements IOverrideModel
         float green = ((glassGlowColor >> 8) & 0xFF) / 255F;
         float blue = ((glassGlowColor >> 0) & 0xFF) / 255F;
 
-        matrixStack.translate(0, 0.055, -0.15);
+        matrixStack.translate(0, 0.055, -0.1375);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
         matrixStack.translate(0, -0.049, 0);
         matrixStack.pop();
         matrixStack.push();
-        matrixStack.translate(0, 0.006, -0.15);
+        matrixStack.translate(0, 0.006, -0.1375);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "eotechshort" ? new ScopeData("") : ScopeEditor.get().getScopeData();
@@ -100,11 +100,11 @@ public class EotechShortSightModel implements IOverrideModel
 
                 //matrixStack.translate(0, 0, -0.2);
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(-size / 2, (1.38 + scopeData.getReticleYMod()+0.47275) * 0.0625, (0.075 + scopeData.getReticleZMod() + (!Config.COMMON.gameplay.redDotSquish2D.get() ? 1.2625 : 0)) * 0.0625);
+                matrixStack.translate(((-size / 2) -0.002015 + scopeData.getReticleXMod()), (1.38 + 0.03308125 + scopeData.getReticleYMod()+0.47275) * 0.0625, (0.075 + scopeData.getReticleZMod() + (!Config.COMMON.gameplay.redDotSquish2D.get() ? 1.2625 : 0)) * 0.0625);
                 IVertexBuilder builder;
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
-                double scale = 3.75 -0.49499965 + scopeData.getReticleSizeMod();
+                double scale = 3.75 -0.49499965 -2.3025033 + 0.38249975 + scopeData.getReticleSizeMod();
                 matrixStack.translate(size / 2, size / 2, 0);
                 matrixStack.translate(-(size / scale) / 2, -(size / scale) / 2, 0);
                 matrixStack.translate(0, 0, 0.0001);

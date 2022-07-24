@@ -4,6 +4,8 @@ import com.google.gson.GsonBuilder;
 import com.tac.guns.Config;
 import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.tooling.CommandsHandler;
+import com.tac.guns.common.tooling.CommandsManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -60,14 +62,68 @@ public class GuiEditor
         public int getSizeYMod() {return sizeXMod;}
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onKeyPressed(GuiScreenEvent.KeyboardKeyEvent event) {
         // Basics overview
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null)
             return;
-        if (!Config.COMMON.development.enableTDev.get())
+        if (!Config.COMMON.development.enableTDev.get() && CommandsHandler.get().getCatCurrentIndex() == 3)
             return;
+        if(event.getKeyCode() == GLFW.GLFW_KEY_1)
+        {
+            this.currElement = 1;
+            event.setCanceled(true);
+            return;
+        }
+        else if(event.getKeyCode() == GLFW.GLFW_KEY_2)
+        {
+            this.currElement = 2;
+            event.setCanceled(true);
+            return;
+        }
+        else if(event.getKeyCode() == GLFW.GLFW_KEY_3)
+        {
+            this.currElement = 3;
+            event.setCanceled(true);
+            return;
+        }
+        else if(event.getKeyCode() == GLFW.GLFW_KEY_4)
+        {
+            this.currElement = 4;
+            event.setCanceled(true);
+            return;
+        }
+        else if(event.getKeyCode() == GLFW.GLFW_KEY_5)
+        {
+            this.currElement = 5;
+            event.setCanceled(true);
+            return;
+        }
+        else if(event.getKeyCode() == GLFW.GLFW_KEY_6)
+        {
+            this.currElement = 6;
+            event.setCanceled(true);
+            return;
+        }
+        else if(event.getKeyCode() == GLFW.GLFW_KEY_7)
+        {
+            this.currElement = 7;
+            event.setCanceled(true);
+            return;
+        }
+        else if(event.getKeyCode() == GLFW.GLFW_KEY_8)
+        {
+            this.currElement = 8;
+            event.setCanceled(true);
+            return;
+        }
+        else if(event.getKeyCode() == GLFW.GLFW_KEY_9)
+        {
+            this.currElement = 9;
+            event.setCanceled(true);
+            return;
+        }
 
         boolean isLeft = event.getKeyCode() == GLFW.GLFW_KEY_LEFT;
         boolean isRight = event.getKeyCode() == GLFW.GLFW_KEY_RIGHT;
@@ -118,11 +174,6 @@ public class GuiEditor
             GsonBuilder gsonB = new GsonBuilder().setLenient().addSerializationExclusionStrategy(Gun.strategy).setPrettyPrinting();
 
             String jsonString = gsonB.create().toJson(data);//gson.toJson(ch.getCatGlobal(1).get(this.previousWeaponTag));
-            jsonString += "\nSCOPE"+gsonB.create().toJson(data.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("Scope").toString());
-            jsonString += "\nBARREL"+gsonB.create().toJson(data.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("Barrel").toString());
-            jsonString += "\nOLD_SCOPE"+gsonB.create().toJson(data.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("OldScope").toString());
-            jsonString += "\nPISTOL_SCOPE"+gsonB.create().toJson(data.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("PistolScope").toString());
-            jsonString += "\nPISTOL_BARREL"+gsonB.create().toJson(data.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("PistolBarrel").toString());
             this.writeExport(jsonString, "gui_"+name);
         });
     }

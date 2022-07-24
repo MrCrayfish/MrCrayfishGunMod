@@ -945,7 +945,7 @@ public class GunEditor
             FileWriter dataWriter = new FileWriter (dir.getAbsolutePath() +"\\"+ name + "_export.json");
             dataWriter.write(jsonString);
             dataWriter.close();
-            LOGGER.log(Level.INFO, "WEAPON EDITOR EXPORTED FILE ( "+name + "export.txt ). BE PROUD!");
+            LOGGER.log(Level.INFO, "WEAPON EDITOR EXPORTED FILE ( "+name + "_export.txt ). BE PROUD!");
         }
         catch (IOException e)
         {

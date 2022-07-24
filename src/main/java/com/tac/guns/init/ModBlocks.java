@@ -37,7 +37,7 @@ public class ModBlocks
             Block.spawnAsEntity((World) worldIn,pos,this.getBlock().getItem(worldIn,pos,state));
         }*/
     },true);
-    public static final RegistryObject<Block> UPGRADE_BENCH = register("upgrade_bench", () -> new UpgradeBenchBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(3F))
+    public static final RegistryObject<UpgradeBenchBlock> UPGRADE_BENCH = register("upgrade_bench", () -> new UpgradeBenchBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(3F))
     {
         /*@Override
         public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state)

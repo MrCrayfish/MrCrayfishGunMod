@@ -6,6 +6,8 @@ import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
@@ -53,31 +55,47 @@ public class CoyoteSightModel implements IOverrideModel
             matrixStack.scale(1.0F, 1.0F, (float) zScale);
 
         }
+        else if (transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+            double prog = 0;
+            if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
+                prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 1.1875;
+                double transition = 1.0D - Math.pow(1.0D - prog, 2.0D);
+                double zScale = 0.05D + 0.95D * (1.0D - transition);
+                matrixStack.scale(1.0F, 1.0F, (float) zScale);
+            }
+            else {
+                double transition = 1.0D - Math.pow(1.0D - prog, 2.0D);
+                double zScale = 0.05D + 0.95D * (1.0D - transition);
+                matrixStack.scale(1.0F, 1.0F, (float) zScale);
+            }
+
+        }
         int bodyColor = RenderUtil.getItemStackColor(stack, parent, IAttachment.Type.SCOPE_BODY_COLOR,0);
 
-        matrixStack.translate(0, 0.074, 0);
+        matrixStack.translate(0, 0.074, -0.035);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
         matrixStack.translate(0, -0.030, 0);
         matrixStack.pop();
-        matrixStack.translate(0, 0.044, 0);
+        matrixStack.translate(0, 0.044, -0.035);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
+            ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "coyote" ? new ScopeData("") : ScopeEditor.get().getScopeData();
             matrixStack.push();
             {
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(-size / 2, 0.85 * 0.0625, 0.075 * 0.0625);
+                matrixStack.translate(((-size / 2) -0.0035 + scopeData.getReticleXMod()), (0.85 -0.164 + scopeData.getReticleYMod()) * 0.0625, (0.075 + scopeData.getReticleZMod()) * 0.0625);
 
                 IVertexBuilder builder;
 
                 double invertProgress = (1.0 - AimingHandler.get().getNormalisedAdsProgress());
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
-                double scale = 4.0;
+                double scale = 4.0 -3.2175052 + scopeData.getReticleSizeMod();
                 matrixStack.translate(size / 2, size / 2, 0);
                 matrixStack.translate(-(size / scale) / 2, -(size / scale) / 2, 0);
                 matrixStack.translate(0, 0, 0.0001);

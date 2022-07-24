@@ -13,10 +13,8 @@ import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.gun.model.*;
 import com.tac.guns.client.screen.*;
 import com.tac.guns.client.settings.GunOptions;
-import com.tac.guns.init.ModBlocks;
-import com.tac.guns.init.ModContainers;
-import com.tac.guns.init.ModEntities;
-import com.tac.guns.init.ModItems;
+import com.tac.guns.client.util.WorldItemRenderUtil;
+import com.tac.guns.init.*;
 import com.tac.guns.item.IColored;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAttachments;
@@ -38,6 +36,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -76,6 +75,9 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(GuiEditor.get());
         MinecraftForge.EVENT_BUS.register(GunEditor.get());
         MinecraftForge.EVENT_BUS.register(ScopeEditor.get());
+
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), WorldItemRenderUtil::new);
+
         KeyBinds.register();
 
         setupRenderLayers();

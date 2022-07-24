@@ -56,8 +56,8 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
     private static final ResourceLocation GUI_BASE = new ResourceLocation("tac:textures/gui/workbench.png");
     private static boolean showRemaining = false;
 
-    private Tab currentTab;
-    private List<Tab> tabs = new ArrayList<>();
+    /*private Tab currentTab;
+    private List<Tab> tabs = new ArrayList<>();*/
     private List<MaterialItem> materials;
     private List<MaterialItem> filteredMaterials;
     private PlayerInventory playerInventory;
@@ -75,10 +75,10 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         this.ySize = 184;
         this.materials = new ArrayList<>();
         //this.createTabs(WorkbenchRecipes.getAll(playerInventory.player.world));
-        if(!this.tabs.isEmpty())
+        /*if(!this.tabs.isEmpty())
         {
             this.ySize += 28;
-        }
+        }*/
     }
 
     /*private void createTabs(NonNullList<WorkbenchRecipe> recipes)
@@ -159,10 +159,10 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
     public void init()
     {
         super.init();
-        if(!this.tabs.isEmpty())
+        /*if(!this.tabs.isEmpty())
         {
             this.guiTop += 28;
-        }
+        }*/
 
         GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
         if(GuiEditor.get() != null)
@@ -170,45 +170,25 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             if(GuiEditor.get().currElement == 1 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
                 data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
         }
-        this.addButton(new Button(this.guiLeft + 9 + data.getxMod(), this.guiTop + 18 + data.getyMod(), 15+data.getxMod(), 20+data.getSizeXMod(), new StringTextComponent("<"), button ->
+        this.addButton(new Button(this.guiLeft + 9 + data.getxMod(), this.guiTop + 18 + data.getyMod(), 15+data.getSizeXMod(), 20+data.getSizeYMod(), new StringTextComponent("<"), button ->
         {
-            int index = this.currentTab.getCurrentIndex();
-            if(index - 1 < 0)
-            {
-                this.loadItem(this.currentTab.getRecipes().size() - 1);
-            }
-            else
-            {
-                this.loadItem(index - 1);
-            }
+            // Apply module to held item
         }));
         this.addButton(new Button(this.guiLeft + 153, this.guiTop + 18, 15, 20, new StringTextComponent(">"), button ->
         {
-            int index = this.currentTab.getCurrentIndex();
-            if(index + 1 >= this.currentTab.getRecipes().size())
-            {
-                this.loadItem(0);
-            }
-            else
-            {
-                this.loadItem(index + 1);
-            }
+            // Apply module to held item
         }));
-        this.btnCraft = this.addButton(new Button(this.guiLeft + 195, this.guiTop + 16, 74, 20, new TranslationTextComponent("gui.tac.workbench.assemble"), button ->
+        /*this.btnCraft = this.addButton(new Button(this.guiLeft + 195, this.guiTop + 16, 74, 20, new TranslationTextComponent("gui.tac.workbench.assemble"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
             ResourceLocation registryName = recipe.getId();
             PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getPos()));
-        }));
-        this.btnCraft.active = false;
-        this.checkBoxMaterials = this.addButton(new CheckBox(this.guiLeft + 172, this.guiTop + 51, new TranslationTextComponent("gui.tac.workbench.show_remaining")));
-        this.checkBoxMaterials.setToggled(UpgradeBenchScreen.showRemaining);
-    //        this.loadItem(this.currentTab.getCurrentIndex());
+        }));*/
     }
 
     @Override
-    public void tick()
+    public void tick() // Can the player apply the current module? check recipe along with progression on a weapon
     {
         super.tick();
 
@@ -226,46 +206,9 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                 break;
             }
         }
-
-        this.btnCraft.active = canCraft;
-        this.updateColor();
         this.init();
     }
-
-    private void updateColor()
-    {
-        if(this.currentTab != null)
-        {
-            ItemStack item = this.displayStack;
-            if(item.getItem() instanceof IColored && ((IColored) item.getItem()).canColor(item))
-            {
-                IColored colored = (IColored) item.getItem();
-                if(!this.workbench.getStackInSlot(0).isEmpty())
-                {
-                    ItemStack dyeStack = this.workbench.getStackInSlot(0);
-                    if(dyeStack.getItem() instanceof DyeItem)
-                    {
-                        DyeColor color = ((DyeItem) dyeStack.getItem()).getDyeColor();
-                        float[] components = color.getColorComponentValues();
-                        int red = (int) (components[0] * 255F);
-                        int green = (int) (components[1] * 255F);
-                        int blue = (int) (components[2] * 255F);
-                        colored.setColor(item, ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF)));
-                    }
-                    else
-                    {
-                        colored.removeColor(item);
-                    }
-                }
-                else
-                {
-                    colored.removeColor(item);
-                }
-            }
-        }
-    }
-
-    @Override
+    /*@Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
         boolean result = super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -283,29 +226,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         }
 
         return result;
-    }
-
-    private void loadItem(int index)
-    {
-        WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
-        this.displayStack = recipe.getItem().copy();
-        this.updateColor();
-
-        this.materials.clear();
-
-        List<ItemStack> materials = recipe.getMaterials();
-        if(materials != null)
-        {
-            for(ItemStack material : materials)
-            {
-                MaterialItem item = new MaterialItem(material);
-                item.update();
-                this.materials.add(item);
-            }
-
-            this.currentTab.setCurrentIndex(index);
-        }
-    }
+    }*/
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
@@ -317,14 +238,14 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         int startX = this.guiLeft;
         int startY = this.guiTop;
 
-        for(int i = 0; i < this.tabs.size(); i++)
+        /*for(int i = 0; i < this.tabs.size(); i++)
         {
             if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY - 28, 28, 28))
             {
                 this.renderTooltip(matrixStack, new TranslationTextComponent(this.tabs.get(i).getTabKey()), mouseX, mouseY);
                 return;
             }
-        }
+        }*/
 
         if (this.filteredMaterials == null)
             return;
@@ -343,17 +264,17 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             }
         }
 
-        if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 8, startY + 38, 160, 48))
+        /*if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 8, startY + 38, 160, 48))
         {
             this.renderTooltip(matrixStack, this.displayStack, mouseX, mouseY);
-        }
+        }*/
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        int offset = this.tabs.isEmpty() ? 0 : 28;
-        this.font.func_243248_b(matrixStack, this.title, (float)this.titleX, (float)this.titleY - 28 + offset, 4210752);
+        //int offset = this.tabs.isEmpty() ? 0 : 28;
+        //this.font.func_243248_b(matrixStack, this.title, (float)this.titleX, (float)this.titleY - 28 + offset, 4210752);
     }
 
     @Override
@@ -367,35 +288,11 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
         RenderSystem.enableBlend();
 
-        /* Draw unselected tabs */
-        for(int i = 0; i < this.tabs.size(); i++)
-        {
-            Tab tab = this.tabs.get(i);
-            if(tab != this.currentTab)
-            {
-                this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-                this.blit(matrixStack, startX + 28 * i, startY - 28, 80, 184, 28, 32);
-                Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(tab.getIcon(), startX + 28 * i + 6, startY - 28 + 8);
-                Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, tab.getIcon(), startX + 28 * i + 6, startY - 28 + 8, null);
-            }
-        }
-
         this.minecraft.getTextureManager().bindTexture(GUI_BASE);
         this.blit(matrixStack, startX, startY, 0, 0, 173, 184);
         blit(matrixStack, startX + 173, startY, 78, 184, 173, 0, 1, 184, 256, 256);
         this.blit(matrixStack, startX + 251, startY, 174, 0, 24, 184);
         this.blit(matrixStack, startX + 172, startY + 16, 198, 0, 20, 20);
-
-        /* Draw selected tab */
-        if(this.currentTab != null)
-        {
-            int i = this.tabs.indexOf(this.currentTab);
-            int u = i == 0 ? 80 : 108;
-            this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-            this.blit(matrixStack, startX + 28 * i, startY - 28, u, 214, 28, 32);
-            Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(this.currentTab.getIcon(), startX + 28 * i + 6, startY - 28 + 8);
-            Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, this.currentTab.getIcon(), startX + 28 * i + 6, startY - 28 + 8, null);
-        }
 
         this.minecraft.getTextureManager().bindTexture(GUI_BASE);
 
@@ -404,7 +301,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             this.blit(matrixStack, startX + 174, startY + 18, 165, 199, 16, 16);
         }
 
-        ItemStack currentItem = this.displayStack;
+        ItemStack currentItem = this.workbench.getStackInSlot(0);//this.displayStack;
         if(currentItem == null)
             return;
         StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getString());
@@ -436,13 +333,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
-
-            if(ModelOverrides.hasModel(currentItem) && currentItem.getItem() instanceof ScopeItem || currentItem.getItem() instanceof OldScopeItem || currentItem.getItem() instanceof PistolScopeItem) {
-                matrixStack.scale(2,2,2);
-                GunRenderingHandler.get().renderScope(this.minecraft.player, currentItem, ItemCameraTransforms.TransformType.HEAD, matrixStack, buffer, 15728880, 0F); // GROUND, matrixStack, buffer, 15728880, 0F);
-                matrixStack.scale(0.5f,0.5f,0.5f);
-            }else
-                Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.FIXED, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
+            Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.FIXED, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
 
             buffer.finish();
 
@@ -507,82 +398,31 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         }
         return materials;
     }
-
-    public List<Tab> getTabs()
-    {
-        return ImmutableList.copyOf(this.tabs);
-    }
-
-    public static class MaterialItem
-    {
+    public static class MaterialItem {
         public static final MaterialItem EMPTY = new MaterialItem();
 
         private boolean enabled = false;
         private ItemStack stack = ItemStack.EMPTY;
 
-        private MaterialItem() {}
+        private MaterialItem() {
+        }
 
-        private MaterialItem(ItemStack stack)
-        {
+        private MaterialItem(ItemStack stack) {
             this.stack = stack;
         }
 
-        public ItemStack getStack()
-        {
+        public ItemStack getStack() {
             return stack;
         }
 
-        public void update()
-        {
-            if(!this.stack.isEmpty())
-            {
+        public void update() {
+            if (!this.stack.isEmpty()) {
                 this.enabled = InventoryUtil.hasItemStack(Minecraft.getInstance().player, this.stack);
             }
         }
 
-        public boolean isEnabled()
-        {
+        public boolean isEnabled() {
             return this.stack.isEmpty() || this.enabled;
-        }
-    }
-
-    private static class Tab
-    {
-        private final ItemStack icon;
-        private final String id;
-        private final List<WorkbenchRecipe> items;
-        private int currentIndex;
-
-        public Tab(ItemStack icon, String id, List<WorkbenchRecipe> items)
-        {
-            this.icon = icon;
-            this.id = id;
-            this.items = items;
-        }
-
-        public ItemStack getIcon()
-        {
-            return this.icon;
-        }
-
-        public String getTabKey()
-        {
-            return "gui.tac.workbench.tab." + this.id;
-        }
-
-        public void setCurrentIndex(int currentIndex)
-        {
-            this.currentIndex = currentIndex;
-        }
-
-        public int getCurrentIndex()
-        {
-            return this.currentIndex;
-        }
-
-        public List<WorkbenchRecipe> getRecipes()
-        {
-            return this.items;
         }
     }
 }

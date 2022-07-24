@@ -34,7 +34,7 @@ public class UpgradeBenchContainer extends Container
             @Override
             public boolean isItemValid(ItemStack stack)
             {
-                return stack.getItem() instanceof GunItem;
+                return true;
             }
 
             @Override
@@ -44,7 +44,7 @@ public class UpgradeBenchContainer extends Container
             }
         });
 
-        for(int y = 0; y < 3; y++)
+        /*for(int y = 0; y < 3; y++)
         {
             for(int x = 0; x < 9; x++)
             {
@@ -55,16 +55,16 @@ public class UpgradeBenchContainer extends Container
         for(int x = 0; x < 9; x++)
         {
             this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 160));
-        }
-    }
+        }*/
 
+    }
     @Override
     public boolean canInteractWith(PlayerEntity playerIn)
     {
         return upgradeBench.isUsableByPlayer(playerIn);
     }
 
-    /*@Override
+    @Override
     public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
     {
         ItemStack stack = ItemStack.EMPTY;
@@ -122,7 +122,7 @@ public class UpgradeBenchContainer extends Container
         }
 
         return stack;
-    }*/
+    }
 
     public UpgradeBenchTileEntity getBench()
     {
