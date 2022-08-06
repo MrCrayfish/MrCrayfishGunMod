@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageBulletTrail extends PlayMessage<MessageBulletTrail>
+public class S2CMessageBulletTrail extends PlayMessage<S2CMessageBulletTrail>
 {
     private int[] entityIds;
     private Vec3[] positions;
@@ -33,9 +33,9 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail>
     private boolean enchanted;
     private ParticleOptions particleData;
 
-    public MessageBulletTrail() {}
+    public S2CMessageBulletTrail() {}
 
-    public <T extends ParticleOptions> MessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId, T particleData)
+    public S2CMessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId, ParticleOptions particleData)
     {
         this.positions = new Vec3[spawnedProjectiles.length];
         this.motions = new Vec3[spawnedProjectiles.length];
@@ -57,7 +57,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail>
         this.particleData = particleData;
     }
 
-    public MessageBulletTrail(int[] entityIds, Vec3[] positions, Vec3[] motions, ItemStack item, int trailColor, double trailLengthMultiplier, int life, double gravity, int shooterId, boolean enchanted, ParticleOptions particleData)
+    public S2CMessageBulletTrail(int[] entityIds, Vec3[] positions, Vec3[] motions, ItemStack item, int trailColor, double trailLengthMultiplier, int life, double gravity, int shooterId, boolean enchanted, ParticleOptions particleData)
     {
         this.entityIds = entityIds;
         this.positions = positions;
@@ -73,7 +73,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail>
     }
 
     @Override
-    public void encode(MessageBulletTrail message, FriendlyByteBuf buffer)
+    public void encode(S2CMessageBulletTrail message, FriendlyByteBuf buffer)
     {
         buffer.writeInt(message.entityIds.length);
         for(int i = 0; i < message.entityIds.length; i++)
@@ -94,7 +94,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail>
     }
 
     @Override
-    public MessageBulletTrail decode(FriendlyByteBuf buffer)
+    public S2CMessageBulletTrail decode(FriendlyByteBuf buffer)
     {
         int size = buffer.readInt();
         int[] entityIds = new int[size];
@@ -116,7 +116,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail>
         ParticleType<?> type = Registry.PARTICLE_TYPE.byId(buffer.readInt());
         if (type == null) type = ParticleTypes.CRIT;
         ParticleOptions particleData = this.readParticle(buffer, type);
-        return new MessageBulletTrail(entityIds, positions, motions, item, trailColor, trailLengthMultiplier, life, gravity,shooterId, enchanted, particleData);
+        return new S2CMessageBulletTrail(entityIds, positions, motions, item, trailColor, trailLengthMultiplier, life, gravity,shooterId, enchanted, particleData);
     }
 
     private <T extends ParticleOptions> T readParticle(FriendlyByteBuf buffer, ParticleType<T> type)
@@ -125,7 +125,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail>
     }
 
     @Override
-    public void handle(MessageBulletTrail message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageBulletTrail message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBulletTrail(message));
         supplier.get().setPacketHandled(true);

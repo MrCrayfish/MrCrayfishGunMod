@@ -8,31 +8,31 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageAim extends PlayMessage<MessageAim>
+public class C2SMessageAim extends PlayMessage<C2SMessageAim>
 {
 	private boolean aiming;
 
-	public MessageAim() {}
+	public C2SMessageAim() {}
 
-	public MessageAim(boolean aiming)
+	public C2SMessageAim(boolean aiming)
 	{
 		this.aiming = aiming;
 	}
 
 	@Override
-	public void encode(MessageAim message, FriendlyByteBuf buffer)
+	public void encode(C2SMessageAim message, FriendlyByteBuf buffer)
 	{
 		buffer.writeBoolean(message.aiming);
 	}
 
 	@Override
-	public MessageAim decode(FriendlyByteBuf buffer)
+	public C2SMessageAim decode(FriendlyByteBuf buffer)
 	{
-		return new MessageAim(buffer.readBoolean());
+		return new C2SMessageAim(buffer.readBoolean());
 	}
 
 	@Override
-	public void handle(MessageAim message, Supplier<NetworkEvent.Context> supplier)
+	public void handle(C2SMessageAim message, Supplier<NetworkEvent.Context> supplier)
 	{
 		supplier.get().enqueueWork(() ->
 		{

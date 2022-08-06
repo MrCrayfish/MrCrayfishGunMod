@@ -8,7 +8,7 @@ import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageAim;
+import com.mrcrayfish.guns.network.message.C2SMessageAim;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.CameraType;
@@ -118,14 +118,14 @@ public class AimingHandler
             if(!this.aiming)
             {
                 ModSyncedDataKeys.AIMING.setValue(player, true);
-                PacketHandler.getPlayChannel().sendToServer(new MessageAim(true));
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAim(true));
                 this.aiming = true;
             }
         }
         else if(this.aiming)
         {
             ModSyncedDataKeys.AIMING.setValue(player, false);
-            PacketHandler.getPlayChannel().sendToServer(new MessageAim(false));
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageAim(false));
             this.aiming = false;
         }
 

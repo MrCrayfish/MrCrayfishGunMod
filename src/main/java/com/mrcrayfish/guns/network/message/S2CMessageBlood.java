@@ -10,15 +10,15 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageBlood extends PlayMessage<MessageBlood>
+public class S2CMessageBlood extends PlayMessage<S2CMessageBlood>
 {
     private double x;
     private double y;
     private double z;
 
-    public MessageBlood() {}
+    public S2CMessageBlood() {}
 
-    public MessageBlood(double x, double y, double z)
+    public S2CMessageBlood(double x, double y, double z)
     {
         this.x = x;
         this.y = y;
@@ -26,7 +26,7 @@ public class MessageBlood extends PlayMessage<MessageBlood>
     }
 
     @Override
-    public void encode(MessageBlood message, FriendlyByteBuf buffer)
+    public void encode(S2CMessageBlood message, FriendlyByteBuf buffer)
     {
         buffer.writeDouble(message.x);
         buffer.writeDouble(message.y);
@@ -34,13 +34,13 @@ public class MessageBlood extends PlayMessage<MessageBlood>
     }
 
     @Override
-    public MessageBlood decode(FriendlyByteBuf buffer)
+    public S2CMessageBlood decode(FriendlyByteBuf buffer)
     {
-        return new MessageBlood(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+        return new S2CMessageBlood(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
 
     @Override
-    public void handle(MessageBlood message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageBlood message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBlood(message));
         supplier.get().setPacketHandled(true);

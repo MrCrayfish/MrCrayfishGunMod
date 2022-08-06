@@ -6,8 +6,8 @@ import com.mrcrayfish.guns.event.GunReloadEvent;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageReload;
-import com.mrcrayfish.guns.network.message.MessageUnload;
+import com.mrcrayfish.guns.network.message.C2SMessageReload;
+import com.mrcrayfish.guns.network.message.C2SMessageUnload;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -89,7 +89,7 @@ public class ReloadHandler
         if(KeyBinds.KEY_UNLOAD.consumeClick() && event.getAction() == GLFW.GLFW_PRESS)
         {
             this.setReloading(false);
-            PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
         }
     }
 
@@ -112,7 +112,7 @@ public class ReloadHandler
                         if(MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                             return;
                         ModSyncedDataKeys.RELOADING.setValue(player, true);
-                        PacketHandler.getPlayChannel().sendToServer(new MessageReload(true));
+                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true));
                         this.reloadingSlot = player.getInventory().selected;
                         MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack));
                     }
@@ -121,7 +121,7 @@ public class ReloadHandler
             else
             {
                 ModSyncedDataKeys.RELOADING.setValue(player, false);
-                PacketHandler.getPlayChannel().sendToServer(new MessageReload(false));
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(false));
                 this.reloadingSlot = -1;
             }
         }
