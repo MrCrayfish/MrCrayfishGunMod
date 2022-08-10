@@ -1,12 +1,16 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
+import com.tac.guns.client.render.animation.impl.AnimationMeta;
+import com.tac.guns.client.render.animation.impl.Animations;
+import com.tac.guns.client.render.animation.impl.GunAnimationController;
+import com.tac.guns.client.render.animation.impl.PistalAnimationController;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
-public class Deagle50AnimationController extends PistalAnimationController{
+public class Deagle50AnimationController extends PistalAnimationController {
     public static int INDEX_BODY = 2;
 
     public static int INDEX_SLIDE = 1;
@@ -23,6 +27,8 @@ public class Deagle50AnimationController extends PistalAnimationController{
 
     public static final AnimationMeta RELOAD_EMPTY = new AnimationMeta(new ResourceLocation("tac","animations/deagle_50_reload_empty.gltf"));
 
+    public static final AnimationMeta INSPECT = new AnimationMeta(new ResourceLocation("tac","animations/deagle_50_inspect.gltf"));
+
     private static final Deagle50AnimationController instance = new Deagle50AnimationController();
 
     @Override
@@ -31,6 +37,7 @@ public class Deagle50AnimationController extends PistalAnimationController{
             case RELOAD_NORMAL: return RELOAD_NORM;
             case RELOAD_EMPTY: return RELOAD_EMPTY;
             case DRAW: return DRAW;
+            case INSPECT: return INSPECT;
             default: return null;
         }
     }
@@ -40,6 +47,7 @@ public class Deagle50AnimationController extends PistalAnimationController{
             Animations.load(RELOAD_NORM);
             Animations.load(RELOAD_EMPTY);
             Animations.load(DRAW);
+            Animations.load(INSPECT);
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }

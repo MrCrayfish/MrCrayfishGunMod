@@ -349,5 +349,23 @@
       "sounds": [
          { "name": "tac:animation/hk416_a5_reload_empty"}
       ]
+   },
+   "animation.hk416_a5_reload": {
+      "subtitle": "animation.hk416_a5_reload",
+      "sounds": [
+         { "name": "tac:animation/hk416_a5_reload"}
+      ]
+   },
+   "animation.hk416_a5_draw": {
+      "subtitle": "animation.hk416_a5_draw",
+      "sounds": [
+         { "name": "tac:animation/hk416_a5_draw"}
+      ]
+   },
+   "animation.hk416_a5_inspect": {
+      "subtitle": "animation.hk416_a5_inspect",
+      "sounds": [
+         { "name": "tac:animation/hk416_a5_inspect"}
+      ]
    }
 }

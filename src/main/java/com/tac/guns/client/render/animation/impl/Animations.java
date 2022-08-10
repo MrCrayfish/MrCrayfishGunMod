@@ -1,7 +1,6 @@
-package com.tac.guns.client.render.animation;
+package com.tac.guns.client.render.animation.impl;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tac.guns.GunMod;
 import de.javagl.jgltf.model.GltfAnimations;
 import de.javagl.jgltf.model.NodeModel;
 import de.javagl.jgltf.model.animation.Animation;
@@ -15,9 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;

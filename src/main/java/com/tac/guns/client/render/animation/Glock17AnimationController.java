@@ -1,13 +1,16 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
+import com.tac.guns.client.render.animation.impl.AnimationMeta;
+import com.tac.guns.client.render.animation.impl.Animations;
+import com.tac.guns.client.render.animation.impl.GunAnimationController;
+import com.tac.guns.client.render.animation.impl.PistalAnimationController;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.system.CallbackI;
 
 import java.io.IOException;
 
-public class Glock17AnimationController extends PistalAnimationController{
+public class Glock17AnimationController extends PistalAnimationController {
 
     public static int INDEX_BODY = 3;
 

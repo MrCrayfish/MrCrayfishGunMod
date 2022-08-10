@@ -42,8 +42,10 @@
   },
   "sounds": {
     "fire": "tac:item.sig552",
-    "reload": "tac:item.pistol.reload",
-    "cock": "tac:animation.hk416_a5_reload_empty",
+    "reloadNormal": "tac:animation.hk416_a5_reload",
+    "reloadEmpty": "tac:animation.hk416_a5_reload_empty",
+    "draw": "tac:animation.hk416_a5_draw",
+    "inspect": "tac:animation.hk416_a5_inspect",
     "silencedFire": "tac:item.sig552s"
   },
   "display": {

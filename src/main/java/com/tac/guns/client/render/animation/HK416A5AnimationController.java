@@ -1,6 +1,10 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
+import com.tac.guns.client.render.animation.impl.AnimationMeta;
+import com.tac.guns.client.render.animation.impl.AnimationSoundMeta;
+import com.tac.guns.client.render.animation.impl.Animations;
+import com.tac.guns.client.render.animation.impl.GunAnimationController;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
 
@@ -15,6 +19,7 @@ public class HK416A5AnimationController extends GunAnimationController{
     public static final AnimationMeta RELOAD_NORM = new AnimationMeta(new ResourceLocation("tac","animations/hk416_a5_reload_norm.gltf"));
     public static final AnimationMeta RELOAD_EMPTY = new AnimationMeta(new ResourceLocation("tac","animations/hk416_a5_reload_empty.gltf"));
     public static final AnimationMeta DRAW = new AnimationMeta(new ResourceLocation("tac","animations/hk416_a5_draw.gltf"));
+    public static final AnimationMeta INSPECT = new AnimationMeta(new ResourceLocation("tac","animations/hk416_a5_inspect.gltf"));
     private static final HK416A5AnimationController instance = new HK416A5AnimationController();
 
     private HK416A5AnimationController() {
@@ -22,6 +27,7 @@ public class HK416A5AnimationController extends GunAnimationController{
             Animations.load(RELOAD_NORM);
             Animations.load(RELOAD_EMPTY);
             Animations.load(DRAW);
+            Animations.load(INSPECT);
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }
@@ -38,8 +44,14 @@ public class HK416A5AnimationController extends GunAnimationController{
             case RELOAD_EMPTY: return RELOAD_EMPTY;
             case RELOAD_NORMAL: return RELOAD_NORM;
             case DRAW: return DRAW;
+            case INSPECT: return INSPECT;
             default: return null;
         }
+    }
+
+    @Override
+    public AnimationSoundMeta getSoundFromLabel(AnimationLabel label){
+        return super.getSoundFromLabel(ModItems.HK416_A5.get(), label);
     }
 
     @Override

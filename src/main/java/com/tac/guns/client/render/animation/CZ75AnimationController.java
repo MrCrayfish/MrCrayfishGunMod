@@ -1,6 +1,9 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
+import com.tac.guns.client.render.animation.impl.AnimationMeta;
+import com.tac.guns.client.render.animation.impl.Animations;
+import com.tac.guns.client.render.animation.impl.GunAnimationController;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
 

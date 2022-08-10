@@ -11,9 +11,8 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.render.IHeldAnimation;
-import com.tac.guns.client.render.animation.Animations;
-import com.tac.guns.client.render.animation.GunAnimationController;
-import com.tac.guns.client.render.animation.PistalAnimationController;
+import com.tac.guns.client.render.animation.impl.GunAnimationController;
+import com.tac.guns.client.render.animation.impl.PistalAnimationController;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -31,7 +30,6 @@ import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IBarrel;
 import com.tac.guns.item.attachment.impl.Barrel;
 import com.tac.guns.item.attachment.impl.Scope;
-import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.OptifineHelper;
 import com.tac.guns.util.math.easing.QuadEaseOut;
@@ -60,7 +58,6 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
@@ -70,8 +67,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -135,16 +130,20 @@ public class GunRenderingHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && (mc.player.isSprinting() && !mc.player.isCrouching()) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.SHOOTING) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING) && !AimingHandler.get().isAiming() && this.sprintCooldown == 0) {
-            if (this.sprintTransition < 5) {
-                if (Minecraft.getInstance().player != null) {
-                    ItemStack heldItem = Minecraft.getInstance().player.getHeldItemMainhand();
-                    if(heldItem.getItem() instanceof GunItem) {
-                        GunItem modifiedGun = (GunItem) heldItem.getItem();
-                        GunAnimationController controller = GunAnimationController.fromItem(modifiedGun.getItem());
-                        if(controller == null ||
-                                (modifiedGun.getGun().getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation() && !controller.isAnimationRunning()))
-                        {
+            if (Minecraft.getInstance().player != null) {
+                ItemStack heldItem = Minecraft.getInstance().player.getHeldItemMainhand();
+                if(heldItem.getItem() instanceof GunItem) {
+                    GunItem modifiedGun = (GunItem) heldItem.getItem();
+                    GunAnimationController controller = GunAnimationController.fromItem(modifiedGun.getItem());
+                    if (this.sprintTransition < 5) {
+                        if (controller == null ||
+                                (modifiedGun.getGun().getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation() && !controller.isAnimationRunning())) {
                             this.sprintTransition++;
+                        }
+                    }
+                    if(controller != null && controller.isAnimationRunning()) {
+                        if(sprintTransition > 0){
+                            this.sprintTransition --;
                         }
                     }
                 }
@@ -180,18 +179,6 @@ public class GunRenderingHandler {
 
         float direction = down ? -0.3F : 0.3F;
         this.offhandTranslate = MathHelper.clamp(this.offhandTranslate + direction, 0.0F, 1.0F);
-    }
-
-    @SubscribeEvent
-    public void onGunReload(GunReloadEvent.Post event) {
-        GunAnimationController controller = GunAnimationController.fromItem(event.getStack().getItem());
-        if(controller!=null) {
-            if(Gun.hasAmmo(event.getStack())) {
-                controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL);
-            }else {
-                controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
-            }
-        }
     }
 
     @SubscribeEvent

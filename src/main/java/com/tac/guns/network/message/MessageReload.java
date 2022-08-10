@@ -1,7 +1,6 @@
 package com.tac.guns.network.message;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.tac.guns.client.audio.GunShotSound;
 import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
