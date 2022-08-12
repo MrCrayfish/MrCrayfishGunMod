@@ -7,6 +7,9 @@ import com.tac.guns.common.Gun;
 import com.tac.guns.init.ModBlocks;
 import com.tac.guns.init.ModTileEntities;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.network.PacketHandler;
+import com.tac.guns.network.message.MessageFireMode;
+import com.tac.guns.network.message.MessageSaveItemUpgradeBench;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
 import com.tac.guns.util.VoxelShapeHelper;
@@ -33,7 +36,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
@@ -92,51 +98,12 @@ public class UpgradeBenchBlock extends RotatedObjectBlock
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof INamedContainerProvider)
             {
-                Chunk chunk = Minecraft.getInstance().world.getChunkAt(result.getPos());
-                UpgradeBenchTileEntity blockTileEntity = ModTileEntities.UPGRADE_BENCH.get().getIfExists(Minecraft.getInstance().world.getBlockReader(chunk.getPos().x, chunk.getPos().z), result.getPos());
-                if(playerEntity.getHeldItemMainhand().getItem() instanceof TimelessGunItem && blockTileEntity != null) {
-                    if(blockTileEntity.getStackInSlot(0) == null || blockTileEntity.getStackInSlot(0) == ItemStack.EMPTY) {
-                        blockTileEntity.getInventory().set(0, playerEntity.getHeldItemMainhand());
-                        playerEntity.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.AIR));
-                    }
-                    else
-                    {
-                        /*GsonBuilder gsonB = new GsonBuilder().setLenient().addSerializationExclusionStrategy(Gun.strategy).setPrettyPrinting();//.setNumberToNumberStrategy(ToNumberPolicy.DOUBLE).setObjectToNumberStrategy(ToNumberPolicy.DOUBLE).serializeSpecialFloatingPointValues();;
-
-                        String jsonString = blockTileEntity.getStackInSlot(0).getTag().toString();*//*.toString()*//*;//gson.toJson(ch.getCatGlobal(1).get(this.previousWeaponTag));
-                        File dir = new File(Config.COMMON.development.TDevPath.get()+"\\tac_export\\");
-                        dir.mkdir();
-                        try {
-                            FileWriter dataWriter = new FileWriter (dir.getAbsolutePath() +"\\"+ "WoahPaskgangaDov" + "_export.json");
-                            dataWriter.write(jsonString);
-                            dataWriter.close();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        LOGGER.log(Level.INFO, "WEAPON EDITOR EXPORTED FILE ( "+"WoahPaskgangaDov" + "_export.txt ). BE PROUD!");
-*/
-                        if(!playerEntity.addItemStackToInventory(blockTileEntity.getStackInSlot(0))) {
-                            InventoryHelper.spawnItemStack(Minecraft.getInstance().world, result.getPos().getX() + 0.5, result.getPos().getY() + 1.125, result.getPos().getZ() + 0.5, blockTileEntity.getStackInSlot(0));
-                        }
-                        blockTileEntity.getInventory().set(0, playerEntity.getHeldItemMainhand());
-                        playerEntity.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.AIR));
-                    }
-                }
-                else if(playerEntity.isCrouching())
-                {
-                    NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
-                }
-                else {
-                    if(blockTileEntity != null && !playerEntity.addItemStackToInventory(blockTileEntity.getStackInSlot(0)))
-                    {
-                        blockTileEntity.getInventory().set(0, ItemStack.EMPTY);
-                        InventoryHelper.spawnItemStack(Minecraft.getInstance().world, result.getPos().getX() + 0.5, result.getPos().getY() + 1.125, result.getPos().getZ() + 0.5, blockTileEntity.getStackInSlot(0));
-                    }
-
-                }
+                PacketHandler.getPlayChannel().sendToServer(new MessageSaveItemUpgradeBench(pos));
+                tileEntity.markDirty();
             }
         }
         return ActionResultType.SUCCESS;
+
     }
 
     @Override

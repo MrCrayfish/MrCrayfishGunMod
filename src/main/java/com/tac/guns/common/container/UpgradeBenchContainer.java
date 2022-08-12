@@ -1,5 +1,6 @@
 package com.tac.guns.common.container;
 
+import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.crafting.WorkbenchRecipes;
 import com.tac.guns.init.ModContainers;
 import com.tac.guns.item.GunItem;
@@ -29,7 +30,13 @@ public class UpgradeBenchContainer extends Container
 
         int offset = WorkbenchRecipes.isEmpty(workbench.getWorld()) ? 0 : 28;
 
-        this.addSlot(new Slot(workbench, 0, 174, 18)
+        GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
+        if(GuiEditor.get() != null)
+        {
+            if(GuiEditor.get().currElement == 3 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
+        }
+        this.addSlot(new Slot(workbench, 0, 17400, 40000)
         {
             @Override
             public boolean isItemValid(ItemStack stack)
@@ -44,18 +51,18 @@ public class UpgradeBenchContainer extends Container
             }
         });
 
-        /*for(int y = 0; y < 3; y++)
+        for(int y = 0; y < 3; y++)
         {
             for(int x = 0; x < 9; x++)
             {
-                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 102 + y * 18));
+                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, -112 + 8 + x * 18, 103 + y * 18)); // 102
             }
         }
 
         for(int x = 0; x < 9; x++)
         {
-            this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 160));
-        }*/
+            this.addSlot(new Slot(playerInventory, x,  -112 + 8 + x * 18, 161)); // 160
+        }
 
     }
     @Override

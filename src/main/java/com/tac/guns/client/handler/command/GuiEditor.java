@@ -45,21 +45,21 @@ public class GuiEditor
 
     public static class GUI_Element
     {
-        private int xMod = 0;
-        private int yMod = 0;
-        private int sizeXMod = 0;
-        private int sizeYMod = 0;
-        public GUI_Element(int x, int y, int sizeX, int sizeY)
+        private double xMod = 0;
+        private double yMod = 0;
+        private double sizeXMod = 0;
+        private double sizeYMod = 0;
+        public GUI_Element(double x, double y, double sizeX, double sizeY)
         {
             this.xMod = x;
             this.yMod = y;
             this.sizeXMod = sizeX;
             this.sizeYMod = sizeY;
         }
-        public int getxMod() {return xMod;}
-        public int getyMod() {return yMod;}
-        public int getSizeXMod() {return sizeYMod;}
-        public int getSizeYMod() {return sizeXMod;}
+        public int getxMod() {return (int)xMod;}
+        public int getyMod() {return (int)yMod;}
+        public int getSizeXMod() {return (int)sizeYMod;}
+        public int getSizeYMod() {return (int)sizeXMod;}
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -134,34 +134,34 @@ public class GuiEditor
         boolean isPeriodDown = KeyBinds.SIZE_OPT.isKeyDown();
 
         GUI_Element element = this.elements.size() == 0 || !this.elements.containsKey(this.currElement) ? new GUI_Element(0, 0, 0, 0) : this.elements.get(this.currElement);
-        int xMod = element.xMod;
-        int yMod = element.yMod;
-        int sizeXMod = element.sizeXMod;
-        int sizeYMod = element.sizeYMod;
+        double xMod = element.xMod;
+        double yMod = element.yMod;
+        double sizeXMod = element.sizeXMod;
+        double sizeYMod = element.sizeYMod;
 
         if (isPeriodDown && isUp) {
-            sizeYMod += isShiftDown ? 10 : 1;
+            sizeYMod += isPeriodDown ? 2.5 : 0.5;
         }
         else if (isPeriodDown && isDown) {
-            sizeYMod -= isShiftDown ? 10 : 1;
+            sizeYMod -= isPeriodDown ? 2.5 : 0.5;
         }
         else if (isPeriodDown && isRight) {
-            sizeXMod += isShiftDown ? 10 : 1;
+            sizeXMod += isPeriodDown ? 2.5 : 0.5;
         }
         else if (isPeriodDown && isLeft) {
-            sizeXMod -= isShiftDown ? 10 : 1;
+            sizeXMod -= isPeriodDown ? 2.5 : 0.5;
         }
         else if (isLeft) {
-            xMod -= isShiftDown ? 10 : 1;
+            xMod -= isShiftDown ? 2.5 : 0.5;
         }
         else if (isRight) {
-            xMod += isShiftDown ? 10 : 1;
+            xMod += isShiftDown ? 2.5 : 0.5;
         }
         else if (isUp) {
-            yMod += isShiftDown ? 10 : 1;
+            yMod -= isShiftDown ? 2.5 : 0.5;
         }
         else if (isDown) {
-            yMod -= isShiftDown ? 10 : 1;
+            yMod += isShiftDown ? 2.5 : 0.5;
         }
 
         this.elements.put(this.currElement, new GUI_Element(xMod,yMod,sizeXMod,sizeYMod));

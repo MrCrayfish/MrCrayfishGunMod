@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.handler.command.GuiEditor;
+import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.NetworkGunManager;
@@ -53,7 +54,7 @@ import java.util.stream.Collectors;
  */
 public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 {
-    private static final ResourceLocation GUI_BASE = new ResourceLocation("tac:textures/gui/workbench.png");
+    private static final ResourceLocation GUI_BASE = new ResourceLocation("tac:textures/gui/upgrade_table.png");
     private static boolean showRemaining = false;
 
     /*private Tab currentTab;
@@ -80,90 +81,10 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             this.ySize += 28;
         }*/
     }
-
-    /*private void createTabs(NonNullList<WorkbenchRecipe> recipes)
-    {
-        List<WorkbenchRecipe> weapons = new ArrayList<>();
-        List<WorkbenchRecipe> attachments = new ArrayList<>();
-        List<WorkbenchRecipe> ammo = new ArrayList<>();
-        List<WorkbenchRecipe> misc = new ArrayList<>();
-
-        for(WorkbenchRecipe recipe : recipes)
-        {
-            ItemStack output = recipe.getItem();
-            if(output.getItem() instanceof GunItem)
-            {
-                weapons.add(recipe);
-            }
-            else if(output.getItem() instanceof IAttachment)
-            {
-                attachments.add(recipe);
-            }
-            else if(this.isAmmo(output))
-            {
-                ammo.add(recipe);
-            }
-            else
-            {
-                misc.add(recipe);
-            }
-        }
-
-        if(!weapons.isEmpty())
-        {
-            ItemStack icon = new ItemStack(ModItems.AR_15_HELLMOUTH.get());
-            icon.getOrCreateTag().putInt("AmmoCount", ModItems.AR_15_HELLMOUTH.get().getGun().getReloads().getMaxAmmo());
-            this.tabs.add(new Tab(icon, "weapons", weapons));
-        }
-
-        if(!attachments.isEmpty())
-        {
-            this.tabs.add(new Tab(new ItemStack(ModItems.COYOTE_SIGHT.get()), "attachments", attachments));
-        }
-
-        if(!ammo.isEmpty())
-        {
-            this.tabs.add(new Tab(new ItemStack(ModItems.BULLET_30_WIN.get()), "ammo", ammo));
-        }
-
-        if(!misc.isEmpty())
-        {
-            this.tabs.add(new Tab(new ItemStack(Items.BARRIER), "misc", misc));
-        }
-
-        if(!this.tabs.isEmpty())
-        {
-            this.currentTab = this.tabs.get(0);
-        }
-    }*/
-
-    private boolean isAmmo(ItemStack stack)
-    {
-        if(stack.getItem() instanceof IAmmo)
-        {
-            return true;
-        }
-        ResourceLocation id = stack.getItem().getRegistryName();
-        Objects.requireNonNull(id);
-        for(GunItem gunItem : NetworkGunManager.getClientRegisteredGuns())
-        {
-            if(id.equals(gunItem.getModifiedGun(stack).getProjectile().getItem()))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public void init()
     {
         super.init();
-        /*if(!this.tabs.isEmpty())
-        {
-            this.guiTop += 28;
-        }*/
-
         GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
         if(GuiEditor.get() != null)
         {
@@ -178,13 +99,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         {
             // Apply module to held item
         }));
-        /*this.btnCraft = this.addButton(new Button(this.guiLeft + 195, this.guiTop + 16, 74, 20, new TranslationTextComponent("gui.tac.workbench.assemble"), button ->
-        {
-            int index = this.currentTab.getCurrentIndex();
-            WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
-            ResourceLocation registryName = recipe.getId();
-            PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getPos()));
-        }));*/
+
     }
 
     @Override
@@ -288,23 +203,23 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
         RenderSystem.enableBlend();
 
-        this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-        this.blit(matrixStack, startX, startY, 0, 0, 173, 184);
-        blit(matrixStack, startX + 173, startY, 78, 184, 173, 0, 1, 184, 256, 256);
-        this.blit(matrixStack, startX + 251, startY, 174, 0, 24, 184);
-        this.blit(matrixStack, startX + 172, startY + 16, 198, 0, 20, 20);
-
-        this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-
-        if(this.workbench.getStackInSlot(0).isEmpty())
+        GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
+        if(GuiEditor.get() != null)
         {
-            this.blit(matrixStack, startX + 174, startY + 18, 165, 199, 16, 16);
+            if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
         }
+        matrixStack.push();
+        matrixStack.scale(4f, 4f, 0); //3.87
+        this.minecraft.getTextureManager().bindTexture(GUI_BASE);
+        this.blit(matrixStack, startX+data.getxMod()-112, startY+data.getyMod()-30, 0, 0, 496, 175);
+
+        matrixStack.pop();
 
         ItemStack currentItem = this.workbench.getStackInSlot(0);//this.displayStack;
         if(currentItem == null)
             return;
-        StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getString());
+        /*StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getString());
         if(currentItem.getCount() > 1)
         {
             builder.append(TextFormatting.GOLD);
@@ -312,8 +227,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             builder.append(" x ");
             builder.append(currentItem.getCount());
         }
-        this.drawCenteredString(matrixStack, this.font, builder.toString(), startX + 88, startY + 22, Color.WHITE.getRGB());
-
+        this.drawCenteredString(matrixStack, this.font, builder.toString(), startX + 88, startY + 22, Color.WHITE.getRGB());*/
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         RenderUtil.scissor(startX + 8, startY + 17, 160, 70);
 
@@ -333,7 +247,15 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
-            Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.FIXED, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
+            ObjectRenderEditor.RENDER_Element dataW = new ObjectRenderEditor.RENDER_Element(0,0,0,0);
+            if(ObjectRenderEditor.get() != null)
+            {
+                if(ObjectRenderEditor.get().currElement == 3 && ObjectRenderEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                    dataW = ObjectRenderEditor.get().GetFromElements(ObjectRenderEditor.get().currElement);
+            }
+            matrixStack.translate(dataW.getxMod(), dataW.getyMod(), 0);
+            GunRenderingHandler.get().renderWeapon(Minecraft.getInstance().player, currentItem, ItemCameraTransforms.TransformType.FIXED, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY);
+            //Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.FIXED, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
 
             buffer.finish();
 

@@ -56,8 +56,7 @@ import static com.tac.guns.GunMod.LOGGER;
  */
 public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorageBlock
 {
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-    private ItemStackHandler STACK_HANDLER = new ItemStackHandler();
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 
     public UpgradeBenchTileEntity()
     {
@@ -70,6 +69,16 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
         return this.inventory;
     }
 
+
+   /* @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
+
+        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+        return super.getCapability(cap);
+    }
+*/
     @Override
     public CompoundNBT getUpdateTag()
     {
@@ -101,37 +110,11 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
     public CompoundNBT write(CompoundNBT compound)
     {
         super.write(compound);
-        //ItemStackHelper.saveAllItems(compound, this.inventory);
 
         CompoundNBT weaponBt = new CompoundNBT();
         this.inventory.get(0).write(weaponBt);
-
-        String jsonString = weaponBt.toString();//gson.toJson(ch.getCatGlobal(1).get(this.previousWeaponTag));
-        File dir = new File(Config.COMMON.development.TDevPath.get() + "\\tac_export\\");
-        dir.mkdir();
-        try {
-            FileWriter dataWriter = new FileWriter(dir.getAbsolutePath() + "\\" + "WoahPaskgangaDov3" + "_export.json");
-            dataWriter.write(jsonString);
-            dataWriter.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        LOGGER.log(Level.INFO, "WEAPON EDITOR EXPORTED FILE ( " + "WoahPaskgangaDov" + "_export.txt ). BE PROUD!");
-
         if(this.inventory.get(0).getTag() != null)
             compound.put("weapon", weaponBt);
-
-        jsonString = compound.toString();//gson.toJson(ch.getCatGlobal(1).get(this.previousWeaponTag));
-        dir = new File(Config.COMMON.development.TDevPath.get() + "\\tac_export\\");
-        dir.mkdir();
-        try {
-            FileWriter dataWriter = new FileWriter(dir.getAbsolutePath() + "\\" + "WoahPaskgangaDov1" + "_export.json");
-            dataWriter.write(jsonString);
-            dataWriter.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        LOGGER.log(Level.INFO, "WEAPON EDITOR EXPORTED FILE ( " + "WoahPaskgangaDov" + "_export.txt ). BE PROUD!");
 
         return compound;
     }
@@ -142,7 +125,6 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
         super.read(state, compound);
         if(compound.contains("weapon"))
             this.inventory.set(0, ItemStack.read(compound.getCompound("weapon")));
-        //ItemStackHelper.loadAllItems(compound, this.inventory);
     }
 
     @Override

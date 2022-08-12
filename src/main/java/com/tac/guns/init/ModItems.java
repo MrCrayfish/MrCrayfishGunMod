@@ -160,4 +160,7 @@ public class ModItems
     //public static final RegistryObject<Item> STANDARD_FLASHLIGHT = REGISTER.register("standard_flashlight", () -> new SideRailItem(SideRail.create(), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
    //public static final RegistryObject<Item> LIGHT_GRENADE = REGISTER.register("light_grenade", () ->  new GrenadeItem(new Item.Properties().group(GunMod.GROUP), 20 * 4, 1.1f));
+
+    /* Misc */
+    public static final RegistryObject<Item> AMMO_PACK = REGISTER.register("ammopack", () -> new AmmoPackItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 }

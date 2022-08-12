@@ -1,7 +1,10 @@
 package com.tac.guns.client.util;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.tac.guns.Config;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.command.ObjectRenderEditor;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -10,6 +13,8 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.FilledMapItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -20,6 +25,7 @@ public class WorldItemRenderUtil extends TileEntityRenderer<UpgradeBenchTileEnti
     public WorldItemRenderUtil(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
         super(tileEntityRendererDispatcher);
     }
+
 
     /**
      * render the tile entity - called every frame while the tileentity is in view of the player
@@ -43,20 +49,23 @@ public class WorldItemRenderUtil extends TileEntityRenderer<UpgradeBenchTileEnti
         matrixStack.push();
         matrixStack.translate(0.5, 1.05, 0.5);
         matrixStack.rotate(Vector3f.ZP.rotationDegrees(90F));
-        GunRenderingHandler.get().renderWeapon(Minecraft.getInstance().player, tileEntityMBE21.getStackInSlot(0), ItemCameraTransforms.TransformType.GROUND, matrixStack, renderBuffers, combinedLight, combinedOverlay);
-        //RenderUtil.renderModel(RenderUtil.getModel(tileEntityMBE21.getStackInSlot(0).getItem()), tileEntityMBE21.getStackInSlot(0), matrixStack, renderBuffers, combinedLight, combinedOverlay);
-        matrixStack.pop();
 
-        // if you need to manually change the combinedLight you can use these helper functions...
-        int blockLight = LightTexture.getLightBlock(combinedLight);
-        int skyLight = LightTexture.getLightSky(combinedLight);
-        int repackedValue = LightTexture.packLight(blockLight, skyLight);
+        if(Config.COMMON.development.enableTDev.get() && (ObjectRenderEditor.get() != null && ObjectRenderEditor.get().currElement == 1 && ObjectRenderEditor.get().GetFromElements(1) != null)) {
+            matrixStack.translate(ObjectRenderEditor.get().GetFromElements(1).getxMod(), ObjectRenderEditor.get().GetFromElements(1).getyMod(), ObjectRenderEditor.get().GetFromElements(1).getzMod());
+        }
+        matrixStack.translate(-0.14, -0.4200001, 0);
+        if(!(tileEntityMBE21.getStackInSlot(0).getItem() instanceof TimelessGunItem))
+            GunRenderingHandler.get().renderWeapon(Minecraft.getInstance().player, ItemStack.read(tileEntityMBE21.getUpdateTag().getCompound("weapon")), ItemCameraTransforms.TransformType.GROUND, matrixStack, renderBuffers, combinedLight, combinedOverlay);
+        else
+            GunRenderingHandler.get().renderWeapon(Minecraft.getInstance().player, tileEntityMBE21.getStackInSlot(0), ItemCameraTransforms.TransformType.GROUND, matrixStack, renderBuffers, combinedLight, combinedOverlay);
+
+        matrixStack.pop();
     }
 
     // this should be true for tileentities which render globally (no render bounding box), such as beacons.
     @Override
     public boolean isGlobalRenderer(UpgradeBenchTileEntity tileEntityMBE21)
     {
-        return false;
+        return true;
     }
 }

@@ -2,10 +2,12 @@ package com.tac.guns.init;
 
 import com.tac.guns.Reference;
 import com.tac.guns.common.container.*;
+import com.tac.guns.inventory.AmmoPackContainer;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -32,6 +34,7 @@ public class ModContainers
         UpgradeBenchTileEntity workstation = (UpgradeBenchTileEntity) playerInventory.player.world.getTileEntity(data.readBlockPos());
         return new UpgradeBenchContainer(windowId, playerInventory, workstation);
     });
+    public static final RegistryObject<ContainerType<AmmoPackContainer>> AMMOPACK = REGISTER.register("ammopack", () -> IForgeContainerType.create((windowId, inv, data) -> new AmmoPackContainer(windowId, inv)));
 
     private static <T extends Container> RegistryObject<ContainerType<T>> register(String id, ContainerType.IFactory<T> factory)
     {

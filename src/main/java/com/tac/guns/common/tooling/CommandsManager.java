@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
+import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.handler.command.ScopeEditor;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -157,6 +158,51 @@ public class CommandsManager
                         .executes(commandContext -> {
                             CommandsHandler.get().setCatCurrentIndex(3);
                             sendMessage(commandContext,  "Use \"/tdev tac_gui_category setElementIndex\" to select your adjusting element");
+                            return 1;
+                        }))
+                .then(Commands.literal("tac_obj_category")
+                        .then(Commands.literal("setElementIndex")
+                                .then(Commands.argument("modeName", MessageArgument.message())//
+                                        .executes(commandContext ->
+                                        {
+                                            CommandsHandler.get().setCatCurrentIndex(4);
+                                            ITextComponent iTextComponent = MessageArgument.getMessage(commandContext, "modeName");
+                                            try
+                                            {
+                                                ObjectRenderEditor.get().currElement = Integer.parseInt(iTextComponent.getUnformattedComponentText());
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                sendMessage(commandContext, "INPUT WAS NOT AN INTEGER, PLEASE REFER TO DOCUMENTATION");
+                                            }
+
+                                            sendMessage(commandContext,  "TaC OBJ_RENDER Editor \n Element: " + GuiEditor.get().currElement);
+                                            return 1;
+                                        }))
+                                .executes(commandContext ->
+                                {
+                                    CommandsHandler.get().setCatCurrentIndex(3);
+                                    sendMessage(commandContext,  "FAILED TO SET ELEMENT, THE PARAM IS A NUMBER, INTEGERS ONLY!");
+                                    return 1;
+                                }))
+                        .then(Commands.literal("export")
+                                .executes(commandContext ->
+                                {
+                                    CommandsHandler.get().setCatCurrentIndex(4);
+                                    try {
+                                        ObjectRenderEditor.get().exportData();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        sendMessage(commandContext,  "FAILED TO EXPORT RENDER DATA, THIS IS A GENERIC ERROR, REPORT WITH A LOG PLEASE.\n" + GunEditor.formattedModeContext());
+                                        return 1;
+                                    }
+                                    sendMessage(commandContext,  "Exported all weapon data, with adjustments!");
+                                    return 1;
+                                }))
+                        .executes(commandContext -> {
+                            CommandsHandler.get().setCatCurrentIndex(4);
+                            sendMessage(commandContext,  "Use \"/tdev tac_obj_category setElementIndex\" to select your adjusting element");
                             return 1;
                         }))
                 .then(Commands.literal("tac_scope_category")

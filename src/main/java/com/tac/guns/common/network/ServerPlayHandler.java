@@ -6,6 +6,7 @@ import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.MovementAdaptationsHandler;
 import com.tac.guns.client.handler.ShootingHandler;
+import com.tac.guns.client.util.WorldItemRenderUtil;
 import com.tac.guns.common.*;
 import com.tac.guns.common.container.AttachmentContainer;
 import com.tac.guns.common.container.ColorBenchContainer;
@@ -27,12 +28,15 @@ import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageBulletTrail;
 import com.tac.guns.network.message.MessageGunSound;
+import com.tac.guns.network.message.MessageSaveItemUpgradeBench;
 import com.tac.guns.network.message.MessageShoot;
 import com.tac.guns.tileentity.FlashLightSource;
+import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.InventoryUtil;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -41,10 +45,12 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -681,5 +687,41 @@ public class ServerPlayHandler
             }
         }
 
+    }
+
+    public static void handleUpgradeBenchItem(MessageSaveItemUpgradeBench message, ServerPlayerEntity player)
+    {
+        if(!player.isSpectator())
+        {
+            World world = player.world;
+            ItemStack heldItem = player.getHeldItem(Hand.MAIN_HAND);
+            TileEntity tileEntity = world.getTileEntity(message.getPos());
+
+            if(player.isCrouching())
+            {
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                return;
+            }
+            world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
+            //if item is empty or air stack in hand, take weapon, if holding weapon, take or replace weapon
+            if (tileEntity != null) {
+                if (!(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0).getItem() instanceof TimelessGunItem) && heldItem.getItem() instanceof TimelessGunItem) {
+                    ((UpgradeBenchTileEntity) tileEntity).setInventorySlotContents(0, heldItem);
+                    player.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.AIR));
+                    // I hate this last part, this is used in order to reset the TileRenderer, without this the item stack is added, but the visual is only reset on entering GUI
+                    NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                    player.closeScreen();
+                }
+                else
+                {
+                    //tileEntity.handleUpdateTag(tileEntity.getBlockState(), tileEntity.getUpdateTag());
+                    player.inventory.addItemStackToInventory(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0));
+                    ((UpgradeBenchTileEntity) tileEntity).setInventorySlotContents(0, ItemStack.EMPTY);
+                    // I hate this last part, this is used in order to reset the TileRenderer, without this the item stack is added, but the visual is only reset on entering GUI
+                    NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                    player.closeScreen();
+                }
+            }
+        }
     }
 }

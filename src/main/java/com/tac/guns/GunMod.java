@@ -15,6 +15,8 @@ import com.tac.guns.enchantment.EnchantmentTypes;
 import com.tac.guns.entity.GrenadeEntity;
 import com.tac.guns.entity.MissileEntity;
 import com.tac.guns.init.*;
+import com.tac.guns.inventory.AmmoItemStackHandler;
+import com.tac.guns.inventory.IAmmoItemHandler;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
@@ -22,10 +24,16 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -39,6 +47,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -239,6 +248,40 @@ public class GunMod
         {
             MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
         }
+
+        CapabilityManager.INSTANCE.register(IAmmoItemHandler.class, new Capability.IStorage<IAmmoItemHandler>() {
+            @Override
+            public INBT writeNBT(Capability<IAmmoItemHandler> capability, IAmmoItemHandler instance, Direction side) {
+                ListNBT nbtTagList = new ListNBT();
+                int size = instance.getSlots();
+                for (int i = 0; i < size; i++) {
+                    ItemStack stack = instance.getStackInSlot(i);
+                    if (!stack.isEmpty()) {
+                        CompoundNBT itemTag = new CompoundNBT();
+                        itemTag.putInt("Slot", i);
+                        stack.write(itemTag);
+                        nbtTagList.add(itemTag);
+                    }
+                }
+                return nbtTagList;
+            }
+
+            @Override
+            public void readNBT(Capability<IAmmoItemHandler> capability, IAmmoItemHandler instance, Direction side, INBT base) {
+                if (!(instance instanceof IItemHandlerModifiable))
+                    throw new RuntimeException("IItemHandler instance does not implement IItemHandlerModifiable");
+                IItemHandlerModifiable itemHandlerModifiable = (IItemHandlerModifiable) instance;
+                ListNBT tagList = (ListNBT) base;
+                for (int i = 0; i < tagList.size(); i++) {
+                    CompoundNBT itemTags = tagList.getCompound(i);
+                    int j = itemTags.getInt("Slot");
+
+                    if (j >= 0 && j < instance.getSlots()) {
+                        itemHandlerModifiable.setStackInSlot(j, ItemStack.read(itemTags));
+                    }
+                }
+            }
+        }, AmmoItemStackHandler::new);
 
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1911"), new OneHandedPoseHighRes_m1911()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1851"), new OneHandedPoseHighRes_m1851()));

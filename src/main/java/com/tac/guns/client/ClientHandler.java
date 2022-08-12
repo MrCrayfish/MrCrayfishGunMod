@@ -1,9 +1,11 @@
 package com.tac.guns.client;
 
+import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.*;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
+import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.handler.command.ScopeEditor;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
@@ -70,11 +72,14 @@ public class ClientHandler
         //MinecraftForge.EVENT_BUS.register(FloodLightSource.get());
 
         MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDayMemory part of the Timeless dev team, amazing work!!!!!!!!!!!
-
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
-        MinecraftForge.EVENT_BUS.register(GuiEditor.get());
-        MinecraftForge.EVENT_BUS.register(GunEditor.get());
-        MinecraftForge.EVENT_BUS.register(ScopeEditor.get());
+
+        if(Config.COMMON.development.enableTDev.get()) {
+            MinecraftForge.EVENT_BUS.register(GuiEditor.get());
+            MinecraftForge.EVENT_BUS.register(GunEditor.get());
+            MinecraftForge.EVENT_BUS.register(ScopeEditor.get());
+            MinecraftForge.EVENT_BUS.register(ObjectRenderEditor.get());
+        }
 
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), WorldItemRenderUtil::new);
 
@@ -151,6 +156,7 @@ public class ClientHandler
         ScreenManager.registerFactory(ModContainers.UPGRADE_BENCH.get(), UpgradeBenchScreen::new);
         ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
         ScreenManager.registerFactory(ModContainers.INSPECTION.get(), InspectScreen::new);
+        ScreenManager.registerFactory(ModContainers.AMMOPACK.get(), AmmoPackScreen::new);
         //ScreenManager.registerFactory(ModContainers.COLOR_BENCH.get(), ColorBenchAttachmentScreen::new);
     }
 

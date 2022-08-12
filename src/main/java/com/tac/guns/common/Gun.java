@@ -8,6 +8,10 @@ import com.tac.guns.annotation.Ignored;
 import com.tac.guns.annotation.Optional;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.interfaces.TGExclude;
+import com.tac.guns.inventory.AmmoItemStackHandler;
+import com.tac.guns.inventory.AmmoPackCapabilityProvider;
+import com.tac.guns.inventory.InventoryListener;
+import com.tac.guns.item.AmmoPackItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IScope;
 import com.tac.guns.item.attachment.impl.Scope;
@@ -1765,20 +1769,31 @@ public final class Gun implements INBTSerializable<CompoundNBT>
     public static ItemStack[] findAmmo(PlayerEntity player, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
     {
         ArrayList<ItemStack> stacks = new ArrayList<>();
-
         if(player.isCreative())
         {
             Item item = ForgeRegistries.ITEMS.getValue(id);
             stacks.add(item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY);
             return stacks.toArray(new ItemStack[]{});
-            //return item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
         }
         for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
         {
             ItemStack stack = player.inventory.getStackInSlot(i);
-            if(isAmmo(stack, id))
-            {
+            if(isAmmo(stack, id)) {
                 stacks.add(stack);
+            }
+        }
+        AmmoItemStackHandler ammoItemHandler = (AmmoItemStackHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
+        for(ItemStack stack : ammoItemHandler.getStacks()) {
+            if(isAmmo(stack, id)) {
+                stacks.add(stack);
+            }
+            if(stack.getItem() instanceof AmmoPackItem) {
+                AmmoItemStackHandler itemHandler = (AmmoItemStackHandler)stack.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
+                for(ItemStack item : itemHandler.getStacks()) {
+                    if(isAmmo(item, id)) {
+                        stacks.add(item);
+                    }
+                }
             }
         }
         return stacks.toArray(new ItemStack[]{});

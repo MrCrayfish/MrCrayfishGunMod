@@ -13,7 +13,8 @@
     "client.FirstPersonRendererMixin",
     "client.GameRendererMixin",
     "client.MouseHelperMixin",
-    "client.WorldRendererMixin"
+    "client.WorldRendererMixin",
+    "client.InventoryScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
