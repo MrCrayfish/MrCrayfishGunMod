@@ -9,8 +9,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7.+'
         classpath 'org.codehaus.groovy:groovy-all:2.4.15'
     }
 }
@@ -32,16 +32,14 @@ mixin {
     add sourceSets.main, "tac.refmap.json"
 }
 
-
 minecraft {
     //mappings channel: 'official', version: '1.16.5'
-
+    //mappings channel: 'official', version: '1.16.5'
     mappings channel: 'snapshot', version: '20201028-1.16.3'
 
     runs {
         client {
             workingDirectory project.file('run')
-            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             arg '-mixin.config=tac.mixins.json'
@@ -91,19 +89,23 @@ processResources {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
-    implementation fg.deobf('curse.maven:obfuscate-289380:3169370')
+    //implementation fg.deobf('curse.maven:obfuscate-289380:3169369')
+    implementation fg.deobf('curse.maven:obfuscate-289380:3740120')
     //implementation fg.deobf('curse.maven:chisel-and-bits-231095:3593643')
     //implementation fg.deobf('curse.maven:flashlight-addon-227874:3381556')
 
     //implementation fg.deobf('curse.maven:extra-player-render-481042:3305584')
 
     //implementation 'com.google.code.gson:gson:2.9.0'
-    compile ('com.fasterxml.jackson.core:jackson-databind:2.12.4')
+    implementation ('com.fasterxml.jackson.core:jackson-databind:2.12.4')
 }
 repositories {
     maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven {
-        url = "https://www.cursemaven.com"
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
 }
 jar {
