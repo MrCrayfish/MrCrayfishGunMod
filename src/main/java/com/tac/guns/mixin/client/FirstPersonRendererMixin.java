@@ -16,17 +16,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
 
-@Mixin(FirstPersonRenderer.class)
+//@Mixin(FirstPersonRenderer.class)
 public class FirstPersonRendererMixin {
-    @Shadow
+    //@Shadow
     private ItemStack itemStackMainHand;
     private ItemStack prevItemStack = ItemStack.EMPTY;
-    @Shadow
+    //@Shadow
     private float equippedProgressMainHand;
-    @Shadow
+    //@Shadow
     private float prevEquippedProgressMainHand;
 
-    @Inject(method = "tick",at = @At("HEAD"))
+    //@Inject(method = "tick",at = @At("HEAD"))
     public void applyDrawAndHolster(CallbackInfo ci){
         ItemStack mainHandItemStack = Minecraft.getInstance().player.getHeldItemMainhand();
         GunAnimationController controller = GunAnimationController.fromItem(mainHandItemStack.getItem());
@@ -64,7 +64,7 @@ public class FirstPersonRendererMixin {
     }
     /*
              */
-    @Inject(method = "tick",at = @At("RETURN"))
+    //@Inject(method = "tick",at = @At("RETURN"))
     public void cancelEquippedProgress(CallbackInfo ci){
         ItemStack mainHandItemStack = Minecraft.getInstance().player.getHeldItemMainhand();
         GunAnimationController controller = GunAnimationController.fromItem(mainHandItemStack.getItem());

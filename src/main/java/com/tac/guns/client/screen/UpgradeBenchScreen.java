@@ -18,6 +18,7 @@ import com.tac.guns.item.*;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageCraft;
+import com.tac.guns.network.message.MessageGunSound;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
 import com.tac.guns.util.InventoryUtil;
@@ -55,6 +56,7 @@ import java.util.stream.Collectors;
 public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 {
     private static final ResourceLocation GUI_BASE = new ResourceLocation("tac:textures/gui/upgrade_table.png");
+    private static final ResourceLocation GUI_PARTS = new ResourceLocation("tac:textures/gui/upgrade_table_parts.png");
     private static boolean showRemaining = false;
 
     /*private Tab currentTab;
@@ -81,6 +83,9 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             this.ySize += 28;
         }*/
     }
+
+
+
     @Override
     public void init()
     {
@@ -88,11 +93,17 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
         if(GuiEditor.get() != null)
         {
-            if(GuiEditor.get().currElement == 1 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+            if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
                 data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
         }
-        this.addButton(new Button(this.guiLeft + 9 + data.getxMod(), this.guiTop + 18 + data.getyMod(), 15+data.getSizeXMod(), 20+data.getSizeYMod(), new StringTextComponent("<"), button ->
+
+        this.addButton(new GuiEnchantmentButton(this.guiLeft + 9 + data.getxMod(), this.guiTop + 18 + data.getyMod(), 43+data.getSizeXMod(), 15+data.getSizeYMod(), 43, 15, button ->
         {
+            /*int index = this.currentTab.getCurrentIndex();
+            WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
+            ResourceLocation registryName = recipe.getId();
+            PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getPos()));*/
+
             // Apply module to held item
         }));
         this.addButton(new Button(this.guiLeft + 153, this.guiTop + 18, 15, 20, new StringTextComponent(">"), button ->
@@ -123,25 +134,6 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         }
         this.init();
     }
-    /*@Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
-    {
-        boolean result = super.mouseClicked(mouseX, mouseY, mouseButton);
-        UpgradeBenchScreen.showRemaining = this.checkBoxMaterials.isToggled();
-
-        for(int i = 0; i < this.tabs.size(); i++)
-        {
-            if(RenderUtil.isMouseWithin((int) mouseX, (int) mouseY, this.guiLeft + 28 * i, this.guiTop - 28, 28, 28))
-            {
-                this.currentTab = this.tabs.get(i);
-                this.loadItem(this.currentTab.getCurrentIndex());
-                this.minecraft.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                return true;
-            }
-        }
-
-        return result;
-    }*/
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
@@ -152,15 +144,6 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
         int startX = this.guiLeft;
         int startY = this.guiTop;
-
-        /*for(int i = 0; i < this.tabs.size(); i++)
-        {
-            if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY - 28, 28, 28))
-            {
-                this.renderTooltip(matrixStack, new TranslationTextComponent(this.tabs.get(i).getTabKey()), mouseX, mouseY);
-                return;
-            }
-        }*/
 
         if (this.filteredMaterials == null)
             return;
@@ -178,19 +161,14 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                 }
             }
         }
-
-        /*if(RenderUtil.isMouseWithin(mouseX, mouseY, startX + 8, startY + 38, 160, 48))
-        {
-            this.renderTooltip(matrixStack, this.displayStack, mouseX, mouseY);
-        }*/
     }
 
-    @Override
+    /*@Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
     {
         //int offset = this.tabs.isEmpty() ? 0 : 28;
         //this.font.func_243248_b(matrixStack, this.title, (float)this.titleX, (float)this.titleY - 28 + offset, 4210752);
-    }
+    }*/
 
     @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
@@ -203,38 +181,26 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
         RenderSystem.enableBlend();
 
-        GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
-        if(GuiEditor.get() != null)
-        {
-            if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
-                data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
-        }
         matrixStack.push();
         matrixStack.scale(4f, 4f, 0); //3.87
         this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-        this.blit(matrixStack, startX+data.getxMod()-112, startY+data.getyMod()-30, 0, 0, 496, 175);
+        this.blit(matrixStack, startX-112, startY-30, 0, 0, 496, 175);
 
         matrixStack.pop();
 
         ItemStack currentItem = this.workbench.getStackInSlot(0);//this.displayStack;
         if(currentItem == null)
             return;
-        /*StringBuilder builder = new StringBuilder(currentItem.getDisplayName().getString());
-        if(currentItem.getCount() > 1)
-        {
-            builder.append(TextFormatting.GOLD);
-            builder.append(TextFormatting.BOLD);
-            builder.append(" x ");
-            builder.append(currentItem.getCount());
-        }
-        this.drawCenteredString(matrixStack, this.font, builder.toString(), startX + 88, startY + 22, Color.WHITE.getRGB());*/
+
+
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        RenderUtil.scissor(startX + 8, startY + 17, 160, 70);
+        RenderUtil.scissor(startX + 8 -114, startY + 17 -6, 160, 70);
 
         IRenderTypeBuffer.Impl buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
         RenderSystem.pushMatrix();
         {
-            RenderSystem.translatef(startX + 88, startY + 60, 100);
+
+            RenderSystem.translatef(startX+ 88 -118, startY + 60 -10, 100);
             RenderSystem.scalef(50F, -50F, 50F);
             RenderSystem.rotatef(5F, 1, 0, 0);
             RenderSystem.rotatef(Minecraft.getInstance().player.ticksExisted + partialTicks, 0, 1, 0);
@@ -247,13 +213,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             buffer = this.minecraft.getRenderTypeBuffers().getBufferSource();
-            ObjectRenderEditor.RENDER_Element dataW = new ObjectRenderEditor.RENDER_Element(0,0,0,0);
-            if(ObjectRenderEditor.get() != null)
-            {
-                if(ObjectRenderEditor.get().currElement == 3 && ObjectRenderEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
-                    dataW = ObjectRenderEditor.get().GetFromElements(ObjectRenderEditor.get().currElement);
-            }
-            matrixStack.translate(dataW.getxMod(), dataW.getyMod(), 0);
+
             GunRenderingHandler.get().renderWeapon(Minecraft.getInstance().player, currentItem, ItemCameraTransforms.TransformType.FIXED, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY);
             //Minecraft.getInstance().getItemRenderer().renderItem(currentItem, ItemCameraTransforms.TransformType.FIXED, false, matrixStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
 
@@ -307,6 +267,52 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                 Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63, null);
                 //GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getHeldItemMainhand(), ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, 15728880, 0F); // GROUND, matrixStack, buffer, 15728880, 0F);
             }
+        }
+    }
+
+    public class GuiEnchantmentButton extends Button {
+
+        protected final IPressable onPress;
+        int u;
+        int v;
+        int x;
+        int y;
+        int widthIn;
+        int heightIn;
+
+        public void onPress() {
+            this.onPress.onPress(this);
+        }
+
+        public GuiEnchantmentButton(int x, int y, int u, int v, int widthIn, int heightIn, IPressable onPress) {
+            super(widthIn, heightIn, u, v, new TranslationTextComponent("tac.empt"), onPress);
+            this.u = u;
+            this.v = v;
+            this.x = x;
+            this.y = y;
+            this.widthIn = widthIn;
+            this.heightIn = heightIn;
+            this.onPress = onPress;
+        }
+
+        @Override
+        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+        {
+            //super.renderButton(matrixStack,mouseX,mouseY,partialTicks);
+            Minecraft mc = Minecraft.getInstance();
+            if (!visible)
+            {
+                return;
+            }
+            mc.getTextureManager().bindTexture(GUI_PARTS);
+
+            GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
+            if(GuiEditor.get() != null)
+            {
+                //if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                    //data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
+            }
+            mc.ingameGUI.blit(matrixStack, this.x+ data.getxMod()-74, this.y +data.getyMod()-44, 0, 0, this.width, this.height);
         }
     }
 

@@ -30,12 +30,6 @@ public class UpgradeBenchContainer extends Container
 
         int offset = WorkbenchRecipes.isEmpty(workbench.getWorld()) ? 0 : 28;
 
-        GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
-        if(GuiEditor.get() != null)
-        {
-            if(GuiEditor.get().currElement == 3 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
-                data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
-        }
         this.addSlot(new Slot(workbench, 0, 17400, 40000)
         {
             @Override

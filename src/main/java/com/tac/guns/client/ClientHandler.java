@@ -94,6 +94,7 @@ public class ClientHandler
 
     private static void setupRenderLayers()
     {
+        RenderTypeLookup.setRenderLayer(ModBlocks.UPGRADE_BENCH.get(), RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.getCutout());
     }
 
