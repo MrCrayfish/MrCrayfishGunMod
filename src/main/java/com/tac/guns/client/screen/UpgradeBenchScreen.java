@@ -97,7 +97,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                 data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
         }
 
-        this.addButton(new GuiEnchantmentButton(this.guiLeft + 9 + data.getxMod(), this.guiTop + 18 + data.getyMod(), 43+data.getSizeXMod(), 15+data.getSizeYMod(), 43, 15, button ->
+        this.addButton(new GuiEnchantmentButton(this.guiLeft + 9 , this.guiTop + 18 , 43+data.getSizeXMod()+ data.getxMod(), 15+data.getSizeYMod()+ data.getyMod(), 43, 15, button ->
         {
             /*int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
@@ -298,7 +298,13 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         @Override
         public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
         {
-            //super.renderButton(matrixStack,mouseX,mouseY,partialTicks);
+            GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
+            if(GuiEditor.get() != null)
+            {
+                if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                    data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
+            }
+            super.renderButton(matrixStack,mouseX,mouseY,partialTicks);
             Minecraft mc = Minecraft.getInstance();
             if (!visible)
             {
@@ -306,12 +312,6 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             }
             mc.getTextureManager().bindTexture(GUI_PARTS);
 
-            GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
-            if(GuiEditor.get() != null)
-            {
-                //if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
-                    //data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
-            }
             mc.ingameGUI.blit(matrixStack, this.x+ data.getxMod()-74, this.y +data.getyMod()-44, 0, 0, this.width, this.height);
         }
     }
