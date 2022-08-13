@@ -1,15 +1,18 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
-import com.tac.guns.client.render.animation.impl.AnimationMeta;
-import com.tac.guns.client.render.animation.impl.Animations;
-import com.tac.guns.client.render.animation.impl.GunAnimationController;
-import com.tac.guns.client.render.animation.impl.PistalAnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.Animations;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PistalAnimationController;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 
+@OnlyIn(Dist.CLIENT)
 public class Deagle50AnimationController extends PistalAnimationController {
     public static int INDEX_BODY = 2;
 

@@ -367,5 +367,53 @@
       "sounds": [
          { "name": "tac:animation/hk416_a5_inspect"}
       ]
+   },
+   "animation.glock17_draw": {
+      "subtitle": "animation.glock17_draw",
+      "sounds": [
+         { "name": "tac:animation/glock17_draw"}
+      ]
+   },
+   "animation.glock17_inspect": {
+      "subtitle": "animation.glock17_inspect",
+      "sounds": [
+         { "name": "tac:animation/glock17_inspect"}
+      ]
+   },
+   "animation.glock17_reload_empty": {
+      "subtitle": "animation.glock17_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/glock17_reload_empty"}
+      ]
+   },
+   "animation.glock17_reload_normal": {
+      "subtitle": "animation.glock17_reload_normal",
+      "sounds": [
+         { "name": "tac:animation/glock17_reload_normal"}
+      ]
+   },
+   "animation.mp7_draw": {
+      "subtitle": "animation.mp7_draw",
+      "sounds": [
+         { "name": "tac:animation/mp7_draw"}
+      ]
+   },
+   "animation.mp7_reload_empty": {
+      "subtitle": "animation.mp7_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/mp7_reload_empty"}
+      ]
+   },
+   "animation.mp7_inspect": {
+      "subtitle": "animation.mp7_inspect",
+      "sounds": [
+         { "name": "tac:animation/mp7_inspect"}
+      ]
+   },
+   "animation.mp7_reload_normal": {
+      "subtitle": "animation.mp7_reload_normal",
+      "sounds": [
+         { "name": "tac:animation/mp7_reload_normal"}
+      ]
    }
 }

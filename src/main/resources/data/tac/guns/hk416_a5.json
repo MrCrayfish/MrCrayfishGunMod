@@ -46,6 +46,7 @@
     "reloadEmpty": "tac:animation.hk416_a5_reload_empty",
     "draw": "tac:animation.hk416_a5_draw",
     "inspect": "tac:animation.hk416_a5_inspect",
+    "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.sig552s"
   },
   "display": {

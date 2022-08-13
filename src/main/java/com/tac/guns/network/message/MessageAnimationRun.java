@@ -1,22 +1,24 @@
 package com.tac.guns.network.message;
 
 import com.tac.guns.client.network.ClientPlayHandler;
+import com.tac.guns.network.PacketHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class MessageAnimationSound implements IMessage{
+public class MessageAnimationRun implements IMessage{
     private ResourceLocation animationResource;
     private ResourceLocation soundResource;
     private boolean play;
     private UUID fromWho;
 
-    public MessageAnimationSound(){}
+    public MessageAnimationRun(){}
 
-    public MessageAnimationSound(ResourceLocation animationResource,
+    public MessageAnimationRun(ResourceLocation animationResource,
                                  ResourceLocation soundResource,
                                  boolean play,
                                  UUID fromWho)
@@ -47,7 +49,8 @@ public class MessageAnimationSound implements IMessage{
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         supplier.get().enqueueWork(() ->
         {
-            ClientPlayHandler.handleMessageAnimationSound(fromWho, animationResource, soundResource, play);
+            MessageAnimationSound message = new MessageAnimationSound(animationResource,soundResource,play,fromWho);
+            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), message);
         });
         supplier.get().setPacketHandled(true);
     }

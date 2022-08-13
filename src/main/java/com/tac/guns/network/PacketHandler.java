@@ -70,7 +70,8 @@ public class PacketHandler
         registerPlayMessage(MessageUpdateGunID.class, MessageUpdateGunID::new, LogicalSide.SERVER);
 
         registerPlayMessage(MessageUpdatePlayerMovement.class, MessageUpdatePlayerMovement::new, LogicalSide.SERVER);
-        registerPlayMessage(MessageAnimationSound.class, MessageAnimationSound::new, LogicalSide.SERVER);
+        registerPlayMessage(MessageAnimationSound.class, MessageAnimationSound::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageAnimationRun.class, MessageAnimationRun::new, LogicalSide.SERVER);
     }
 
     /**

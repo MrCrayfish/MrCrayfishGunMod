@@ -1,9 +1,10 @@
-package com.tac.guns.client.render.animation.impl;
+package com.tac.guns.client.render.animation.module;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.common.Gun;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.network.PacketHandler;
+import com.tac.guns.network.message.MessageAnimationRun;
 import com.tac.guns.network.message.MessageAnimationSound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -14,16 +15,27 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class GunAnimationController {
     public enum AnimationLabel{
         RELOAD_NORMAL,
         RELOAD_EMPTY,
+        RELOAD_INTRO,
+        RELOAD_LOOP,
+        RELOAD_NORMAL_END,
+        RELOAD_EMPTY_END,
+        PUMP,
         INSPECT,
         DRAW,
+        STATIC,
     }
     private AnimationMeta previousAnimation;
 
@@ -32,15 +44,31 @@ public abstract class GunAnimationController {
     /*A map to obtain AnimationController through Item, the key value should put the RegistryName of the Item.*/
     private static final Map<ResourceLocation, GunAnimationController> animationControllerMap = new HashMap<>();
 
-    private void runAnimation(AnimationMeta animationMeta, AnimationSoundMeta soundMeta){
+    protected void enableStaticState(){
+        AnimationMeta staticMeta = getAnimationFromLabel(AnimationLabel.STATIC);
+        if(staticMeta != null) {
+            try {
+                for(AnimationLabel label : AnimationLabel.values()){
+                    AnimationMeta meta = getAnimationFromLabel(label);
+                    if(meta != null) Animations.specifyInitialModel(meta, staticMeta);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void runAnimation(AnimationMeta animationMeta, AnimationSoundMeta soundMeta, Runnable callback){
         if(animationMeta != null) {
-            Animations.runAnimation(animationMeta);
+            Animations.runAnimation(animationMeta, callback);
             previousAnimation = animationMeta;
         }
         if(animationMeta != null && soundMeta != null) {
             ClientPlayerEntity player = Minecraft.getInstance().player;
             if(player == null) return;
-            MessageAnimationSound message = new MessageAnimationSound(
+            if(animationMeta.getResourceLocation() == null || soundMeta.getResourceLocation() == null)
+                return;
+            MessageAnimationRun message = new MessageAnimationRun(
                     animationMeta.getResourceLocation(),
                     soundMeta.getResourceLocation(),
                     true,
@@ -65,7 +93,7 @@ public abstract class GunAnimationController {
         if(previousAnimation != null && previousSound != null){
             ClientPlayerEntity player = Minecraft.getInstance().player;
             if(player == null) return;
-            MessageAnimationSound message = new MessageAnimationSound(
+            MessageAnimationRun message = new MessageAnimationRun(
                     previousAnimation.getResourceLocation(),
                     previousSound.getResourceLocation(),
                     false,
@@ -75,7 +103,11 @@ public abstract class GunAnimationController {
     }
 
     public void runAnimation(AnimationLabel label){
-        runAnimation(getAnimationFromLabel(label), getSoundFromLabel(label));
+        runAnimation(getAnimationFromLabel(label), getSoundFromLabel(label), null);
+    }
+
+    public void runAnimation(AnimationLabel label, Runnable callback){
+        runAnimation(getAnimationFromLabel(label), getSoundFromLabel(label), callback);
     }
 
     public abstract AnimationMeta getAnimationFromLabel(AnimationLabel label);

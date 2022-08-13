@@ -1,14 +1,18 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
-import com.tac.guns.client.render.animation.impl.AnimationMeta;
-import com.tac.guns.client.render.animation.impl.Animations;
-import com.tac.guns.client.render.animation.impl.GunAnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.AnimationSoundMeta;
+import com.tac.guns.client.render.animation.module.Animations;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 
+@OnlyIn(Dist.CLIENT)
 public class Mp7AnimationController extends GunAnimationController{
 
     public static int INDEX_BODY = 1;
@@ -27,6 +31,8 @@ public class Mp7AnimationController extends GunAnimationController{
 
     public static final AnimationMeta INSPECT = new AnimationMeta(new ResourceLocation("tac","animations/mp7_inspect.gltf"));
 
+    public static final AnimationMeta STATIC = new AnimationMeta(new ResourceLocation("tac","animations/mp7_static.gltf"));
+
     private static final Mp7AnimationController instance = new Mp7AnimationController();
 
     private Mp7AnimationController() {
@@ -35,10 +41,17 @@ public class Mp7AnimationController extends GunAnimationController{
             Animations.load(RELOAD_EMPTY);
             Animations.load(DRAW);
             Animations.load(INSPECT);
+            Animations.load(STATIC);
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }
+        enableStaticState();
         GunAnimationController.setAnimationControllerMap(ModItems.MP7.getId(),this);
+    }
+
+    @Override
+    public AnimationSoundMeta getSoundFromLabel(AnimationLabel label){
+        return super.getSoundFromLabel(ModItems.MP7.get(), label);
     }
 
     public static Mp7AnimationController getInstance(){ return instance; }
@@ -50,6 +63,7 @@ public class Mp7AnimationController extends GunAnimationController{
             case RELOAD_EMPTY: return RELOAD_EMPTY;
             case DRAW: return DRAW;
             case INSPECT: return INSPECT;
+            case STATIC: return STATIC;
             default: return null;
         }
     }

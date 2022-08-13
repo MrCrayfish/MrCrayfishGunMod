@@ -1,15 +1,18 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
-import com.tac.guns.client.render.animation.impl.AnimationMeta;
-import com.tac.guns.client.render.animation.impl.AnimationSoundMeta;
-import com.tac.guns.client.render.animation.impl.Animations;
-import com.tac.guns.client.render.animation.impl.GunAnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.AnimationSoundMeta;
+import com.tac.guns.client.render.animation.module.Animations;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 
+@OnlyIn(Dist.CLIENT)
 public class HK416A5AnimationController extends GunAnimationController{
     public static int INDEX_BODY = 6;
     public static int INDEX_LEFT_HAND = 0;
@@ -20,6 +23,7 @@ public class HK416A5AnimationController extends GunAnimationController{
     public static final AnimationMeta RELOAD_EMPTY = new AnimationMeta(new ResourceLocation("tac","animations/hk416_a5_reload_empty.gltf"));
     public static final AnimationMeta DRAW = new AnimationMeta(new ResourceLocation("tac","animations/hk416_a5_draw.gltf"));
     public static final AnimationMeta INSPECT = new AnimationMeta(new ResourceLocation("tac","animations/hk416_a5_inspect.gltf"));
+    public static final AnimationMeta STATIC = new AnimationMeta(new ResourceLocation("tac","animations/hk416_a5_static.gltf"));
     private static final HK416A5AnimationController instance = new HK416A5AnimationController();
 
     private HK416A5AnimationController() {
@@ -28,9 +32,11 @@ public class HK416A5AnimationController extends GunAnimationController{
             Animations.load(RELOAD_EMPTY);
             Animations.load(DRAW);
             Animations.load(INSPECT);
+            Animations.load(STATIC);
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }
+        enableStaticState();
         GunAnimationController.setAnimationControllerMap(ModItems.HK416_A5.getId(),this);
     }
 
@@ -45,6 +51,7 @@ public class HK416A5AnimationController extends GunAnimationController{
             case RELOAD_NORMAL: return RELOAD_NORM;
             case DRAW: return DRAW;
             case INSPECT: return INSPECT;
+            case STATIC: return STATIC;
             default: return null;
         }
     }

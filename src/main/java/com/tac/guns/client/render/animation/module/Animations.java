@@ -1,4 +1,4 @@
-package com.tac.guns.client.render.animation.impl;
+package com.tac.guns.client.render.animation.module;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import de.javagl.jgltf.model.GltfAnimations;
@@ -19,6 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+@OnlyIn(Dist.CLIENT)
 public class Animations {
     private static final Stack<NodeModel> nodeModelStack = new Stack<>();
     private static final Stack<NodeModel> initialModelStack = new Stack<>();
@@ -73,6 +76,20 @@ public class Animations {
         }
         inputStream.close();
         return null;
+    }
+
+    public static void specifyInitialModel(AnimationMeta animationMeta, AnimationMeta initialMeta) throws IOException {
+        IResource initialResource = Minecraft.getInstance().getResourceManager().getResource(initialMeta.getResourceLocation());
+        InputStream inputStream = initialResource.getInputStream();
+        GltfAssetReader reader = new GltfAssetReader();
+        GltfAsset asset = reader.readWithoutReferences(inputStream);
+        GltfModelV2 model2 = new GltfModelV2((GltfAssetV2) asset);
+        List<Animation> animations2 = GltfAnimations.createModelAnimations(model2.getAnimationModels());
+        AnimationManager initialStateManager = new AnimationManager(AnimationManager.AnimationPolicy.TIP_STOP);
+        initialStateManager.addAnimations(animations2);
+        initialStateManager.reset();
+        initialStateManager.performStep(1);
+        initialModelMap.put(animationMeta.getResourceLocation().toString(),model2);
     }
 
     private static GltfModelV2 getGltfModel(ResourceLocation resourceLocation){
@@ -125,10 +142,18 @@ public class Animations {
     }
 
     public static void runAnimation(ResourceLocation resourceLocation){
+        runAnimation(resourceLocation, null);
+    }
+
+    public static void runAnimation(AnimationMeta animationMeta, Runnable callback){
+        if(animationMeta !=null)  runAnimation(animationMeta.getResourceLocation(), callback);
+    }
+
+    public static void runAnimation(ResourceLocation resourceLocation, Runnable callback){
         AnimationRunner runner = getAnimationRunner(resourceLocation);
         if(runner!=null) {
             if(runner.isRunning()) return;
-            runner.start();
+            runner.start(callback);
         }
     }
 
@@ -140,7 +165,10 @@ public class Animations {
         AnimationRunner runner = getAnimationRunner(resourceLocation);
         if(runner!=null) runner.stop();
         AnimationManager manager = getAnimationManager(resourceLocation);
-        if(manager!=null) manager.reset();
+        if(manager!=null) {
+            manager.reset();
+            manager.performStep(0);
+        }
     }
 
     public static boolean isAnimationRunning(AnimationMeta animationMeta){

@@ -6,7 +6,6 @@ import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.MovementAdaptationsHandler;
 import com.tac.guns.client.handler.ShootingHandler;
-import com.tac.guns.client.render.animation.impl.GunAnimationController;
 import com.tac.guns.common.*;
 import com.tac.guns.common.container.AttachmentContainer;
 import com.tac.guns.common.container.ColorBenchContainer;
@@ -377,12 +376,7 @@ public class ServerPlayHandler
         ItemStack heldItem = player.getHeldItemMainhand();
         if(heldItem.getItem() instanceof GunItem)
         {
-            GunAnimationController controller =  GunAnimationController.fromItem(heldItem.getItem());
-            if(controller != null) {
-                controller.stopAnimation();
-                controller.runAnimation(GunAnimationController.AnimationLabel.INSPECT);
-            } else
-                NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, playerInventory, player1) -> new InspectionContainer(windowId, playerInventory, heldItem), new TranslationTextComponent("container.tac.inspection")));
+            NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, playerInventory, player1) -> new InspectionContainer(windowId, playerInventory, heldItem), new TranslationTextComponent("container.tac.inspection")));
         }
     }
 

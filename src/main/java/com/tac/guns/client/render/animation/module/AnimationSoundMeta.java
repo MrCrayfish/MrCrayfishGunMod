@@ -1,7 +1,10 @@
-package com.tac.guns.client.render.animation.impl;
+package com.tac.guns.client.render.animation.module;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimationSoundMeta {
     private final ResourceLocation resourceLocation;
 

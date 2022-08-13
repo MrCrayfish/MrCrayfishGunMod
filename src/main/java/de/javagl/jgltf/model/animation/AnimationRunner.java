@@ -47,7 +47,7 @@ public final class AnimationRunner
     /**
      * Whether this runner is currently running
      */
-    private boolean running = false;
+    private volatile boolean running = false;
 
     private volatile boolean blocking = false;
 
@@ -55,7 +55,7 @@ public final class AnimationRunner
     /**
      * The step size, in milliseconds
      */
-    private final long stepSizeMs = 10;
+    private final long stepSizeMs = 6;
     
     /**
      * Create a new runner for the given {@link AnimationManager}
@@ -79,7 +79,16 @@ public final class AnimationRunner
         {
             return;
         }
-        executorService.execute(this::runAnimations);
+        executorService.execute(new AnimationRunnable(null));
+    }
+
+    public synchronized void start(Runnable callback)
+    {
+        if (isRunning())
+        {
+            return;
+        }
+        executorService.execute(new AnimationRunnable(callback));
     }
     
     /**
@@ -120,6 +129,7 @@ public final class AnimationRunner
             if(animationManager.tipStop()) {
                 stop();
                 animationManager.reset();
+                break;
             }
             try
             {
@@ -137,5 +147,19 @@ public final class AnimationRunner
 
     public AnimationManager getAnimationManager() {
         return animationManager;
+    }
+
+    public class AnimationRunnable implements Runnable{
+        private final Runnable callback;
+
+        public AnimationRunnable(Runnable callback){
+            this.callback = callback;
+        }
+
+        @Override
+        public void run() {
+            runAnimations();
+            if(callback != null) callback.run();
+        }
     }
 }

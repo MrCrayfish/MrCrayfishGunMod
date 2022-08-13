@@ -1,9 +1,7 @@
 package com.tac.guns.mixin.client;
 
-import com.tac.guns.client.render.animation.impl.AnimationMeta;
-import com.tac.guns.client.render.animation.impl.Animations;
-import com.tac.guns.client.render.animation.impl.GunAnimationController;
-import de.javagl.jgltf.model.animation.AnimationRunner;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.item.ItemStack;
@@ -30,6 +28,7 @@ public class FirstPersonRendererMixin {
         GunAnimationController controller = GunAnimationController.fromItem(mainHandItemStack.getItem());
         GunAnimationController controller1 = GunAnimationController.fromItem(this.prevItemStack.getItem());
         if(prevItemStack.isItemEqual(mainHandItemStack)) return;
+        //if(isSameWeapon(Minecraft.getInstance().player)) return;
         prevItemStack = mainHandItemStack;
         if(controller1 != null && controller != controller1) {
             controller1.stopAnimation();
@@ -39,18 +38,9 @@ public class FirstPersonRendererMixin {
             AnimationMeta meta = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.DRAW);
             if(!controller.getPreviousAnimation().equals(meta)) controller.stopAnimation();
             controller.runAnimation(GunAnimationController.AnimationLabel.DRAW);
-            //Skip the beginning of the draw animation to prevent flickering
-            AnimationRunner runner = Animations.getAnimationRunner(
-                    controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.DRAW).getResourceLocation());
-            runner.getAnimationManager().setCurrentTimeS(0.1f);
         }else if(controller != null && controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.DRAW) != null) {
             this.itemStackMainHand = mainHandItemStack;
             controller.runAnimation(GunAnimationController.AnimationLabel.DRAW);
-            //Skip the beginning of the draw animation to prevent flickering
-            AnimationRunner runner = Animations.getAnimationRunner(
-                    controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.DRAW).getResourceLocation());
-            if(runner.getAnimationManager().getCurrentTimeS() < 0.1f)
-                runner.getAnimationManager().setCurrentTimeS(0.1f);
         }
     }
     /*
