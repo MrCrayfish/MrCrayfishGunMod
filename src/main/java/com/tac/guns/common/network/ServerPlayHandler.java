@@ -8,12 +8,10 @@ import com.tac.guns.client.handler.MovementAdaptationsHandler;
 import com.tac.guns.client.handler.ShootingHandler;
 import com.tac.guns.client.util.WorldItemRenderUtil;
 import com.tac.guns.common.*;
-import com.tac.guns.common.container.AttachmentContainer;
-import com.tac.guns.common.container.ColorBenchContainer;
-import com.tac.guns.common.container.InspectionContainer;
-import com.tac.guns.common.container.WorkbenchContainer;
+import com.tac.guns.common.container.*;
 import com.tac.guns.crafting.WorkbenchRecipe;
 import com.tac.guns.crafting.WorkbenchRecipes;
+import com.tac.guns.enchantment.GunEnchantment;
 import com.tac.guns.entity.ProjectileEntity;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.init.ModBlocks;
@@ -36,7 +34,9 @@ import com.tac.guns.tileentity.WorkbenchTileEntity;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.InventoryUtil;
+import com.tac.guns.util.UTR;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -684,9 +684,19 @@ public class ServerPlayHandler
                     player.getHeldItemMainhand().getTag().putUniqueId("ID", id);
                     NetworkGunManager.get().StackIds.put(id, player.getHeldItemMainhand());
                 }
+                initLevelTracking(player.getHeldItemMainhand());
             }
         }
+    }
 
+    private static void initLevelTracking(ItemStack gunStack)
+    {
+        if(gunStack.getTag().get("level") == null) {
+            gunStack.getTag().putInt("level", 1);
+        }
+        if(gunStack.getTag().get("lifeTimeDmg") == null) {
+            gunStack.getTag().putFloat("lifeTimeDmg", 0f);
+        }
     }
 
     public static void handleUpgradeBenchItem(MessageSaveItemUpgradeBench message, ServerPlayerEntity player)
@@ -704,8 +714,12 @@ public class ServerPlayHandler
             }
             world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, 0.8F);
             //if item is empty or air stack in hand, take weapon, if holding weapon, take or replace weapon
-            if (tileEntity != null) {
-                if (!(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0).getItem() instanceof TimelessGunItem) && heldItem.getItem() instanceof TimelessGunItem) {
+            if (tileEntity != null)
+            {
+                // React to adding an extra Module item
+                //if()
+
+                if (!(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0).getItem() instanceof GunItem) && heldItem.getItem() instanceof GunItem) {
                     ((UpgradeBenchTileEntity) tileEntity).setInventorySlotContents(0, heldItem);
                     player.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.AIR));
                     // I hate this last part, this is used in order to reset the TileRenderer, without this the item stack is added, but the visual is only reset on entering GUI
@@ -722,6 +736,57 @@ public class ServerPlayHandler
                     player.closeScreen();
                 }
             }
+        }
+    }
+
+    /**
+     * Crafts the specified item at the workstation the player is currently using.
+     * This is only intended for use on the logical server.
+     *
+     * @param player the player who is crafting
+     * @param id     the id of an item which is registered as a valid workstation recipe
+     * @param pos    the block position of the workstation the player is using
+     */
+    public static void handleUpgradeBenchApply(ServerPlayerEntity player, ResourceLocation id, BlockPos pos, int ench, int enchIndx)
+    {
+        World world = player.world;
+
+        if(player.openContainer instanceof UpgradeBenchContainer)
+        {
+            Enchantment enchantment = GunEnchantmentHelper.enchs.get(ench);
+            UTR[] upgradeRequirements = GunEnchantmentHelper.upgradeableEnchs.get(enchantment);
+
+            UpgradeBenchContainer workbench = (UpgradeBenchContainer) player.openContainer;
+            if(workbench.getPos().equals(pos))
+            {
+                /*WorkbenchRecipe recipe = WorkbenchRecipes.getRecipeById(world, id);
+                if(recipe == null)
+                {
+                    return;
+                }
+
+                List<ItemStack> materials = recipe.getMaterials();
+                if(materials != null)
+                {
+                    for(ItemStack stack : materials)
+                    {
+                        if(!InventoryUtil.hasItemStack(player, stack))
+                        {
+                            return;
+                        }
+                        stack.setCount((int) (stack.getCount()*upgradeRequirements[enchIndx].getWeaponCraftPercentage()));
+                    }
+
+                    for(ItemStack stack : materials)
+                    {
+                        InventoryUtil.removeItemStack(player, stack);
+                    }
+                }*/
+
+                ItemStack toUpdate = workbench.getBench().getInventory().get(0);
+                toUpdate.addEnchantment(enchantment, EnchantmentHelper.getEnchantmentLevel(enchantment, toUpdate)+1);
+            }
+
         }
     }
 }

@@ -396,7 +396,7 @@ public class GunRenderingHandler {
                     xOffset = -translateX + modifiedGun.getModules().getZoom().getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - modifiedGun.getModules().getZoom().getYOffset()) * 0.0625 * scaleY;
                     zOffset = -translateZ + modifiedGun.getModules().getZoom().getZOffset() * 0.0625 * scaleZ;
-                } 
+                }
 
 
                 /* Controls the direction of the following translations, changes depending on the main hand. */

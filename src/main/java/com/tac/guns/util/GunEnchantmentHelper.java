@@ -1,19 +1,42 @@
 package com.tac.guns.util;
 
-import com.tac.guns.GunMod;
 import com.tac.guns.common.Gun;
 import com.tac.guns.init.ModEnchantments;
 import com.tac.guns.item.GunItem;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import org.apache.logging.log4j.Level;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
  */
 public class GunEnchantmentHelper
 {
+    // UNSAFE... REMOVING DEFAULTS MAY CAUSE PROBLEMS, CURRENT SOLUTION FOR ADDONS TO INCORPORATE THEIR OWN UPGRADE TABLE ENTRIES
+    public static ArrayList<Enchantment> enchs = new ArrayList<Enchantment>()
+    {{
+        add(ModEnchantments.ACCELERATOR.get());
+        add(ModEnchantments.OVER_CAPACITY.get());
+        add(ModEnchantments.PUNCTURING.get());
+        add(ModEnchantments.RIFLING.get());
+        add(ModEnchantments.BUFFERED.get());
+        add(ModEnchantments.LIGHTWEIGHT.get());
+    }};
+
+    public static HashMap<Enchantment, UTR[]> upgradeableEnchs = new HashMap<Enchantment, UTR[]>()
+    {{
+        put(ModEnchantments.ACCELERATOR.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d)});
+        put(ModEnchantments.OVER_CAPACITY.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
+        put(ModEnchantments.PUNCTURING.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
+        put(ModEnchantments.RIFLING.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
+        put(ModEnchantments.BUFFERED.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
+        put(ModEnchantments.LIGHTWEIGHT.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
+    }};
+
     public static int getReloadInterval(ItemStack weapon)
     {
         int interval = ((GunItem)weapon.getItem()).getGun().getReloads().getinterReloadPauseTicks();//10;
