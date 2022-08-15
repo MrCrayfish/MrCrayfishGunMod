@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class CameraAnimationHandler {
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
@@ -37,5 +37,5 @@ public class CameraAnimationHandler {
             final double impact = mod.playerAcceleration.y * mod.camDropImpact;
             easingV.z += positive ? impact : -impact;
         }
-    }
+    }*/
 }
