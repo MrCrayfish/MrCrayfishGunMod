@@ -119,7 +119,7 @@ public class TimelessGunItem extends GunItem
                 tooltip.add((new TranslationTextComponent("info.tac.standardWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_GREEN)));
             else
                 tooltip.add((new TranslationTextComponent("info.tac.heavyWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_RED)));
-            tooltip.add((new TranslationTextComponent("" + tagCompound.getFloat("level"))).mergeStyle(TextFormatting.LIGHT_PURPLE));
+            tooltip.add((new TranslationTextComponent("" + tagCompound.getInt("level"))).mergeStyle(TextFormatting.LIGHT_PURPLE));
         }
         tooltip.add((new TranslationTextComponent("info.tac.attachment_help", new Object[]{(new KeybindTextComponent("key.tac.attachments")).getString().toUpperCase(Locale.ENGLISH)})).mergeStyle(TextFormatting.YELLOW));
     }

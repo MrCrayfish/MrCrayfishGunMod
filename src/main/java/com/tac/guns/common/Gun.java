@@ -109,7 +109,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @TGExclude
         private GripType gripType = GripType.ONE_HANDED;
         @Optional
-        private float levelReq = 100.0F;
+        private float levelReq = 300.0F;
         @Override
         public CompoundNBT serializeNBT()
         {
