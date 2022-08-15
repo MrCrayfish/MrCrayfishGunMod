@@ -6,6 +6,9 @@ import com.tac.guns.client.CustomGunManager;
 import com.tac.guns.client.audio.GunShotSound;
 import com.tac.guns.client.handler.BulletTrailRenderingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.AnimationSoundManager;
+import com.tac.guns.client.render.animation.module.AnimationSoundMeta;
 import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.init.ModParticleTypes;
 import com.tac.guns.network.message.*;
@@ -16,6 +19,7 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
@@ -30,6 +34,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -55,6 +60,18 @@ public class ClientPlayHandler
         {
             Minecraft.getInstance().getSoundHandler().play(new GunShotSound(message.getId(), SoundCategory.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload()));
         }
+    }
+
+    public static void handleMessageAnimationSound(UUID fromWho, ResourceLocation animationResource, ResourceLocation soundResource, boolean play){
+        World world = Minecraft.getInstance().world;
+        if(world == null) return;
+        PlayerEntity player = world.getPlayerByUuid(fromWho);
+        if (player == null) return;
+        if (animationResource == null || soundResource == null) return;
+        AnimationMeta animationMeta = new AnimationMeta(animationResource);
+        AnimationSoundMeta soundMeta = new AnimationSoundMeta(soundResource);
+        if (play) AnimationSoundManager.INSTANCE.playerSound(player, animationMeta, soundMeta);
+        else AnimationSoundManager.INSTANCE.interruptSound(player, animationMeta);
     }
 
     public static void handleMessageBlood(MessageBlood message)

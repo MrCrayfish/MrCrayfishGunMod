@@ -37,6 +37,7 @@
   },
   "sounds": {
     "fire": "tac:item.m870",
+    "pump": "tac:item.m870",
     "reload": "tac:item.pistol.reload",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.fire_m16s"
@@ -52,7 +53,7 @@
   "modules": {
     "zoom": {
       "fovModifier": 0.9,
-      "yOffset": 9.175,
+      "yOffset": 10.175,
       "zOffset": -2.1
     },
     "attachments": {}

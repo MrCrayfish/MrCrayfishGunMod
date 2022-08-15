@@ -1,11 +1,17 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.Animations;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 
+@OnlyIn(Dist.CLIENT)
 public class CZ75AnimationController extends GunAnimationController {
 
     public static int INDEX_BODY = 5;

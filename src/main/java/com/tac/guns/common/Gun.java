@@ -15,15 +15,11 @@ import com.tac.guns.item.AmmoPackItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IScope;
 import com.tac.guns.item.attachment.impl.Scope;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeInternalHandler;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
@@ -712,6 +708,26 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         @Nullable
         @TGExclude
+        private ResourceLocation reloadEmpty;
+        @Optional
+        @Nullable
+        @TGExclude
+        private ResourceLocation reloadNormal;
+        @Optional
+        @Nullable
+        @TGExclude
+        private ResourceLocation pump;
+        @Optional
+        @Nullable
+        @TGExclude
+        private ResourceLocation draw;
+        @Optional
+        @Nullable
+        @TGExclude
+        private ResourceLocation inspect;
+        @Optional
+        @Nullable
+        @TGExclude
         private ResourceLocation cock;
         @Optional
         @Nullable
@@ -738,6 +754,26 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 tag.putString("SilencedFire", this.silencedFire.toString());
             }
+            if(reloadEmpty != null)
+            {
+                tag.putString("ReloadEmpty", this.reloadEmpty.toString());
+            }
+            if(draw != null)
+            {
+                tag.putString("Draw", this.draw.toString());
+            }
+            if(inspect != null)
+            {
+                tag.putString("Inspect", this.inspect.toString());
+            }
+            if(reloadNormal != null)
+            {
+                tag.putString("ReloadNormal", this.reloadNormal.toString());
+            }
+            if(pump != null)
+            {
+                tag.putString("Pump", this.pump.toString());
+            }
             return tag;
         }
 
@@ -760,6 +796,22 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.silencedFire = this.createSound(tag, "SilencedFire");
             }
+            if(tag.contains("ReloadEmpty", Constants.NBT.TAG_STRING))
+            {
+                this.reloadEmpty = this.createSound(tag, "ReloadEmpty");
+            }
+            if(tag.contains("Draw", Constants.NBT.TAG_STRING)){
+                this.draw = this.createSound(tag, "Draw");
+            }
+            if(tag.contains("Inspect", Constants.NBT.TAG_STRING)){
+                this.inspect = this.createSound(tag, "Inspect");
+            }
+            if(tag.contains("ReloadNormal", Constants.NBT.TAG_STRING)){
+                this.reloadNormal = this.createSound(tag, "ReloadNormal");
+            }
+            if(tag.contains("Pump", Constants.NBT.TAG_STRING)){
+                this.pump = this.createSound(tag, "Pump");
+            }
         }
 
         public Sounds copy()
@@ -769,6 +821,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             sounds.reload = this.reload;
             sounds.cock = this.cock;
             sounds.silencedFire = this.silencedFire;
+            sounds.reloadEmpty = this.reloadEmpty;
+            sounds.draw = this.draw;
+            sounds.inspect = this.inspect;
+            sounds.reloadNormal = this.reloadNormal;
+            sounds.pump = this.pump;
             return sounds;
         }
 
@@ -789,7 +846,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         /**
-         * @return The registry iid of the sound event when reloading this weapon
+         * @return The registry id of the sound event when reloading this weapon
          */
         @Nullable
         public ResourceLocation getReload()
@@ -798,7 +855,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         /**
-         * @return The registry iid of the sound event when cocking this weapon
+         * @return The registry id of the sound event when cocking this weapon
          */
         @Nullable
         public ResourceLocation getCock()
@@ -807,13 +864,40 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
 
         /**
-         * @return The registry iid of the sound event when silenced firing this weapon
+         * @return The registry id of the sound event when silenced firing this weapon
          */
         @Nullable
         public ResourceLocation getSilencedFire()
         {
             return this.silencedFire;
         }
+
+        /**
+         * @return The registry id of the sound event when reloading firearms with no bullets in the gun
+         */
+        @Nullable
+        public ResourceLocation getReloadEmpty() { return this.reloadEmpty; }
+
+        /**
+         * @return The registry id of the sound event when drawing.
+         */
+        @Nullable
+        public ResourceLocation getDraw() { return this.draw; }
+
+        /**
+         * @return The registry id of the sound event when inspecting.
+         */
+        @Nullable
+        public ResourceLocation getInspect() { return this.draw; }
+
+        /**
+         * @return The registry id of the sound event when inspecting.
+         */
+        @Nullable
+        public ResourceLocation getReloadNormal() { return this.reloadNormal; }
+
+        @Nullable
+        public ResourceLocation getPump() { return this.pump; }
     }
 
     public static class Display implements INBTSerializable<CompoundNBT>

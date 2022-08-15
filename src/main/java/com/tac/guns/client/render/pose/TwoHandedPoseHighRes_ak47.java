@@ -1,7 +1,6 @@
 package com.tac.guns.client.render.pose;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tac.guns.client.render.animation.GunAnimationController;
 import com.tac.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -81,7 +80,7 @@ public class TwoHandedPoseHighRes_ak47 extends TwoHandedPose {
 package com.tac.guns.client.render.pose;
 
 		import com.mojang.blaze3d.matrix.MatrixStack;
-		import com.tac.guns.client.render.animation.GunAnimationController;
+		import com.tac.guns.client.render.animation.impl.GunAnimationController;
 		import com.tac.guns.client.util.RenderUtil;
 		import net.minecraft.client.Minecraft;
 		import net.minecraft.client.entity.player.ClientPlayerEntity;

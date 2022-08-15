@@ -39,7 +39,10 @@
   },
   "sounds": {
     "fire": "tac:item.fire_glock",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.glock17_reload_normal",
+    "reloadEmpty": "tac:animation.glock17_reload_empty",
+    "draw": "tac:animation.glock17_draw",
+    "inspect": "tac:animation.glock17_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.fire_glocks"
   },

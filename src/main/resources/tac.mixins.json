@@ -11,6 +11,7 @@
   ],
   "client": [
     "client.GameRendererMixin",
+    "client.FirstPersonRendererMixin",
     "client.MouseHelperMixin",
     "client.WorldRendererMixin",
     "client.InventoryScreenMixin"

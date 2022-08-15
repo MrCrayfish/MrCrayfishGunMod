@@ -11,9 +11,8 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.render.IHeldAnimation;
-import com.tac.guns.client.render.animation.Animations;
-import com.tac.guns.client.render.animation.GunAnimationController;
-import com.tac.guns.client.render.animation.PistalAnimationController;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PistalAnimationController;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -31,7 +30,6 @@ import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IBarrel;
 import com.tac.guns.item.attachment.impl.Barrel;
 import com.tac.guns.item.attachment.impl.Scope;
-import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.OptifineHelper;
 import com.tac.guns.util.math.easing.QuadEaseOut;
@@ -40,8 +38,6 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
@@ -57,27 +53,20 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
-import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -141,16 +130,20 @@ public class GunRenderingHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && (mc.player.isSprinting() && !mc.player.isCrouching()) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.SHOOTING) && !SyncedPlayerData.instance().get(mc.player, ModSyncedDataKeys.RELOADING) && !AimingHandler.get().isAiming() && this.sprintCooldown == 0) {
-            if (this.sprintTransition < 5) {
-                if (Minecraft.getInstance().player != null) {
-                    ItemStack heldItem = Minecraft.getInstance().player.getHeldItemMainhand();
-                    if(heldItem.getItem() instanceof GunItem) {
-                        GunItem modifiedGun = (GunItem) heldItem.getItem();
-                        GunAnimationController controller = GunAnimationController.fromItem(modifiedGun.getItem());
-                        if(controller == null ||
-                                (modifiedGun.getGun().getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation() && !controller.isAnimationRunning()))
-                        {
+            if (Minecraft.getInstance().player != null) {
+                ItemStack heldItem = Minecraft.getInstance().player.getHeldItemMainhand();
+                if(heldItem.getItem() instanceof GunItem) {
+                    GunItem modifiedGun = (GunItem) heldItem.getItem();
+                    GunAnimationController controller = GunAnimationController.fromItem(modifiedGun.getItem());
+                    if (this.sprintTransition < 5) {
+                        if (controller == null ||
+                                (modifiedGun.getGun().getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation() && !controller.isAnimationRunning())) {
                             this.sprintTransition++;
+                        }
+                    }
+                    if(controller != null && controller.isAnimationRunning()) {
+                        if(sprintTransition > 0){
+                            this.sprintTransition --;
                         }
                     }
                 }
@@ -186,18 +179,6 @@ public class GunRenderingHandler {
 
         float direction = down ? -0.3F : 0.3F;
         this.offhandTranslate = MathHelper.clamp(this.offhandTranslate + direction, 0.0F, 1.0F);
-    }
-
-    @SubscribeEvent
-    public void onGunReload(GunReloadEvent.Post event) {
-        GunAnimationController controller = GunAnimationController.fromItem(event.getStack().getItem());
-        if(controller!=null) {
-            if(Gun.hasAmmo(event.getStack())) {
-                controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL);
-            }else {
-                controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
-            }
-        }
     }
 
     @SubscribeEvent
@@ -382,15 +363,16 @@ public class GunRenderingHandler {
                 /* Creates the required offsets to position the scope into the middle of the screen. */
                 if (modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null) {
                     double viewFinderOffset = isScopeOffsetType || OptifineHelper.isShadersEnabled() ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset();
-                    if(scope.getAdditionalZoom().getFovZoom() > 0) {
+                    if(scope.getAdditionalZoom().getFovZoom() > 0)
                         viewFinderOffset = isScopeRenderType ? (isScopeOffsetType || OptifineHelper.isShadersEnabled() ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset()) : (isScopeOffsetType || OptifineHelper.isShadersEnabled() ? scope.getViewFinderOffsetSpecialDR() : scope.getViewFinderOffsetDR()); // switches between either, but either must be populated
-                    }
+
                     //if (OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.735;
                     //if (isScopeRenderType) viewFinderOffset *= 0.735;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getScope();
                     xOffset = -translateX + -scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
-                    zOffset = !Config.COMMON.gameplay.gameplayEnchancedScopeOffset.get() && scope.getAdditionalZoom().getFovZoom() == 0 ? -translateZ + modifiedGun.getModules().getZoom().getZOffset() * 0.0625 * scaleZ : -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();//viewFinderOffset * scaleZ * scaledPos.getScale();\
+                    zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
+
                 }
                 else if (modifiedGun.canAttachType(IAttachment.Type.OLD_SCOPE) && scope != null) {
                     double viewFinderOffset = isScopeOffsetType || isScopeRenderType ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset(); // switches between either, but either must be populated
@@ -407,8 +389,7 @@ public class GunRenderingHandler {
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getPistolScope();
                     xOffset = -translateX + -scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
-                    //zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
-                    zOffset = !Config.COMMON.gameplay.gameplayEnchancedScopeOffset.get() && scope.getAdditionalZoom().getFovZoom() == 0 ? -translateZ + modifiedGun.getModules().getZoom().getZOffset() * 0.0625 * scaleZ : -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();//viewFinderOffset * scaleZ * scaledPos.getScale();
+                    zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
                 }
                 else if (modifiedGun.getModules().getZoom() != null)
                 {
@@ -811,6 +792,21 @@ public class GunRenderingHandler {
         }
         return false;
     }
+    /*public boolean renderColored(LivingEntity entity, IBakedModel model, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks) {
+
+            matrixStack.push();
+
+            RenderUtil.applyTransformTypeIB(model, matrixStack, transformType, entity);
+
+            this.renderColoredModel(entity, transformType, model, matrixStack, renderTypeBuffer, light, partialTicks);//matrixStack, renderTypeBuffer, light, partialTicks);
+            //this.renderAttachments(entity, transformType, stack, matrixStack, renderTypeBuffer, light, partialTicks);
+            //this.renderMuzzleFlash(entity, matrixStack, renderTypeBuffer, stack, transformType);
+
+            matrixStack.pop();
+            return true;
+
+        //return false;
+    }*/
     private void renderGun(LivingEntity entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
     {
         /*if(ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GUI))
@@ -825,6 +821,15 @@ public class GunRenderingHandler {
             RenderUtil.renderModel(stack, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, entity);
         }
     }
+    /*private void renderColoredModel(LivingEntity entity, ItemCameraTransforms.TransformType transformType, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
+    {
+        //if(stack.getItem() instanceof ITimelessAnimated) RenderUtil.renderModel(stack, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, entity);
+        IOverrideModel model = ModelOverrides.getModel(stack);
+        if (model != null) {
+            model.render(partialTicks, transformType, stack, ItemStack.EMPTY, entity, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+        }
+    }*/
+
     private void renderAttachments(LivingEntity entity, ItemCameraTransforms.TransformType transformType, ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks) {
         if (stack.getItem() instanceof GunItem) {
             Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
@@ -899,8 +904,6 @@ public class GunRenderingHandler {
         if(GunRenderingHandler.get().muzzleExtraOnEnch != 0)
             this.muzzleExtraOnEnch = 0;
 
-        //this.spawnSparks(); Add new spark catagory / data points to calculate spark / lingering smoke effect, for now we probably will stick with MC particles till future
-
         matrixStack.translate(displayX, displayY, displayZ);
         matrixStack.translate(0, -0.5, 0);
 
@@ -941,27 +944,6 @@ public class GunRenderingHandler {
         matrixStack.pop();
     }
 
-    private void spawnSparks()
-    {
-        Minecraft mc = Minecraft.getInstance();
-        ParticleManager particleManager = mc.particles;
-        World world = mc.world;
-        /* Spawn fast moving smoke/spark particles */
-        for(int i = 0; i < 8; i++)
-        {
-            Particle smokeFlash = spawnParticle(particleManager, ParticleTypes.SMOKE, mc.player.getPosX(), mc.player.getPosYEye(), mc.player.getPosZ(), world.rand, 1.1);
-            smokeFlash.setMaxAge((int) ((6 / (Math.random() * 0.1 + 0.4)) * 0.5));
-            Particle smoke = spawnParticle(particleManager, ParticleTypes.CLOUD, mc.player.getPosX(), mc.player.getPosYEye(), mc.player.getPosZ(), world.rand, 0.2);
-            smoke.setMaxAge((int) ((11 / (Math.random() * 0.1 + 0.4)) * 0.5));
-            Particle flash = spawnParticle(particleManager, ParticleTypes.ASH, mc.player.getPosX(), mc.player.getPosYEye(), mc.player.getPosZ(), world.rand, 2.0);
-            flash.setMaxAge((int) ((3 / (Math.random() * 0.1 + 0.4)) * 0.5));
-            //spawnParticle(particleManager, ParticleTypes.CRIT, mc.player.getPosX(), mc.player.getPosY(), mc.player.getPosZ(), world.rand, 4.0);
-        }
-    }
-    private static Particle spawnParticle(ParticleManager manager, IParticleData data, double x, double y, double z, Random rand, double velocityMultiplier)
-    {
-        return manager.addParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
-    }
     /*private void renderReloadArm(MatrixStack matrixStack, IRenderTypeBuffer buffer, int light, Gun modifiedGun, ItemStack stack, HandSide hand) {
         *//*if (stack.getItem() instanceof IAnimatable && stack.getItem() instanceof GunItem) {
 

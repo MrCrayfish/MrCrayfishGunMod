@@ -27,21 +27,18 @@
 package de.javagl.jgltf.model.animation;
 
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Simple utility class to run an {@link AnimationManager} in an own thread
  */
 public final class AnimationRunner
 {
-    public static final ExecutorService executorService = Executors.newFixedThreadPool(5, new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable r) {
-            return new Thread(r);
-        }
-    });
+    public static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5, Thread::new);
+    static {
+        for(int i =0; i<5; i++) executorService.execute(()->{});
+    }
     /**
      * The {@link AnimationManager}
      */
@@ -50,17 +47,15 @@ public final class AnimationRunner
     /**
      * Whether this runner is currently running
      */
-    private boolean running = false;
-    
-    /**
-     * The animation thread
-     */
-    //private Thread animationThread;
-    
+    private volatile boolean running = false;
+
+    private volatile boolean blocking = false;
+
+    private long previousNs = System.nanoTime();
     /**
      * The step size, in milliseconds
      */
-    private final long stepSizeMs = 10;
+    private final long stepSizeMs = 6;
     
     /**
      * Create a new runner for the given {@link AnimationManager}
@@ -84,11 +79,16 @@ public final class AnimationRunner
         {
             return;
         }
-        //animationThread = new Thread(this::runAnimations, "animationThread");
-        //animationThread.setDaemon(true);
-        //animationThread.start();
-        executorService.execute(this::runAnimations);
-        running = true;
+        executorService.execute(new AnimationRunnable(null));
+    }
+
+    public synchronized void start(Runnable callback)
+    {
+        if (isRunning())
+        {
+            return;
+        }
+        executorService.execute(new AnimationRunnable(callback));
     }
     
     /**
@@ -97,12 +97,7 @@ public final class AnimationRunner
      */
     public synchronized void stop()
     {
-        if (!isRunning())
-        {
-            return;
-        }
         running = false;
-        //animationThread = null;
     }
 
     /**
@@ -121,9 +116,12 @@ public final class AnimationRunner
      */
     private void runAnimations()
     {
-        long previousNs = System.nanoTime();
+        while (blocking){ }
+        running = true;
+        previousNs = System.nanoTime();
         while (isRunning())
         {
+            blocking = true;
             long currentNs = System.nanoTime();
             long deltaNs = currentNs - previousNs;
             animationManager.performStep(deltaNs);
@@ -131,6 +129,7 @@ public final class AnimationRunner
             if(animationManager.tipStop()) {
                 stop();
                 animationManager.reset();
+                break;
             }
             try
             {
@@ -139,12 +138,28 @@ public final class AnimationRunner
             catch (InterruptedException e)
             {
                 Thread.currentThread().interrupt();
+                blocking = false;
                 return;
             }
         }
+        blocking = false;
     }
 
     public AnimationManager getAnimationManager() {
         return animationManager;
+    }
+
+    public class AnimationRunnable implements Runnable{
+        private final Runnable callback;
+
+        public AnimationRunnable(Runnable callback){
+            this.callback = callback;
+        }
+
+        @Override
+        public void run() {
+            runAnimations();
+            if(callback != null) callback.run();
+        }
     }
 }

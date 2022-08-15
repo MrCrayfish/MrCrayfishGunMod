@@ -1,13 +1,16 @@
 package com.tac.guns.client.render.animation;
 
 import com.tac.guns.GunMod;
+import com.tac.guns.client.render.animation.module.*;
 import com.tac.guns.init.ModItems;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.system.CallbackI;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 
-public class Glock17AnimationController extends PistalAnimationController{
+@OnlyIn(Dist.CLIENT)
+public class Glock17AnimationController extends PistalAnimationController {
 
     public static int INDEX_BODY = 3;
 
@@ -25,14 +28,20 @@ public class Glock17AnimationController extends PistalAnimationController{
 
     public static final AnimationMeta RELOAD_EMPTY = new AnimationMeta(new ResourceLocation("tac","animations/glock_17_reload_empty.gltf"));
 
+    public static final AnimationMeta STATIC = new AnimationMeta(new ResourceLocation("tac","animations/glock_17_static.gltf"));
+
+    public static final AnimationMeta INSPECT = new AnimationMeta(new ResourceLocation("tac","animations/glock_17_inspect.gltf"));
+
     private static final Glock17AnimationController instance = new Glock17AnimationController();
 
     @Override
-    public AnimationMeta getAnimationFromLabel(AnimationLabel label) {
+    public AnimationMeta getAnimationFromLabel(GunAnimationController.AnimationLabel label) {
         switch (label){
             case RELOAD_NORMAL: return RELOAD_NORM;
             case RELOAD_EMPTY: return RELOAD_EMPTY;
             case DRAW: return DRAW;
+            case STATIC: return STATIC;
+            case INSPECT: return INSPECT;
             default: return null;
         }
     }
@@ -42,11 +51,20 @@ public class Glock17AnimationController extends PistalAnimationController{
             Animations.load(RELOAD_NORM);
             Animations.load(DRAW);
             Animations.load(RELOAD_EMPTY);
+            Animations.load(STATIC);
+            Animations.load(INSPECT);
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }
+        enableStaticState();
         GunAnimationController.setAnimationControllerMap(ModItems.GLOCK_17.getId(),this);
     }
+
+    @Override
+    public AnimationSoundMeta getSoundFromLabel(AnimationLabel label){
+        return super.getSoundFromLabel(ModItems.GLOCK_17.get(), label);
+    }
+
 
     public static Glock17AnimationController getInstance() { return instance; }
 
