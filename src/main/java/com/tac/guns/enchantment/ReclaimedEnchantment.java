@@ -18,6 +18,7 @@ public class ReclaimedEnchantment extends GunEnchantment
         return 2;
     }
 
+
     @Override
     public int getMinEnchantability(int level)
     {

@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GarandPingEvent {
+	/* BTW this was by bomb787 as a Timeless Contributor */
 	@SubscribeEvent
     public static void postShoot(GunFireEvent.Post event) {
 		PlayerEntity player = event.getPlayer();

@@ -37,6 +37,48 @@ public class AttachmentContainer extends Container
 
     private boolean loaded = false;
 
+    public static ItemStack[] getAttachments(ItemStack stack)
+    {
+        ItemStack[] attachments = new ItemStack[IAttachment.Type.values().length];
+        if(stack.getItem() instanceof ScopeItem)
+        {
+            for (int i = 8; i < attachments.length; i++) {
+                attachments[i] = Gun.getAttachment(IAttachment.Type.values()[i], stack);
+            }
+        }
+        else if(stack.getItem() instanceof TimelessOldRifleGunItem)
+        {
+            for (int i = 0; i < attachments.length-6; i++)
+            {
+                if(i==0)
+                    attachments[i] = Gun.getAttachment(IAttachment.Type.OLD_SCOPE, stack);
+                else
+                    attachments[i] = Gun.getAttachment(IAttachment.Type.values()[i], stack);
+            }
+        }
+        else if(stack.getItem() instanceof TimelessPistolGunItem)
+        {
+            for (int i = 0; i < attachments.length-6; i++)
+            {
+                if(i==0)
+                    attachments[i] = Gun.getAttachment(IAttachment.Type.PISTOL_SCOPE, stack);
+                else if(i==1)
+                    attachments[i] = Gun.getAttachment(IAttachment.Type.PISTOL_BARREL, stack);
+                else
+                    attachments[i] = Gun.getAttachment(IAttachment.Type.values()[i], stack);
+            }
+        }
+        else if (stack.getItem() instanceof TimelessGunItem)
+        {
+            for (int i = 0; i < attachments.length-6; i++)
+            {
+                /*if(i == 0)
+                    attachments[i] = Gun.getAttachment(IAttachment.Type.SCOPE, stack);*/
+                attachments[i] = Gun.getAttachment(IAttachment.Type.values()[i], stack);
+            }
+        }
+        return attachments;
+    }
     public AttachmentContainer(int windowId, PlayerInventory playerInventory, ItemStack stack) // reads from attachments inv
     {
         this(windowId, playerInventory);
@@ -201,7 +243,7 @@ public class AttachmentContainer extends Container
     }
 
     @Override
-    public void onCraftMatrixChanged(IInventory inventoryIn) // something with this shit...
+    public void onCraftMatrixChanged(IInventory inventoryIn) // something with this...
     {
         CompoundNBT attachments = new CompoundNBT();
 

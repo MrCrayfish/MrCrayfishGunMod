@@ -35,7 +35,7 @@ public class Glock17AnimationController extends PistalAnimationController {
     private static final Glock17AnimationController instance = new Glock17AnimationController();
 
     @Override
-    public AnimationMeta getAnimationFromLabel(AnimationLabel label) {
+    public AnimationMeta getAnimationFromLabel(GunAnimationController.AnimationLabel label) {
         switch (label){
             case RELOAD_NORMAL: return RELOAD_NORM;
             case RELOAD_EMPTY: return RELOAD_EMPTY;

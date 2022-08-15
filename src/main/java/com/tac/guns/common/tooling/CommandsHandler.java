@@ -35,9 +35,11 @@ public class CommandsHandler
         instance.catGlobals.put(1, true);
         // WEAPON EDITING TRACKER   |   END
 
-        instance.catGlobals.put(2, true); // GUI EDITOR
+        instance.catGlobals.put(3, true); // GUI EDITOR
 
-        instance.catGlobals.put(3, true); // SCOPE EDITOR
+        instance.catGlobals.put(2, true); // SCOPE EDITOR
+
+        instance.catGlobals.put(4, true); // GUI EDITOR
         // ---MANUAL, CURRENT SYSTEM FOR IMPLEMENTING DEFAULT HANDLERS   |   END--- ///
         return instance;
     }

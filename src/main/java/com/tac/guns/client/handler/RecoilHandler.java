@@ -5,6 +5,7 @@ import com.tac.guns.GunMod;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -75,6 +76,7 @@ public class RecoilHandler
 
         float recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(heldItem);
         recoilModifier *= this.getAdsRecoilReduction(modifiedGun);
+        recoilModifier *= GunEnchantmentHelper.getBufferedRecoil(heldItem);
         recoilModifier *= verticalRandomAmount;
         this.cameraRecoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;
         this.progressCameraRecoil = 0F;
@@ -86,6 +88,7 @@ public class RecoilHandler
 
         float horizontalRecoilModifier = 1.0F - GunModifierHelper.getHorizontalRecoilModifier(heldItem);
         horizontalRecoilModifier *= this.getAdsRecoilReduction(modifiedGun);
+        horizontalRecoilModifier *= GunEnchantmentHelper.getBufferedRecoil(heldItem);
         horizontalRecoilModifier *= horizontalRandomAmount;
         horizontalCameraRecoil = (modifiedGun.getGeneral().getHorizontalRecoilAngle() * horizontalRecoilModifier * 0.75F);
         horizontalProgressCameraRecoil = 0F;

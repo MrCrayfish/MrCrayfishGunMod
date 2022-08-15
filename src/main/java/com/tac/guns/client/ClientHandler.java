@@ -1,11 +1,12 @@
 package com.tac.guns.client;
 
+import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.*;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
+import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.handler.command.ScopeEditor;
-import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
@@ -14,10 +15,8 @@ import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.gun.model.*;
 import com.tac.guns.client.screen.*;
 import com.tac.guns.client.settings.GunOptions;
-import com.tac.guns.init.ModBlocks;
-import com.tac.guns.init.ModContainers;
-import com.tac.guns.init.ModEntities;
-import com.tac.guns.init.ModItems;
+import com.tac.guns.client.util.WorldItemRenderUtil;
+import com.tac.guns.init.*;
 import com.tac.guns.item.IColored;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAttachments;
@@ -38,6 +37,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -74,9 +74,15 @@ public class ClientHandler
 
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
         MinecraftForge.EVENT_BUS.register(AnimationHandler.INSTANCE); //Mainly controls when the animation should play.
-        MinecraftForge.EVENT_BUS.register(GuiEditor.get());
-        MinecraftForge.EVENT_BUS.register(GunEditor.get());
-        MinecraftForge.EVENT_BUS.register(ScopeEditor.get());
+        if(Config.COMMON.development.enableTDev.get()) {
+            MinecraftForge.EVENT_BUS.register(GuiEditor.get());
+            MinecraftForge.EVENT_BUS.register(GunEditor.get());
+            MinecraftForge.EVENT_BUS.register(ScopeEditor.get());
+            MinecraftForge.EVENT_BUS.register(ObjectRenderEditor.get());
+        }
+
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), WorldItemRenderUtil::new);
+
         KeyBinds.register();
 
         setupRenderLayers();
@@ -213,9 +219,7 @@ public class ClientHandler
             }*/
             else if(KeyBinds.KEY_INSPECT.isPressed())
             {
-                GunAnimationController controller = GunAnimationController.fromItem(mc.player.inventory.getCurrentItem().getItem());
-                if(controller == null)
-                    PacketHandler.getPlayChannel().sendToServer(new MessageInspection());
+                PacketHandler.getPlayChannel().sendToServer(new MessageInspection());
             }
         }
     }

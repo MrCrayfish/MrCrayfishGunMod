@@ -36,7 +36,6 @@ import java.util.Locale;
 
 import static com.tac.guns.GunMod.LOGGER;
 
-// Awaiting redesign for server compatability
 public class GunEditor
 {
     private static GunEditor instance;
@@ -62,10 +61,6 @@ public class GunEditor
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if(Thread.currentThread().getThreadGroup() == SidedThreadGroups.CLIENT)
-        {
-            LOGGER.log(Level.FATAL, "WE ARE ON CLIENTTTTTTTTT");
-        }
         if(!Config.COMMON.development.enableTDev.get())
             return;
         Minecraft mc = Minecraft.getInstance();
@@ -950,7 +945,7 @@ public class GunEditor
             FileWriter dataWriter = new FileWriter (dir.getAbsolutePath() +"\\"+ name + "_export.json");
             dataWriter.write(jsonString);
             dataWriter.close();
-            LOGGER.log(Level.INFO, "WEAPON EDITOR EXPORTED FILE ( "+name + "export.txt ). BE PROUD!");
+            LOGGER.log(Level.INFO, "WEAPON EDITOR EXPORTED FILE ( "+name + "_export.txt ). BE PROUD!");
         }
         catch (IOException e)
         {
