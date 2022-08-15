@@ -301,6 +301,7 @@ public class ReloadHandler
                         //    return;
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, true);
                         PacketHandler.getPlayChannel().sendToServer(new MessageReload(true));
+                        AnimationHandler.INSTANCE.onGunReload();
                         this.reloadingSlot = player.inventory.currentItem;
                         //MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack));
                     }
