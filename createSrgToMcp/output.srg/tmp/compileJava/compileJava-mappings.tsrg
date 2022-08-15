@@ -1,0 +1,3 @@
+com/tac/guns/mixin/client/FirstPersonRendererMixin itemStackMainHand field_187467_d
+com/tac/guns/mixin/client/FirstPersonRendererMixin equippedProgressMainHand field_187469_f
+com/tac/guns/mixin/client/FirstPersonRendererMixin prevEquippedProgressMainHand field_187470_g

@@ -60,8 +60,8 @@
   "modules": {
     "zoom": {
       "fovModifier": 0.8,
-      "yOffset": 12.675,
-      "zOffset": -4.75
+      "yOffset": 12.215,
+      "zOffset": 3.55
     },
     "attachments": {
       "barrel": {
@@ -70,8 +70,8 @@
         "scale": 1.00
       },
       "scope": {
-        "yOffset": 10.25,
-        "zOffset": 7.4,
+        "yOffset": 10.51,
+        "zOffset": -1.28,
         "scale": 1.00
       },
       "stock": {

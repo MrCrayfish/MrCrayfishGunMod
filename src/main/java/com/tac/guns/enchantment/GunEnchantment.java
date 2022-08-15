@@ -17,7 +17,7 @@ public abstract class GunEnchantment extends Enchantment
         this.type = type;
     }
 
-    @Override
+    /*@Override
     protected boolean canApplyTogether(Enchantment enchantment)
     {
         if(enchantment instanceof GunEnchantment)
@@ -25,7 +25,7 @@ public abstract class GunEnchantment extends Enchantment
             return ((GunEnchantment) enchantment).type != this.type;
         }
         return super.canApplyTogether(enchantment);
-    }
+    }*/
 
     public enum Type
     {

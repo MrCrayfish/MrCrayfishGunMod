@@ -1,0 +1,54 @@
+{
+  "mappings": {
+    "com/tac/guns/mixin/common/PlayerListMixin": {
+      "reloadResources": "Lnet/minecraft/server/management/PlayerList;func_193244_w()V"
+    },
+    "com/tac/guns/mixin/common/SittingPhaseMixin": {
+      "func_221113_a": "Lnet/minecraft/entity/boss/dragon/phase/SittingPhase;func_221113_a(Lnet/minecraft/util/DamageSource;F)F"
+    },
+    "com/tac/guns/mixin/client/InventoryScreenMixin": {
+      "drawGuiContainerBackgroundLayer(Lcom/mojang/blaze3d/matrix/MatrixStack;FII)V": "Lnet/minecraft/client/gui/screen/inventory/InventoryScreen;func_230450_a_(Lcom/mojang/blaze3d/matrix/MatrixStack;FII)V"
+    },
+    "com/tac/guns/mixin/common/LivingEntityMixin": {
+      "attackEntityFrom": "Lnet/minecraft/entity/LivingEntity;func_70097_a(Lnet/minecraft/util/DamageSource;F)Z",
+      "Lnet/minecraft/entity/LivingEntity;applyKnockback(FDD)V": "Lnet/minecraft/entity/LivingEntity;func_233627_a_(FDD)V"
+    },
+    "com/tac/guns/mixin/client/WorldRendererMixin": {
+      "updateCameraAndRender": "Lnet/minecraft/client/renderer/WorldRenderer;func_228426_a_(Lcom/mojang/blaze3d/matrix/MatrixStack;FJZLnet/minecraft/client/renderer/ActiveRenderInfo;Lnet/minecraft/client/renderer/GameRenderer;Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/util/math/vector/Matrix4f;)V",
+      "Lnet/minecraft/client/renderer/WorldRenderer;checkMatrixStack(Lcom/mojang/blaze3d/matrix/MatrixStack;)V": "Lnet/minecraft/client/renderer/WorldRenderer;func_228423_a_(Lcom/mojang/blaze3d/matrix/MatrixStack;)V"
+    },
+    "com/tac/guns/mixin/client/MouseHelperMixin": {
+      "updatePlayerLook()V": "Lnet/minecraft/client/MouseHelper;func_198028_a()V"
+    },
+    "com/tac/guns/mixin/client/FirstPersonRendererMixin": {
+      "tick": "Lnet/minecraft/client/renderer/FirstPersonRenderer;func_78441_a()V"
+    }
+  },
+  "data": {
+    "searge": {
+      "com/tac/guns/mixin/common/PlayerListMixin": {
+        "reloadResources": "Lnet/minecraft/server/management/PlayerList;func_193244_w()V"
+      },
+      "com/tac/guns/mixin/common/SittingPhaseMixin": {
+        "func_221113_a": "Lnet/minecraft/entity/boss/dragon/phase/SittingPhase;func_221113_a(Lnet/minecraft/util/DamageSource;F)F"
+      },
+      "com/tac/guns/mixin/client/InventoryScreenMixin": {
+        "drawGuiContainerBackgroundLayer(Lcom/mojang/blaze3d/matrix/MatrixStack;FII)V": "Lnet/minecraft/client/gui/screen/inventory/InventoryScreen;func_230450_a_(Lcom/mojang/blaze3d/matrix/MatrixStack;FII)V"
+      },
+      "com/tac/guns/mixin/common/LivingEntityMixin": {
+        "attackEntityFrom": "Lnet/minecraft/entity/LivingEntity;func_70097_a(Lnet/minecraft/util/DamageSource;F)Z",
+        "Lnet/minecraft/entity/LivingEntity;applyKnockback(FDD)V": "Lnet/minecraft/entity/LivingEntity;func_233627_a_(FDD)V"
+      },
+      "com/tac/guns/mixin/client/WorldRendererMixin": {
+        "updateCameraAndRender": "Lnet/minecraft/client/renderer/WorldRenderer;func_228426_a_(Lcom/mojang/blaze3d/matrix/MatrixStack;FJZLnet/minecraft/client/renderer/ActiveRenderInfo;Lnet/minecraft/client/renderer/GameRenderer;Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/util/math/vector/Matrix4f;)V",
+        "Lnet/minecraft/client/renderer/WorldRenderer;checkMatrixStack(Lcom/mojang/blaze3d/matrix/MatrixStack;)V": "Lnet/minecraft/client/renderer/WorldRenderer;func_228423_a_(Lcom/mojang/blaze3d/matrix/MatrixStack;)V"
+      },
+      "com/tac/guns/mixin/client/MouseHelperMixin": {
+        "updatePlayerLook()V": "Lnet/minecraft/client/MouseHelper;func_198028_a()V"
+      },
+      "com/tac/guns/mixin/client/FirstPersonRendererMixin": {
+        "tick": "Lnet/minecraft/client/renderer/FirstPersonRenderer;func_78441_a()V"
+      }
+    }
+  }
+}

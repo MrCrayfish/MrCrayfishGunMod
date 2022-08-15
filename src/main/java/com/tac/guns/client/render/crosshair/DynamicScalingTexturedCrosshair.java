@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -125,7 +126,7 @@ public class DynamicScalingTexturedCrosshair extends TexturedCrosshair implement
             if (playerEntity.getPosY() != playerEntity.prevPosY)
                 scale += this.getVerticalMovementScale() * gunItem.getGun().getDisplay().getHipfireMoveScale();
 
-            this.scale(scale * (gunItem.getGun().getDisplay().getHipfireScale()) * GunModifierHelper.getModifiedSpread(playerEntity.getHeldItemMainhand(), gunItem.getGun().getGeneral().getSpread()));
+            this.scale(scale * (gunItem.getGun().getDisplay().getHipfireScale()) * (GunModifierHelper.getModifiedSpread(playerEntity.getHeldItemMainhand(), gunItem.getGun().getGeneral().getSpread())*GunEnchantmentHelper.getSpreadModifier(playerEntity.getHeldItemMainhand())));
             //this.scale *= GunModifierHelper.getModifiedSpread(playerEntity.getMainHandItem(), gunItem.getGun().getGeneral().getSpread());
         }
     }
