@@ -719,7 +719,7 @@ public class ServerPlayHandler
                 // React to adding an extra Module item
                 //if()
 
-                if (!(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0).getItem() instanceof TimelessGunItem) && heldItem.getItem() instanceof TimelessGunItem) {
+                if (!(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0).getItem() instanceof GunItem) && heldItem.getItem() instanceof GunItem) {
                     ((UpgradeBenchTileEntity) tileEntity).setInventorySlotContents(0, heldItem);
                     player.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.AIR));
                     // I hate this last part, this is used in order to reset the TileRenderer, without this the item stack is added, but the visual is only reset on entering GUI
