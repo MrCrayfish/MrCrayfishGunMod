@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class CameraAnimationHandler {
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
         /*
@@ -36,6 +36,4 @@ public class CameraAnimationHandler {
             easingV.z += positive ? impact : -impact;
         }
          */
-    }
-
 }

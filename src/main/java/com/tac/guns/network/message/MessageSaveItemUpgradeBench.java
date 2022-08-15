@@ -43,7 +43,7 @@ public class MessageSaveItemUpgradeBench implements IMessage
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                supplier.get().enqueueWork(() -> ServerPlayHandler. handleUpgradeBenchItem(this, player));
+                supplier.get().enqueueWork(() -> ServerPlayHandler.handleUpgradeBenchItem(this, player));
             }
         });
         supplier.get().setPacketHandled(true);
