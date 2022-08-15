@@ -43,7 +43,7 @@ public class LevelingEvent {
     */
 
     @SubscribeEvent
-    public void onPartialLevel(LevelUpEvent.Pre event)
+    public void onPartialLevel(LevelUpEvent.Post event)
     {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null)

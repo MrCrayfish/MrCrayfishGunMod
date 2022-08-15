@@ -152,6 +152,9 @@ public class  ShootingHandler
             if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
                 boolean shooting = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS && !this.clickUp;
+                if(GunRenderingHandler.get().sprintTransition != 0) {
+                    shooting = false;
+                }
                 if(GunMod.controllableLoaded)
                 {
                     // shooting |= ControllerHandler.isShooting();
@@ -180,9 +183,6 @@ public class  ShootingHandler
         {
             this.shooting = false;
         }
-
-        if (this.shooting)
-            player.setSprinting(false);
     }
 
     /*@SubscribeEvent
@@ -335,6 +335,11 @@ public class  ShootingHandler
         if(player.isSpectator())
             return;
 
+        player.setSprinting(false);
+        if(GunRenderingHandler.get().sprintTransition != 0) {
+            this.shooting = false;
+            return;
+        }
         CooldownTracker tracker = player.getCooldownTracker();
 
         if(!tracker.hasCooldown(heldItem.getItem()))
