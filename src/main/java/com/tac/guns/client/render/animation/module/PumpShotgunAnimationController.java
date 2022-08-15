@@ -53,6 +53,7 @@ public abstract class PumpShotgunAnimationController extends GunAnimationControl
     @Override
     public void stopAnimation(){
         super.stopAnimation();
+        flow = null;
         stopReloadingFlow();
     }
 
@@ -129,8 +130,7 @@ public abstract class PumpShotgunAnimationController extends GunAnimationControl
 
         public void stop(){
             stopped = true;
-            flow = null;
-            stopAnimation();
+            //unfinished
         }
 
         public AnimationMeta getCurrentAnimation() {return currentAnimation;}
