@@ -7,6 +7,7 @@ import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
@@ -219,6 +220,7 @@ public class ClientHandler
             }*/
             else if(KeyBinds.KEY_INSPECT.isPressed())
             {
+                if(GunAnimationController.fromItem(mc.player.inventory.getCurrentItem().getItem()) != null) return;
                 PacketHandler.getPlayChannel().sendToServer(new MessageInspection());
             }
         }

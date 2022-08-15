@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,9 +27,24 @@ public enum AnimationSoundManager {
             SoundEvent soundEvent = new SoundEvent(soundMeta.getResourceLocation());
             sound = new EntityTickableSound(soundEvent, SoundCategory.PLAYERS, player);
         }
+        if(sound instanceof EntityTickableSound){
+            EntityTickableSound entityTickableSound = (EntityTickableSound) sound;
+            if(entityTickableSound.isDonePlaying()){
+                SoundEvent soundEvent = new SoundEvent(soundMeta.getResourceLocation());
+                sound = new EntityTickableSound(soundEvent, SoundCategory.PLAYERS, player);
+            }
+        }
         if(Minecraft.getInstance().getSoundHandler().isPlaying(sound)) return;
         Minecraft.getInstance().getSoundHandler().play(sound);
         map.put(animationMeta.getResourceLocation(), sound);
+    }
+
+    public void onPlayerDeath(PlayerEntity player){
+        Map<ResourceLocation, ISound> map = soundsMap.computeIfAbsent(player.getUniqueID(), k -> new HashMap<>());
+        for(ISound sound : map.values()){
+            Minecraft.getInstance().getSoundHandler().stop(sound);
+        }
+        soundsMap.remove(player.getUniqueID());
     }
 
     public void interruptSound(PlayerEntity player, AnimationMeta animationMeta){
@@ -38,6 +54,7 @@ public enum AnimationSoundManager {
             if(sound != null){
                 Minecraft.getInstance().getSoundHandler().stop(sound);
             }
+            map.remove(animationMeta.getResourceLocation());
         }
     }
 }

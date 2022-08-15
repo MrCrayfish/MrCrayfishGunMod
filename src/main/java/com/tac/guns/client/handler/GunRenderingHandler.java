@@ -847,6 +847,7 @@ public class GunRenderingHandler {
                             if(controller!=null){
                                 if(type!=null && type.equals(IAttachment.Type.PISTOL_SCOPE)){
                                     if(controller instanceof PistalAnimationController) {
+                                        //Minecraft.getInstance().player.sendChatMessage("test");
                                         PistalAnimationController pcontroller = (PistalAnimationController) controller;
                                         controller.applyTransform(stack,pcontroller.getSlideNodeIndex(),transformType,entity,matrixStack);
                                     }
