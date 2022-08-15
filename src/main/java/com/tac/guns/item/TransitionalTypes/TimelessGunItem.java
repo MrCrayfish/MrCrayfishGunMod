@@ -109,20 +109,18 @@ public class TimelessGunItem extends GunItem
             else if (tagCompound.getInt("CurrentFireMode") == 2)
                 tooltip.add((new TranslationTextComponent("info.tac.firemode_auto", new Object[]{(new KeybindTextComponent("key.tac.fireSelect")).getString().toUpperCase(Locale.ENGLISH)})).mergeStyle(TextFormatting.RED));
         }
-
-        if(tagCompound != null)
-        {
-            GunItem gun = (GunItem)stack.getItem();
-            float speed = 0.1f / (1+((gun.getGun().getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(stack)) + GunModifierHelper.getAdditionalWeaponWeight(stack)-GunEnchantmentHelper.getWeightModifier(stack)) * 0.0275f));
+        GunItem gun = (GunItem)stack.getItem();
+        if(tagCompound != null) {
+            float speed = 0.1f / (1 + ((gun.getGun().getGeneral().getWeightKilo() * (1 + GunModifierHelper.getModifierOfWeaponWeight(stack)) + GunModifierHelper.getAdditionalWeaponWeight(stack) - GunEnchantmentHelper.getWeightModifier(stack)) * 0.0275f));
             speed = Math.max(Math.min(speed, 0.095F), 0.075F);
-            if(speed > 0.09)
-                tooltip.add((new TranslationTextComponent("info.tac.lightWeightGun", new TranslationTextComponent(-((int)((0.1 - speed)*1000))+"%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_AQUA)));
-            else if(speed < 0.09 && speed > 0.0825)
-                tooltip.add((new TranslationTextComponent("info.tac.standardWeightGun", new TranslationTextComponent(-((int)((0.1 - speed)*1000))+"%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_GREEN)));
+            if (speed > 0.09)
+                tooltip.add((new TranslationTextComponent("info.tac.lightWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_AQUA)));
+            else if (speed < 0.09 && speed > 0.0825)
+                tooltip.add((new TranslationTextComponent("info.tac.standardWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_GREEN)));
             else
-                tooltip.add((new TranslationTextComponent("info.tac.heavyWeightGun", new TranslationTextComponent(-((int)((0.1 - speed)*1000))+"%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_RED)));
+                tooltip.add((new TranslationTextComponent("info.tac.heavyWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_RED)));
+            tooltip.add((new TranslationTextComponent("" + tagCompound.getFloat("level"))).mergeStyle(TextFormatting.LIGHT_PURPLE));
         }
-
         tooltip.add((new TranslationTextComponent("info.tac.attachment_help", new Object[]{(new KeybindTextComponent("key.tac.attachments")).getString().toUpperCase(Locale.ENGLISH)})).mergeStyle(TextFormatting.YELLOW));
     }
 

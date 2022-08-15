@@ -108,6 +108,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Ignored
         @TGExclude
         private GripType gripType = GripType.ONE_HANDED;
+        @Optional
+        private float levelReq = 100.0F;
         @Override
         public CompoundNBT serializeNBT()
         {
@@ -130,6 +132,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putBoolean("AlwaysSpread", this.alwaysSpread);
             tag.putFloat("Spread", this.spread);
             tag.putFloat("WeightKilo", this.weightKilo);
+            tag.putFloat("LevelReq", this.levelReq);
             return tag;
         }
 
@@ -208,6 +211,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.weightKilo = tag.getFloat("WeightKilo");
             }
+            if(tag.contains("LevelReq", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.levelReq = tag.getFloat("LevelReq");
+            }
         }
 
         /**
@@ -234,6 +241,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
             general.weightKilo = this.weightKilo;
+            general.levelReq = this.levelReq;
             return general;
         }
         /**
@@ -339,12 +347,19 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.spread + GunEditor.get().getSpreadMod() : this.spread;
         }
         /**
-         * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
-         * the fired projectile.
+         * @return The default Kilogram weight of the weapon
          */
         public float getWeightKilo()
         {
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.weightKilo + GunEditor.get().getWeightKiloMod() : this.weightKilo;//*1.25f;
+        }
+        /**
+         * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
+         * the fired projectile.
+         */
+        public float getLevelReq()
+        {
+            return this.levelReq;//*1.25f;
         }
     }
 

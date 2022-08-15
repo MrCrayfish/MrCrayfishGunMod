@@ -96,8 +96,8 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
                 data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
         }
-
-        this.addButton(new GuiEnchantmentButton(this.guiLeft + 9 , this.guiTop + 18 , 43+data.getSizeXMod()+ data.getxMod(), 15+data.getSizeYMod()+ data.getyMod(), 43, 15, button ->
+        // 23
+        this.addButton(new GuiEnchantmentApplyButton(this.guiLeft + 9+ data.getxMod()+152+74 , this.guiTop + 18 + data.getyMod()+96+50, 23+data.getSizeXMod(), 15+data.getSizeYMod(), 44, 15, button ->
         {
             /*int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
@@ -270,8 +270,45 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         }
     }
 
-    public class GuiEnchantmentButton extends Button {
+    public class GuiEnchantmentApplyButton extends UpgradeTableButton
+    {
+        public void GuiEnchantmentApplyButton() {
+            this.onPress.onPress(this);
+        }
+        public GuiEnchantmentApplyButton(int x, int y, int u, int v, int widthIn, int heightIn, IPressable onPress) {super(x, y, u, v, widthIn, heightIn, onPress);}
+        @Override
+        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+        {
+            Minecraft mc = Minecraft.getInstance();
+            if (!visible)
+            {
+                return;
+            }
+            GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
+            if(GuiEditor.get() != null)
+            {
+                if(GuiEditor.get().currElement == 4 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                    data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
+            }
+            mc.getTextureManager().bindTexture(GUI_PARTS);
 
+            if(this.isHovered)
+            {
+                matrixStack.push();
+                matrixStack.scale(2f, 2f, 0); //3.87
+                mc.ingameGUI.blit(matrixStack, this.x + data.getxMod() - 74 - 26 - 74, this.y + data.getyMod() - 44 - 10 - 50, 24, 0, 23, this.height);
+                matrixStack.pop();
+            }
+            else
+            {
+                matrixStack.push();
+                matrixStack.scale(2f, 2f, 0); //3.87
+                mc.ingameGUI.blit(matrixStack, this.x + data.getxMod() - 74 - 26 - 74, this.y + data.getyMod() - 44 - 10 - 50, 0, 0, 23, this.height);
+                matrixStack.pop();
+            }
+        }
+    }
+    public class UpgradeTableButton extends Button {
         protected final IPressable onPress;
         int u;
         int v;
@@ -284,8 +321,9 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             this.onPress.onPress(this);
         }
 
-        public GuiEnchantmentButton(int x, int y, int u, int v, int widthIn, int heightIn, IPressable onPress) {
-            super(widthIn, heightIn, u, v, new TranslationTextComponent("tac.empt"), onPress);
+        public UpgradeTableButton(int x, int y, int u, int v, int widthIn, int heightIn, IPressable onPress) {
+
+            super(x, y, widthIn, heightIn, new TranslationTextComponent("tac.empt"), onPress);
             this.u = u;
             this.v = v;
             this.x = x;
@@ -293,26 +331,6 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             this.widthIn = widthIn;
             this.heightIn = heightIn;
             this.onPress = onPress;
-        }
-
-        @Override
-        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
-        {
-            GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
-            if(GuiEditor.get() != null)
-            {
-                if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
-                    data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
-            }
-            super.renderButton(matrixStack,mouseX,mouseY,partialTicks);
-            Minecraft mc = Minecraft.getInstance();
-            if (!visible)
-            {
-                return;
-            }
-            mc.getTextureManager().bindTexture(GUI_PARTS);
-
-            mc.ingameGUI.blit(matrixStack, this.x+ data.getxMod()-74, this.y +data.getyMod()-44, 0, 0, this.width, this.height);
         }
     }
 

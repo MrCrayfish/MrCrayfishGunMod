@@ -9,13 +9,16 @@ import com.tac.guns.common.BoundingBoxManager;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.Gun.Projectile;
 import com.tac.guns.common.SpreadTracker;
+import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.event.GunProjectileHitEvent;
+import com.tac.guns.event.LevelUpEvent;
 import com.tac.guns.init.ModEnchantments;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.interfaces.IDamageable;
 import com.tac.guns.interfaces.IExplosionDamageable;
 import com.tac.guns.interfaces.IHeadshotBox;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageBlood;
 import com.tac.guns.network.message.MessageProjectileHitBlock;
@@ -514,14 +517,33 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
         entity.attackEntityFrom(source, damage);
 
+
         if(this.shooter instanceof PlayerEntity)
         {
             int hitType = critical ? MessageProjectileHitEntity.HitType.CRITICAL : headshot ? MessageProjectileHitEntity.HitType.HEADSHOT : MessageProjectileHitEntity.HitType.NORMAL;
+            updateWeaponLevels(getWeapon(), damage);
             PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) this.shooter), new MessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof PlayerEntity));
         }
 
         /* Send blood particle to tracking clients. */
         PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(hitVec.x, hitVec.y, hitVec.z));
+    }
+
+    protected void updateWeaponLevels(ItemStack gunStack, float damage)
+    {
+        MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Pre((ServerPlayerEntity) this.shooter, gunStack));
+        if(gunStack.getTag().get("lifeTimeDmg") != null)
+        {
+            gunStack.getTag().putFloat("lifeTimeDmg", gunStack.getTag().getFloat("lifeTimeDmg")+damage);
+        }
+        if(gunStack.getTag().get("level") != null)
+        {
+            TimelessGunItem gunItem = (TimelessGunItem) gunStack.getItem();
+            if(gunStack.getTag().getFloat("lifeTimeDmg") > gunItem.getGun().getGeneral().getLevelReq()) {
+                gunStack.getTag().putInt("level", gunStack.getTag().getInt("level") + 1);
+            }
+        }
+        MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post((ServerPlayerEntity) this.shooter, gunStack));
     }
 
     protected void onHitBlock(BlockRayTraceResult blockRayTraceResult)
