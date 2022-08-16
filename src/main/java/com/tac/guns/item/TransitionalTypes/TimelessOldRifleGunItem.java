@@ -88,6 +88,11 @@ public class TimelessOldRifleGunItem extends TimelessGunItem {
             else
                 tooltip.add((new TranslationTextComponent("info.tac.heavyWeightGun", new TranslationTextComponent(-((int)((0.1 - speed)*1000))+"%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_RED)));
             //tooltip.add((new TranslationTextComponent("info.tac.oldRifleScope", new TranslationTextComponent("OldScope").mergeStyle(TextFormatting.BOLD)).mergeStyle(TextFormatting.LIGHT_PURPLE)));
+
+            float percentageToNextLevel =
+                    ( tagCompound.getFloat("levelDmg") * 100) / (modifiedGun.getGeneral().getLevelReq()*(((tagCompound.getInt("level"))*3.0f)));
+            tooltip.add((new TranslationTextComponent("info.tac.current_level" + tagCompound.getInt("level") + " : " + percentageToNextLevel))
+                    .mergeStyle(TextFormatting.GRAY).mergeStyle(TextFormatting.BOLD));
         }
 
         if(tagCompound != null)

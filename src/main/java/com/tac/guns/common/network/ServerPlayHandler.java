@@ -694,8 +694,8 @@ public class ServerPlayHandler
         if(gunStack.getTag().get("level") == null) {
             gunStack.getTag().putInt("level", 1);
         }
-        if(gunStack.getTag().get("lifeTimeDmg") == null) {
-            gunStack.getTag().putFloat("lifeTimeDmg", 0f);
+        if(gunStack.getTag().get("levelDmg") == null) {
+            gunStack.getTag().putFloat("levelDmg", 0f);
         }
     }
 

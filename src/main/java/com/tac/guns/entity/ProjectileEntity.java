@@ -533,22 +533,25 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void updateWeaponLevels(float damage)
     {
         ItemStack gunStack = this.shooter.getHeldItemMainhand();
-        if(gunStack.getTag().get("lifeTimeDmg") != null)
+        if(gunStack.getTag().get("levelDmg") != null)
         {
-            float toUpd = gunStack.getTag().getFloat("lifeTimeDmg") + damage;
-            gunStack.getTag().remove("lifeTimeDmg");
-            gunStack.getTag().putFloat("lifeTimeDmg", toUpd);
+            float toUpd = gunStack.getTag().getFloat("levelDmg") + damage;
+            gunStack.getTag().remove("levelDmg");
+            gunStack.getTag().putFloat("levelDmg", toUpd);
         }
         if(gunStack.getTag().get("level") != null)
         {
             //MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Pre((ServerPlayerEntity) this.shooter, gunStack));
             TimelessGunItem gunItem = (TimelessGunItem) gunStack.getItem();
-            if(gunStack.getTag().getFloat("lifeTimeDmg") > (gunItem.getGun().getGeneral().getLevelReq()*((gunStack.getTag().getInt("level"))*3.0d)) ) {
+            if(gunStack.getTag().getFloat("levelDmg") > (gunItem.getGun().getGeneral().getLevelReq()*((gunStack.getTag().getInt("level")*3.0d))) ) {
+                gunStack.getTag().remove("levelDmg");
+                gunStack.getTag().putFloat("levelDmg",0f);
+
                 int toUpd = gunStack.getTag().getInt("level") + 1;
                 gunStack.getTag().remove("level");
                 gunStack.getTag().putInt("level", toUpd);
+                MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post((PlayerEntity) this.shooter, gunStack));
             }
-            MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post((ServerPlayerEntity) this.shooter, gunStack));
         }
     }
 
