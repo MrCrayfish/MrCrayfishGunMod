@@ -56,7 +56,7 @@ import static com.tac.guns.GunMod.LOGGER;
  */
 public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorageBlock
 {
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
     public UpgradeBenchTileEntity()
     {
@@ -83,7 +83,7 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
     public CompoundNBT getUpdateTag()
     {
         CompoundNBT nbtTagCompound = new CompoundNBT();
-        write(nbtTagCompound);
+        this.write(nbtTagCompound);
         return nbtTagCompound;
     }
     @Override
@@ -94,14 +94,14 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         BlockState blockState = world.getBlockState(pos);
-        read(blockState, pkt.getNbtCompound());   // read from the nbt in the packet
+        this.read(blockState, pkt.getNbtCompound());   // read from the nbt in the packet
     }
     @Override
     @Nullable
     public SUpdateTileEntityPacket getUpdatePacket()
     {
         CompoundNBT nbtTagCompound = new CompoundNBT();
-        write(nbtTagCompound);
+        this.write(nbtTagCompound);
         int tileEntityType = 42;  // arbitrary number; only used for vanilla TileEntities.
         return new SUpdateTileEntityPacket(this.pos, tileEntityType, nbtTagCompound);
     }
@@ -116,6 +116,12 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
         if(this.inventory.get(0).getTag() != null)
             compound.put("weapon", weaponBt);
 
+
+        CompoundNBT modules = new CompoundNBT();
+        this.inventory.get(1).write(modules);
+        if(this.inventory.get(1).getOrCreateTag() != null)
+            compound.put("modules", modules);
+
         return compound;
     }
 
@@ -125,12 +131,19 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
         super.read(state, compound);
         if(compound.contains("weapon"))
             this.inventory.set(0, ItemStack.read(compound.getCompound("weapon")));
+
+        CompoundNBT itemStackNBT = compound.getCompound("modules");
+        ItemStack readItemStack = ItemStack.read(itemStackNBT);
+        this.inventory.set(1, readItemStack);
     }
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return index != 0; //|| (stack.getItem() instanceof TimelessGunItem && this.inventory.get(index).getCount() < 1);
+        return true;//index != 0 || index != 1; //|| (stack.getItem() instanceof TimelessGunItem &&
+        // this
+        // .inventory
+        // .get(index).getCount() < 1);
     }
 
     @Override

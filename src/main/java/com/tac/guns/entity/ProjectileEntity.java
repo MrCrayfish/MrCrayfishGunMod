@@ -535,21 +535,25 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         ItemStack gunStack = this.shooter.getHeldItemMainhand();
         if(gunStack.getTag().get("levelDmg") != null)
         {
-            float toUpd = gunStack.getTag().getFloat("levelDmg") + damage;
+            /*float toUpd = gunStack.getTag().getFloat("levelDmg") + damage;
             gunStack.getTag().remove("levelDmg");
-            gunStack.getTag().putFloat("levelDmg", toUpd);
+            gunStack.getTag().putFloat("levelDmg", toUpd);*/
+            gunStack.getTag().putFloat("levelDmg", gunStack.getTag().getFloat("levelDmg") + damage);
         }
         if(gunStack.getTag().get("level") != null)
         {
             //MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Pre((ServerPlayerEntity) this.shooter, gunStack));
             TimelessGunItem gunItem = (TimelessGunItem) gunStack.getItem();
             if(gunStack.getTag().getFloat("levelDmg") > (gunItem.getGun().getGeneral().getLevelReq()*((gunStack.getTag().getInt("level")*3.0d))) ) {
-                gunStack.getTag().remove("levelDmg");
+                /*gunStack.getTag().remove("levelDmg");
                 gunStack.getTag().putFloat("levelDmg",0f);
 
                 int toUpd = gunStack.getTag().getInt("level") + 1;
                 gunStack.getTag().remove("level");
                 gunStack.getTag().putInt("level", toUpd);
+                MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post((PlayerEntity) this.shooter, gunStack));*/
+                gunStack.getTag().putFloat("levelDmg",0f);
+                gunStack.getTag().putInt("level", gunStack.getTag().getInt("level") + 1);
                 MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post((PlayerEntity) this.shooter, gunStack));
             }
         }

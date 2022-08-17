@@ -16,6 +16,7 @@ import com.tac.guns.entity.ProjectileEntity;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.init.ModBlocks;
 import com.tac.guns.init.ModEnchantments;
+import com.tac.guns.init.ModItems;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.interfaces.IProjectileFactory;
 import com.tac.guns.item.GunItem;
@@ -719,19 +720,40 @@ public class ServerPlayHandler
                 // React to adding an extra Module item
                 //if()
 
-                if (!(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0).getItem() instanceof GunItem) && heldItem.getItem() instanceof GunItem) {
+                if (!(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0).getItem() instanceof GunItem) && heldItem.getItem() instanceof GunItem)
+                {
                     ((UpgradeBenchTileEntity) tileEntity).setInventorySlotContents(0, heldItem);
                     player.setHeldItem(Hand.MAIN_HAND, new ItemStack(Items.AIR));
-                    // I hate this last part, this is used in order to reset the TileRenderer, without this the item stack is added, but the visual is only reset on entering GUI
+                    // I hate this last part, this is used in order to reset the TileRenderer,
+                    // without this the item stack is added, but the visual is only reset on
+                    // entering GUI, gotta Check what Yor said about this portion.
+                    NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
+                    player.closeScreen();
+                }
+                else if (heldItem.getItem() == ModItems.MODULE.get() && ((UpgradeBenchTileEntity) tileEntity).getStackInSlot(1).getCount() < 3)
+                {
+                    if( ((UpgradeBenchTileEntity) tileEntity).getStackInSlot(1).getItem() != ModItems.MODULE.get() ) {
+                        ((UpgradeBenchTileEntity) tileEntity).setInventorySlotContents(1,
+                                heldItem.copy());
+                        ((UpgradeBenchTileEntity) tileEntity).getStackInSlot(1).setCount(1);
+                    }
+                    else {
+                        ((UpgradeBenchTileEntity) tileEntity).getStackInSlot(1).setCount(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(1).getCount() + 1);
+                    }
+                    player.getHeldItem(Hand.MAIN_HAND).setCount(player.getHeldItem(Hand.MAIN_HAND).getCount()-1);
+                    /// I hate this last part, this is used in order to reset the TileRenderer,
+                    // without this the item stack is added, but the visual is only reset on
+                    // entering GUI, gotta Check what Yor said about this portion.
                     NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
                     player.closeScreen();
                 }
                 else
                 {
-                    //tileEntity.handleUpdateTag(tileEntity.getBlockState(), tileEntity.getUpdateTag());
                     player.inventory.addItemStackToInventory(((UpgradeBenchTileEntity) tileEntity).getStackInSlot(0));
                     ((UpgradeBenchTileEntity) tileEntity).setInventorySlotContents(0, ItemStack.EMPTY);
-                    // I hate this last part, this is used in order to reset the TileRenderer, without this the item stack is added, but the visual is only reset on entering GUI
+                    // I hate this last part, this is used in order to reset the TileRenderer,
+                    // without this the item stack is added, but the visual is only reset on
+                    // entering GUI, gotta Check what Yor said about this portion.
                     NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, tileEntity.getPos());
                     player.closeScreen();
                 }
