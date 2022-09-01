@@ -3,7 +3,11 @@
   "materials": [
     {
       "tag": "forge:ingots/iron",
-      "count": 20
+      "count": 14
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 1
     }
   ],
   "result": {
