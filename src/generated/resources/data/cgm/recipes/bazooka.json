@@ -3,14 +3,18 @@
   "materials": [
     {
       "tag": "forge:ingots/iron",
-      "count": 44
+      "count": 64
+    },
+    {
+      "tag": "forge:storage_blocks/iron",
+      "count": 3
     },
     {
       "item": "minecraft:redstone",
-      "count": 4
+      "count": 24
     },
     {
-      "tag": "forge:dyes/red",
+      "item": "minecraft:repeater",
       "count": 1
     }
   ],
