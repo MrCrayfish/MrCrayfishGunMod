@@ -102,7 +102,7 @@ public class GunGen extends GunProvider
                 .setSpread(1.0F)
                 .setAmmo(ModItems.ADVANCED_AMMO.get())
                 .setDamage(28.0F)
-                .setHeadshotDamage(13.0F)
+                .setHeadshotMultiplier(13.0F)
                 .setProjectileAffectedByGravity(true)
                 .setProjectileSize(0.0625F)
                 .setProjectileSpeed(25.0F)
