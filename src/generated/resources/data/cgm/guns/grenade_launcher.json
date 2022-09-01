@@ -2,7 +2,7 @@
   "general": {
     "rate": 20,
     "gripType": "cgm:two_handed",
-    "maxAmmo": 1,
+    "maxAmmo": 6,
     "recoilAngle": 5.0,
     "recoilKick": 1.0,
     "recoilDurationOffset": 0.25
@@ -10,7 +10,7 @@
   "projectile": {
     "item": "cgm:grenade",
     "visible": true,
-    "damage": 15.0,
+    "damage": 25.0,
     "size": 0.2,
     "speed": 1.5,
     "life": 50,
