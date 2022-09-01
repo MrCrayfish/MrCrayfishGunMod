@@ -6,19 +6,23 @@ import com.mrcrayfish.guns.compat.PlayerReviveHelper;
 import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.C2SMessageShoot;
-import com.mrcrayfish.guns.network.message.C2SMessageShooting;
+import com.mrcrayfish.guns.network.message.MessageShoot;
+import com.mrcrayfish.guns.network.message.MessageShooting;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Author: MrCrayfish
@@ -53,7 +57,7 @@ public class ShootingHandler
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onMouseClick(InputEvent.InteractionKeyMappingTriggered event)
+    public void onMouseClick(InputEvent.ClickInputEvent event)
     {
         if(event.isCanceled())
             return;
@@ -117,19 +121,19 @@ public class ShootingHandler
                     if(!this.shooting)
                     {
                         this.shooting = true;
-                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(true));
+                        PacketHandler.getPlayChannel().sendToServer(new MessageShooting(true));
                     }
                 }
                 else if(this.shooting)
                 {
                     this.shooting = false;
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(false));
+                    PacketHandler.getPlayChannel().sendToServer(new MessageShooting(false));
                 }
             }
             else if(this.shooting)
             {
                 this.shooting = false;
-                PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(false));
+                PacketHandler.getPlayChannel().sendToServer(new MessageShooting(false));
             }
         }
         else
@@ -192,7 +196,7 @@ public class ShootingHandler
             int rate = GunEnchantmentHelper.getRate(heldItem, modifiedGun);
             rate = GunModifierHelper.getModifiedRate(heldItem, rate);
             tracker.addCooldown(heldItem.getItem(), rate);
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(player));
+            PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player));
 
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
         }
