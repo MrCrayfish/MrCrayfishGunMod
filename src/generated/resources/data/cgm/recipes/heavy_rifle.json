@@ -3,7 +3,11 @@
   "materials": [
     {
       "tag": "forge:ingots/iron",
-      "count": 36
+      "count": 60
+    },
+    {
+      "item": "minecraft:piston",
+      "count": 1
     }
   ],
   "result": {
