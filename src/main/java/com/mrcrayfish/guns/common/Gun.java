@@ -316,6 +316,9 @@ public final class Gun implements INBTSerializable<CompoundTag>
         private int trailColor = 0xFFD289;
         @Optional
         private double trailLengthMultiplier = 1.0;
+        
+        @Optional
+        private float headshotMultiplier = 2.0F;
 
         @Override
         public CompoundTag serializeNBT()
@@ -331,6 +334,8 @@ public final class Gun implements INBTSerializable<CompoundTag>
             tag.putBoolean("DamageReduceOverLife", this.damageReduceOverLife);
             tag.putInt("TrailColor", this.trailColor);
             tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
+            
+            tag.putFloat("HeadshotMultiplier", this.headshotMultiplier);
             return tag;
         }
 
@@ -377,6 +382,12 @@ public final class Gun implements INBTSerializable<CompoundTag>
             {
                 this.trailLengthMultiplier = tag.getDouble("TrailLengthMultiplier");
             }
+
+            if(tag.contains("HeadshotMultiplier", Tag.TAG_ANY_NUMERIC))
+            {
+                this.headshotMultiplier = tag.getFloat("HeadshotMultiplier");
+            }
+            
         }
 
         public JsonObject toJsonObject()
@@ -397,6 +408,7 @@ public final class Gun implements INBTSerializable<CompoundTag>
             if(this.damageReduceOverLife) object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
             if(this.trailColor != 0xFFD289) object.addProperty("trailColor", this.trailColor);
             if(this.trailLengthMultiplier != 1.0) object.addProperty("trailLengthMultiplier", this.trailLengthMultiplier);
+            object.addProperty("headshotMultiplier", this.headshotMultiplier);
             return object;
         }
 
@@ -413,6 +425,7 @@ public final class Gun implements INBTSerializable<CompoundTag>
             projectile.damageReduceOverLife = this.damageReduceOverLife;
             projectile.trailColor = this.trailColor;
             projectile.trailLengthMultiplier = this.trailLengthMultiplier;
+            projectile.headshotMultiplier = this.headshotMultiplier;
             return projectile;
         }
 
@@ -495,6 +508,16 @@ public final class Gun implements INBTSerializable<CompoundTag>
         {
             return this.trailLengthMultiplier;
         }
+
+        /**
+         * @return The multiplier for headshot damage, by 1_1
+         */
+        public float getHeadshotMultiplier()
+        {
+            return this.headshotMultiplier;
+        }
+        
+        
     }
 
     public static class Sounds implements INBTSerializable<CompoundTag>
@@ -1508,6 +1531,12 @@ public final class Gun implements INBTSerializable<CompoundTag>
         public Builder setProjectileTrailLengthMultiplier(int trailLengthMultiplier)
         {
             this.gun.projectile.trailLengthMultiplier = trailLengthMultiplier;
+            return this;
+        }
+
+        public Builder setHeadshotMultiplier(float headshotMultiplier)
+        {
+            this.gun.projectile.headshotMultiplier = headshotMultiplier;
             return this;
         }
 
