@@ -137,6 +137,7 @@ public class ClientHandler
         ModelOverrides.register(ModItems.PISTOL.get(), new SimpleModel(SpecialModels.PISTOL::getModel));
         ModelOverrides.register(ModItems.RIFLE.get(), new SimpleModel(SpecialModels.RIFLE::getModel));
         ModelOverrides.register(ModItems.SHOTGUN.get(), new SimpleModel(SpecialModels.SHOTGUN::getModel));
+        ModelOverrides.register(ModItems.LMG.get(), new SimpleModel(SpecialModels.LMG::getModel));
 
         /* Attachments */
         ModelOverrides.register(ModItems.SHORT_SCOPE.get(), new ShortScopeModel());
