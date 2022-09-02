@@ -14,7 +14,8 @@
     "damage": 7.5,
     "size": 0.2,
     "speed": 10.0,
-    "life": 25
+    "life": 25,
+    "headshotMultiplier": 1.8
   },
   "sounds": {
     "fire": "cgm:item.assault_rifle.fire",

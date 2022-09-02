@@ -16,7 +16,8 @@
     "damage": 4.0,
     "size": 0.2,
     "speed": 10.0,
-    "life": 20
+    "life": 20,
+    "headshotMultiplier": 1.5
   },
   "sounds": {
     "fire": "cgm:item.machine_pistol.fire",

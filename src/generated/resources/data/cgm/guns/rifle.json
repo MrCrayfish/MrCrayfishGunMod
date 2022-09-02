@@ -16,7 +16,8 @@
     "size": 0.0625,
     "speed": 20.0,
     "life": 30,
-    "gravity": true
+    "gravity": true,
+    "headshotMultiplier": 4.0
   },
   "sounds": {
     "fire": "cgm:item.rifle.fire",

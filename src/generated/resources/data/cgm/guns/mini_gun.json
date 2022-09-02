@@ -14,7 +14,8 @@
     "damage": 5.0,
     "size": 0.2,
     "speed": 8.0,
-    "life": 30
+    "life": 30,
+    "headshotMultiplier": 1.5
   },
   "sounds": {
     "fire": "cgm:item.mini_gun.fire",

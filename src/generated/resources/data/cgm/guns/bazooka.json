@@ -12,7 +12,8 @@
     "damage": 25.0,
     "size": 0.2,
     "speed": 2.0,
-    "life": 150
+    "life": 150,
+    "headshotMultiplier": 2.0
   },
   "sounds": {
     "fire": "cgm:item.bazooka.fire",
