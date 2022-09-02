@@ -256,7 +256,7 @@ public class GunGen extends GunProvider
                 .build());
                 
         this.addGun(new ResourceLocation(Reference.MOD_ID, "lmg"), Gun.Builder.create()
-                .setAuto:(true)
+                .setAuto(true)
                 .setFireRate(8)
                 .setGripType(GripType.TWO_HANDED)
                 .setMaxAmmo(60)
