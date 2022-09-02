@@ -275,7 +275,7 @@ public class GunGen extends GunProvider
                 .setProjectileLife(30)
                 .setFireSound(ModSounds.ITEM_SHOTGUN_FIRE.get())
                 .setReloadSound(ModSounds.ITEM_PISTOL_RELOAD.get())
-                .setCockSound(ModSounds.ITEM_SHOTGUN_COCK.get())
+                .setCockSound(ModSounds.ITEM_HEAVY_RIFLE_COCK.get())
                 .setSilencedFireSound(ModSounds.ITEM_SHOTGUN_SILENCED_FIRE.get())
                 .setEnchantedFireSound(ModSounds.ITEM_SHOTGUN_ENCHANTED_FIRE.get())
                 .setMuzzleFlash(0.5, 0.0, 3.8365, -10.21)
