@@ -4,6 +4,10 @@
     {
       "tag": "forge:ingots/iron",
       "count": 36
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 36
     }
   ],
   "result": {
