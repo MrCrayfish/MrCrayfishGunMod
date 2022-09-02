@@ -112,6 +112,10 @@ public class RecipeGen extends RecipeProvider
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 36))
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
+        WorkbenchRecipeBuilder.crafting(ModItems.LMG.get())
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 36))
+                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+                .build(consumer);
 
         // Ammo
         WorkbenchRecipeBuilder.crafting(ModItems.BASIC_BULLET.get(), 64)
