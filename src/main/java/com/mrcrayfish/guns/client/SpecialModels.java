@@ -23,6 +23,7 @@ public enum SpecialModels
     MACHINE_PISTOL("gun/machine_pistol"),
     PISTOL("gun/pistol"),
     RIFLE("gun/rifle"),
+    LMG("gun/lmg"),
     SHOTGUN("gun/shotgun"),
     FLAME("flame"),
     MINI_GUN_BASE("mini_gun_base"),
