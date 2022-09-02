@@ -1,0 +1,16 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 42
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "cgm:lmg"
+  }
+}
