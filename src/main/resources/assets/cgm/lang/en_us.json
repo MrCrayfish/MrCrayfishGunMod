@@ -2,12 +2,11 @@
     "block.cgm.workbench": "Workbench",
     "item.cgm.pistol": "Pistol",
     "item.cgm.shotgun": "Shotgun",
-    "item.cgm.sniper_rifle": "Sniper Rifle",
+    "item.cgm.lmg": "LMG",
     "item.cgm.grenade_launcher": "Grenade Launcher",
     "item.cgm.bazooka": "Bazooka",
     "item.cgm.mini_gun": "Minigun",
     "item.cgm.rifle": "Rifle",
-    "item.cgm.lmg": "LMG"
     "item.cgm.assault_rifle": "Assault Rifle",
     "item.cgm.machine_pistol": "Machine Pistol",
     "item.cgm.heavy_rifle": "Heavy Rifle",
