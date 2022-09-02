@@ -16,9 +16,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.2.7-1.18.2"
+version = "2.0.2-1.18.2"
 group = "com.mrcrayfish"
-archivesBaseName = "gun-mod"
+archivesBaseName = "cgm refined"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
