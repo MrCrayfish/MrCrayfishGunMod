@@ -7,9 +7,8 @@
     "reloadAmount": 10,
     "recoilAngle": 10.0,
     "recoilKick": 0.75,
-    "recoilAdsReduction": 0.25,
-    "alwaysSpread": true,
-    "spread": 20.0
+    "recoilAdsReduction": 0.1,
+    "alwaysSpread": true
   },
   "projectile": {
     "item": "cgm:advanced_bullet",
@@ -28,29 +27,33 @@
   },
   "display": {
     "flash": {
-      "yOffset": 3.6505,
-      "zOffset": -3.81
+      "yOffset": 3.8365,
+      "zOffset": -10.21
     }
   },
   "modules": {
     "zoom": {
-      "yOffset": 5.1,
-      "zOffset": 3.2,
-      "fovModifier": 0.7
+      "yOffset": 4.6223,
+      "zOffset": 6.0,
+      "fovModifier": 0.6
     },
     "attachments": {
       "scope": {
-        "yOffset": 4.4,
-        "zOffset": 4.0
+        "yOffset": 4.3,
+        "zOffset": 3.3
       },
       "barrel": {
-        "yOffset": 3.6506,
-        "zOffset": -3.8,
-        "scale": 0.5
+        "yOffset": 3.8365,
+        "zOffset": -10.2,
+        "scale": 0.44999998807907104
       },
       "stock": {
-        "yOffset": 3.6506,
-        "zOffset": 8.4
+        "yOffset": 3.1294,
+        "zOffset": 8.3
+      },
+      "underBarrel": {
+        "yOffset": 2.63,
+        "zOffset": -0.5
       }
     }
   }
