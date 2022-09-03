@@ -29,12 +29,13 @@
   "display": {
     "flash": {
       "yOffset": 3.8365,
-      "zOffset": -10.21
+      "zOffset": -10.21,
+      "size": 3.5
     }
   },
   "modules": {
     "zoom": {
-      "yOffset": 4.6223,
+      "yOffset": 5.0,
       "zOffset": 6.0,
       "fovModifier": 0.6
     },
