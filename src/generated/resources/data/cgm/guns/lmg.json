@@ -29,8 +29,7 @@
   "display": {
     "flash": {
       "yOffset": 3.8365,
-      "zOffset": -10.21,
-      "size": 3.5
+      "zOffset": -9.0
     }
   },
   "modules": {
@@ -46,7 +45,7 @@
       },
       "barrel": {
         "yOffset": 3.8365,
-        "zOffset": -10.2,
+        "zOffset": -9.0,
         "scale": 0.44999998807907104
       },
       "stock": {
