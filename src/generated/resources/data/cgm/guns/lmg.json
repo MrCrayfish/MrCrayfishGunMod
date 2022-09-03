@@ -5,10 +5,11 @@
     "gripType": "cgm:two_handed",
     "maxAmmo": 60,
     "reloadAmount": 10,
-    "recoilAngle": 15.0,
+    "recoilAngle": 6.0,
     "recoilKick": 0.75,
     "recoilAdsReduction": 0.3,
-    "alwaysSpread": true
+    "alwaysSpread": true,
+    "spread": 0.5
   },
   "projectile": {
     "item": "cgm:advanced_bullet",
@@ -19,11 +20,11 @@
     "headshotMultiplier": 2.0
   },
   "sounds": {
-    "fire": "cgm:item.rifle.fire",
+    "fire": "cgm:item.shotgun.fire",
     "reload": "cgm:item.pistol.reload",
-    "cock": "cgm:item.rifle.cock",
-    "silencedFire": "cgm:item.rifle.silenced_fire",
-    "enchantedFire": "cgm:item.rifle.enchanted_fire"
+    "cock": "cgm:item.heavy_rifle.cock",
+    "silencedFire": "cgm:item.shotgun.silenced_fire",
+    "enchantedFire": "cgm:item.shotgun.enchanted_fire"
   },
   "display": {
     "flash": {
