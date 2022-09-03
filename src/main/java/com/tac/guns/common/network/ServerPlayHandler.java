@@ -6,12 +6,11 @@ import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.MovementAdaptationsHandler;
 import com.tac.guns.client.handler.ShootingHandler;
-import com.tac.guns.client.util.WorldItemRenderUtil;
+import com.tac.guns.client.screen.UpgradeBenchScreen;
 import com.tac.guns.common.*;
 import com.tac.guns.common.container.*;
 import com.tac.guns.crafting.WorkbenchRecipe;
 import com.tac.guns.crafting.WorkbenchRecipes;
-import com.tac.guns.enchantment.GunEnchantment;
 import com.tac.guns.entity.ProjectileEntity;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.init.ModBlocks;
@@ -25,10 +24,7 @@ import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageBulletTrail;
-import com.tac.guns.network.message.MessageGunSound;
-import com.tac.guns.network.message.MessageSaveItemUpgradeBench;
-import com.tac.guns.network.message.MessageShoot;
+import com.tac.guns.network.message.*;
 import com.tac.guns.tileentity.FlashLightSource;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
@@ -36,7 +32,6 @@ import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.InventoryUtil;
 import com.tac.guns.util.UTR;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
@@ -53,6 +48,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -74,6 +70,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -760,55 +757,46 @@ public class ServerPlayHandler
             }
         }
     }
-
+    //remove enchant minecraft "modding" 1.16
     /**
      * Crafts the specified item at the workstation the player is currently using.
      * This is only intended for use on the logical server.
      *
      * @param player the player who is crafting
-     * @param id     the id of an item which is registered as a valid workstation recipe
-     * @param pos    the block position of the workstation the player is using
      */
-    public static void handleUpgradeBenchApply(ServerPlayerEntity player, ResourceLocation id, BlockPos pos, int ench, int enchIndx)
+    public static void handleUpgradeBenchApply(MessageUpgradeBenchApply message, ServerPlayerEntity player)
     {
-        World world = player.world;
-
         if(player.openContainer instanceof UpgradeBenchContainer)
         {
-            Enchantment enchantment = GunEnchantmentHelper.enchs.get(ench);
-            UTR[] upgradeRequirements = GunEnchantmentHelper.upgradeableEnchs.get(enchantment);
-
             UpgradeBenchContainer workbench = (UpgradeBenchContainer) player.openContainer;
-            if(workbench.getPos().equals(pos))
+            UpgradeBenchScreen.RequirementItem req =
+                    GunEnchantmentHelper.upgradeableEnchs.get(message.reqKey);
+            if(workbench.getPos().equals(message.pos))
             {
-                /*WorkbenchRecipe recipe = WorkbenchRecipes.getRecipeById(world, id);
-                if(recipe == null)
-                {
-                    return;
-                }
-
-                List<ItemStack> materials = recipe.getMaterials();
-                if(materials != null)
-                {
-                    for(ItemStack stack : materials)
-                    {
-                        if(!InventoryUtil.hasItemStack(player, stack))
-                        {
-                            return;
-                        }
-                        stack.setCount((int) (stack.getCount()*upgradeRequirements[enchIndx].getWeaponCraftPercentage()));
-                    }
-
-                    for(ItemStack stack : materials)
-                    {
-                        InventoryUtil.removeItemStack(player, stack);
-                    }
-                }*/
-
                 ItemStack toUpdate = workbench.getBench().getInventory().get(0);
-                toUpdate.addEnchantment(enchantment, EnchantmentHelper.getEnchantmentLevel(enchantment, toUpdate)+1);
-            }
+                int currLevel =
+                        EnchantmentHelper.getEnchantmentLevel(req.enchantment, toUpdate);
+                if(toUpdate.getTag() == null)
+                    return;
+                int currWeaponLevel = toUpdate.getTag().getInt("level");
+                TimelessGunItem gunItem = (TimelessGunItem) toUpdate.getItem();
+                if(workbench.getBench().getStackInSlot(1).getCount() >= req.getModuleCount()[currLevel] && currWeaponLevel >= req.getLevelReq()[currLevel] && gunItem.getGun().getGeneral().getUpgradeBenchMaxUses() > toUpdate.getTag().getInt("upgradeBenchUses"))
+                {
+                    if (currLevel > 0) {
+                        Map<Enchantment, Integer> listNBT =
+                                EnchantmentHelper.deserializeEnchantments(toUpdate.getEnchantmentTagList());
+                        listNBT.replace(req.enchantment, currLevel + 1);
+                        EnchantmentHelper.setEnchantments(listNBT, toUpdate);
+                    } else
+                        toUpdate.addEnchantment(req.enchantment, 1);
 
+                    workbench.getBench().getStackInSlot(1).setCount(workbench.getBench().getStackInSlot(1).getCount()-req.getModuleCount()[currLevel]);
+                    toUpdate.getTag().putInt("upgradeBenchUses", toUpdate.getTag().getInt(
+                            "upgradeBenchUses")+1);
+                }
+                else
+                    player.sendStatusMessage(new TranslationTextComponent("Cannot apply enchants anymore"), true);
+            }
         }
     }
 }

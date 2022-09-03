@@ -21,7 +21,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 //apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = "0.3.0.44-1.16.5"
+version = "0.3.0.91-1.16.5"
 group = "com.tac"
 archivesBaseName = "tac-a"
 
@@ -43,6 +43,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             arg '-mixin.config=tac.mixins.json'
@@ -55,6 +56,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             arg '-mixin.config=tac.mixins.json'
@@ -92,7 +94,7 @@ processResources {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
     //implementation fg.deobf('curse.maven:obfuscate-289380:3169369')
-    implementation fg.deobf('curse.maven:obfuscate-289380:3740120')
+    implementation fg.deobf('curse.maven:obfuscate-289380:3336021') // 3740120') // 3336021
     //implementation fg.deobf('curse.maven:chisel-and-bits-231095:3593643')
     //implementation fg.deobf('curse.maven:flashlight-addon-227874:3381556')
 
@@ -101,6 +103,12 @@ dependencies {
     //implementation 'com.google.code.gson:gson:2.9.0'
     implementation ('com.fasterxml.jackson.core:jackson-databind:2.12.4')
 }
+/*repositories {
+    maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+}*/
 repositories {
     maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven {

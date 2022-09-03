@@ -69,16 +69,6 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
         return this.inventory;
     }
 
-
-   /* @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-        return super.getCapability(cap);
-    }
-*/
     @Override
     public CompoundNBT getUpdateTag()
     {
@@ -116,7 +106,6 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
         if(this.inventory.get(0).getTag() != null)
             compound.put("weapon", weaponBt);
 
-
         CompoundNBT modules = new CompoundNBT();
         this.inventory.get(1).write(modules);
         if(this.inventory.get(1).getOrCreateTag() != null)
@@ -140,10 +129,7 @@ public class UpgradeBenchTileEntity extends SyncedTileEntity implements IStorage
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return true;//index != 0 || index != 1; //|| (stack.getItem() instanceof TimelessGunItem &&
-        // this
-        // .inventory
-        // .get(index).getCount() < 1);
+        return true;
     }
 
     @Override

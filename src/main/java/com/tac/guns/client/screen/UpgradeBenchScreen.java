@@ -1,54 +1,34 @@
 package com.tac.guns.client.screen;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.handler.command.GuiEditor;
-import com.tac.guns.client.handler.command.ObjectRenderEditor;
-import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
-import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.common.container.UpgradeBenchContainer;
-import com.tac.guns.crafting.WorkbenchRecipe;
-import com.tac.guns.crafting.WorkbenchRecipes;
-import com.tac.guns.init.ModItems;
-import com.tac.guns.item.*;
-import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageCraft;
-import com.tac.guns.network.message.MessageGunSound;
+import com.tac.guns.network.message.MessageUpgradeBenchApply;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
-import com.tac.guns.tileentity.WorkbenchTileEntity;
-import com.tac.guns.util.InventoryUtil;
+import com.tac.guns.util.GunEnchantmentHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -57,18 +37,15 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 {
     private static final ResourceLocation GUI_BASE = new ResourceLocation("tac:textures/gui/upgrade_table.png");
     private static final ResourceLocation GUI_PARTS = new ResourceLocation("tac:textures/gui/upgrade_table_parts.png");
-    private static boolean showRemaining = false;
-
-    /*private Tab currentTab;
-    private List<Tab> tabs = new ArrayList<>();*/
-    private List<MaterialItem> materials;
-    private List<MaterialItem> filteredMaterials;
+    private List<RequirementItem> requirements;
     private PlayerInventory playerInventory;
     private UpgradeBenchTileEntity workbench;
-    private Button btnCraft;
-    private CheckBox checkBoxMaterials;
-    private ItemStack displayStack;
+    private String btnSelected;
 
+    private int scrollItor = 0;
+
+    private int lmbdaItor = 0;
+    //
     public UpgradeBenchScreen(UpgradeBenchContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
         super(container, playerInventory, title);
@@ -76,15 +53,45 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         this.workbench = container.getBench();
         this.xSize = 256;
         this.ySize = 184;
-        this.materials = new ArrayList<>();
+        this.requirements = new ArrayList<>();
+        /*for (:
+             ) {
+            
+        }
+                new RequirementItem(this.workbench.getStackInSlot(1).getCount(),
+                        levelReqPerEnch);*/
+        
         //this.createTabs(WorkbenchRecipes.getAll(playerInventory.player.world));
         /*if(!this.tabs.isEmpty())
         {
             this.ySize += 28;
         }*/
+
     }
 
-
+    public void initScrollingButtons()
+    {
+        GunEnchantmentHelper.upgradeableEnchs.forEach((key, value) ->
+        {
+            if(this.lmbdaItor == GunEnchantmentHelper.upgradeableEnchs.size())
+                return;
+            if ((this.lmbdaItor-3 > scrollItor))
+            {
+                return;
+            }
+            this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+152+74-170,
+                    this.guiTop + 18+96+20-100+(this.lmbdaItor *34),
+                    this.guiLeft + 9+152+74, this.guiTop + 18+96+20,
+                    76*2, 16*2,
+                    value,
+                    3, this.lmbdaItor, key
+                    , button ->
+            {
+                this.setSelectedBtn(key);
+            }));
+            this.lmbdaItor++; // Lambdas stink
+        });
+    }
 
     @Override
     public void init()
@@ -96,21 +103,58 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             if(GuiEditor.get().currElement == 2 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
                 data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
         }
-        // 23
+
         this.addButton(new GuiEnchantmentApplyButton(this.guiLeft + 9+ data.getxMod()+152+74 , this.guiTop + 18 + data.getyMod()+96+50, 23+data.getSizeXMod(), 15+data.getSizeYMod(), 44, 15, button ->
         {
-            /*int index = this.currentTab.getCurrentIndex();
-            WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
-            ResourceLocation registryName = recipe.getId();
-            PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getPos()));*/
-
-            // Apply module to held item
+            PacketHandler.getPlayChannel().sendToServer(new MessageUpgradeBenchApply(this.workbench.getPos(), this.btnSelected));
         }));
-        this.addButton(new Button(this.guiLeft + 153, this.guiTop + 18, 15, 20, new StringTextComponent(">"), button ->
+
+        initScrollingButtons();
+
+       /* // Ergonomic
+        this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+ data.getxMod()+152+74-170,
+                this.guiTop + 18 + data.getyMod()+96+20-100+(1*34), this.guiLeft + 9+152+74,
+                this.guiTop + 18+96+20, 76*2, 16*2,
+                new RequirementItem(new int[]{}, new int[]{}, ModEnchantments.LIGHTWEIGHT.get()), 3,
+                1, "Ergonomic", button ->
         {
+            this.btnSelected = 1;
             // Apply module to held item
         }));
+        // accuracy
+        this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+ data.getxMod()+152+74-170,
+                this.guiTop + 18 + data.getyMod()+96+20-100+(2*34), this.guiLeft + 9+152+74,
+                this.guiTop + 18+96+20, 76*2, 16*2, new RequirementItem(new int[]{}, new int[]{},
+                ModEnchantments.RIFLING.get()), 3,
+                2, "Advanced_Rifling", button ->
+        {
+            this.btnSelected = 2;
+            // Apply module to held item
+        }));
+        // lower recoil
+        this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+ data.getxMod()+152+74-170,
+                this.guiTop + 18 + data.getyMod()+96+20-100+((3+scrollItor)*34), this.guiLeft + 9+152+74,
+                this.guiTop + 18+96+20, 76*2, 16*2, new RequirementItem(new int[]{}, new int[]{},
+                ModEnchantments.BUFFERED.get()), 5,
+                3, "Buffered_Recoil", button ->
+        {
+            this.btnSelected = 3;
+            // Apply module to held item
+        }));
+        this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+ data.getxMod()+152+74-170,
+                this.guiTop + 18 + data.getyMod()+96+20-100+(4*34), this.guiLeft + 9+152+74,
+                this.guiTop + 18+96+20, 76*2, 16*2, new RequirementItem(new int[]{}, new int[]{},
+                ModEnchantments.OVER_CAPACITY.get()), 3,
+                4, "Over_Capacity", button ->
+        {
+            this.btnSelected = 4;
+            // Apply module to held item
+        }));*/
+    }
 
+    public void setSelectedBtn(String name)
+    {
+        this.btnSelected = name;
     }
 
     @Override
@@ -118,13 +162,14 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
     {
         super.tick();
 
-        for(MaterialItem material : this.materials)
+        /*for(RequirementItem material : this.requirements)
         {
-            material.update();
-        }
+            material.update(this.workbench.getStackInSlot(0),
+                    this.workbench.getStackInSlot(1).getCount());
+        }*/
 
         boolean canCraft = true;
-        for(MaterialItem material : this.materials)
+        for(RequirementItem material : this.requirements)
         {
             if(!material.isEnabled())
             {
@@ -145,7 +190,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         int startX = this.guiLeft;
         int startY = this.guiTop;
 
-        if (this.filteredMaterials == null)
+        /*if (this.filteredMaterials == null)
             return;
         for(int i = 0; i < this.filteredMaterials.size(); i++)
         {
@@ -160,15 +205,8 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                     return;
                 }
             }
-        }
+        }*/
     }
-
-    /*@Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
-    {
-        //int offset = this.tabs.isEmpty() ? 0 : 28;
-        //this.font.func_243248_b(matrixStack, this.title, (float)this.titleX, (float)this.titleY - 28 + offset, 4210752);
-    }*/
 
     @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
@@ -226,7 +264,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-        this.filteredMaterials = this.getMaterials();
+        /*this.requirements = this.requirements();
         for(int i = 0; i < this.filteredMaterials.size(); i++)
         {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -256,22 +294,128 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
                 Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, startX + 172 + 2, startY + i * 19 + 1 + 63);
 
-                if(this.checkBoxMaterials.isToggled())
-                {
-                    int count = InventoryUtil.getItemStackAmount(Minecraft.getInstance().player, stack);
-                    stack = stack.copy();
-                    stack.setCount(stack.getCount() - count);
-                }
-
-                //GunRenderingHandler.get().renderWeapon(minecraft.player, stack, ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, )
                 Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63, null);
-                //GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getHeldItemMainhand(), ItemCameraTransforms.TransformType.GROUND, matrixStack, buffer, 15728880, 0F); // GROUND, matrixStack, buffer, 15728880, 0F);
+
             }
-        }
+        }*/
     }
 
-    public class GuiEnchantmentApplyButton extends UpgradeTableButton
+    /*@Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+
+        return super.mouseScrolled(mouseX, mouseY, delta);
+    }*/
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll)
     {
+        if(scroll < 0 && this.scrollItor > 0)
+        {
+            this.scrollItor--;
+        }
+        else if(scroll > 0)
+        {
+            this.scrollItor++;
+        }
+        return false;
+    }
+
+    public class GuiEnchantmentOptionButton extends UpgradeTableButton {
+        private RequirementItem requirement;
+        private String name;
+        public int enchLevel = 0;
+        public int maxEnchLevel;
+        private int itorInt; // Start from 0, since it will start at list start
+        public boolean selected = false;
+        public RequirementItem getRequirement(){return this.requirement;}
+        public void GuiEnchantmentOptionButton() {
+            this.onPress.onPress(this);
+        }
+        public GuiEnchantmentOptionButton(int x, int y, int u, int v, int widthIn, int heightIn,
+                                          RequirementItem requirement, int maxEnchLevel, int itor
+                , String name, IPressable onPress)
+        {
+            super(x, y, u, v, widthIn, heightIn, onPress);
+            this.itorInt = itor;
+            this.requirement = requirement;
+            this.maxEnchLevel = maxEnchLevel;
+            this.name = name;
+
+            GunEnchantmentHelper.upgradeableEnchs.put(name, requirement);
+        }
+
+        /*@Override
+        public void onPress()
+        {
+            super.onPress();
+        }*/
+
+        @Override
+        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+        {
+            //super.renderButton(matrixStack,mouseX,mouseY,partialTicks);
+            Minecraft mc = Minecraft.getInstance();
+            if (!visible || (this.itorInt-3 > scrollItor))
+            {
+                return;
+            }
+
+            /// EDITOR
+            GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
+            if(GuiEditor.get() != null)
+            {
+                if(GuiEditor.get().currElement == 4 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                    data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
+            }
+            /// EDITOR
+
+            mc.getTextureManager().bindTexture(GUI_PARTS);
+            matrixStack.push();
+            boolean btnSelectedYet = btnSelected != null;
+            if (this.enchLevel == this.maxEnchLevel)
+            {
+                matrixStack.scale(2f, 2f, 0); //3.87
+                mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
+                        this.v + data.getyMod() - 44 - 10 - 50-34+(this.itorInt*17), 0, 56, 76, 16);
+
+            }// MAX
+            else if(this.isHovered() || btnSelectedYet && btnSelected.equalsIgnoreCase(this.name))
+            {
+                matrixStack.scale(2f, 2f, 0); //3.87
+                mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
+                        this.v + data.getyMod() - 44 - 10 - 50-34+(this.itorInt*17), 0, 32, 76, 16);
+
+            }
+            else
+            {
+                matrixStack.scale(2f, 2f, 0); //3.87
+                mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
+                    this.v + data.getyMod() - 44 - 10 - 50-34+(this.itorInt*17), 0, 80, 76, 16);
+            }
+
+            for(int i = 0; i < this.maxEnchLevel && this.enchLevel != this.maxEnchLevel; i++)
+            {
+                //Render blue
+                if(this.enchLevel > i) {
+                    mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84 + (i*12),
+                            this.v + data.getyMod() - 44 - 10 - 50-21+(this.itorInt*17), 0, 101,
+                            12, 3);
+                }
+                else {
+                    mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84 + (i*12),
+                            this.v + data.getyMod() - 44 - 10 - 50-21+(this.itorInt*17), 0, 98,
+                            12, 3);
+                }
+            }
+            matrixStack.pop();
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack, this.name,
+                    (this.u + data.getxMod() - 174-82)*2+1,
+                    (this.v + data.getyMod() - 44 - 10 - 50-31+(this.itorInt*17))*2,
+                    Color.WHITE.getRGB());
+
+        }
+    }
+    public class GuiEnchantmentApplyButton extends UpgradeTableButton {
         public void GuiEnchantmentApplyButton() {
             this.onPress.onPress(this);
         }
@@ -285,13 +429,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                 return;
             }
             GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
-            if(GuiEditor.get() != null)
-            {
-                if(GuiEditor.get().currElement == 4 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
-                    data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
-            }
             mc.getTextureManager().bindTexture(GUI_PARTS);
-
             if(this.isHovered)
             {
                 matrixStack.push();
@@ -334,41 +472,51 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         }
     }
 
-    private List<MaterialItem> getMaterials()
+    /*private static final int[] levelReqPerEnch = new int[]{};
+    private List<RequirementItem> getRequirements()
     {
-        List<MaterialItem> materials = NonNullList.withSize(6, new MaterialItem(ItemStack.EMPTY));
-        List<MaterialItem> filteredMaterials = this.materials.stream().filter(materialItem -> this.checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : !materialItem.stack.isEmpty()).collect(Collectors.toList());
-        for(int i = 0; i < filteredMaterials.size() && i < materials.size(); i++)
+        List<RequirementItem> materials = NonNullList.withSize(6,
+                new RequirementItem(this.workbench.getStackInSlot(1).getCount(),
+                        levelReqPerEnch));
+        //List<MaterialItem> filteredMaterials = this.requirements.stream().filter(materialItem ->
+        // this.checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : !materialItem.stack.isEmpty()).collect(Collectors.toList());
+        for(int i = 0; i < this.requirements.size() && i < materials.size(); i++)
         {
-            materials.set(i, filteredMaterials.get(i));
+            materials.set(i, this.requirements.get(i));
         }
         return materials;
-    }
-    public static class MaterialItem {
-        public static final MaterialItem EMPTY = new MaterialItem();
+    }*/
+    public static class RequirementItem {
+        public static final RequirementItem EMPTY = new RequirementItem();
 
+        public Enchantment enchantment;
         private boolean enabled = false;
-        private ItemStack stack = ItemStack.EMPTY;
 
-        private MaterialItem() {
+        private int[] moduleCounts = new int[]{};
+        private int[] levelReqs = new int[]{};
+        public int[] getModuleCount() {return moduleCounts;}
+        public int[] getLevelReq() {return levelReqs;}
+        public RequirementItem() {}
+
+        public RequirementItem(int[] moduleCounts, int[] levelReqs, Enchantment enchantment)
+        {
+            this.enchantment = enchantment;
+            this.moduleCounts = moduleCounts;
+            this.levelReqs = levelReqs;
         }
 
-        private MaterialItem(ItemStack stack) {
-            this.stack = stack;
-        }
-
-        public ItemStack getStack() {
-            return stack;
-        }
-
-        public void update() {
-            if (!this.stack.isEmpty()) {
-                this.enabled = InventoryUtil.hasItemStack(Minecraft.getInstance().player, this.stack);
+        public void update(ItemStack stack, int moduleCount, int upgradeLevel)
+        {
+            if(stack.getTag() != null)
+            {
+                if(stack.getTag().getInt("level") >= this.levelReqs[upgradeLevel] && this.moduleCounts[upgradeLevel] >= moduleCount)
+                    this.enabled = true;
             }
         }
 
-        public boolean isEnabled() {
-            return this.stack.isEmpty() || this.enabled;
+        public boolean isEnabled()
+        {
+            return this.enabled;
         }
     }
 }

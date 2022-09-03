@@ -15,7 +15,7 @@ import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.gun.model.*;
 import com.tac.guns.client.screen.*;
 import com.tac.guns.client.settings.GunOptions;
-import com.tac.guns.client.util.WorldItemRenderUtil;
+import com.tac.guns.client.util.UpgradeBenchRenderUtil;
 import com.tac.guns.init.*;
 import com.tac.guns.item.IColored;
 import com.tac.guns.network.PacketHandler;
@@ -34,7 +34,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -81,7 +80,7 @@ public class ClientHandler
             MinecraftForge.EVENT_BUS.register(ObjectRenderEditor.get());
         }
 
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), WorldItemRenderUtil::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), UpgradeBenchRenderUtil::new);
 
         KeyBinds.register();
 

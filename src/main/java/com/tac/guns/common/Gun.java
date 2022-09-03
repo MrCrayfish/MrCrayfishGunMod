@@ -110,6 +110,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private GripType gripType = GripType.ONE_HANDED;
         @Optional
         private float levelReq = 300.0F;
+        @Optional
+        private int upgradeBenchMaxUses = 3;
         @Override
         public CompoundNBT serializeNBT()
         {
@@ -133,6 +135,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putFloat("Spread", this.spread);
             tag.putFloat("WeightKilo", this.weightKilo);
             tag.putFloat("LevelReq", this.levelReq);
+            tag.putInt("UpgradeBenchMaxUses", this.upgradeBenchMaxUses);
             return tag;
         }
 
@@ -199,6 +202,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.projectileAmount = tag.getInt("ProjectileAmount");
             }
+            if(tag.contains("UpgradeBenchMaxUses", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.upgradeBenchMaxUses = tag.getInt("UpgradeBenchMaxUses");
+            }
             if(tag.contains("AlwaysSpread", Constants.NBT.TAG_ANY_NUMERIC))
             {
                 this.alwaysSpread = tag.getBoolean("AlwaysSpread");
@@ -242,6 +249,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.spread = this.spread;
             general.weightKilo = this.weightKilo;
             general.levelReq = this.levelReq;
+            general.upgradeBenchMaxUses = this.upgradeBenchMaxUses;
             return general;
         }
         /**
@@ -264,6 +272,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public int getRate()
         {
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (int) (this.rate + GunEditor.get().getRateMod()) : (int)this.rate;
+        }
+        /**
+         * @return The fire rate of this weapon in ticks
+         */
+        public int getUpgradeBenchMaxUses()
+        {
+            return this.upgradeBenchMaxUses;
         }
         /**
          * @return The fire rate of this weapon in ticks

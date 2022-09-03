@@ -1,35 +1,24 @@
 package com.tac.guns.client.util;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.tac.guns.Config;
 import com.tac.guns.client.handler.GunRenderingHandler;
-import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.init.ModItems;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
-public class WorldItemRenderUtil extends TileEntityRenderer<UpgradeBenchTileEntity>
+public class UpgradeBenchRenderUtil extends TileEntityRenderer<UpgradeBenchTileEntity>
 {
-    public WorldItemRenderUtil(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
+    public UpgradeBenchRenderUtil(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
         super(tileEntityRendererDispatcher);
     }
 
