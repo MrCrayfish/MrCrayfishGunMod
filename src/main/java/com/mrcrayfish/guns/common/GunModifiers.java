@@ -49,6 +49,15 @@ public class GunModifiers
             return speed * 0.9F;
         }
     };
+    
+    public static final IGunModifier SLOWEST_ADS = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 0.8F;
+        }
+    };
 
     public static final IGunModifier BETTER_CONTROL = new IGunModifier()
     {
@@ -188,6 +197,39 @@ public class GunModifiers
         public float modifyProjectileSpread(float spread)
         {
             return spread * 0.5F;
+        }
+    };
+    
+    public static final IGunModifier SNIPER_RECOIL = new IGunModifier()
+    {
+        @Override
+        public float recoilModifier()
+        {
+            return 2.0F;
+        }
+
+        @Override
+        public float kickModifier()
+        {
+            return 2.0F;
+        }
+
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 0.95F;
+        }
+
+        @Override
+        public float modifyProjectileSpread(float spread)
+        {
+            return spread * 0.5F;
+        }
+        
+        @Override
+        public int modifyFireRate(int rate)
+        {
+            return Mth.clamp((int) (rate * 1.25), rate + 1, Integer.MAX_VALUE);
         }
     };
 }
