@@ -53,6 +53,7 @@ public class ModItems
     public static final RegistryObject<Item> LIGHT_MUZZLE_BREAK = REGISTER.register("light_muzzle_break", () -> new BarrelItem(Barrel.create(1.0F, GunModifiers.LIGHT_RECOIL), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
     public static final RegistryObject<Item> MUZZLE_BREAK = REGISTER.register("muzzle_break", () -> new BarrelItem(Barrel.create(1.0F, GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
     public static final RegistryObject<Item> SNIPER_MUZZLE_BREAK = REGISTER.register("sniper_muzzle_break", () -> new BarrelItem(Barrel.create(1.0F, GunModifiers.SNIPER_RECOIL), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
+    public static final RegistryObject<Item> LASER_SIGHT = REGISTER.register("laser_sight", () -> new BarrelItem(Barrel.create(1.0F, GunModifiers.LASER), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
     
     /* Stock Attachments */
     public static final RegistryObject<Item> LIGHT_STOCK = REGISTER.register("light_stock", () -> new StockItem(Stock.create(GunModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1).tab(GunMod.GROUP), false));
@@ -62,5 +63,5 @@ public class ModItems
     /* Under Barrel Attachments */
     public static final RegistryObject<Item> LIGHT_GRIP = REGISTER.register("light_grip", () -> new UnderBarrelItem(UnderBarrel.create(GunModifiers.LIGHT_RECOIL), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
     public static final RegistryObject<Item> SPECIALISED_GRIP = REGISTER.register("specialised_grip", () -> new UnderBarrelItem(UnderBarrel.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
-    public static final RegistryObject<Item> LASER_SIGHT = REGISTER.register("laser_sight", () -> new UnderBarrelItem(UnderBarrel.create(GunModifiers.LASER), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
+    
 }
