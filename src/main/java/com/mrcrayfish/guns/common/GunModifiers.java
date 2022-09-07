@@ -49,6 +49,15 @@ public class GunModifiers
             return speed * 0.9F;
         }
     };
+    
+    public static final IGunModifier SLOWEST_ADS = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed)
+        {
+            return speed * 0.8F;
+        }
+    };
 
     public static final IGunModifier BETTER_CONTROL = new IGunModifier()
     {
