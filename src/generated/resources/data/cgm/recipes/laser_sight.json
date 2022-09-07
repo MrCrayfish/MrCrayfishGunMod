@@ -1,0 +1,20 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "tag": "forge:nuggets/iron",
+      "count": 4
+    },
+    {
+      "item": "minecraft:gray_wool",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 1
+    }
+  ],
+  "result": {
+    "item": "cgm:laser_sight"
+  }
+}
