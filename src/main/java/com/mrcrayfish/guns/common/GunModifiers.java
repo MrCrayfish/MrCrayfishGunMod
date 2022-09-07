@@ -232,4 +232,13 @@ public class GunModifiers
             return Mth.clamp((int) (rate * 1.75), rate + 1, Integer.MAX_VALUE);
         }
     };
+    
+    public static final IGunModifier LASER = new IGunModifier()
+    {
+        @Override
+        public float modifyProjectileSpread(float spread)
+        {
+            return spread * 0.1F;
+        }
+    };
 }
