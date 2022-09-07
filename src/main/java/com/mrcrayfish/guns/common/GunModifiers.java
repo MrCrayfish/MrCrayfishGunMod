@@ -205,13 +205,13 @@ public class GunModifiers
         @Override
         public float recoilModifier()
         {
-            return 2.0F;
+            return 0.2F;
         }
 
         @Override
         public float kickModifier()
         {
-            return 2.0F;
+            return 0.2F;
         }
 
         @Override
@@ -229,7 +229,7 @@ public class GunModifiers
         @Override
         public int modifyFireRate(int rate)
         {
-            return Mth.clamp((int) (rate * 1.25), rate + 1, Integer.MAX_VALUE);
+            return Mth.clamp((int) (rate * 1.75), rate + 1, Integer.MAX_VALUE);
         }
     };
 }
