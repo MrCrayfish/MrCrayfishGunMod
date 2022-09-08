@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class LongScopeModel implements IOverrideModel
+public class SniperScopeModel implements IOverrideModel
 {
     private static final ResourceLocation RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/effect/sniper_scope_reticle.png");
     private static final ResourceLocation VIGNETTE = new ResourceLocation(Reference.MOD_ID, "textures/effect/scope_vignette.png");
