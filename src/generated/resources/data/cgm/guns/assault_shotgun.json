@@ -1,12 +1,13 @@
 {
   "general": {
+    "auto": true,
     "rate": 4,
     "gripType": "cgm:two_handed",
     "maxAmmo": 16,
     "reloadAmount": 4,
-    "recoilAngle": 3.0,
-    "recoilKick": 0.5,
-    "recoilAdsReduction": 1.0,
+    "recoilAngle": 5.0,
+    "recoilKick": 2.0,
+    "recoilAdsReduction": 0.5,
     "projectileAmount": 8,
     "alwaysSpread": true,
     "spread": 35.0
