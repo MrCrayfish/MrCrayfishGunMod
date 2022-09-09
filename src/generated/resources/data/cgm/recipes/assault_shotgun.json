@@ -1,0 +1,16 @@
+{
+  "type": "cgm:workbench",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 32
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 8
+    },
+  ],
+  "result": {
+    "item": "cgm:assault_shotgun"
+  }
+}
