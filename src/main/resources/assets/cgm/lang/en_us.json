@@ -20,6 +20,10 @@
     "item.cgm.medium_scope": "Medium Scope",
     "item.cgm.long_scope": "Long Scope",
     "item.cgm.silencer": "Silencer",
+    "item.cgm.light_muzzle_break": "Light Muzzle Brake"
+    "item.cgm.muzzle_break": "Muzzle Brake"
+    "item.cgm.sniper_muzzle_break": "Sniper Muzzle Brake"
+    "item.cgm.laser_sight": "Laser Sight"
     "item.cgm.light_stock": "Light Stock",
     "item.cgm.tactical_stock": "Tactical Stock",
     "item.cgm.weighted_stock": "Weighted Stock",
