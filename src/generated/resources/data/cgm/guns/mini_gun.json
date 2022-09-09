@@ -5,9 +5,9 @@
     "gripType": "cgm:mini_gun",
     "maxAmmo": 100,
     "reloadAmount": 10,
-    "recoilAngle": 1.0,
+    "recoilAngle": 0.5,
     "alwaysSpread": true,
-    "spread": 7.0
+    "spread": 3.0
   },
   "projectile": {
     "item": "cgm:basic_bullet",

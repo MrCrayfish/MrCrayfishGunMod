@@ -9,7 +9,7 @@
   "projectile": {
     "item": "cgm:missile",
     "visible": true,
-    "damage": 25.0,
+    "damage": 200.0,
     "size": 0.2,
     "speed": 2.0,
     "life": 150,
