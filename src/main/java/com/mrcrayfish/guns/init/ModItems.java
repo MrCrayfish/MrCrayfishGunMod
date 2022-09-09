@@ -46,7 +46,6 @@ public class ModItems
     public static final RegistryObject<Item> SHORT_SCOPE = REGISTER.register("short_scope", () -> new ScopeItem(Scope.create(0.1F, 1.55F, GunModifiers.SLOW_ADS).viewFinderOffset(0.4), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
     public static final RegistryObject<Item> MEDIUM_SCOPE = REGISTER.register("medium_scope", () -> new ScopeItem(Scope.create(0.25F, 1.625F, GunModifiers.SLOW_ADS).viewFinderOffset(0.3), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
     public static final RegistryObject<Item> LONG_SCOPE = REGISTER.register("long_scope", () -> new ScopeItem(Scope.create(0.4F, 1.4F, GunModifiers.SLOWER_ADS).viewFinderOffset(0.275), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
-    public static final RegistryObject<Item> SNIPER_SCOPE = REGISTER.register("sniper_scope", () -> new ScopeItem(Scope.create(0.45F, 1.25F, GunModifiers.SLOWEST_ADS).viewFinderOffset(0.2), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
 
     /* Barrel Attachments */
     public static final RegistryObject<Item> SILENCER = REGISTER.register("silencer", () -> new BarrelItem(Barrel.create(8.0F, GunModifiers.SILENCED, GunModifiers.REDUCED_DAMAGE), new Item.Properties().stacksTo(1).tab(GunMod.GROUP)));
