@@ -4,13 +4,13 @@ license="GPL3"
 
 [[mods]]
 modId="cgm"
-version="1.2.7"
-displayName="MrCrayfish's Gun Mod"
+version="2.2.0"
+displayName="MrCrayfish's Gun Mod (REFINED)"
 updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/cgm/update.json"
-displayURL="https://mrcrayfish.com/"
+displayURL="https://github.com/poly-1810/CGM-refined"
 logoFile="cgm_banner.png"
-authors="MrCrayfish"
-description="MrCrayfish's Gun Mod adds in simple and straight forward weapons into Minecraft. They can be configured with many different attachments to add extra stats to your weapon and coloured to your personal liking. This mod adds ten weapons into the game!"
+authors="Poly and MrCrayfish"
+description="MrCrayfish's Gun Mod adds in simple and straight forward weapons into Minecraft. They can be configured with many different attachments to add extra stats to your weapon and coloured to your personal liking. This mod adds ten weapons into the game! It also has been recently refined by me (Poly), and ive added in even more weapons and attachments!"
 
 [[dependencies.cgm]]
     modId="forge"
