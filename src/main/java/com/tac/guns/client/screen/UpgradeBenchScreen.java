@@ -19,13 +19,17 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,7 +49,6 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
     private int scrollItor = 0;
 
     private int lmbdaItor = 0;
-    //
     public UpgradeBenchScreen(UpgradeBenchContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
         super(container, playerInventory, title);
@@ -54,45 +57,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         this.xSize = 256;
         this.ySize = 184;
         this.requirements = new ArrayList<>();
-        /*for (:
-             ) {
-            
-        }
-                new RequirementItem(this.workbench.getStackInSlot(1).getCount(),
-                        levelReqPerEnch);*/
-        
-        //this.createTabs(WorkbenchRecipes.getAll(playerInventory.player.world));
-        /*if(!this.tabs.isEmpty())
-        {
-            this.ySize += 28;
-        }*/
-
     }
-
-    public void initScrollingButtons()
-    {
-        GunEnchantmentHelper.upgradeableEnchs.forEach((key, value) ->
-        {
-            if(this.lmbdaItor == GunEnchantmentHelper.upgradeableEnchs.size())
-                return;
-            if ((this.lmbdaItor-3 > scrollItor))
-            {
-                return;
-            }
-            this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+152+74-170,
-                    this.guiTop + 18+96+20-100+(this.lmbdaItor *34),
-                    this.guiLeft + 9+152+74, this.guiTop + 18+96+20,
-                    76*2, 16*2,
-                    value,
-                    3, this.lmbdaItor, key
-                    , button ->
-            {
-                this.setSelectedBtn(key);
-            }));
-            this.lmbdaItor++; // Lambdas stink
-        });
-    }
-
     @Override
     public void init()
     {
@@ -109,47 +74,32 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             PacketHandler.getPlayChannel().sendToServer(new MessageUpgradeBenchApply(this.workbench.getPos(), this.btnSelected));
         }));
 
-        initScrollingButtons();
-
-       /* // Ergonomic
-        this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+ data.getxMod()+152+74-170,
-                this.guiTop + 18 + data.getyMod()+96+20-100+(1*34), this.guiLeft + 9+152+74,
-                this.guiTop + 18+96+20, 76*2, 16*2,
-                new RequirementItem(new int[]{}, new int[]{}, ModEnchantments.LIGHTWEIGHT.get()), 3,
-                1, "Ergonomic", button ->
+        GunEnchantmentHelper.upgradeableEnchs.forEach((key, value) ->
         {
-            this.btnSelected = 1;
-            // Apply module to held item
-        }));
-        // accuracy
-        this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+ data.getxMod()+152+74-170,
-                this.guiTop + 18 + data.getyMod()+96+20-100+(2*34), this.guiLeft + 9+152+74,
-                this.guiTop + 18+96+20, 76*2, 16*2, new RequirementItem(new int[]{}, new int[]{},
-                ModEnchantments.RIFLING.get()), 3,
-                2, "Advanced_Rifling", button ->
-        {
-            this.btnSelected = 2;
-            // Apply module to held item
-        }));
-        // lower recoil
-        this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+ data.getxMod()+152+74-170,
-                this.guiTop + 18 + data.getyMod()+96+20-100+((3+scrollItor)*34), this.guiLeft + 9+152+74,
-                this.guiTop + 18+96+20, 76*2, 16*2, new RequirementItem(new int[]{}, new int[]{},
-                ModEnchantments.BUFFERED.get()), 5,
-                3, "Buffered_Recoil", button ->
-        {
-            this.btnSelected = 3;
-            // Apply module to held item
-        }));
-        this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+ data.getxMod()+152+74-170,
-                this.guiTop + 18 + data.getyMod()+96+20-100+(4*34), this.guiLeft + 9+152+74,
-                this.guiTop + 18+96+20, 76*2, 16*2, new RequirementItem(new int[]{}, new int[]{},
-                ModEnchantments.OVER_CAPACITY.get()), 3,
-                4, "Over_Capacity", button ->
-        {
-            this.btnSelected = 4;
-            // Apply module to held item
-        }));*/
+            if(this.lmbdaItor == GunEnchantmentHelper.upgradeableEnchs.size())
+                return;
+            int lmbdaTmp=this.lmbdaItor;
+            int scroll = this.scrollItor;
+            /*if ((lmbdaTmp-3 > scroll) || lmbdaTmp < scroll)
+            {
+                return;
+            }*/
+            if (lmbdaTmp-scroll < 0 || lmbdaTmp-3 > scroll)
+            {
+                return;
+            }
+            this.addButton(new GuiEnchantmentOptionButton(this.guiLeft + 9+152+74-170,
+                    this.guiTop + 18+96+20-100+((lmbdaTmp+scroll)*34),
+                    this.guiLeft + 9+152+74, this.guiTop + 18+96+20,
+                    76*2, 16*2,
+                    value,
+                    3, lmbdaTmp, key
+                    , button ->
+            {
+                this.setSelectedBtn(key);
+            }));
+            this.lmbdaItor++; // Lambdas stink
+        });
     }
 
     public void setSelectedBtn(String name)
@@ -300,25 +250,41 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         }*/
     }
 
-    /*@Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-
-        return super.mouseScrolled(mouseX, mouseY, delta);
-    }*/
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+    {
+        if(keyCode == GLFW.GLFW_KEY_UP) {
+            this.scrollItor--;
+        }
+        else if(keyCode == GLFW.GLFW_KEY_DOWN)
+        {
+            this.scrollItor++;
+        }
+        else super.keyPressed(keyCode, scanCode, modifiers);
+        //initScrollingButtons();
+        this.lmbdaItor=0;
+        this.init();
+        return true;
+    }
+
+    /*@Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scroll)
     {
         if(scroll < 0 && this.scrollItor > 0)
         {
             this.scrollItor--;
+            init();
+            //initScrollingButtons();
         }
         else if(scroll > 0)
         {
             this.scrollItor++;
+            init();
+            //initScrollingButtons();
         }
         return false;
-    }
+    }*/
 
     public class GuiEnchantmentOptionButton extends UpgradeTableButton {
         private RequirementItem requirement;
@@ -355,7 +321,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         {
             //super.renderButton(matrixStack,mouseX,mouseY,partialTicks);
             Minecraft mc = Minecraft.getInstance();
-            if (!visible || (this.itorInt-3 > scrollItor))
+            if (!visible/* || (this.itorInt-3 > scrollItor)*/)
             {
                 return;
             }
@@ -376,21 +342,23 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             {
                 matrixStack.scale(2f, 2f, 0); //3.87
                 mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
-                        this.v + data.getyMod() - 44 - 10 - 50-34+(this.itorInt*17), 0, 56, 76, 16);
+                        this.v + data.getyMod() - 44 - 10 - 50-34+((this.itorInt+scrollItor)*17), 0, 56, 76,
+                        16);
 
             }// MAX
             else if(this.isHovered() || btnSelectedYet && btnSelected.equalsIgnoreCase(this.name))
             {
                 matrixStack.scale(2f, 2f, 0); //3.87
                 mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
-                        this.v + data.getyMod() - 44 - 10 - 50-34+(this.itorInt*17), 0, 32, 76, 16);
+                        this.v + data.getyMod() - 44 - 10 - 50-34+((this.itorInt+scrollItor)*17), 0, 32, 76,
+                        16);
 
             }
             else
             {
                 matrixStack.scale(2f, 2f, 0); //3.87
                 mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
-                    this.v + data.getyMod() - 44 - 10 - 50-34+(this.itorInt*17), 0, 80, 76, 16);
+                    this.v + data.getyMod() - 44 - 10 - 50-34+((this.itorInt+scrollItor)*17), 0, 80, 76, 16);
             }
 
             for(int i = 0; i < this.maxEnchLevel && this.enchLevel != this.maxEnchLevel; i++)
@@ -398,19 +366,19 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                 //Render blue
                 if(this.enchLevel > i) {
                     mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84 + (i*12),
-                            this.v + data.getyMod() - 44 - 10 - 50-21+(this.itorInt*17), 0, 101,
+                            this.v + data.getyMod() - 44 - 10 - 50-21+((this.itorInt+scrollItor)*17), 0, 101,
                             12, 3);
                 }
                 else {
                     mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84 + (i*12),
-                            this.v + data.getyMod() - 44 - 10 - 50-21+(this.itorInt*17), 0, 98,
+                            this.v + data.getyMod() - 44 - 10 - 50-21+((this.itorInt+scrollItor)*17), 0, 98,
                             12, 3);
                 }
             }
             matrixStack.pop();
             Minecraft.getInstance().fontRenderer.drawString(matrixStack, this.name,
                     (this.u + data.getxMod() - 174-82)*2+1,
-                    (this.v + data.getyMod() - 44 - 10 - 50-31+(this.itorInt*17))*2,
+                    (this.v + data.getyMod() - 44 - 10 - 50-31+((this.itorInt+scrollItor)*17))*2,
                     Color.WHITE.getRGB());
 
         }

@@ -158,6 +158,7 @@ public class GunEditor
     public float getHorizontalRecoilAngleMod() {return horizontalRecoilAngleMod;}
     public float getCameraRecoilModifierMod() {return cameraRecoilModifierMod;}
     public float getWeaponRecoilDurationMod() {return weaponRecoilDurationMod;}
+    public float getcameraRecoilDurationMod() {return cameraRecoilDurationMod;}
     public float getRecoilDurationMod() {return recoilDurationMod;}
     public float getRecoilAdsReductionMod() {return recoilAdsReductionMod;}
     public double getProjectileAmountMod() {return projectileAmountMod;}
@@ -170,6 +171,7 @@ public class GunEditor
     private float horizontalRecoilAngleMod = 0;
     private float cameraRecoilModifierMod = 0;
     private float weaponRecoilDurationMod = 0;
+    private float cameraRecoilDurationMod = 0;
     private float recoilDurationMod = 0;
     private float recoilAdsReductionMod = 0;
     private double projectileAmountMod = 0;
