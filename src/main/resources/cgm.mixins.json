@@ -4,6 +4,7 @@
     "compatibilityLevel": "JAVA_8",
     "minVersion": "0.8",
     "refmap": "cgm.refmap.json",
+    "plugin": "com.mrcrayfish.guns.mixin.MixinPlugin",
     "mixins": [
         "common.EndPortalBlockMixin",
         "common.LivingEntityMixin",
