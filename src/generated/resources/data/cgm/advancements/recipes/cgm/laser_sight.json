@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "cgm:light_grip"
+      "cgm:laser_sight"
     ]
   },
   "criteria": {
@@ -12,16 +12,6 @@
         "items": [
           {
             "tag": "forge:nuggets/iron"
-          }
-        ]
-      }
-    },
-    "has_gray_wool": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "item": "minecraft:gray_wool"
           }
         ]
       }
@@ -36,7 +26,6 @@
   "requirements": [
     [
       "has_iron_ingot",
-      "has_gray_wool",
       "has_the_recipe"
     ]
   ]

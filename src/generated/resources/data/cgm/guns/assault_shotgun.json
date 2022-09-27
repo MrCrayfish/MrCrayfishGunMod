@@ -1,7 +1,7 @@
 {
   "general": {
     "auto": true,
-    "rate": 4,
+    "rate": 8,
     "gripType": "cgm:two_handed",
     "maxAmmo": 16,
     "reloadAmount": 4,
@@ -10,7 +10,7 @@
     "recoilAdsReduction": 0.5,
     "projectileAmount": 8,
     "alwaysSpread": true,
-    "spread": 35.0
+    "spread": 25.0
   },
   "projectile": {
     "item": "cgm:shell",

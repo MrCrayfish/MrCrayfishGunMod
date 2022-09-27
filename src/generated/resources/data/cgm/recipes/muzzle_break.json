@@ -3,11 +3,11 @@
   "materials": [
     {
       "tag": "forge:nuggets/iron",
-      "count": 8
+      "count": 4
     },
     {
-      "tag": "forge:ingots/iron",
-      "count": 3
+      "item": "minecraft:sponge",
+      "count": 1
     }
   ],
   "result": {

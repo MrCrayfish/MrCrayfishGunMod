@@ -6,8 +6,8 @@
       "count": 4
     },
     {
-      "tag": "forge:ingots/iron",
-      "count": 2
+      "item": "minecraft:sponge",
+      "count": 1
     }
   ],
   "result": {

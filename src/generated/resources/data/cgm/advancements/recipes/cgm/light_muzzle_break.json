@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "cgm:silencer"
+      "cgm:light_muzzle_break"
     ]
   },
   "criteria": {

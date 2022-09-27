@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "cgm:shotgun"
+      "cgm:assault_shotgun"
     ]
   },
   "criteria": {

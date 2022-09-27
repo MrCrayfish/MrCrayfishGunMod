@@ -3,14 +3,10 @@
   "materials": [
     {
       "tag": "forge:nuggets/iron",
-      "count": 16
-    },
-    {
-      "tag": "forge:ingots/iron",
       "count": 4
     },
     {
-      "item": "cgm:muzzle_break",
+      "item": "minecraft:sponge",
       "count": 1
     }
   ],
