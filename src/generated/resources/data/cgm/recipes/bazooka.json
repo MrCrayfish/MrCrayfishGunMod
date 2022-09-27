@@ -6,16 +6,12 @@
       "count": 64
     },
     {
-      "tag": "forge:storage_blocks/iron",
-      "count": 3
-    },
-    {
       "item": "minecraft:redstone",
       "count": 24
     },
     {
       "item": "minecraft:repeater",
-      "count": 1
+      "count": 3
     }
   ],
   "result": {

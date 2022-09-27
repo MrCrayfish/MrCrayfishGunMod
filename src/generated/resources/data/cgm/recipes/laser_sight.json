@@ -6,7 +6,11 @@
       "count": 4
     },
     {
-      "item": "minecraft:sponge",
+      "tag": "forge:ingots/iron",
+      "count": 2
+    },
+    {
+      "item": "minecraft:redstone",
       "count": 1
     }
   ],
