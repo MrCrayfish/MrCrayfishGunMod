@@ -288,7 +288,7 @@ public class GunGen extends GunProvider
                 
         this.addGun(new ResourceLocation(Reference.MOD_ID, "assault_shotgun"), Gun.Builder.create()
                 .setAuto(true)
-                .setFireRate(4)
+                .setFireRate(8)
                 .setGripType(GripType.TWO_HANDED)
                 .setMaxAmmo(16)
                 .setReloadAmount(4)
@@ -297,7 +297,7 @@ public class GunGen extends GunProvider
                 .setRecoilAdsReduction(0.5F)
                 .setProjectileAmount(8)
                 .setAlwaysSpread(true)
-                .setSpread(35.0F)
+                .setSpread(25.0F)
                 .setAmmo(ModItems.SHELL.get())
                 .setDamage(20.0F)
                 .setHeadshotMultiplier(2.0F)
