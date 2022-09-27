@@ -204,8 +204,8 @@ public class RecipeGen extends RecipeProvider
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.MUZZLE_BREAK.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 8)
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON)
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 8))
+                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.SNIPER_MUZZLE_BREAK.get())
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 16))
