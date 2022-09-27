@@ -81,6 +81,10 @@ public class RecipeGen extends RecipeProvider
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
+        WorkbenchRecipeBuilder.crafting(ModItems.ASSAULT_SHOTGUN.get())
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
+                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+                .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.RIFLE.get())
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
@@ -187,6 +191,26 @@ public class RecipeGen extends RecipeProvider
 
         // Barrel Attachments
         WorkbenchRecipeBuilder.crafting(ModItems.SILENCER.get())
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
+                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+                .build(consumer);
+        WorkbenchRecipeBuilder.crafting(ModItems.LIGHT_MUZZLE_BREAK.get())
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
+                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+                .build(consumer);
+        WorkbenchRecipeBuilder.crafting(ModItems.MUZZLE_BREAK.get())
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
+                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+                .build(consumer);
+        WorkbenchRecipeBuilder.crafting(ModItems.SNIPER_MUZZLE_BREAK.get())
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
+                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+                .build(consumer);
+        WorkbenchRecipeBuilder.crafting(ModItems.LASER_SIGHT.get())
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
                 .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
                 .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
