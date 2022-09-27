@@ -78,11 +78,12 @@ public class RecipeGen extends RecipeProvider
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.SHOTGUN.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 32))
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.ASSAULT_SHOTGUN.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 32))
+                .addIngredient(Items.REDSTONE, 2)
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.RIFLE.get())
@@ -94,30 +95,33 @@ public class RecipeGen extends RecipeProvider
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.BAZOOKA.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 44))
-                .addIngredient(Items.REDSTONE, 4)
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.DYES_RED, 1))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 64))
+                .addIngredient(Items.REDSTONE, 24)
+                .addIngredient(Items.REPEATER, 3)
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_redstone", has(Items.REDSTONE))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.MINI_GUN.get())
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 38))
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.ASSAULT_RIFLE.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 28))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 26))
+                .addIngredient(Items.REDSTONE, 2)
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.MACHINE_PISTOL.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 20))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 14))
+                .addIngredient(Items.REDSTONE, 1)
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.HEAVY_RIFLE.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 36))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 60))
+                .addIngredient(Items.PISTON, 1)
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.LMG.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 36))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 42))
+                .addIngredient(Items.REDSTONE, 4)
                 .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
 
@@ -196,24 +200,22 @@ public class RecipeGen extends RecipeProvider
                 .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.LIGHT_MUZZLE_BREAK.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
-                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 4))
+                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.MUZZLE_BREAK.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
-                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 8)
+                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON)
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.SNIPER_MUZZLE_BREAK.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
-                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 16))
+                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.LASER_SIGHT.get())
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
-                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 2))
+                .addIngredient(Items.REDSTONE, 1)
+                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
                 .build(consumer);
 
         // Stock Attachments
