@@ -2,37 +2,27 @@ package com.tac.guns.client.handler.command;
 
 import com.google.gson.*;
 import com.tac.guns.Config;
-import com.tac.guns.Reference;
 import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
-import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.common.tooling.CommandsHandler;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.IAttachment;
-import com.tac.guns.item.attachment.impl.Scope;
-import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageUpdateGuns;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.KeybindTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.thread.SidedThreadGroups;
-import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Locale;
 
 import static com.tac.guns.GunMod.LOGGER;
 
@@ -224,14 +214,14 @@ public class GunEditor
         {
             if(isShiftDown)
                 stepModifier*=5;
-            player.sendStatusMessage(new TranslationTextComponent("WeaponRecoilDuration: "+gunTmp.getGeneral().getWeaponRecoilDuration()+" | RecoilDuration: "+gunTmp.getGeneral().getRecoilDuration()), true);
+            player.sendStatusMessage(new TranslationTextComponent("weaponRecoilOffset: "+gunTmp.getGeneral().getWeaponRecoilOffset()+" | RecoilDuration: "+gunTmp.getGeneral().getRecoilDuration()), true);
             if (isLeft) {
                 this.weaponRecoilDurationMod += 0.0025 * stepModifier;
-                player.sendStatusMessage(new TranslationTextComponent("WeaponRecoilDuration: "+gunTmp.getGeneral().getWeaponRecoilDuration()).mergeStyle(TextFormatting.GREEN), true);
+                player.sendStatusMessage(new TranslationTextComponent("weaponRecoilOffset: "+gunTmp.getGeneral().getWeaponRecoilOffset()).mergeStyle(TextFormatting.GREEN), true);
             }
             else if (isRight) {
                 this.weaponRecoilDurationMod -= 0.0025 * stepModifier;
-                player.sendStatusMessage(new TranslationTextComponent("WeaponRecoilDuration: "+gunTmp.getGeneral().getWeaponRecoilDuration()).mergeStyle(TextFormatting.DARK_RED), true);
+                player.sendStatusMessage(new TranslationTextComponent("weaponRecoilOffset: "+gunTmp.getGeneral().getWeaponRecoilOffset()).mergeStyle(TextFormatting.DARK_RED), true);
             }
             else if (isUp) {
                 this.recoilDurationMod += 0.0025 * stepModifier;
@@ -342,7 +332,7 @@ public class GunEditor
         gun.getCompound("General").remove("HorizontalRecoilAngle");
         gun.getCompound("General").remove("CameraRecoilModifier");
         gun.getCompound("General").remove("RecoilDurationOffset");
-        gun.getCompound("General").remove("WeaponRecoilDuration");
+        gun.getCompound("General").remove("weaponRecoilOffset");
         gun.getCompound("General").remove("RecoilAdsReduction");
         gun.getCompound("General").remove("ProjectileAmount");
         gun.getCompound("General").remove("Spread");
@@ -353,7 +343,7 @@ public class GunEditor
         gun.getCompound("General").putDouble("HorizontalRecoilAngle", gunItem.getGun().getGeneral().getHorizontalRecoilAngle());
         gun.getCompound("General").putDouble("CameraRecoilModifier", gunItem.getGun().getGeneral().getCameraRecoilModifier());
         gun.getCompound("General").putDouble("RecoilDurationOffset", gunItem.getGun().getGeneral().getRecoilDuration());
-        gun.getCompound("General").putDouble("WeaponRecoilDuration", gunItem.getGun().getGeneral().getWeaponRecoilDuration());
+        gun.getCompound("General").putDouble("weaponRecoilOffset", gunItem.getGun().getGeneral().getWeaponRecoilOffset());
         gun.getCompound("General").putDouble("RecoilAdsReduction", gunItem.getGun().getGeneral().getRecoilAdsReduction());
         gun.getCompound("General").putDouble("ProjectileAmount", gunItem.getGun().getGeneral().getProjectileAmount());
         gun.getCompound("General").putDouble("Spread", gunItem.getGun().getGeneral().getSpread());
@@ -851,7 +841,7 @@ public class GunEditor
                     this.recoilKickMod = gun.getGeneral().getRecoilKick()-toUpdate.getGeneral().getRecoilKick();
                     this.horizontalRecoilAngleMod = gun.getGeneral().getHorizontalRecoilAngle()-toUpdate.getGeneral().getHorizontalRecoilAngle();
                     this.cameraRecoilModifierMod = gun.getGeneral().getCameraRecoilModifier()-toUpdate.getGeneral().getCameraRecoilModifier();
-                    this.weaponRecoilDurationMod = gun.getGeneral().getWeaponRecoilDuration()-toUpdate.getGeneral().getWeaponRecoilDuration();
+                    this.weaponRecoilDurationMod = gun.getGeneral().getWeaponRecoilOffset()-toUpdate.getGeneral().getWeaponRecoilOffset();
                     this.recoilDurationMod = gun.getGeneral().getRecoilDuration()-toUpdate.getGeneral().getRecoilDuration();
                     this.recoilAdsReductionMod = gun.getGeneral().getRecoilAdsReduction()-toUpdate.getGeneral().getRecoilAdsReduction();
                     this.projectileAmountMod = gun.getGeneral().getProjectileAmount()-toUpdate.getGeneral().getProjectileAmount();

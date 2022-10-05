@@ -1,7 +1,6 @@
 package com.tac.guns.client.handler;
 
 import com.tac.guns.Config;
-import com.tac.guns.GunMod;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.item.GunItem;
@@ -16,7 +15,6 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.Level;
 
 import java.util.Random;
 
@@ -177,17 +175,23 @@ public class RecoilHandler
         GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
         CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldown = tracker.getCooldown(gunItem, Minecraft.getInstance().getRenderPartialTicks());
+        float cooldown ;
+        if((tracker.getCooldown(gunItem, Minecraft.getInstance().getRenderPartialTicks()))<0.5f)
+            cooldown = 0;/*(tracker.getCooldown(gunItem,
+                    Minecraft.getInstance().getRenderPartialTicks()));*/
+        else
+            cooldown = (tracker.getCooldown(gunItem,
+                    Minecraft.getInstance().getRenderPartialTicks())-0.5f)*2f;
 
-        if(cooldown >= modifiedGun.getGeneral().getWeaponRecoilDuration())// || tooFast) // Actually have any visual recoil at Rate 1???
+        if(cooldown >= modifiedGun.getGeneral().getWeaponRecoilOffset())// || tooFast) // Actually have any visual recoil at Rate 1???
         {
             //float amount = 1.0F * ((1.0F - cooldown) / 0.2F);
-            float amount = 1F * ((1.0F - cooldown) / (1-modifiedGun.getGeneral().getWeaponRecoilDuration()));
+            float amount = 1F * ((1.0F - cooldown) / (1-modifiedGun.getGeneral().getWeaponRecoilOffset()));
             this.gunRecoilNormal = 1 - (--amount) * amount * amount * amount;
         }
         else
         {
-            float amount = ( (cooldown) / modifiedGun.getGeneral().getWeaponRecoilDuration() );
+            float amount = ( (cooldown) / modifiedGun.getGeneral().getWeaponRecoilOffset() );
             this.gunRecoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
         }
 

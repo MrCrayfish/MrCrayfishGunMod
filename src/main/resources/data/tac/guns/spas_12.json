@@ -13,7 +13,7 @@
     "alwaysSpread": true,
     "spread": 8.5,
     "projectileAmount": 9,
-    "weaponRecoilDuration": 0.985,
+    "weaponRecoilOffset": 0.985,
     "cameraRecoilModifier": 0.375,
     "recoilDuration": 0.115,
     "weightKilo": 4.75
