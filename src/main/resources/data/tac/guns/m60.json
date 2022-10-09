@@ -20,8 +20,8 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 100,
-    "reloadMagTimer": 150,
-    "additionalReloadEmptyMagTimer": -12,
+    "reloadMagTimer": 135,
+    "additionalReloadEmptyMagTimer": 13,
     "maxAdditionalAmmoPerOC": [
       50,
       75,
@@ -40,7 +40,10 @@
   },
   "sounds": {
     "fire": "tac:item.fire_m60",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.m60_reload_norm",
+    "reloadEmpty": "tac:animation.m60_reload_empty",
+    "draw": "tac:animation.m60_draw",
+    "inspect": "tac:animation.m60_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.pistol.silenced_fire"
   },

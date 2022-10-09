@@ -1,12 +1,21 @@
 package com.tac.guns.client.render.gun.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
+import com.tac.guns.client.handler.ReloadHandler;
+import com.tac.guns.client.render.animation.M60AnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.Animations;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.ReloadTracker;
+import com.tac.guns.init.ModSyncedDataKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -40,44 +49,44 @@ public class m60_animation implements IOverrideModel {
             matrices.pop();
             return;
         }
-        if(Gun.getScope(stack) == null)
-        {
-            RenderUtil.renderModel(SpecialModels.M60_UNFOLDED_SIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else
-        {
-            RenderUtil.renderModel(SpecialModels.M60_FOLDED_SIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        RenderUtil.renderModel(SpecialModels.M60.getModel(), stack, matrices, renderBuffer, light, overlay);
-
-
+        M60AnimationController controller = M60AnimationController.getInstance();
         matrices.push();
-        CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
-
-        if(Gun.hasAmmo(stack))
         {
-            // Math provided by Bomb787 on GitHub and Curseforge!!!
-            matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-        }
-        else if(!Gun.hasAmmo(stack))
-        {
-            if(cooldownOg > 0.5){
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+            controller.applySpecialModelTransform(SpecialModels.M60.getModel(), M60AnimationController.INDEX_BODY, transformType, matrices);
+            if (Gun.getScope(stack) == null) {
+                RenderUtil.renderModel(SpecialModels.M60_UNFOLDED_SIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else {
+                RenderUtil.renderModel(SpecialModels.M60_FOLDED_SIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
-            else
-            {
-                matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
-            }
+            RenderUtil.renderModel(SpecialModels.M60.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
-
-        RenderUtil.renderModel(SpecialModels.M60_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
         matrices.pop();
 
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M60.getModel(), M60AnimationController.INDEX_MAGAZINE, transformType, matrices);
+            RenderUtil.renderModel(SpecialModels.M60_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M60.getModel(), M60AnimationController.INDEX_CHAIN, transformType, matrices);
+            if(controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_EMPTY)
+                    || Gun.hasAmmo(stack)) {
+                RenderUtil.renderModel(SpecialModels.M60_BULLET_CHAIN.getModel(), stack, matrices, renderBuffer, light, overlay);
+
+            }
+        }
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M60.getModel(), M60AnimationController.INDEX_CAPS, transformType, matrices);
+            RenderUtil.renderModel(SpecialModels.M60_CAPS.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
-
-     
-
-    //TODO comments
 }

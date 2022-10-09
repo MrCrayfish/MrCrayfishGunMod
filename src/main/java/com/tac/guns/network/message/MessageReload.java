@@ -1,7 +1,6 @@
 package com.tac.guns.network.message;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.tac.guns.client.audio.GunShotSound;
 import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
@@ -73,8 +72,6 @@ public class MessageReload implements IMessage
                 {
                     MessageGunSound message = new MessageGunSound(reloadSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) player.getPosY() + 1.0F, (float) player.getPosZ(), 1.0F, 1.0F, player.getEntityId(), false, true);
                     PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player,player.getPosX(), (player.getPosY() + 1.0), player.getPosZ(), 16.0, player.world.getDimensionKey())), message);
-                    SoundEvent soundEvent = new SoundEvent(message.getId());
-                    Minecraft.getInstance().getSoundHandler().play(new EntityTickableSound(soundEvent, SoundCategory.PLAYERS, player));
                 }
             }
         });

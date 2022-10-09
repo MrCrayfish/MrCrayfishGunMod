@@ -1,9 +1,6 @@
 package com.tac.guns.client.handler;
 
 import com.tac.guns.Reference;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,6 +12,7 @@ public class CameraAnimationHandler {
     /*@SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
+        /*
         Minecraft mc = Minecraft.getInstance();
         ClientPlayerEntity player = mc.player;
         player.chasingPosX
@@ -37,5 +35,5 @@ public class CameraAnimationHandler {
             final double impact = mod.playerAcceleration.y * mod.camDropImpact;
             easingV.z += positive ? impact : -impact;
         }
-    }*/
+         */
 }

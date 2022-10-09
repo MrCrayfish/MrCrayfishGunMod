@@ -3,6 +3,9 @@ package com.tac.guns.client.render.gun.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
+import com.tac.guns.client.render.animation.Dp28AnimationController;
+import com.tac.guns.client.render.animation.Type81AnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -40,38 +43,51 @@ public class dp28_animation implements IOverrideModel {
             matrices.pop();
             return;
         }
-        RenderUtil.renderModel(SpecialModels.DP_28.getModel(), stack, matrices, renderBuffer, light, overlay);
-
-        RenderUtil.renderModel(SpecialModels.DP_28_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+        Dp28AnimationController controller = Dp28AnimationController.getInstance();
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.DP_28.getModel(), Dp28AnimationController.INDEX_BODY,transformType,matrices);
+            RenderUtil.renderModel(SpecialModels.DP_28.getModel(), stack, matrices, renderBuffer, light, overlay);
             //Always push
             matrices.push();
 
             //We're getting the cooldown tracker for the item - items like the sword, ender pearl, and chorus fruit all have this too.
             CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
             float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
-             
 
-        if(Gun.hasAmmo(stack))
-        {
-            // Math provided by Bomb787 on GitHub and Curseforge!!!
-            matrices.translate(0, 0, 0.198f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-        }
-        else if(!Gun.hasAmmo(stack))
-        {
-            if(cooldownOg > 0.5){
+
+            if(Gun.hasAmmo(stack))
+            {
                 // Math provided by Bomb787 on GitHub and Curseforge!!!
                 matrices.translate(0, 0, 0.198f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
             }
-            else
+            else if(!Gun.hasAmmo(stack))
             {
-                matrices.translate(0, 0, 0.198f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+                if(cooldownOg > 0.5){
+                    // Math provided by Bomb787 on GitHub and Curseforge!!!
+                    matrices.translate(0, 0, 0.198f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+                }
+                else
+                {
+                    matrices.translate(0, 0, 0.198f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+                }
             }
-        }
 
             RenderUtil.renderModel(SpecialModels.DP_28_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
 
             //Always pop
             matrices.pop();
+        }
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.DP_28.getModel(), Dp28AnimationController.INDEX_MAGAZINE,transformType,matrices);
+            RenderUtil.renderModel(SpecialModels.DP_28_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
 
      

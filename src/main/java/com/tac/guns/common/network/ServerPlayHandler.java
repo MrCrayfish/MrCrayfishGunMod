@@ -121,7 +121,7 @@ public class ServerPlayHandler
 
                     if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
                     {
-                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+                        //SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
                     }
 
                     if(!modifiedGun.getGeneral().isAlwaysSpread() && modifiedGun.getGeneral().getSpread() > 0.0F)

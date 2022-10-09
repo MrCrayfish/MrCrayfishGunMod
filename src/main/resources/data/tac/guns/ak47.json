@@ -30,8 +30,8 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 30,
-    "reloadMagTimer": 65,
-    "additionalReloadEmptyMagTimer": 22,
+    "reloadMagTimer": 30,
+    "additionalReloadEmptyMagTimer": 20,
     "maxAdditionalAmmoPerOC": [
       15,
       20,
@@ -41,7 +41,10 @@
   },
   "sounds": {
     "fire": "tac:item.fire_ak47",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.ak47_reload_norm",
+    "reloadEmpty": "tac:animation.ak47_reload_empty",
+    "draw": "tac:animation.ak47_draw",
+    "inspect": "tac:animation.ak47_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.fire_ak47s"
   },

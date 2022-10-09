@@ -7,6 +7,7 @@ import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
@@ -34,6 +35,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -73,6 +75,7 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDayMemory part of the Timeless dev team, amazing work!!!!!!!!!!!
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
         MinecraftForge.EVENT_BUS.register(AnimationHandler.INSTANCE); //Mainly controls when the animation should play.
+        MinecraftForge.EVENT_BUS.register(ArmorRenderingHandler.INSTANCE); //Test
         if(Config.COMMON.development.enableTDev.get()) {
             MinecraftForge.EVENT_BUS.register(GuiEditor.get());
             MinecraftForge.EVENT_BUS.register(GunEditor.get());
@@ -89,6 +92,8 @@ public class ClientHandler
         registerColors();
         registerModelOverrides();
         registerScreenFactories();
+
+        AnimationHandler.preloadAnimations();
     }
 
     private static void setupRenderLayers()
@@ -221,6 +226,7 @@ public class ClientHandler
             }*/
             else if(KeyBinds.KEY_INSPECT.isPressed())
             {
+                if(GunAnimationController.fromItem(mc.player.inventory.getCurrentItem().getItem()) != null) return;
                 PacketHandler.getPlayChannel().sendToServer(new MessageInspection());
             }
         }

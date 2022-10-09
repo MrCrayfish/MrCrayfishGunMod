@@ -40,7 +40,10 @@
   },
   "sounds": {
     "fire": "tac:item.fire_dp28",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.dp28_reload_norm",
+    "reloadEmpty": "tac:animation.dp28_reload_empty",
+    "draw": "tac:animation.dp28_draw",
+    "inspect": "tac:animation.dp28_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.pistol.silenced_fire"
   },

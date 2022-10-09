@@ -5,6 +5,9 @@ import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
 import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.render.animation.Ak47AnimationController;
+import com.tac.guns.client.render.animation.Type81AnimationController;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -44,12 +47,12 @@ public class type81_x_animation implements IOverrideModel {
             matrices.pop();
             return;
         }
-        Ak47AnimationController controller = Ak47AnimationController.getInstance();
+        Type81AnimationController controller = Type81AnimationController.getInstance();
         CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker(); // getCooldownTracker();
         float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks()); // getRenderPartialTicks()); // getCooldown(stack.getItem(), Minecraft.getInstance().getFrameTime());
         matrices.push();
         {
-            //controller.applySpecialModelTransform(SpecialModels.TYPE81_X.getModel(),Ak47AnimationController.INDEX_BODY,transformType,matrices);
+            controller.applySpecialModelTransform(SpecialModels.TYPE81_X.getModel(),Type81AnimationController.INDEX_BODY,transformType,matrices);
             if (Gun.getScope(stack) != null) {
                 RenderUtil.renderModel(SpecialModels.TYPE81_X_MOUNT.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
@@ -57,9 +60,17 @@ public class type81_x_animation implements IOverrideModel {
         }
         matrices.pop();
 
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.TYPE81_X.getModel(),Type81AnimationController.INDEX_MAGAZINE,transformType,matrices);
+            RenderUtil.renderModel(SpecialModels.TYPE81_X_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
         //Always push
         matrices.push();
         {
+            controller.applySpecialModelTransform(SpecialModels.TYPE81_X.getModel(),Type81AnimationController.INDEX_BOLT,transformType,matrices);
             //controller.applySpecialModelTransform(SpecialModels.AK47.getModel(), Ak47AnimationController.INDEX_BOLT, transformType, matrices);
 
             /*//We're getting the cooldown tracker for the item - items like the sword, ender pearl, and chorus fruit all have this too.
@@ -68,7 +79,7 @@ public class type81_x_animation implements IOverrideModel {
 
             // Math provided by Bomb787 on GitHub and Curseforge!!!
             //matrices.translate(0, 0, 0.190f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1));
-            if(Gun.hasAmmo(stack))
+            if(Gun.hasAmmo(stack) || controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_EMPTY))
             {
                 // Math provided by Bomb787 on GitHub and Curseforge!!!
                 matrices.translate(0, 0, 0.280f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
@@ -89,6 +100,8 @@ public class type81_x_animation implements IOverrideModel {
         }
         //Always pop
         matrices.pop();
+
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
 /*
         matrices.push();
         {
