@@ -7,11 +7,11 @@
       1
     ],
     "gripType": "tac:two_handed_mosin",
-    "recoilAngle": 1.475,
-    "recoilKick": 1.95,
+    "recoilAngle": 6.0,
+    "recoilKick": 4.75,
     "horizontalRecoilAngle": 0.125,
     "recoilAdsReduction": 0.40,
-    "weaponRecoilDuration": 0.875,
+    "weaponRecoilDuration": 0.675,
     "recoilDuration": 0.125,
     "cameraRecoilModifier": 2.0,
     "alwaysSpread": true,
@@ -41,7 +41,11 @@
   },
   "sounds": {
     "fire": "tac:item.ai_awp",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.awp_reload_norm",
+    "reloadEmpty": "tac:animation.awp_reload_empty",
+    "draw": "tac:animation.awp_draw",
+    "inspect": "tac:animation.awp_inspect",
+    "pullBolt": "tac:animation.awp_bolt",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.remington_700s"
   },

@@ -17,7 +17,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,8 +30,8 @@ public abstract class GunAnimationController {
         RELOAD_INTRO,
         RELOAD_LOOP,
         RELOAD_NORMAL_END,
-        RELOAD_EMPTY_END,
         PUMP,
+        PULL_BOLT,
         INSPECT,
         DRAW,
         STATIC,
@@ -177,6 +176,14 @@ public abstract class GunAnimationController {
             matrixStack.getLast().getMatrix().mul(animationTransition);
             Animations.popNode();
         }
+    }
+
+    public boolean isAnimationRunning(AnimationLabel label){
+        if(!isAnimationRunning()) return false;
+        if(previousAnimation == null) return false;
+        AnimationMeta meta = getAnimationFromLabel(label);
+        if(meta == null) return false;
+        return meta.equals(previousAnimation);
     }
 
     /**

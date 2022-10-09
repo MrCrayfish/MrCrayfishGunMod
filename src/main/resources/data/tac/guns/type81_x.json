@@ -33,7 +33,10 @@
   },
   "sounds": {
     "fire":  "tac:item.fire_ak47",
-    "reload":  "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.type81_reload_norm",
+    "reloadEmpty": "tac:animation.type81_reload_empty",
+    "draw": "tac:animation.type81_draw",
+    "inspect": "tac:animation.type81_inspect",
     "cock":  "tac:item.pistol.cock",
     "silencedFire":  "tac:item.fire_ak47s"
   },

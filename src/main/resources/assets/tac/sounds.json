@@ -415,5 +415,179 @@
       "sounds": [
          { "name": "tac:animation/mp7_reload_normal"}
       ]
+   },
+   "animation.type81_reload_norm": {
+      "subtitle": "animation.type81_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/type81_reload_norm"}
+      ]
+   },
+   "animation.type81_reload_empty": {
+      "subtitle": "animation.type81_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/type81_reload_empty"}
+      ]
+   },
+   "animation.type81_draw": {
+      "subtitle": "animation.type81_draw",
+      "sounds": [
+         { "name": "tac:animation/type81_draw"}
+      ]
+   },
+   "animation.type81_inspect": {
+      "subtitle": "animation.type81_inspect",
+      "sounds": [
+         { "name": "tac:animation/type81_inspect"}
+      ]
+   },
+   "animation.dp28_draw": {
+      "subtitle": "animation.dp28_draw",
+      "sounds": [
+         { "name": "tac:animation/dp28_draw"}
+      ]
+   },
+   "animation.dp28_inspect": {
+      "subtitle": "animation.dp28_inspect",
+      "sounds": [
+         { "name": "tac:animation/dp28_inspect"}
+      ]
+   },
+   "animation.dp28_reload_norm": {
+      "subtitle": "animation.dp28_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/dp28_reload_norm"}
+      ]
+   },
+   "animation.dp28_reload_empty": {
+      "subtitle": "animation.dp28_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/dp28_reload_empty"}
+      ]
+   },
+   "animation.aa12_draw": {
+      "subtitle": "animation.aa12_draw",
+      "sounds": [
+         { "name": "tac:animation/aa12_draw"}
+      ]
+   },
+   "animation.aa12_inspect": {
+      "subtitle": "animation.aa12_inspect",
+      "sounds": [
+         { "name": "tac:animation/aa12_inspect"}
+      ]
+   },
+   "animation.aa12_reload_norm": {
+      "subtitle": "animation.aa12_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/aa12_reload_norm"}
+      ]
+   },
+   "animation.aa12_reload_empty": {
+      "subtitle": "animation.aa12_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/aa12_reload_empty"}
+      ]
+   },
+   "animation.hk_mp5a5_reload_empty": {
+      "subtitle": "animation.hk_mp5a5_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/hk_mp5a5_reload_empty"}
+      ]
+   },
+   "animation.hk_mp5a5_reload_norm": {
+      "subtitle": "animation.hk_mp5a5_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/hk_mp5a5_reload_norm"}
+      ]
+   },
+   "animation.hk_mp5a5_inspect": {
+      "subtitle": "animation.hk_mp5a5_inspect",
+      "sounds": [
+         { "name": "tac:animation/hk_mp5a5_inspect"}
+      ]
+   },
+   "animation.hk_mp5a5_draw": {
+      "subtitle": "animation.hk_mp5a5_draw",
+      "sounds": [
+         { "name": "tac:animation/hk_mp5a5_draw"}
+      ]
+   },
+   "animation.awp_reload_empty": {
+      "subtitle": "animation.awp_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/awp_reload_empty"}
+      ]
+   },
+   "animation.awp_reload_norm": {
+      "subtitle": "animation.awp_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/awp_reload_norm"}
+      ]
+   },
+   "animation.awp_inspect": {
+      "subtitle": "animation.awp_inspect",
+      "sounds": [
+         { "name": "tac:animation/awp_inspect"}
+      ]
+   },
+   "animation.awp_draw": {
+      "subtitle": "animation.awp_draw",
+      "sounds": [
+         { "name": "tac:animation/awp_draw"}
+      ]
+   },
+   "animation.awp_bolt": {
+      "subtitle": "animation.awp_bolt",
+      "sounds": [
+         { "name": "tac:animation/awp_bolt"}
+      ]
+   },
+   "animation.ak47_reload_empty": {
+      "subtitle": "animation.ak47_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/ak47_reload_empty"}
+      ]
+   },
+   "animation.ak47_reload_norm": {
+      "subtitle": "animation.ak47_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/ak47_reload_norm"}
+      ]
+   },
+   "animation.ak47_inspect": {
+      "subtitle": "animation.ak47_inspect",
+      "sounds": [
+         { "name": "tac:animation/ak47_inspect"}
+      ]
+   },
+   "animation.ak47_draw": {
+      "subtitle": "animation.ak47_draw",
+      "sounds": [
+         { "name": "tac:animation/ak47_draw"}
+      ]
+   },
+   "animation.m60_reload_empty": {
+      "subtitle": "animation.m60_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/m60_reload_empty"}
+      ]
+   },
+   "animation.m60_reload_norm": {
+      "subtitle": "animation.m60_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/m60_reload_norm"}
+      ]
+   },
+   "animation.m60_inspect": {
+      "subtitle": "animation.m60_inspect",
+      "sounds": [
+         { "name": "tac:animation/m60_inspect"}
+      ]
+   },
+   "animation.m60_draw": {
+      "subtitle": "animation.m60_draw",
+      "sounds": [
+         { "name": "tac:animation/m60_draw"}
+      ]
    }
 }

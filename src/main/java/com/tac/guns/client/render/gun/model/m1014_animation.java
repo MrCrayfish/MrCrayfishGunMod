@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
 import com.tac.guns.client.handler.AimingHandler;
+import com.tac.guns.client.render.animation.M1014AnimationController;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -48,32 +49,45 @@ public class m1014_animation implements IOverrideModel {
             return;
         }
 
-        RenderUtil.renderModel(SpecialModels.M1014.getModel(), stack, matrices, renderBuffer, light, overlay);
+        M1014AnimationController controller = M1014AnimationController.getInstance();
         matrices.push();
-
-        CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
-
-        if(Gun.hasAmmo(stack))
         {
-            RenderUtil.renderModel(SpecialModels.M1014_SHELL.getModel(), stack, matrices, renderBuffer, light, overlay);
-            // Math provided by Bomb787 on GitHub and Curseforge!!!
-            matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+            controller.applySpecialModelTransform(SpecialModels.M1014.getModel(), M1014AnimationController.INDEX_BODY, transformType, matrices);
+            RenderUtil.renderModel(SpecialModels.M1014.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
-        else if(!Gun.hasAmmo(stack))
-        {
-            if(cooldownOg > 0.5){
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-            }
-            else
-            {
-                matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
-            }
-        }
-        matrices.translate(0, 0, 0.025f);
-        RenderUtil.renderModel(SpecialModels.M1014_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay); // BOLT
         matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M1014.getModel(), M1014AnimationController.INDEX_BOLT, transformType, matrices);
+            CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
+            float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
+
+            if (Gun.hasAmmo(stack)|| controller.isAnimationRunning()) {
+                RenderUtil.renderModel(SpecialModels.M1014_SHELL.getModel(), stack, matrices, renderBuffer, light, overlay);
+                // Math provided by Bomb787 on GitHub and Curseforge!!!
+                matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+            } else if (!Gun.hasAmmo(stack)) {
+                if (cooldownOg > 0.5) {
+                    // Math provided by Bomb787 on GitHub and Curseforge!!!
+                    matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                } else {
+                    matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                }
+            }
+            matrices.translate(0, 0, 0.025f);
+            RenderUtil.renderModel(SpecialModels.M1014_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay); // BOLT
+        }
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M1014.getModel(), M1014AnimationController.INDEX_BULLET, transformType, matrices);
+            RenderUtil.renderModel(SpecialModels.M1014_BULLET.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
+        PlayerHandAnimation.render(controller, transformType, matrices, renderBuffer, light);
     }
     //Same method from GrenadeLauncherModel, to make a smooth rotation of the chamber.
     private double easeInOutBack(double x) {

@@ -735,6 +735,22 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         @Nullable
         @TGExclude
+        private ResourceLocation pullBolt;
+        @Optional
+        @Nullable
+        @TGExclude
+        private ResourceLocation reloadIntro;
+        @Optional
+        @Nullable
+        @TGExclude
+        private ResourceLocation reloadLoop;
+        @Optional
+        @Nullable
+        @TGExclude
+        private ResourceLocation reloadEnd;
+        @Optional
+        @Nullable
+        @TGExclude
         private ResourceLocation draw;
         @Optional
         @Nullable
@@ -789,6 +805,22 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 tag.putString("Pump", this.pump.toString());
             }
+            if(reloadIntro != null)
+            {
+                tag.putString("ReloadIntro", this.reloadIntro.toString());
+            }
+            if(reloadLoop != null)
+            {
+                tag.putString("ReloadLoop", this.reloadLoop.toString());
+            }
+            if(reloadEnd != null)
+            {
+                tag.putString("ReloadEnd", this.reloadEnd.toString());
+            }
+            if(pullBolt != null)
+            {
+                tag.putString("PullBolt", this.pullBolt.toString());
+            }
             return tag;
         }
 
@@ -827,6 +859,18 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             if(tag.contains("Pump", Constants.NBT.TAG_STRING)){
                 this.pump = this.createSound(tag, "Pump");
             }
+            if(tag.contains("ReloadIntro", Constants.NBT.TAG_STRING)){
+                this.reloadIntro = this.createSound(tag, "ReloadIntro");
+            }
+            if(tag.contains("ReloadLoop", Constants.NBT.TAG_STRING)){
+                this.reloadLoop = this.createSound(tag, "ReloadLoop");
+            }
+            if(tag.contains("ReloadEnd", Constants.NBT.TAG_STRING)){
+                this.reloadEnd = this.createSound(tag, "ReloadEnd");
+            }
+            if(tag.contains("PullBolt", Constants.NBT.TAG_STRING)){
+                this.pullBolt = this.createSound(tag, "PullBolt");
+            }
         }
 
         public Sounds copy()
@@ -841,6 +885,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             sounds.inspect = this.inspect;
             sounds.reloadNormal = this.reloadNormal;
             sounds.pump = this.pump;
+            sounds.reloadIntro = this.reloadIntro;
+            sounds.reloadLoop = this.reloadLoop;
+            sounds.reloadEnd = this.reloadEnd;
+            sounds.pullBolt = this.pullBolt;
             return sounds;
         }
 
@@ -903,7 +951,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          * @return The registry id of the sound event when inspecting.
          */
         @Nullable
-        public ResourceLocation getInspect() { return this.draw; }
+        public ResourceLocation getInspect() { return this.inspect; }
 
         /**
          * @return The registry id of the sound event when inspecting.
@@ -913,6 +961,18 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
         @Nullable
         public ResourceLocation getPump() { return this.pump; }
+
+        @Nullable
+        public ResourceLocation getReloadIntro() { return this.reloadIntro; }
+
+        @Nullable
+        public ResourceLocation getReloadLoop() { return this.reloadLoop; }
+
+        @Nullable
+        public ResourceLocation getReloadEnd() { return this.reloadEnd; }
+
+        @Nullable
+        public ResourceLocation getPullBolt() { return this.pullBolt; }
     }
 
     public static class Display implements INBTSerializable<CompoundNBT>

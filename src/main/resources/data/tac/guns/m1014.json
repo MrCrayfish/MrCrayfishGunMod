@@ -23,7 +23,7 @@
     "maxAmmo": 7,
     "reloadAmount": 1,
     "preReloadPauseTicks": 11,
-    "interReloadPauseTicks": 15,
+    "interReloadPauseTicks": 20,
     "openBolt": false
   },
   "projectile": {

@@ -75,6 +75,7 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDayMemory part of the Timeless dev team, amazing work!!!!!!!!!!!
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
         MinecraftForge.EVENT_BUS.register(AnimationHandler.INSTANCE); //Mainly controls when the animation should play.
+        MinecraftForge.EVENT_BUS.register(ArmorRenderingHandler.INSTANCE); //Test
         if(Config.COMMON.development.enableTDev.get()) {
             MinecraftForge.EVENT_BUS.register(GuiEditor.get());
             MinecraftForge.EVENT_BUS.register(GunEditor.get());
@@ -91,6 +92,8 @@ public class ClientHandler
         registerColors();
         registerModelOverrides();
         registerScreenFactories();
+
+        AnimationHandler.preloadAnimations();
     }
 
     private static void setupRenderLayers()

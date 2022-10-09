@@ -5,6 +5,8 @@ import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
 import com.tac.guns.client.handler.ReloadHandler;
 import com.tac.guns.client.render.animation.Ak47AnimationController;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -120,6 +122,24 @@ public class ak47_animation implements IOverrideModel {
             }
         }
         matrices.pop();
+
+        if(controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_EMPTY)){
+            matrices.push();
+            {
+                controller.applySpecialModelTransform(SpecialModels.AK47.getModel(), Ak47AnimationController.INDEX_EXTRA_MAG, transformType, matrices);
+                if(EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0)
+                {
+                    RenderUtil.renderModel(SpecialModels.AK47_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+                }
+                else
+                {
+                    RenderUtil.renderModel(SpecialModels.AK47_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+                }
+            }
+            matrices.pop();
+        }
+
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
 
      

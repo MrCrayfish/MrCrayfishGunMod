@@ -267,6 +267,10 @@ public class ReloadTracker
         }
     }
 
+    public static boolean isPlayerReload(PlayerEntity player){
+        return RELOAD_TRACKER_MAP.containsKey(player);
+    }
+
     @SubscribeEvent
     public static void onPlayerTick(PlayerEvent.PlayerLoggedOutEvent event)
     {

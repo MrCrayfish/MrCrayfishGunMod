@@ -7,10 +7,12 @@ import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
+import com.tac.guns.util.math.SecondOrderDynamics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -49,6 +51,10 @@ public class RecoilHandler
     public float horizontalCameraRecoil; // READONLY
 
     private float horizontalProgressCameraRecoil;
+
+    private int timer;
+
+    private final int recoilDuration = 10; //0.5s
 
     private RecoilHandler() {}
 
@@ -92,6 +98,8 @@ public class RecoilHandler
         horizontalRecoilModifier *= horizontalRandomAmount;
         horizontalCameraRecoil = (modifiedGun.getGeneral().getHorizontalRecoilAngle() * horizontalRecoilModifier * 0.75F);
         horizontalProgressCameraRecoil = 0F;
+
+        timer = recoilDuration;
     }
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
@@ -151,6 +159,7 @@ public class RecoilHandler
             this.horizontalProgressCameraRecoil = 0;
         }
 
+        if(timer > 0) timer--;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -165,8 +174,9 @@ public class RecoilHandler
 
         GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-        CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldown = tracker.getCooldown(gunItem, Minecraft.getInstance().getRenderPartialTicks());
+        //CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
+        //float cooldown = tracker.getCooldown(gunItem, Minecraft.getInstance().getRenderPartialTicks());
+        float cooldown = (float) timer / recoilDuration;
         //cooldown = cooldown >= modifiedGun.getGeneral().getRecoilDurationOffset() ? (cooldown - modifiedGun.getGeneral().getRecoilDurationOffset()) / (1.0F - modifiedGun.getGeneral().getRecoilDurationOffset()) : 0.0F;
 
         //float durationRandom = this.random.nextFloat()*(1.22f - 0.75f) + 0.75f;  * durationRandom
