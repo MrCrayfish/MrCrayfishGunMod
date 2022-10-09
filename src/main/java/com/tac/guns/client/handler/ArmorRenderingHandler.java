@@ -24,7 +24,7 @@ public enum ArmorRenderingHandler {
     private static final RenderType type = RenderType.makeType(Reference.MOD_ID + ":muzzle_flash", DefaultVertexFormats.ENTITY, GL_QUADS, 1024, true, false, RenderType.State.getBuilder().texture(new RenderState.TextureState(texture, false, false)).build(true));
     @SubscribeEvent
     public void onPlayerRender(RenderPlayerEvent.Pre event){
-        Minecraft.getInstance().player.sendChatMessage("test");
-        model.render(event.getMatrixStack(),event.getBuffers().getBuffer(type),event.getLight(),event.getLight(),1f,1f,1f,1f);
+        //Minecraft.getInstance().player.sendChatMessage("test");
+        //model.render(event.getMatrixStack(),event.getBuffers().getBuffer(type),event.getLight(),event.getLight(),1f,1f,1f,1f);
     }
 }
