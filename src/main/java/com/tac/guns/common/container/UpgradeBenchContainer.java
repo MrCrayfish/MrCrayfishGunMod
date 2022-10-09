@@ -44,6 +44,20 @@ public class UpgradeBenchContainer extends Container
                 return 1;
             }
         });
+        this.addSlot(new Slot(workbench, 1, 17600, 50000)
+        {
+            @Override
+            public boolean isItemValid(ItemStack stack)
+            {
+                return true;
+            }
+
+            @Override
+            public int getSlotStackLimit()
+            {
+                return 10;
+            }
+        });
 
         for(int y = 0; y < 3; y++)
         {

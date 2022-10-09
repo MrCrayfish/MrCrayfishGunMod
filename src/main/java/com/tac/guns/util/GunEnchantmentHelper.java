@@ -1,5 +1,6 @@
 package com.tac.guns.util;
 
+import com.tac.guns.client.screen.UpgradeBenchScreen;
 import com.tac.guns.common.Gun;
 import com.tac.guns.init.ModEnchantments;
 import com.tac.guns.item.GunItem;
@@ -16,25 +17,25 @@ import java.util.HashMap;
  */
 public class GunEnchantmentHelper
 {
-    // UNSAFE... REMOVING DEFAULTS MAY CAUSE PROBLEMS, CURRENT SOLUTION FOR ADDONS TO INCORPORATE THEIR OWN UPGRADE TABLE ENTRIES
-    public static ArrayList<Enchantment> enchs = new ArrayList<Enchantment>()
+    // UNSAFE, ME NO LIKEY - CLUMSYALIEN
+    public static HashMap<String, UpgradeBenchScreen.RequirementItem> upgradeableEnchs =
+        new HashMap<String, UpgradeBenchScreen.RequirementItem>()
     {{
-        add(ModEnchantments.ACCELERATOR.get());
-        add(ModEnchantments.OVER_CAPACITY.get());
-        add(ModEnchantments.PUNCTURING.get());
-        add(ModEnchantments.RIFLING.get());
-        add(ModEnchantments.BUFFERED.get());
-        add(ModEnchantments.LIGHTWEIGHT.get());
-    }};
-
-    public static HashMap<Enchantment, UTR[]> upgradeableEnchs = new HashMap<Enchantment, UTR[]>()
-    {{
-        put(ModEnchantments.ACCELERATOR.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d)});
-        put(ModEnchantments.OVER_CAPACITY.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
-        put(ModEnchantments.PUNCTURING.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
-        put(ModEnchantments.RIFLING.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
-        put(ModEnchantments.BUFFERED.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
-        put(ModEnchantments.LIGHTWEIGHT.get(), new UTR[]{ new UTR(1, 0.25d), new UTR(2, 0.5d), new UTR(3, 1d) });
+        put("Over Pressured",
+                new UpgradeBenchScreen.RequirementItem(new int[]{2,3,3}, new int[]{5,7,10},
+                        ModEnchantments.ACCELERATOR.get()));
+        put("Over Capacity",
+                new UpgradeBenchScreen.RequirementItem(new int[]{1,2,3}, new int[]{1,3,6},
+                        ModEnchantments.OVER_CAPACITY.get()));
+        put("Advanced Rifling",
+                new UpgradeBenchScreen.RequirementItem(new int[]{1,2,3}, new int[]{4,6,8},
+                        ModEnchantments.RIFLING.get()));
+        put("Buffered",
+                new UpgradeBenchScreen.RequirementItem(new int[]{1,2,2,3,3}, new int[]{1,5,8,11,15},
+                        ModEnchantments.BUFFERED.get()));
+        put("Puncturing",
+                new UpgradeBenchScreen.RequirementItem(new int[]{1,2,3}, new int[]{5,7,10},
+                        ModEnchantments.PUNCTURING.get()));
     }};
 
     public static int getReloadInterval(ItemStack weapon)

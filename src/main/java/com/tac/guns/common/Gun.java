@@ -94,7 +94,14 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private float recoilDuration = 0.25F;
         @Optional
-        private float weaponRecoilDuration = 0.5F; // Recoil up until the weapon cooldown is under this value (0.1 == 10% recoil time left, use to help scale with high firerate weapons and their weapon recoil feel)
+        private float weaponRecoilOffset = 0.5F; // Recoil up until the weapon cooldown is under this value (0.1 == 10% recoil time left, use to help scale with high firerate weapons and their weapon recoil feel)
+        @Optional
+        private float cameraRecoilDuration = 1F; // Percentage
+
+        // this value (0.1 == 10% recoil time left, use to help scale with high firerate weapons and their weapon recoil feel)
+        @Optional
+        private float visualRecoilPercent = 0F; // Percentage
+        // this value (0.1 == 10% recoil time left, use to help scale with high firerate weapons and their weapon recoil feel)
         @Optional
         private float recoilAdsReduction = 0.2F;
         @Optional
@@ -110,6 +117,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private GripType gripType = GripType.ONE_HANDED;
         @Optional
         private float levelReq = 300.0F;
+        @Optional
+        private int upgradeBenchMaxUses = 3;
         @Override
         public CompoundNBT serializeNBT()
         {
@@ -126,13 +135,16 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putFloat("HorizontalRecoilAngle", this.horizontalRecoilAngle); // x2 for quick camera recoil reduction balancing
             tag.putFloat("CameraRecoilModifier", this.cameraRecoilModifier);
             tag.putFloat("RecoilDurationOffset", this.recoilDuration);
-            tag.putFloat("WeaponRecoilDuration", this.weaponRecoilDuration);
+            tag.putFloat("weaponRecoilOffset", this.weaponRecoilOffset);
+            tag.putFloat("CameraRecoilDuration", this.cameraRecoilDuration);
+            tag.putFloat("VisualRecoilDuration", this.visualRecoilPercent);
             tag.putFloat("RecoilAdsReduction", this.recoilAdsReduction);
             tag.putInt("ProjectileAmount", this.projectileAmount);
             tag.putBoolean("AlwaysSpread", this.alwaysSpread);
             tag.putFloat("Spread", this.spread);
             tag.putFloat("WeightKilo", this.weightKilo);
             tag.putFloat("LevelReq", this.levelReq);
+            tag.putInt("UpgradeBenchMaxUses", this.upgradeBenchMaxUses);
             return tag;
         }
 
@@ -187,9 +199,17 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.recoilDuration = tag.getFloat("RecoilDurationOffset");
             }
-            if(tag.contains("WeaponRecoilDuration", Constants.NBT.TAG_ANY_NUMERIC))
+            if(tag.contains("weaponRecoilOffset", Constants.NBT.TAG_ANY_NUMERIC))
             {
-                this.weaponRecoilDuration = tag.getFloat("WeaponRecoilDuration");
+                this.weaponRecoilOffset = tag.getFloat("weaponRecoilOffset");
+            }
+            if(tag.contains("CameraRecoilDuration", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.cameraRecoilDuration = tag.getFloat("CameraRecoilDuration");
+            }
+            if(tag.contains("VisualRecoilDuration", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.visualRecoilPercent = tag.getFloat("VisualRecoilDuration");
             }
             if(tag.contains("RecoilAdsReduction", Constants.NBT.TAG_ANY_NUMERIC))
             {
@@ -198,6 +218,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             if(tag.contains("ProjectileAmount", Constants.NBT.TAG_ANY_NUMERIC))
             {
                 this.projectileAmount = tag.getInt("ProjectileAmount");
+            }
+            if(tag.contains("UpgradeBenchMaxUses", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.upgradeBenchMaxUses = tag.getInt("UpgradeBenchMaxUses");
             }
             if(tag.contains("AlwaysSpread", Constants.NBT.TAG_ANY_NUMERIC))
             {
@@ -235,13 +259,16 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.horizontalRecoilAngle = this.horizontalRecoilAngle;
             general.cameraRecoilModifier = this.cameraRecoilModifier;
             general.recoilDuration = this.recoilDuration;
-            general.weaponRecoilDuration = this.weaponRecoilDuration;
+            general.weaponRecoilOffset = this.weaponRecoilOffset;
+            general.cameraRecoilDuration = this.cameraRecoilDuration;
+            general.visualRecoilPercent = this.visualRecoilPercent;
             general.recoilAdsReduction = this.recoilAdsReduction;
             general.projectileAmount = this.projectileAmount;
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
             general.weightKilo = this.weightKilo;
             general.levelReq = this.levelReq;
+            general.upgradeBenchMaxUses = this.upgradeBenchMaxUses;
             return general;
         }
         /**
@@ -264,6 +291,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public int getRate()
         {
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (int) (this.rate + GunEditor.get().getRateMod()) : (int)this.rate;
+        }
+        /**
+         * @return The fire rate of this weapon in ticks
+         */
+        public int getUpgradeBenchMaxUses()
+        {
+            return this.upgradeBenchMaxUses;
         }
         /**
          * @return The fire rate of this weapon in ticks
@@ -319,11 +353,21 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         /**
          * @return Recoil (the weapon) up until the weapon cooldown is under this value (0.1 == 10% recoil time left, use to help scale with high firerate weapons and their weapon recoil feel)
          */
-        public float getWeaponRecoilDuration() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.weaponRecoilDuration + GunEditor.get().getWeaponRecoilDurationMod() : this.weaponRecoilDuration;}
+        public float getWeaponRecoilOffset() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.weaponRecoilOffset + GunEditor.get().getWeaponRecoilDurationMod() : this.weaponRecoilOffset;}
+        /**
+         * @return Recoil (the weapon) up until the weapon cooldown is under this value (0.1 == 10% recoil time left, use to help scale with high firerate weapons and their weapon recoil feel)
+         */
+        public float getCameraRecoilDuration() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.cameraRecoilDuration + GunEditor.get().getWeaponRecoilDurationMod() : this.cameraRecoilDuration;}
+
+        /**
+         * @return Recoil (the weapon) up until the weapon cooldown is under this value (0.1 == 10% recoil time left, use to help scale with high firerate weapons and their weapon recoil feel)
+         */
+        public float getVisualRecoilPercent() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.visualRecoilPercent : this.visualRecoilPercent;}
+
         /**
          * @return The amount of reduction applied when aiming down this weapon's sight
          */
-        public float getRecoilAdsReduction() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.recoilAdsReduction + GunEditor.get().getRecoilAdsReductionMod() : this.recoilAdsReduction;}
+        public float getRecoilAdsReduction() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (this.recoilAdsReduction + GunEditor.get().getRecoilAdsReductionMod())*2 : (this.recoilAdsReduction)*2;}
         /**
          * @return The amount of projectiles this weapon fires
          */
@@ -344,7 +388,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public float getSpread()
         {
-            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.spread + GunEditor.get().getSpreadMod() : this.spread;
+            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (this.spread + GunEditor.get().getSpreadMod())/2f : this.spread/2f;
         }
         /**
          * @return The default Kilogram weight of the weapon

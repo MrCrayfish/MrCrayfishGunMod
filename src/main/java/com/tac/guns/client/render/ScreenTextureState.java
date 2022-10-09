@@ -49,7 +49,8 @@ public class ScreenTextureState extends RenderState.TexturingState
             RenderSystem.disableDepthTest();
             RenderSystem.disableBlend();
         });
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onRenderWorldLast);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST,
+                this::onRenderWorldLast);
     }
 
     private int getTextureId()
@@ -59,8 +60,18 @@ public class ScreenTextureState extends RenderState.TexturingState
             this.textureId = TextureUtil.generateTextureId();
             // Texture params only need to be set once, not once per frame
             RenderSystem.bindTexture(this.textureId);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 9729);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 9729);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+            // Can I make optifine Shaders compatible?
+            /*int wrap = true ? 33071 : 10497;
+            glTexParameteri(3553, 10242, wrap);
+            glTexParameteri(3553, 10243, wrap);
+            glTexParameteri(3553, 10240, 9728);
+            glTexParameteri(3553, 10241, 9728);
+*/
         }
         return this.textureId;
     }

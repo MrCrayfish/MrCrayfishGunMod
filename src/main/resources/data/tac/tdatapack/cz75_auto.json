@@ -11,7 +11,7 @@
     "horizontalRecoilAngle": 2.52,
     "recoilKick": 1.75,
     "recoilAdsReduction": 0.185,
-    "weaponRecoilDuration": 0.9815,
+    "weaponRecoilOffset": 0.9815,
     "recoilDuration": 0.15,
     "cameraRecoilModifier": 2.15,
     "alwaysSpread": true,

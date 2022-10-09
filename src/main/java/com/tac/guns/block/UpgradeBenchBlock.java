@@ -107,17 +107,22 @@ public class UpgradeBenchBlock extends RotatedObjectBlock
     }
 
     @Override
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.hasTileEntity() && state.getBlock() != newState.getBlock())
+        {
+            spawnAsEntity(worldIn, pos,
+                    ((UpgradeBenchTileEntity)worldIn.getTileEntity(pos)).getInventory().get(0));
+            spawnAsEntity(worldIn, pos,
+                    ((UpgradeBenchTileEntity)worldIn.getTileEntity(pos)).getInventory().get(1));
+            worldIn.removeTileEntity(pos);
+        }
+    }
+
+    @Override
     public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
-
-    /*@Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand)
-    {
-        super.tick(state, worldIn, pos, rand);
-        ItemFrameRenderer
-    }*/
 
     @Nullable
     @Override

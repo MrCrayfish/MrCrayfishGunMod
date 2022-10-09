@@ -1,5 +1,8 @@
 package com.tac.guns.network.message;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.tac.guns.client.screen.UpgradeBenchScreen;
 import com.tac.guns.common.network.ServerPlayHandler;
 import com.tac.guns.init.ModEnchantments;
 import net.minecraft.enchantment.Enchantment;
@@ -8,7 +11,10 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
+import org.apache.commons.lang3.SerializationUtils;
 
+import java.beans.XMLEncoder;
+import java.io.*;
 import java.util.function.Supplier;
 
 /**
@@ -16,37 +22,31 @@ import java.util.function.Supplier;
  */
 public class MessageUpgradeBenchApply implements IMessage
 {
-    private ResourceLocation id;
-    private BlockPos pos;
-    private int ench;
-
-    private int enchIndx;
+    // Ew public
+   public BlockPos pos;
+   public String reqKey;
     public MessageUpgradeBenchApply() {}
 
-    public MessageUpgradeBenchApply(ResourceLocation id, BlockPos pos, int ench, int enchIndx)
+    public MessageUpgradeBenchApply(BlockPos pos, String reqKey)
     {
-        this.id = id;
         this.pos = pos;
-        this.ench = ench;
-        this.enchIndx = enchIndx;
+        this.reqKey = reqKey;
     }
 
     @Override
     public void encode(PacketBuffer buffer)
     {
-        buffer.writeResourceLocation(this.id);
         buffer.writeBlockPos(this.pos);
-        buffer.writeInt(this.ench);
-        buffer.writeInt(this.enchIndx);
+        buffer.writeString(this.reqKey);
+
+
     }
 
     @Override
     public void decode(PacketBuffer buffer)
     {
-        this.id = buffer.readResourceLocation();
         this.pos = buffer.readBlockPos();
-        this.ench = buffer.readInt();
-        this.enchIndx = buffer.readInt();
+        this.reqKey = buffer.readString();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class MessageUpgradeBenchApply implements IMessage
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                ServerPlayHandler.handleUpgradeBenchApply(player, this.id, this.pos, this.ench, this.enchIndx);
+                ServerPlayHandler.handleUpgradeBenchApply(this, player);
             }
         });
         supplier.get().setPacketHandled(true);

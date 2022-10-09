@@ -3305,7 +3305,8 @@
 			"scale": [0.6, 0.6, 0.6]
 		},
 		"firstperson_righthand": {
-			"translation": [-4, 5.75, -4.5]
+			"rotation": [0, 0, 5],
+			"translation": [-6.75, 6.25, -3.75]
 		},
 		"firstperson_lefthand": {
 			"translation": [-4, 5.75, -4.5]

@@ -1,0 +1,4 @@
+# Made in Blockbench 4.3.1
+newmtl m_2
+map_Kd tac:textures/items/bulletproof_vest_v1.png 
+newmtl none

@@ -11,7 +11,7 @@
     "recoilKick": 1.25,
     "recoilAdsReduction": 0.175,
     "cameraRecoilModifier": 0.35,
-    "weaponRecoilDuration": 0.975,
+    "weaponRecoilOffset": 0.975,
     "recoilDuration": 0.15,
     "alwaysSpread": true,
     "spread": 10.75,

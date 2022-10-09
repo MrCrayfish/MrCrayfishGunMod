@@ -163,4 +163,7 @@ public class ModItems
 
     /* Misc */
     public static final RegistryObject<Item> AMMO_PACK = REGISTER.register("ammopack", () -> new AmmoPackItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+
+    public static final RegistryObject<Item> MODULE = REGISTER.register("module_item",
+            () -> new Item(new Item.Properties().maxStackSize(3).group(GunMod.GROUP)));
 }

@@ -11,12 +11,17 @@ import com.tac.guns.Reference;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.event.LevelUpEvent;
+import com.tac.guns.init.ModSounds;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.TransitionalTypes.MBPGunItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.Sound;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.KeybindTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -42,13 +47,12 @@ public class LevelingEvent {
         (In short this serves as a temporary test bed to keep development on new functions on course)
     */
 
-    @SubscribeEvent
-    public void onPartialLevel(LevelUpEvent.Pre event)
+    /*@SubscribeEvent
+    public void onPartialLevel(LevelUpEvent.Post event)
     {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null)
-            return;
-        event.getPlayer().sendStatusMessage(new TranslationTextComponent("info." + Reference.MOD_ID + ".gun_waterlock"), true);
-    }
+        PlayerEntity player = event.getPlayer();
+        event.getPlayer().getEntityWorld().playSound(player, player.getPosition(), ModSounds.M1_PING.get()*//*.GARAND_PING.get()*//*, SoundCategory.MASTER, 3.0F, 1.0F);
+        //event.getPlayer().sendStatusMessage(new TranslationTextComponent("LEVEL UP!"), true);
+    }*/
 
 }

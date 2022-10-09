@@ -9802,7 +9802,8 @@
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"translation": [-4, 3, -6.5]
+			"rotation": [0, 0, 5],
+			"translation": [-6, 3.25, -6.25]
 		},
 		"firstperson_lefthand": {
 			"translation": [-4, 3, -6.5]
@@ -10048,7 +10049,7 @@
 			"children": [406, 407, 408, 409, 410, 411]
 		},
 		{
-			"name": "(Gun barrel）",
+			"name": "(Gun barrelï¼‰",
 			"origin": [8, 8, 8],
 			"color": 3,
 			"nbt": "{}",

@@ -533,22 +533,19 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void updateWeaponLevels(float damage)
     {
         ItemStack gunStack = this.shooter.getHeldItemMainhand();
-        if(gunStack.getTag().get("lifeTimeDmg") != null)
+        if(gunStack.getTag().get("levelDmg") != null)
         {
-            float toUpd = gunStack.getTag().getFloat("lifeTimeDmg") + damage;
-            gunStack.getTag().remove("lifeTimeDmg");
-            gunStack.getTag().putFloat("lifeTimeDmg", toUpd);
+            gunStack.getTag().putFloat("levelDmg", gunStack.getTag().getFloat("levelDmg") + damage);
         }
         if(gunStack.getTag().get("level") != null)
         {
-            MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Pre((ServerPlayerEntity) this.shooter, gunStack));
             TimelessGunItem gunItem = (TimelessGunItem) gunStack.getItem();
-            if(gunStack.getTag().getFloat("lifeTimeDmg") > (gunItem.getGun().getGeneral().getLevelReq()*((gunStack.getTag().getInt("level"))*3.0d)) ) {
-                int toUpd = gunStack.getTag().getInt("level") + 1;
-                gunStack.getTag().remove("level");
-                gunStack.getTag().putInt("level", toUpd);
+            if(gunStack.getTag().getFloat("levelDmg") > (gunItem.getGun().getGeneral().getLevelReq()*((gunStack.getTag().getInt("level")*3.0d))) ) {
+
+                gunStack.getTag().putFloat("levelDmg",0f);
+                gunStack.getTag().putInt("level", gunStack.getTag().getInt("level") + 1);
+                MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post((PlayerEntity) this.shooter, gunStack));
             }
-            MinecraftForge.EVENT_BUS.post(new LevelUpEvent.Post((ServerPlayerEntity) this.shooter, gunStack));
         }
     }
 
@@ -589,30 +586,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.life -= 1;
     }
 
-    /*private static boolean deleteBitOnHit(BlockPos blockPos, BlockState blockState, double x, double y, double z)//(IParticleData data, double x, double y, double z, Random rand, double velocityMultiplier)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        //IChiselsAndBitsAPI.getInstance()
-        //ChiselAdaptingWorldMutator chiselAdaptingWorldMutator =
-        float bitSize = ChiselsAndBitsAPI.getInstance().getStateEntrySize().getSizePerBit();
-        ChiselsAndBitsAPI.getInstance().getMutatorFactory().in(mc.world, blockPos).overrideInAreaTarget(Blocks.AIR.getDefaultState(), new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z)));
-
-        //ChiselsAndBitsAPI.getInstance().getMutatorFactory().in(mc.world, blockPos).clearInBlockTarget(BlockPos.ZERO, new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z)));//Math.abs(x),Math.abs(y),Math.abs(z) //clearInBlockTarget(BlockPos.ZERO, new Vector3d(Math.abs(x)/bitSize,Math.abs(y)/bitSize,Math.abs(z)/bitSize));
-
-        *//*ChiselsAndBitsAPI.getInstance().getMutatorFactory().covering(, blockPos).overrideInAreaTarget(Blocks.AIR.getDefaultState(), new Vector3d(0,0,0));*//*
-        //chiselAdaptingWorldMutator.clearInAreaTarget(new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z)));//(BlockPos.ZERO, new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z)));//setInBlockTarget(Blocks.AIR.getDefaultState(), BlockPos.ZERO, new Vector3d(Math.abs(x),Math.abs(y),Math.abs(z))); //clearInBlockTarget(blockPos, new Vector3d(Math.abs(x)/1000,Math.abs(y)/1000,Math.abs(z)/1000));// clearInBlockTarget(blockPos, new Vector3d(x,y,z));
-        return true;
-    }*/
-
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {
-        /*if(GunMod.cabLoaded)
-        {
-            double holeX = 0.005 * face.getXOffset();
-            double holeY = 0.005 * face.getYOffset();
-            double holeZ = 0.005 * face.getZOffset();
-            deleteBitOnHit(pos, state, holeX, holeY, holeZ);
-        }*/
         PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.world.getChunkAt(pos)), new MessageProjectileHitBlock(x, y, z, pos, face));
     }
 

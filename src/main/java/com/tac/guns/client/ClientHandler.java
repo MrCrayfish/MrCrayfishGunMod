@@ -16,7 +16,7 @@ import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.gun.model.*;
 import com.tac.guns.client.screen.*;
 import com.tac.guns.client.settings.GunOptions;
-import com.tac.guns.client.util.WorldItemRenderUtil;
+import com.tac.guns.client.util.UpgradeBenchRenderUtil;
 import com.tac.guns.init.*;
 import com.tac.guns.item.IColored;
 import com.tac.guns.network.PacketHandler;
@@ -83,7 +83,7 @@ public class ClientHandler
             MinecraftForge.EVENT_BUS.register(ObjectRenderEditor.get());
         }
 
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), WorldItemRenderUtil::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), UpgradeBenchRenderUtil::new);
 
         KeyBinds.register();
 

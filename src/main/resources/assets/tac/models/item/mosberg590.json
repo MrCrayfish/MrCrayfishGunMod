@@ -4880,7 +4880,8 @@
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"translation": [-4, 4.75, -11.75]
+			"rotation": [0, 0, 5],
+			"translation": [-5.5, 4.25, -10.5]
 		},
 		"firstperson_lefthand": {
 			"translation": [-4, 4.75, -11.75]
@@ -4905,18 +4906,24 @@
 			"name": "body",
 			"origin": [8.5, 11.03835, 15.80892],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
 		},
 		{
 			"name": "barrel",
 			"origin": [8, 8.6875, 13.5],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56]
 		},
 		{
 			"name": "magazine",
 			"origin": [7.26256, 6.9375, -4.258],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				57,
 				58,
@@ -4942,6 +4949,8 @@
 					"name": "group",
 					"origin": [0, 0, 0],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [77, 78]
 				},
 				79
@@ -4951,35 +4960,47 @@
 			"name": "slide",
 			"origin": [8.44887, 8.1471, 4.25],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148]
 		},
 		{
 			"name": "guard",
 			"origin": [0.5, 6.44662, 20.13823],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159]
 		},
 		{
 			"name": "trigger",
 			"origin": [8, 5.99611, 22.86014],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [160, 161, 162, 163, 164]
 		},
 		{
 			"name": "grip",
 			"origin": [8, 0.92689, 26.27301],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184]
 		},
 		{
 			"name": "rail",
 			"origin": [0, -5.375, 0],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "group",
 					"origin": [7.6294, 8.39813, 15.5625],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": []
 				},
 				185,
@@ -5025,11 +5046,15 @@
 			"name": "sight",
 			"origin": [8, 8, 8],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": []
 				},
 				222,
@@ -5045,6 +5070,8 @@
 					"name": "group",
 					"origin": [7.26072, 9.82307, 19.125],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						231,
 						232,
@@ -5054,6 +5081,8 @@
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [235, 236, 237, 238, 239, 240, 241, 242]
 						}
 					]
@@ -5064,11 +5093,15 @@
 			"name": "side_rail",
 			"origin": [0, -5.375, 0],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "group",
 					"origin": [7.6294, 8.39813, 15.5625],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": []
 				},
 				243,
@@ -5106,12 +5139,16 @@
 					"name": "group",
 					"origin": [8.1919, 7.89813, 19.5],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [274, 275, 276]
 				},
 				{
 					"name": "group",
 					"origin": [8.1919, 7.89813, 19.5],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [277, 278, 279]
 				},
 				280,
@@ -5119,6 +5156,8 @@
 					"name": "group",
 					"origin": [8.1919, 7.89813, 19.5],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [281, 282, 283]
 				},
 				284,
@@ -5126,18 +5165,24 @@
 					"name": "group",
 					"origin": [8.1919, 7.89813, 19.5],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [285, 286, 287]
 				},
 				{
 					"name": "group",
 					"origin": [8.1919, 7.89813, 19.5],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [288, 289, 290]
 				},
 				{
 					"name": "group",
 					"origin": [8.1919, 7.89813, 19.5],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [291, 292, 293]
 				},
 				294
@@ -5147,12 +5192,16 @@
 			"name": "bullet_belt",
 			"origin": [8, 8, 8],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				295,
 				{
 					"name": "snap",
 					"origin": [5.25, 8, 21.25],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344]
 				}
 			]
@@ -5161,16 +5210,22 @@
 			"name": "bulllets",
 			"origin": [8, 8, 8],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "10_gague",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 0, 0],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [345, 346]
 						}
 					]
@@ -5179,11 +5234,15 @@
 					"name": "10_gague",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 0, 0],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [347, 348]
 						}
 					]
@@ -5192,11 +5251,15 @@
 					"name": "10_gague",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 0, 0],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [349, 350]
 						}
 					]
@@ -5205,11 +5268,15 @@
 					"name": "10_gague",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 0, 0],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [351, 352]
 						}
 					]
@@ -5218,11 +5285,15 @@
 					"name": "10_gague",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 0, 0],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [353, 354]
 						}
 					]
@@ -5231,11 +5302,15 @@
 					"name": "10_gague",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 0, 0],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [355, 356]
 						}
 					]
@@ -5244,11 +5319,15 @@
 					"name": "10_gague",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 0, 0],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [357, 358]
 						}
 					]

@@ -2274,7 +2274,7 @@
 		},
 		"firstperson_righthand": {
 			"rotation": [0, 0, 5],
-			"translation": [-5, 5.25, -2],
+			"translation": [-6.75, 4.5, -0.5],
 			"scale": [0.5, 0.5, 0.5]
 		},
 		"firstperson_lefthand": {
@@ -2299,6 +2299,8 @@
 			"name": "slide",
 			"origin": [6.41789, 11.46063, 7],
 			"color": 4,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				0,
 				1,
@@ -2328,12 +2330,16 @@
 					"name": "sight",
 					"origin": [8.46823, 13.12507, 17.65625],
 					"color": 4,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [24, 25, 26, 27, 28, 29, 30]
 				},
 				{
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [31, 32, 33]
 				}
 			]
@@ -2342,17 +2348,23 @@
 			"name": "magazine",
 			"origin": [5.9311, 2.92691, 16.97987],
 			"color": 5,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [34, 35, 36, 37, 38, 39, 40, 41, 42, 43]
 		},
 		{
 			"name": "barrel",
 			"origin": [8, 8, 8],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [44, 45, 46, 47, 48, 49, 50, 51]
 				},
 				52
@@ -2362,6 +2374,8 @@
 			"name": "bottom",
 			"origin": [8, 7.78858, 14.73669],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				53,
 				54,
@@ -2467,12 +2481,16 @@
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [153, 154, 155, 156]
 				},
 				{
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [157, 158, 159, 160]
 				}
 			]
@@ -2481,12 +2499,16 @@
 			"name": "trigger",
 			"origin": [8.03992, 9.03306, 8.81403],
 			"color": 1,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [161, 162, 163, 164, 165, 166, 167]
 		},
 		{
 			"name": "parts",
 			"origin": [-1.48112, -3.95177, 11.6176],
 			"color": 6,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [168, 169, 170, 171]
 		}
 	]

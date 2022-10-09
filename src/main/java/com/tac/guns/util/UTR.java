@@ -1,5 +1,7 @@
 package com.tac.guns.util;
 
+// DEPRECATED ALREADY, WHY? CAUSE IM COOL. Joking, this system is design testing proved too
+// complex for a V1, may revist on later updates
 public class UTR
 {
     public int getWeaponLevel() {return this.weaponLevel;}
