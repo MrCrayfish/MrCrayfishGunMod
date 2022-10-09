@@ -4008,8 +4008,9 @@
 			"scale": [0.275, 0.275, 0.275]
 		},
 		"firstperson_righthand": {
-			"translation": [-0.5, 0, -11],
-			"scale": [0.9, 0.9, 0.9]
+			"rotation": [0, 0, 5],
+			"translation": [-6.5, 3.75, 0],
+			"scale": [0.5, 0.5, 0.5]
 		},
 		"firstperson_lefthand": {
 			"translation": [-3, 1.25, -7]
@@ -4033,11 +4034,15 @@
 			"name": "magazine",
 			"origin": [7.25, 3.84375, 12.5],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "group",
 					"origin": [7.25, 0.09375, 13.5],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": []
 				},
 				0,
@@ -4057,6 +4062,8 @@
 			"name": "grip",
 			"origin": [8, 3.29575, 10.26026],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				11,
 				12,
@@ -4076,12 +4083,16 @@
 					"name": "group",
 					"origin": [8, 5.75, 10.4375],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [25, 26, 27, 28]
 				},
 				{
 					"name": "group",
 					"origin": [8.25, -0.33075, 12.15454],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [29, 30, 31, 32, 33, 34, 35, 36]
 				}
 			]
@@ -4090,6 +4101,8 @@
 			"name": "slide 2",
 			"origin": [0, 0, 0],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				37,
 				38,
@@ -4236,6 +4249,8 @@
 					"name": "group",
 					"origin": [8, 9.75, -3.29687],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [178, 179, 180, 181, 182, 183, 184, 185]
 				},
 				186,
@@ -4259,6 +4274,8 @@
 			"name": "lower",
 			"origin": [8, 9.9375, 5.9375],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				201,
 				202,
@@ -4340,47 +4357,63 @@
 					"name": "barrel",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [277, 278, 279, 280, 281, 282, 283, 284, 285, 286]
 				},
 				{
 					"name": "rail",
 					"origin": [8, 7.77802, 14.29321],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [8.94204, 7.37498, 1.40625],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [287, 288, 289, 290, 291]
 						},
 						{
 							"name": "group",
 							"origin": [8.94204, 7.37498, 1.40625],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [292, 293, 294]
 						},
 						{
 							"name": "group",
 							"origin": [8.94204, 7.37498, 1.40625],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [295, 296, 297]
 						},
 						{
 							"name": "group",
 							"origin": [8.94204, 7.37498, 1.40625],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [298, 299, 300]
 						},
 						{
 							"name": "group",
 							"origin": [8.94204, 7.37498, 1.40625],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [301, 302, 303]
 						},
 						{
 							"name": "group",
 							"origin": [8.94204, 7.37498, 1.40625],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [304, 305, 306]
 						}
 					]
@@ -4389,6 +4422,8 @@
 					"name": "trigger",
 					"origin": [8, 5.48015, 8.40951],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						307,
 						308,
@@ -4399,12 +4434,16 @@
 							"name": "group",
 							"origin": [8, 5.61858, 8.48829],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [312, 313, 314, 315, 316]
 						},
 						{
 							"name": "group",
 							"origin": [8, 5.61858, 8.48829],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [317, 318, 319, 320, 321]
 						}
 					]
@@ -4415,12 +4454,16 @@
 			"name": "parts",
 			"origin": [6.5625, 11.28453, 12.89306],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341]
 		},
 		{
 			"name": "hammer",
 			"origin": [7.9375, 14.20464, 13.73151],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [342, 343, 344, 345, 346, 347, 348, 349, 350, 351]
 		},
 		352,

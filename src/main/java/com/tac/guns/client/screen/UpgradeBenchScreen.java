@@ -169,12 +169,26 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
         RenderSystem.enableBlend();
 
-        matrixStack.push();
-        matrixStack.scale(4f, 4f, 0); //3.87
+        //matrixStack.push();
+         //3.87
+        GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
+        if(GuiEditor.get() != null)
+        {
+            if(GuiEditor.get().currElement == 1 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
+        }
         this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-        this.blit(matrixStack, startX-112, startY-30, 0, 0, 496, 175);
-
-        matrixStack.pop();
+        //matrixStack.scale(4f, 4f, 0);
+        //this.blit(matrixStack, startX, startY, 0, 0, 496, 175);
+/*        "xMod": -225.0,
+            "yMod": 40.5,
+        */
+        blit(matrixStack, startX + data.getxMod()-224 + 112, startY+ data.getyMod()+39-30, 496, 175
+                , 0,
+                0, 496, 175, 1024
+                , 1024);
+        //this.blit(matrixStack, startX-112, startY-30, 0, 0, 496, 175);
+        //matrixStack.pop();
 
         ItemStack currentItem = this.workbench.getStackInSlot(0);//this.displayStack;
         if(currentItem == null)
@@ -254,17 +268,17 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
-        if(keyCode == GLFW.GLFW_KEY_UP) {
+        /*if(keyCode == GLFW.GLFW_KEY_UP) {
             this.scrollItor--;
         }
         else if(keyCode == GLFW.GLFW_KEY_DOWN)
         {
             this.scrollItor++;
         }
-        else super.keyPressed(keyCode, scanCode, modifiers);
+        else*/ super.keyPressed(keyCode, scanCode, modifiers);
         //initScrollingButtons();
-        this.lmbdaItor=0;
-        this.init();
+        /*this.lmbdaItor=0;
+        */this.init();
         return true;
     }
 
@@ -285,6 +299,16 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         }
         return false;
     }*/
+
+    protected void drawText(MatrixStack matrixStack, int x, int y, ITextComponent text)
+    {
+        int startX = this.guiLeft;
+        int startY = this.guiTop;
+        this.font.drawString(matrixStack, text.getString(), startX+x, startY+y,
+                Color.WHITE.getRGB());
+        // What in the hell? Not scalable, how to make this scale on gui scale?
+
+    }
 
     public class GuiEnchantmentOptionButton extends UpgradeTableButton {
         private RequirementItem requirement;
@@ -328,58 +352,54 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
             /// EDITOR
             GuiEditor.GUI_Element data = new GuiEditor.GUI_Element(0,0,0,0);
-            if(GuiEditor.get() != null)
-            {
-                if(GuiEditor.get().currElement == 4 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
-                    data = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
-            }
+
             /// EDITOR
 
             mc.getTextureManager().bindTexture(GUI_PARTS);
-            matrixStack.push();
             boolean btnSelectedYet = btnSelected != null;
             if (this.enchLevel == this.maxEnchLevel)
             {
-                matrixStack.scale(2f, 2f, 0); //3.87
-                mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
-                        this.v + data.getyMod() - 44 - 10 - 50-34+((this.itorInt+scrollItor)*17), 0, 56, 76,
-                        16);
+                //matrixStack.scale(2f, 2f, 0); //3.87
+                blit(matrixStack, this.u + data.getxMod()+88 - 174-84,
+                        this.v + data.getyMod() - 4 - 10 - 50-34+((this.itorInt+scrollItor)*33),
+                        152, 32, 0, 112, 152, 32, 512, 512);
 
             }// MAX
             else if(this.isHovered() || btnSelectedYet && btnSelected.equalsIgnoreCase(this.name))
             {
-                matrixStack.scale(2f, 2f, 0); //3.87
-                mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
-                        this.v + data.getyMod() - 44 - 10 - 50-34+((this.itorInt+scrollItor)*17), 0, 32, 76,
-                        16);
-
+                //matrixStack.scale(2f, 2f, 0); //3.87
+                blit(matrixStack, this.u + data.getxMod()+88 - 174-84,
+                        this.v + data.getyMod() - 4 - 10 - 50-34+((this.itorInt+scrollItor)*33),
+                        152, 32, 0, 160, 152, 32, 512, 512);
             }
             else
             {
-                matrixStack.scale(2f, 2f, 0); //3.87
-                mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84,
-                    this.v + data.getyMod() - 44 - 10 - 50-34+((this.itorInt+scrollItor)*17), 0, 80, 76, 16);
+                blit(matrixStack, this.u + data.getxMod()+88 - 174-84,
+                        this.v + data.getyMod() - 4 - 10 - 50-34+((this.itorInt+scrollItor)*33),
+                        152, 32, 0, 64, 152, 32, 512, 512);
             }
-
+            GuiEditor.GUI_Element data1 = new GuiEditor.GUI_Element(0,0,0,0);
+            if(GuiEditor.get() != null)
+            {
+                if(GuiEditor.get().currElement == 7 && GuiEditor.get().GetFromElements(GuiEditor.get().currElement) != null)
+                    data1 = GuiEditor.get().GetFromElements(GuiEditor.get().currElement);
+            }
             for(int i = 0; i < this.maxEnchLevel && this.enchLevel != this.maxEnchLevel; i++)
             {
                 //Render blue
                 if(this.enchLevel > i) {
-                    mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84 + (i*12),
-                            this.v + data.getyMod() - 44 - 10 - 50-21+((this.itorInt+scrollItor)*17), 0, 101,
+                    mc.ingameGUI.blit(matrixStack, this.u + data.getxMod()+88 - 174-84 + (i*12),
+                            this.v +13+ data.getyMod() - 4 - 10 - 50-21+((this.itorInt+scrollItor)*33), 0, 101,
                             12, 3);
                 }
                 else {
-                    mc.ingameGUI.blit(matrixStack, this.u + data.getxMod() - 174-84 + (i*12),
-                            this.v + data.getyMod() - 44 - 10 - 50-21+((this.itorInt+scrollItor)*17), 0, 98,
+                    mc.ingameGUI.blit(matrixStack, this.u + data.getxMod()+88 - 174-84 + (i*12),
+                            this.v +13+ data.getyMod() - 4 - 10 - 50-21+((this.itorInt+scrollItor)*33), 0, 98,
                             12, 3);
                 }
             }
-            matrixStack.pop();
-            Minecraft.getInstance().fontRenderer.drawString(matrixStack, this.name,
-                    (this.u + data.getxMod() - 174-82)*2+1,
-                    (this.v + data.getyMod() - 44 - 10 - 50-31+((this.itorInt+scrollItor)*17))*2,
-                    Color.WHITE.getRGB());
+            drawText(matrixStack,77+data1.getxMod(),
+                    data1.getyMod()+40+1*(int)((this.itorInt+scrollItor)*33), new TranslationTextComponent(this.name));
 
         }
     }
@@ -400,17 +420,14 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
             mc.getTextureManager().bindTexture(GUI_PARTS);
             if(this.isHovered)
             {
-                matrixStack.push();
-                matrixStack.scale(2f, 2f, 0); //3.87
-                mc.ingameGUI.blit(matrixStack, this.x + data.getxMod() - 74 - 26 - 74, this.y + data.getyMod() - 44 - 10 - 50, 24, 0, 23, this.height);
-                matrixStack.pop();
+                blit(matrixStack, this.x + data.getxMod()+173 - 74 - 26 - 74,
+                        this.y + data.getyMod()+103 - 44 - 10 - 50, 24*2, 0, 23*2, this.height*2,
+                        512, 512);
             }
             else
             {
-                matrixStack.push();
-                matrixStack.scale(2f, 2f, 0); //3.87
-                mc.ingameGUI.blit(matrixStack, this.x + data.getxMod() - 74 - 26 - 74, this.y + data.getyMod() - 44 - 10 - 50, 0, 0, 23, this.height);
-                matrixStack.pop();
+                blit(matrixStack, this.x + data.getxMod()+173 - 74 - 26 - 74,
+                        this.y + data.getyMod()+103 - 44 - 10 - 50, 0, 0, 23*2, this.height*2, 512, 512);
             }
         }
     }

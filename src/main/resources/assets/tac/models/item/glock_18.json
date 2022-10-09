@@ -2689,7 +2689,9 @@
 			"scale": [0.275, 0.275, 0.275]
 		},
 		"firstperson_righthand": {
-			"translation": [-0.5, 0.5, -12]
+			"rotation": [0, 0, 5],
+			"translation": [-6.75, 4.5, -0.5],
+			"scale": [0.5, 0.5, 0.5]
 		},
 		"firstperson_lefthand": {
 			"translation": [-3, 1.5, -6.75]
@@ -2713,6 +2715,8 @@
 			"name": "slide",
 			"origin": [6.41789, 11.46063, 7],
 			"color": 4,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				0,
 				1,
@@ -2763,18 +2767,24 @@
 					"name": "sight",
 					"origin": [8.46823, 13.12507, 17.65625],
 					"color": 4,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [45, 46, 47, 48, 49, 50, 51]
 				},
 				{
 					"name": "switch",
 					"origin": [8, 8, 8],
 					"color": 4,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [52, 53, 54, 55, 56, 57]
 				},
 				{
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 4,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [58, 59, 60]
 				},
 				61
@@ -2784,17 +2794,23 @@
 			"name": "magazine",
 			"origin": [5.9311, 2.92691, 16.97987],
 			"color": 5,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [62, 63, 64, 65, 66, 67, 68, 69, 70, 71]
 		},
 		{
 			"name": "barrel",
 			"origin": [8, 8, 8],
 			"color": 3,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 3,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87]
 				},
 				88
@@ -2804,6 +2820,8 @@
 			"name": "bottom",
 			"origin": [8, 7.78858, 14.73669],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				89,
 				90,
@@ -2909,6 +2927,8 @@
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [189, 190, 191, 192]
 				}
 			]
@@ -2917,12 +2937,16 @@
 			"name": "trigger",
 			"origin": [8.03992, 9.03306, 8.81403],
 			"color": 1,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [193, 194, 195, 196, 197, 198, 199]
 		},
 		{
 			"name": "parts",
 			"origin": [-1.48112, -3.95177, 11.6176],
 			"color": 6,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [200, 201, 202]
 		}
 	]

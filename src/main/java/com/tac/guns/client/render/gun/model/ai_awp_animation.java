@@ -51,9 +51,9 @@ public class ai_awp_animation implements IOverrideModel {
         if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem()))
         {
             matrices.push();
-            matrices.translate(0,0,-0.305);
+            matrices.translate(0,0,-0.335);
             RenderUtil.renderModel(SpecialModels.AI_AWP_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-            matrices.translate(0,0,0.305);
+            matrices.translate(0,0,0.335);
             matrices.pop();
         }
         else if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem()))

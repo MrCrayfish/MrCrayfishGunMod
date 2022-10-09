@@ -2441,7 +2441,8 @@
 			"scale": [0.75, 0.75, 0.75]
 		},
 		"firstperson_righthand": {
-			"translation": [-0.5, 7.25, -4.25],
+			"rotation": [0, 0, 5],
+			"translation": [-5, 7.5, 1],
 			"scale": [1.5, 1.5, 1.5]
 		},
 		"firstperson_lefthand": {
@@ -2465,9 +2466,11 @@
 	},
 	"groups": [
 		{
-			"name": "æžªèº«(Gun body)",
+			"name": "Ã¦Å¾ÂªÃ¨ÂºÂ«(Gun body)",
 			"origin": [8, 8, 8],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				0,
 				1,
@@ -2475,23 +2478,31 @@
 					"name": "group",
 					"origin": [8, 5.25, 12.8],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [8, 5.25, 12],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [2, 3, 4, 5]
 						},
 						{
 							"name": "group",
 							"origin": [8, 5.25, 12],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [6, 7, 8, 9]
 						},
 						{
 							"name": "group",
 							"origin": [8, 5.25, 8.6],
 							"color": 0,
+							"nbt": "{}",
+							"armAnimationEnabled": false,
 							"children": [10, 11, 12, 13]
 						}
 					]
@@ -2512,30 +2523,40 @@
 			"name": "exhaust",
 			"origin": [8, 5.25, 31.56599],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
 		},
 		{
 			"name": "wood",
 			"origin": [8, 8, 8],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "group",
 					"origin": [8, 5.25, 15.75],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
 				}
 			]
 		},
 		{
-			"name": "ç�«ç®­(Rockets)",
+			"name": "Ã§ï¿½Â«Ã§Â®Â­(Rockets)",
 			"origin": [8, 8, 8],
 			"color": 4,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "group",
 					"origin": [8, 15.25072, 1.00614],
 					"color": 4,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [64, 65, 66, 67]
 				},
 				68,
@@ -2543,6 +2564,8 @@
 					"name": "group",
 					"origin": [8, 15.25072, 1.00614],
 					"color": 4,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [69, 70, 71, 72]
 				},
 				73,
@@ -2576,14 +2599,18 @@
 					"name": "group",
 					"origin": [8, 5.25063, -12.81158],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [100, 101, 102, 103]
 				}
 			]
 		},
 		{
-			"name": "çž„å…·(Sight)",
+			"name": "Ã§Å¾â€žÃ¥â€¦Â·(Sight)",
 			"origin": [8, 8, 8],
 			"color": 3,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				104,
 				105,
@@ -2622,6 +2649,8 @@
 					"name": "octagon",
 					"origin": [8, 8, 8],
 					"color": 3,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [137, 138, 139, 140, 141, 142, 143, 144]
 				}
 			]
@@ -2630,30 +2659,40 @@
 			"name": "grip",
 			"origin": [8, 0.33895, 5.86198],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [145, 146, 147, 148, 149, 150, 151, 152]
 		},
 		{
 			"name": "grip",
 			"origin": [8, 0.04072, 11.85377],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [153, 154, 155, 156, 157, 158, 159, 160, 161, 162]
 		},
 		{
 			"name": "deco",
 			"origin": [8, 5.25, 26.875],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182]
 		},
 		{
 			"name": "guard",
 			"origin": [8, 2.51596, 4.26386],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199]
 		},
 		{
 			"name": "trigger",
 			"origin": [8, 2.95405, 4.95625],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [200, 201]
 		}
 	]

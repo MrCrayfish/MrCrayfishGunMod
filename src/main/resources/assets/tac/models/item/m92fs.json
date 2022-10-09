@@ -2847,8 +2847,9 @@
 			"scale": [0.275, 0.275, 0.275]
 		},
 		"firstperson_righthand": {
-			"translation": [-0.5, 0.5, -12.5],
-			"scale": [0.9, 0.9, 0.9]
+			"rotation": [0, 0, 5],
+			"translation": [-6, 4.25, -1.75],
+			"scale": [0.5, 0.5, 0.5]
 		},
 		"firstperson_lefthand": {
 			"translation": [-3, 0, -10]
@@ -2871,12 +2872,16 @@
 			"name": "grip",
 			"origin": [7.375, 7.75, 13.75],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 		},
 		{
 			"name": "slide",
 			"origin": [8.3125, 13.37956, 0],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				16,
 				17,
@@ -2991,6 +2996,8 @@
 					"name": "sight",
 					"origin": [8.3125, 16.50958, 13.73394],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138]
 				}
 			]
@@ -2999,6 +3006,8 @@
 			"name": "bottom",
 			"origin": [6.83081, 14.44554, 11.5625],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [
 				139,
 				140,
@@ -3079,12 +3088,16 @@
 					"name": "rail",
 					"origin": [8.7544, 12.81266, 4.5],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [214, 215, 216, 217, 218, 219, 220, 221, 222]
 				},
 				{
 					"name": "hammer",
 					"origin": [7.96875, 15.42401, 15.97748],
 					"color": 0,
+					"nbt": "{}",
+					"armAnimationEnabled": false,
 					"children": [223, 224, 225, 226, 227, 228, 229]
 				}
 			]
@@ -3093,12 +3106,16 @@
 			"name": "barrel",
 			"origin": [8, 13.27497, 5.44383],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244]
 		},
 		{
 			"name": "magazine",
 			"origin": [7.56434, 5, 14.37238],
 			"color": 0,
+			"nbt": "{}",
+			"armAnimationEnabled": false,
 			"children": [245, 246, 247, 248, 249, 250, 251]
 		}
 	]

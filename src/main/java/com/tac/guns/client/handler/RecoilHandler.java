@@ -176,12 +176,17 @@ public class RecoilHandler
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
         CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
         float cooldown ;
-        if((tracker.getCooldown(gunItem, Minecraft.getInstance().getRenderPartialTicks()))<0.5f)
+        //TODO: each gun should be able to choose it's partial reset timer
+        if((tracker.getCooldown(gunItem, Minecraft.getInstance().getRenderPartialTicks())) < modifiedGun.getGeneral().getVisualRecoilPercent())
+            //modifiedGun.getGeneral().getVisualRecoilPercent())
             cooldown = 0;/*(tracker.getCooldown(gunItem,
                     Minecraft.getInstance().getRenderPartialTicks()));*/
+        else if (modifiedGun.getGeneral().getVisualRecoilPercent() != 0)
+            cooldown = (tracker.getCooldown(gunItem,
+                    Minecraft.getInstance().getRenderPartialTicks())-modifiedGun.getGeneral().getVisualRecoilPercent())*(1/modifiedGun.getGeneral().getVisualRecoilPercent());//*1.5f
         else
             cooldown = (tracker.getCooldown(gunItem,
-                    Minecraft.getInstance().getRenderPartialTicks())-0.5f)*2f;
+                    Minecraft.getInstance().getRenderPartialTicks()));
 
         if(cooldown >= modifiedGun.getGeneral().getWeaponRecoilOffset())// || tooFast) // Actually have any visual recoil at Rate 1???
         {

@@ -6398,7 +6398,8 @@
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"translation": [-3.75, 2.5, -2.25]
+			"rotation": [0, 0, 5],
+			"translation": [-6.25, 4, -3.75]
 		},
 		"firstperson_lefthand": {
 			"translation": [-4, 3.5, -0.25]

@@ -269,7 +269,8 @@ public class GunRenderingHandler {
         }
         Minecraft mc = Minecraft.getInstance();
         GunItem gunItem = (GunItem) heldItem.getItem();
-        if (mc.gameSettings.viewBobbing && mc.getRenderViewEntity() instanceof PlayerEntity)
+        if (mc.gameSettings.viewBobbing && mc.getRenderViewEntity() instanceof PlayerEntity) //
+            // movement transforms
         {
             PlayerEntity playerentity = (PlayerEntity) mc.getRenderViewEntity();
             float deltaDistanceWalked = playerentity.distanceWalkedModified - playerentity.prevDistanceWalkedModified;
@@ -297,10 +298,10 @@ public class GunRenderingHandler {
             this.zoomProgressInv = (float)invertZoomProgress;
 
             //matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, ((double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress) * (1.285 * crouch), 0.0D);
-            matrixStack.translate((double) (MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, ((double) (-Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI) * cameraYaw)) * invertZoomProgress) * 1.140, 0.0D);// * 1.140, 0.0D);
+            matrixStack.translate((double) (MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 0.25F) * invertZoomProgress, ((double) (-Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI) * cameraYaw)) * invertZoomProgress) * 1.140, 0.0D);// * 1.140, 0.0D);
             //matrixStack.translate((double) (Math.asin(-MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 0.5F)) * invertZoomProgress, ((double) (Math.asin((-Math.abs(-MathHelper.cos(distanceWalked*crouch * (float) Math.PI) * cameraYaw))) * invertZoomProgress)) * 1.140, 0.0D);// * 1.140, 0.0D);
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 3F) * (float) invertZoomProgress));//3.0
+            matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI - 0.2F) * cameraYaw) * 5F) * (float) invertZoomProgress));//5.0
 
             // Weapon movement clanting
             float rollingForceCrouch = mc.player.isCrouching() ? 4f : 1f;
@@ -369,7 +370,8 @@ public class GunRenderingHandler {
                     //if (OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.735;
                     //if (isScopeRenderType) viewFinderOffset *= 0.735;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getScope();
-                    xOffset = -translateX + -scaledPos.getXOffset() * 0.0625 * scaleX;
+                    xOffset =
+                            -translateX + (modifiedGun.getModules().getZoom().getXOffset() * 0.0625) -scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
                     zOffset = !Config.COMMON.gameplay.gameplayEnchancedScopeOffset.get() && scope.getAdditionalZoom().getFovZoom() == 0 ? -translateZ + modifiedGun.getModules().getZoom().getZOffset() * 0.0625 * scaleZ : -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();//viewFinderOffset * scaleZ * scaledPos.getScale();\
                 }
@@ -377,7 +379,8 @@ public class GunRenderingHandler {
                     double viewFinderOffset = isScopeOffsetType || isScopeRenderType ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset(); // switches between either, but either must be populated
                     if (OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.735;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getOldScope();
-                    xOffset = -translateX + -scaledPos.getXOffset() * 0.0625 * scaleX;
+                    xOffset =
+                            -translateX +  (modifiedGun.getModules().getZoom().getXOffset() * 0.0625) -scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
                     zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
 
@@ -386,7 +389,8 @@ public class GunRenderingHandler {
                     double viewFinderOffset = isScopeOffsetType || isScopeRenderType ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset(); // switches between either, but either must be populated
                     if (OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.735;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getPistolScope();
-                    xOffset = -translateX + -scaledPos.getXOffset() * 0.0625 * scaleX;
+                    xOffset =
+                            -translateX +( modifiedGun.getModules().getZoom().getXOffset() * 0.0625) -scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
                     //zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
                     zOffset = !Config.COMMON.gameplay.gameplayEnchancedScopeOffset.get() && scope.getAdditionalZoom().getFovZoom() == 0 ? -translateZ + modifiedGun.getModules().getZoom().getZOffset() * 0.0625 * scaleZ : -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();//viewFinderOffset * scaleZ * scaledPos.getScale();
@@ -401,18 +405,16 @@ public class GunRenderingHandler {
 
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 float side = right ? 1.0F : -1.0F;
-                //double transition = 1.0 - Math.pow(1.0 - AimingHandler.get().getNormalisedAdsProgress(), 2);
-
-                QuadEaseOut easeOut = new QuadEaseOut();
                 double transition = new SineEaseInOut().evaluate((float) AimingHandler.get().getNormalisedAdsProgress(), 0, 1);
-                double transitionY = easeOut.evaluate(1.0f - (float) Math.abs(0.5-AimingHandler.get().getNormalisedAdsProgress())*2,0,1);
 
+                // Compensate rot
+                matrixStack.rotate(Vector3f.ZN.rotationDegrees(5*(float)transition));
                 /* Reverses the original first person translations */
-                //matrixStack.translate(-0.56 * side * transition, 0.52 * transition, 0);
-                matrixStack.translate(-0.56 * side * transition, 0.52 * (transition- 0.1*transitionY), 0);
+                matrixStack.translate(-0.56 * side * transition, 0.52 * (transition/*- 0.1*transitionY*/), 0);
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
-                matrixStack.translate(xOffset * side * transition, yOffset * transition, zOffset * transition);
+                matrixStack.translate((xOffset+0.03) * side * transition, yOffset * transition,
+                        zOffset * transition);
 
                 if(Config.COMMON.gameplay.realisticAimedBreathing.get()) {
                     /* Apply scope jitter*/
