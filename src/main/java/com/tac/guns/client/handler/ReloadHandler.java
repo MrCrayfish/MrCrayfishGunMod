@@ -1,6 +1,7 @@
 package com.tac.guns.client.handler;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+
 import com.tac.guns.client.InputHandler;
 import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.animation.module.PumpShotgunAnimationController;
@@ -18,6 +19,7 @@ import com.tac.guns.util.GunEnchantmentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.MinecraftForge;
