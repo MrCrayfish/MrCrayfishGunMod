@@ -1,8 +1,10 @@
 package com.tac.guns.client.handler;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.GunMod;
 import com.tac.guns.client.network.ClientPlayHandler;
 import com.tac.guns.common.Gun;
+import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageReload;
@@ -111,5 +113,13 @@ public class MovementAdaptationsHandler
             return;
         }
         PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement());
+    }
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void movementRec(TickEvent.ClientTickEvent event)
+    {
+        if (Minecraft.getInstance().player == null) {
+            return;
+        }
+        PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement(true));
     }
 }

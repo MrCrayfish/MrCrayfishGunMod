@@ -26,6 +26,7 @@ import com.tac.guns.item.GunItem;
 import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.TransitionalTypes.ITimelessAnimated;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.item.TransitionalTypes.TimelessPistolGunItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IBarrel;
 import com.tac.guns.item.attachment.impl.Barrel;
@@ -68,6 +69,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
+import java.sql.Time;
 import java.util.*;
 
 public class GunRenderingHandler {
@@ -392,7 +394,7 @@ public class GunRenderingHandler {
                     //if (OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.735;
                     //if (isScopeRenderType) viewFinderOffset *= 0.735;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getScope();
-                    xOffset = -translateX + -scaledPos.getXOffset() * 0.0625 * scaleX;
+                    xOffset = -translateX +  (modifiedGun.getModules().getZoom().getXOffset() * 0.0625) + -scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
                     zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
 
@@ -401,7 +403,7 @@ public class GunRenderingHandler {
                     double viewFinderOffset = isScopeOffsetType || isScopeRenderType ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset(); // switches between either, but either must be populated
                     if (OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.735;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getOldScope();
-                    xOffset = -translateX + -scaledPos.getXOffset() * 0.0625 * scaleX;
+                    xOffset = -translateX +  (modifiedGun.getModules().getZoom().getXOffset() * 0.0625) + -scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
                     zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
 
@@ -410,7 +412,7 @@ public class GunRenderingHandler {
                     double viewFinderOffset = isScopeOffsetType || isScopeRenderType ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset(); // switches between either, but either must be populated
                     if (OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.735;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getPistolScope();
-                    xOffset = -translateX + -scaledPos.getXOffset() * 0.0625 * scaleX;
+                    xOffset = -translateX +  (modifiedGun.getModules().getZoom().getXOffset() * 0.0625) + -scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
                     zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
                 }
@@ -427,6 +429,7 @@ public class GunRenderingHandler {
                 //double transition = 1.0 - Math.pow(1.0 - AimingHandler.get().getNormalisedAdsProgress(), 2);
 
                 double transition = (float) AimingHandler.get().getNormalisedAdsProgress();
+                //matrixStack.rotate(Vector3f.ZN.rotationDegrees(5*(float)transition));
                 Vector3f result = aimingDynamics.update(0.05f, new Vector3f((float) (xOffset * side * transition - 0.56 * side * transition), (float) (yOffset * transition + 0.52 * transition), (float) (zOffset * transition)));
 
                 /* Reverses the original first person translations */
@@ -434,20 +437,21 @@ public class GunRenderingHandler {
                 matrixStack.translate(result.getX(), result.getY(), result.getZ());
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 //matrixStack.translate(xOffset * side * transition, yOffset * transition, zOffset * transition);
+                matrixStack.translate(0, 0.015*transition, 0);
 
                 if(Config.COMMON.gameplay.realisticAimedBreathing.get()) {
                     /* Apply scope jitter*/
                     double scopeJitterOffset = 0.8;
+                    if (scope == null)
+                        scopeJitterOffset *= modifiedGun.getModules().getZoom().getStabilityOffset();
+                    else
+                        scopeJitterOffset *= scope.getStabilityOffset();
                     if (entity.isCrouching())
                         scopeJitterOffset *= 0.30;
                     if (entity.isSprinting() && !entity.isCrouching())
                         scopeJitterOffset *= 4;
                     if (entity.getMotion().getX() != 0.0 || entity.getMotion().getY() != 0.0 || entity.getMotion().getZ() != 0.0)
                         scopeJitterOffset *= 6.5;
-                    if (scope == null)
-                        scopeJitterOffset *= modifiedGun.getModules().getZoom().getStabilityOffset();
-                    else
-                        scopeJitterOffset *= scope.getStabilityOffset();
 
                     double yOffsetRatio = ScopeJitterHandler.getInstance().getYOffsetRatio() * (0.0125 * 0.75 * scopeJitterOffset);
                     double xOffsetRatio = ScopeJitterHandler.getInstance().getXOffsetRatio() * (0.0085 * 0.875 * scopeJitterOffset);
@@ -496,17 +500,36 @@ public class GunRenderingHandler {
     }
     private void applySprintingTransforms(GunItem modifiedGun, HandSide hand, MatrixStack matrixStack, float partialTicks)
     {
-        float leftHanded = hand == HandSide.LEFT ? -1 : 1;
-        float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
-        //transition = (float) Math.sin((transition * Math.PI) / 2);
-        Vector3f result = sprintDynamics.update(0.05f, new Vector3f((float) (-0.25 * leftHanded * transition), (float) (-0.1 * transition), 35F * leftHanded * transition));
-        Vector3f result2 = sprintDynamicsZ.update(0.05f, new Vector3f(15F * transition,20f * transition, 0.3f * transition));
-        //matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
-        matrixStack.translate(result.getX(), result.getY(), 0);
-        //matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(result.getZ()));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(result2.getX()));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(result2.getY()));
+        // Lets implement some differences while on topic, pistols can for sure have a custom
+        // run, any weight defining ones we should add?
+        if(modifiedGun instanceof TimelessPistolGunItem) {
+            float leftHanded = hand == HandSide.LEFT ? -1 : 1;
+            float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
+            //transition = (float) Math.sin((transition * Math.PI) / 2);
+            Vector3f result = sprintDynamics.update(0.05f, new Vector3f((float) (-0.25 * leftHanded * transition), (float) (-0.1 * transition), 35F * leftHanded * transition));
+            Vector3f result2 = sprintDynamicsZ.update(0.05f, new Vector3f(15F * transition, 20f * transition, 0.3f * transition));
+            //matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
+            matrixStack.translate(result.getX()+(-0.15f*transition),
+                    result.getY()-(0.175f*transition), -result.getZ()/80);
+            //matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(result.getZ()));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-result2.getX()));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(-result2.getY()/1.2f));
+        }
+        else if (modifiedGun instanceof TimelessGunItem)
+        {
+            float leftHanded = hand == HandSide.LEFT ? -1 : 1;
+            float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
+            //transition = (float) Math.sin((transition * Math.PI) / 2);
+            Vector3f result = sprintDynamics.update(0.05f, new Vector3f((float) (-0.25 * leftHanded * transition), (float) (-0.1 * transition), 35F * leftHanded * transition));
+            Vector3f result2 = sprintDynamicsZ.update(0.05f, new Vector3f(15F * transition, 20f * transition, 0.3f * transition));
+            //matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
+            matrixStack.translate(result.getX(), result.getY(), 0);
+            //matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(result.getZ()));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(result2.getX()));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(result2.getY()));
+        }
     }
 
     private void applyReloadTransforms(MatrixStack matrixStack, HandSide hand, float partialTicks, ItemStack modifiedGun) {
@@ -563,7 +586,7 @@ public class GunRenderingHandler {
         matrixStack.rotate(Vector3f.YP.rotationDegrees(result.getY()));
         matrixStack.rotate(Vector3f.ZN.rotationDegrees(result.getX())); // seems to be interesting to increase the force of
         //matrixStack.rotate(Vector3f.ZP.rotationDegrees(recoilSway * 2.5f * recoilReduction)); // seems to be interesting to increase the force of
-        if(gun.getGeneral().getWeaponRecoilDuration() != 0)
+        if(gun.getGeneral().getWeaponRecoilOffset() != 0)
             matrixStack.rotate(Vector3f.XP.rotationDegrees(this.recoilLift * this.recoilReduction));
         matrixStack.translate(0, 0, -0.35);
     }

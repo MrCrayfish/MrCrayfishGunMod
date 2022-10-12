@@ -20,6 +20,8 @@ import java.util.WeakHashMap;
  */
 public class ShootTracker
 {
+
+    // Clumsyalien: Um, why don't we spend a cycle and unlock this for MS level firerate?
     /**
      * A custom implementation of the cooldown tracker in order to provide the best experience for
      * players. On servers, Minecraft's cooldown tracker is sent to the client but the latency creates

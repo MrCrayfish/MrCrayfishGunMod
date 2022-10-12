@@ -29,10 +29,19 @@ public class ModSyncedDataKeys
             .resetOnDeath()
             .build();
 
+    public static final SyncedDataKey<Float> MOVING = SyncedDataKey.builder(Serializers.FLOAT)
+            .id(new ResourceLocation(Reference.MOD_ID, "moving"))
+            .defaultValueSupplier(() -> 0f)
+            .resetOnDeath()
+            .build();
+
+    // Create new moving tag, can use a number to be speed dependent, or another simple boolean
+
     public static void register()
     {
         SyncedPlayerData.instance().registerKey(AIMING);
         SyncedPlayerData.instance().registerKey(SHOOTING);
         SyncedPlayerData.instance().registerKey(RELOADING);
+        SyncedPlayerData.instance().registerKey(MOVING);
     }
 }

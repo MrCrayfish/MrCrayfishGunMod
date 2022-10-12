@@ -32,6 +32,7 @@ import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.InventoryUtil;
 import com.tac.guns.util.UTR;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
@@ -620,7 +621,7 @@ public class ServerPlayHandler
         }
     }
 
-    public static void handleMovementUpdate(ServerPlayerEntity player)
+    public static void handleMovementUpdate(ServerPlayerEntity player, boolean handle)
     {
         if (player == null)
             return;
@@ -628,6 +629,12 @@ public class ServerPlayHandler
             return;
         if(!player.isAlive())
             return;
+
+        if(handle)
+        {
+            SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING,
+                    (float)(player.prevDistanceWalkedModified-player.distanceWalkedOnStepModified));
+        }
 
         ItemStack heldItem = player.getHeldItemMainhand();
         if(player.getAttribute(MOVEMENT_SPEED) != null && MovementAdaptationsHandler.get().isReadyToReset())
@@ -662,7 +669,9 @@ public class ServerPlayHandler
 
         MovementAdaptationsHandler.get().setPreviousWeight(gun.getGeneral().getWeightKilo());
         //DEBUGGING AND BALANCE TOOL
-        //player.sendStatusMessage(new TranslationTextComponent("Speed is: " + player.getAttribute(MOVEMENT_SPEED).getValue()) ,true);
+        player.sendStatusMessage(new TranslationTextComponent(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING)+""), true);
+        //new TranslationTextComponent("Speed is: " + player
+                // .getAttribute(MOVEMENT_SPEED).getValue()) ,true);
     }
 
     public static void handleGunID(ServerPlayerEntity player, boolean regenerate)

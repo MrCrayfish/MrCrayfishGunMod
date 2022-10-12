@@ -158,14 +158,23 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if(shooter instanceof PlayerEntity)
         {
+            gunSpread*=0.7F;
             if(!modifiedGun.getGeneral().isAlwaysSpread())
             {
                 gunSpread *= SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
             }
-
             if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
             {
-                gunSpread *= 0.5F;
+                gunSpread *= 0.75F;
+            }
+            if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
+            {
+                gunSpread *= 7.5F*(1+SyncedPlayerData.instance().get((PlayerEntity) shooter,
+                        ModSyncedDataKeys.MOVING));
+            }
+            if(((PlayerEntity) shooter).isCrouching())
+            {
+                gunSpread *= 0.75F;
             }
         }
 
