@@ -7,8 +7,8 @@
       1
     ],
     "gripType": "tac:two_handed_mosin",
-    "recoilAngle": 6.0,
-    "recoilKick": 4.75,
+    "recoilAngle": 7.0,
+    "recoilKick": 4.0,
     "horizontalRecoilAngle": 0.125,
     "recoilAdsReduction": 0.40,
     "weaponRecoilDuration": 0.675,

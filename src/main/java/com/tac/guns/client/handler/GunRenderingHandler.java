@@ -72,10 +72,10 @@ import java.util.*;
 
 public class GunRenderingHandler {
     private static GunRenderingHandler instance;
-    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.6f,0.5f, 2.5f, new Vector3f(0,0,0));
+    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.7f,0.6f, 2.5f, new Vector3f(0,0,0));
     private final SecondOrderDynamics aimingDynamics = new SecondOrderDynamics(1.5f,0.9f, 0f, new Vector3f(0,0,0));
 
-    private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.45f,0.8f, 0.6f, new Vector3f(0,0,0));
+    private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.45f,0.7f, 0.6f, new Vector3f(0,0,0));
     private final SecondOrderDynamics sprintDynamicsZ = new SecondOrderDynamics(0.45f,0.8f, 0.5f, new Vector3f(0,0,0));
     public static GunRenderingHandler get() {
         if (instance == null) {
@@ -499,7 +499,7 @@ public class GunRenderingHandler {
         float leftHanded = hand == HandSide.LEFT ? -1 : 1;
         float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
         //transition = (float) Math.sin((transition * Math.PI) / 2);
-        Vector3f result = sprintDynamics.update(0.05f, new Vector3f((float) (-0.25 * leftHanded * transition), (float) (-0.1 * transition), 35F * leftHanded * transition));
+        Vector3f result = sprintDynamics.update(0.05f, new Vector3f((float) (-0.25 * leftHanded * transition), (float) (-0.1 * transition), 28F * leftHanded * transition));
         Vector3f result2 = sprintDynamicsZ.update(0.05f, new Vector3f(15F * transition,20f * transition, 0.3f * transition));
         //matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
         matrixStack.translate(result.getX(), result.getY(), 0);
@@ -563,7 +563,7 @@ public class GunRenderingHandler {
         matrixStack.rotate(Vector3f.YP.rotationDegrees(result.getY()));
         matrixStack.rotate(Vector3f.ZN.rotationDegrees(result.getX())); // seems to be interesting to increase the force of
         //matrixStack.rotate(Vector3f.ZP.rotationDegrees(recoilSway * 2.5f * recoilReduction)); // seems to be interesting to increase the force of
-        if(gun.getGeneral().getWeaponRecoilDuration() != 0)
+        if(gun.getGeneral().getWeaponRecoilOffset() != 0)
             matrixStack.rotate(Vector3f.XP.rotationDegrees(this.recoilLift * this.recoilReduction));
         matrixStack.translate(0, 0, -0.35);
     }
