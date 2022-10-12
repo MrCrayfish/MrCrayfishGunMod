@@ -1,8 +1,16 @@
 package com.tac.guns.client.handler;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import javax.annotation.Nullable;
+
+import org.lwjgl.glfw.GLFW;
+
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
-import com.tac.guns.client.KeyBinds;
+import com.tac.guns.client.InputHandler;
 import com.tac.guns.client.render.crosshair.Crosshair;
 import com.tac.guns.common.Gun;
 import com.tac.guns.init.ModBlocks;
@@ -14,7 +22,7 @@ import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAim;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -37,11 +45,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.glfw.GLFW;
-
-import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -71,7 +74,19 @@ public class AimingHandler
     public void resetCurrentScopeZoomIndex() {this.currentScopeZoomIndex = 0;}
     private int currentScopeZoomIndex = 0;
 
-    private AimingHandler() {}
+    private AimingHandler()
+    {
+    	InputHandler.SIGHT_SWITCH.addPressCallBack( () -> {
+            final Minecraft mc = Minecraft.getInstance();
+            if(
+            	mc.player != null
+            	&& (
+            		mc.player.getHeldItemMainhand().getItem() instanceof GunItem
+            		|| Gun.getScope( mc.player.getHeldItemMainhand() ) != null
+            	)
+            ) this.currentScopeZoomIndex++;
+    	} );
+    }
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -252,19 +267,6 @@ public class AimingHandler
     }
 
     @SubscribeEvent
-    public void onKeyPressedSightSwitch(InputEvent.KeyInputEvent event)
-    {
-        if(event.getAction() != GLFW.GLFW_PRESS)
-            return;
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null)
-            return;
-        if(!(mc.player.getHeldItemMainhand().getItem() instanceof GunItem) && Gun.getScope(mc.player.getHeldItemMainhand()) == null)
-            return;
-        if (KeyBinds.KEY_SIGHT_SWITCH.isKeyDown())
-            this.currentScopeZoomIndex++;
-    }
-    @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
         if(!Config.CLIENT.controls.toggleAim.get())
@@ -277,14 +279,15 @@ public class AimingHandler
         if(this.toggledAimAwaiter > 0)
             return;
 
-        boolean isLeftClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_LEFT);
-        boolean isRightClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
-        if(isLeftClickAim || isRightClickAim)
-            return;
-        if (KeyBinds.KEY_ADS.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS) {
-            this.forceToggleAim();
-            this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
-        }
+        // FIXME: cant handle this part
+//        boolean isLeftClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+//        boolean isRightClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+//        if(isLeftClickAim || isRightClickAim)
+//            return;
+//        if (KeyBinds.KEY_ADS.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS) {
+//            this.forceToggleAim();
+//            this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
+//        }
     }
 
     @SubscribeEvent
@@ -302,11 +305,12 @@ public class AimingHandler
         if(event.getAction() != GLFW.GLFW_PRESS)
             return;
 
-        if(event.getButton() == KeyBinds.KEY_ADS.getKey().getKeyCode())
-        {
-            forceToggleAim();
-            this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
-        }
+        // FIXME: Cant handle this part
+//        if(event.getButton() == KeyBinds.KEY_ADS.getKey().getKeyCode())
+//        {
+//            forceToggleAim();
+//            this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
+//        }
     }
 
     public boolean isToggledAim()

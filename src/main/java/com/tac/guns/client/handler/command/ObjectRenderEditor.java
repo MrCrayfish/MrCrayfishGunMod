@@ -1,25 +1,25 @@
 package com.tac.guns.client.handler.command;
 
-import com.google.gson.GsonBuilder;
-import com.tac.guns.Config;
-import com.tac.guns.client.KeyBinds;
-import com.tac.guns.common.Gun;
-import com.tac.guns.common.tooling.CommandsHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.Level;
-import org.lwjgl.glfw.GLFW;
+import static com.tac.guns.GunMod.LOGGER;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static com.tac.guns.GunMod.LOGGER;
+import org.apache.logging.log4j.Level;
+import org.lwjgl.glfw.GLFW;
+
+import com.google.gson.GsonBuilder;
+import com.tac.guns.Config;
+import com.tac.guns.client.InputHandler;
+import com.tac.guns.common.Gun;
+import com.tac.guns.common.tooling.CommandsHandler;
+
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ObjectRenderEditor
 {
@@ -132,10 +132,10 @@ public class ObjectRenderEditor
         boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
         boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
 
-        boolean isControlDown = KeyBinds.CONTROLLY.isKeyDown() || KeyBinds.CONTROLLYR.isKeyDown(); // Increase Module Size
+        boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
         boolean isShiftDown = event.getKey() == GLFW.GLFW_KEY_LEFT_SHIFT; // Increase Step Size
-        boolean isAltDown = KeyBinds.ALTY.isKeyDown() || KeyBinds.ALTYR.isKeyDown(); // Swap X -> Z modify
-        boolean isPeriodDown = KeyBinds.SIZE_OPT.isKeyDown();
+        boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify
+        boolean isPeriodDown = InputHandler.SIZE_OPT.down;
 
         RENDER_Element element = this.elements.size() == 0 || !this.elements.containsKey(this.currElement) ? new RENDER_Element(0, 0,0, 0) : this.elements.get(this.currElement);
         float xMod = element.xMod;

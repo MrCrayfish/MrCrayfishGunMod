@@ -1,15 +1,31 @@
 package com.tac.guns.client.handler;
 
 import com.tac.guns.Reference;
-import com.tac.guns.client.KeyBinds;
+import com.tac.guns.client.InputHandler;
+import com.tac.guns.client.render.animation.AA12AnimationController;
+import com.tac.guns.client.render.animation.AWPAnimationController;
+import com.tac.guns.client.render.animation.Ak47AnimationController;
+import com.tac.guns.client.render.animation.Dp28AnimationController;
+import com.tac.guns.client.render.animation.Glock17AnimationController;
+import com.tac.guns.client.render.animation.HK416A5AnimationController;
+import com.tac.guns.client.render.animation.HkMp5a5AnimationController;
 import com.tac.guns.client.render.animation.M1014AnimationController;
-import com.tac.guns.client.render.animation.*;
-import com.tac.guns.client.render.animation.module.*;
+import com.tac.guns.client.render.animation.M60AnimationController;
+import com.tac.guns.client.render.animation.M870AnimationController;
+import com.tac.guns.client.render.animation.Mp7AnimationController;
+import com.tac.guns.client.render.animation.Type81AnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.AnimationSoundManager;
+import com.tac.guns.client.render.animation.module.Animations;
+import com.tac.guns.client.render.animation.module.BoltActionAnimationController;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PumpShotgunAnimationController;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.event.GunReloadEvent;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.util.GunEnchantmentHelper;
+
 import de.javagl.jgltf.model.animation.AnimationRunner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -18,12 +34,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * Mainly controls when the animation should play.
@@ -117,22 +131,26 @@ public enum AnimationHandler {
             controller.runAnimation(GunAnimationController.AnimationLabel.PULL_BOLT);
         }
     }
-
-    @SubscribeEvent
-    public void onInspect(InputEvent.KeyInputEvent event) {
-        PlayerEntity player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack itemStack = player.inventory.getCurrentItem();
-        if (KeyBinds.KEY_INSPECT.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS) {
-            GunAnimationController controller = GunAnimationController.fromItem(itemStack.getItem());
-            if (controller != null) {
-                if(controller.isAnimationRunning()) return;
-                controller.stopAnimation();
-                controller.runAnimation(GunAnimationController.AnimationLabel.INSPECT);
-            }
-        }
+    
+    static
+    {
+    	final Runnable callback = () -> {
+    		final PlayerEntity player = Minecraft.getInstance().player;
+    		if( player == null ) return;
+    		
+    		final ItemStack stack = player.inventory.getCurrentItem();
+    		final GunAnimationController controller
+    			= GunAnimationController.fromItem( stack.getItem() );
+    		if( controller != null && !controller.isAnimationRunning() )
+    		{
+    			controller.stopAnimation();
+    			controller.runAnimation( GunAnimationController.AnimationLabel.INSPECT );
+    		}
+    	};
+    	InputHandler.INSPECT.addPressCallBack( callback );
+    	InputHandler.CO_INSPECT.addPressCallBack( callback );
     }
-
+    
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event){
         AnimationSoundManager.INSTANCE.onPlayerDeath(event.getPlayer());

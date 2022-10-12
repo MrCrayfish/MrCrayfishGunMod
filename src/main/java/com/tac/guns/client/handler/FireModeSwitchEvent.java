@@ -1,27 +1,23 @@
 package com.tac.guns.client.handler;
 
 
-import com.tac.guns.Reference;
-import com.tac.guns.client.KeyBinds;
+import com.tac.guns.client.InputHandler;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageFireMode;
+
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.glfw.GLFW;
 
 
 
 /**
- * Author: ClumsyAlien
+ * @author: ClumsyAlien
  */
-
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FireModeSwitchEvent
 {
     private static FireModeSwitchEvent instance;
 
+    // TODO: remove this class maybe? Its function has been replaced by callback
+    @Deprecated
     public static FireModeSwitchEvent get()
     {
         if(instance == null)
@@ -30,21 +26,13 @@ public class FireModeSwitchEvent
         }
         return instance;
     }
+    
     private FireModeSwitchEvent()
     {
+    	InputHandler.FIRE_SELECT.addPressCallBack( () -> {
+    		if( Minecraft.getInstance().player != null )
+    			PacketHandler.getPlayChannel().sendToServer( new MessageFireMode() );
+    	} );
     }
-    @SubscribeEvent
-    public void onKeyPressed(InputEvent.KeyInputEvent event)
-    {
-        if(Minecraft.getInstance().player == null)
-        {
-            return;
-        }
-        if(KeyBinds.KEY_FIRESELECT.isPressed() && event.getAction() == GLFW.GLFW_PRESS)
-        {
-            PacketHandler.getPlayChannel().sendToServer(new MessageFireMode());
-        }
-    }
-
 }
 

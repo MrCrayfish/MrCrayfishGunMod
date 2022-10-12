@@ -563,7 +563,7 @@ public class GunRenderingHandler {
         matrixStack.rotate(Vector3f.YP.rotationDegrees(result.getY()));
         matrixStack.rotate(Vector3f.ZN.rotationDegrees(result.getX())); // seems to be interesting to increase the force of
         //matrixStack.rotate(Vector3f.ZP.rotationDegrees(recoilSway * 2.5f * recoilReduction)); // seems to be interesting to increase the force of
-        if(gun.getGeneral().getWeaponRecoilDuration() != 0)
+        if(gun.getGeneral().getWeaponRecoilOffset() != 0)
             matrixStack.rotate(Vector3f.XP.rotationDegrees(this.recoilLift * this.recoilReduction));
         matrixStack.translate(0, 0, -0.35);
     }
