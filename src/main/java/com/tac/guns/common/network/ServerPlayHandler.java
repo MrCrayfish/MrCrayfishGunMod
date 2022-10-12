@@ -632,8 +632,11 @@ public class ServerPlayHandler
 
         if(handle)
         {
-            SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING,
+            if(player.distanceWalkedOnStepModified != 0)
+                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING,
                     (float)(player.prevDistanceWalkedModified-player.distanceWalkedOnStepModified));
+            else
+                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING, 0f);
         }
 
         ItemStack heldItem = player.getHeldItemMainhand();
