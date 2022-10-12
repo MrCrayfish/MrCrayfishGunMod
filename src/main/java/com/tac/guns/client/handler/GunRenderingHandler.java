@@ -96,7 +96,7 @@ public class GunRenderingHandler {
     private int prevSprintTransition;
     private int sprintCooldown;
     private int restingTimer;
-    private final int restingTimerUpper = 8;
+    private final int restingTimerUpper = 4;
 
     private float offhandTranslate;
     private float prevOffhandTranslate;
