@@ -1,13 +1,24 @@
 package com.tac.guns.client.handler.command;
 
+import static com.tac.guns.GunMod.LOGGER;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+
+import org.apache.logging.log4j.Level;
+import org.lwjgl.glfw.GLFW;
+
 import com.google.gson.GsonBuilder;
 import com.tac.guns.Config;
-import com.tac.guns.client.KeyBinds;
+import com.tac.guns.client.InputHandler;
 import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.tooling.CommandsHandler;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.impl.Scope;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -16,15 +27,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.Level;
-import org.lwjgl.glfw.GLFW;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-
-import static com.tac.guns.GunMod.LOGGER;
 
 public class ScopeEditor
 {
@@ -108,19 +110,19 @@ public class ScopeEditor
         boolean isRight = event.getKey() == GLFW.GLFW_KEY_RIGHT;
         boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
         boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
-        boolean isControlDown = KeyBinds.CONTROLLY.isKeyDown() || KeyBinds.CONTROLLYR.isKeyDown(); // Increase Module Size
-        boolean isShiftDown = KeyBinds.SHIFTY.isKeyDown() || KeyBinds.SHIFTYR.isKeyDown(); // Increase Step Size
-        boolean isAltDown = KeyBinds.ALTY.isKeyDown() || KeyBinds.ALTYR.isKeyDown(); // Swap X -> Z modify
+        boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
+        boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
+        boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify
 
         if(isShiftDown)
             stepModifier*=10;
         if(isControlDown)
             stepModifier/=10;
 
-        boolean isPeriodDown = KeyBinds.SIZE_OPT.isKeyDown();
+        boolean isPeriodDown = InputHandler.SIZE_OPT.down;
 
         PlayerEntity player = Minecraft.getInstance().player;
-        if(KeyBinds.P.isKeyDown()) // P will be for adjusting double render
+        if(InputHandler.P.down) // P will be for adjusting double render
         {
             if(isShiftDown)
                 stepModifier*=10;
@@ -164,7 +166,7 @@ public class ScopeEditor
                 player.sendStatusMessage(new TranslationTextComponent("DR X: "+data.getDrXZoomMod()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.L.isKeyDown()) // L will be for adjusting reticle pos
+        else if(InputHandler.L.down) // L will be for adjusting reticle pos
         {
             if(isShiftDown)
                 stepModifier*=5;
@@ -206,7 +208,7 @@ public class ScopeEditor
                 player.sendStatusMessage(new TranslationTextComponent("Reticle X: "+data.getReticleXMod()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.M.isKeyDown()) // L will be for adjusting reticle pos
+        else if(InputHandler.M.down) // L will be for adjusting reticle pos
         {
             if(isShiftDown)
                 stepModifier*=10;

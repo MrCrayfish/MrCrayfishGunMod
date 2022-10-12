@@ -1,12 +1,23 @@
 package com.tac.guns.client.handler.command;
 
-import com.google.gson.*;
+import static com.tac.guns.GunMod.LOGGER;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+
+import org.apache.logging.log4j.Level;
+import org.lwjgl.glfw.GLFW;
+
+import com.google.gson.GsonBuilder;
 import com.tac.guns.Config;
-import com.tac.guns.client.KeyBinds;
+import com.tac.guns.client.InputHandler;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.tooling.CommandsHandler;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.IAttachment;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -16,15 +27,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.Level;
-import org.lwjgl.glfw.GLFW;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-
-import static com.tac.guns.GunMod.LOGGER;
 
 public class GunEditor
 {
@@ -173,12 +175,12 @@ public class GunEditor
         boolean isRight = event.getKey() == GLFW.GLFW_KEY_RIGHT;
         boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
         boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
-        boolean isControlDown = KeyBinds.CONTROLLY.isKeyDown() || KeyBinds.CONTROLLYR.isKeyDown(); // Increase Module Size
-        boolean isShiftDown = KeyBinds.SHIFTY.isKeyDown() || KeyBinds.SHIFTYR.isKeyDown(); // Increase Step Size
-        boolean isAltDown = KeyBinds.ALTY.isKeyDown() || KeyBinds.ALTYR.isKeyDown(); // Swap X -> Z modify
+        boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
+        boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
+        boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify
         PlayerEntity player = Minecraft.getInstance().player;
         Gun gunTmp = gunItem.getGun();
-        if(KeyBinds.P.isKeyDown())
+        if(InputHandler.P.down)
         {
             if(isShiftDown)
                 stepModifier*=10;
@@ -210,7 +212,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("VerticalRecoilAngle: "+gunTmp.getGeneral().getRecoilAngle()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.L.isKeyDown())
+        else if(InputHandler.L.down)
         {
             if(isShiftDown)
                 stepModifier*=5;
@@ -232,7 +234,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("RecoilDuration: "+gunTmp.getGeneral().getRecoilDuration()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.O.isKeyDown())
+        else if(InputHandler.O.down)
         {
             if(isShiftDown)
                 stepModifier*=5;
@@ -246,7 +248,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("CameraRecoilModifier: "+gunTmp.getGeneral().getCameraRecoilModifier()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.K.isKeyDown())
+        else if(InputHandler.K.down)
         {
             if(isShiftDown)
                 stepModifier*=5;
@@ -260,7 +262,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("RecoilAdsReduction: "+gunTmp.getGeneral().getRecoilAdsReduction()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.M.isKeyDown())
+        else if(InputHandler.M.down)
         {
             if(isShiftDown)
                 stepModifier*=10;
@@ -276,7 +278,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("Inaccuracy in Degrees: "+gunTmp.getGeneral().getSpread()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.I.isKeyDown())
+        else if(InputHandler.I.down)
         {
             if(isShiftDown)
                 stepModifier*=10;
@@ -292,7 +294,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("Weight in Kilograms: "+gunTmp.getGeneral().getWeightKilo()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.J.isKeyDown())
+        else if(InputHandler.J.down)
         {
             player.sendStatusMessage(new TranslationTextComponent("Rate in Ticks: "+gunTmp.getGeneral().getRate()+" | Burst Rate in Ticks:: "+gunTmp.getGeneral().getBurstRate()),true);
             if (isLeft) {
@@ -312,7 +314,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("Rate in Ticks: "+gunTmp.getGeneral().getRate()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.N.isKeyDown())
+        else if(InputHandler.N.down)
         {
             player.sendStatusMessage(new TranslationTextComponent("Projectile Amount: "+gunTmp.getGeneral().getProjectileAmount()),true);
             if (isUp) {
@@ -365,11 +367,11 @@ public class GunEditor
         double stepModifier = 1;
         boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
         boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
-        boolean isControlDown = KeyBinds.CONTROLLY.isKeyDown() || KeyBinds.CONTROLLYR.isKeyDown(); // Increase Module Size
-        boolean isShiftDown = KeyBinds.SHIFTY.isKeyDown() || KeyBinds.SHIFTYR.isKeyDown(); // Increase Step Size
+        boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
+        boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
         PlayerEntity player = Minecraft.getInstance().player;
         Gun gunTmp = gunItem.getGun();
-        if(KeyBinds.P.isKeyDown())
+        if(InputHandler.P.down)
         {
             if(isShiftDown)
                 stepModifier*=10;
@@ -385,7 +387,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("Damage: "+gunTmp.getProjectile().getDamage()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.L.isKeyDown())
+        else if(InputHandler.L.down)
         {
             if(isShiftDown)
                 stepModifier*=10;
@@ -401,7 +403,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("Projectile size: "+gunTmp.getProjectile().getSize()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.O.isKeyDown())
+        else if(InputHandler.O.down)
         {
             if(isShiftDown)
                 stepModifier*=10;
@@ -415,7 +417,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("Speed: "+gunTmp.getProjectile().getSpeed()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.K.isKeyDown())
+        else if(InputHandler.K.down)
         {
             player.sendStatusMessage(new TranslationTextComponent("Ticks bullet Exists for: "+gunTmp.getProjectile().getLife()), true);
             if (isUp) {
@@ -458,7 +460,7 @@ public class GunEditor
         boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
         PlayerEntity player = Minecraft.getInstance().player;
         Gun gunTmp = gunItem.getGun();
-        if(KeyBinds.P.isKeyDown())
+        if(InputHandler.P.down)
         {
             player.sendStatusMessage(new TranslationTextComponent("ReloadMagTimer: "+gunTmp.getReloads().getReloadMagTimer()), true);
             if (isUp) {
@@ -470,7 +472,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("ReloadMagTimer: "+gunTmp.getReloads().getReloadMagTimer()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.L.isKeyDown())
+        else if(InputHandler.L.down)
         {
             player.sendStatusMessage(new TranslationTextComponent("AdditionalReloadEmptyMagTimer: "+gunTmp.getReloads().getAdditionalReloadEmptyMagTimer()), true);
             if (isUp) {
@@ -482,7 +484,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("AdditionalReloadEmptyMagTimer: "+gunTmp.getReloads().getAdditionalReloadEmptyMagTimer()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.O.isKeyDown())
+        else if(InputHandler.O.down)
         {
             player.sendStatusMessage(new TranslationTextComponent("ReloadAmount: "+gunTmp.getReloads().getReloadAmount()), true);
             if (isUp) {
@@ -494,7 +496,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("ReloadAmount: "+gunTmp.getReloads().getReloadAmount()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.K.isKeyDown())
+        else if(InputHandler.K.down)
         {
             player.sendStatusMessage(new TranslationTextComponent("PreReloadPauseTicks: "+gunTmp.getReloads().getPreReloadPauseTicks()), true);
             if (isUp) {
@@ -506,7 +508,7 @@ public class GunEditor
                 player.sendStatusMessage(new TranslationTextComponent("PreReloadPauseTicks: "+gunTmp.getReloads().getPreReloadPauseTicks()).mergeStyle(TextFormatting.DARK_RED), true);
             }
         }
-        else if(KeyBinds.M.isKeyDown())
+        else if(InputHandler.M.down)
         {
             player.sendStatusMessage(new TranslationTextComponent("InterReloadPauseTicks: "+gunTmp.getReloads().getinterReloadPauseTicks()), true);
             if (isUp) {
@@ -565,9 +567,9 @@ public class GunEditor
         boolean isRight = event.getKey() == GLFW.GLFW_KEY_RIGHT;
         boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
         boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
-        boolean isControlDown = KeyBinds.CONTROLLY.isKeyDown() || KeyBinds.CONTROLLYR.isKeyDown(); // Increase Module Size
-        boolean isShiftDown = KeyBinds.SHIFTY.isKeyDown() || KeyBinds.SHIFTYR.isKeyDown(); // Increase Step Size
-        boolean isAltDown = KeyBinds.ALTY.isKeyDown() || KeyBinds.ALTYR.isKeyDown(); // Swap X -> Z modify
+        boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
+        boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
+        boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify
 
         if(isShiftDown)
             stepModifier*=10;
@@ -636,13 +638,13 @@ public class GunEditor
     public double getSizeMod() {return this.sizeMod;}
     private void handleScaledPositionedMod(InputEvent.KeyInputEvent event, TimelessGunItem gunItem) {
         this.handlePositionedMod(event, gunItem);
-        boolean isPeriodDown = KeyBinds.SIZE_OPT.isKeyDown(); // Increase Step Size
+        boolean isPeriodDown = InputHandler.SIZE_OPT.down; // Increase Step Size
 
         if(isPeriodDown) {
             double stepModifier = 1;
             boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
             boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
-            boolean isShiftDown = KeyBinds.SHIFTY.isKeyDown() || KeyBinds.SHIFTYR.isKeyDown(); // Increase Step Size
+            boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
 
             if (isShiftDown)
                 stepModifier *= 10;

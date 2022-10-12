@@ -1,8 +1,8 @@
 package com.tac.guns.client.handler;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.tac.guns.client.KeyBinds;
-import com.tac.guns.client.render.animation.module.AnimationMeta;
+
+import com.tac.guns.client.InputHandler;
 import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.animation.module.PumpShotgunAnimationController;
 import com.tac.guns.common.Gun;
@@ -15,18 +15,18 @@ import com.tac.guns.network.message.MessageReload;
 import com.tac.guns.network.message.MessageUnload;
 import com.tac.guns.network.message.MessageUpdateGunID;
 import com.tac.guns.util.GunEnchantmentHelper;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.glfw.GLFW;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 /**
@@ -204,7 +204,36 @@ public class ReloadHandler {
     private boolean prevState = false;
     private ItemStack prevItemStack;
 
-    private ReloadHandler() {
+    private ReloadHandler()
+    {
+    	InputHandler.RELOAD.addPressCallBack( () -> {
+    		final ClientPlayerEntity player = Minecraft.getInstance().player;
+			if( player == null ) return;
+			
+			final ItemStack stack = player.getHeldItemMainhand();
+			if( stack.getItem() instanceof GunItem )
+			{
+				PacketHandler.getPlayChannel().sendToServer( new MessageUpdateGunID() );
+				if( !SyncedPlayerData.instance().get( player, ModSyncedDataKeys.RELOADING ) )
+					this.setReloading( true );
+				else if(
+					GunAnimationController.fromItem( stack.getItem() )
+						instanceof PumpShotgunAnimationController
+				) this.setReloading( false );
+			}
+		} );
+    	
+    	final Runnable callback = () -> {
+    		if( !this.isReloading() )
+			{
+				final SimpleChannel channel = PacketHandler.getPlayChannel();
+				channel.sendToServer( new MessageUpdateGunID() );
+				this.setReloading( false );
+				channel.sendToServer( new MessageUnload() );
+			}
+    	};
+    	InputHandler.UNLOAD.addPressCallBack( callback );
+    	InputHandler.CO_UNLOAD.addPressCallBack( callback );
     }
 
     @SubscribeEvent
@@ -246,31 +275,6 @@ public class ReloadHandler {
             return;
 
     }*/
-
-    @SubscribeEvent
-    public void onKeyPressed(InputEvent.KeyInputEvent event) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player == null) {
-            return;
-        }
-        ItemStack stack = player.getHeldItemMainhand();
-        if (KeyBinds.KEY_RELOAD.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS && stack.getItem() instanceof GunItem) {
-            PacketHandler.getPlayChannel().sendToServer(new MessageUpdateGunID());
-            if (!SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING)) {
-                this.setReloading(true);
-            } else {
-                GunAnimationController controller = GunAnimationController.fromItem(player.getHeldItemMainhand().getItem());
-                if(controller instanceof PumpShotgunAnimationController)
-                    this.setReloading(false);
-            }
-        }
-        if (KeyBinds.KEY_UNLOAD.isPressed() && event.getAction() == GLFW.GLFW_PRESS) {
-            if(isReloading()) return;
-            PacketHandler.getPlayChannel().sendToServer(new MessageUpdateGunID());
-            this.setReloading(false);
-            PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
-        }
-    }
 
     public void setReloading(boolean reloading) {
         PlayerEntity player = Minecraft.getInstance().player;
