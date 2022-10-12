@@ -209,7 +209,7 @@ public enum AnimationHandler {
         }
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event){
         AnimationSoundManager.INSTANCE.onPlayerDeath(event.getPlayer());
     }
@@ -264,5 +264,5 @@ public enum AnimationHandler {
             controller.runAnimation(GunAnimationController.AnimationLabel.STATIC);
             controller.stopAnimation();
         }
-    }
+    }*/
 }
