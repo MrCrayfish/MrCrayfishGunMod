@@ -1,43 +1,25 @@
 package com.tac.guns.client.handler;
 
-import com.tac.guns.Reference;
-import com.tac.guns.client.KeyBinds;
+import static com.tac.guns.GunMod.LOGGER;
+
+import java.util.UUID;
+
+import org.apache.logging.log4j.Level;
+
+import com.tac.guns.client.InputHandler;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.NetworkGunManager;
-import com.tac.guns.init.ModBlocks;
-import com.tac.guns.init.ModItems;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageLightChange;
-import com.tac.guns.network.message.MessageShooting;
-import com.tac.guns.tileentity.FlashLightSource;
-import net.minecraft.block.Block;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.resources.ResourcePackInfo;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IWorld;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.Level;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.UUID;
-
-import static com.tac.guns.GunMod.LOGGER;
-import static net.minecraftforge.eventbus.api.EventPriority.HIGHEST;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -55,6 +37,24 @@ public class FlashlightHandler
         return instance;
     }
 
+    private boolean active = false;
+    
+    private FlashlightHandler()
+    {
+    	InputHandler.ACTIVATE_SIDE_RAIL.addPressCallBack( () -> {
+    		final Minecraft mc = Minecraft.getInstance();
+    		final PlayerEntity player = mc.player;
+    		if(
+    			player != null
+    			&& player.getHeldItemMainhand().getItem() instanceof GunItem
+    			&& Gun.getAttachment(
+    				IAttachment.Type.SIDE_RAIL,
+    				player.getHeldItemMainhand()
+    			) != null
+    		) this.active = !active;
+    	} );
+    }
+
     private boolean isInGame()
     {
         Minecraft mc = Minecraft.getInstance();
@@ -65,27 +65,6 @@ public class FlashlightHandler
         if(!mc.mouseHelper.isMouseGrabbed())
             return false;
         return mc.isGameFocused();
-    }
-
-    private boolean active = false;
-    @SubscribeEvent
-    public void onKeyPressed(InputEvent.KeyInputEvent event)
-    {
-        if(event.getAction() != GLFW.GLFW_PRESS)
-            return;
-        Minecraft mc = Minecraft.getInstance();
-        PlayerEntity player = mc.player;
-        if(player == null)
-            return;
-        if(KeyBinds.KEY_ACTIVATE_SIDE_RAIL.isPressed() && event.getAction() == GLFW.GLFW_PRESS) // REPLACE KEYBIND
-        {
-            if(player.getHeldItemMainhand().getItem() instanceof GunItem)
-            {
-                if(Gun.getAttachment(IAttachment.Type.SIDE_RAIL,player.getHeldItemMainhand()) != null)
-                    this.active=!active;
-            }
-            return;
-        }
     }
 
     @SubscribeEvent

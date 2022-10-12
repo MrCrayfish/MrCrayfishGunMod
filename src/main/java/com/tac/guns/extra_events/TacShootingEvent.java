@@ -1,5 +1,9 @@
 package com.tac.guns.extra_events;
 
+import java.util.Locale;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 /**
  * This class will be used for all shooting events that I will utilise.
  * The gun mod provides 3 events for firing guns check out {@link com.mrcrayfish.guns.event.GunFireEvent} for what they are
@@ -8,30 +12,20 @@ package com.tac.guns.extra_events;
 
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
-import com.tac.guns.client.KeyBinds;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.TransitionalTypes.MBPGunItem;
-import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageGunSound;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.KeybindTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.network.PacketDistributor;
-import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.Locale;
 
 
 /**

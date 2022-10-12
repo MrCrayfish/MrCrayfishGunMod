@@ -1,8 +1,27 @@
 package com.tac.guns.client;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+
 import com.tac.guns.Config;
+import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
-import com.tac.guns.client.handler.*;
+import com.tac.guns.client.handler.AimingHandler;
+import com.tac.guns.client.handler.AnimationHandler;
+import com.tac.guns.client.handler.ArmorRenderingHandler;
+import com.tac.guns.client.handler.BulletTrailRenderingHandler;
+import com.tac.guns.client.handler.CrosshairHandler;
+import com.tac.guns.client.handler.FireModeSwitchEvent;
+import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.HUDRenderingHandler;
+import com.tac.guns.client.handler.MovementAdaptationsHandler;
+import com.tac.guns.client.handler.RecoilHandler;
+import com.tac.guns.client.handler.ReloadHandler;
+import com.tac.guns.client.handler.ScopeJitterHandler;
+import com.tac.guns.client.handler.ShootingHandler;
+import com.tac.guns.client.handler.SightSwitchEvent;
+import com.tac.guns.client.handler.SoundHandler;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.handler.command.ObjectRenderEditor;
@@ -13,18 +32,45 @@ import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
 import com.tac.guns.client.render.entity.ThrowableGrenadeRenderer;
 import com.tac.guns.client.render.gun.ModelOverrides;
-import com.tac.guns.client.render.gun.model.*;
-import com.tac.guns.client.screen.*;
+import com.tac.guns.client.render.gun.model.ACOG_4x_ScopeModel;
+import com.tac.guns.client.render.gun.model.AimpointT1SightModel;
+import com.tac.guns.client.render.gun.model.CoyoteSightModel;
+import com.tac.guns.client.render.gun.model.EotechNSightModel;
+import com.tac.guns.client.render.gun.model.EotechShortSightModel;
+import com.tac.guns.client.render.gun.model.LongRange8xScopeModel;
+import com.tac.guns.client.render.gun.model.MicroHoloSightModel;
+import com.tac.guns.client.render.gun.model.MiniDotSightModel;
+import com.tac.guns.client.render.gun.model.OldLongRange4xScopeModel;
+import com.tac.guns.client.render.gun.model.OldLongRange8xScopeModel;
+import com.tac.guns.client.render.gun.model.Qmk152ScopeModel;
+import com.tac.guns.client.render.gun.model.SLX_2X_ScopeModel;
+import com.tac.guns.client.render.gun.model.SrsRedDotSightModel;
+import com.tac.guns.client.render.gun.model.VortexLPVO_1_4xScopeModel;
+import com.tac.guns.client.render.gun.model.VortexUh1SightModel;
+import com.tac.guns.client.render.gun.model.elcan_14x_ScopeModel;
+import com.tac.guns.client.screen.AmmoPackScreen;
+import com.tac.guns.client.screen.AttachmentScreen;
+import com.tac.guns.client.screen.InspectScreen;
+import com.tac.guns.client.screen.TaCSettingsScreen;
+import com.tac.guns.client.screen.UpgradeBenchScreen;
+import com.tac.guns.client.screen.WorkbenchScreen;
 import com.tac.guns.client.settings.GunOptions;
 import com.tac.guns.client.util.UpgradeBenchRenderUtil;
-import com.tac.guns.init.*;
+import com.tac.guns.init.ModBlocks;
+import com.tac.guns.init.ModContainers;
+import com.tac.guns.init.ModEntities;
+import com.tac.guns.init.ModItems;
+import com.tac.guns.init.ModTileEntities;
 import com.tac.guns.item.IColored;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAttachments;
 import com.tac.guns.network.message.MessageInspection;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.ControlsScreen;
 import net.minecraft.client.gui.screen.MouseSettingsScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.VideoSettingsScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
@@ -33,6 +79,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -45,8 +92,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.lang.reflect.Field;
-
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
  */
@@ -55,7 +100,9 @@ public class ClientHandler
 {
     private static Field mouseOptionsField;
 
-    public static void setup()
+    private static File keyBindsFile;
+    
+    public static void setup( Minecraft mc )
     {
         MinecraftForge.EVENT_BUS.register(AimingHandler.get());
         MinecraftForge.EVENT_BUS.register(BulletTrailRenderingHandler.get());
@@ -85,7 +132,15 @@ public class ClientHandler
 
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), UpgradeBenchRenderUtil::new);
 
-        KeyBinds.register();
+        // Load key binds
+        keyBindsFile = new File( mc.gameDir, "config/tac-key-binds.txt" );
+        if( !keyBindsFile.exists() )
+        {
+        	try { keyBindsFile.createNewFile(); }
+        	catch( IOException e ) { GunMod.LOGGER.error( "Fail to create key binds file" ); }
+        	InputHandler.saveTo( keyBindsFile );
+        }
+        else InputHandler.readFrom( keyBindsFile );
 
         setupRenderLayers();
         registerEntityRenders();
@@ -153,7 +208,7 @@ public class ClientHandler
 
         ModelOverrides.register(ModItems.MINI_DOT.get(), new MiniDotSightModel());
         ModelOverrides.register(ModItems.MICRO_HOLO_SIGHT.get(), new MicroHoloSightModel());
-     }
+    }
 
     private static void registerScreenFactories()
     {
@@ -205,7 +260,43 @@ public class ClientHandler
         }
 */
     }
-
+    
+    private static Screen prevScreen = null;
+    @SubscribeEvent
+    public static void onGUIChange( GuiOpenEvent evt )
+    {
+    	final Screen gui = evt.getGui();
+    	
+    	// Show key binds if control GUI is activated
+    	if( gui instanceof ControlsScreen )
+    		InputHandler.restoreKeyBinds();
+    	else if( prevScreen instanceof ControlsScreen )
+    		InputHandler.clearKeyBinds( keyBindsFile );
+    	
+    	prevScreen = gui;
+    }
+    
+    static
+    {
+    	InputHandler.ATTACHMENTS.addPressCallBack( () -> {
+    		final Minecraft mc = Minecraft.getInstance();
+    		if( mc.player != null && mc.currentScreen == null )
+    			PacketHandler.getPlayChannel().sendToServer( new MessageAttachments() );
+    	} );
+    	
+    	final Runnable callback = () -> {
+    		final Minecraft mc = Minecraft.getInstance();
+    		if(
+    			mc.player != null
+    			&& mc.currentScreen == null
+    			&& GunAnimationController.fromItem(
+    				Minecraft.getInstance().player.inventory.getCurrentItem().getItem()
+    			) == null
+    		) PacketHandler.getPlayChannel().sendToServer( new MessageInspection() );
+    	};
+    	InputHandler.INSPECT.addPressCallBack( callback );
+    	InputHandler.CO_INSPECT.addPressCallBack( callback );
+    }
     @SubscribeEvent
     public static void onKeyPressed(InputEvent.KeyInputEvent event)
     {
@@ -216,19 +307,10 @@ public class ClientHandler
             {
                 PacketHandler.getPlayChannel().sendToServer(new MessageIronSightSwitch());
             }*/
-            if(KeyBinds.KEY_ATTACHMENTS.isPressed())
-            {
-                PacketHandler.getPlayChannel().sendToServer(new MessageAttachments());
-            }
             /*else if(KeyBinds.COLOR_BENCH.isPressed())
             {
                 PacketHandler.getPlayChannel().sendToServer(new MessageColorBench());
             }*/
-            else if(KeyBinds.KEY_INSPECT.isPressed())
-            {
-                if(GunAnimationController.fromItem(mc.player.inventory.getCurrentItem().getItem()) != null) return;
-                PacketHandler.getPlayChannel().sendToServer(new MessageInspection());
-            }
         }
     }
 

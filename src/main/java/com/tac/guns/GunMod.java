@@ -311,7 +311,7 @@ public class GunMod
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        ClientHandler.setup();
+        ClientHandler.setup( event.getMinecraftSupplier().get() );
 
         for (Field field : ModItems.class.getDeclaredFields()) {
             RegistryObject<?> object;

@@ -180,7 +180,11 @@ public class RecoilHandler
         //cooldown = cooldown >= modifiedGun.getGeneral().getRecoilDurationOffset() ? (cooldown - modifiedGun.getGeneral().getRecoilDurationOffset()) / (1.0F - modifiedGun.getGeneral().getRecoilDurationOffset()) : 0.0F;
 
         //float durationRandom = this.random.nextFloat()*(1.22f - 0.75f) + 0.75f;  * durationRandom
-        //float weaponRecoilDuration = modifiedGun.getGeneral().getWeaponRecoilDuration() >= 0.0F && modifiedGun.getGeneral().getWeaponRecoilDuration() <= 1.0F ? modifiedGun.getGeneral().getWeaponRecoilDuration(): 0.5F;
+
+        //float weaponRecoilDuration = modifiedGun.getGeneral().getWeaponRecoilOffset() >= 0.0F && modifiedGun.getGeneral().getWeaponRecoilOffset() <= 1.0F ? modifiedGun.getGeneral().getWeaponRecoilOffset(): 0.5F;
+
+        //boolean tooFast = modifiedGun.getGeneral().getRate() < 2;
+
 
         //boolean tooFast = modifiedGun.getGeneral().getRate() < 2;
 
@@ -195,14 +199,18 @@ public class RecoilHandler
             /*if(modifiedGun.getGeneral().getRate() < 15)
             {
                 //float amount = (cooldown / 0.8F);
-                float amount = (cooldown / modifiedGun.getGeneral().getWeaponRecoilDuration());
+
+                float amount = (cooldown / modifiedGun.getGeneral().getWeaponRecoilOffset());
+
                 //this.gunRecoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
                 this.gunRecoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
                 //this.gunRecoilNormal*=1.2F;
             }
             else
             {*/
-                float amount = ( (cooldown) / modifiedGun.getGeneral().getWeaponRecoilDuration() );
+
+                float amount = ( (cooldown) / modifiedGun.getGeneral().getWeaponRecoilOffset() );
+                
                 this.gunRecoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
             //}
         }
