@@ -169,7 +169,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
             {
-                gunSpread *= 7.5F*(1+SyncedPlayerData.instance().get((PlayerEntity) shooter,
+                gunSpread *= 2.5F*(1+SyncedPlayerData.instance().get((PlayerEntity) shooter,
                         ModSyncedDataKeys.MOVING));
             }
             if(((PlayerEntity) shooter).isCrouching())

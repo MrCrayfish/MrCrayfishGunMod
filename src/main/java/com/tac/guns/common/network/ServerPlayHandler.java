@@ -621,7 +621,8 @@ public class ServerPlayHandler
         }
     }
 
-    public static void handleMovementUpdate(ServerPlayerEntity player, boolean handle)
+    public static void handleMovementUpdate(ServerPlayerEntity player, boolean handle,
+                                            float dist)
     {
         if (player == null)
             return;
@@ -632,11 +633,14 @@ public class ServerPlayHandler
 
         if(handle)
         {
-            if(player.distanceWalkedOnStepModified != 0)
+            /*if(prevDist-player.distanceWalkedOnStepModified != 0)
                 SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING,
-                    (float)(player.prevDistanceWalkedModified-player.distanceWalkedOnStepModified));
+                    (float)(player.distanceWalkedOnStepModified-prevDist));
+            */if(dist != 0)
+                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING, dist);
             else
                 SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING, 0f);
+
         }
 
         ItemStack heldItem = player.getHeldItemMainhand();
