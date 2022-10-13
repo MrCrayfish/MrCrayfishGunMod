@@ -56,7 +56,7 @@ public final class InputHandler
 	 */
 	public static final KeyBind
 		RELOAD = new KeyBind( "key.tac.reload", GLFW.GLFW_KEY_R ),
-		UNLOAD = new KeyBind( "key.tac.unload", GLFW.GLFW_KEY_U ),
+		UNLOAD = new KeyBind( "key.tac.unload", InputMappings.INPUT_INVALID.getKeyCode() ),
 		ATTACHMENTS = new KeyBind( "key.tac.attachments", GLFW.GLFW_KEY_Z ),
 		
 		FIRE_SELECT = new KeyBind( "key.tac.fireSelect", GLFW.GLFW_KEY_G ),
@@ -72,7 +72,7 @@ public final class InputHandler
 	 */
 	public static final KeyBind
 		CO = new KeyBind( "key.tac.co", GLFW.GLFW_KEY_LEFT_ALT ),
-		CO_UNLOAD = new KeyBind( "key.tac.co_unload", -1 ),
+		CO_UNLOAD = new KeyBind( "key.tac.co_unload", GLFW.GLFW_KEY_R ),
 		CO_INSPECT = new KeyBind( "key.tac.co_inspect", -1 );
 	
 	/**
@@ -110,10 +110,8 @@ public final class InputHandler
 			PULL_TRIGGER,
 			AIM_HOLD,
 			AIM_TOGGLE,
-			CO,
-			P
+			CO
 		);
-		P.addPressCallBack( () -> GunMod.LOGGER.info( "key down: " + AIM_HOLD.down ) );
 		
 		regisAll(
 			NORMAL_KEYS,
