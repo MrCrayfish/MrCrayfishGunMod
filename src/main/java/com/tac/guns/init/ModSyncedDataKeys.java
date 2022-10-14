@@ -35,8 +35,6 @@ public class ModSyncedDataKeys
             .resetOnDeath()
             .build();
 
-    // Create new moving tag, can use a number to be speed dependent, or another simple boolean
-
     public static void register()
     {
         SyncedPlayerData.instance().registerKey(AIMING);
