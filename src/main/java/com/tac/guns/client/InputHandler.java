@@ -20,9 +20,12 @@ import com.tac.guns.Reference;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.InputMappings.Type;
+import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.InputEvent.RawMouseEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -40,15 +43,20 @@ public final class InputHandler
 	 * Universal keys. These keys will always update
 	 */
 	public static final KeyBind
-		PULL_TRIGGER = new KeyBind( "key.tac.pull_trigger", 0, Type.MOUSE ),
-		AIM_SIGHTS = new KeyBind( "key.tac.aim_sights", 1, Type.MOUSE );
+		PULL_TRIGGER = new KeyBind(
+			"key.tac.pull_trigger",
+			GLFW.GLFW_MOUSE_BUTTON_LEFT,
+			Type.MOUSE
+		),
+		AIM_HOLD = new KeyBind( "key.tac.aim_hold", GLFW.GLFW_MOUSE_BUTTON_RIGHT, Type.MOUSE ),
+		AIM_TOGGLE = new KeyBind( "key.tac.aim_toggle", InputMappings.INPUT_INVALID.getKeyCode() );
 	
 	/**
 	 * Normal keys. These keys will update when {@link #CO} is not down.
 	 */
 	public static final KeyBind
 		RELOAD = new KeyBind( "key.tac.reload", GLFW.GLFW_KEY_R ),
-		UNLOAD = new KeyBind( "key.tac.unload", GLFW.GLFW_KEY_U ),
+		UNLOAD = new KeyBind( "key.tac.unload", InputMappings.INPUT_INVALID.getKeyCode() ),
 		ATTACHMENTS = new KeyBind( "key.tac.attachments", GLFW.GLFW_KEY_Z ),
 		
 		FIRE_SELECT = new KeyBind( "key.tac.fireSelect", GLFW.GLFW_KEY_G ),
@@ -56,6 +64,8 @@ public final class InputHandler
 		SIGHT_SWITCH = new KeyBind( "key.tac.sight_switch", GLFW.GLFW_KEY_V ),
 		ACTIVATE_SIDE_RAIL = new KeyBind( "key.tac.activateSideRail", GLFW.GLFW_KEY_B );
 		
+
+		// TODO: remove this key maybe? At least not used now.
 //		COLOR_BENCH = new KeyBind( "key.tac.color_bench", GLFW.GLFW_KEY_PAGE_DOWN );
 	
 	/**
@@ -63,7 +73,8 @@ public final class InputHandler
 	 */
 	public static final KeyBind
 		CO = new KeyBind( "key.tac.co", GLFW.GLFW_KEY_LEFT_ALT ),
-		CO_UNLOAD = new KeyBind( "key.tac.co_unload", -1 ),
+
+		CO_UNLOAD = new KeyBind( "key.tac.co_unload", GLFW.GLFW_KEY_R ),
 		CO_INSPECT = new KeyBind( "key.tac.co_inspect", -1 );
 	
 	/**
@@ -99,7 +110,9 @@ public final class InputHandler
 			UNIVERSAL_KEYS,
 			
 			PULL_TRIGGER,
-			AIM_SIGHTS,
+
+			AIM_HOLD,
+			AIM_TOGGLE,
 			CO
 		);
 		
@@ -141,17 +154,36 @@ public final class InputHandler
 			);
 		}
 	}
-	
-	// TODO: maybe narrow down the events to receive
+
+	/**
+	 * Original TAC implementation seems to try to prevent gun from destroying block and bobbing on
+	 * use by canceling the {@link RawMouseEvent} event. Hence to receive the update, we need a
+	 * higher priority to receive event ahead. But I have to say this kind of implementation is a
+	 * bit of ugly. There are actually methods on {@link Item} that can be override to control the
+	 * behavior of item on mouse input.
+	 * 
+	 * TODO: maybe refactor this part
+	 */
+	@SubscribeEvent( priority = EventPriority.HIGH )
+	public static void onMouseInput( InputEvent.RawMouseEvent evt )
+	{
+		UNIVERSAL_KEYS.forEach( KeyBind::update );
+		( CO.down ? CO_KEYS : NORMAL_KEYS ).forEach( KeyBind::update );
+		( CO.down ? NORMAL_KEYS : CO_KEYS ).forEach( KeyBind::reset );
+	}
+
 	@SubscribeEvent
-	public static void onKeyInput( InputEvent evt )
+	public static void onKeyInput( InputEvent.KeyInputEvent evt )
 	{
 		UNIVERSAL_KEYS.forEach( KeyBind::update );
 		( CO.down ? CO_KEYS : NORMAL_KEYS ).forEach( KeyBind::update );
 		( CO.down ? NORMAL_KEYS : CO_KEYS ).forEach( KeyBind::reset );
 	}
 	
-	static void restoreKeyBinds() {
+	private static KeyBind oriAimKey;
+	static void restoreKeyBinds()
+	{
+		oriAimKey = AIM_HOLD.keyCode() != InputMappings.INPUT_INVALID ? AIM_HOLD : AIM_TOGGLE;
 		KeyBind.REGISTRY.values().forEach( KeyBind::restoreKeyBind );
 	}
 	
@@ -160,9 +192,21 @@ public final class InputHandler
 		boolean flag = false;
 		for( KeyBind key : KeyBind.REGISTRY.values())
 			flag |= key.clearKeyBind();
+
+		// Make sure only one aim key is bounden
+		if(
+			AIM_HOLD.keyCode() != InputMappings.INPUT_INVALID
+			&& AIM_TOGGLE.keyCode() != InputMappings.INPUT_INVALID
+		) {
+			( oriAimKey == AIM_HOLD ? AIM_HOLD : AIM_TOGGLE )
+				.$keyCode( InputMappings.INPUT_INVALID );
+			flag = true;
+		}
 		
+		// Do not forget to update key bind hash
 		KeyBinding.resetKeyBindingArrayAndHash();
 		
+		// If any key bind has changed, save it to the file
 		if( flag )
 			saveTo( file );
 	}

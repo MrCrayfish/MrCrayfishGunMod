@@ -143,9 +143,9 @@ public class ObjectRenderEditor
         float zMod = element.zMod;
         float sizeMod = element.sizeMod;
         float stepModifier = 1;
+        /*if(isShiftDown)
+            stepModifier*=10;*/
         if(isShiftDown)
-            stepModifier*=10;
-        if(isControlDown)
             stepModifier/=10;
 
         if (isPeriodDown && isUp) {
@@ -154,10 +154,10 @@ public class ObjectRenderEditor
         else if (isPeriodDown && isDown) {
             sizeMod -= 0.05*stepModifier;
         }
-        else if (isAltDown && isUp) {
+        else if (isControlDown && isUp) {
             zMod += 0.05*stepModifier;
         }
-        else if (isAltDown && isDown) {
+        else if (isControlDown && isDown) {
             zMod -= 0.05*stepModifier;
         }
         else if (isLeft) {

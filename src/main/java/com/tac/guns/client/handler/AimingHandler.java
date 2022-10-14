@@ -5,8 +5,6 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
@@ -29,6 +27,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.PointOfView;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
@@ -74,19 +72,31 @@ public class AimingHandler
     public void resetCurrentScopeZoomIndex() {this.currentScopeZoomIndex = 0;}
     private int currentScopeZoomIndex = 0;
 
-    private AimingHandler()
-    {
-    	InputHandler.SIGHT_SWITCH.addPressCallBack( () -> {
-            final Minecraft mc = Minecraft.getInstance();
-            if(
-            	mc.player != null
-            	&& (
-            		mc.player.getHeldItemMainhand().getItem() instanceof GunItem
-            		|| Gun.getScope( mc.player.getHeldItemMainhand() ) != null
-            	)
-            ) this.currentScopeZoomIndex++;
-    	} );
-    }
+	private AimingHandler()
+	{
+		InputHandler.SIGHT_SWITCH.addPressCallBack( () -> {
+			final Minecraft mc = Minecraft.getInstance();
+			if(
+				mc.player != null
+				&& (
+					mc.player.getHeldItemMainhand().getItem() instanceof GunItem
+					|| Gun.getScope( mc.player.getHeldItemMainhand() ) != null
+				)
+			) this.currentScopeZoomIndex++;
+		} );
+		
+		InputHandler.AIM_TOGGLE.addPressCallBack( () -> {
+			final Minecraft mc = Minecraft.getInstance();
+			if(
+				mc.player != null
+				&& mc.player.getHeldItemMainhand().getItem() instanceof GunItem
+				&& this.toggledAimAwaiter <= 0
+			) {
+				this.forceToggleAim();
+				this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
+			}
+		} );
+	}
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -252,9 +262,9 @@ public class AimingHandler
 
         boolean zooming;
 
-        if(!Config.CLIENT.controls.toggleAim.get())
+        if( InputHandler.AIM_HOLD.keyCode() != InputMappings.INPUT_INVALID )
         {
-            zooming = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+            zooming = InputHandler.AIM_HOLD.down;
 
             if (GunMod.controllableLoaded) {
                 // zooming |= ControllerHandler.isAiming();
@@ -264,53 +274,6 @@ public class AimingHandler
             zooming = this.toggledAim;
 
         return zooming;
-    }
-
-    @SubscribeEvent
-    public void onKeyPressed(InputEvent.KeyInputEvent event)
-    {
-        if(!Config.CLIENT.controls.toggleAim.get())
-            return;
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null)
-            return;
-        if(!(mc.player.getHeldItemMainhand().getItem() instanceof GunItem))
-            return;
-        if(this.toggledAimAwaiter > 0)
-            return;
-
-        // FIXME: cant handle this part
-//        boolean isLeftClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_LEFT);
-//        boolean isRightClickAim = KeyBinds.KEY_ADS.matchesMouseKey(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
-//        if(isLeftClickAim || isRightClickAim)
-//            return;
-//        if (KeyBinds.KEY_ADS.isKeyDown() && event.getAction() == GLFW.GLFW_PRESS) {
-//            this.forceToggleAim();
-//            this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
-//        }
-    }
-
-    @SubscribeEvent
-    public void onKeyPressed(InputEvent.RawMouseEvent event)
-    {
-        if(!Config.CLIENT.controls.toggleAim.get())
-            return;
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null)
-            return;
-        if(!(mc.player.getHeldItemMainhand().getItem() instanceof GunItem))
-            return;
-        if(this.toggledAimAwaiter > 0)
-            return;
-        if(event.getAction() != GLFW.GLFW_PRESS)
-            return;
-
-        // FIXME: Cant handle this part
-//        if(event.getButton() == KeyBinds.KEY_ADS.getKey().getKeyCode())
-//        {
-//            forceToggleAim();
-//            this.toggledAimAwaiter = Config.CLIENT.controls.toggleAimDelay.get();
-//        }
     }
 
     public boolean isToggledAim()

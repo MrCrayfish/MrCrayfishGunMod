@@ -1,27 +1,16 @@
 package com.tac.guns.client.handler;
 
-import com.tac.guns.GunMod;
-import com.tac.guns.client.network.ClientPlayHandler;
-import com.tac.guns.common.Gun;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageReload;
 import com.tac.guns.network.message.MessageUpdatePlayerMovement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.NetworkManager;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.PacketDistributor;
-import org.apache.logging.log4j.Level;
 
 public class MovementAdaptationsHandler
 {
@@ -64,6 +53,8 @@ public class MovementAdaptationsHandler
 
     private float speed = 0.0F;
     private float previousWeight = 0.0F;
+
+    private float movement = 0.0F;
 
     //private Byte previousGun;
 
@@ -111,5 +102,16 @@ public class MovementAdaptationsHandler
             return;
         }
         PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement());
+    }
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void movementRec(TickEvent.ClientTickEvent event)
+    {
+        if (Minecraft.getInstance().player == null) {
+            return;
+        }
+        PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement(true,
+                this.movement));
+        this.movement =
+                (Math.abs(Minecraft.getInstance().player.movementInput.moveForward)/2+Math.abs(Minecraft.getInstance().player.movementInput.moveStrafe)/2)*(Minecraft.getInstance().player.movementInput.jump ? 2:1)+(Minecraft.getInstance().player.movementInput.jump ? 1:0);
     }
 }

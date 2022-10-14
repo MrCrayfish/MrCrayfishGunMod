@@ -1,8 +1,10 @@
 package com.tac.guns.client.handler;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
-import com.tac.guns.client.settings.GunOptions;
+import com.tac.guns.client.InputHandler;
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.item.GunItem;
@@ -12,23 +14,16 @@ import com.tac.guns.network.message.MessageShoot;
 import com.tac.guns.network.message.MessageShooting;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.Level;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.UUID;
-
-import static com.tac.guns.GunMod.LOGGER;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -102,15 +97,6 @@ public class  ShootingHandler
         if(player == null)
             return;
 
-        if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && AimingHandler.get().isLookingAtInteractableBlock())
-        {
-            if(player.getHeldItemMainhand().getItem() instanceof GunItem && !AimingHandler.get().isLookingAtInteractableBlock())
-            {
-                event.setCanceled(true);
-            }
-            return;
-        }
-
         ItemStack heldItem = player.getHeldItemMainhand();
         if(heldItem.getItem() instanceof GunItem)
         {
@@ -119,7 +105,7 @@ public class  ShootingHandler
             {
                 event.setCanceled(true);
             }
-            if(event.getAction() == GLFW.GLFW_PRESS && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+            if( InputHandler.PULL_TRIGGER.down )
             {
                 if(heldItem.getItem() instanceof TimelessGunItem && heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstCooldown == 0)
                 {
@@ -130,7 +116,6 @@ public class  ShootingHandler
                 }
                 else if(this.burstCooldown == 0)
                     fire(player, heldItem);
-
             }
         }
     }
@@ -151,7 +136,7 @@ public class  ShootingHandler
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
-                boolean shooting = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS && !this.clickUp;
+                boolean shooting = InputHandler.PULL_TRIGGER.down && !this.clickUp;
                 if(GunRenderingHandler.get().sprintTransition != 0) {
                     shooting = false;
                 }
@@ -185,39 +170,6 @@ public class  ShootingHandler
         }
     }
 
-    /*@SubscribeEvent
-    public void onHandleBurstShootonKeyPressed(InputEvent.RawMouseEvent event)
-    {
-        if(!this.isInGame())
-            return;
-
-        if(event.getAction() != GLFW.GLFW_PRESS)
-            return;
-
-        Minecraft mc = Minecraft.getInstance();
-        PlayerEntity player = mc.player;
-        if(player == null)
-            return;
-        if(!Config.CLIENT.controls.burstPress.get())
-            return;
-
-        if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-            ItemStack heldItem = player.getHeldItemMainhand();
-            if (heldItem.getItem() instanceof TimelessGunItem) {
-                TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
-                Gun gun = gunItem.getGun();
-                if (heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstCooldown == 0)
-                {
-                //CooldownTracker tracker = player.getCooldownTracker();
-                    //if (!tracker.hasCooldown(heldItem.getItem())) {
-                        //fire(player, heldItem);
-                        this.burstTracker = gun.getGeneral().getBurstCount();
-                        this.burstCooldown = gun.getGeneral().getBurstRate();
-                    //}
-                }
-            }
-        }
-    }*/
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
     {
@@ -280,7 +232,7 @@ public class  ShootingHandler
                     }*/
                     return;
                 }
-                else if(GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS)
+                else if( InputHandler.PULL_TRIGGER.down )
                 {
                     Gun gun = ((TimelessGunItem) heldItem.getItem()).getModifiedGun(heldItem);
                     if (gun.getGeneral().isAuto() && heldItem.getTag().getInt("CurrentFireMode") == 2) {
@@ -311,7 +263,7 @@ public class  ShootingHandler
                     }
                     //}
                 }
-                else if(this.clickUp || GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_RELEASE)
+                else if(this.clickUp || InputHandler.PULL_TRIGGER.down )
                 {
                     if(heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstTracker > 0) {
                         this.burstCooldown = gunItem.getGun().getGeneral().getBurstRate();

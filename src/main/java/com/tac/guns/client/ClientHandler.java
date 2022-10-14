@@ -81,8 +81,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -235,7 +233,7 @@ public class ClientHandler
             {
                 OptionsRowList list = (OptionsRowList) mouseOptionsField.get(screen);
                 list.addOption(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
-                list.addOption(GunOptions.TOGGLE_ADS);/*, GunOptions.BURST_MECH);*/
+                /*, GunOptions.BURST_MECH);*/
             }
             catch(IllegalAccessException e)
             {
@@ -262,6 +260,7 @@ public class ClientHandler
     }
     
     private static Screen prevScreen = null;
+
     @SubscribeEvent
     public static void onGUIChange( GuiOpenEvent evt )
     {
@@ -296,22 +295,6 @@ public class ClientHandler
     	};
     	InputHandler.INSPECT.addPressCallBack( callback );
     	InputHandler.CO_INSPECT.addPressCallBack( callback );
-    }
-    @SubscribeEvent
-    public static void onKeyPressed(InputEvent.KeyInputEvent event)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && mc.currentScreen == null)
-        {
-            /*if(KeyBinds.KEY_SIGHT_SWITCH.isPressed())
-            {
-                PacketHandler.getPlayChannel().sendToServer(new MessageIronSightSwitch());
-            }*/
-            /*else if(KeyBinds.COLOR_BENCH.isPressed())
-            {
-                PacketHandler.getPlayChannel().sendToServer(new MessageColorBench());
-            }*/
-        }
     }
 
     /* Uncomment for debugging headshot hit boxes */

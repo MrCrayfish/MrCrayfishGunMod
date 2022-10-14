@@ -12,8 +12,8 @@ public class SecondOrderDynamics {
 
     /**
      * @param f Natural frequency
-     * @param r Initial response
      * @param z Damping coefficient
+     * @param r Initial response
      * @param x0 Initial position
      * */
     public SecondOrderDynamics(float f, float z, float r,Vector3f x0){

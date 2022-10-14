@@ -6,8 +6,6 @@ import java.util.function.Function;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.tac.guns.GunMod;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -144,7 +142,6 @@ public final class KeyBind
 		if( code == this.keyCode ) return false;
 		
 		// Key bind has been changed, update it
-		GunMod.LOGGER.info( "key bind changed " + this.name() + ":" + this.keyCode() );
 		this.$keyCode( code );
 		this.keyBind.bind( InputMappings.INPUT_INVALID );
 		return true;

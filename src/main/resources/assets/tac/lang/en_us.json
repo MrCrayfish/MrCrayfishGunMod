@@ -237,16 +237,24 @@
 
     "key.categories.tac": "Timeless and Classic Guns",
 
+	"key.tac.pull_trigger": "Pull Trigger",
+	"key.tac.aim_hold": "Aim Hold",
+	"key.tac.aim_toggle": "Aim Toggle",
+	
     "key.tac.reload": "Reload",
     "key.tac.unload": "Unload",
-    "key.tac.activateSideRail": "Toggle Devices",
-    "key.tac.aim_sights": "Toggle ADS",
-    "key.tac.color_bench": "NULL",
+    "key.tac.attachments": "Modify Attachments",
+	
     "key.tac.fireSelect": "Fire Mode",
     "key.tac.inspect": "Inspect Weapon",
+    "key.tac.activateSideRail": "Toggle Devices",
     "key.tac.sight_switch": "Toggle Scope Zoom",
-
-    "key.tac.attachments": "Modify Attachments",
+	
+    "key.tac.color_bench": "Color Bench",
+	
+	"key.tac.co": "Co-key",
+	"key.tac.co_unload": "Co-Unload",
+	"key.tac.co_inspect": "Co-Inspect",
 
     "effect.tac.blinded": "Blinded",
     "effect.tac.deafened": "Deafened",

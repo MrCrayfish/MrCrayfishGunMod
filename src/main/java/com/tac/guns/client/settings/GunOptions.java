@@ -1,19 +1,19 @@
 package com.tac.guns.client.settings;
 
+import java.text.DecimalFormat;
+
 import com.tac.guns.Config;
 import com.tac.guns.client.handler.CrosshairHandler;
 import com.tac.guns.client.render.crosshair.Crosshair;
+
 import net.minecraft.client.AbstractOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.widget.button.OptionButton;
 import net.minecraft.client.settings.BooleanOption;
 import net.minecraft.client.settings.SliderPercentageOption;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
-
-import java.text.DecimalFormat;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -30,13 +30,6 @@ public class GunOptions
     }, (gameSettings, option) -> {
         double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
         return new TranslationTextComponent("tac.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
-    });
-
-    public static final BooleanOption TOGGLE_ADS = new BooleanOption("tac.options.toggleAim", (settings) -> {
-        return Config.CLIENT.controls.toggleAim.get();
-    }, (settings, value) -> {
-        Config.CLIENT.controls.toggleAim.set(value);
-        Config.saveClientConfig();
     });
 
    /* public static final BooleanOption BURST_MECH = new BooleanOption("tac.options.burstPress", (settings) -> {
