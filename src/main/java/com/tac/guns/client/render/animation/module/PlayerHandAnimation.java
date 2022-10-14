@@ -29,21 +29,23 @@ public class PlayerHandAnimation {
         {
             controller.applyLeftHandTransform(matrices);
 
-            if(GunRenderingHandler.get() != null && GunRenderingHandler.get().animationLeftHandSprinter != null)
+            if(GunRenderingHandler.get() != null)
             {
+                Vector3f result =
+                        GunRenderingHandler.get().sprintDynamicsHSSLeftHand.update(0.15f,
+                                new Vector3f((float) (-0.25 * /*leftHanded **/ GunRenderingHandler.get().sOT), (float) (-0.1 * GunRenderingHandler.get().sOT), 35F /** leftHanded*/ * GunRenderingHandler.get().sOT));
                 ObjectRenderEditor.RENDER_Element element =
-                        new ObjectRenderEditor.RENDER_Element(0,0,0,0);
+                        new ObjectRenderEditor.RENDER_Element(0,0,0.25f,0);
                 /*if(ObjectRenderEditor.get() != null && ObjectRenderEditor.get().GetFromElements(1) != null)
                 {
                     element = ObjectRenderEditor.get().GetFromElements(1);
                 }*/
 
                 if(GunRenderingHandler.get().wSpeed > 0.09) {
-                    Vector3f vector = GunRenderingHandler.get().animationLeftHandSprinter;
                     float transition = GunRenderingHandler.get().sOT;
-                    matrices.translate(vector.getX() + ((1.35515f+0.205f+element.getxMod()) * transition),
-                            vector.getY() - ((0.905f+1.48f+element.getyMod()) * transition),
-                            element.getzMod()*10);
+                    matrices.translate(result.getX() + ((1.35515f+0.205f+element.getxMod()) * transition),
+                            result.getY() - ((0.875f+element.getyMod()) * transition),
+                            element.getzMod()*transition);
                 }
             }
             RenderUtil.renderFirstPersonArm(Minecraft.getInstance().player, HandSide.LEFT, matrices, renderBuffer, light);

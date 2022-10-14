@@ -81,11 +81,14 @@ public class GunRenderingHandler {
     private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.45f,0.8f, 0.6f, new Vector3f(0,0,0));
     private final SecondOrderDynamics sprintDynamicsZ = new SecondOrderDynamics(0.45f,0.8f, 0.5f, new Vector3f(0,0,0));
     // High Speed Sprint Dynamics
-    private final SecondOrderDynamics sprintDynamicsHSS = new SecondOrderDynamics(0.45f,0.8f, 0.6f,
+    private final SecondOrderDynamics sprintDynamicsHSS = new SecondOrderDynamics(0.45f,0.8f, 0.5f,
             new Vector3f(0,0,0));
-    private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.45f,0.8f, 0.5f, new Vector3f(0,0,0));
-    public final SecondOrderDynamics sprintDynamicsLeftHand = new SecondOrderDynamics(0.45f,0.8f,
-            0.6f, new Vector3f(0,0,0));
+   /* private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.15f,0.7f,
+            -2.25f, new Vector3f(0,0,0));*/
+    private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.75f,1.525f,
+            0.9f, new Vector3f(0,0,0));
+    public final SecondOrderDynamics sprintDynamicsHSSLeftHand = new SecondOrderDynamics(0.125f,
+            0.715f, 1f, new Vector3f(0,0,0));
     public static GunRenderingHandler get() {
         if (instance == null) {
             instance = new GunRenderingHandler();
@@ -505,7 +508,6 @@ public class GunRenderingHandler {
         this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getMatrixStack(), event.getBuffers(), packedLight, event.getPartialTicks());
         matrixStack.pop();
     }
-    public Vector3f animationLeftHandSprinter = null;
     // Sprinting Offset Transition, the same transition aggregate used for all running anims,
     // made public for adjusting hands within animator instances
     public float sOT = 0.0f;
@@ -533,16 +535,15 @@ public class GunRenderingHandler {
             float leftHanded = hand == HandSide.LEFT ? -1 : 1;
             this.sOT = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
             // Translation
-            Vector3f result = sprintDynamics.update(0.15f, new Vector3f((float) (-0.25 * leftHanded * this.sOT), (float) (-0.1 * this.sOT), 35F * leftHanded * this.sOT));
+            Vector3f result = sprintDynamicsHSS.update(0.15f, new Vector3f((float) (-0.25 * leftHanded * this.sOT), (float) (-0.1 * this.sOT), 35F * leftHanded * this.sOT));
 
             // Rotating to the left a bit
-            Vector3f result2 = sprintDynamicsZ.update(0.015f, new Vector3f(38F * this.sOT, 10f * this.sOT, 0.15f * this.sOT));
+            Vector3f result2 = sprintDynamicsZHSS.update(0.05f, new Vector3f(38F * this.sOT,
+                    2.5f * this.sOT, 0.15f * this.sOT));
 
             // Rotating the Y, needs to have higher scaling to rise higher more quickly
-            Vector3f result3 = sprintDynamicsZ.update(0.32f, new Vector3f(40f * this.sOT, 10f * this.sOT, 0.55f * this.sOT));
-
-            // Lets start with a single vector for the left hand adjustments
-            this.animationLeftHandSprinter = sprintDynamics.update(0.15f, new Vector3f((float) (-0.25 * leftHanded * this.sOT), (float) (-0.1 * this.sOT), 35F * leftHanded * this.sOT));
+            Vector3f result3 = sprintDynamicsZHSS.update(0.05f, new Vector3f(38f * this.sOT,
+                    42.5f * this.sOT, 0.55f * this.sOT));
 
             matrixStack.translate(result.getX() + (0.465f * this.sOT),
                     result.getY() + (0.225f * this.sOT), -result.getZ() / 170);
