@@ -200,14 +200,24 @@
 
     "key.categories.tac": "永恒枪械工坊",
 
-    "key.tac.reload": "装弹",
-    "key.tac.unload": "卸弹",
+	"key.tac.pull_trigger": "武器开火",
+	"key.tac.aim_hold": "按住瞄准",
+	"key.tac.aim_toggle": "切换瞄准",
+	
+    "key.tac.reload": "重新填装",
+    "key.tac.unload": "卸载弹药",
     "key.tac.attachments": "配件管理",
-    "key.tac.activateSideRail": "切换设备",
-    "key.tac.aim_sights": "切换开镜",
-    "key.tac.color_bench": "NULL",
-    "key.tac.fireSelect": "开火模式切换",
+	
+    "key.tac.fireSelect": "切换开火模式",
     "key.tac.inspect": "检视武器",
+	"key.tac.sight_switch": "切换瞄具倍率",
+    "key.tac.activateSideRail": "启动侧轨配件",
+	
+    "key.tac.color_bench": "颜色工坊",
+	
+	"key.tac.co": "辅助键",
+	"key.tac.co_unload": "卸载弹药组合键",
+	"key.tac.co_inspect": "检视武器组合键",
 
     "effect.tac.blinded": "致盲",
     "effect.tac.deafened": "失聪",
