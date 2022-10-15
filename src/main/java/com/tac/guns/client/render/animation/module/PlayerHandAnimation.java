@@ -27,27 +27,34 @@ public class PlayerHandAnimation {
         matrices.pop();
         matrices.push();
         {
-            controller.applyLeftHandTransform(matrices);
-
             if(GunRenderingHandler.get() != null)
             {
-                Vector3f result =
-                        GunRenderingHandler.get().sprintDynamicsHSSLeftHand.update(0.15f,
-                                new Vector3f((float) (-0.25 * /*leftHanded **/ GunRenderingHandler.get().sOT), (float) (-0.1 * GunRenderingHandler.get().sOT), 35F /** leftHanded*/ * GunRenderingHandler.get().sOT));
-                ObjectRenderEditor.RENDER_Element element =
-                        new ObjectRenderEditor.RENDER_Element(0,0,0.25f,0);
                 /*if(ObjectRenderEditor.get() != null && ObjectRenderEditor.get().GetFromElements(1) != null)
                 {
                     element = ObjectRenderEditor.get().GetFromElements(1);
                 }*/
 
+                //When performing a tactical sprint, apply additional actions
                 if(GunRenderingHandler.get().wSpeed > 0.09) {
+                    ObjectRenderEditor.RENDER_Element element =
+                            new ObjectRenderEditor.RENDER_Element(0,0,0.25f,0);
                     float transition = GunRenderingHandler.get().sOT;
-                    matrices.translate(result.getX() + ((1.35515f+0.205f+element.getxMod()) * transition),
-                            result.getY() - ((0.875f+element.getyMod()) * transition),
-                            element.getzMod()*transition);
+
+                    Vector3f result =
+                            GunRenderingHandler.get().sprintDynamicsHSSLeftHand.update(0.15f,
+                                    new Vector3f(
+                                            (float) (-1.2 * /*leftHanded **/ GunRenderingHandler.get().sOT),
+                                            (float) (-0.8 * GunRenderingHandler.get().sOT ),
+                                            transition));
+                    //Reverse the left arm rotation
+                    matrices.rotate(Vector3f.XP.rotationDegrees(-90F * result.getZ()));
+                    matrices.rotate(Vector3f.ZP.rotationDegrees(25f * result.getZ()));
+                    matrices.translate(result.getX() ,
+                            result.getY(),
+                            0);
                 }
             }
+            controller.applyLeftHandTransform(matrices);
             RenderUtil.renderFirstPersonArm(Minecraft.getInstance().player, HandSide.LEFT, matrices, renderBuffer, light);
         }
         matrices.pop();
