@@ -13,13 +13,14 @@
     "recoilAngle": 2.375,
     "horizontalRecoilAngle": 1.75,
     "recoilKick": 1.155,
-    "recoilAdsReduction": 0.375,
+    "recoilAdsReduction": 0.325,
     "weaponRecoilOffset": 0.55,
     "cameraRecoilModifier": 1.1,
     "recoilDuration": 0.275,
     "alwaysSpread": true,
     "spread": 4.31,
-    "weightKilo": 3.0
+    "weightKilo": 3.0,
+    "moveInaccuracyMod": 0.5
   },
   "reloads": {
     "magFed": true,

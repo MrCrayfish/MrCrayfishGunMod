@@ -4,17 +4,14 @@ package com.tac.guns.entity;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Config;
-import com.tac.guns.GunMod;
 import com.tac.guns.common.BoundingBoxManager;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.Gun.Projectile;
 import com.tac.guns.common.SpreadTracker;
-import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.event.GunProjectileHitEvent;
 import com.tac.guns.event.LevelUpEvent;
 import com.tac.guns.init.ModEnchantments;
 import com.tac.guns.init.ModSyncedDataKeys;
-import com.tac.guns.interfaces.IDamageable;
 import com.tac.guns.interfaces.IExplosionDamageable;
 import com.tac.guns.interfaces.IHeadshotBox;
 import com.tac.guns.item.GunItem;
@@ -31,7 +28,6 @@ import com.tac.guns.util.math.ExtendedEntityRayTraceResult;
 import com.tac.guns.world.ProjectileExplosion;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -57,7 +53,6 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -169,8 +164,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
             {
-                gunSpread *= 2.5F*(1+SyncedPlayerData.instance().get((PlayerEntity) shooter,
-                        ModSyncedDataKeys.MOVING));
+                gunSpread *= Math.max(1 , (2.5F * ( 1 + SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING))) * modifiedGun.getGeneral().getMovementInaccuracy());
             }
             if(((PlayerEntity) shooter).isCrouching())
             {
