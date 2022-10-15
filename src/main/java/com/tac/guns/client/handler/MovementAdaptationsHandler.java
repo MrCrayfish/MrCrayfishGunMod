@@ -1,5 +1,6 @@
 package com.tac.guns.client.handler;
 
+import com.tac.guns.Config;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageUpdatePlayerMovement;
@@ -106,12 +107,12 @@ public class MovementAdaptationsHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void movementRec(TickEvent.ClientTickEvent event)
     {
-        if (Minecraft.getInstance().player == null) {
+        if (Minecraft.getInstance().player == null || !Config.COMMON.projectileSpread.movementInaccuracy.get()) {
             return;
         }
         PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement(true,
                 this.movement));
         this.movement =
-                (Math.abs(Minecraft.getInstance().player.movementInput.moveForward)/2+Math.abs(Minecraft.getInstance().player.movementInput.moveStrafe)/2)*(Minecraft.getInstance().player.movementInput.jump ? 2:1)+(Minecraft.getInstance().player.movementInput.jump ? 1:0);
+                (Math.abs(Minecraft.getInstance().player.movementInput.moveForward)/4+Math.abs(Minecraft.getInstance().player.movementInput.moveStrafe)/1.5f)*(Minecraft.getInstance().player.movementInput.jump ? 2:1)+(Minecraft.getInstance().player.movementInput.jump ? 1:0);
     }
 }

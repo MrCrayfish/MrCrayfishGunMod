@@ -116,6 +116,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @TGExclude
         private GripType gripType = GripType.ONE_HANDED;
         @Optional
+        private float movementInaccuracy = 1F;
+        @Optional
         private float levelReq = 300.0F;
         @Optional
         private int upgradeBenchMaxUses = 3;
@@ -145,6 +147,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putFloat("WeightKilo", this.weightKilo);
             tag.putFloat("LevelReq", this.levelReq);
             tag.putInt("UpgradeBenchMaxUses", this.upgradeBenchMaxUses);
+            tag.putFloat("MovementInaccuracy", this.movementInaccuracy); // Movement inaccuracy modifier
             return tag;
         }
 
@@ -239,6 +242,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.levelReq = tag.getFloat("LevelReq");
             }
+            if(tag.contains("MovementInaccuracy", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.movementInaccuracy = tag.getFloat("MovementInaccuracy");
+            }
         }
 
         /**
@@ -269,6 +276,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.weightKilo = this.weightKilo;
             general.levelReq = this.levelReq;
             general.upgradeBenchMaxUses = this.upgradeBenchMaxUses;
+            general.movementInaccuracy = this.movementInaccuracy;
             return general;
         }
         /**
@@ -368,6 +376,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          * @return The amount of reduction applied when aiming down this weapon's sight
          */
         public float getRecoilAdsReduction() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (this.recoilAdsReduction + GunEditor.get().getRecoilAdsReductionMod())*2 : (this.recoilAdsReduction)*2;}
+
+        /*public float getRecoilAdsReduction() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (this.recoilAdsReduction + GunEditor.get().getRecoilAdsReductionMod())*2 : (this.recoilAdsReduction)*2;}*/
         /**
          * @return The amount of projectiles this weapon fires
          */
@@ -404,6 +414,14 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public float getLevelReq()
         {
             return this.levelReq;//*1.25f;
+        }
+
+        /**
+         * @return Percentage of movement inaccuracy modification ((spread * (movement)) * movementInaccuracy)
+         */
+        public float getMovementInaccuracy()
+        {
+            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.movementInaccuracy : this.movementInaccuracy;//*1.25f;
         }
     }
 
