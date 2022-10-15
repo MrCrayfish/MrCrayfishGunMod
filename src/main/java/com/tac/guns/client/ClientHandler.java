@@ -260,6 +260,7 @@ public class ClientHandler
     }
     
     private static Screen prevScreen = null;
+
     @SubscribeEvent
     public static void onGUIChange( GuiOpenEvent evt )
     {

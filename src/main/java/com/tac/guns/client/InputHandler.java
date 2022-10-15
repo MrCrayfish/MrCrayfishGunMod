@@ -64,6 +64,7 @@ public final class InputHandler
 		SIGHT_SWITCH = new KeyBind( "key.tac.sight_switch", GLFW.GLFW_KEY_V ),
 		ACTIVATE_SIDE_RAIL = new KeyBind( "key.tac.activateSideRail", GLFW.GLFW_KEY_B );
 		
+
 		// TODO: remove this key maybe? At least not used now.
 //		COLOR_BENCH = new KeyBind( "key.tac.color_bench", GLFW.GLFW_KEY_PAGE_DOWN );
 	
@@ -72,6 +73,7 @@ public final class InputHandler
 	 */
 	public static final KeyBind
 		CO = new KeyBind( "key.tac.co", GLFW.GLFW_KEY_LEFT_ALT ),
+
 		CO_UNLOAD = new KeyBind( "key.tac.co_unload", GLFW.GLFW_KEY_R ),
 		CO_INSPECT = new KeyBind( "key.tac.co_inspect", -1 );
 	
@@ -108,6 +110,7 @@ public final class InputHandler
 			UNIVERSAL_KEYS,
 			
 			PULL_TRIGGER,
+
 			AIM_HOLD,
 			AIM_TOGGLE,
 			CO
@@ -151,7 +154,7 @@ public final class InputHandler
 			);
 		}
 	}
-	
+
 	/**
 	 * Original TAC implementation seems to try to prevent gun from destroying block and bobbing on
 	 * use by canceling the {@link RawMouseEvent} event. Hence to receive the update, we need a
@@ -168,7 +171,7 @@ public final class InputHandler
 		( CO.down ? CO_KEYS : NORMAL_KEYS ).forEach( KeyBind::update );
 		( CO.down ? NORMAL_KEYS : CO_KEYS ).forEach( KeyBind::reset );
 	}
-	
+
 	@SubscribeEvent
 	public static void onKeyInput( InputEvent.KeyInputEvent evt )
 	{
@@ -189,7 +192,7 @@ public final class InputHandler
 		boolean flag = false;
 		for( KeyBind key : KeyBind.REGISTRY.values())
 			flag |= key.clearKeyBind();
-		
+
 		// Make sure only one aim key is bounden
 		if(
 			AIM_HOLD.keyCode() != InputMappings.INPUT_INVALID

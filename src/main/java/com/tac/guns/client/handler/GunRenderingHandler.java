@@ -74,21 +74,21 @@ import java.util.*;
 
 public class GunRenderingHandler {
     private static GunRenderingHandler instance;
-    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.6f,0.5f, 2.5f, new Vector3f(0,0,0));
-    private final SecondOrderDynamics aimingDynamics = new SecondOrderDynamics(1.5f,0.9f, 0f, new Vector3f(0,0,0));
-
+    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.7f,0.5f, 2.5f, new Vector3f(0,0,0));
+    private final SecondOrderDynamics aimingDynamics = new SecondOrderDynamics(0.65f,0.9f, 2f, new Vector3f(0,0,0));
     // Standard Sprint Dynamics
-    private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.45f,0.8f, 0.6f, new Vector3f(0,0,0));
-    private final SecondOrderDynamics sprintDynamicsZ = new SecondOrderDynamics(0.45f,0.8f, 0.5f, new Vector3f(0,0,0));
+    private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.45f,0.6f, 0.6f, new Vector3f(0,0,0));
+    private final SecondOrderDynamics sprintDynamicsZ = new SecondOrderDynamics(0.45f,0.75f, 0.5f, new Vector3f(0,0,0));
     // High Speed Sprint Dynamics
-    private final SecondOrderDynamics sprintDynamicsHSS = new SecondOrderDynamics(0.45f,0.8f, 0.5f,
+    private final SecondOrderDynamics sprintDynamicsHSS = new SecondOrderDynamics(0.6f,0.6f, 0.6f,
             new Vector3f(0,0,0));
    /* private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.15f,0.7f,
             -2.25f, new Vector3f(0,0,0));*/
-    private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.75f,1.525f,
-            0.9f, new Vector3f(0,0,0));
-    public final SecondOrderDynamics sprintDynamicsHSSLeftHand = new SecondOrderDynamics(0.125f,
-            0.715f, 1f, new Vector3f(0,0,0));
+    private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.55f,0.75f, 0.5f,
+            new Vector3f(0,0,0));
+    public final SecondOrderDynamics sprintDynamicsHSSLeftHand = new SecondOrderDynamics(0.35f,
+            1f, 0f, new Vector3f(0,0,0));
+
     public static GunRenderingHandler get() {
         if (instance == null) {
             instance = new GunRenderingHandler();
@@ -108,7 +108,7 @@ public class GunRenderingHandler {
     private int prevSprintTransition;
     private int sprintCooldown;
     private int restingTimer;
-    private final int restingTimerUpper = 8;
+    private final int restingTimerUpper = 4;
 
     private float offhandTranslate;
     private float prevOffhandTranslate;
@@ -332,7 +332,7 @@ public class GunRenderingHandler {
             this.zoomProgressInv = (float)invertZoomProgress;
 
             //matrixStack.translate((double) (MathHelper.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, ((double) (-Math.abs(MathHelper.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress) * (1.285 * crouch), 0.0D);
-            matrixStack.translate((double) (MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, ((double) (-Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI) * cameraYaw)) * invertZoomProgress) * 1.140, 0.0D);// * 1.140, 0.0D);
+            //matrixStack.translate((double) (MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, ((double) (-Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI) * cameraYaw)) * invertZoomProgress) * 1.140, 0.0D);// * 1.140, 0.0D);
             //matrixStack.translate((double) (Math.asin(-MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 0.5F)) * invertZoomProgress, ((double) (Math.asin((-Math.abs(-MathHelper.cos(distanceWalked*crouch * (float) Math.PI) * cameraYaw))) * invertZoomProgress)) * 1.140, 0.0D);// * 1.140, 0.0D);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
             matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
@@ -386,7 +386,7 @@ public class GunRenderingHandler {
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
         //int gunZoom = heldItem.getTag().getInt("currentZoom");
 
-        if (AimingHandler.get().getNormalisedAdsProgress() > 0 && modifiedGun.canAimDownSight())
+        if (modifiedGun.canAimDownSight())
         {
             if (event.getHand() == Hand.MAIN_HAND) {
                 this.xOffset = 0.0;
@@ -439,12 +439,13 @@ public class GunRenderingHandler {
                 //double transition = 1.0 - Math.pow(1.0 - AimingHandler.get().getNormalisedAdsProgress(), 2);
 
                 double transition = (float) AimingHandler.get().getNormalisedAdsProgress();
-                //matrixStack.rotate(Vector3f.ZN.rotationDegrees(5*(float)transition));
-                Vector3f result = aimingDynamics.update(0.05f, new Vector3f((float) (xOffset * side * transition - 0.56 * side * transition), (float) (yOffset * transition + 0.52 * transition), (float) (zOffset * transition)));
+
+                Vector3f result = aimingDynamics.update(0.05f, new Vector3f((float) (xOffset * side * transition - 0.56 * side * transition), (float) (yOffset * transition + 0.52 * transition + 0.03 - Math.abs(0.5 - transition) * 0.06), (float) (zOffset * transition)));
 
                 /* Reverses the original first person translations */
                 //matrixStack.translate(-0.56 * side * transition, 0.52 * transition, 0);
                 matrixStack.translate(result.getX(), result.getY(), result.getZ());
+                matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (5*(1-transition))) );
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 //matrixStack.translate(xOffset * side * transition, yOffset * transition, zOffset * transition);
                 matrixStack.translate(0, 0.015*transition, 0);
@@ -516,11 +517,11 @@ public class GunRenderingHandler {
                                           MatrixStack matrixStack, float partialTicks)
     {
         TimelessGunItem modifiedGun = (TimelessGunItem) gun.getItem();
+        float leftHanded = hand == HandSide.LEFT ? -1 : 1;
+        this.sOT = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
         //TODO: Speed of the held weapon, make a static method? it's not that useful but will be cleaner
         this.wSpeed = 0.1f / (1 + ((modifiedGun.getGun().getGeneral().getWeightKilo() * (1 + GunModifierHelper.getModifierOfWeaponWeight(gun)) + GunModifierHelper.getAdditionalWeaponWeight(gun) - GunEnchantmentHelper.getWeightModifier(gun)) * 0.0275f));
         if (modifiedGun instanceof TimelessPistolGunItem) {
-            float leftHanded = hand == HandSide.LEFT ? -1 : 1;
-            this.sOT = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
             //transition = (float) Math.sin((transition * Math.PI) / 2);
             Vector3f result = sprintDynamics.update(0.05f, new Vector3f((float) (-0.25 * leftHanded * this.sOT), (float) (-0.1 * this.sOT), 35F * leftHanded * this.sOT));
             Vector3f result2 = sprintDynamicsZ.update(0.05f, new Vector3f(15F * this.sOT, 20f * this.sOT, 0.3f * this.sOT));
@@ -532,31 +533,26 @@ public class GunRenderingHandler {
         }
         // Light weight animation, used for SMGS and light rifles like the hk416
         else if (wSpeed > 0.09) {
-            float leftHanded = hand == HandSide.LEFT ? -1 : 1;
-            this.sOT = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
             // Translation
-            Vector3f result = sprintDynamicsHSS.update(0.15f, new Vector3f((float) (-0.25 * leftHanded * this.sOT), (float) (-0.1 * this.sOT), 35F * leftHanded * this.sOT));
+            Vector3f result = sprintDynamicsHSS.update(0.15f, new Vector3f(
+                    (float) (-0.25 * leftHanded * this.sOT + (0.465f * this.sOT)),
+                    0.07f * sOT,
+                    -30F * leftHanded * this.sOT / 170));
 
             // Rotating to the left a bit
-            Vector3f result2 = sprintDynamicsZHSS.update(0.05f, new Vector3f(38F * this.sOT,
-                    2.5f * this.sOT, 0.15f * this.sOT));
+            Vector3f result2 = sprintDynamicsZHSS.update(0.05f, new Vector3f(60f * this.sOT,
+                    -25f * this.sOT, (float) (-0.1 * this.sOT+ (0.225f * this.sOT))));
 
-            // Rotating the Y, needs to have higher scaling to rise higher more quickly
-            Vector3f result3 = sprintDynamicsZHSS.update(0.05f, new Vector3f(38f * this.sOT,
-                    42.5f * this.sOT, 0.55f * this.sOT));
-
-            matrixStack.translate(result.getX() + (0.465f * this.sOT),
-                    result.getY() + (0.225f * this.sOT), -result.getZ() / 170);
+            matrixStack.translate(result.getX() ,
+                    result.getY() , result.getZ());
             matrixStack.rotate(Vector3f.XP.rotationDegrees(result2.getX()));
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(-result3.getY()));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(result2.getY()));
         }
         // Default
         else {
-            float leftHanded = hand == HandSide.LEFT ? -1 : 1;
-            this.sOT = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
             //transition = (float) Math.sin((transition * Math.PI) / 2);
-            Vector3f result = sprintDynamics.update(0.05f, new Vector3f((float) (-0.25 * leftHanded * this.sOT), (float) (-0.1 * this.sOT), 35F * leftHanded * this.sOT));
-            Vector3f result2 = sprintDynamicsZ.update(0.05f, new Vector3f(15F * this.sOT, 20f * this.sOT, 0.3f * this.sOT));
+            Vector3f result = sprintDynamics.update(0.05f, new Vector3f((float) (-0.25 * leftHanded * sOT), (float) (-0.1 * sOT - 0.1 + Math.abs(0.5 - sOT) * 0.2), 28F * leftHanded * sOT));
+            Vector3f result2 = sprintDynamicsZ.update(0.05f, new Vector3f(15F * sOT,20f * sOT, 0.3f * sOT));
             //matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
             matrixStack.translate(result.getX(), result.getY(), 0);
             //matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));

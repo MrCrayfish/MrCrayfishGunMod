@@ -172,13 +172,13 @@ public class RecoilHandler
         GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
         float cooldown = (float) timer / recoilDuration;
+
         if(cooldown >= modifiedGun.getGeneral().getWeaponRecoilOffset())// || tooFast) // Actually have any visual recoil at Rate 1???
         {
             float amount = 1F * ((1.0F - cooldown) / (1-modifiedGun.getGeneral().getWeaponRecoilOffset()));
             this.gunRecoilNormal = 1 - (--amount) * amount * amount * amount;
         }
-        else
-    {
+        else {
             float amount = ( (cooldown) / modifiedGun.getGeneral().getWeaponRecoilOffset() );
             this.gunRecoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
         }
