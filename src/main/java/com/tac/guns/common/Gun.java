@@ -595,7 +595,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private int trailColor = 0xFFD289;
         @Optional
-        private double trailLengthMultiplier = 1;
+        private double trailLengthMultiplier = 5.5;
         @Optional
         private boolean ricochet = true;
         @TGExclude

@@ -25,6 +25,11 @@ public class BulletTrail
     private int trailColor;
     private double trailLengthMultiplier;
     private int age;
+
+    public int getMaxAge() {
+        return maxAge;
+    }
+
     private int maxAge;
     private double gravity;
     private int shooterId;
@@ -162,7 +167,7 @@ public class BulletTrail
     public boolean isTrailVisible()
     {
         Entity entity = Minecraft.getInstance().getRenderViewEntity();
-        return entity != null && entity.getEntityId() != this.shooterId;
+        return entity != null/* && entity.getEntityId() != this.shooterId*/;
     }
 
     @Override

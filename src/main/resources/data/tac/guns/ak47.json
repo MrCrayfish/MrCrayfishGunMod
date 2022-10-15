@@ -21,7 +21,7 @@
   },
   "projectile": {
     "item": "tac:762x39",
-    "visible": true,
+    "visible": false,
     "damage": 9.5,
     "size": 0.2,
     "speed": 22.5,
