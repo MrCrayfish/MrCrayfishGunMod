@@ -52,6 +52,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
+import java.sql.Time;
 import java.util.Locale;
 
 @Mod(Reference.MOD_ID)
@@ -83,8 +84,10 @@ public class GunMod
         @Override
         public ItemStack createIcon()
         {
-            ItemStack stack = new ItemStack(ModItems.M1911.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.M1911.get().getGun().getReloads().getMaxAmmo());
+            ItemStack stack = new ItemStack(ModItems.GLOCK_17.get());
+            stack.getOrCreateTag().putInt("AmmoCount", ((TimelessGunItem)ModItems.GLOCK_17.get()).getGun().getReloads().getMaxAmmo());
+            /*ItemStack stack = new ItemStack(ModItems.M1911.get());
+            stack.getOrCreateTag().putInt("AmmoCount", ModItems.M1911.get().getGun().getReloads().getMaxAmmo());*/
             return stack;
         }
 
@@ -134,8 +137,8 @@ public class GunMod
         @Override
         public ItemStack createIcon()
         {
-            ItemStack stack = new ItemStack(ModItems.M24.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.M24.get().getGun().getReloads().getMaxAmmo());
+            ItemStack stack = new ItemStack(ModItems.AI_AWP.get());
+            stack.getOrCreateTag().putInt("AmmoCount", ((TimelessGunItem)ModItems.AI_AWP.get()).getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -151,8 +154,8 @@ public class GunMod
         @Override
         public ItemStack createIcon()
         {
-            ItemStack stack = new ItemStack(ModItems.MOSBERG590.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.MOSBERG590.get().getGun().getReloads().getMaxAmmo());
+            ItemStack stack = new ItemStack(ModItems.M1014.get());
+            stack.getOrCreateTag().putInt("AmmoCount", ((TimelessGunItem)ModItems.M1014.get()).getGun().getReloads().getMaxAmmo());
             return stack;
         }
 
@@ -201,8 +204,8 @@ public class GunMod
         @Override
         public ItemStack createIcon()
         {
-            ItemStack stack = new ItemStack(ModItems.RPG7.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.RPG7.get().getGun().getReloads().getMaxAmmo());
+            ItemStack stack = new ItemStack(ModItems.BASEBALL_GRENADE.get());
+            //stack.getOrCreateTag().putInt("AmmoCount", ModItems.BASEBALL_GRENADE.get().getGun().getReloads().getMaxAmmo());
             return stack;
         }
 

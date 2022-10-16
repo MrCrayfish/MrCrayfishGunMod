@@ -54,7 +54,7 @@ public class Deagle50AnimationController extends PistalAnimationController {
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }
-        GunAnimationController.setAnimationControllerMap(ModItems.DEAGLE_357.getId(),this);
+        //GunAnimationController.setAnimationControllerMap(ModItems.DEAGLE_357.getId(),this);
     }
 
     public static Deagle50AnimationController getInstance(){ return instance; }

@@ -50,7 +50,7 @@ public class CZ75AnimationController extends GunAnimationController {
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }
-        GunAnimationController.setAnimationControllerMap(ModItems.CZ75.getId(),this);
+        //GunAnimationController.setAnimationControllerMap(ModItems.CZ75.getId(),this);
     }
 
     public static CZ75AnimationController getInstance(){ return instance; }

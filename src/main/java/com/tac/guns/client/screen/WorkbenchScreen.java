@@ -13,6 +13,7 @@ import com.tac.guns.crafting.WorkbenchRecipe;
 import com.tac.guns.crafting.WorkbenchRecipes;
 import com.tac.guns.init.ModItems;
 import com.tac.guns.item.*;
+import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageCraft;
@@ -109,8 +110,8 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         if(!weapons.isEmpty())
         {
-            ItemStack icon = new ItemStack(ModItems.AR_15_HELLMOUTH.get());
-            icon.getOrCreateTag().putInt("AmmoCount", ModItems.AR_15_HELLMOUTH.get().getGun().getReloads().getMaxAmmo());
+            ItemStack icon = new ItemStack(ModItems.HK416_A5.get());
+            icon.getOrCreateTag().putInt("AmmoCount", ((TimelessGunItem)ModItems.HK416_A5.get()).getGun().getReloads().getMaxAmmo());
             this.tabs.add(new Tab(icon, "weapons", weapons));
         }
 
