@@ -12,9 +12,9 @@
     "cameraRecoilModifier": 1.35,
     "recoilDuration": 0.205,
     "alwaysSpread": true,
-    "spread": 3.925,
+    "spread": 4.925,
     "weightKilo": 2.1,
-    "movementInaccuracy": 0.225
+    "movementInaccuracy": 0.205
   },
   "reloads": {
     "magFed": true,

@@ -55,6 +55,10 @@ public class MovementAdaptationsHandler
     private float speed = 0.0F;
     private float previousWeight = 0.0F;
 
+    public float getMovement() {
+        return movement;
+    }
+
     private float movement = 0.0F;
 
     //private Byte previousGun;
@@ -104,15 +108,12 @@ public class MovementAdaptationsHandler
         }
         PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement());
     }
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public void movementRec(TickEvent.ClientTickEvent event)
     {
         if (Minecraft.getInstance().player == null || !Config.COMMON.projectileSpread.movementInaccuracy.get()) {
             return;
         }
-        PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement(true,
-                this.movement));
-        this.movement =
-                (Math.abs(Minecraft.getInstance().player.movementInput.moveForward)/4+Math.abs(Minecraft.getInstance().player.movementInput.moveStrafe)/1.5f)*(Minecraft.getInstance().player.movementInput.jump ? 2:1)+(Minecraft.getInstance().player.movementInput.jump ? 1:0);
-    }
+        PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement(true));
+    }*/
 }

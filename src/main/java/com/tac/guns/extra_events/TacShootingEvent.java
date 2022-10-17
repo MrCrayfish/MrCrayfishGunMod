@@ -2,6 +2,8 @@ package com.tac.guns.extra_events;
 
 import java.util.Locale;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import com.tac.guns.init.ModSyncedDataKeys;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -51,7 +53,7 @@ public class TacShootingEvent {
             return;
         HandleFireMode(event);
     }
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onShootTick(GunFireEvent.Pre event)
     {
         Minecraft mc = Minecraft.getInstance();
@@ -67,7 +69,7 @@ public class TacShootingEvent {
             event.setCanceled(true);
             event.getPlayer().sendStatusMessage(new TranslationTextComponent("info." + Reference.MOD_ID + ".gun_waterlock"), true);
         }
-    }
+    }*/
 
 
     private static void HandleFireMode(GunFireEvent.Pre event)
@@ -75,7 +77,15 @@ public class TacShootingEvent {
         ItemStack gunItem = event.getStack();
         int[] gunItemFireModes = gunItem.getTag().getIntArray("supportedFireModes");
         Gun gun = ((GunItem) gunItem.getItem()).getModifiedGun(gunItem.getStack()); // Quick patch up, will create static method for handling null supported modes
-
+        float dist =
+                (Math.abs(Minecraft.getInstance().player.movementInput.moveForward)/4+
+                        Math.abs(Minecraft.getInstance().player.movementInput.moveStrafe)/1.5f)*
+                        (Minecraft.getInstance().player.movementInput.jump ? 2:1)+
+                        (Minecraft.getInstance().player.movementInput.jump ? 1:0);
+        if(dist != 0)
+            SyncedPlayerData.instance().set(event.getPlayer(), ModSyncedDataKeys.MOVING, dist);
+        else
+            SyncedPlayerData.instance().set(event.getPlayer(), ModSyncedDataKeys.MOVING, 0f);
         if(gunItem.getTag().get("CurrentFireMode") == null) // If user has not checked fire modes yet, default to first mode
         {
             if(ArrayUtils.isEmpty(gunItemFireModes) || gunItemFireModes == null)

@@ -16,7 +16,7 @@
     "recoilDuration": 0.175,
     "cameraRecoilModifier": 1.05,
     "alwaysSpread": true,
-    "spread": 12.25,
+    "spread": 18.25,
     "projectileAmount": 12,
     "weightKilo": 5.0,
     "movementInaccuracy": 0.0

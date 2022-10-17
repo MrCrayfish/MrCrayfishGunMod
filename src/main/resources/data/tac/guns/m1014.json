@@ -14,7 +14,7 @@
     "weaponRecoilOffset": 0.975,
     "recoilDuration": 0.125,
     "alwaysSpread": true,
-    "spread": 8.5,
+    "spread": 12.5,
     "projectileAmount": 10,
     "weightKilo": 4.8,
     "movementInaccuracy": 0.0

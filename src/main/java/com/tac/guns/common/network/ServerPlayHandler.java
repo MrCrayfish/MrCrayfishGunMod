@@ -621,8 +621,7 @@ public class ServerPlayHandler
         }
     }
 
-    public static void handleMovementUpdate(ServerPlayerEntity player, boolean handle,
-                                            float dist)
+    public static void handleMovementUpdate(ServerPlayerEntity player, boolean handle)
     {
         if (player == null)
             return;
@@ -636,10 +635,7 @@ public class ServerPlayHandler
             /*if(prevDist-player.distanceWalkedOnStepModified != 0)
                 SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING,
                     (float)(player.distanceWalkedOnStepModified-prevDist));
-            */if(dist != 0)
-                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING, dist);
-            else
-                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING, 0f);
+            */
 
         }
 

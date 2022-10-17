@@ -19,27 +19,24 @@ public class MessageUpdatePlayerMovement implements IMessage
     @Override
     public void encode(PacketBuffer buffer)
     {
-        buffer.writeBoolean(this.handle); buffer.writeFloat(this.prevDist);
+        buffer.writeBoolean(this.handle);
     }
     @Override
     public void decode(PacketBuffer buffer)
     {
         this.handle = buffer.readBoolean();
-        this.prevDist = buffer.readFloat();
     }
     public MessageUpdatePlayerMovement() {}
     private boolean handle;
-    private float prevDist = 0.0F;
-    public MessageUpdatePlayerMovement(boolean handle, float prevDist)
+    public MessageUpdatePlayerMovement(boolean handle)
     {
         this.handle = handle;
-        this.prevDist = prevDist;
     }
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> {ServerPlayHandler.handleMovementUpdate(supplier.get().getSender(), this.handle, this.prevDist);});
+        supplier.get().enqueueWork(() -> {ServerPlayHandler.handleMovementUpdate(supplier.get().getSender(), this.handle);});
         //supplier.get().enqueueWork(() -> {ServerPlayHandler.handleMovementUpdateLow(supplier.get().getSender());});
         supplier.get().setPacketHandled(true);
     }
