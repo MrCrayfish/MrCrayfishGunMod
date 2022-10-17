@@ -10,16 +10,17 @@
       3
     ],
     "gripType": "tac:two_handed_vector",
-    "recoilAngle": 2.225,
-    "horizontalRecoilAngle": 0.85,
-    "recoilKick": 1.185,
+    "recoilAngle": 1.425,
+    "horizontalRecoilAngle": 1.15,
+    "recoilKick": 2.875,
     "recoilAdsReduction": 0.24,
-    "weaponRecoilOffset": 0.9625,
-    "cameraRecoilModifier": 0.775,
+    "weaponRecoilOffset": 0.9775,
+    "cameraRecoilModifier": 0.725,
     "recoilDuration": 0.1775,
     "alwaysSpread": true,
-    "spread": 6.65,
-    "weightKilo": 2.9
+    "spread": 8.55,
+    "weightKilo": 2.9,
+    "movementInaccuracy": 0.325
   },
   "reloads": {
     "magFed": true,
@@ -33,10 +34,11 @@
   "projectile": {
     "item": "tac:round45",
     "visible": false,
-    "damage": 4.25,
+    "damage": 6.0,
     "size": 0.2,
-    "speed": 20.5,
-    "life": 6
+    "speed": 11.5,
+    "life": 9,
+    "trailLengthMultiplier": 5.15
   },
   "sounds": {
     "fire": "tac:item.vector",

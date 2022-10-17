@@ -121,7 +121,7 @@ public class BulletTrailRenderingHandler
 
         Minecraft mc = Minecraft.getInstance();
         Entity entity = mc.getRenderViewEntity();
-        if(entity == null || bulletTrail.isDead() || bulletTrail.getAge() >= bulletTrail.getMaxAge())
+        if(entity == null || bulletTrail.isDead() || bulletTrail.getAge() < 2)
             return;
 
         matrixStack.push();

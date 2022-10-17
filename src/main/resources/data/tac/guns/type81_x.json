@@ -13,11 +13,12 @@
     "recoilDuration": 0.1825,
     "alwaysSpread": true,
     "spread": 2.825,
-    "weightKilo": 4.1
+    "weightKilo": 4.1,
+    "movementInaccuracy": 0.9
   },
   "projectile": {
     "item":  "tac:762x39",
-    "visible": true,
+    "visible": false,
     "damage": 9,
     "size": 0.2,
     "speed": 23.5,

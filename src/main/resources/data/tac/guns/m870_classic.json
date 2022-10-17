@@ -16,7 +16,8 @@
     "alwaysSpread": true,
     "spread": 6.5,
     "projectileAmount": 10,
-    "weightKilo": 4.1
+    "weightKilo": 4.1,
+    "movementInaccuracy": 0.0
   },
   "reloads": {
     "magFed": false,

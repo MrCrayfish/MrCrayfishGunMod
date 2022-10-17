@@ -12,12 +12,13 @@
     "horizontalRecoilAngle": 3.75,
     "recoilKick": 1.625,
     "recoilAdsReduction": 0.225,
-    "weaponRecoilOffset": 0.925,
+    "weaponRecoilOffset": 0.905,
     "cameraRecoilModifier": 1.625,
-    "recoilDuration": 0.3,
+    "recoilDuration": 0.275,
     "alwaysSpread": true,
     "spread": 2.925,
-    "weightKilo": 4.4
+    "weightKilo": 4.4,
+    "movementInaccuracy": 1.0
   },
   "projectile": {
     "item": "tac:762x39",

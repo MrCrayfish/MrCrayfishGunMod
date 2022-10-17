@@ -244,7 +244,7 @@ public class GunModifiers
         @Override
         public float kickModifier()
         {
-            return 0.625F;
+            return 0.925F;
         }
 
         @Override

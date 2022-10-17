@@ -1,21 +1,23 @@
 {
   "general": {
     "auto": true,
-    "rate": 2,
+    "rate": 3,
     "rateSelector": [
       0,
       2
     ],
     "gripType": "tac:two_handed_m60",
-    "recoilAngle": 1.875,
-    "recoilKick": 1.2,
-    "horizontalRecoilAngle": 0.25,
-    "recoilAdsReduction": 0.44,
-    "weaponRecoilOffset": 0.775,
-    "cameraRecoilModifier": 1.65,
+    "recoilAngle": 2.275,
+    "recoilKick": 2.325,
+    "horizontalRecoilAngle": 1.45,
+    "recoilAdsReduction": 0.24,
+    "weaponRecoilOffset": 0.675,
+    "cameraRecoilModifier": 1.15,
+    "recoilDuration": 0.335,
     "alwaysSpread": true,
-    "spread": 4.22,
-    "weightKilo": 10.3
+    "spread": 3.15,
+    "weightKilo": 10.3,
+    "movementInaccuracy": 2.0
   },
   "reloads": {
     "magFed": true,
@@ -33,10 +35,10 @@
   "projectile": {
     "item": "tac:bullet_308",
     "visible": false,
-    "damage": 6.5,
+    "damage": 11.0,
     "size": 0.2,
-    "speed": 28.5,
-    "life": 4
+    "speed": 31.5,
+    "life": 5
   },
   "sounds": {
     "fire": "tac:item.fire_m60",

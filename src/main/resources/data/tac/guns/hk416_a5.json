@@ -8,16 +8,17 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 3.025,
-    "horizontalRecoilAngle": 1.525,
-    "recoilKick": 1.4125,
-    "recoilAdsReduction": 0.2925,
-    "weaponRecoilOffset": 0.878,
-    "cameraRecoilModifier": 1.125,
-    "recoilDuration": 0.2375,
+    "recoilAngle": 2.775,
+    "horizontalRecoilAngle": 1.65,
+    "recoilKick": 1.35,
+    "recoilAdsReduction": 0.265,
+    "weaponRecoilOffset": 0.835,
+    "cameraRecoilModifier": 1.10,
+    "recoilDuration": 0.2325,
     "alwaysSpread": true,
-    "spread": 3.025,
-    "weightKilo": 3.6
+    "spread": 3.125,
+    "weightKilo": 3.6,
+    "movementInaccuracy": 0.95
   },
   "reloads": {
     "magFed": true,
@@ -33,7 +34,7 @@
   },
   "projectile": {
     "item": "tac:nato_556_bullet",
-    "visible": true,
+    "visible": false,
     "damage": 6.5,
     "size": 0.1,
     "speed": 31.5,
