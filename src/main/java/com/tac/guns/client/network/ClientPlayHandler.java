@@ -157,28 +157,18 @@ public class ClientPlayHandler
         Minecraft mc = Minecraft.getInstance();
         World world = mc.world;
         if (world != null) {
-            /*if(GunMod.cabLoaded)
-            {
-                double holeX = 0.005 * message.getFace().getXOffset();
-                double holeY = 0.005 * message.getFace().getYOffset();
-                double holeZ = 0.005 * message.getFace().getZOffset();
-                //System.out.println(world.getBlockState(message.getPos()).getBlock().getTranslatedName().getString());
-                //deleteBitOnHit(message.getPos(), world.getBlockState(message.getPos()), holeX,holeY,holeZ);
+            BlockState state = world.getBlockState(message.getPos());
+            double holeX = message.getX() + 0.005 * message.getFace().getXOffset();
+            double holeY = message.getY() + 0.005 * message.getFace().getYOffset();
+            double holeZ = message.getZ() + 0.005 * message.getFace().getZOffset();
+            double distance = Math.sqrt(mc.player.getDistanceSq(message.getX(), message.getY(), message.getZ()));
+            world.addParticle(new BulletHoleData(message.getFace(), message.getPos()), false, holeX, holeY, holeZ, 0, 0, 0);
+            if (distance < 16.0) {
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
             }
-            else {*/
-                BlockState state = world.getBlockState(message.getPos());
-                double holeX = message.getX() + 0.005 * message.getFace().getXOffset();
-                double holeY = message.getY() + 0.005 * message.getFace().getYOffset();
-                double holeZ = message.getZ() + 0.005 * message.getFace().getZOffset();
-                double distance = Math.sqrt(mc.player.getDistanceSq(message.getX(), message.getY(), message.getZ()));
-                world.addParticle(new BulletHoleData(message.getFace(), message.getPos()), false, holeX, holeY, holeZ, 0, 0, 0);
-                if (distance < 16.0) {
-                    world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), 0, 0, 0);
-                }
-                if (distance < 32.0) {
-                    world.playSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F, false);
-                }
-            //}
+            if (distance < 32.0) {
+                world.playSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundCategory.BLOCKS, 0.75F, 2.0F, false);
+            }
         }
     }
 

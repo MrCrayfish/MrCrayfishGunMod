@@ -300,7 +300,9 @@ public class AimingHandler
                 BlockState state = mc.world.getBlockState(result.getPos());
                 Block block = state.getBlock();
                 // Forge should add a tag for intractable blocks so modders can know which blocks can be interacted with :)
-                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || block == ModBlocks.UPGRADE_BENCH.get() || BlockTags.DOORS.contains(block) || BlockTags.TRAPDOORS.contains(block) || Tags.Blocks.CHESTS.contains(block) || Tags.Blocks.FENCE_GATES.contains(block);
+                if(block == ModBlocks.UPGRADE_BENCH.get())
+                    return false;
+                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || /* ||*/ BlockTags.DOORS.contains(block) || BlockTags.TRAPDOORS.contains(block) || Tags.Blocks.CHESTS.contains(block) || Tags.Blocks.FENCE_GATES.contains(block);
             }
             else if(mc.objectMouseOver instanceof EntityRayTraceResult)
             {

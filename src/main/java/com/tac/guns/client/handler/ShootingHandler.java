@@ -101,7 +101,7 @@ public class  ShootingHandler
         if(heldItem.getItem() instanceof GunItem)
         {
             int button = event.getButton();
-            if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+            if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT || (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && AimingHandler.get().isLookingAtInteractableBlock()))
             {
                 event.setCanceled(true);
             }

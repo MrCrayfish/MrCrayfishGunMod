@@ -7,6 +7,7 @@ import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.container.UpgradeBenchContainer;
+import com.tac.guns.init.ModItems;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageUpgradeBenchApply;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
@@ -15,13 +16,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -93,8 +97,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                     this.guiLeft + 9+152+74, this.guiTop + 18+96+20,
                     76*2, 16*2,
                     value,
-                    3, lmbdaTmp, key
-                    , button ->
+                    3, lmbdaTmp, key, EnchantmentHelper.getEnchantmentLevel(value.enchantment, this.workbench.getInventory().get(0)), button ->
             {
                 this.setSelectedBtn(key);
             }));
@@ -118,7 +121,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                     this.workbench.getStackInSlot(1).getCount());
         }*/
 
-        boolean canCraft = true;
+        /*boolean canCraft = true;
         for(RequirementItem material : this.requirements)
         {
             if(!material.isEnabled())
@@ -126,7 +129,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
                 canCraft = false;
                 break;
             }
-        }
+        }*/
         this.init();
     }
 
@@ -228,40 +231,65 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-        /*this.requirements = this.requirements();
-        for(int i = 0; i < this.filteredMaterials.size(); i++)
+
+        RequirementItem requirementItem = GunEnchantmentHelper.upgradeableEnchs.get(this.btnSelected);
+        if(requirementItem == null)
+            return;
         {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.minecraft.getTextureManager().bindTexture(GUI_BASE);
-
-            MaterialItem materialItem = this.filteredMaterials.get(i);
-            ItemStack stack = materialItem.stack;
-            if(!stack.isEmpty())
+            this.minecraft.getTextureManager().bindTexture(GUI_PARTS);
+            int currLevel = EnchantmentHelper.getEnchantmentLevel(requirementItem.enchantment,currentItem);
+            int moduleCount = requirementItem.moduleCounts.length-1;
+            int levelReq = requirementItem.moduleCounts.length-1;
+            if(currLevel != requirementItem.enchantment.getMaxLevel()) {
+                moduleCount = requirementItem.moduleCounts[currLevel];
+                levelReq = requirementItem.levelReqs[currLevel];
+            }
+            // Handle Module Items
+            if(moduleCount > 0)
             {
                 RenderHelper.disableStandardItemLighting();
-                if(materialItem.isEnabled())
+                if(this.workbench.getInventory().get(1).getCount() < moduleCount)
                 {
-                    this.blit(matrixStack, startX + 172, startY + i * 19 + 63, 0, 184, 80, 19);
+                    //Red req
+                    blit(matrixStack, startX, startY, 128, 20, 0, 256, 118, 20, 512, 512);
                 }
                 else
                 {
-                    this.blit(matrixStack, startX + 172, startY + i * 19 + 63, 0, 222, 80, 19);
+                    blit(matrixStack, startX, startY, 128, 20, 0, 288, 118, 20, 512, 512);
+                }
+
+                /*RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                this.font.drawString(matrixStack, "x "+moduleCount, startX, startY, Color.WHITE.getRGB());*/
+                ItemStack moduleRender = this.workbench.getInventory().get(1).copy();
+                if(moduleRender == null || moduleRender.isEmpty())
+                    moduleRender = new ItemStack(ModItems.MODULE.get().getItem());
+                moduleRender.setCount(moduleCount);
+                Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(moduleRender, startX, startY);
+                Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, moduleRender, startX, startY, null);
+            }
+
+            // Handle Levels
+            this.minecraft.getTextureManager().bindTexture(GUI_PARTS);
+            CompoundNBT gunTag = this.workbench.getInventory().get(0).getTag();
+            if(levelReq > 0 && gunTag != null)
+            {
+                RenderHelper.disableStandardItemLighting();
+                if(gunTag.getInt("level") < levelReq)
+                {
+                    //Red req
+                    blit(matrixStack, startX, startY-10, 128, 20, 0, 256, 118, 20, 512, 512);
+                }
+                else
+                {
+                    blit(matrixStack, startX, startY-10, 128, 20, 0, 288, 118, 20, 512, 512);
                 }
 
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                String name = stack.getDisplayName().getString();
-                if(this.font.getStringWidth(name) > 55)
-                {
-                    name = this.font.func_238412_a_(name, 50).trim() + "...";
-                }
-                this.font.drawString(matrixStack, name, startX + 172 + 22, startY + i * 19 + 6 + 63, Color.WHITE.getRGB());
-
-                Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, startX + 172 + 2, startY + i * 19 + 1 + 63);
-
-                Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63, null);
+                this.font.drawString(matrixStack, "Required level "+levelReq, startX, startY, Color.WHITE.getRGB());
 
             }
-        }*/
+        }
     }
 
 
@@ -323,12 +351,13 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         }
         public GuiEnchantmentOptionButton(int x, int y, int u, int v, int widthIn, int heightIn,
                                           RequirementItem requirement, int maxEnchLevel, int itor
-                , String name, IPressable onPress)
+                , String name, int enchLevel, IPressable onPress)
         {
             super(x, y, u, v, widthIn, heightIn, onPress);
             this.itorInt = itor;
             this.requirement = requirement;
             this.maxEnchLevel = maxEnchLevel;
+            this.enchLevel = enchLevel;
             this.name = name;
 
             GunEnchantmentHelper.upgradeableEnchs.put(name, requirement);

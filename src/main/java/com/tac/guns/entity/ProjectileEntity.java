@@ -440,19 +440,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 this.world.destroyBlock(blockRayTraceResult.getPos(), false);
             }
 
-            //if(!state.getMaterial().isReplaceable())
-            //{
-            //    this.remove();
-            //}
-
-/*
-            if(block instanceof IDamageable)
-            {
-                ((IDamageable) block).onBlockDamaged(this.world, state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1); // Possibly to help fix button issue and many others, I don't think I can use this for now
-            }
-*/
-
-            if(modifiedGun.getProjectile().isRicochet() &&
+            /*if(modifiedGun.getProjectile().isRicochet() &&
             ((
                             state.getMaterial() == Material.ROCK ||
                             state.getMaterial() == Material.PACKED_ICE ||
@@ -461,7 +449,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             )))
             {
                 this.onHitBlock(blockRayTraceResult);
-            }
+            }*/
 
             this.onHitBlock(state, pos, blockRayTraceResult.getFace(), hitVec.x, hitVec.y, hitVec.z);
 
@@ -552,7 +540,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void onHitBlock(BlockRayTraceResult blockRayTraceResult)
+    // RICOCHET IS DEPRECATED
+    /*protected void onHitBlock(BlockRayTraceResult blockRayTraceResult)
     {
         if(modifiedGun == null)
             return;
@@ -587,7 +576,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             this.teleportToHitPoint(result);
         }
         this.life -= 1;
-    }
+    }*/
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {

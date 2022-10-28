@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
+import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.ReloadTracker;
 import com.tac.guns.item.GunItem;
@@ -20,7 +21,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.ArrayUtils;
@@ -41,12 +46,19 @@ public class HUDRenderingHandler extends AbstractGui {
                     new ResourceLocation(Reference.MOD_ID, "textures/gui/countersniper.png")
             };
 
-    private static final ResourceLocation[] FIREMODE_ICONS = new ResourceLocation[]
+    private static final ResourceLocation[] FIREMODE_ICONS_OLD = new ResourceLocation[]
             {
                     new ResourceLocation(Reference.MOD_ID, "textures/gui/safety.png"),
                     new ResourceLocation(Reference.MOD_ID, "textures/gui/semi.png"),
                     new ResourceLocation(Reference.MOD_ID, "textures/gui/full.png"),
                     new ResourceLocation(Reference.MOD_ID, "textures/gui/burst.png"),
+            };
+    private static final ResourceLocation[] FIREMODE_ICONS = new ResourceLocation[]
+            {
+                    new ResourceLocation(Reference.MOD_ID, "textures/gui/firemode_safety.png"),
+                    new ResourceLocation(Reference.MOD_ID, "textures/gui/firemode_semi.png"),
+                    new ResourceLocation(Reference.MOD_ID, "textures/gui/firemode_auto.png"),
+                    new ResourceLocation(Reference.MOD_ID, "textures/gui/firemode_burst.png"),
             };
     private static final ResourceLocation[] RELOAD_ICONS = new ResourceLocation[]
             {
@@ -60,6 +72,20 @@ public class HUDRenderingHandler extends AbstractGui {
     private HUDRenderingHandler() {
     }
 
+    private int ammoCount = 0;
+    @SubscribeEvent
+    public void tick(TickEvent.ClientTickEvent e)
+    {
+        if (e.phase != TickEvent.Phase.END)
+            return;
+        if(Minecraft.getInstance().player == null)
+            return;
+        if(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem)
+        {
+            GunItem gunItem = (GunItem) Minecraft.getInstance().player.getHeldItemMainhand().getItem();
+            this.ammoCount = ReloadTracker.calcMaxReserveAmmo(Gun.findAmmo(Minecraft.getInstance().player, gunItem.getGun().getProjectile().getItem()));
+        }
+    }
     @SubscribeEvent
     public void onOverlayRender(RenderGameOverlayEvent event) {
         if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
@@ -119,6 +145,9 @@ public class HUDRenderingHandler extends AbstractGui {
         if(Config.CLIENT.weaponGUI.weaponFireMode.showWeaponFireMode.get()/* && !ArrayUtils.isEmpty(gunItem.getSupportedFireModes())*/) {
             // FireMode rendering
             RenderSystem.enableAlphaTest();
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.defaultAlphaFunc();
             buffer = Tessellator.getInstance().getBuffer();
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             stack.push();
@@ -141,9 +170,9 @@ public class HUDRenderingHandler extends AbstractGui {
                     Minecraft.getInstance().getTextureManager().bindTexture(FIREMODE_ICONS[fireMode]); // Render true firemode
 
                 Matrix4f matrix = stack.getLast().getMatrix();
-                buffer.pos(matrix, 0, fireModeSize, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-                buffer.pos(matrix, fireModeSize, fireModeSize, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-                buffer.pos(matrix, fireModeSize, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, 0, fireModeSize/2, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, fireModeSize/2, fireModeSize/2, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, fireModeSize/2, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
                 buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
             }
             stack.pop();
@@ -183,10 +212,33 @@ public class HUDRenderingHandler extends AbstractGui {
                         (anchorPointY - (counterSize*32) / 4) + (-Config.CLIENT.weaponGUI.weaponAmmoCounter.y.get().floatValue()),
                         0
                 );
+
+
                 if(player.getHeldItemMainhand().getTag() != null) {
-                    String text = player.getHeldItemMainhand().getTag().getInt("AmmoCount") + " / " + GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
+                    IFormattableTextComponent currentAmmo;
+                    if(player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo()/4)
+                        currentAmmo = new TranslationTextComponent(""+player.getHeldItemMainhand().getTag().getInt("AmmoCount")).mergeStyle(TextFormatting.RED);//GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
+                    else
+                        currentAmmo = new TranslationTextComponent(""+player.getHeldItemMainhand().getTag().getInt("AmmoCount"));//GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
                     stack.scale(counterSize, counterSize, counterSize);
-                    drawCenteredString(stack, Minecraft.getInstance().fontRenderer, text, 0, 0, 0xffffff);
+                    drawCenteredString(stack, Minecraft.getInstance().fontRenderer, currentAmmo, 0, 0, 0xffffff);
+
+                    GuiEditor.GUI_Element element = GuiEditor.get().GetFromElements(1);
+                    if(element != null)
+                        stack.translate(
+                                (element.getxMod()),
+                                (element.getyMod()),
+                                0
+                        );
+
+                    stack.scale(counterSize/1.5f, counterSize/1.5f, counterSize/1.5f);
+                    IFormattableTextComponent reserveAmmo;
+                    if(this.ammoCount > 10000)
+                        drawCenteredString(stack, Minecraft.getInstance().fontRenderer, "∞", 0, 0, 0xffffff);
+                    else {
+                        reserveAmmo = new TranslationTextComponent("" + this.ammoCount);//GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
+                        drawCenteredString(stack, Minecraft.getInstance().fontRenderer, reserveAmmo, 0, 0, 0xffffff);
+                    }
                 }
             }
             stack.pop();

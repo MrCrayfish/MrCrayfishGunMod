@@ -132,7 +132,7 @@ public class ReloadTracker
         }
     }
 
-    private int calcMaxReserveAmmo(ItemStack[] ammoStacks)
+    public static int calcMaxReserveAmmo(ItemStack[] ammoStacks)
     {
         int result = 0;
         for (ItemStack x: ammoStacks)
