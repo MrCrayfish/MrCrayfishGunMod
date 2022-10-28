@@ -553,6 +553,8 @@ public class GunRenderingHandler {
                                           MatrixStack matrixStack, float partialTicks)
     {
         TimelessGunItem modifiedGun = (TimelessGunItem) gun.getItem();
+        GunAnimationController controller = GunAnimationController.fromItem(gun.getItem());
+        float draw = (controller == null || !controller.isAnimationRunning(GunAnimationController.AnimationLabel.DRAW) ? 1 : 0);
         float leftHanded = hand == HandSide.LEFT ? -1 : 1;
         this.sOT = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
         //TODO: Speed of the held weapon, make a static method? it's not that useful but will be cleaner
@@ -560,10 +562,10 @@ public class GunRenderingHandler {
         // Light weight animation, used for SMGS and light rifles like the hk416
         if (wSpeed > 0.09) {
             // Translation
-            float result = sprintDynamicsHSS.update(0.05f, sOT);
+            float result = sprintDynamicsHSS.update(0.05f, sOT) * draw;
 
             // Rotating to the left a bit
-            float result2 = sprintDynamicsZHSS.update(0.05f, sOT);
+            float result2 = sprintDynamicsZHSS.update(0.05f, sOT) * draw;
 
             matrixStack.translate(0.215 * leftHanded * result ,
                     0.07f * result , -30F * leftHanded * result / 170);
@@ -573,8 +575,8 @@ public class GunRenderingHandler {
         // Default
         else {
             //transition = (float) Math.sin((transition * Math.PI) / 2);
-            float result = sprintDynamics.update(0.05f, sOT);
-            float result2 = sprintDynamicsZ.update(0.05f, sOT);
+            float result = sprintDynamics.update(0.05f, sOT) * draw;
+            float result2 = sprintDynamicsZ.update(0.05f, sOT) * draw;
             //matrixStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
             matrixStack.translate(-0.25 * leftHanded * result, -0.1 * result - 0.1 + Math.abs(0.5 - result) * 0.2, 0);
             //matrixStack.rotate(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
