@@ -39,7 +39,10 @@
   },
   "sounds": {
     "fire": "tac:item.deagle",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.deagle_reload_norm",
+    "reloadEmpty": "tac:animation.deagle_reload_empty",
+    "draw": "tac:animation.deagle_draw",
+    "inspect": "tac:animation.deagle_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.deagles"
   },

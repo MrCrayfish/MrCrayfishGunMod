@@ -212,4 +212,5 @@ public class RecoilHandler
         return this.gunRecoilRandom;
     }
 
+    public double getRecoilProgress() {return timer / (double)recoilDuration;}
 }

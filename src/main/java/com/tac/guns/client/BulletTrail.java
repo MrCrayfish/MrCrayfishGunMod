@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
@@ -35,7 +36,11 @@ public class BulletTrail
     private int shooterId;
     private WeakReference<Entity> shooter;
 
-    public BulletTrail(int entityId, Vector3d position, Vector3d motion, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId)
+    private float shooterYaw;
+
+    private float shooterPitch;
+
+    public BulletTrail(int entityId, Vector3d position, Vector3d motion, float shooterYaw, float shooterPitch, ItemStack item, int trailColor, double trailMultiplier, int maxAge, double gravity, int shooterId)
     {
         this.entityId = entityId;
         this.position = position;
@@ -47,6 +52,8 @@ public class BulletTrail
         this.gravity = gravity;
         this.shooterId = shooterId;
         this.updateYawPitch();
+        this.shooterYaw = shooterYaw;
+        this.shooterPitch = shooterPitch;
     }
 
     private void updateYawPitch()
@@ -130,6 +137,10 @@ public class BulletTrail
     {
         return this.shooterId;
     }
+
+    public float getShooterYaw() { return shooterYaw; }
+
+    public float getShooterPitch() { return shooterPitch; }
 
     /**
      * Gets the instance of the entity that shot the bullet. The entity is cached to avoid searching
