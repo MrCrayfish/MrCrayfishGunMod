@@ -217,28 +217,12 @@ public class HUDRenderingHandler extends AbstractGui {
                 if(player.getHeldItemMainhand().getTag() != null) {
                     IFormattableTextComponent currentAmmo;
                     if(player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo()/4)
-                        currentAmmo = new TranslationTextComponent(""+player.getHeldItemMainhand().getTag().getInt("AmmoCount")).mergeStyle(TextFormatting.RED);//GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
+                        currentAmmo = new TranslationTextComponent(""+player.getHeldItemMainhand().getTag().getInt("AmmoCount")).mergeStyle(TextFormatting.RED).append(new TranslationTextComponent(" / " + this.ammoCount));//GunEnchantmentHelper
                     else
-                        currentAmmo = new TranslationTextComponent(""+player.getHeldItemMainhand().getTag().getInt("AmmoCount"));//GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
+                        currentAmmo = new TranslationTextComponent(""+player.getHeldItemMainhand().getTag().getInt("AmmoCount")).append(new TranslationTextComponent(" / " + this.ammoCount));//GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
+
                     stack.scale(counterSize, counterSize, counterSize);
                     drawCenteredString(stack, Minecraft.getInstance().fontRenderer, currentAmmo, 0, 0, 0xffffff);
-
-                    GuiEditor.GUI_Element element = GuiEditor.get().GetFromElements(1);
-                    if(element != null)
-                        stack.translate(
-                                (element.getxMod()),
-                                (element.getyMod()),
-                                0
-                        );
-
-                    stack.scale(counterSize/1.5f, counterSize/1.5f, counterSize/1.5f);
-                    IFormattableTextComponent reserveAmmo;
-                    if(this.ammoCount > 10000)
-                        drawCenteredString(stack, Minecraft.getInstance().fontRenderer, "∞", 0, 0, 0xffffff);
-                    else {
-                        reserveAmmo = new TranslationTextComponent("" + this.ammoCount);//GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
-                        drawCenteredString(stack, Minecraft.getInstance().fontRenderer, reserveAmmo, 0, 0, 0xffffff);
-                    }
                 }
             }
             stack.pop();
