@@ -82,7 +82,7 @@ public class OneHandedPose implements IHeldAnimation
     @Override
     public boolean canApplySprintingAnimation()
     {
-        return false;
+        return true;
     }
 
     @Override

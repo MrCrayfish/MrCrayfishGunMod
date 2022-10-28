@@ -40,17 +40,12 @@ public class PlayerHandAnimation {
                             new ObjectRenderEditor.RENDER_Element(0,0,0.25f,0);
                     float transition = GunRenderingHandler.get().sOT;
 
-                    Vector3f result =
-                            GunRenderingHandler.get().sprintDynamicsHSSLeftHand.update(0.15f,
-                                    new Vector3f(
-                                            (float) (-1.2 * /*leftHanded **/ GunRenderingHandler.get().sOT),
-                                            (float) (-0.8 * GunRenderingHandler.get().sOT ),
-                                            transition));
+                    float result = GunRenderingHandler.get().sprintDynamicsHSSLeftHand.update(0.15f, transition);
                     //Reverse the left arm rotation
-                    matrices.rotate(Vector3f.XP.rotationDegrees(-90F * result.getZ()));
-                    matrices.rotate(Vector3f.ZP.rotationDegrees(25f * result.getZ()));
-                    matrices.translate(result.getX() ,
-                            result.getY(),
+                    matrices.rotate(Vector3f.XP.rotationDegrees(-90F * result));
+                    matrices.rotate(Vector3f.ZP.rotationDegrees(25f * result));
+                    matrices.translate(-1.2 * /*leftHanded **/ result ,
+                            -0.8 * result ,
                             0);
                 }
             }

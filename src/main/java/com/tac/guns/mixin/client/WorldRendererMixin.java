@@ -20,6 +20,6 @@ public class WorldRendererMixin
 {
     @Inject(method = "updateCameraAndRender", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;checkMatrixStack(Lcom/mojang/blaze3d/matrix/MatrixStack;)V", ordinal = 0))
     private void renderBullets(MatrixStack stack, float partialTicks, long finishTimeNano, boolean drawBlockOutline, ActiveRenderInfo info, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projection, CallbackInfo ci) {
-        BulletTrailRenderingHandler.get().render(stack, partialTicks);
+        //BulletTrailRenderingHandler.get().render(stack, partialTicks);
     }
 }

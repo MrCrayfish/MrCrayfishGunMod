@@ -98,6 +98,8 @@ public class ClientPlayHandler
             int[] entityIds = message.getEntityIds();
             Vector3d[] positions = message.getPositions();
             Vector3d[] motions = message.getMotions();
+            float[] shooterYaws = message.getShooterYaws();
+            float[] shooterPitch = message.getShooterPitches();
             ItemStack item = message.getItem();
             int trailColor = message.getTrailColor();
             double trailLengthMultiplier = message.getTrailLengthMultiplier();
@@ -106,7 +108,7 @@ public class ClientPlayHandler
             int shooterId = message.getShooterId();
             for(int i = 0; i < message.getCount(); i++)
             {
-                BulletTrailRenderingHandler.get().add(new BulletTrail(entityIds[i], positions[i], motions[i], item, trailColor, trailLengthMultiplier, life, gravity, shooterId));
+                BulletTrailRenderingHandler.get().add(new BulletTrail(entityIds[i], positions[i], motions[i], shooterYaws[i], shooterPitch[i], item, trailColor, trailLengthMultiplier, life, gravity, shooterId));
             }
         }
     }

@@ -305,7 +305,7 @@ public class  ShootingHandler
             int rate = GunEnchantmentHelper.getRate(heldItem, modifiedGun);
             rate = GunModifierHelper.getModifiedRate(heldItem, rate);
             tracker.setCooldown(heldItem.getItem(), rate);
-            PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player));
+            PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player.getYaw(1), player.getPitch(1)));
 
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
         }

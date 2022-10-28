@@ -589,5 +589,29 @@
       "sounds": [
          { "name": "tac:animation/m60_draw"}
       ]
+   },
+   "animation.deagle_reload_empty": {
+      "subtitle": "animation.deagle_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/deagle_reload_empty"}
+      ]
+   },
+   "animation.deagle_reload_norm": {
+      "subtitle": "animation.deagle_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/deagle_reload_norm"}
+      ]
+   },
+   "animation.deagle_inspect": {
+      "subtitle": "animation.deagle_inspect",
+      "sounds": [
+         { "name": "tac:animation/deagle_inspect"}
+      ]
+   },
+   "animation.deagle_draw": {
+      "subtitle": "animation.deagle_draw",
+      "sounds": [
+         { "name": "tac:animation/deagle_draw"}
+      ]
    }
 }

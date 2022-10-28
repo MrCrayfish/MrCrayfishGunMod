@@ -1,7 +1,6 @@
 package com.tac.guns.network.message;
 
 import com.tac.guns.common.network.ServerPlayHandler;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -18,10 +17,10 @@ public class MessageShoot implements IMessage
 
     public MessageShoot() {}
 
-    public MessageShoot(PlayerEntity player)
+    public MessageShoot(float yaw, float pitch)
     {
-        this.rotationYaw = player.rotationYaw;
-        this.rotationPitch = player.rotationPitch;
+        this.rotationPitch = pitch;
+        this.rotationYaw = yaw;
     }
 
     @Override

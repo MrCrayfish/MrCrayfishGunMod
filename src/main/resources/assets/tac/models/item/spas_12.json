@@ -4910,7 +4910,6 @@
 			"scale": [0.55, 0.55, 0.55]
 		},
 		"firstperson_righthand": {
-			"rotation": [0, 0, 5],
 			"translation": [-6, 2.75, -9.5]
 		},
 		"firstperson_lefthand": {

@@ -86,6 +86,7 @@ public enum SpecialModels
     AR15_BOLT("ar_15_bolt"),
     VECTOR45_BODY("vector45_body"),
     VECTOR45_BOLT("vector45_bolt"),
+    VECTOR45_HANDLE("vector45_handle"),
     VECTOR45_EXTENDED_MAG("vector45_extended_mag"),
     VECTOR45_GRIP("vector45_grip"),
     VECTOR45_HEAVY_STOCK("vector45_heavy_stock"),

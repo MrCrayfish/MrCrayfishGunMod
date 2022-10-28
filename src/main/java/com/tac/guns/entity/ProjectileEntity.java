@@ -172,7 +172,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
 
-        return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.getRotationYawHead() - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
+        return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.rotationYaw - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
     }
 
     public void setWeapon(ItemStack weapon)

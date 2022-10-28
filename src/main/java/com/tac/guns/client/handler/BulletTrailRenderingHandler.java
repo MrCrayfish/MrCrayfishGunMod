@@ -132,10 +132,10 @@ public class BulletTrailRenderingHandler
         double bulletX = position.x + motion.x * partialTicks;
         double bulletY = position.y + motion.y * partialTicks;
         double bulletZ = position.z + motion.z * partialTicks;
-        matrixStack.translate(bulletX - view.getX(), bulletY - view.getY(), bulletZ - view.getZ());
+        //matrixStack.translate(bulletX - view.getX(), bulletY - view.getY(), bulletZ - view.getZ());
 
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(bulletTrail.getYaw()));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 90));
+       // matrixStack.rotate(Vector3f.YP.rotationDegrees(-bulletTrail.getYaw() - bulletTrail.getShooterYaw()));
+       // matrixStack.rotate(Vector3f.XP.rotationDegrees(bulletTrail.getPitch() + bulletTrail.getShooterPitch()));
 
         Vector3d motionVec = new Vector3d(motion.x, motion.y, motion.z);
         float trailLength = (float) ((motionVec.length() / 3.0F) * bulletTrail.getTrailLengthMultiplier());
@@ -156,6 +156,7 @@ public class BulletTrailRenderingHandler
 
         if(bulletTrail.isTrailVisible())
         {
+/*
             RenderType bulletType = GunRenderType.getBulletTrail();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
             builder.pos(matrix4f, 0, 0, -0.035F).color(red, green, blue, alpha).endVertex();
@@ -166,6 +167,19 @@ public class BulletTrailRenderingHandler
             builder.pos(matrix4f, 0.035F, 0, 0).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, 0.035F, -trailLength, 0).color(red, green, blue, alpha).endVertex();
             builder.pos(matrix4f, -0.035F, -trailLength, 0).color(red, green, blue, alpha).endVertex();
+            Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(bulletType);
+            */
+
+            RenderType bulletType = GunRenderType.getBulletTrail();
+            IVertexBuilder buffer1 = renderTypeBuffer.getBuffer(bulletType);
+            buffer1.pos(matrix4f, 0, -0.035F, 0).color(red, green, blue, alpha).endVertex();
+            buffer1.pos(matrix4f, 0, 0.035F, 0).color(red, green, blue, alpha).endVertex();
+            buffer1.pos(matrix4f, 0, 0.035F, -trailLength).color(red, green, blue, alpha).endVertex();
+            buffer1.pos(matrix4f, 0, -0.035F, -trailLength).color(red, green, blue, alpha).endVertex();
+            buffer1.pos(matrix4f, -0.035F, 0, 0).color(red, green, blue, alpha).endVertex();
+            buffer1.pos(matrix4f, 0.035F, 0, 0).color(red, green, blue, alpha).endVertex();
+            buffer1.pos(matrix4f, 0.035F, 0, -trailLength).color(red, green, blue, alpha).endVertex();
+            buffer1.pos(matrix4f, -0.035F, 0, -trailLength).color(red, green, blue, alpha).endVertex();
             Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(bulletType);
         }
 
