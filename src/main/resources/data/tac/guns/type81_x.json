@@ -27,10 +27,10 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 30,
-    "reloadMagTimer": 48,
-    "additionalReloadEmptyMagTimer": 19,
+    "reloadMagTimer": 58,
+    "additionalReloadEmptyMagTimer": 8,
     "maxAdditionalAmmoPerOC": [15, 20, 45],
-    "preReloadPauseTicks": 12
+    "preReloadPauseTicks": 0
   },
   "sounds": {
     "fire":  "tac:item.fire_ak47",

@@ -302,6 +302,7 @@ public class GunRenderingHandler {
     public double zOffset = 0.0;
 
     public double opticMovement;
+    public double slideKeep;
 
     @SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
@@ -464,7 +465,7 @@ public class GunRenderingHandler {
                 else if (modifiedGun.getModules().getZoom() != null)
                 {
                     xOffset = -translateX + modifiedGun.getModules().getZoom().getXOffset() * 0.0625 * scaleX;
-                    yOffset = -translateY + (8 - modifiedGun.getModules().getZoom().getYOffset()) * 0.0625 * scaleY;
+                    yOffset = -translateY + (8 - modifiedGun.getModules().getZoom().getYOffset()-0.2) * 0.0625 * scaleY;
                     zOffset = -translateZ + modifiedGun.getModules().getZoom().getZOffset() * 0.0625 * scaleZ;
                 }
 

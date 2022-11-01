@@ -111,7 +111,7 @@ public class Scope extends Attachment
     @OnlyIn(Dist.CLIENT)
     public double getCenterOffset()
     {
-        return this.centerOffset;
+        return this.centerOffset+0.225;
     }
 
     /**

@@ -22,14 +22,14 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 100,
-    "reloadMagTimer": 135,
-    "additionalReloadEmptyMagTimer": 13,
+    "reloadMagTimer": 152,
+    "additionalReloadEmptyMagTimer": 16,
     "maxAdditionalAmmoPerOC": [
       50,
       75,
       100
     ],
-    "preReloadPauseTicks": 18,
+    "preReloadPauseTicks": 0,
     "openBolt": true
   },
   "projectile": {

@@ -27,6 +27,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Locale;
@@ -47,12 +48,11 @@ public class LevelingEvent {
         (In short this serves as a temporary test bed to keep development on new functions on course)
     */
 
-    /*@SubscribeEvent
+    @SubscribeEvent
     public void onPartialLevel(LevelUpEvent.Post event)
     {
         PlayerEntity player = event.getPlayer();
-        event.getPlayer().getEntityWorld().playSound(player, player.getPosition(), ModSounds.M1_PING.get()*//*.GARAND_PING.get()*//*, SoundCategory.MASTER, 3.0F, 1.0F);
-        //event.getPlayer().sendStatusMessage(new TranslationTextComponent("LEVEL UP!"), true);
-    }*/
+        event.getPlayer().getEntityWorld().playSound(player, player.getPosition(), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.experience_orb.pickup")), SoundCategory.PLAYERS,4.0F, 1.0F);
+    }
 
 }

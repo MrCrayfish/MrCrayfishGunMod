@@ -23,7 +23,7 @@ public class ModTileEntities
 
     public static final RegistryObject<TileEntityType<WorkbenchTileEntity>> WORKBENCH = register("workbench", WorkbenchTileEntity::new, () -> new Block[]{ModBlocks.WORKBENCH.get()});
 
-    public static final RegistryObject<TileEntityType<UpgradeBenchTileEntity>> UPGRADE_BENCH = registers("upgrade_benchy", UpgradeBenchTileEntity::new, () -> ModBlocks.UPGRADE_BENCH.get());
+    //public static final RegistryObject<TileEntityType<UpgradeBenchTileEntity>> UPGRADE_BENCH = registers("upgrade_benchy", UpgradeBenchTileEntity::new, () -> ModBlocks.UPGRADE_BENCH.get());
     public static final RegistryObject<TileEntityType<FlashLightSource>> LIGHT_SOURCE = register("flashlight",FlashLightSource::new, () -> new Block[]{ModBlocks.FLASHLIGHT_BLOCK.get()});
 
     private static <T extends TileEntity> RegistryObject<TileEntityType<T>> registers(String id, Supplier<T> factoryIn, Supplier<Block> validBlocksSupplier)

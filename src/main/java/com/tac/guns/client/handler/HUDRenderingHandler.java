@@ -119,7 +119,7 @@ public class HUDRenderingHandler extends AbstractGui {
         RenderSystem.enableAlphaTest();
         BufferBuilder buffer = Tessellator.getInstance().getBuffer();
 
-        if(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get()) {
+        /*if(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get()) {
             // Weapon icon rendering
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             stack.push();
@@ -141,7 +141,7 @@ public class HUDRenderingHandler extends AbstractGui {
             stack.pop();
             buffer.finishDrawing();
             WorldVertexBufferUploader.draw(buffer);
-        }
+        }*/
         if(Config.CLIENT.weaponGUI.weaponFireMode.showWeaponFireMode.get()/* && !ArrayUtils.isEmpty(gunItem.getSupportedFireModes())*/) {
             // FireMode rendering
             RenderSystem.enableAlphaTest();
@@ -216,10 +216,24 @@ public class HUDRenderingHandler extends AbstractGui {
 
                 if(player.getHeldItemMainhand().getTag() != null) {
                     IFormattableTextComponent currentAmmo;
-                    if(player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo()/4)
-                        currentAmmo = new TranslationTextComponent(""+player.getHeldItemMainhand().getTag().getInt("AmmoCount")).mergeStyle(TextFormatting.RED).append(new TranslationTextComponent(" / " + this.ammoCount));//GunEnchantmentHelper
-                    else
-                        currentAmmo = new TranslationTextComponent(""+player.getHeldItemMainhand().getTag().getInt("AmmoCount")).append(new TranslationTextComponent(" / " + this.ammoCount));//GunEnchantmentHelper.getAmmoCapacity(heldItem, gun);
+                    if(player.isCreative()) {
+                        if (player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo() / 4)
+                            currentAmmo = new TranslationTextComponent("")
+                                    .append(new TranslationTextComponent("" + player.getHeldItemMainhand().getTag().getInt("AmmoCount")).mergeStyle(TextFormatting.RED));
+                        else
+                            currentAmmo = new TranslationTextComponent("" + player.getHeldItemMainhand().getTag().getInt("AmmoCount"));
+                    }
+                    else {
+                        if (player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo() / 4)
+                            currentAmmo = new TranslationTextComponent("")
+                                    .append(new TranslationTextComponent("" + player.getHeldItemMainhand().getTag().getInt("AmmoCount")).mergeStyle(TextFormatting.RED))
+                                    .append(new TranslationTextComponent(" | ").mergeStyle(TextFormatting.BOLD))
+                                    .append(new TranslationTextComponent("" + (this.ammoCount > 10000 ? 10000 : this.ammoCount)).mergeStyle(TextFormatting.GRAY));
+                        else
+                            currentAmmo = new TranslationTextComponent("" + player.getHeldItemMainhand().getTag().getInt("AmmoCount"))
+                                    .append(new TranslationTextComponent(" | ").mergeStyle(TextFormatting.BOLD))
+                                    .append(new TranslationTextComponent("" + (this.ammoCount > 10000 ? 10000 : this.ammoCount)).mergeStyle(TextFormatting.GRAY));
+                    }
 
                     stack.scale(counterSize, counterSize, counterSize);
                     drawCenteredString(stack, Minecraft.getInstance().fontRenderer, currentAmmo, 0, 0, 0xffffff);

@@ -144,8 +144,8 @@ public class Config
                 this.showWeaponAmmoCounter = builder.comment("Display the amount of ammunition your weapon holds and can hold on your HUD.").define("showWeaponAmmoCounter", true);
                 this.weaponAmmoCounterSize = builder.comment("Size of the weapon ammunition counter on your HUD").defineInRange("weaponAmmoCounterSize", 1.0, 0.01, 4.0);
 
-                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0,-500d, 500d);
-                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0,-500d, 500d);
+                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 58.7,-500d, 500d);
+                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", -52.98,-500d, 500d);
             }
             builder.pop();
         }

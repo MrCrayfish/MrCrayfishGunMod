@@ -561,28 +561,36 @@ public class GunEditor
     private double xMod = 0; public double getxMod() {return this.xMod;}
     private double yMod = 0; public double getyMod() {return this.yMod;}
     private double zMod = 0; public double getzMod() {return this.zMod;}
+
+    private boolean controlToggle = false;
+    private boolean altToggle = false;
     private void handlePositionedMod(InputEvent.KeyInputEvent event, TimelessGunItem gunItem) {
         double stepModifier = 1;
         boolean isLeft = event.getKey() == GLFW.GLFW_KEY_LEFT;
         boolean isRight = event.getKey() == GLFW.GLFW_KEY_RIGHT;
         boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
         boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
-        boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
-        boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
-        boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify
+        //boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
+        //boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
+        //boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify
 
-        if(isShiftDown)
-            stepModifier*=10;
-        if(isControlDown)
+        /*if(isShiftDown)
+            stepModifier*=10;*/
+        if(event.getKey() == GLFW.GLFW_KEY_LEFT_CONTROL)
+        {controlToggle = true;}
+        if(event.getKey() == GLFW.GLFW_KEY_LEFT_ALT)
+        {altToggle = true;}
+
+        if(controlToggle)
             stepModifier/=10;
 
         if (isLeft)
             this.xMod -= 0.1*stepModifier;
         else if (isRight)
             this.xMod += 0.1*stepModifier;
-        else if (isUp && isAltDown)
+        else if (isUp && altToggle)
             this.zMod -= 0.1*stepModifier; // Forward
-        else if (isDown && isAltDown)
+        else if (isDown && altToggle)
             this.zMod += 0.1*stepModifier; // Backward
         else if (isUp)
             this.yMod += 0.1*stepModifier;

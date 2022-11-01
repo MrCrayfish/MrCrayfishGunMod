@@ -10,11 +10,11 @@
       3
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 2.375,
-    "horizontalRecoilAngle": 1.75,
-    "recoilKick": 1.275,
-    "recoilAdsReduction": 0.325,
-    "weaponRecoilOffset": 0.55,
+    "recoilAngle": 2.225,
+    "horizontalRecoilAngle": 1.825,
+    "recoilKick": 1.575,
+    "recoilAdsReduction": 0.24,
+    "weaponRecoilOffset": 0.525,
     "cameraRecoilModifier": 1.1,
     "recoilDuration": 0.275,
     "alwaysSpread": true,
@@ -25,14 +25,14 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 30,
-    "reloadMagTimer": 55,
-    "additionalReloadEmptyMagTimer": 12,
+    "reloadMagTimer": 50,
+    "additionalReloadEmptyMagTimer": 16,
     "maxAdditionalAmmoPerOC": [
       10,
       20,
       45
     ],
-    "preReloadPauseTicks": 8
+    "preReloadPauseTicks": 0
   },
   "projectile": {
     "item": "tac:9mm_round",

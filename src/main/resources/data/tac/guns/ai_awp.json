@@ -7,13 +7,13 @@
       1
     ],
     "gripType": "tac:two_handed_mosin",
-    "recoilAngle": 8.6,
-    "recoilKick": 3.25,
+    "recoilAngle": 7.6,
+    "recoilKick": 2.9,
     "horizontalRecoilAngle": 0.125,
-    "recoilAdsReduction": 0.45,
+    "recoilAdsReduction": 0.28,
     "weaponRecoilDuration": 0.675,
-    "recoilDuration": 0.125,
-    "cameraRecoilModifier": 2.0,
+    "recoilDuration": 0.155,
+    "cameraRecoilModifier": 1.75,
     "alwaysSpread": true,
     "spread": 0.15,
     "weightKilo": 6.0,
@@ -22,14 +22,14 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 5,
-    "reloadMagTimer": 56,
-    "additionalReloadEmptyMagTimer": 10,
+    "reloadMagTimer": 60,
+    "additionalReloadEmptyMagTimer": 18,
     "maxAdditionalAmmoPerOC": [
       3,
       5,
       7
     ],
-    "preReloadPauseTicks": 10
+    "preReloadPauseTicks": 0
   },
   "projectile": {
     "item": "tac:win_30-30",

@@ -37,14 +37,14 @@ public class ModBlocks
             Block.spawnAsEntity((World) worldIn,pos,this.getBlock().getItem(worldIn,pos,state));
         }*/
     },true);
-    public static final RegistryObject<UpgradeBenchBlock> UPGRADE_BENCH = register("upgrade_bench", () -> new UpgradeBenchBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(3F))
+    /*public static final RegistryObject<UpgradeBenchBlock> UPGRADE_BENCH = register("upgrade_bench", () -> new UpgradeBenchBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(3F))
     {
-        /*@Override
+        *//*@Override
         public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state)
         {
             Block.spawnAsEntity((World) worldIn,pos, this.getBlock().getItem(worldIn,pos,state));
-        }*/
-    },true);
+        }*//*
+    },true);*/
     public static final RegistryObject<Block> FLASHLIGHT_BLOCK = register("flashlight", () -> new FlashLightBlock(),false);
 
     private static <T extends Block> RegistryObject<T> register(String id, Supplier<T> blockSupplier, boolean grouped)

@@ -115,23 +115,8 @@ public class hk_mp5a5_animation implements IOverrideModel {
             CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
             float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
 
-            if(Gun.hasAmmo(stack))
-            {
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.085f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-            }
-            else if(!Gun.hasAmmo(stack))
-            {
-                if(cooldownOg > 0.5){
-                    // Math provided by Bomb787 on GitHub and Curseforge!!!
-                    matrices.translate(0, 0, 0.085f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-                }
-                else
-                {
-                    matrices.translate(0, 0, 0.085f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
-                }
-            }
-            matrices.translate(0, 0, 0.025F);
+            matrices.translate(0, 0, 0.085f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+
             RenderUtil.renderModel(SpecialModels.HK_MP5A5_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
             matrices.pop();
         }
