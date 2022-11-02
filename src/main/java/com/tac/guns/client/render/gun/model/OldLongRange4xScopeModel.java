@@ -20,7 +20,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
@@ -43,7 +42,7 @@ public class OldLongRange4xScopeModel implements IOverrideModel
             matrixStack.translate(0,0,transition*0.18);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.COMMON.gameplay.redDotSquish2D.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if (Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;

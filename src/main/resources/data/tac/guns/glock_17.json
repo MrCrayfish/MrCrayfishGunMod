@@ -2,16 +2,15 @@
   "general": {
     "rate": 3,
     "rateSelector": [
-      0,
       1
     ],
     "gripType": "tac:one_handed_m1911",
-    "recoilAngle": 7.0,
-    "horizontalRecoilAngle": 5.925,
-    "recoilKick": 2.75,
-    "recoilAdsReduction": 0.135,
+    "recoilAngle": 9.7,
+    "horizontalRecoilAngle": 6.925,
+    "recoilKick": 2.55,
+    "recoilAdsReduction": 0.145,
     "weaponRecoilOffset": 0.7225,
-    "cameraRecoilModifier": 2.45,
+    "cameraRecoilModifier": 3.75,
     "recoilDuration": 0.15,
     "alwaysSpread": true,
     "spread": 4.62,

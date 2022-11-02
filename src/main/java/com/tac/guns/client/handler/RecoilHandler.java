@@ -133,11 +133,11 @@ public class RecoilHandler
         }
         else if(startProgress > progressForward)
         {
-            mc.player.rotationPitch += ((endProgress - startProgress) / (1-progressForward) ) * this.cameraRecoil / (cameraRecoilModifer*1.25); // 0.75F
+            mc.player.rotationPitch += ((endProgress - startProgress) / (1-progressForward) ) * this.cameraRecoil / (cameraRecoilModifer*1.05); // 0.75F
             if(recoilRand == 1)
-                mc.player.rotationYaw -= ((endProgress - startProgress) / (1-progressForward)) * -this.horizontalCameraRecoil / (cameraRecoilModifer*1.25);
+                mc.player.rotationYaw -= ((endProgress - startProgress) / (1-progressForward)) * -this.horizontalCameraRecoil / (cameraRecoilModifer*1.05);
             else
-                mc.player.rotationYaw -= ((endProgress - startProgress) / (1-progressForward)) * this.horizontalCameraRecoil / (cameraRecoilModifer*1.25);
+                mc.player.rotationYaw -= ((endProgress - startProgress) / (1-progressForward)) * this.horizontalCameraRecoil / (cameraRecoilModifer*1.05);
         }
 
         this.progressCameraRecoil += recoilAmount;

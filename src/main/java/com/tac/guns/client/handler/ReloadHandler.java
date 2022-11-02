@@ -417,7 +417,7 @@ public class ReloadHandler {
                 (
                         gunItem.getGun().getReloads().isMagFed() ?
                                 (isEmpty ? ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / ((float) gunItem.getGun().getReloads().getReloadMagTimer() + gunItem.getGun().getReloads().getAdditionalReloadEmptyMagTimer())) : ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / (float) gunItem.getGun().getReloads().getReloadMagTimer()))
-                                : ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks)) / ((float) gunItem.getGun().getReloads().getinterReloadPauseTicks()))
+                                : ((this.reloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks)) / ((float) gunItem.getGun().getReloads().getinterReloadPauseTicks()))
                 )
                 : 1F;
     }

@@ -10,24 +10,17 @@ import com.tac.guns.client.handler.command.ScopeEditor;
 import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
-import com.tac.guns.common.Gun;
-import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.attachment.IAttachment;
-import com.tac.guns.util.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.common.util.Constants;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -40,12 +33,12 @@ public class CoyoteSightModel implements IOverrideModel
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay) {
 
         matrixStack.push();
-        /*if(Config.COMMON.gameplay.redDotSquish2D.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        /*if(Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
             double zScale = 0.05D + 0.95D * (1.0D - transition);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.COMMON.gameplay.redDotSquish2D.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if (Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;

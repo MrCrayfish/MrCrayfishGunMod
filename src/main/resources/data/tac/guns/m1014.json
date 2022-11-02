@@ -23,7 +23,7 @@
     "magFed": false,
     "maxAmmo": 7,
     "reloadAmount": 1,
-    "preReloadPauseTicks": 10,
+    "preReloadPauseTicks": 0,
     "interReloadPauseTicks": 20,
     "openBolt": false
   },

@@ -144,8 +144,8 @@ public class Config
                 this.showWeaponAmmoCounter = builder.comment("Display the amount of ammunition your weapon holds and can hold on your HUD.").define("showWeaponAmmoCounter", true);
                 this.weaponAmmoCounterSize = builder.comment("Size of the weapon ammunition counter on your HUD").defineInRange("weaponAmmoCounterSize", 1.0, 0.01, 4.0);
 
-                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 58.7,-500d, 500d);
-                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", -52.98,-500d, 500d);
+                this.x = builder.comment("X Position on your HUD.").defineInRange("XLocation", 0,-500d, 500d);
+                this.y = builder.comment("Y Position on your HUD.").defineInRange("YLocation", 0,-500d, 500d);
             }
             builder.pop();
         }
@@ -312,7 +312,7 @@ public class Config
 
         public final ForgeConfigSpec.BooleanValue gameplayEnchancedScopeOffset;
         public final ForgeConfigSpec.BooleanValue scopeDoubleRender;
-        public final ForgeConfigSpec.BooleanValue redDotSquish2D;
+        public final ForgeConfigSpec.BooleanValue redDotSquish;
 
         public Gameplay(ForgeConfigSpec.Builder builder)
         {
@@ -337,7 +337,7 @@ public class Config
 
                 this.gameplayEnchancedScopeOffset = builder.comment("Scopes are brought closer to the shooter to help fill FOV with a scope view at all times").define("gameplayEnchancedScopeOffset", true);
                 this.scopeDoubleRender = builder.comment("Enable scope double render, saves on some performance and compatability issues with Optifine").define("scopeDoubleRender", true);
-                this.redDotSquish2D = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to render in 2d when aimed like the scopeDoubleRender(false) effect.").define("redDotSquish2D", true);
+                this.redDotSquish = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to render in 2d when aimed like the scopeDoubleRender(false) effect.").define("redDotSquish", false);
             }
             builder.pop();
         }

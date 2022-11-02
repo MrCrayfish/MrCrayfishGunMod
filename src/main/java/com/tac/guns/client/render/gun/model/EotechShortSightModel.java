@@ -6,15 +6,11 @@ import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
-import com.tac.guns.client.handler.RecoilHandler;
 import com.tac.guns.client.handler.command.ScopeEditor;
 import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
-import com.tac.guns.common.Gun;
-import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.attachment.IAttachment;
-import com.tac.guns.util.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -22,7 +18,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
@@ -39,12 +34,12 @@ public class EotechShortSightModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay) {
         matrixStack.push();
-        /*if (Config.COMMON.gameplay.redDotSquish2D.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        /*if (Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
             double zScale = 0.05D + 0.95D * (1.0D - transition);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.COMMON.gameplay.redDotSquish2D.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if (Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;
@@ -100,7 +95,7 @@ public class EotechShortSightModel implements IOverrideModel
 
                 //matrixStack.translate(0, 0, -0.2);
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(((-size / 2) -0.002015 + scopeData.getReticleXMod()), (1.38 + 0.03308125 + scopeData.getReticleYMod()+0.47275) * 0.0625, (0.075 + scopeData.getReticleZMod() + (!Config.COMMON.gameplay.redDotSquish2D.get() ? 1.2625 : 0)) * 0.0625);
+                matrixStack.translate(((-size / 2) -0.002015 + scopeData.getReticleXMod()), (1.38 + 0.03308125 + scopeData.getReticleYMod()+0.47275) * 0.0625, (0.075 + scopeData.getReticleZMod() + (!Config.COMMON.gameplay.redDotSquish.get() ? 1.2625 : 0)) * 0.0625);
                 IVertexBuilder builder;
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
