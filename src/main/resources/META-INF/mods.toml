@@ -4,7 +4,7 @@ license="GPL3"
 
 [[mods]]
 modId="cgm"
-version="2.2.0"
+version="2.1.0"
 displayName="MrCrayfish's Gun Mod (REFINED)"
 updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/cgm/update.json"
 displayURL="https://github.com/poly-1810/CGM-refined"
