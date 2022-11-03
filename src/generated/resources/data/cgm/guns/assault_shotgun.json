@@ -10,7 +10,7 @@
     "recoilAdsReduction": 0.5,
     "projectileAmount": 8,
     "alwaysSpread": true,
-    "spread": 25.0
+    "spread": 10.0
   },
   "projectile": {
     "item": "cgm:shell",
