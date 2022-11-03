@@ -297,7 +297,7 @@ public class GunGen extends GunProvider
                 .setRecoilAdsReduction(0.5F)
                 .setProjectileAmount(8)
                 .setAlwaysSpread(true)
-                .setSpread(25.0F)
+                .setSpread(10.0F)
                 .setAmmo(ModItems.SHELL.get())
                 .setDamage(20.0F)
                 .setHeadshotMultiplier(2.0F)
