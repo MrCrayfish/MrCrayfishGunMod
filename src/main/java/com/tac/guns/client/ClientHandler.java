@@ -131,6 +131,7 @@ public class ClientHandler
         //ClientRegistry.bindTileEntityRenderer(ModTileEntities.UPGRADE_BENCH.get(), UpgradeBenchRenderUtil::new);
 
         // Load key binds
+        InputHandler.initKeys();
         keyBindsFile = new File( mc.gameDir, "config/tac-key-binds.txt" );
         if( !keyBindsFile.exists() )
         {

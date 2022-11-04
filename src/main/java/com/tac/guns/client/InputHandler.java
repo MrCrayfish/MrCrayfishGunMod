@@ -104,7 +104,7 @@ public final class InputHandler
 	
 	private static final ArrayList< KeyBind > CO_KEYS = new ArrayList<>();
 	
-	static
+	public static void initKeys()
 	{
 		regisAll(
 			UNIVERSAL_KEYS,
@@ -172,7 +172,7 @@ public final class InputHandler
 		( CO.down ? NORMAL_KEYS : CO_KEYS ).forEach( KeyBind::reset );
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent( priority = EventPriority.HIGH )
 	public static void onKeyInput( InputEvent.KeyInputEvent evt )
 	{
 		UNIVERSAL_KEYS.forEach( KeyBind::update );
