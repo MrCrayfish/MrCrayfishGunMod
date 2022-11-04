@@ -74,6 +74,7 @@ public class ScopeEditor
             this.scopeData = this.map.get(scopeItem.getTagName());
         }
     }
+    
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
@@ -82,9 +83,9 @@ public class ScopeEditor
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null)
             return;
-        CommandsHandler ch = CommandsHandler.get();
-        if(ch == null || ch.getCatCurrentIndex() != 2)
-            return;
+//        CommandsHandler ch = CommandsHandler.get();
+//        if(ch == null || ch.getCatCurrentIndex() != 2)
+//            return;
         if ((mc.player.getHeldItemMainhand() == null || mc.player.getHeldItemMainhand() == ItemStack.EMPTY || !(mc.player.getHeldItemMainhand().getItem() instanceof TimelessGunItem)))
             return;
         if(((TimelessGunItem)mc.player.getHeldItemMainhand().getItem()).isIntegratedOptic()) {
@@ -104,7 +105,9 @@ public class ScopeEditor
         }
 
     }
-    private void handleScopeMod(InputEvent.KeyInputEvent event, ScopeData data) {
+    
+    private void handleScopeMod(InputEvent.KeyInputEvent event, ScopeData data)
+    {
         double stepModifier = 1;
         boolean isLeft = event.getKey() == GLFW.GLFW_KEY_LEFT;
         boolean isRight = event.getKey() == GLFW.GLFW_KEY_RIGHT;
