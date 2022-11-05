@@ -103,43 +103,17 @@ public class HUDRenderingHandler extends AbstractGui {
         float anchorPointX = event.getWindow().getScaledWidth() / 12F * 11F;
         float anchorPointY = event.getWindow().getScaledHeight() / 10F * 9F;
 
-        float configScaleWeaponType = Config.CLIENT.weaponGUI.weaponTypeIcon.weaponIconSize.get().floatValue();
         float configScaleWeaponCounter = Config.CLIENT.weaponGUI.weaponAmmoCounter.weaponAmmoCounterSize.get().floatValue();
         float configScaleWeaponFireMode = Config.CLIENT.weaponGUI.weaponFireMode.weaponFireModeSize.get().floatValue();
         float configScaleWeaponReloadBar = Config.CLIENT.weaponGUI.weaponReloadTimer.weaponReloadTimerSize.get().floatValue();
 
-        float iconSize = 64.0F * configScaleWeaponType;
         float counterSize = 1.8F * configScaleWeaponCounter;
         float fireModeSize = 32.0F * configScaleWeaponFireMode;
         float ReloadBarSize = 32.0F * configScaleWeaponReloadBar;
 
         RenderSystem.enableAlphaTest();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-
-        /*if(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get()) {
-            // Weapon icon rendering
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            stack.push();
-            {
-                stack.translate(anchorPointX, anchorPointY, 0);
-                stack.translate(-iconSize + (-Config.CLIENT.weaponGUI.weaponTypeIcon.x.get().floatValue()), -iconSize + (-Config.CLIENT.weaponGUI.weaponTypeIcon.y.get().floatValue()), 0);
-
-                if (gun.getDisplay().getWeaponType() > 5 || gun.getDisplay().getWeaponType() < 0)
-                    Minecraft.getInstance().getTextureManager().bindTexture(AMMO_ICONS[0]);
-                else
-                    Minecraft.getInstance().getTextureManager().bindTexture(AMMO_ICONS[gun.getDisplay().getWeaponType()]);
-
-                Matrix4f matrix = stack.getLast().getMatrix();
-                buffer.pos(matrix, 0, iconSize, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-                buffer.pos(matrix, iconSize, iconSize, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-                buffer.pos(matrix, iconSize, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-                buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-            }
-            stack.pop();
-            buffer.finishDrawing();
-            WorldVertexBufferUploader.draw(buffer);
-        }*/
-        if(Config.CLIENT.weaponGUI.weaponFireMode.showWeaponFireMode.get()/* && !ArrayUtils.isEmpty(gunItem.getSupportedFireModes())*/) {
+        BufferBuilder buffer;
+        if(Config.CLIENT.weaponGUI.weaponFireMode.showWeaponFireMode.get()) {
             // FireMode rendering
             RenderSystem.enableAlphaTest();
             RenderSystem.enableBlend();
@@ -177,30 +151,6 @@ public class HUDRenderingHandler extends AbstractGui {
             buffer.finishDrawing();
             WorldVertexBufferUploader.draw(buffer);
         }
-        /*if(Config.CLIENT.weaponGUI.weaponReloadTimer.showWeaponReloadTimer.get() && ReloadHandler.get().isReloading())//Replace with reload bar checker
-        {
-            // FireMode rendering
-            RenderSystem.enableAlphaTest();
-            buffer = Tessellator.getInstance().getBuffer();
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            stack.push();
-            {
-                stack.translate(anchorPointX - (ReloadBarSize*4.35) / 4F, anchorPointY + (ReloadBarSize*1.625F) / 5F * 3F, 0);//stack.translate(anchorPointX - (fireModeSize*6) / 4F, anchorPointY - (fireModeSize*1F) / 5F * 3F, 0); // *68for21F
-                stack.translate(-ReloadBarSize + (-Config.CLIENT.weaponGUI.weaponReloadTimer.x.get().floatValue()), -ReloadBarSize + (-Config.CLIENT.weaponGUI.weaponReloadTimer.y.get().floatValue()), 0);
-               // stack.translate(0, 0, );
-                stack.scale(2.1F*(1-ReloadHandler.get().getReloadProgress(event.getPartialTicks(), heldItem)),0.25F,0); // *21F
-                Minecraft.getInstance().getTextureManager().bindTexture(RELOAD_ICONS[0]); // Future options to render bar types
-
-                Matrix4f matrix = stack.getLast().getMatrix();
-                buffer.pos(matrix, 0, ReloadBarSize, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-                buffer.pos(matrix, ReloadBarSize, ReloadBarSize, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-                buffer.pos(matrix, ReloadBarSize, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-                buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
-            }
-            stack.pop();
-            buffer.finishDrawing();
-            WorldVertexBufferUploader.draw(buffer);
-        }*/
         if(Config.CLIENT.weaponGUI.weaponAmmoCounter.showWeaponAmmoCounter.get()) {
             // Text rendering
             stack.push();
@@ -214,28 +164,20 @@ public class HUDRenderingHandler extends AbstractGui {
                 IFormattableTextComponent currentAmmo;
                 IFormattableTextComponent reserveAmmo = new TranslationTextComponent("");
                 int ammo = player.getHeldItemMainhand().getTag().getInt("AmmoCount");
-                /*if (player.isCreative()) {
-                    if (ammo <= gun.getReloads().getMaxAmmo() / 4)
-                        currentAmmo = new TranslationTextComponent("")
-                                .append(new TranslationTextComponent("" + ammo).mergeStyle(TextFormatting.RED));
-                    else
-                        currentAmmo = new TranslationTextComponent("" + ammo);
-                }*/// else {
-                    if (player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo() / 4 && this.ammoReserveCount <= gun.getReloads().getMaxAmmo()) {
-                        currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo)).mergeStyle(TextFormatting.RED);
-                        reserveAmmo =
-                                byPaddingZeros(this.ammoReserveCount > 10000 ? 10000 : this.ammoReserveCount).append(new TranslationTextComponent("" + (this.ammoReserveCount > 10000 ? 9999 : this.ammoReserveCount))).mergeStyle(TextFormatting.RED);
-                    } else if (this.ammoReserveCount <= gun.getReloads().getMaxAmmo()) {
-                        currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo).mergeStyle(TextFormatting.WHITE));
-                        reserveAmmo = byPaddingZeros(this.ammoReserveCount > 10000 ? 10000 : this.ammoReserveCount).append(new TranslationTextComponent("" + (this.ammoReserveCount > 10000 ? 9999 : this.ammoReserveCount))).mergeStyle(TextFormatting.RED);
-                    } else if (player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo() / 4) {
-                        currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo)).mergeStyle(TextFormatting.RED);
-                        reserveAmmo = byPaddingZeros(this.ammoReserveCount > 10000 ? 10000 : this.ammoReserveCount).append(new TranslationTextComponent("" + (this.ammoReserveCount > 10000 ? 9999 : this.ammoReserveCount))).mergeStyle(TextFormatting.GRAY);
-                    } else {
-                        currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo).mergeStyle(TextFormatting.WHITE));
-                        reserveAmmo = byPaddingZeros(this.ammoReserveCount > 10000 ? 10000 : this.ammoReserveCount).append(new TranslationTextComponent("" + (this.ammoReserveCount > 10000 ? 9999 : this.ammoReserveCount))).mergeStyle(TextFormatting.GRAY);
-                    }
-                //}
+                if (player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo() / 4 && this.ammoReserveCount <= gun.getReloads().getMaxAmmo()) {
+                    currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo)).mergeStyle(TextFormatting.RED);
+                    reserveAmmo =
+                            byPaddingZeros(this.ammoReserveCount > 10000 ? 10000 : this.ammoReserveCount).append(new TranslationTextComponent("" + (this.ammoReserveCount > 10000 ? 9999 : this.ammoReserveCount))).mergeStyle(TextFormatting.RED);
+                } else if (this.ammoReserveCount <= gun.getReloads().getMaxAmmo()) {
+                    currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo).mergeStyle(TextFormatting.WHITE));
+                    reserveAmmo = byPaddingZeros(this.ammoReserveCount > 10000 ? 10000 : this.ammoReserveCount).append(new TranslationTextComponent("" + (this.ammoReserveCount > 10000 ? 9999 : this.ammoReserveCount))).mergeStyle(TextFormatting.RED);
+                } else if (player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo() / 4) {
+                    currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo)).mergeStyle(TextFormatting.RED);
+                    reserveAmmo = byPaddingZeros(this.ammoReserveCount > 10000 ? 10000 : this.ammoReserveCount).append(new TranslationTextComponent("" + (this.ammoReserveCount > 10000 ? 9999 : this.ammoReserveCount))).mergeStyle(TextFormatting.GRAY);
+                } else {
+                    currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo).mergeStyle(TextFormatting.WHITE));
+                    reserveAmmo = byPaddingZeros(this.ammoReserveCount > 10000 ? 10000 : this.ammoReserveCount).append(new TranslationTextComponent("" + (this.ammoReserveCount > 10000 ? 9999 : this.ammoReserveCount))).mergeStyle(TextFormatting.GRAY);
+                }
                 stack.scale(counterSize, counterSize, counterSize);
                 stack.push();
                 {
@@ -266,7 +208,6 @@ public class HUDRenderingHandler extends AbstractGui {
             stack.translate(anchorPointX - (ReloadBarSize*4.35) / 4F, anchorPointY + (ReloadBarSize*1.625F) / 5F * 3F, 0);//stack.translate(anchorPointX - (fireModeSize*6) / 4F, anchorPointY - (fireModeSize*1F) / 5F * 3F, 0); // *68for21F
             stack.translate(-ReloadBarSize, -ReloadBarSize, 0);
 
-
             stack.translate(-16.25-7.3, 0.15+1.6, 0);
             // stack.translate(0, 0, );
             stack.scale(3.05F,0.028F,0); // *21F
@@ -278,11 +219,7 @@ public class HUDRenderingHandler extends AbstractGui {
             buffer.pos(matrix, ReloadBarSize, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
             buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
 
-            ObjectRenderEditor.RENDER_Element elemet = new ObjectRenderEditor.RENDER_Element(0, 0, 0, 0);
-            if (ObjectRenderEditor.get().GetFromElements(6) != null) {
-                elemet = ObjectRenderEditor.get().GetFromElements(6);
-            }
-            stack.translate(elemet.getxMod()+19.25, (1.5+(-63.4)+elemet.getyMod())*10, 0);
+            stack.translate(19.25, (1.5+(-63.4))*10, 0);
             // stack.translate(0, 0, );
             stack.scale(0.0095F,20.028F,0); // *21F
 
@@ -294,7 +231,6 @@ public class HUDRenderingHandler extends AbstractGui {
             buffer.finishDrawing();
             WorldVertexBufferUploader.draw(buffer);
             stack.pop();
-
         }
     }
 
@@ -309,7 +245,7 @@ public class HUDRenderingHandler extends AbstractGui {
         if(length < 100)
             return 1;
         if(length < 1000)
-            return 1;
+            return 0;
         return 0;
     }
 }

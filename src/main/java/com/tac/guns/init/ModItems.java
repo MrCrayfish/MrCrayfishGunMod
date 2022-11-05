@@ -133,7 +133,8 @@ public class ModItems
 
     public static final RegistryObject<Item> SLX_2X = REGISTER.register("slx_2x", () -> new ScopeItem(Scope.create(new ScopeZoomData[]{new ScopeZoomData(0.0165F,0.4185F)}, 2.25F,0.1725, "slx2x", GunModifiers.ACOG_4_ADS).viewFinderOffset(0.425).viewFinderOffsetDR(0.4).viewFinderOffsetSpecial(0.375).viewFinderOffsetSpecialDR(0.35), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));//.viewFinderOffset(0.475), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
-    public static final RegistryObject<Item> LONGRANGE_8x_SCOPE = REGISTER.register("8x_scope", () -> new ScopeItem(Scope.create(new ScopeZoomData[]{new ScopeZoomData(0.435F,0.00F)}, 1.930F,0.1725, "gener8x",GunModifiers.LONGRANGE_8x_SCOPE_ADS).viewFinderOffset(0.595).viewFinderOffsetDR(0.3925).viewFinderOffsetSpecial(0.465).viewFinderOffsetSpecialDR(0.304), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> LONGRANGE_8x_SCOPE = REGISTER.register("8x_scope",
+            () -> new ScopeItem(Scope.create(new ScopeZoomData[]{new ScopeZoomData(0.375F,0.385F), new ScopeZoomData(0.525F,0.4375F)}, 2.230F,0.2125, "gener8x",GunModifiers.LONGRANGE_8x_SCOPE_ADS).viewFinderOffset(0.595).viewFinderOffsetDR(0.3925).viewFinderOffsetSpecial(0.465).viewFinderOffsetSpecialDR(0.304), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
     /* Old Scopes */
     public static final RegistryObject<Item> OLD_LONGRANGE_8x_SCOPE = REGISTER.register("old_8x_scope", () -> new OldScopeItem(Scope.create(new ScopeZoomData[]{new ScopeZoomData(0.375F,0.00F)}, 1.930F,0.14, "old8x",GunModifiers.OLD_LONGRANGE_8x_SCOPE_ADS).viewFinderOffset(0.51).viewFinderOffsetDR(0.36).viewFinderOffsetSpecial(0.42).viewFinderOffsetSpecialDR(0.3), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));

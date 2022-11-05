@@ -1,23 +1,23 @@
 {
   "general": {
-    "boltAction": true,
-    "rate": 28,
+    "boltAction": false,
+    "rate": 26,
     "rateSelector": [
       0,
       1
     ],
     "gripType": "tac:two_handed_mosin",
-    "recoilAngle": 7.6,
+    "recoilAngle": 7.9,
     "recoilKick": 2.9,
     "horizontalRecoilAngle": 0.125,
-    "recoilAdsReduction": 0.28,
+    "recoilAdsReduction": 0.27,
     "weaponRecoilDuration": 0.675,
     "recoilDuration": 0.155,
     "cameraRecoilModifier": 1.75,
     "alwaysSpread": true,
     "spread": 0.15,
     "weightKilo": 6.0,
-    "movementInaccuracy": 5.75
+    "movementInaccuracy": 15.75
   },
   "reloads": {
     "magFed": true,

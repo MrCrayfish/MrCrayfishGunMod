@@ -45,7 +45,7 @@ public class OldLongRange8xScopeModel implements IOverrideModel
             matrixStack.translate(0,0,transition*0.18);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if ((OptifineHelper.isShadersEnabled()) || !Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;

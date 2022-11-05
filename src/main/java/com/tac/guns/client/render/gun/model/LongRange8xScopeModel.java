@@ -7,8 +7,11 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
+import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.util.OptifineHelper;
 import net.minecraft.client.MainWindow;
@@ -42,7 +45,7 @@ public class LongRange8xScopeModel implements IOverrideModel
             matrixStack.translate(0,0,transition*0.18);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if ((OptifineHelper.isShadersEnabled()) || !Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.625) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.625) * 2.78;
@@ -63,19 +66,19 @@ public class LongRange8xScopeModel implements IOverrideModel
         matrixStack.translate(0, 0, 0.04);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
-
             if(entity.getPrimaryHand() == HandSide.LEFT)
             {
                 matrixStack.scale(-1, 1, 1);
             }
 
-            float scopeSize = 1.085F;
-            float scopePrevSize = 1.20F;
+            ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "gener8x" ? new ScopeData("") : ScopeEditor.get().getScopeData();
+            ScopeItem scopeItem = (ScopeItem)stack.getItem();
+            float scopeSize = 1.085F + 0.24375f + 0.03f + scopeData.getDrZoomSizeMod();
+            float scopePrevSize = 1.20F + scopeData.getReticleSizeMod();
             float size = scopeSize / 16.0F;
             float reticleSize = scopePrevSize / 16.0F;
 
-//            float crop = 0.4375F;
-            float crop = 0.4425F;
+            float crop = scopeItem.getProperties().getAdditionalZoom().getDrCropZoom() + scopeData.getDrZoomCropMod();
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
 
@@ -87,10 +90,8 @@ public class LongRange8xScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
-                //matrixStack.translate(-size / 2, 0.0595 , 4.55 * 0.0625);
-                matrixStack.translate(-size / 2, 0.08725  , Config.COMMON.gameplay.scopeDoubleRender.get() ? 4.70 * 0.0625 : 2.37 * 0.0625); //4.70
-                // matrixStack.translate(-size / 2, 0.08725  , Config.COMMON.gameplay.scopeDoubleRender.get() ? 4.70 * 0.0625 : 2.37 * 0.0625); //4.70
-
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.08725 + 0.014 -0.005 + scopeData.getDrYZoomMod(), Config.COMMON.gameplay.scopeDoubleRender.get() ? (4.70 -0.54725 + scopeData.getDrZZoomMod()) * 0.0625 :
+                        (2.37 -0.54725 + scopeData.getDrZZoomMod()) * 0.0625); //4.70
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
                 IVertexBuilder builder;
@@ -125,6 +126,7 @@ public class LongRange8xScopeModel implements IOverrideModel
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(10.0f,10.0f,10.0f);
                 matrixStack.translate(-0.00455715, -0.00456, 0.0);
+                matrixStack.translate(scopeData.getReticleXMod(), scopeData.getReticleYMod(), scopeData.getReticleZMod());
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing
                 boolean aimed = false;

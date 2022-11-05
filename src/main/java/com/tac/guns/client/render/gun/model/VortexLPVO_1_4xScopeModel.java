@@ -60,7 +60,7 @@ public class VortexLPVO_1_4xScopeModel implements IOverrideModel
             matrixStack.scale(1.0F, 1.0F, (float) zScale);
 
         }*/
-        if (!Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if ((OptifineHelper.isShadersEnabled()) || !Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.375) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.375) * 1.6;
