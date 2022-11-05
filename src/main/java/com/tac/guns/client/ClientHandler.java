@@ -66,6 +66,8 @@ import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAttachments;
 import com.tac.guns.network.message.MessageInspection;
 
+import com.tac.guns.util.math.SecondOrderDynamics;
+import de.javagl.jgltf.model.animation.AnimationRunner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.ControlsScreen;
@@ -148,6 +150,8 @@ public class ClientHandler
         registerScreenFactories();
 
         AnimationHandler.preloadAnimations();
+        new AnimationRunner(); //preload thread pool
+        new SecondOrderDynamics(1f,1f,1f, 1f); //preload thread pool
     }
 
     private static void setupRenderLayers()

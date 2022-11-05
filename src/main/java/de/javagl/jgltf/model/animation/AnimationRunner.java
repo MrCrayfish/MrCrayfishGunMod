@@ -68,6 +68,10 @@ public final class AnimationRunner
             "The animationManager may not be null");
         this.animationManager = animationManager;
     }
+
+    public AnimationRunner(){
+        animationManager = null;
+    }
     
     /**
      * Start this runner. If the runner is already {@link #isRunning()},

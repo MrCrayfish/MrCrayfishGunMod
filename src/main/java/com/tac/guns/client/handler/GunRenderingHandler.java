@@ -77,23 +77,23 @@ import java.util.*;
 
 public class GunRenderingHandler {
     private static GunRenderingHandler instance;
-    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.85f,0.7f, 2.5f, 0);
-    private final SecondOrderDynamics swayDynamics = new SecondOrderDynamics(0.7f,0.5f, 2.5f, 0);
-    private final SecondOrderDynamics aimingDynamics = new SecondOrderDynamics(0.65f,0.9f, 2f, 0);
+    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.4f,0.7f, 2.5f, 0);
+    private final SecondOrderDynamics swayDynamics = new SecondOrderDynamics(0.35f,0.5f, 2.5f, 0);
+    private final SecondOrderDynamics aimingDynamics = new SecondOrderDynamics(0.4f,0.85f, 1.5f, 0);
     // Standard Sprint Dynamics
-    private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.45f,0.7f, 0.6f, 0);
-    private final SecondOrderDynamics bobbingDynamics = new SecondOrderDynamics(0.45f,0.7f, 0.6f, 1);
-    private final SecondOrderDynamics speedUpDynamics = new SecondOrderDynamics(0.45f,0.7f, 0.6f, 0);
-    private final SecondOrderDynamics sprintDynamicsZ = new SecondOrderDynamics(0.45f,0.8f, 0.5f, 0);
-    private final SecondOrderDynamics jumpingDynamics =  new SecondOrderDynamics(0.65f,1f, 0.7f, 0);
+    private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.22f,0.7f, 0.6f, 0);
+    private final SecondOrderDynamics bobbingDynamics = new SecondOrderDynamics(0.22f,0.7f, 0.6f, 1);
+    private final SecondOrderDynamics speedUpDynamics = new SecondOrderDynamics(0.22f,0.7f, 0.6f, 0);
+    private final SecondOrderDynamics sprintDynamicsZ = new SecondOrderDynamics(0.22f,0.8f, 0.5f, 0);
+    private final SecondOrderDynamics jumpingDynamics =  new SecondOrderDynamics(0.28f,1f, 0.65f, 0);
     // High Speed Sprint Dynamics
-    private final SecondOrderDynamics sprintDynamicsHSS = new SecondOrderDynamics(0.6f,0.6f, 0.6f,
+    private final SecondOrderDynamics sprintDynamicsHSS = new SecondOrderDynamics(0.3f,0.6f, 0.6f,
             0);
    /* private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.15f,0.7f,
             -2.25f, new Vector3f(0,0,0));*/
-    private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.55f,0.75f, 0.5f,
+    private final SecondOrderDynamics sprintDynamicsZHSS = new SecondOrderDynamics(0.27f,0.75f, 0.5f,
             0);
-    public final SecondOrderDynamics sprintDynamicsHSSLeftHand = new SecondOrderDynamics(0.35f,
+    public final SecondOrderDynamics sprintDynamicsHSSLeftHand = new SecondOrderDynamics(0.38f,
             1f, 0f, 0);
 
     public static GunRenderingHandler get() {
@@ -351,14 +351,14 @@ public class GunRenderingHandler {
             double invertZoomProgress = aimed ? (Gun.getScope(heldItem) != null ? 0.0575 : 0.0725) : 0.468;
             float crouch = mc.player.isCrouching() ? 148f : 1f;
 
-            if(playerentity.distanceWalkedModified == playerentity.prevDistanceWalkedModified)
+            if(playerentity.distanceWalkedModified == playerentity.prevDistanceWalkedModified && !playerentity.isSneaking())
                 startingDistance = playerentity.distanceWalkedModified;
             if(!mc.player.movementInput.isMovingForward()){
                 speedUpDistanceFrom = playerentity.distanceWalkedModified;
                 speedUpProgress -= (new Date().getTime() - prevTime) / 150f;
                 if(speedUpProgress < 0) speedUpProgress = 0;
             }else {
-                speedUpProgress = ( -distanceWalked - speedUpDistanceFrom < speedUpDistance ? (-distanceWalked - speedUpDistanceFrom )/speedUpDistance : 1) * crouch;
+                speedUpProgress = ( -distanceWalked - speedUpDistanceFrom < speedUpDistance ? (-distanceWalked - speedUpDistanceFrom )/speedUpDistance : 1) ;
             }
             distanceWalked = distanceWalked + startingDistance;
             this.walkingDistance1 = distanceWalked;
@@ -650,8 +650,8 @@ public class GunRenderingHandler {
         matrixStack.translate(0, 0, 0.25);
         float amplifier = bobbingDynamics.update(0.05f, (float) ((sprintTransition/2f + 1) * (1 - AimingHandler.get().getNormalisedAdsProgress() * 0.75) * (RecoilHandler.get().getRecoilProgress() == 0 ? 1 : 0)) );
         float speedUp = speedUpDynamics.update(0.05f, speedUpProgress * (1 - sOT) * (float) (1 - AimingHandler.get().getNormalisedAdsProgress())) ;
-        float delta = -MathHelper.sin(walkingDistance1* walkingCrouch * (float) Math.PI) * walkingCameraYaw * 0.5f * (convert ? -0.5f : 1) * amplifier * (8 - backwardTicker) / 8;
-        float delta2 = -MathHelper.sin(walkingDistance1* walkingCrouch * (float) Math.PI * 2f) * walkingCameraYaw * 0.5f * (convert ? -0.35f : 1) * amplifier * (12 - backwardTicker) / 12;
+        float delta = -MathHelper.sin(walkingDistance1 * (float) Math.PI) * walkingCameraYaw * 0.5f * (convert ? -0.5f : 1) * amplifier * (8 - backwardTicker) / 8;
+        float delta2 = -MathHelper.sin(walkingDistance1 * (float) Math.PI * 2f) * walkingCameraYaw * 0.5f * (convert ? -0.35f : 1) * amplifier * (12 - backwardTicker) / 12;
         matrixStack.rotate(Vector3f.YP.rotationDegrees(35f*delta*(float) (1 - AimingHandler.get().getNormalisedAdsProgress())));
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-3f*speedUp));
         matrixStack.translate(0, 0, -0.25 + 0.07 * speedUp);
@@ -684,8 +684,8 @@ public class GunRenderingHandler {
             if(acceleration > 0) acceleration = 0;
         }
         float maxMotion = 0.3f;
-        float transition = - jumpingDynamics.update(0.05f, (Math.abs(acceleration) < maxMotion ? (acceleration / maxMotion) * 0.12f : Math.abs(acceleration) / acceleration * 0.12f) * (sprintTransition/3f + 1) * (1f - 0.7f * (float) AimingHandler.get().getNormalisedAdsProgress()));
-        if(transition < 0) transition *= 0.7f;
+        float transition = - jumpingDynamics.update(0.05f, (Math.abs(acceleration) < maxMotion ? (acceleration / maxMotion) * 0.15f : Math.abs(acceleration) / acceleration * 0.15f) * (sprintTransition/3f + 1) * (1f - 0.7f * (float) AimingHandler.get().getNormalisedAdsProgress()));
+        if(transition > 0) transition *= 0.8f;
         matrixStack.translate(0, transition,0);
         velocity = newVelocity;
         prevTime = date.getTime();
@@ -701,8 +701,8 @@ public class GunRenderingHandler {
 
     private final OneDimensionalPerlinNoise noiseRotationY = new OneDimensionalPerlinNoise(-0.5f, 0.5f, 2000);
     public void applyNoiseMovementTransform(MatrixStack matrixStack){
-        matrixStack.translate(noiseX.getValue(), noiseY.getValue() + additionNoiseY.getValue(), 0);
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(noiseRotationY.getValue()));
+        matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedAdsProgress()), noiseY.getValue() + additionNoiseY.getValue(), 0);
+        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (noiseRotationY.getValue() * (1 - AimingHandler.get().getNormalisedAdsProgress()))));
     }
 
     @SubscribeEvent

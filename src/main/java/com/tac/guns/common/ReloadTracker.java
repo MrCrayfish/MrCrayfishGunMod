@@ -8,6 +8,7 @@ import com.tac.guns.item.GunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageGunSound;
 import com.tac.guns.util.GunEnchantmentHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,6 +26,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.lang.reflect.Array;
 import java.util.Map;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**
@@ -214,6 +217,7 @@ public class ReloadTracker
                     if(!(player.inventory.getCurrentItem().getItem() instanceof GunItem))
                     {
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, true);
                         return;
                     }
                     RELOAD_TRACKER_MAP.put(player, new ReloadTracker(player));
@@ -223,6 +227,7 @@ public class ReloadTracker
                 {
                     RELOAD_TRACKER_MAP.remove(player);
                     SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+                    SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, true);
                     return;
                 }
                 if(tracker.canReload(player))
@@ -234,6 +239,7 @@ public class ReloadTracker
                         tracker.increaseMagAmmo(player);
                         RELOAD_TRACKER_MAP.remove(player);
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, false);
                         /*DelayedTask.runAfter(2, () ->
                         {
                             ResourceLocation cockSound = gun.getSounds().getCock();
@@ -248,6 +254,7 @@ public class ReloadTracker
                         if (tracker.isWeaponFull() || tracker.hasNoAmmo(player)) {
                             RELOAD_TRACKER_MAP.remove(player);
                             SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
+                            SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, false);
                             /*DelayedTask.runAfter(4, () ->
                             {
                                 ResourceLocation cockSound = gun.getSounds().getCock();

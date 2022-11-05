@@ -1,7 +1,11 @@
 package com.tac.guns.mixin.client;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import com.tac.guns.client.handler.AnimationHandler;
 import com.tac.guns.client.render.animation.module.AnimationMeta;
 import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.init.ModSyncedDataKeys;
+import com.tac.guns.network.CommonStateBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.item.ItemStack;
@@ -16,6 +20,7 @@ public class FirstPersonRendererMixin {
     @Shadow
     private ItemStack itemStackMainHand;
     private ItemStack prevItemStack = ItemStack.EMPTY;
+    private int prevSlot = 0;
     @Shadow
     private float equippedProgressMainHand;
     @Shadow
@@ -27,10 +32,14 @@ public class FirstPersonRendererMixin {
         ItemStack mainHandItemStack = Minecraft.getInstance().player.getHeldItemMainhand();
         GunAnimationController controller = GunAnimationController.fromItem(mainHandItemStack.getItem());
         GunAnimationController controller1 = GunAnimationController.fromItem(this.prevItemStack.getItem());
-        if(prevItemStack.isItemEqual(mainHandItemStack)) return;
-        //if(isSameWeapon(Minecraft.getInstance().player)) return;
+        if(prevItemStack.isItemEqual(mainHandItemStack)
+                && (prevSlot == Minecraft.getInstance().player.inventory.currentItem && !CommonStateBox.isSwapped ) )
+            return;
         prevItemStack = mainHandItemStack;
-        if(controller1 != null && controller != controller1) {
+        prevSlot = Minecraft.getInstance().player.inventory.currentItem;
+        CommonStateBox.isSwapped = false;
+        //if(isSameWeapon(Minecraft.getInstance().player)) return;
+        if(controller1 != null) {
             controller1.stopAnimation();
         }
         if(controller != null && controller == controller1){
