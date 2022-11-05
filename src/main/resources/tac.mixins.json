@@ -7,14 +7,15 @@
   "mixins": [
     "common.LivingEntityMixin",
     "common.PlayerListMixin",
+    "common.ServerPlayNetHandlerMixin",
     "common.SittingPhaseMixin"
   ],
   "client": [
-    "client.GameRendererMixin",
     "client.FirstPersonRendererMixin",
+    "client.GameRendererMixin",
+    "client.InventoryScreenMixin",
     "client.MouseHelperMixin",
-    "client.WorldRendererMixin",
-    "client.InventoryScreenMixin"
+    "client.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

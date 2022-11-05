@@ -1,5 +1,6 @@
 package com.tac.guns.client.handler;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Reference;
 import com.tac.guns.client.InputHandler;
 import com.tac.guns.client.render.animation.AA12AnimationController;
@@ -23,18 +24,21 @@ import com.tac.guns.client.render.animation.module.PumpShotgunAnimationControlle
 import com.tac.guns.common.Gun;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.event.GunReloadEvent;
+import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.util.GunEnchantmentHelper;
 
 import de.javagl.jgltf.model.animation.AnimationRunner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
 
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -203,9 +207,11 @@ public enum AnimationHandler {
                 controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL_END);
             }
         }else{
-            controller.stopAnimation();
-            controller.runAnimation(GunAnimationController.AnimationLabel.STATIC);
-            controller.stopAnimation();
+            if(SyncedPlayerData.instance().get(Minecraft.getInstance().player, ModSyncedDataKeys.STOP_ANIMA)) {
+                controller.stopAnimation();
+                controller.runAnimation(GunAnimationController.AnimationLabel.STATIC);
+                controller.stopAnimation();
+            }
         }
     }
 

@@ -2,7 +2,16 @@ package com.tac.guns.util.math;
 
 import net.minecraft.util.math.vector.Vector3f;
 
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 public class SecondOrderDynamics {
+    public static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(15, Thread::new);
+    static {
+        for(int i =0; i<15; i++) executorService.execute(()->{});
+    }
+
     private final float k1;
     private final float k2;
     private final float k3 ;
@@ -10,6 +19,8 @@ public class SecondOrderDynamics {
     private float py;
     private float pyd;
     private float px;
+
+    private float target;
 
     /**
      * @param f Natural frequency
@@ -24,18 +35,39 @@ public class SecondOrderDynamics {
 
         py = px = x0;
         pyd = 0;
+
+        target = x0;
+
+        executorService.execute(this::update);
     }
 
     /**
      * @return processed y value
+     * @param T abandoned.
      * */
     public float update(float T, float x){
-        float xd = (x - px) / T;
-        float y = py + T * pyd;
+        target = x;
+        return py + 0.05f * pyd;
+    }
 
-        pyd = pyd + T * (px + k3 * xd - py - k1 * pyd) / k2;
-        px = x;
-        py = y;
-        return y;
+    private void update(){
+        while (true) {
+            float T = 0.05f;
+            float xd = (target - px) / T;
+            float y = py + T * pyd;
+
+            pyd = pyd + T * (px + k3 * xd - py - k1 * pyd) / k2;
+            px = target;
+            py = y;
+
+            try
+            {
+                Thread.sleep(6);
+            }
+            catch (InterruptedException e)
+            {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }
