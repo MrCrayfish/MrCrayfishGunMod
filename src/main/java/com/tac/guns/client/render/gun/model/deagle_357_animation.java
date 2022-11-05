@@ -96,13 +96,10 @@ public class deagle_357_animation implements IOverrideModel {
         float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks()); // getRenderPartialTicks()); // getCooldown(stack.getItem(), Minecraft.getInstance().getFrameTime());
         AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
         boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
-        if(shouldOffset)
-            GunRenderingHandler.get().slideKeep = 28;
-        if(Gun.hasAmmo(stack) || GunRenderingHandler.get().slideKeep > 0 || shouldOffset)
+        if(Gun.hasAmmo(stack) || shouldOffset)
         {
             // Math provided by Bomb787 on GitHub and Curseforge!!!
             matrices.translate(0, 0, 0.280f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-            GunRenderingHandler.get().slideKeep--;
         }
         else if(!Gun.hasAmmo(stack))
         {

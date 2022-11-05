@@ -29,6 +29,11 @@ public class ModSyncedDataKeys
             .resetOnDeath()
             .build();
 
+    public static final SyncedDataKey<Boolean> STOP_ANIMA = SyncedDataKey.builder(Serializers.BOOLEAN)
+            .id(new ResourceLocation(Reference.MOD_ID, "stop_anima"))
+            .defaultValueSupplier(() -> true)
+            .resetOnDeath()
+            .build();
     public static final SyncedDataKey<Float> MOVING = SyncedDataKey.builder(Serializers.FLOAT)
             .id(new ResourceLocation(Reference.MOD_ID, "moving"))
             .defaultValueSupplier(() -> 0f)
@@ -40,6 +45,7 @@ public class ModSyncedDataKeys
         SyncedPlayerData.instance().registerKey(AIMING);
         SyncedPlayerData.instance().registerKey(SHOOTING);
         SyncedPlayerData.instance().registerKey(RELOADING);
+        SyncedPlayerData.instance().registerKey(STOP_ANIMA);
         SyncedPlayerData.instance().registerKey(MOVING);
     }
 }

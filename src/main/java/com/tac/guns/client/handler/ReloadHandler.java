@@ -22,6 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.datafix.fixes.SwapHandsFix;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
@@ -248,6 +249,7 @@ public class ReloadHandler {
             if (SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING)) {
                 if (this.reloadingSlot != player.inventory.currentItem) {
                     this.setReloading(false);
+                    SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, true);
                 }
             }
             this.updateReloadTimer(player);
