@@ -7,17 +7,17 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 2.75,
-    "horizontalRecoilAngle": 2.05,
-    "recoilKick": 2.575,
+    "recoilAngle": 3.75,
+    "horizontalRecoilAngle": 2.35,
+    "recoilKick": 2.175,
     "recoilAdsReduction": 0.315,
     "weaponRecoilOffset": 0.715,
     "cameraRecoilModifier": 1.25,
     "recoilDuration": 0.335,
     "alwaysSpread": true,
-    "spread": 3.0,
-    "weightKilo": 9.0,
-    "movementInaccuracy": 1.75
+    "spread": 2.78,
+    "weightKilo": 9.5,
+    "movementInaccuracy": 1.85
   },
   "reloads": {
     "magFed": true,
@@ -35,10 +35,10 @@
   "projectile": {
     "item": "tac:762x54",
     "visible": false,
-    "damage": 10,
+    "damage": 14,
     "size": 0.2,
-    "speed": 24.5,
-    "life": 6
+    "speed": 26.5,
+    "life": 7
   },
   "sounds": {
     "fire": "tac:item.fire_dp28",

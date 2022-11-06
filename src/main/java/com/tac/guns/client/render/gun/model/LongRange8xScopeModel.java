@@ -73,7 +73,7 @@ public class LongRange8xScopeModel implements IOverrideModel
 
             ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "gener8x" ? new ScopeData("") : ScopeEditor.get().getScopeData();
             ScopeItem scopeItem = (ScopeItem)stack.getItem();
-            float scopeSize = 1.085F + 0.24375f + 0.03f + scopeData.getDrZoomSizeMod();
+            float scopeSize = 1.085F + 0.24375f + 0.03f + 0.3945f + scopeData.getDrZoomSizeMod();
             float scopePrevSize = 1.20F + scopeData.getReticleSizeMod();
             float size = scopeSize / 16.0F;
             float reticleSize = scopePrevSize / 16.0F;
@@ -90,8 +90,8 @@ public class LongRange8xScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
-                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.08725 + 0.014 -0.005 + scopeData.getDrYZoomMod(), Config.COMMON.gameplay.scopeDoubleRender.get() ? (4.70 -0.54725 + scopeData.getDrZZoomMod()) * 0.0625 :
-                        (2.37 -0.54725 + scopeData.getDrZZoomMod()) * 0.0625); //4.70
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.08725 + 0.014 -0.005 + 0.00175 + scopeData.getDrYZoomMod(), Config.COMMON.gameplay.scopeDoubleRender.get() ? (4.70 -0.54725 + 0.0239 + scopeData.getDrZZoomMod()) * 0.0625 :
+                        (2.37 -0.54725 + 0.0239 + scopeData.getDrZZoomMod()) * 0.0625); //4.70
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
                 IVertexBuilder builder;
@@ -125,7 +125,7 @@ public class LongRange8xScopeModel implements IOverrideModel
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(10.0f,10.0f,10.0f);
-                matrixStack.translate(-0.00455715, -0.00456, 0.0);
+                matrixStack.translate(-0.00455715, -0.00439, 0.0);
                 matrixStack.translate(scopeData.getReticleXMod(), scopeData.getReticleYMod(), scopeData.getReticleZMod());
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing

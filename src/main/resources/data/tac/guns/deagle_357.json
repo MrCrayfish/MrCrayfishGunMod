@@ -31,7 +31,7 @@
     "preReloadPauseTicks": 0
   },
   "projectile": {
-    "item": "tac:magnumround",
+    "item": "tac:ae50",
     "visible": false,
     "damage": 16,
     "size": 0.2,
@@ -62,7 +62,11 @@
       "zOffset": -15.15
     },
     "attachments": {
-
+      "barrel": {
+        "yOffset": -100829.84,
+        "zOffset": -11.55,
+        "scale": 1.00
+      }
     }
   }
 }

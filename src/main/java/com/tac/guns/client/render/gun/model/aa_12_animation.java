@@ -51,21 +51,15 @@ public class aa_12_animation implements IOverrideModel {
         matrices.push();
         {
             controller.applySpecialModelTransform(SpecialModels.AA_12_BODY.getModel(), AA12AnimationController.INDEX_BODY,transformType,matrices);
-            if (Gun.getScope(stack) != null) {
+            if (Gun.getScope(stack) == null) {
                 RenderUtil.renderModel(SpecialModels.AA_12_SIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
             if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem())) {
-                //int overlayTmp = Gun.getAttachment(IAttachment.Type.BARREL, stack).getStack().serializeNBT().getInt("Color");
-                //int overlayTmp = Minecraft.getInstance().getItemColors().getColor(Gun.getAttachment(IAttachment.Type.BARREL, stack).getStack(), 0);
-                //if(overlayTmp == -1)
-                //{
-                //    overlayTmp = overlay;
-                //}
-            /*
-                Hm, it seems like the getAttachment().stack() method chain does not actually grab the color of the specific attachment
-                I will be making a bug report as I don't think this behavior is correct and something wrong is on either side as this should be clearly possible
-            */
+                matrices.push();
+                matrices.translate(0,0,-.1);
                 RenderUtil.renderModel(SpecialModels.AA_12_SILENCER.getModel(), stack, matrices, renderBuffer, light, overlay);
+                matrices.translate(0,0,.1);
+                matrices.pop();
             } else {
                 RenderUtil.renderModel(SpecialModels.AA_12_MUZZLE.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
@@ -94,13 +88,25 @@ public class aa_12_animation implements IOverrideModel {
 
         matrices.push();
         controller.applySpecialModelTransform(SpecialModels.AA_12_BODY.getModel(), AA12AnimationController.INDEX_BOLT,transformType,matrices);
+        RenderUtil.renderModel(SpecialModels.AA_12_BOLT_HANDLE.getModel(), stack, matrices, renderBuffer, light, overlay);
         CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
         float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
 
         if(Gun.hasAmmo(stack))
         {
             // Math provided by Bomb787 on GitHub and Curseforge!!!
-            matrices.translate(0, 0, 0.275f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+            matrices.translate(0, 0, -0.215f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+        }
+        else if(!Gun.hasAmmo(stack))
+        {
+            if(cooldownOg > 0.5){
+                // Math provided by Bomb787 on GitHub and Curseforge!!!
+                matrices.translate(0, 0, -0.215f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+            }
+            else
+            {
+                matrices.translate(0, 0, -0.215f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+            }
         }
 
         RenderUtil.renderModel(SpecialModels.AA_12_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
