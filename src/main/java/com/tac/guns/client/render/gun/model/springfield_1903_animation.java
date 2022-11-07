@@ -47,7 +47,7 @@ public class springfield_1903_animation implements IOverrideModel {
             matrices.pop();
             return;
         }
-        if((Gun.getScope(stack) != null) && (!(OptifineHelper.isShadersEnabled() || !Config.COMMON.gameplay.scopeDoubleRender.get()) || !(AimingHandler.get().getNormalisedAdsProgress() > 0.5)))
+        if((Gun.getScope(stack) != null) && (!(OptifineHelper.isShadersEnabled() || !Config.CLIENT.display.scopeDoubleRender.get()) || !(AimingHandler.get().getNormalisedAdsProgress() > 0.5)))
         {
             RenderUtil.renderModel(SpecialModels.SPRINGFIELD_1903_MOUNT.getModel(), stack, matrices, renderBuffer, light, overlay);
         }

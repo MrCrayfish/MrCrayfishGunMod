@@ -51,7 +51,7 @@ public class kar98_animation implements IOverrideModel {
         {
             RenderUtil.renderModel(SpecialModels.SMLE_III_MOUNT.getModel(), stack, matrices, renderBuffer, light, overlay);
         }*/
-        if((Gun.getScope(stack) != null) && (!(OptifineHelper.isShadersEnabled() || !Config.COMMON.gameplay.scopeDoubleRender.get()) || !(AimingHandler.get().getNormalisedAdsProgress() > 0.5)))
+        if((Gun.getScope(stack) != null) && (!(OptifineHelper.isShadersEnabled() || !Config.CLIENT.display.scopeDoubleRender.get()) || !(AimingHandler.get().getNormalisedAdsProgress() > 0.5)))
         {
             RenderUtil.renderModel(SpecialModels.KAR98_MOUNT.getModel(), stack, matrices, renderBuffer, light, overlay);
         }

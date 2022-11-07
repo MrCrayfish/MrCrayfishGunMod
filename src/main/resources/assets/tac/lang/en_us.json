@@ -379,6 +379,7 @@
     "tac.options.reloadBarExist": "Show Reloading Bar",
     "tac.options.ammoCounterExist": "Show Ammo Counter",
     "tac.options.iconExist": "Show Weapon Icon",
+    "tac.options.doubleRender": "Enable DR for Scopes" ,
 
     "tac.options.screenFormat": "TAC GUI SETTINGS",
 

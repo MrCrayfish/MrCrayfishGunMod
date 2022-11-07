@@ -73,6 +73,19 @@ public class GunOptions
         matrixStack.pop();
     });
 
+    public static final BooleanOption DOUBLE_RENDER_EXIST = new BooleanOption("tac.options.doubleRender", (settings) -> {
+        return Config.CLIENT.display.scopeDoubleRender.get();
+    }, (settings, value) -> {
+        Config.CLIENT.display.scopeDoubleRender.set(value);
+        Config.saveClientConfig();
+    });
+    public static final BooleanOption REDDOT_SQUISH_EXIST = new BooleanOption("tac.options.reddotSquish", (settings) -> {
+        return Config.CLIENT.display.redDotSquish.get();
+    }, (settings, value) -> {
+        Config.CLIENT.display.redDotSquish.set(value);
+        Config.saveClientConfig();
+    });
+
     public static final BooleanOption FIREMODE_EXIST = new BooleanOption("tac.options.firemodeExist", (settings) -> {
         return Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get();
     }, (settings, value) -> {

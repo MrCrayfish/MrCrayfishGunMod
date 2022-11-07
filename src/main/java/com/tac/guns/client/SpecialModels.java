@@ -337,6 +337,7 @@ public enum SpecialModels
     AI_AWP_BOLT_EXTRA("ai_awp_bolt_extra"),
     AI_AWP_BULLET_SHELL("ai_awp_bullet_shell"),
     AI_AWP_MAG("ai_awp_mag"),
+    AI_AWP_MAG_EXTENDED("ai_awp_extended_mag"),
     TEC_9("tec_9"),
     TEC_9_BOLT("tec_9_bolt"),
     TEC_9_STANDARD_MAG("tec_9_standard_mag"),
@@ -533,6 +534,8 @@ public enum SpecialModels
     MICRO_HOLO_BASE("optics/micro_holo_base"),
     LPVO_1_6_FRONT("optics/lpvo_1_6_front"),
     LPVO_1_6("optics/lpvo_1_6"),
+    Sx8_FRONT("optics/8x_scope_front"),
+    Sx8_BODY("optics/8x_scope"),
     //Everything from this point on is all LOD renders
 
     M1911_LOD("lods/m1911_lod");

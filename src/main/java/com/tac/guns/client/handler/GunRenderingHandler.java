@@ -429,8 +429,8 @@ public class GunRenderingHandler {
                 this.yOffset = 0.0;
                 this.zOffset = 0.0;
                 Scope scope = Gun.getScope(heldItem);
-                boolean isScopeOffsetType = Config.COMMON.gameplay.gameplayEnchancedScopeOffset.get();
-                boolean isScopeRenderType = Config.COMMON.gameplay.scopeDoubleRender.get();
+                boolean isScopeOffsetType = Config.CLIENT.display.gameplayEnchancedScopeOffset.get();
+                boolean isScopeRenderType = Config.CLIENT.display.scopeDoubleRender.get();
                 /* Creates the required offsets to position the scope into the middle of the screen. */
                 if (modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null) {
                     double viewFinderOffset = isScopeOffsetType || OptifineHelper.isShadersEnabled() ? scope.getViewFinderOffsetSpecial() : scope.getViewFinderOffset();

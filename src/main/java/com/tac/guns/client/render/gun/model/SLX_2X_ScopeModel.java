@@ -39,13 +39,13 @@ public class SLX_2X_ScopeModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay) {
         matrixStack.push();
-        /*if (OptifineHelper.isShadersEnabled() || !Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        /*if (OptifineHelper.isShadersEnabled() || !Config.CLIENT.display.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
             double zScale = 0.05D + 0.75D * (1.0D - transition);
             matrixStack.translate(0,0,transition*0.12);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if (Config.CLIENT.display.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;
@@ -58,7 +58,7 @@ public class SLX_2X_ScopeModel implements IOverrideModel
         }
         matrixStack.translate(0, 0.074, 0);
 
-        /*if(AimingHandler.get().getNormalisedAdsProgress() < 0.525 || Config.COMMON.gameplay.scopeDoubleRender.get())
+        /*if(AimingHandler.get().getNormalisedAdsProgress() < 0.525 || Config.CLIENT.display.scopeDoubleRender.get())
             RenderUtil.renderModel(LPVO_1_6_FRONT.getModel(), stack, matrixStack, renderTypeBuffer, light, overlay);
         RenderUtil.renderModel(LPVO_1_6.getModel(), stack, matrixStack, renderTypeBuffer, light, overlay);*/
         matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
@@ -91,13 +91,13 @@ public class SLX_2X_ScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
-                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), (0.0685075+0.01175-0.003) + scopeData.getDrYZoomMod(), (Config.COMMON.gameplay.scopeDoubleRender.get() ? (4.65+0.52975-0.618-2.8744+ scopeData.getDrZZoomMod()) * 0.0625 : (4.65+0.52975-0.618-2.8744+ scopeData.getDrZZoomMod()) * 0.0625/*(2.15+0.52975-0.618-2.8744 + scopeData.getDrZZoomMod()) * 0.0625)*/));
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), (0.0685075+0.01175-0.003) + scopeData.getDrYZoomMod(), (Config.CLIENT.display.scopeDoubleRender.get() ? (4.65+0.52975-0.618-2.8744+ scopeData.getDrZZoomMod()) * 0.0625 : (4.65+0.52975-0.618-2.8744+ scopeData.getDrZZoomMod()) * 0.0625/*(2.15+0.52975-0.618-2.8744 + scopeData.getDrZZoomMod()) * 0.0625)*/));
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
                 IVertexBuilder builder;
 
-                if(!OptifineHelper.isShadersEnabled() && Config.COMMON.gameplay.scopeDoubleRender.get())
+                if(!OptifineHelper.isShadersEnabled() && Config.CLIENT.display.scopeDoubleRender.get())
                 {
                     builder = renderTypeBuffer.getBuffer(GunRenderType.getScreen());
                     builder.pos(matrix, 0, size, 0).color(color, color, color, 1.0F).tex(texU, 1.0F - crop).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -126,7 +126,7 @@ public class SLX_2X_ScopeModel implements IOverrideModel
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(6f,6f,6f);
-                matrixStack.translate((-0.00327715-0.0063525+0.000215+0.00877625)+ scopeData.getReticleXMod(), (-0.003385-0.00847125+0.0008+0.01049125) + scopeData.getReticleYMod(), (Config.COMMON.gameplay.scopeDoubleRender.get() ? (0.0000) + scopeData.getReticleZMod() : (0.002) + scopeData.getReticleZMod()));
+                matrixStack.translate((-0.00327715-0.0063525+0.000215+0.00877625)+ scopeData.getReticleXMod(), (-0.003385-0.00847125+0.0008+0.01049125) + scopeData.getReticleYMod(), (Config.CLIENT.display.scopeDoubleRender.get() ? (0.0000) + scopeData.getReticleZMod() : (0.002) + scopeData.getReticleZMod()));
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing
                 boolean aimed = false;

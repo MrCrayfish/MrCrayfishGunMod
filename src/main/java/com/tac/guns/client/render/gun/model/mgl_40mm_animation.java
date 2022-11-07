@@ -111,13 +111,13 @@ public class mgl_40mm_animation implements IOverrideModel
                 Matrix4f matrix = matrices.getLast().getMatrix();
                 Matrix3f normal = matrices.getLast().getNormal();
 
-                matrices.translate((-size / 2) + scopeData.getDrXZoomMod(), (0.0936175+0.3275) + scopeData.getDrYZoomMod() , Config.COMMON.gameplay.scopeDoubleRender.get() ? (3.915-3.605 + scopeData.getDrZZoomMod()) * 0.0625 : (3.075-3.605 + scopeData.getDrZZoomMod()) * 0.0625); //3.275
+                matrices.translate((-size / 2) + scopeData.getDrXZoomMod(), (0.0936175+0.3275) + scopeData.getDrYZoomMod() , Config.CLIENT.display.scopeDoubleRender.get() ? (3.915-3.605 + scopeData.getDrZZoomMod()) * 0.0625 : (3.075-3.605 + scopeData.getDrZZoomMod()) * 0.0625); //3.275
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
                 IVertexBuilder builder;
 
-                if(!OptifineHelper.isShadersEnabled() && Config.COMMON.gameplay.scopeDoubleRender.get())
+                if(!OptifineHelper.isShadersEnabled() && Config.CLIENT.display.scopeDoubleRender.get())
                 {
                     builder = renderBuffer.getBuffer(GunRenderType.getScreen());
                     //matrix.mul(Vector3f.ZP.rotationDegrees(-GunRenderingHandler.get().immersiveWeaponRoll));

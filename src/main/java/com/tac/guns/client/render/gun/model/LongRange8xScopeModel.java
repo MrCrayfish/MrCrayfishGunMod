@@ -27,6 +27,8 @@ import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 
+import static com.tac.guns.client.SpecialModels.*;
+
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
  */
@@ -39,26 +41,28 @@ public class LongRange8xScopeModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay) {
         matrixStack.push();
-        /*if (OptifineHelper.isShadersEnabled() || !Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if (OptifineHelper.isShadersEnabled() || !Config.CLIENT.display.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
             double zScale = 0.05D + 0.95D * (1.0D - transition);
             matrixStack.translate(0,0,transition*0.18);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
-        }*/
-        if ((OptifineHelper.isShadersEnabled()) || !Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        }
+        /*if ((OptifineHelper.isShadersEnabled()) || !Config.CLIENT.display.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.625) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.625) * 2.78;
             }
             double transition = 1.0D - Math.pow(1.0D - prog, 2.0D);
             double zScale = 0.05D + 0.95D * (1.0D - transition);
-            matrixStack.translate(0,0,transition*0.18);
-            matrixStack.scale(1.0F, 1.0F, (float) zScale);
+            matrixStack.translate(0,0,transition*0.20);
+            matrixStack.scale(1.0F, 1.0F, (float) zScale/1.5f);
 
-        }
+        }*/
         matrixStack.translate(0, -0.15, -0.38);
         matrixStack.translate(0, 0, 0.0015);
-        RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
+        if(AimingHandler.get().getNormalisedAdsProgress() < 0.525 || Config.CLIENT.display.scopeDoubleRender.get())
+            RenderUtil.renderModel(Sx8_FRONT.getModel(), stack, matrixStack, renderTypeBuffer, light, overlay);
+        RenderUtil.renderModel(Sx8_BODY.getModel(), stack, matrixStack, renderTypeBuffer, light, overlay);
 
         matrixStack.translate(0, 0.15, 0.42);
 
@@ -90,13 +94,13 @@ public class LongRange8xScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
-                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.08725 + 0.014 -0.005 + 0.00175 + scopeData.getDrYZoomMod(), Config.COMMON.gameplay.scopeDoubleRender.get() ? (4.70 -0.54725 + 0.0239 + scopeData.getDrZZoomMod()) * 0.0625 :
-                        (2.37 -0.54725 + 0.0239 + scopeData.getDrZZoomMod()) * 0.0625); //4.70
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.08725 + 0.014 -0.005 + 0.00175 + scopeData.getDrYZoomMod(), Config.CLIENT.display.scopeDoubleRender.get() ? (4.70 -0.54725 + 0.0239 + scopeData.getDrZZoomMod()) * 0.0625 :
+                        (2.37 + 0.54725 + 0.0239 + scopeData.getDrZZoomMod()) * 0.0625); //4.70
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
                 IVertexBuilder builder;
 
-                if(!OptifineHelper.isShadersEnabled() && Config.COMMON.gameplay.scopeDoubleRender.get())
+                if(!OptifineHelper.isShadersEnabled() && Config.CLIENT.display.scopeDoubleRender.get())
                 {
                     builder = renderTypeBuffer.getBuffer(GunRenderType.getScreen());
                     builder.pos(matrix, 0, size, 0).color(color, color, color, 1.0F).tex(texU, 1.0F - crop).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
@@ -126,7 +130,7 @@ public class LongRange8xScopeModel implements IOverrideModel
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(10.0f,10.0f,10.0f);
                 matrixStack.translate(-0.00455715, -0.00439, 0.0);
-                matrixStack.translate(scopeData.getReticleXMod(), scopeData.getReticleYMod(), scopeData.getReticleZMod());
+                matrixStack.translate(0.00025875f, 0.0000525f, scopeData.getReticleZMod());
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing
                 boolean aimed = false;
