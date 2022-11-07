@@ -73,6 +73,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue gameplayEnchancedScopeOffset;
         public final ForgeConfigSpec.BooleanValue scopeDoubleRender;
         public final ForgeConfigSpec.BooleanValue redDotSquish;
+        public final ForgeConfigSpec.BooleanValue sight1xRealisticPosition;
         public Display(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for display related options").push("display");
@@ -85,6 +86,7 @@ public class Config
                 this.gameplayEnchancedScopeOffset = builder.comment("Scopes are brought closer to the shooter to help fill FOV with a scope view at all times").define("gameplayEnchancedScopeOffset", true);
                 this.scopeDoubleRender = builder.comment("Enable scope double render, saves on some performance and compatability issues with Optifine").define("scopeDoubleRender", true);
                 this.redDotSquish = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to render in 2d when aimed like the scopeDoubleRender(false) effect.").define("redDotSquish", false);
+                this.sight1xRealisticPosition = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to be viewed realisticly, with the players head static for iron sights, and 1x optics").define("sight1xRealisticPostion", false);
             }
             builder.pop();
         }

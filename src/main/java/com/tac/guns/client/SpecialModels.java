@@ -528,6 +528,23 @@ public enum SpecialModels
    AR_15_GRIP("ar_15_grip"),
    AR_15_LIGHT_GRIP("ar_15_l_grip"),
    AR_15_TAC_GRIP("ar_15_t_grip"),
+
+    SPR_15_BODY("spr15"),
+    SPR_15_BOLT("spr15_bolt"),
+    SPR_15_COMPENSATOR("spr15_c_muzzle"),
+    SPR_15_DEFAULT_BARREL("spr15_d_muzzle"),
+    SPR_15_EXTENDED_MAG("spr15_extended_mag"),
+    SPR_15_SUPPRESSOR("spr15_s_muzzle"),
+    SPR_15_STANDARD_MAG("spr15_mag"),
+    SPR_15_SIGHT("spr15_sight"),
+    SPR_15_SIGHT_FOLDED("spr15_sight_folded"),
+    SPR_15_BRAKE("spr15_b_muzzle"),
+    SPR_15_TACTICAL_STOCK("spr15_tac_stock"),
+    SPR_15_LIGHT_STOCK("spr15_light_stock"),
+    SPR_15_HEAVY_STOCK("spr15_heavy_stock"),
+    SPR_15_DEFAULT_GRIP("spr15_default_grip"),
+    SPR_15_LIGHT_GRIP("spr15_light_grip"),
+    SPR_15_TAC_GRIP("spr15_tac_grip"),
     //Everything from this point on is all scope additions
 
     MINI_DOT_BASE("optics/mini_dot_base"),
