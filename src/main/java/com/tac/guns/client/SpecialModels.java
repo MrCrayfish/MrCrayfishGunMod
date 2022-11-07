@@ -332,6 +332,7 @@ public enum SpecialModels
     AI_AWP_COMPENSATOR("ai_awp_compensator"),
     AI_AWP_SUPPRESSOR("ai_awp_silencer"),
     AI_AWP("ai_awp"),
+    AI_AWP_SIGHT("ai_awp_sight"),
     AI_AWP_BOLT("ai_awp_bolt"),
     AI_AWP_BOLT_EXTRA("ai_awp_bolt_extra"),
     AI_AWP_BULLET_SHELL("ai_awp_bullet_shell"),
