@@ -381,6 +381,8 @@
     "tac.options.iconExist": "Show Weapon Icon",
     "tac.options.doubleRender": "Enable DR for Scopes" ,
 
+    "info.tac.current_level": "Current level",
+
     "tac.options.screenFormat": "TAC GUI SETTINGS",
 
     "gui.tac.assemble": "Assemble",
