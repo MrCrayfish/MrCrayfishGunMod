@@ -40,6 +40,7 @@ public enum SpecialModels
     M60("m60"),
     M60_MAG("m60_mag"),
     M60_CAPS("m60_caps"),
+    M60_HANDLE("m60_handle"),
     AK47_OPTIC_MOUNT("ak47_mount"),
     M1917("m1917"),
     M1917_CYLINDER("m1917_cylinder"),

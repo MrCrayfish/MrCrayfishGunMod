@@ -220,7 +220,10 @@ public class ReloadHandler {
 				else if(
 					GunAnimationController.fromItem( stack.getItem() )
 						instanceof PumpShotgunAnimationController
-				) this.setReloading( false );
+				) {
+                    this.setReloading( false );
+                    SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, true);
+                }
 			}
 		} );
     	
@@ -249,7 +252,6 @@ public class ReloadHandler {
             if (SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING)) {
                 if (this.reloadingSlot != player.inventory.currentItem) {
                     this.setReloading(false);
-                    SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, true);
                 }
             }
             this.updateReloadTimer(player);

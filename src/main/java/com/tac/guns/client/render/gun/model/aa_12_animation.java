@@ -94,15 +94,6 @@ public class aa_12_animation implements IOverrideModel {
 
         matrices.push();
         controller.applySpecialModelTransform(SpecialModels.AA_12_BODY.getModel(), AA12AnimationController.INDEX_BOLT,transformType,matrices);
-        CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
-
-        if(Gun.hasAmmo(stack))
-        {
-            // Math provided by Bomb787 on GitHub and Curseforge!!!
-            matrices.translate(0, 0, 0.275f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-        }
-
         RenderUtil.renderModel(SpecialModels.AA_12_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
         matrices.pop();
 

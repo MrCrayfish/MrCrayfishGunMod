@@ -25,8 +25,8 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 13,
-    "reloadMagTimer": 36,
-    "additionalReloadEmptyMagTimer": 10,
+    "reloadMagTimer": 15,
+    "additionalReloadEmptyMagTimer": 15,
     "maxAdditionalAmmoPerOC": [5, 10, 17],
     "preReloadPauseTicks": 9,
     "openBolt": false
@@ -42,7 +42,10 @@
   },
   "sounds": {
     "fire": "tac:item.vector",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.vector45_reload_norm",
+    "reloadEmpty": "tac:animation.vector45_reload_empty",
+    "draw": "tac:animation.vector45_draw",
+    "inspect": "tac:animation.vector45_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.fire_m1911s"
   },

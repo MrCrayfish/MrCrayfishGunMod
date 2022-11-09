@@ -7,8 +7,8 @@
       2
     ],
     "gripType": "tac:two_handed_m60",
-    "recoilAngle": 2.275,
-    "recoilKick": 2.325,
+    "recoilAngle": 1.575,
+    "recoilKick": 1.825,
     "horizontalRecoilAngle": 1.45,
     "recoilAdsReduction": 0.24,
     "weaponRecoilOffset": 0.675,
@@ -22,8 +22,8 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 100,
-    "reloadMagTimer": 152,
-    "additionalReloadEmptyMagTimer": 16,
+    "reloadMagTimer": 120,
+    "additionalReloadEmptyMagTimer": 20,
     "maxAdditionalAmmoPerOC": [
       50,
       75,

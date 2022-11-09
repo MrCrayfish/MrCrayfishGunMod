@@ -22,8 +22,8 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 5,
-    "reloadMagTimer": 60,
-    "additionalReloadEmptyMagTimer": 18,
+    "reloadMagTimer": 41,
+    "additionalReloadEmptyMagTimer": 24,
     "maxAdditionalAmmoPerOC": [
       3,
       5,
