@@ -222,7 +222,6 @@ public class ReloadHandler {
 						instanceof PumpShotgunAnimationController
 				) {
                     this.setReloading( false );
-                    SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, true);
                 }
 			}
 		} );
