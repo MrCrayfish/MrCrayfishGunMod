@@ -2,7 +2,7 @@ package com.tac.guns.client.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.tac.guns.inventory.AmmoPackContainer;
+import com.tac.guns.inventory.gear.armor.AmmoPackContainer;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;

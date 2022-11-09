@@ -8,10 +8,10 @@ import com.tac.guns.annotation.Ignored;
 import com.tac.guns.annotation.Optional;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.interfaces.TGExclude;
-import com.tac.guns.inventory.AmmoItemStackHandler;
-import com.tac.guns.inventory.AmmoPackCapabilityProvider;
-import com.tac.guns.inventory.InventoryListener;
-import com.tac.guns.item.AmmoPackItem;
+import com.tac.guns.inventory.gear.GearSlotsHandler;
+import com.tac.guns.inventory.gear.armor.AmmoPackCapabilityProvider;
+import com.tac.guns.inventory.gear.InventoryListener;
+import com.tac.guns.item.ArmorRigItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IScope;
 import com.tac.guns.item.attachment.impl.Scope;
@@ -2004,13 +2004,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 stacks.add(stack);
             }
         }
-        AmmoItemStackHandler ammoItemHandler = (AmmoItemStackHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
+        GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
         for(ItemStack stack : ammoItemHandler.getStacks()) {
             if(isAmmo(stack, id)) {
                 stacks.add(stack);
             }
-            if(stack.getItem() instanceof AmmoPackItem) {
-                AmmoItemStackHandler itemHandler = (AmmoItemStackHandler)stack.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
+            if(stack.getItem() instanceof ArmorRigItem) {
+                GearSlotsHandler itemHandler = (GearSlotsHandler)stack.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
                 for(ItemStack item : itemHandler.getStacks()) {
                     if(isAmmo(item, id)) {
                         stacks.add(item);

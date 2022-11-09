@@ -470,7 +470,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             ExtendedEntityRayTraceResult entityRayTraceResult = (ExtendedEntityRayTraceResult) result;
             Entity entity = entityRayTraceResult.getEntity();
-            if(entity.getEntityId() == this.shooterId)
+            if(entity.getEntityId() == this.shooterId) // TDEV option this
             {
                 return;
             }

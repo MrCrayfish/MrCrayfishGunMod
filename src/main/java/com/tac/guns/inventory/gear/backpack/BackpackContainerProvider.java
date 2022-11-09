@@ -1,4 +1,4 @@
-package com.tac.guns.inventory;
+package com.tac.guns.inventory.gear.backpack;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -10,11 +10,11 @@ import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nullable;
 
-public class AmmoPackContainerProvider implements INamedContainerProvider {
+public class BackpackContainerProvider implements INamedContainerProvider {
 
     private ItemStack item;
 
-    public AmmoPackContainerProvider(ItemStack item) {
+    public BackpackContainerProvider(ItemStack item) {
         this.item = item;
     }
 
@@ -26,7 +26,7 @@ public class AmmoPackContainerProvider implements INamedContainerProvider {
     @Nullable
     @Override
     public Container createMenu(int windowId, PlayerInventory inv, PlayerEntity player) {
-        AmmoPackContainer container = new AmmoPackContainer(windowId, inv, this.item);
+        BackpackContainer container = new BackpackContainer(windowId, inv, this.item);
         return container;
     }
 }

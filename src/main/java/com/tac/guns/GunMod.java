@@ -15,11 +15,10 @@ import com.tac.guns.enchantment.EnchantmentTypes;
 import com.tac.guns.entity.GrenadeEntity;
 import com.tac.guns.entity.MissileEntity;
 import com.tac.guns.init.*;
-import com.tac.guns.inventory.AmmoItemStackHandler;
-import com.tac.guns.inventory.IAmmoItemHandler;
+import com.tac.guns.inventory.gear.GearSlotsHandler;
+import com.tac.guns.inventory.gear.armor.IAmmoItemHandler;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -27,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -35,9 +33,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
@@ -52,7 +48,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
-import java.sql.Time;
 import java.util.Locale;
 
 @Mod(Reference.MOD_ID)
@@ -284,7 +279,7 @@ public class GunMod
                     }
                 }
             }
-        }, AmmoItemStackHandler::new);
+        }, GearSlotsHandler::new);
 
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1911"), new OneHandedPoseHighRes_m1911()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1851"), new OneHandedPoseHighRes_m1851()));

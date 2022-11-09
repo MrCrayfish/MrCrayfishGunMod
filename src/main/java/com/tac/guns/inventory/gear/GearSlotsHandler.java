@@ -1,5 +1,6 @@
-package com.tac.guns.inventory;
+package com.tac.guns.inventory.gear;
 
+import com.tac.guns.inventory.gear.armor.IAmmoItemHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -11,19 +12,19 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
-public class AmmoItemStackHandler implements IAmmoItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
+public class GearSlotsHandler implements IAmmoItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
     protected NonNullList<ItemStack> stacks;
 
-    public AmmoItemStackHandler()
+    public GearSlotsHandler()
     {
-        this(1);
+        this(2);
     }
 
-    public AmmoItemStackHandler(int size) {
+    public GearSlotsHandler(int size) {
         stacks = NonNullList.withSize(size, ItemStack.EMPTY);
     }
 
-    public AmmoItemStackHandler(NonNullList<ItemStack> stacks)
+    public GearSlotsHandler(NonNullList<ItemStack> stacks)
     {
         this.stacks = stacks;
     }

@@ -1,21 +1,26 @@
-package com.tac.guns.inventory;
+package com.tac.guns.inventory.gear.armor;
 
+import com.tac.guns.inventory.gear.InventoryListener;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class AmmoPackCapabilityProvider implements ICapabilitySerializable<ListNBT> {
+public class AmmoInventoryCapability implements ICapabilityProvider, ICapabilitySerializable<ListNBT> {
 
-    @CapabilityInject(IAmmoItemHandler.class)
-    public static Capability<IAmmoItemHandler> capability = null;
-    private IAmmoItemHandler itemHandler = new AmmoItemStackHandler(18);
-    private LazyOptional<IAmmoItemHandler> optionalStorage = LazyOptional.of(() -> itemHandler);
+    private Capability capability = InventoryListener.ITEM_HANDLER_CAPABILITY;
+    private IAmmoItemHandler itemHandler;
+    private LazyOptional<IAmmoItemHandler> optionalStorage;
+
+    public AmmoInventoryCapability(IAmmoItemHandler itemHandler) {
+        this.itemHandler = itemHandler;
+        this.optionalStorage = LazyOptional.of(() -> itemHandler);
+    }
 
     @Nonnull
     @Override
@@ -34,5 +39,13 @@ public class AmmoPackCapabilityProvider implements ICapabilitySerializable<ListN
     @Override
     public void deserializeNBT(ListNBT nbt) {
         capability.getStorage().readNBT(capability, itemHandler, null, nbt);
+    }
+
+    public IAmmoItemHandler getItemHandler() {
+        return itemHandler;
+    }
+
+    public LazyOptional<IAmmoItemHandler> getOptionalStorage() {
+        return optionalStorage;
     }
 }

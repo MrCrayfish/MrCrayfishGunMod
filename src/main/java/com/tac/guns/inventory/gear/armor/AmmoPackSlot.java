@@ -1,6 +1,6 @@
-package com.tac.guns.inventory;
+package com.tac.guns.inventory.gear.armor;
 
-import com.tac.guns.item.AmmoPackItem;
+import com.tac.guns.item.ArmorRigItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -13,6 +13,6 @@ public class AmmoPackSlot extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return stack.getItem() instanceof AmmoPackItem;
+        return stack.getItem() instanceof ArmorRigItem;
     }
 }

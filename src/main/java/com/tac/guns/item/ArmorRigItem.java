@@ -1,8 +1,8 @@
 package com.tac.guns.item;
 
 import com.tac.guns.Reference;
-import com.tac.guns.inventory.AmmoPackCapabilityProvider;
-import com.tac.guns.inventory.AmmoPackContainerProvider;
+import com.tac.guns.inventory.gear.armor.AmmoPackCapabilityProvider;
+import com.tac.guns.inventory.gear.armor.AmmoPackContainerProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -18,9 +18,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
-public class AmmoPackItem extends Item {
+public class ArmorRigItem extends Item {
 
-    public AmmoPackItem(Properties properties) {
+    public ArmorRigItem(Properties properties) {
         super(properties);
     }
 

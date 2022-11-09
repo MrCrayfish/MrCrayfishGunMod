@@ -2,7 +2,7 @@ package com.tac.guns.init;
 
 import com.tac.guns.Reference;
 import com.tac.guns.common.container.*;
-import com.tac.guns.inventory.AmmoPackContainer;
+import com.tac.guns.inventory.gear.armor.AmmoPackContainer;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
 import net.minecraft.inventory.container.Container;

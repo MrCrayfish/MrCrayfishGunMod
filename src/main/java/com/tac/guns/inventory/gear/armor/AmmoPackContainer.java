@@ -1,7 +1,8 @@
-package com.tac.guns.inventory;
+package com.tac.guns.inventory.gear.armor;
 
 import com.tac.guns.init.ModContainers;
-import com.tac.guns.item.AmmoPackItem;
+import com.tac.guns.inventory.gear.GearSlotsHandler;
+import com.tac.guns.item.ArmorRigItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -18,7 +19,7 @@ public class AmmoPackContainer extends Container {
     public AmmoPackContainer(int windowId, PlayerInventory inv, ItemStack item) {
         super(ModContainers.AMMOPACK.get(), windowId);
         this.item = item;
-        AmmoItemStackHandler itemHandler = (AmmoItemStackHandler)this.item.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
+        GearSlotsHandler itemHandler = (GearSlotsHandler)this.item.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
         int i = (this.numRows - 4) * 18;
 
         for(int j = 0; j < this.numRows; ++j) {
@@ -74,7 +75,7 @@ public class AmmoPackContainer extends Container {
         if(slotId <= 0) return super.slotClick(slotId, dragType, clickTypeIn, player);
         Slot slot = this.inventorySlots.get(slotId);
         if(slot.getHasStack()) {
-            if(slot.getStack().getItem() instanceof AmmoPackItem) return ItemStack.EMPTY;
+            if(slot.getStack().getItem() instanceof ArmorRigItem) return ItemStack.EMPTY;
         }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
     }

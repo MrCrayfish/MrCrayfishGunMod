@@ -1,4 +1,4 @@
-package com.tac.guns.inventory;
+package com.tac.guns.inventory.gear.backpack;
 
 import com.tac.guns.item.IStorageCase;
 import net.minecraft.item.ItemStack;
