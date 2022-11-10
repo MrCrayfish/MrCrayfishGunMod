@@ -21,7 +21,7 @@
     "visible": false,
     "damage": 9,
     "size": 0.2,
-    "speed": 23.5,
+    "speed": 25.5,
     "life": 10
   },
   "reloads": {
@@ -59,9 +59,9 @@
       "fovModifier": 0.8,
       "yOffset": 11.015,
       "zOffset": -4.225
-      }
-    ,"attachments": {
-      "Disabledscope": {
+      },
+    "attachments": {
+      "scope": {
         "yOffset": 10.51,
         "zOffset": 5.85,
         "scale": 1.0

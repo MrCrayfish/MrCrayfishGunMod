@@ -7,6 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.tac.guns.Reference;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 
@@ -28,6 +32,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ScopeEditor
 {
     private static ScopeEditor instance;
@@ -45,36 +50,7 @@ public class ScopeEditor
     public HashMap<String, ScopeData> map = new HashMap<>();
     private ScopeData scopeData;
     public ScopeData getScopeData() {return scopeData;}
-    //public ScopeData getMapItem(String tag) {return this.map.get(tag);}
 
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (!Config.COMMON.development.enableTDev.get())
-            return;
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null)
-            return;
-        CommandsHandler ch = CommandsHandler.get();
-        if (ch == null || ch.getCatCurrentIndex() != 1)
-            return;
-        if ((mc.player.getHeldItemMainhand() == null || mc.player.getHeldItemMainhand() == ItemStack.EMPTY || !(mc.player.getHeldItemMainhand().getItem() instanceof TimelessGunItem)))
-            return;
-
-        if(((TimelessGunItem)mc.player.getHeldItemMainhand().getItem()).isIntegratedOptic()) {
-            if(!this.map.containsKey(mc.player.getHeldItemMainhand().getItem().getTranslationKey()))
-                this.map.put(mc.player.getHeldItemMainhand().getItem().getTranslationKey(), new ScopeData(mc.player.getHeldItemMainhand().getItem().getTranslationKey()));
-            this.scopeData = this.map.get(mc.player.getHeldItemMainhand().getItem().getTranslationKey());
-        }
-        else {
-            Scope scopeItem = Gun.getScope(mc.player.getHeldItemMainhand());
-            if (scopeItem == null)
-                return;
-            if(!this.map.containsKey(scopeItem.getTagName()))
-                this.map.put(scopeItem.getTagName(), new ScopeData(scopeItem.getTagName()));
-            this.scopeData = this.map.get(scopeItem.getTagName());
-        }
-    }
-    
     @SubscribeEvent
     public void onKeyPressed(InputEvent.KeyInputEvent event)
     {
@@ -83,9 +59,9 @@ public class ScopeEditor
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null)
             return;
-//        CommandsHandler ch = CommandsHandler.get();
-//        if(ch == null || ch.getCatCurrentIndex() != 2)
-//            return;
+        CommandsHandler ch = CommandsHandler.get();
+       if(ch == null || ch.getCatCurrentIndex() != 2)
+            return;
         if ((mc.player.getHeldItemMainhand() == null || mc.player.getHeldItemMainhand() == ItemStack.EMPTY || !(mc.player.getHeldItemMainhand().getItem() instanceof TimelessGunItem)))
             return;
         if(((TimelessGunItem)mc.player.getHeldItemMainhand().getItem()).isIntegratedOptic()) {

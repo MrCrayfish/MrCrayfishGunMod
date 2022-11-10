@@ -14,11 +14,13 @@ import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
+import com.tac.guns.init.ModEnchantments;
 import com.tac.guns.init.ModItems;
 import com.tac.guns.item.attachment.IAttachment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -65,7 +67,16 @@ public class type81_x_animation implements IOverrideModel {
         matrices.push();
         {
             controller.applySpecialModelTransform(SpecialModels.TYPE81_X.getModel(),Type81AnimationController.INDEX_MAGAZINE,transformType,matrices);
-            RenderUtil.renderModel(SpecialModels.TYPE81_X_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+
+            if(EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0)
+            {
+                RenderUtil.renderModel(SpecialModels.TYPE81_X_EXT_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            else
+            {
+                RenderUtil.renderModel(SpecialModels.TYPE81_X_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+
         }
         matrices.pop();
 

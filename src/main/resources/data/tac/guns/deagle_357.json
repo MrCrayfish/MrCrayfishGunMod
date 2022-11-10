@@ -14,29 +14,29 @@
     "cameraRecoilModifier": 3.875,
     "recoilDuration": 0.13,
     "alwaysSpread": true,
-    "spread": 2.15,
+    "spread": 1.95,
     "weightKilo": 2.4,
-    "movementInaccuracy": 1.75
+    "movementInaccuracy": 1.225
   },
   "reloads": {
     "magFed": true,
-    "maxAmmo": 9,
+    "maxAmmo": 7,
     "reloadMagTimer": 25,
     "additionalReloadEmptyMagTimer": 11,
     "maxAdditionalAmmoPerOC": [
       1,
       3,
-      6
+      5
     ],
     "preReloadPauseTicks": 0
   },
   "projectile": {
-    "item": "tac:magnumround",
+    "item": "tac:ae50",
     "visible": false,
-    "damage": 15.5,
+    "damage": 16,
     "size": 0.2,
-    "speed": 24.0,
-    "life": 6
+    "speed": 30.0,
+    "life": 11
   },
   "sounds": {
     "fire": "tac:item.deagle",

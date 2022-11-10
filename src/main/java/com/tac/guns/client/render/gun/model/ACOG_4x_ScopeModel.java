@@ -39,14 +39,14 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
     {
         matrixStack.push();
 
-        /*if ((OptifineHelper.isShadersEnabled()) || !Config.COMMON.gameplay.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        /*if ((OptifineHelper.isShadersEnabled()) || !Config.CLIENT.display.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
             double zScale = 0.05D + 0.75D * (1.0D - transition);
             //if(AimingHandler.get().getNormalisedAdsProgress() > 0.525)
                 matrixStack.translate(0,0,transition*0.18);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.COMMON.gameplay.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if ((OptifineHelper.isShadersEnabled()) || !Config.CLIENT.display.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;
@@ -89,13 +89,13 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
-                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.0936175-0.006 + scopeData.getDrYZoomMod() , Config.COMMON.gameplay.scopeDoubleRender.get() ? (3.915+0.3 + scopeData.getDrZZoomMod()) * 0.0625 : (3.075+0.3 + scopeData.getDrZZoomMod()) * 0.0625); //3.275
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.0936175-0.006 + scopeData.getDrYZoomMod() , Config.CLIENT.display.scopeDoubleRender.get() ? (3.915+0.3 + scopeData.getDrZZoomMod()) * 0.0625 : (3.075+0.3 + scopeData.getDrZZoomMod()) * 0.0625); //3.275
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
                 IVertexBuilder builder;
 
-                if(!OptifineHelper.isShadersEnabled() && Config.COMMON.gameplay.scopeDoubleRender.get())
+                if(!OptifineHelper.isShadersEnabled() && Config.CLIENT.display.scopeDoubleRender.get())
                 {
                     builder = renderTypeBuffer.getBuffer(GunRenderType.getScreen());
                     //matrix.mul(Vector3f.ZP.rotationDegrees(-GunRenderingHandler.get().immersiveWeaponRoll));

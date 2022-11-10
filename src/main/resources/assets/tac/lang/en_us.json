@@ -45,7 +45,7 @@
     "item.tac.m1a1_smg": "M1A1",
     "item.tac.mk14": "MK14 EBR",
     "item.tac.spas_12": "SPAS-12",
-    "item.tac.deagle_357": "Desert Eagle .357 Mag",
+    "item.tac.deagle_357": "Desert Eagle .50AE",
     "item.tac.hk_mp5a5": "MP5A5",
     "item.tac.sten_mk_ii": "STEN MK.II",
     "item.tac.glock_18": "Glock 18",
@@ -98,6 +98,7 @@
     "item.tac.rpg7_missile": "RPG-7 Rocket",
     "item.tac.50bmg": ".50 BMG",
     "item.tac.bullet68": "6.8mm SIG",
+    "item.tac.ae50": ".50 AE",
 
     "item.tac.light_grenade": "F1 Grenade",
     "item.tac.baseball_grenade": "M67 Grenade",
@@ -378,6 +379,9 @@
     "tac.options.reloadBarExist": "Show Reloading Bar",
     "tac.options.ammoCounterExist": "Show Ammo Counter",
     "tac.options.iconExist": "Show Weapon Icon",
+    "tac.options.doubleRender": "Enable DR for Scopes" ,
+
+    "info.tac.current_level": "Current level",
 
     "tac.options.screenFormat": "TAC GUI SETTINGS",
 
