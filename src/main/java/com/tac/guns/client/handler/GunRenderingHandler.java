@@ -63,6 +63,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.Constants;
@@ -77,9 +78,9 @@ import java.util.*;
 
 public class GunRenderingHandler {
     private static GunRenderingHandler instance;
-    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.4f,0.7f, 2.5f, 0);
-    private final SecondOrderDynamics swayDynamics = new SecondOrderDynamics(0.35f,0.5f, 2.5f, 0);
-    private final SecondOrderDynamics aimingDynamics = new SecondOrderDynamics(0.4f,0.85f, 1.5f, 0);
+    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.4f,0.7f, 2f, 0);
+    private final SecondOrderDynamics swayDynamics = new SecondOrderDynamics(0.35f,0.5f, 2f, 0);
+    private final SecondOrderDynamics aimingDynamics = new SecondOrderDynamics(0.45f,0.8f, 1.2f, 0);
     // Standard Sprint Dynamics
     private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.22f,0.7f, 0.6f, 0);
     private final SecondOrderDynamics bobbingDynamics = new SecondOrderDynamics(0.22f,0.7f, 0.6f, 1);
@@ -161,6 +162,34 @@ public class GunRenderingHandler {
                 this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getEntityId());
             }
         }
+    }
+
+    private long fireTime = System.currentTimeMillis();
+
+    @SubscribeEvent
+    public void onGunFired(GunFireEvent event){
+        if(event.isClient()) fireTime = System.currentTimeMillis();
+    }
+
+    @SubscribeEvent
+    public void onCameraSetup(EntityViewRenderEvent.CameraSetup event){
+        float cameraShakeDuration = 0.06f;
+        long alphaTime = System.currentTimeMillis() - fireTime;
+        float progress = (alphaTime < cameraShakeDuration * 1000 ? 1 - alphaTime / (cameraShakeDuration*1000f) : 0);
+        //apply camera shake when firing.
+        float alpha = (progress
+                * (Math.random() - 0.5 < 0 ? -1 : 1)
+                * 0.8f);
+        event.setPitch(event.getPitch() - Math.abs(alpha));
+        event.setRoll(event.getRoll() + alpha * 0.5f);
+    }
+
+    @SubscribeEvent
+    public void onFovModifying(EntityViewRenderEvent.FOVModifier event){
+        float cameraShakeDuration = 0.06f;
+        long alphaTime = System.currentTimeMillis() - fireTime;
+        float progress = (alphaTime < cameraShakeDuration * 1000 ? 1 - alphaTime / (cameraShakeDuration*1000f) : 0);
+        event.setFOV(event.getFOV() + progress * 0.5f);
     }
 
     private void updateSprinting() {
@@ -639,7 +668,7 @@ public class GunRenderingHandler {
         float newSway = swayDynamics.update(0.05f, recoilSway * recoilReduction * weaponsHorizontalAngle);
         matrixStack.translate(0, 0, newKick);
         matrixStack.translate(0, 0, 0.35);
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(newSway));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(newSway * 0.5f));
         matrixStack.rotate(Vector3f.ZN.rotationDegrees(newSway)); // seems to be interesting to increase the force of
         //matrixStack.rotate(Vector3f.ZP.rotationDegrees(recoilSway * 2.5f * recoilReduction)); // seems to be interesting to increase the force of
         if(gun.getGeneral().getWeaponRecoilOffset() != 0)
@@ -702,7 +731,7 @@ public class GunRenderingHandler {
 
     private final OneDimensionalPerlinNoise noiseRotationY = new OneDimensionalPerlinNoise(-0.5f, 0.5f, 2000);
     public void applyNoiseMovementTransform(MatrixStack matrixStack){
-        matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedAdsProgress()), noiseY.getValue() + additionNoiseY.getValue(), 0);
+        matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedAdsProgress()), (noiseY.getValue() + additionNoiseY.getValue()) * (1 - AimingHandler.get().getNormalisedAdsProgress()), 0);
         matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (noiseRotationY.getValue() * (1 - AimingHandler.get().getNormalisedAdsProgress()))));
     }
 

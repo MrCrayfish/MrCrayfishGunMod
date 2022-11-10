@@ -87,6 +87,13 @@ public class m60_animation implements IOverrideModel {
         }
         matrices.pop();
 
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M60_HANDLE.getModel(), M60AnimationController.INDEX_HANDLE, transformType, matrices);
+            RenderUtil.renderModel(SpecialModels.M60_HANDLE.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
         PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
 }

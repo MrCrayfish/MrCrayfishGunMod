@@ -5,6 +5,7 @@ import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.render.animation.M1014AnimationController;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -83,7 +84,8 @@ public class m1014_animation implements IOverrideModel {
         matrices.push();
         {
             controller.applySpecialModelTransform(SpecialModels.M1014.getModel(), M1014AnimationController.INDEX_BULLET, transformType, matrices);
-            RenderUtil.renderModel(SpecialModels.M1014_BULLET.getModel(), stack, matrices, renderBuffer, light, overlay);
+            if(Gun.hasAmmo(stack) || controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_LOOP))
+                RenderUtil.renderModel(SpecialModels.M1014_BULLET.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
         matrices.pop();
 

@@ -16,7 +16,7 @@ public class Vector45AnimationController extends GunAnimationController {
     public static int INDEX_RIGHT_HAND = 7;
     public static int INDEX_MAGAZINE = 2;
     public static int INDEX_BOLT = 5;
-    public static int INDEX_HANDLE = 4;
+    public static int INDEX_HANDLE = 3;
     public static int INDEX_BULLET = 0;
 
     public static final AnimationMeta STATIC = new AnimationMeta(new ResourceLocation("tac","animations/vector45_static.gltf"));

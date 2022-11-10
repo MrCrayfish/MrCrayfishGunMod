@@ -217,7 +217,7 @@ public class ReloadTracker
                     if(!(player.inventory.getCurrentItem().getItem() instanceof GunItem))
                     {
                         SyncedPlayerData.instance().set(player, ModSyncedDataKeys.RELOADING, false);
-                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, true);
+                        SyncedPlayerData.instance().set(player, ModSyncedDataKeys.STOP_ANIMA, false);
                         return;
                     }
                     RELOAD_TRACKER_MAP.put(player, new ReloadTracker(player));
