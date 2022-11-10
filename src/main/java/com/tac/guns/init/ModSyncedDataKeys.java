@@ -45,7 +45,7 @@ public class ModSyncedDataKeys
         SyncedPlayerData.instance().registerKey(AIMING);
         SyncedPlayerData.instance().registerKey(SHOOTING);
         SyncedPlayerData.instance().registerKey(RELOADING);
-        SyncedPlayerData.instance().registerKey(STOP_ANIMA);
         SyncedPlayerData.instance().registerKey(MOVING);
+        SyncedPlayerData.instance().registerKey(STOP_ANIMA);
     }
 }

@@ -1,5 +1,9 @@
 package com.tac.guns.client.handler;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import com.tac.guns.init.ModSyncedDataKeys;
+import com.tac.guns.network.message.MessageUpdateMoveInacc;
+import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 import com.tac.guns.Config;
@@ -136,6 +140,14 @@ public class  ShootingHandler
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()))
             {
+                float dist =
+                        (Math.abs(player.moveForward)/2.5f+
+                                Math.abs(player.moveStrafing)/1.25f)+
+                                (player.getMotion().y > 0 ? 0.5f:0);
+                if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING) != dist || dist != 0)
+                    PacketHandler.getPlayChannel().sendToServer(new MessageUpdateMoveInacc(dist));
+                else
+                    PacketHandler.getPlayChannel().sendToServer(new MessageUpdateMoveInacc(0));
                 boolean shooting = InputHandler.PULL_TRIGGER.down && !this.clickUp;
                 if(GunRenderingHandler.get().sprintTransition != 0) {
                     shooting = false;

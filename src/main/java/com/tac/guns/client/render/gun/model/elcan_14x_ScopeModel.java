@@ -142,7 +142,7 @@ public class elcan_14x_ScopeModel implements IOverrideModel
                 //matrixStack.rotate(Vector3f.ZP.rotationDegrees(-GunRenderingHandler.get().immersiveWeaponRoll));
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(7.5f,7.5f,7.5f);
-                //matrixStack.translate(-0.00335715, -0.0039355, 0.0000);
+                matrixStack.translate(0,0, 0.001);
                 matrixStack.translate((-0.00335715-0.0033) + scopeData.getReticleXMod(), (-0.0035055-0.0046) + scopeData.getReticleYMod(), 0.0000 + scopeData.getReticleZMod());
 
 

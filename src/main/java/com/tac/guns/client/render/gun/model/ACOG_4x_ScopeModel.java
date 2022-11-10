@@ -128,7 +128,7 @@ public class ACOG_4x_ScopeModel implements IOverrideModel
 
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(7.5f,7.5f,7.5f);
-                //matrixStack.translate(-0.00335715, -0.0039355, 0.0000);
+                matrixStack.translate(0, 0, 0.001);
                 matrixStack.translate(-0.00335715-0.00022-0.0008825 + scopeData.getReticleXMod(), -0.0035055-0.0006325 + scopeData.getReticleYMod(), 0.0000 + scopeData.getReticleZMod());
 
 

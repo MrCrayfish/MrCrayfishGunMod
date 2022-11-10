@@ -75,14 +75,14 @@ public class TacShootingEvent {
         ItemStack gunItem = event.getStack();
         int[] gunItemFireModes = gunItem.getTag().getIntArray("supportedFireModes");
         Gun gun = ((GunItem) gunItem.getItem()).getModifiedGun(gunItem.getStack()); // Quick patch up, will create static method for handling null supported modes
-        float dist =
-                (Math.abs(event.getPlayer().moveForward)/4+
-                        Math.abs(event.getPlayer().moveStrafing)/1.5f)*
-                        (event.getPlayer().moveVertical != 0 ? 3:1);
+        /*float dist =
+        (Math.abs(event.getPlayer().moveForward)/4+
+                Math.abs(event.getPlayer().moveStrafing)/1.5f)*
+                (event.getPlayer().moveVertical != 0 ? 3:1);
         if(dist != 0)
             SyncedPlayerData.instance().set(event.getPlayer(), ModSyncedDataKeys.MOVING, dist);
         else
-            SyncedPlayerData.instance().set(event.getPlayer(), ModSyncedDataKeys.MOVING, 0f);
+            SyncedPlayerData.instance().set(event.getPlayer(), ModSyncedDataKeys.MOVING, 0f);*/
         if(gunItem.getTag().get("CurrentFireMode") == null) // If user has not checked fire modes yet, default to first mode
         {
             if(ArrayUtils.isEmpty(gunItemFireModes) || gunItemFireModes == null)

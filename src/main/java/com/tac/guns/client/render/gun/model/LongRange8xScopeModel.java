@@ -118,7 +118,7 @@ public class LongRange8xScopeModel implements IOverrideModel
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(10.0f,10.0f,10.0f);
-                matrixStack.translate(-0.00455715, -0.00439, 0.0);
+                matrixStack.translate(-0.00455715, -0.00439, 0.001);
                 matrixStack.translate(0.00025875f, 0.0000525f, scopeData.getReticleZMod());
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing

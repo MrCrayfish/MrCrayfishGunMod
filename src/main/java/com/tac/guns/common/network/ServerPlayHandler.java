@@ -630,15 +630,6 @@ public class ServerPlayHandler
         if(!player.isAlive())
             return;
 
-        if(handle)
-        {
-            /*if(prevDist-player.distanceWalkedOnStepModified != 0)
-                SyncedPlayerData.instance().set(player, ModSyncedDataKeys.MOVING,
-                    (float)(player.distanceWalkedOnStepModified-prevDist));
-            */
-
-        }
-
         ItemStack heldItem = player.getHeldItemMainhand();
         if(player.getAttribute(MOVEMENT_SPEED) != null && MovementAdaptationsHandler.get().isReadyToReset())
         {
@@ -672,8 +663,7 @@ public class ServerPlayHandler
 
         MovementAdaptationsHandler.get().setPreviousWeight(gun.getGeneral().getWeightKilo());
         //DEBUGGING AND BALANCE TOOL
-        //player.sendStatusMessage(new TranslationTextComponent(SyncedPlayerData.instance().get
-        // (player, ModSyncedDataKeys.MOVING)+""), true);
+        player.sendStatusMessage(new TranslationTextComponent(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING)+""), true);
         //new TranslationTextComponent("Speed is: " + player
                 // .getAttribute(MOVEMENT_SPEED).getValue()) ,true);
     }
