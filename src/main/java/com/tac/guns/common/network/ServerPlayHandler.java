@@ -442,7 +442,24 @@ public class ServerPlayHandler
         }
     }
 
-
+    /**
+     * @param player
+     */
+    public static void EmptyMag(ServerPlayerEntity player)
+    {
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if(heldItem.getItem() instanceof GunItem)
+        {
+            GunItem gunItem = (GunItem) heldItem.getItem();
+            Gun gun = gunItem.getModifiedGun(heldItem.getStack());
+            ResourceLocation fireModeSound = gun.getSounds().getCock(); // Use cocking sound for now
+            if(fireModeSound != null && player.isAlive())
+            {
+                MessageGunSound messageSound = new MessageGunSound(fireModeSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) (player.getPosY() + 1.0), (float) player.getPosZ(), 1.2F, 0.75F, player.getEntityId(), false, false);
+                PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() ->(ServerPlayerEntity) player), messageSound);
+            }
+        }
+    }
     //ARCHIVE, THIS MAY CHANGE IN THE FUTURE CAUSE WTF
     /*public static void handleFireMode(ServerPlayerEntity player)
     {
@@ -663,7 +680,7 @@ public class ServerPlayHandler
 
         MovementAdaptationsHandler.get().setPreviousWeight(gun.getGeneral().getWeightKilo());
         //DEBUGGING AND BALANCE TOOL
-        player.sendStatusMessage(new TranslationTextComponent(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING)+""), true);
+        //player.sendStatusMessage(new TranslationTextComponent(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING)+""), true);
         //new TranslationTextComponent("Speed is: " + player
                 // .getAttribute(MOVEMENT_SPEED).getValue()) ,true);
     }

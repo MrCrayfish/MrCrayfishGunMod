@@ -382,6 +382,7 @@
     "tac.options.doubleRender": "Enable DR for Scopes" ,
 
     "info.tac.current_level": "Current level",
+    "info.tac.out_of_ammo": "No ammo in the gun!!!",
 
     "tac.options.screenFormat": "TAC GUI SETTINGS",
 
