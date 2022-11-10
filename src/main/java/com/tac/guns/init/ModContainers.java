@@ -2,7 +2,7 @@ package com.tac.guns.init;
 
 import com.tac.guns.Reference;
 import com.tac.guns.common.container.*;
-import com.tac.guns.inventory.gear.armor.AmmoPackContainer;
+import com.tac.guns.inventory.gear.armor.ArmorRigContainer;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
 import net.minecraft.inventory.container.Container;
@@ -12,6 +12,9 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.Dictionary;
+import java.util.HashMap;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -34,7 +37,13 @@ public class ModContainers
         UpgradeBenchTileEntity workstation = (UpgradeBenchTileEntity) playerInventory.player.world.getTileEntity(data.readBlockPos());
         return new UpgradeBenchContainer(windowId, playerInventory, workstation);
     });
-    public static final RegistryObject<ContainerType<AmmoPackContainer>> AMMOPACK = REGISTER.register("ammopack", () -> IForgeContainerType.create((windowId, inv, data) -> new AmmoPackContainer(windowId, inv)));
+    public static final RegistryObject<ContainerType<ArmorRigContainer>> ARMOR_TEST = REGISTER.register("armor_test", () -> IForgeContainerType.create((windowId, inv, data) -> new ArmorRigContainer(windowId, inv)));
+
+    // ITEM -> CONTAINER
+    /*public static final HashMap<RegistryObject, RegistryObject> containerVitem = new HashMap()
+    {{
+        put(ARMOR_TEST.get(), ModItems.ARMOR_TEST.get());
+    }};*/
 
     private static <T extends Container> RegistryObject<ContainerType<T>> register(String id, ContainerType.IFactory<T> factory)
     {

@@ -10,11 +10,11 @@ import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nullable;
 
-public class AmmoPackContainerProvider implements INamedContainerProvider {
+public class ArmorRigContainerProvider implements INamedContainerProvider {
 
     private ItemStack item;
 
-    public AmmoPackContainerProvider(ItemStack item) {
+    public ArmorRigContainerProvider(ItemStack item) {
         this.item = item;
     }
 
@@ -26,7 +26,7 @@ public class AmmoPackContainerProvider implements INamedContainerProvider {
     @Nullable
     @Override
     public Container createMenu(int windowId, PlayerInventory inv, PlayerEntity player) {
-        AmmoPackContainer container = new AmmoPackContainer(windowId, inv, this.item);
+        ArmorRigContainer container = new ArmorRigContainer(windowId, inv, this.item);
         return container;
     }
 }

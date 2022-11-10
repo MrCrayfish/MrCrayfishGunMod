@@ -1,11 +1,10 @@
 package com.tac.guns.inventory.gear;
 
 import com.tac.guns.Reference;
-import com.tac.guns.inventory.gear.armor.AmmoInventoryCapability;
-import com.tac.guns.inventory.gear.armor.AmmoPackSlot;
+import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
+import com.tac.guns.inventory.gear.armor.ArmorRigSlot;
 import com.tac.guns.inventory.gear.armor.IAmmoItemHandler;
 import com.tac.guns.inventory.gear.backpack.BackpackSlot;
-import com.tac.guns.inventory.gear.GearSlotsHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -39,15 +38,15 @@ public class InventoryListener {
             addSlotMethod = ObfuscationReflectionHelper.findMethod(Container.class, "func_75146_a", Slot.class);
         }
         GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(ITEM_HANDLER_CAPABILITY).resolve().get();
-        addSlotMethod.invoke(player.container, new AmmoPackSlot(ammoItemHandler, 0, 170, 84));
+        addSlotMethod.invoke(player.container, new ArmorRigSlot(ammoItemHandler, 0, 170, 84));
         addSlotMethod.invoke(player.container, new BackpackSlot(ammoItemHandler, 1, 170, 102));
     }
 
     @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) throws InvocationTargetException, IllegalAccessException {
         if(!(event.getObject() instanceof PlayerEntity)) return;
-        AmmoInventoryCapability ammoInventoryCapability = new AmmoInventoryCapability(new GearSlotsHandler(2));
-        event.addCapability(new ResourceLocation("tac", "inventory_capability"), ammoInventoryCapability);
-        event.addListener(ammoInventoryCapability.getOptionalStorage()::invalidate);
+        ArmorRigInventoryCapability armorRigInventoryCapability = new ArmorRigInventoryCapability(new GearSlotsHandler(2));
+        event.addCapability(new ResourceLocation("tac", "inventory_capability"), armorRigInventoryCapability);
+        event.addListener(armorRigInventoryCapability.getOptionalStorage()::invalidate);
     }
 }

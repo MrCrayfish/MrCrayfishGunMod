@@ -1,13 +1,13 @@
 package com.tac.guns.inventory.gear.armor;
 
-import com.tac.guns.item.ArmorRigItem;
+import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class AmmoPackSlot extends SlotItemHandler {
+public class ArmorRigSlot extends SlotItemHandler {
 
-    public AmmoPackSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+    public ArmorRigSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
     }
 

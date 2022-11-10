@@ -2,7 +2,7 @@ package com.tac.guns.inventory.gear.armor;
 
 import com.tac.guns.init.ModContainers;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
-import com.tac.guns.item.ArmorRigItem;
+import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -11,15 +11,15 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class AmmoPackContainer extends Container {
+public class ArmorRigContainer extends Container {
 
     private ItemStack item;
     private int numRows = 2;
 
-    public AmmoPackContainer(int windowId, PlayerInventory inv, ItemStack item) {
-        super(ModContainers.AMMOPACK.get(), windowId);
+    public ArmorRigContainer(int windowId, PlayerInventory inv, ItemStack item) {
+        super(ModContainers.ARMOR_TEST.get(), windowId);
         this.item = item;
-        GearSlotsHandler itemHandler = (GearSlotsHandler)this.item.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
+        GearSlotsHandler itemHandler = (GearSlotsHandler)this.item.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
         int i = (this.numRows - 4) * 18;
 
         for(int j = 0; j < this.numRows; ++j) {
@@ -41,8 +41,8 @@ public class AmmoPackContainer extends Container {
         //this.setAll(itemHandler.getStacks());
     }
 
-    public AmmoPackContainer(int windowId, PlayerInventory inv) {
-        super(ModContainers.AMMOPACK.get(), windowId);
+    public ArmorRigContainer(int windowId, PlayerInventory inv) {
+        super(ModContainers.ARMOR_TEST.get(), windowId);
         this.item = item;
         int i = (this.numRows - 4) * 18;
 

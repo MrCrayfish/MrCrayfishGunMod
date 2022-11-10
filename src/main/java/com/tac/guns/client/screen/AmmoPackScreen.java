@@ -2,18 +2,18 @@ package com.tac.guns.client.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.tac.guns.inventory.gear.armor.AmmoPackContainer;
+import com.tac.guns.inventory.gear.armor.ArmorRigContainer;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class AmmoPackScreen extends ContainerScreen<AmmoPackContainer> implements IHasContainer<AmmoPackContainer> {
+public class AmmoPackScreen extends ContainerScreen<ArmorRigContainer> implements IHasContainer<ArmorRigContainer> {
     private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
     private final int inventoryRows;
 
-    public AmmoPackScreen(AmmoPackContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public AmmoPackScreen(ArmorRigContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.passEvents = false;
         int i = 222;

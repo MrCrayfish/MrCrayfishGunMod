@@ -9,9 +9,9 @@ import com.tac.guns.annotation.Optional;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.interfaces.TGExclude;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
-import com.tac.guns.inventory.gear.armor.AmmoPackCapabilityProvider;
+import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
 import com.tac.guns.inventory.gear.InventoryListener;
-import com.tac.guns.item.ArmorRigItem;
+import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IScope;
 import com.tac.guns.item.attachment.impl.Scope;
@@ -2010,7 +2010,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 stacks.add(stack);
             }
             if(stack.getItem() instanceof ArmorRigItem) {
-                GearSlotsHandler itemHandler = (GearSlotsHandler)stack.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
+                GearSlotsHandler itemHandler = (GearSlotsHandler)stack.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
                 for(ItemStack item : itemHandler.getStacks()) {
                     if(isAmmo(item, id)) {
                         stacks.add(item);
