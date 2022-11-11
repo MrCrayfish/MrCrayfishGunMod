@@ -4,6 +4,7 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.network.message.MessageEmptyMag;
 import com.tac.guns.network.message.MessageUpdateMoveInacc;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
@@ -124,7 +125,7 @@ public class  ShootingHandler
                     fire(player, heldItem);
 
                 if(!(heldItem.getTag().getInt("AmmoCount") > 0)) {
-                    player.sendStatusMessage(new TranslationTextComponent("info.tac.out_of_ammo"), true);
+                    player.sendStatusMessage(new TranslationTextComponent("info.tac.out_of_ammo").mergeStyle(TextFormatting.UNDERLINE).mergeStyle(TextFormatting.BOLD).mergeStyle(TextFormatting.RED), true);
                     PacketHandler.getPlayChannel().sendToServer(new MessageEmptyMag());
                 }
             }

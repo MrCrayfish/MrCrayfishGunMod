@@ -60,7 +60,7 @@
     "item.tac.pkp_penchenberg": "PKP Pencheneg",
     "item.tac.mp7": "MP7",
     "item.tac.m82a2": "M82A1",
-    "item.tac.ai_awp": "AWP",
+    "item.tac.ai_awp": "AWM .300 Magnumcan ",
     "item.tac.rpg7": "RPG-7",
     "item.tac.rpk": "RPK",
     "item.tac.fn_fal": "FN FAL",
@@ -382,7 +382,7 @@
     "tac.options.doubleRender": "Enable DR for Scopes" ,
 
     "info.tac.current_level": "Current level",
-    "info.tac.out_of_ammo": "No ammo in the gun!!!",
+    "info.tac.out_of_ammo": "RELOAD!",
 
     "tac.options.screenFormat": "TAC GUI SETTINGS",
 
