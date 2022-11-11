@@ -54,7 +54,9 @@ public class RecoilHandler
 
     private int timer;
 
-    private final int recoilDuration = 10; //0.5s
+    private long prevTime = System.currentTimeMillis();
+
+    private final int recoilDuration = 200; //0.20s
 
     private RecoilHandler() {}
 
@@ -104,6 +106,10 @@ public class RecoilHandler
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
+        if(timer > 0) timer -= System.currentTimeMillis() - prevTime;
+        prevTime = System.currentTimeMillis();
+        if(timer < 0) timer = 0;
+
         if(!Config.SERVER.enableCameraRecoil.get())
             return;
 
@@ -116,7 +122,7 @@ public class RecoilHandler
 
         float cameraRecoilModifer = mc.player.getHeldItemMainhand().getItem() instanceof GunItem ? ((GunItem) mc.player.getHeldItemMainhand().getItem()).getGun().getGeneral().getCameraRecoilModifier() : 1.0F;
 
-        float recoilAmount = this.cameraRecoil * mc.getTickLength() * 0.1F;//0.25F;//0.1F;
+        float recoilAmount = this.cameraRecoil * mc.getTickLength() * 0.2F;//0.25F;//0.1F;
         float HorizontalRecoilAmount = this.horizontalCameraRecoil * mc.getTickLength() * 0.1F;//0.25F;//* 0.1F;
         float startProgress = (this.progressCameraRecoil / this.cameraRecoil);
         float endProgress = ((this.progressCameraRecoil + recoilAmount) / this.cameraRecoil);
@@ -155,8 +161,6 @@ public class RecoilHandler
             this.horizontalCameraRecoil = 0;
             this.horizontalProgressCameraRecoil = 0;
         }
-
-        if(timer > 0) timer--;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -182,7 +186,7 @@ public class RecoilHandler
         if(cooldown >= modifiedGun.getGeneral().getWeaponRecoilOffset())// || tooFast) // Actually have any visual recoil at Rate 1???
         {
             float amount = 1F * ((1.0F - cooldown) / (1-modifiedGun.getGeneral().getWeaponRecoilOffset()));
-            this.gunRecoilNormal = 1 - (--amount) * amount * amount * amount;
+            this.gunRecoilNormal = 1 - (--amount);
         }
         else {
             float amount = ( (cooldown) / modifiedGun.getGeneral().getWeaponRecoilOffset() );

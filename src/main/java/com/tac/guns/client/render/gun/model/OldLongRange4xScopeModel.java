@@ -121,7 +121,7 @@ public class OldLongRange4xScopeModel implements IOverrideModel
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(7.0f,7.0f,7.0f);
-                matrixStack.translate(-0.00438715, -0.004185, 0.0000);
+                matrixStack.translate(-0.00438715, -0.004185, 0.001);
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing
                 boolean aimed = false;

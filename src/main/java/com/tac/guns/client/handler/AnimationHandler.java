@@ -40,6 +40,7 @@ import net.minecraftforge.api.distmarker.Dist;
 
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -203,14 +204,29 @@ public enum AnimationHandler {
         if(controller == null) return;
         if(controller instanceof PumpShotgunAnimationController ) {
             if(controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_NORMAL_END) != null) {
-                controller.stopAnimation();
-                controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL_END);
+                if(SyncedPlayerData.instance().get(Minecraft.getInstance().player, ModSyncedDataKeys.STOP_ANIMA))
+                    controller.stopAnimation();
+                //controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL_END);
             }
         }else{
             if(SyncedPlayerData.instance().get(Minecraft.getInstance().player, ModSyncedDataKeys.STOP_ANIMA)) {
                 controller.stopAnimation();
                 controller.runAnimation(GunAnimationController.AnimationLabel.STATIC);
                 controller.stopAnimation();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event){
+        if(Minecraft.getInstance().player == null) return;
+        ItemStack stack = Minecraft.getInstance().player.getHeldItemMainhand();
+        GunAnimationController controller = GunAnimationController.fromItem(stack.getItem());
+        if (controller instanceof PumpShotgunAnimationController) {
+            if(controller.getPreviousAnimation() != null && controller.getPreviousAnimation().equals(controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_LOOP))){
+                if(!controller.isAnimationRunning()){
+                    controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL_END);
+                }
             }
         }
     }

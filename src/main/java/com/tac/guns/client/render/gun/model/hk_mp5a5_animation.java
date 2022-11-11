@@ -91,6 +91,14 @@ public class hk_mp5a5_animation implements IOverrideModel {
                 RenderUtil.renderModel(SpecialModels.HK_MP5A5_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
 
+            matrices.push();
+            CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
+            float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
+
+            matrices.translate(0, 0, 0.085f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+            RenderUtil.renderModel(SpecialModels.HK_MP5A5_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+            matrices.pop();
+
             RenderUtil.renderModel(SpecialModels.HK_MP5A5_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
         matrices.pop();
@@ -110,15 +118,6 @@ public class hk_mp5a5_animation implements IOverrideModel {
         {
             controller.applySpecialModelTransform(SpecialModels.HK_MP5A5_BODY.getModel(), HkMp5a5AnimationController.INDEX_BOLT,transformType,matrices);
             RenderUtil.renderModel(SpecialModels.HK_MP5A5_BOLT_HANDLE.getModel(), stack, matrices, renderBuffer, light, overlay);
-
-            matrices.push();
-            CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-            float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
-
-            matrices.translate(0, 0, 0.085f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-
-            RenderUtil.renderModel(SpecialModels.HK_MP5A5_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
-            matrices.pop();
         }
         matrices.pop();
 

@@ -1,6 +1,8 @@
 package com.tac.guns.client.handler;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Config;
+import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageUpdatePlayerMovement;
@@ -106,6 +108,14 @@ public class MovementAdaptationsHandler
         if (Minecraft.getInstance().player == null) {
             return;
         }
+        /*float dist =
+                (Math.abs(Minecraft.getInstance().player.moveForward)/4+
+                        Math.abs(Minecraft.getInstance().player.moveStrafing)/1.5f)*
+                        (Minecraft.getInstance().player.moveVertical != 0 ? 3:1);
+        if(dist != 0)
+            SyncedPlayerData.instance().set(Minecraft.getInstance().player, ModSyncedDataKeys.MOVING, dist);
+        else
+            SyncedPlayerData.instance().set(Minecraft.getInstance().player, ModSyncedDataKeys.MOVING, 0f);*/
         PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement());
     }
     /*@SubscribeEvent(priority = EventPriority.HIGHEST)

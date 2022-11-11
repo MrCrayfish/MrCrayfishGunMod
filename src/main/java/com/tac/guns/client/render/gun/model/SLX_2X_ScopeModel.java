@@ -126,7 +126,8 @@ public class SLX_2X_ScopeModel implements IOverrideModel
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 matrixStack.scale(6f,6f,6f);
-                matrixStack.translate((-0.00327715-0.0063525+0.000215+0.00877625)+ scopeData.getReticleXMod(), (-0.003385-0.00847125+0.0008+0.01049125) + scopeData.getReticleYMod(), (Config.CLIENT.display.scopeDoubleRender.get() ? (0.0000) + scopeData.getReticleZMod() : (0.002) + scopeData.getReticleZMod()));
+                matrixStack.translate((-0.00327715-0.0063525+0.000215+0.00877625)+ scopeData.getReticleXMod(), (-0.003385-0.00847125+0.0008+0.01049125) + scopeData.getReticleYMod(), (Config.CLIENT.display.scopeDoubleRender.get() ?
+                        (0.002) + scopeData.getReticleZMod() : (0.004) + scopeData.getReticleZMod()));
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing
                 boolean aimed = false;

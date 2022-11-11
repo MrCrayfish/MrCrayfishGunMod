@@ -15,12 +15,13 @@ import net.minecraft.util.ResourceLocation;
 import java.io.IOException;
 
 public class M60AnimationController extends MachineGunAnimationController {
-    public static int INDEX_BODY = 3;
-    public static int INDEX_LEFT_HAND = 7;
-    public static int INDEX_RIGHT_HAND = 4;
+    public static int INDEX_BODY = 4;
+    public static int INDEX_LEFT_HAND = 8;
+    public static int INDEX_RIGHT_HAND = 5;
     public static int INDEX_MAGAZINE = 1;
     public static int INDEX_CHAIN = 0;
     public static int INDEX_CAPS = 2;
+    public static int INDEX_HANDLE = 3;
 
     public static final AnimationMeta STATIC = new AnimationMeta(new ResourceLocation("tac","animations/m60_static.gltf"));
     public static final AnimationMeta RELOAD_NORM = new AnimationMeta(new ResourceLocation("tac","animations/m60_reload_norm.gltf"));

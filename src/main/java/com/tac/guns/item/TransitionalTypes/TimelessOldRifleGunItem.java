@@ -91,8 +91,7 @@ public class TimelessOldRifleGunItem extends TimelessGunItem {
 
             float percentageToNextLevel =
                     ( tagCompound.getFloat("levelDmg") * 100) / (modifiedGun.getGeneral().getLevelReq()*(((tagCompound.getInt("level"))*3.0f)));
-            tooltip.add((new TranslationTextComponent("info.tac.current_level" + tagCompound.getInt("level") + " : " + percentageToNextLevel))
-                    .mergeStyle(TextFormatting.GRAY).mergeStyle(TextFormatting.BOLD));
+            tooltip.add((new TranslationTextComponent("info.tac.current_level").append(new TranslationTextComponent( " " +tagCompound.getInt("level") + " : " + percentageToNextLevel+"%"))).mergeStyle(TextFormatting.GRAY).mergeStyle(TextFormatting.BOLD));
         }
 
         if(tagCompound != null)
