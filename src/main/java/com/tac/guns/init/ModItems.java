@@ -92,6 +92,7 @@ public class ModItems
     //public static final RegistryObject<Item> SCAR_L = REGISTER.register("scar_l", () -> new TimelessGunItem(properties -> properties.group(GunMod.RIFLE), GunModifiers.SCAR_L_MOD));
     //public static final RegistryObject<Item> MK47 = REGISTER.register("mk47", () -> new TimelessGunItem(properties -> properties.group(GunMod.RIFLE), GunModifiers.SCAR_L_MOD));
     //public static final RegistryObject<Item> SPR_15 = REGISTER.register("spr15", () -> new TimelessGunItem(properties -> properties.group(GunMod.RIFLE), GunModifiers.SPR_15_MOD));
+    public static final RegistryObject<Item> DEVELOPMENT_SLOW_BULLET = REGISTER.register("devgun1", () -> new TimelessGunItem(properties -> properties.group(GunMod.RIFLE)));
 
     /* Ammunition */
     public static final RegistryObject<Item> MAGNUM_BULLET = REGISTER.register("magnumround", TimelessAmmoItem::new);

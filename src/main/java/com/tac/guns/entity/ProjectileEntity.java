@@ -253,7 +253,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                     {
                         PlayerEntity player = (PlayerEntity) ((EntityRayTraceResult) result).getEntity();
 
-                        if(this.shooter instanceof PlayerEntity && !((PlayerEntity) this.shooter).canAttackPlayer(player))
+                        if(this.shooter instanceof PlayerEntity && !((PlayerEntity) this.shooter).canAttackPlayer(player) && !Config.COMMON.development.bulletSelfHarm.get())
                         {
                             result = null;
                         }
@@ -316,8 +316,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         double closestDistance = Double.MAX_VALUE;
         for(Entity entity : entities)
         {
-            //if(!entity.equals(this.shooter))
-            //{
+            if(!entity.equals(this.shooter) || Config.COMMON.development.bulletSelfHarm.get())
+            {
                 EntityResult result = this.getHitResult(entity, startVec, endVec);
                 if(result == null)
                     continue;
@@ -330,7 +330,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                     closestDistance = distanceToHit;
                     headshot = result.isHeadshot();
                 }
-            //}
+            }
         }
         return hitEntity != null ? new EntityResult(hitEntity, hitVec, headshot) : null;
     }
@@ -342,7 +342,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         List<Entity> entities = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(this.getMotion()).grow(1.0), PROJECTILE_TARGETS);
         for(Entity entity : entities)
         {
-            if(!entity.equals(this.shooter))
+            if(!entity.equals(this.shooter) || Config.COMMON.development.bulletSelfHarm.get())
             {
                 EntityResult result = this.getHitResult(entity, startVec, endVec);
                 if(result == null)
@@ -470,7 +470,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         {
             ExtendedEntityRayTraceResult entityRayTraceResult = (ExtendedEntityRayTraceResult) result;
             Entity entity = entityRayTraceResult.getEntity();
-            if(entity.getEntityId() == this.shooterId)
+            if(entity.getEntityId() == this.shooterId && !Config.COMMON.development.bulletSelfHarm.get())
             {
                 return;
             }

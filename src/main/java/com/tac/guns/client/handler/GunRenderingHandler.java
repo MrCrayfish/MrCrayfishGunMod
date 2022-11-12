@@ -398,7 +398,9 @@ public class GunRenderingHandler {
             //matrixStack.translate((double) (Math.asin(-MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 0.5F)) * invertZoomProgress, ((double) (Math.asin((-Math.abs(-MathHelper.cos(distanceWalked*crouch * (float) Math.PI) * cameraYaw))) * invertZoomProgress)) * 1.140, 0.0D);// * 1.140, 0.0D);
             applyBobbingTransforms(matrixStack, false);
             applyJumpingTransforms(matrixStack, event.getPartialTicks());
+            //TODO: Implement config switch, it's not a required mechanic. it's just fun
             applyNoiseMovementTransform(matrixStack);
+
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
             matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
 
@@ -721,18 +723,34 @@ public class GunRenderingHandler {
         prevTime = date.getTime();
     }
 
-    private final OneDimensionalPerlinNoise noiseX = new OneDimensionalPerlinNoise(-0.004f, 0.004f, 2800);
-    private final OneDimensionalPerlinNoise noiseY = new OneDimensionalPerlinNoise(-0.002f, 0.002f, 2800);
+    private final OneDimensionalPerlinNoise noiseX = new OneDimensionalPerlinNoise(-0.003f, 0.003f, 2400);
+    private final OneDimensionalPerlinNoise noiseY = new OneDimensionalPerlinNoise(-0.003f, 0.003f, 2800);
     {
         noiseY.setReverse(true);
     }
 
-    private final OneDimensionalPerlinNoise additionNoiseY = new OneDimensionalPerlinNoise(-0.002f, 0.002f, 1600);
+    private final OneDimensionalPerlinNoise aimed_noiseX = new OneDimensionalPerlinNoise(-0.00075f, 0.00075f, 1650);
+    private final OneDimensionalPerlinNoise aimed_noiseY = new OneDimensionalPerlinNoise(-0.00135f, 0.00135f, 1650);
+    {
+        noiseY.setReverse(true);
+    }
 
-    private final OneDimensionalPerlinNoise noiseRotationY = new OneDimensionalPerlinNoise(-0.5f, 0.5f, 2000);
+    private final OneDimensionalPerlinNoise additionNoiseY = new OneDimensionalPerlinNoise(-0.002f, 0.002f, 1300);
+
+    private final OneDimensionalPerlinNoise noiseRotationY = new OneDimensionalPerlinNoise(-0.8f, 0.8f, 2000);
+    private final OneDimensionalPerlinNoise aimed_noiseRotationY = new OneDimensionalPerlinNoise(-0.25f, 0.25f, 1600);
     public void applyNoiseMovementTransform(MatrixStack matrixStack){
-        matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedAdsProgress()), (noiseY.getValue() + additionNoiseY.getValue()) * (1 - AimingHandler.get().getNormalisedAdsProgress()), 0);
-        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (noiseRotationY.getValue() * (1 - AimingHandler.get().getNormalisedAdsProgress()))));
+        //matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedAdsProgress()), (noiseY.getValue() + additionNoiseY.getValue()) * (1 - AimingHandler.get().getNormalisedAdsProgress()), 0);
+        if(AimingHandler.get().getNormalisedAdsProgress() == 1) {
+            matrixStack.translate(aimed_noiseX.getValue(), aimed_noiseY.getValue() + additionNoiseY.getValue(), 0);
+            matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (aimed_noiseRotationY.getValue())));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (aimed_noiseRotationY.getValue()*0.85)));
+        }
+        else {
+            matrixStack.translate(noiseX.getValue(), noiseY.getValue() + additionNoiseY.getValue(), 0);
+            matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (noiseRotationY.getValue())));
+        }
+
     }
 
     @SubscribeEvent
