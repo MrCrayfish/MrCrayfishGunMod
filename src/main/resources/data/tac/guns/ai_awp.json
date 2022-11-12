@@ -32,13 +32,13 @@
     "preReloadPauseTicks": 0
   },
   "projectile": {
-    "item": "tac:win_30-30",
+    "item": "tac:lapua338",
     "visible": false,
     "gravity": true,
-    "damage": 25,
+    "damage": 28,
     "size": 0.3,
-    "speed": 85.0,
-    "life": 5
+    "speed": 72.5,
+    "life": 7
   },
   "sounds": {
     "fire": "tac:item.ai_awp",

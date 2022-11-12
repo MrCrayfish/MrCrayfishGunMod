@@ -60,7 +60,7 @@
     "item.tac.pkp_penchenberg": "PKP Pencheneg",
     "item.tac.mp7": "MP7",
     "item.tac.m82a2": "M82A1",
-    "item.tac.ai_awp": "AWM .338 lapua",
+    "item.tac.ai_awp": "AWM .338 Lapua",
     "item.tac.rpg7": "RPG-7",
     "item.tac.rpk": "RPK",
     "item.tac.fn_fal": "FN FAL",
@@ -99,6 +99,7 @@
     "item.tac.50bmg": ".50 BMG",
     "item.tac.bullet68": "6.8mm SIG",
     "item.tac.ae50": ".50 AE",
+    "item.tac.lapua338": ".338 Lapua",
 
     "item.tac.light_grenade": "F1 Grenade",
     "item.tac.baseball_grenade": "M67 Grenade",
