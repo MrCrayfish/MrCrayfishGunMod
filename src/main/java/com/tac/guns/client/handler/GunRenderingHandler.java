@@ -769,7 +769,7 @@ public class GunRenderingHandler {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             if(player.world.isRemote)
                 return;
-            if((Config.CLIENT.display.cameraShakeOnHit.get() && Config.CLIENT.display.cameraShakeOptionGlobal.get()) || !(player.getHeldItemMainhand().getItem() instanceof GunItem) || Config.CLIENT.display.cameraShakeOnHit.get())
+            if(/*(Config.CLIENT.display.cameraShakeOnHit.get() == 0 && Config.CLIENT.display.cameraShakeOptionGlobal.get()) ||*/ !(player.getHeldItemMainhand().getItem() instanceof GunItem) && !Config.CLIENT.display.cameraShakeOptionGlobal.get())
                 return;
 
             //Server Side

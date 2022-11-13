@@ -1,6 +1,7 @@
 package com.tac.guns.network.message;
 
 
+import com.tac.guns.Config;
 import com.tac.guns.common.network.ServerPlayHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
@@ -45,7 +46,8 @@ public class MessagePlayerShake implements IMessage
     @OnlyIn(Dist.CLIENT)
     public static void fromMessage()
     {
-        Minecraft.getInstance().player.hurtTime = 0;
+        Minecraft.getInstance().player.attackedAtYaw = 2.0f;
+        Minecraft.getInstance().player.hurtTime = Config.CLIENT.display.cameraShakeOnHit.get();
     }
 
     @Override
