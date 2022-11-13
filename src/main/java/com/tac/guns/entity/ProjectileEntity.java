@@ -524,6 +524,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void updateWeaponLevels(float damage)
     {
         ItemStack gunStack = this.shooter.getHeldItemMainhand();
+        if(!(gunStack.getItem() instanceof GunItem))
+            return;
         if(gunStack.getTag().get("levelDmg") != null)
         {
             gunStack.getTag().putFloat("levelDmg", gunStack.getTag().getFloat("levelDmg") + damage);

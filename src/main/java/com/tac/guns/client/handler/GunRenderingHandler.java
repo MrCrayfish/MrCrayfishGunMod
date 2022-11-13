@@ -31,6 +31,9 @@ import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IBarrel;
 import com.tac.guns.item.attachment.impl.Barrel;
 import com.tac.guns.item.attachment.impl.Scope;
+import com.tac.guns.network.PacketHandler;
+import com.tac.guns.network.message.MessagePlayerShake;
+import com.tac.guns.network.message.MessageUpdatePlayerMovement;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.OptifineHelper;
@@ -52,6 +55,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -68,8 +72,12 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.ConfigGuiHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.network.NetworkDirection;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.lang.reflect.Field;
@@ -751,6 +759,35 @@ public class GunRenderingHandler {
             matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (noiseRotationY.getValue())));
         }
 
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onKnockback(LivingKnockBackEvent event)
+    {
+        if(event.getEntityLiving() instanceof PlayerEntity)
+        {
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+            if(player.world.isRemote)
+                return;
+            if((Config.CLIENT.display.cameraShakeOnHit.get() && Config.CLIENT.display.cameraShakeOptionGlobal.get()) || !(player.getHeldItemMainhand().getItem() instanceof GunItem) || Config.CLIENT.display.cameraShakeOnHit.get())
+                return;
+
+            //Server Side
+            if(player instanceof ServerPlayerEntity)
+            {
+                ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
+
+                //Check if the connection is null, which may happen with fake players if they get knocked back
+                if(serverPlayer.connection == null)
+                    return;
+
+                //Check if the network manager is null too, while we're at it.
+                if(serverPlayer.connection.getNetworkManager() == null)
+                    return;
+
+                PacketHandler.getPlayChannel().sendTo(new MessagePlayerShake(player), serverPlayer.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+            }
+        }
     }
 
     @SubscribeEvent

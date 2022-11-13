@@ -7,17 +7,17 @@
       1
     ],
     "gripType": "tac:two_handed_mosin",
-    "recoilAngle": 7.9,
-    "recoilKick": 2.9,
-    "horizontalRecoilAngle": 0.125,
-    "recoilAdsReduction": 0.27,
-    "weaponRecoilDuration": 0.675,
-    "recoilDuration": 0.155,
-    "cameraRecoilModifier": 1.75,
+    "recoilAngle": 8.4,
+    "recoilKick": 3.1,
+    "horizontalRecoilAngle": 0.325,
+    "recoilAdsReduction": 0.28,
+    "weaponRecoilDuration": 0.625,
+    "recoilDuration": 0.14,
+    "cameraRecoilModifier": 1.65,
     "alwaysSpread": true,
-    "spread": 0.15,
+    "spread": 0.105,
     "weightKilo": 6.0,
-    "movementInaccuracy": 15.75
+    "movementInaccuracy": 35.75
   },
   "reloads": {
     "magFed": true,
@@ -35,7 +35,7 @@
     "item": "tac:lapua338",
     "visible": false,
     "gravity": true,
-    "damage": 28,
+    "damage": 30,
     "size": 0.3,
     "speed": 72.5,
     "life": 7
