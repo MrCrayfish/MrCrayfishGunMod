@@ -760,7 +760,7 @@ public class GunRenderingHandler {
         }
 
     }
-
+    // Author: https://github.com/Charles445/DamageTilt/blob/1.16/src/main/java/com/charles445/damagetilt/MessageUpdateAttackYaw.java, continued by Timeless devs
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onKnockback(LivingKnockBackEvent event)
     {
