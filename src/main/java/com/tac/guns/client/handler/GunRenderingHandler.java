@@ -769,22 +769,17 @@ public class GunRenderingHandler {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             if(player.world.isRemote)
                 return;
-            if(/*(Config.CLIENT.display.cameraShakeOnHit.get() == 0 && Config.CLIENT.display.cameraShakeOptionGlobal.get()) ||*/ !(player.getHeldItemMainhand().getItem() instanceof GunItem) && !Config.CLIENT.display.cameraShakeOptionGlobal.get())
+            if(!(player.getHeldItemMainhand().getItem() instanceof GunItem) && !Config.CLIENT.display.cameraShakeOptionGlobal.get())
                 return;
 
             //Server Side
             if(player instanceof ServerPlayerEntity)
             {
                 ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
-
-                //Check if the connection is null, which may happen with fake players if they get knocked back
                 if(serverPlayer.connection == null)
                     return;
-
-                //Check if the network manager is null too, while we're at it.
                 if(serverPlayer.connection.getNetworkManager() == null)
                     return;
-
                 PacketHandler.getPlayChannel().sendTo(new MessagePlayerShake(player), serverPlayer.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
             }
         }
