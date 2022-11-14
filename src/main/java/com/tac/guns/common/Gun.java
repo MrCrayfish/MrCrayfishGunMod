@@ -1990,6 +1990,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static ItemStack[] findAmmo(PlayerEntity player, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
     {
+        if(!player.isAlive())
+            return new ItemStack[]{};
         ArrayList<ItemStack> stacks = new ArrayList<>();
         if(player.isCreative())
         {
@@ -2004,16 +2006,19 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 stacks.add(stack);
             }
         }
+
         AmmoItemStackHandler ammoItemHandler = (AmmoItemStackHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
-        for(ItemStack stack : ammoItemHandler.getStacks()) {
-            if(isAmmo(stack, id)) {
-                stacks.add(stack);
-            }
-            if(stack.getItem() instanceof AmmoPackItem) {
-                AmmoItemStackHandler itemHandler = (AmmoItemStackHandler)stack.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
-                for(ItemStack item : itemHandler.getStacks()) {
-                    if(isAmmo(item, id)) {
-                        stacks.add(item);
+        if(ammoItemHandler != null) {
+            for (ItemStack stack : ammoItemHandler.getStacks()) {
+                if (isAmmo(stack, id)) {
+                    stacks.add(stack);
+                }
+                if (stack.getItem() instanceof AmmoPackItem) {
+                    AmmoItemStackHandler itemHandler = (AmmoItemStackHandler) stack.getCapability(AmmoPackCapabilityProvider.capability).resolve().get();
+                    for (ItemStack item : itemHandler.getStacks()) {
+                        if (isAmmo(item, id)) {
+                            stacks.add(item);
+                        }
                     }
                 }
             }
