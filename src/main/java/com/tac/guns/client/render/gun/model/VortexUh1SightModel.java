@@ -64,12 +64,13 @@ public class VortexUh1SightModel implements IOverrideModel
             }
 
         }
-        matrixStack.translate(0, 0.055, 0);
+        matrixStack.translate(0, 0.055, -0.1025);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
         matrixStack.translate(0, -0.049, 0);
         matrixStack.pop();
+        matrixStack.translate(0, 0.0, -0.1025);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "vortex1" ? new ScopeData("") : ScopeEditor.get().getScopeData();
@@ -79,14 +80,14 @@ public class VortexUh1SightModel implements IOverrideModel
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(((-size / 2) -0.001235 + scopeData.getReticleXMod()), (1.5665 + 0.01775 + scopeData.getReticleYMod()) * 0.0625, (0.075 + scopeData.getReticleZMod()) * 0.0625);  //0.3
+                matrixStack.translate(((-size / 2) -0.001235 + scopeData.getReticleXMod()), (1.5665 + 0.01775 + 0.20273875 + scopeData.getReticleYMod()) * 0.0625, (0.075 + scopeData.getReticleZMod()) * 0.0625);  //0.3
 
                 IVertexBuilder builder;
 
                 double invertProgress = (1.0 - AimingHandler.get().getNormalisedAdsProgress());
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
-                double scale = 4.775 -2.6548576 + scopeData.getReticleSizeMod();
+                double scale = 4.775 -2.6548576 -0.57749957 + scopeData.getReticleSizeMod();
                 matrixStack.translate(size / 2, size / 2, 0);
                 matrixStack.translate(-(size / scale) / 2, -(size / scale) / 2, 0);
                 matrixStack.translate(0, 0, 0.0001);

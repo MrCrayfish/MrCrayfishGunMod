@@ -64,13 +64,13 @@ public class AimpointT1SightModel implements IOverrideModel
             }
 
         }
-        matrixStack.translate(0, 0.074, 0);
+        matrixStack.translate(0, 0.074, -0.1075);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
         matrixStack.translate(0, -0.057, 0);
         matrixStack.pop();
-        matrixStack.translate(0, 0.017, 0);
+        matrixStack.translate(0, 0.017, -0.1075);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "aimpoint1" ? new ScopeData("") : ScopeEditor.get().getScopeData();

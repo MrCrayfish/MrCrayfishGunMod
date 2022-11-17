@@ -194,7 +194,7 @@ public class GunRenderingHandler {
 
     @SubscribeEvent
     public void onFovModifying(EntityViewRenderEvent.FOVModifier event){
-        float cameraShakeDuration = 0.06f;
+        float cameraShakeDuration = 0.06f * (AimingHandler.get().isAiming() ? 1.5f : 1f);
         long alphaTime = System.currentTimeMillis() - fireTime;
         float progress = (alphaTime < cameraShakeDuration * 1000 ? 1 - alphaTime / (cameraShakeDuration*1000f) : 0);
         event.setFOV(event.getFOV() + progress * 0.5f);
@@ -761,7 +761,7 @@ public class GunRenderingHandler {
 
     }
     // Author: https://github.com/Charles445/DamageTilt/blob/1.16/src/main/java/com/charles445/damagetilt/MessageUpdateAttackYaw.java, continued by Timeless devs
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onKnockback(LivingKnockBackEvent event)
     {
         if(event.getEntityLiving() instanceof PlayerEntity)

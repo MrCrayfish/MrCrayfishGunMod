@@ -62,13 +62,13 @@ public class SrsRedDotSightModel implements IOverrideModel
             }
 
         }
-        matrixStack.translate(0, 0.074, -0.025);
+        matrixStack.translate(0, 0.074, -0.025-0.1);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
         matrixStack.translate(0, -0.030, 0);
         matrixStack.pop();
-        matrixStack.translate(0, 0.044, -0.025);
+        matrixStack.translate(0, 0.044, -0.025-0.1);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "srsdot" ? new ScopeData("") : ScopeEditor.get().getScopeData();
@@ -78,7 +78,7 @@ public class SrsRedDotSightModel implements IOverrideModel
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(((-size / 2) -0.0027 + scopeData.getReticleXMod()), (0.50 + 0.29223 + scopeData.getReticleYMod()) * 0.0625, (0.075 + scopeData.getReticleZMod()) * 0.0625);
+                matrixStack.translate(((-size / 2) -0.0027 + scopeData.getReticleXMod()), (0.50 + 0.29223 + scopeData.getReticleYMod()) * 0.0625, (0.075 + 0.4255 + scopeData.getReticleZMod()) * 0.0625);
 
                 IVertexBuilder builder;
 
