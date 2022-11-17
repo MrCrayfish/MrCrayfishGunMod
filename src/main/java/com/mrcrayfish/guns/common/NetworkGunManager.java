@@ -19,8 +19,6 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -84,6 +82,10 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
                     // Makes sure the file name matches exactly with the id of the gun
                     if(!id.getPath().equals(splitPath[splitPath.length - 1]))
+                        return;
+
+                    // Also check if the mod id matches with the gun's registered namespace
+                    if (!id.getNamespace().equals(resource.getNamespace()))
                         return;
 
                     try(InputStream inputstream = manager.getResource(resource).getInputStream(); Reader reader = new BufferedReader(new InputStreamReader(inputstream, StandardCharsets.UTF_8)))
