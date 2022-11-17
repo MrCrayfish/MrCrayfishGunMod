@@ -84,6 +84,10 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
                     if(!id.getPath().equals(splitPath[splitPath.length - 1]))
                         return;
 
+                    // Also check if the mod id matches with the gun's registered namespace
+                    if (!id.getNamespace().equals(resourceLocation.getNamespace()))
+                        return;
+
                     manager.getResource(resourceLocation).ifPresent(resource ->
                     {
                         try(Reader reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8)))
