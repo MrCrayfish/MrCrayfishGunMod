@@ -2,6 +2,7 @@ package com.tac.guns;
 
 import com.tac.guns.client.ClientHandler;
 import com.tac.guns.client.CustomGunManager;
+import com.tac.guns.client.CustomRigManager;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.pose.*;
@@ -71,6 +72,7 @@ public class GunMod
         {
             super.fill(items);
             CustomGunManager.fill(items);
+            CustomRigManager.fill(items);
         }
     }.setRelevantEnchantmentTypes(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 

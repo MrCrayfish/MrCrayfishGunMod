@@ -3,6 +3,7 @@ package com.tac.guns.client.network;
 import com.tac.guns.Config;
 import com.tac.guns.client.BulletTrail;
 import com.tac.guns.client.CustomGunManager;
+import com.tac.guns.client.CustomRigManager;
 import com.tac.guns.client.audio.GunShotSound;
 import com.tac.guns.client.handler.BulletTrailRenderingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
@@ -10,6 +11,7 @@ import com.tac.guns.client.render.animation.module.AnimationMeta;
 import com.tac.guns.client.render.animation.module.AnimationSoundManager;
 import com.tac.guns.client.render.animation.module.AnimationSoundMeta;
 import com.tac.guns.common.NetworkGunManager;
+import com.tac.guns.common.NetworkRigManager;
 import com.tac.guns.init.ModParticleTypes;
 import com.tac.guns.network.message.*;
 import com.tac.guns.particles.BulletHoleData;
@@ -228,5 +230,10 @@ public class ClientPlayHandler
     {
         NetworkGunManager.updateRegisteredGuns(message);
         CustomGunManager.updateCustomGuns(message);
+    }
+    public static void handleUpdateRigs(MessageUpdateRigs message)
+    {
+        NetworkRigManager.updateRegisteredRigs(message);
+        CustomRigManager.updateCustomRigs(message);
     }
 }

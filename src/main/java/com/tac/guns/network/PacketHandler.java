@@ -41,6 +41,14 @@ public class PacketHandler
                 .markAsLoginPacket()
                 .add();
 
+        handshakeChannel.messageBuilder(HandshakeMessages.S2CUpdateRigs.class, 2)
+                .loginIndex(HandshakeMessages.LoginIndexedMessage::getLoginIndex, HandshakeMessages.LoginIndexedMessage::setLoginIndex)
+                .decoder(HandshakeMessages.S2CUpdateRigs::decode)
+                .encoder(HandshakeMessages.S2CUpdateRigs::encode)
+                .consumer(FMLHandshakeHandler.biConsumerFor((handler, msg, supplier) -> HandshakeHandler.handleUpdateRigs(msg, supplier)))
+                .markAsLoginPacket()
+                .add();
+
         playChannel = NetworkRegistry.ChannelBuilder
                 .named(new ResourceLocation(Reference.MOD_ID, "play"))
                 .networkProtocolVersion(() -> PROTOCOL_VERSION)
@@ -61,6 +69,7 @@ public class PacketHandler
         registerPlayMessage(MessageInspection.class, MessageInspection::new, LogicalSide.SERVER);
         registerPlayMessage(MessageColorBench.class, MessageColorBench::new, LogicalSide.SERVER);
         registerPlayMessage(MessageUpdateGuns.class, MessageUpdateGuns::new, LogicalSide.CLIENT);
+        registerPlayMessage(MessageUpdateRigs.class, MessageUpdateRigs::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageBlood.class, MessageBlood::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageShooting.class, MessageShooting::new, LogicalSide.SERVER);
         registerPlayMessage(MessageGunSound.class, MessageGunSound::new, LogicalSide.CLIENT);
