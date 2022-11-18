@@ -82,6 +82,8 @@ public class PacketHandler
         registerPlayMessage(MessageUpdateMoveInacc.class, MessageUpdateMoveInacc::new, LogicalSide.SERVER);
         registerPlayMessage(MessageEmptyMag.class, MessageEmptyMag::new, LogicalSide.SERVER);
 
+        registerPlayMessage(MessagePlayerShake.class, MessagePlayerShake::new, LogicalSide.CLIENT);
+
         registerPlayMessage(MessageUpdatePlayerMovement.class, MessageUpdatePlayerMovement::new, LogicalSide.SERVER);
         registerPlayMessage(MessageAnimationSound.class, MessageAnimationSound::new, LogicalSide.CLIENT);
         registerPlayMessage(MessageAnimationRun.class, MessageAnimationRun::new, LogicalSide.SERVER);

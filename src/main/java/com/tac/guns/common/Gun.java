@@ -1990,6 +1990,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
     public static ItemStack[] findAmmo(PlayerEntity player, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
     {
+        if(!player.isAlive())
+            return new ItemStack[]{};
         ArrayList<ItemStack> stacks = new ArrayList<>();
         if(player.isCreative())
         {

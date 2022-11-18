@@ -31,6 +31,9 @@ import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IBarrel;
 import com.tac.guns.item.attachment.impl.Barrel;
 import com.tac.guns.item.attachment.impl.Scope;
+import com.tac.guns.network.PacketHandler;
+import com.tac.guns.network.message.MessagePlayerShake;
+import com.tac.guns.network.message.MessageUpdatePlayerMovement;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
 import com.tac.guns.util.OptifineHelper;
@@ -52,6 +55,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -68,8 +72,12 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.ConfigGuiHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.network.NetworkDirection;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.lang.reflect.Field;
@@ -186,7 +194,7 @@ public class GunRenderingHandler {
 
     @SubscribeEvent
     public void onFovModifying(EntityViewRenderEvent.FOVModifier event){
-        float cameraShakeDuration = 0.06f;
+        float cameraShakeDuration = 0.06f * (AimingHandler.get().isAiming() ? 1.5f : 1f);
         long alphaTime = System.currentTimeMillis() - fireTime;
         float progress = (alphaTime < cameraShakeDuration * 1000 ? 1 - alphaTime / (cameraShakeDuration*1000f) : 0);
         event.setFOV(event.getFOV() + progress * 0.5f);
@@ -398,7 +406,9 @@ public class GunRenderingHandler {
             //matrixStack.translate((double) (Math.asin(-MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 0.5F)) * invertZoomProgress, ((double) (Math.asin((-Math.abs(-MathHelper.cos(distanceWalked*crouch * (float) Math.PI) * cameraYaw))) * invertZoomProgress)) * 1.140, 0.0D);// * 1.140, 0.0D);
             applyBobbingTransforms(matrixStack, false);
             applyJumpingTransforms(matrixStack, event.getPartialTicks());
+            //TODO: Implement config switch, it's not a required mechanic. it's just fun
             applyNoiseMovementTransform(matrixStack);
+
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((MathHelper.sin(distanceWalked*crouch * (float) Math.PI) * cameraYaw * 3.0F) * (float) invertZoomProgress));
             matrixStack.rotate(Vector3f.XP.rotationDegrees((Math.abs(MathHelper.cos(distanceWalked*crouch * (float) Math.PI - 0.2F) * cameraYaw) * 5.0F) * (float) invertZoomProgress));
 
@@ -721,18 +731,58 @@ public class GunRenderingHandler {
         prevTime = date.getTime();
     }
 
-    private final OneDimensionalPerlinNoise noiseX = new OneDimensionalPerlinNoise(-0.004f, 0.004f, 2800);
-    private final OneDimensionalPerlinNoise noiseY = new OneDimensionalPerlinNoise(-0.002f, 0.002f, 2800);
+    private final OneDimensionalPerlinNoise noiseX = new OneDimensionalPerlinNoise(-0.003f, 0.003f, 2400);
+    private final OneDimensionalPerlinNoise noiseY = new OneDimensionalPerlinNoise(-0.003f, 0.003f, 2800);
     {
         noiseY.setReverse(true);
     }
 
-    private final OneDimensionalPerlinNoise additionNoiseY = new OneDimensionalPerlinNoise(-0.002f, 0.002f, 1600);
+    private final OneDimensionalPerlinNoise aimed_noiseX = new OneDimensionalPerlinNoise(-0.00075f, 0.00075f, 1650);
+    private final OneDimensionalPerlinNoise aimed_noiseY = new OneDimensionalPerlinNoise(-0.00135f, 0.00135f, 1650);
+    {
+        noiseY.setReverse(true);
+    }
 
-    private final OneDimensionalPerlinNoise noiseRotationY = new OneDimensionalPerlinNoise(-0.5f, 0.5f, 2000);
+    private final OneDimensionalPerlinNoise additionNoiseY = new OneDimensionalPerlinNoise(-0.002f, 0.002f, 1300);
+
+    private final OneDimensionalPerlinNoise noiseRotationY = new OneDimensionalPerlinNoise(-0.8f, 0.8f, 2000);
+    private final OneDimensionalPerlinNoise aimed_noiseRotationY = new OneDimensionalPerlinNoise(-0.25f, 0.25f, 1600);
     public void applyNoiseMovementTransform(MatrixStack matrixStack){
-        matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedAdsProgress()), (noiseY.getValue() + additionNoiseY.getValue()) * (1 - AimingHandler.get().getNormalisedAdsProgress()), 0);
-        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (noiseRotationY.getValue() * (1 - AimingHandler.get().getNormalisedAdsProgress()))));
+        //matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedAdsProgress()), (noiseY.getValue() + additionNoiseY.getValue()) * (1 - AimingHandler.get().getNormalisedAdsProgress()), 0);
+        if(AimingHandler.get().getNormalisedAdsProgress() == 1) {
+            matrixStack.translate(aimed_noiseX.getValue(), aimed_noiseY.getValue() + additionNoiseY.getValue(), 0);
+            matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (aimed_noiseRotationY.getValue())));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) (aimed_noiseRotationY.getValue()*0.85)));
+        }
+        else {
+            matrixStack.translate(noiseX.getValue(), noiseY.getValue() + additionNoiseY.getValue(), 0);
+            matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (noiseRotationY.getValue())));
+        }
+
+    }
+    // Author: https://github.com/Charles445/DamageTilt/blob/1.16/src/main/java/com/charles445/damagetilt/MessageUpdateAttackYaw.java, continued by Timeless devs
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onKnockback(LivingKnockBackEvent event)
+    {
+        if(event.getEntityLiving() instanceof PlayerEntity)
+        {
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+            if(player.world.isRemote)
+                return;
+            if(!(player.getHeldItemMainhand().getItem() instanceof GunItem) && !Config.CLIENT.display.cameraShakeOptionGlobal.get())
+                return;
+
+            //Server Side
+            if(player instanceof ServerPlayerEntity)
+            {
+                ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
+                if(serverPlayer.connection == null)
+                    return;
+                if(serverPlayer.connection.getNetworkManager() == null)
+                    return;
+                PacketHandler.getPlayChannel().sendTo(new MessagePlayerShake(player), serverPlayer.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+            }
+        }
     }
 
     @SubscribeEvent

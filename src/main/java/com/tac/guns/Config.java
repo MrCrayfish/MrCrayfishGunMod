@@ -74,6 +74,9 @@ public class Config
         public final ForgeConfigSpec.BooleanValue scopeDoubleRender;
         public final ForgeConfigSpec.BooleanValue redDotSquish;
         public final ForgeConfigSpec.BooleanValue sight1xRealisticPosition;
+
+        public final ForgeConfigSpec.IntValue cameraShakeOnHit;
+        public final ForgeConfigSpec.BooleanValue cameraShakeOptionGlobal;
         public Display(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for display related options").push("display");
@@ -87,6 +90,8 @@ public class Config
                 this.scopeDoubleRender = builder.comment("Enable scope double render, saves on some performance and compatability issues with Optifine").define("scopeDoubleRender", true);
                 this.redDotSquish = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to render in 2d when aimed like the scopeDoubleRender(false) effect.").define("redDotSquish", false);
                 this.sight1xRealisticPosition = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to be viewed realisticly, with the players head static for iron sights, and 1x optics").define("sight1xRealisticPostion", false);
+                this.cameraShakeOnHit = builder.comment("Shake camera when hit, 0 = no camera shake when you are hit, while holding a gun, meant to help reduce jarring feel when attempting to aim.").defineInRange("cameraShakeOnHit", 6, 0, 10);
+                this.cameraShakeOptionGlobal = builder.comment("Enable the cameraShakeOnHit option to always take effect, holding a gun or not, keep false for vanilla gameplay to remain vanilla.").define("cameraShakeOptionGlobal", false);
             }
             builder.pop();
         }
@@ -348,6 +353,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue permanentCrosshair;
         public final ForgeConfigSpec.BooleanValue enableTDev;
         public final ForgeConfigSpec.ConfigValue<String> TDevPath;
+        public final ForgeConfigSpec.BooleanValue bulletSelfHarm;
 
         public Development(ForgeConfigSpec.Builder builder)
         {
@@ -356,6 +362,7 @@ public class Config
                 this.permanentCrosshair = builder.comment("If enabled any crosshair will continue to render on aim.").define("permanentCrosshair", false);
                 this.enableTDev = builder.comment("If enabled, /tdev will both be registered (Upon restart), and function! Used as well to speed up tag checks").define("enableTDev", false);
                 this.TDevPath = builder.comment("Directory to build all TaC sub-directories, these will contain export data from /tdev functions").define("tDevPath", "");
+                this.bulletSelfHarm = builder.comment("Wether the shooters bullets can harm the shooter, great for testing armor and onhit effects with the development gun").define("bulletSelfHarm", false);
             }
             builder.pop();
         }

@@ -204,7 +204,7 @@ public class GunModifiers
         @Override
         public float recoilModifier()
         {
-            return 0.825F;
+            return 0.775F;
         }
 
         @Override
@@ -227,7 +227,7 @@ public class GunModifiers
         @Override
         public float horizontalRecoilModifier()
         {
-            return 0.875F;
+            return 0.775F;
         }
         @Override
         public float additionalWeaponWeight() { return 0.185F; }

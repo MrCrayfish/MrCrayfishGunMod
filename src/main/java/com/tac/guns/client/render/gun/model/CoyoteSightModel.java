@@ -65,13 +65,13 @@ public class CoyoteSightModel implements IOverrideModel
         }
         int bodyColor = RenderUtil.getItemStackColor(stack, parent, IAttachment.Type.SCOPE_BODY_COLOR,0);
 
-        matrixStack.translate(0, 0.074, -0.035);
+        matrixStack.translate(0, 0.074, -0.035-0.1025);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
         matrixStack.translate(0, -0.030, 0);
         matrixStack.pop();
-        matrixStack.translate(0, 0.044, -0.035);
+        matrixStack.translate(0, 0.044, -0.035-0.1025);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
             ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "coyote" ? new ScopeData("") : ScopeEditor.get().getScopeData();
@@ -81,7 +81,7 @@ public class CoyoteSightModel implements IOverrideModel
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(((-size / 2) -0.0035 + scopeData.getReticleXMod()), (0.85 -0.164 + scopeData.getReticleYMod()) * 0.0625, (0.075 + scopeData.getReticleZMod()) * 0.0625);
+                matrixStack.translate(((-size / 2) -0.0035 + scopeData.getReticleXMod()), (0.85 -0.164 + scopeData.getReticleYMod()) * 0.0625, (0.075+ 0.5895 + scopeData.getReticleZMod()) * 0.0625);
 
                 IVertexBuilder builder;
 
