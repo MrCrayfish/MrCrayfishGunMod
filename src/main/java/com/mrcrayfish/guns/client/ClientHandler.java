@@ -13,9 +13,12 @@ import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.SimpleModel;
 import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
+import com.mrcrayfish.guns.debug.Debug;
+import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModItems;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -40,6 +43,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
 
@@ -177,6 +181,10 @@ public class ClientHandler
             if(KeyBinds.KEY_ATTACHMENTS.consumeClick())
             {
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+            }
+            else if(event.getKey() == GLFW.GLFW_KEY_KP_9)
+            {
+                mc.setScreen(new EditorScreen(null, new Debug.Menu()));
             }
         }
     }

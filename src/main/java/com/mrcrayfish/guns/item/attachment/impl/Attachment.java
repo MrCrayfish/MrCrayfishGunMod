@@ -23,7 +23,7 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public abstract class Attachment
 {
-    private final IGunModifier[] modifiers;
+    protected IGunModifier[] modifiers;
     private List<Component> perks = null;
 
     Attachment(IGunModifier... modifiers)

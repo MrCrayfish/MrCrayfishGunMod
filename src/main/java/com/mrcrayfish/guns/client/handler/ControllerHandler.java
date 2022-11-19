@@ -140,15 +140,10 @@ public class ControllerHandler
                     event.getActions().put(GunButtonBindings.RELOAD, new Action(Component.translatable("cgm.action.reload"), Action.Side.LEFT));
                 }
 
-                ItemStack scopeStack = Gun.getScopeStack(heldItem);
-                if(scopeStack.getItem() instanceof IScope && AimingHandler.get().isAiming())
+                Scope scope = Gun.getScope(heldItem);
+                if(scope != null && scope.isStable() && AimingHandler.get().isAiming())
                 {
-                    IScope iscope = (IScope) scopeStack.getItem();
-                    Scope scope = iscope.getProperties();
-                    if(scope.isStable())
-                    {
-                        event.getActions().put(GunButtonBindings.STEADY_AIM, new Action(Component.translatable("cgm.action.steady_aim"), Action.Side.RIGHT));
-                    }
+                    event.getActions().put(GunButtonBindings.STEADY_AIM, new Action(Component.translatable("cgm.action.steady_aim"), Action.Side.RIGHT));
                 }
             }
         }
