@@ -1,15 +1,11 @@
 package com.tac.guns.util;
 
-import com.tac.guns.client.screen.UpgradeBenchScreen;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.Rig;
 import com.tac.guns.init.ModEnchantments;
-import com.tac.guns.item.GunItem;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-
-import java.util.HashMap;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -17,10 +13,10 @@ import java.util.HashMap;
 public class RigEnchantmentHelper
 {
 
-    /*public static float getModifiedDurability(ItemStack weapon, Rig modifiedRig)
+    /*public static float getModifiedDurability(ItemStack rig, Rig modifiedRig)
     {
         float maxDurability = modifiedRig.getRepair().getDurability();
-        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.TRIGGER_FINGER.get(), weapon);
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.TRIGGER_FINGER.get(), rig);
         if(level > 0)
         {
             float newRate = maxDurability * (0.15F * level);
@@ -28,9 +24,9 @@ public class RigEnchantmentHelper
         }
         return Math.max(maxDurability, 1);
     }*/
-    public static float getModifiedDurability(ItemStack weapon, Rig modifiedRig)
+    public static float getModifiedDurability(ItemStack rig, Rig modifiedRig)
     {
-        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RIFLING.get(), weapon);
+        int level = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.RIFLING.get(), rig);
         if(level > 0)
         {
             return modifiedRig.getRepair().getDurability() * (1.0f + (0.0334f * level));

@@ -176,6 +176,7 @@ public class ModItems
 
     /* Misc */
     public static final RegistryObject<Item> ARMOR_TEST = REGISTER.register("armor_test", () -> new ArmorRigItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> ARMOR_REPAIR_PLATE_TEST = REGISTER.register("armor_plate_test", () -> new ArmorPlateItem(new Item.Properties().maxStackSize(4).group(GunMod.GROUP)));
 
     public static final RegistryObject<Item> MODULE = REGISTER.register("module_item",
             () -> new Item(new Item.Properties().maxStackSize(3).group(GunMod.GROUP)));

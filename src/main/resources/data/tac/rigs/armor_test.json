@@ -6,8 +6,9 @@
     "movementInaccuracy": 1.0
   },
   "repair": {
-    "ticksToRepair": 30,
-    "durability": 20.0,
+    "ticksToRepair": 55,
+    "durability": 75.0,
+    "quickRepairability": 0.25,
     "quickRepairable": true,
     "repairItem": "tac:10_gauge_round"
   },

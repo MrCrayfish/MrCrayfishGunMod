@@ -47,7 +47,6 @@ public class CustomRigLoader extends JsonReloadListener
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> objects, IResourceManager manager, IProfiler profiler)
     {
-        GunMod.LOGGER.log(Level.FATAL,"YO_DATA_CUSTOMRIG");
         ImmutableMap.Builder<ResourceLocation, CustomRig> builder = ImmutableMap.builder();
         objects.forEach((resourceLocation, object) ->
         {

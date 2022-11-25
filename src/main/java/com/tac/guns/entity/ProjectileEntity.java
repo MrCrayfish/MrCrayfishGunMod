@@ -17,13 +17,11 @@ import com.tac.guns.interfaces.IHeadshotBox;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageBlood;
-import com.tac.guns.network.message.MessageProjectileHitBlock;
-import com.tac.guns.network.message.MessageProjectileHitEntity;
-import com.tac.guns.network.message.MessageRemoveProjectile;
+import com.tac.guns.network.message.*;
 import com.tac.guns.util.BufferUtil;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
+import com.tac.guns.util.WearableHelper;
 import com.tac.guns.util.math.ExtendedEntityRayTraceResult;
 import com.tac.guns.world.ProjectileExplosion;
 import net.minecraft.block.*;
@@ -50,6 +48,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -488,7 +487,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             {
                 this.remove();
             }
-
             entity.hurtResistantTime = 0;
         }
     }
@@ -505,10 +503,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
             damage *= GunModifierHelper.getAdditionalHeadshotDamage(this.weapon) == 0F ? 1F : GunModifierHelper.getAdditionalHeadshotDamage(this.weapon);
         }
-
-        DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
-        entity.attackEntityFrom(source, damage);
-
+        if(entity instanceof PlayerEntity && WearableHelper.PlayerWornRig((PlayerEntity) entity) != null)
+        {
+            ItemStack rig = WearableHelper.PlayerWornRig((PlayerEntity) entity);
+            if(!WearableHelper.tickFromCurrentDurability(rig, this))
+                PacketHandler.getPlayChannel().sendTo(new MessagePlayerShake((PlayerEntity) entity), ((ServerPlayerEntity)entity).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+            else {
+                DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
+                entity.attackEntityFrom(source, damage);
+            }
+        }
+        else {
+            DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
+            entity.attackEntityFrom(source, damage);
+        }
 
         if(this.shooter instanceof PlayerEntity)
         {

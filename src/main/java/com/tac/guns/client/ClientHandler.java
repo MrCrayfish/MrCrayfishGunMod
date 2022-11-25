@@ -7,21 +7,7 @@ import java.lang.reflect.Field;
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
-import com.tac.guns.client.handler.AimingHandler;
-import com.tac.guns.client.handler.AnimationHandler;
-import com.tac.guns.client.handler.ArmorRenderingHandler;
-import com.tac.guns.client.handler.BulletTrailRenderingHandler;
-import com.tac.guns.client.handler.CrosshairHandler;
-import com.tac.guns.client.handler.FireModeSwitchEvent;
-import com.tac.guns.client.handler.GunRenderingHandler;
-import com.tac.guns.client.handler.HUDRenderingHandler;
-import com.tac.guns.client.handler.MovementAdaptationsHandler;
-import com.tac.guns.client.handler.RecoilHandler;
-import com.tac.guns.client.handler.ReloadHandler;
-import com.tac.guns.client.handler.ScopeJitterHandler;
-import com.tac.guns.client.handler.ShootingHandler;
-import com.tac.guns.client.handler.SightSwitchEvent;
-import com.tac.guns.client.handler.SoundHandler;
+import com.tac.guns.client.handler.*;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.handler.command.ObjectRenderEditor;
@@ -115,6 +101,7 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(HUDRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(FireModeSwitchEvent.get()); // Technically now a handler but, yes I need some naming reworks
         MinecraftForge.EVENT_BUS.register(SightSwitchEvent.get()); // Still, as well an event, am uncertain on what to name it, in short handles upcoming advanced iron sights
+        MinecraftForge.EVENT_BUS.register(ArmorInteractionHandler.get());
 
         //MinecraftForge.EVENT_BUS.register(FlashlightHandler.get()); // Completely broken... Needs a full rework
         //MinecraftForge.EVENT_BUS.register(FloodLightSource.get());

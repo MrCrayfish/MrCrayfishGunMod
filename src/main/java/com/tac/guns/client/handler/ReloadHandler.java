@@ -180,7 +180,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
         return this.reloadTimer;
     }
 
-    public float getReloadProgress(float partialTicks)
+    public float getRepairProgress(float partialTicks)
     {
         return (this.prevReloadTimer + (this.reloadTimer - this.prevReloadTimer) * partialTicks) / 5F;
     }
@@ -416,11 +416,7 @@ public class ReloadHandler {
         if (tag != null) {
             isEmpty = tag.getInt("AmmoCount") <= 0;
         }
-        return this.startUpReloadTimer == 0 ?
-                (
-                        gunItem.getGun().getReloads().isMagFed() ?
-                                (isEmpty ? ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / ((float) gunItem.getGun().getReloads().getReloadMagTimer() + gunItem.getGun().getReloads().getAdditionalReloadEmptyMagTimer())) : ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / (float) gunItem.getGun().getReloads().getReloadMagTimer()))
-                                : ((this.reloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks)) / ((float) gunItem.getGun().getReloads().getinterReloadPauseTicks()))
+        return this.startUpReloadTimer == 0 ? (gunItem.getGun().getReloads().isMagFed() ? (isEmpty ? ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / ((float) gunItem.getGun().getReloads().getReloadMagTimer() + gunItem.getGun().getReloads().getAdditionalReloadEmptyMagTimer())) : ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / (float) gunItem.getGun().getReloads().getReloadMagTimer())) : ((this.reloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks)) / ((float) gunItem.getGun().getReloads().getinterReloadPauseTicks()))
                 )
                 : 1F;
     }
@@ -443,7 +439,7 @@ public class ReloadHandler {
         }
     }
 
-    /*public float getReloadProgress(float partialTicks, ItemStack stack)
+    /*public float getRepairProgress(float partialTicks, ItemStack stack)
     {
         boolean isEmpty = false;
         GunItem gunItem = (GunItem)stack.getItem();

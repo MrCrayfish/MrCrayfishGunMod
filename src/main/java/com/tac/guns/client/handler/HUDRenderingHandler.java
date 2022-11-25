@@ -4,10 +4,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
-import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.ReloadTracker;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.IArmorPlate;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -88,17 +88,16 @@ public class HUDRenderingHandler extends AbstractGui {
         if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
-        if (Minecraft.getInstance().player == null || !(Minecraft.getInstance().player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof TimelessGunItem)) {
-            return;
-        }
-        if(!Config.CLIENT.weaponGUI.weaponGui.get()) {
+        if (Minecraft.getInstance().player == null) {
             return;
         }
 
+
+
+
+
         ClientPlayerEntity player = Minecraft.getInstance().player;
         ItemStack heldItem = player.getHeldItemMainhand();
-        TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
-        Gun gun = gunItem.getGun();
         MatrixStack stack = event.getMatrixStack();
         float anchorPointX = event.getWindow().getScaledWidth() / 12F * 11F;
         float anchorPointY = event.getWindow().getScaledHeight() / 10F * 9F;
@@ -110,9 +109,74 @@ public class HUDRenderingHandler extends AbstractGui {
         float counterSize = 1.8F * configScaleWeaponCounter;
         float fireModeSize = 32.0F * configScaleWeaponFireMode;
         float ReloadBarSize = 32.0F * configScaleWeaponReloadBar;
-
         RenderSystem.enableAlphaTest();
         BufferBuilder buffer;
+
+
+
+
+
+        if(ArmorInteractionHandler.get().isRepairing())//Replace with reload bar checker
+        {
+            // FireMode rendering
+            RenderSystem.enableAlphaTest();
+            buffer = Tessellator.getInstance().getBuffer();
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            stack.push();
+            {
+                stack.translate(anchorPointX - (ReloadBarSize*4.35) / 4F, anchorPointY + (ReloadBarSize*1.625F) / 5F * 3F, 0);//stack.translate(anchorPointX - (fireModeSize*6) / 4F, anchorPointY - (fireModeSize*1F) / 5F * 3F, 0); // *68for21F
+                stack.translate(-ReloadBarSize, -ReloadBarSize, 0);
+                // stack.translate(0, 0, );
+                stack.scale(2.1F*(1-ArmorInteractionHandler.get().getRepairProgress(event.getPartialTicks(), player)),0.25F,0); // *21F
+                Minecraft.getInstance().getTextureManager().bindTexture(RELOAD_ICONS[0]); // Future options to render bar types
+
+                Matrix4f matrix = stack.getLast().getMatrix();
+                buffer.pos(matrix, 0, ReloadBarSize, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, ReloadBarSize, ReloadBarSize, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, ReloadBarSize, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, 0.99F).endVertex();
+            }
+            buffer.finishDrawing();
+            WorldVertexBufferUploader.draw(buffer);
+            stack.pop();
+        }
+
+        if(ArmorInteractionHandler.get().isRepairing())//Replace with reload bar checker
+        {
+            // FireMode rendering
+            RenderSystem.enableAlphaTest();
+            buffer = Tessellator.getInstance().getBuffer();
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            stack.push();
+            {
+                stack.translate(anchorPointX - (ReloadBarSize*4.35) / 4F, anchorPointY + 20f + (ReloadBarSize*1.625F) / 5F * 3F, 0);//stack.translate(anchorPointX - (fireModeSize*6) / 4F, anchorPointY - (fireModeSize*1F) / 5F * 3F, 0); // *68for21F
+                stack.translate(-ReloadBarSize, -ReloadBarSize, 0);
+                // stack.translate(0, 0, );
+                stack.scale(2.1F*(1-ArmorInteractionHandler.get().getRepairProgress(event.getPartialTicks(), player)),0.25F,0); // *21F
+                Minecraft.getInstance().getTextureManager().bindTexture(RELOAD_ICONS[0]); // Future options to render bar types
+
+                Matrix4f matrix = stack.getLast().getMatrix();
+                buffer.pos(matrix, 0, ReloadBarSize, 0).tex(0, 1).color(1.0F, 0.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, ReloadBarSize, ReloadBarSize, 0).tex(1, 1).color(1.0F, 0.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, ReloadBarSize, 0, 0).tex(1, 0).color(1.0F, 0.0F, 1.0F, 0.99F).endVertex();
+                buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 0.0F, 1.0F, 0.99F).endVertex();
+            }
+            buffer.finishDrawing();
+            WorldVertexBufferUploader.draw(buffer);
+            stack.pop();
+        }
+
+
+
+
+        if(!(Minecraft.getInstance().player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof TimelessGunItem))
+            return;
+        TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
+        Gun gun = gunItem.getGun();
+        if(!Config.CLIENT.weaponGUI.weaponGui.get()) {
+            return;
+        }
+
         if(Config.CLIENT.weaponGUI.weaponFireMode.showWeaponFireMode.get()) {
             // FireMode rendering
             RenderSystem.enableAlphaTest();
@@ -199,6 +263,7 @@ public class HUDRenderingHandler extends AbstractGui {
                 }
             }
             stack.pop();
+
 
             stack.push();
             RenderSystem.enableAlphaTest();

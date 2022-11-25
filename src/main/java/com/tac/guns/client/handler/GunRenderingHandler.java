@@ -384,7 +384,7 @@ public class GunRenderingHandler {
             if(AimingHandler.get().isAiming())
                 aimed = true;
 
-            //double invertZoomProgress = aimed ? 0.0575 : 0.468; //0.135 : 0.44;//0.94;//aimed ? 1.0 - AimingHandler.get().getNormalisedAdsProgress() : ;
+            //double invertZoomProgress = aimed ? 0.0575 : 0.468; //0.135 : 0.44;//0.94;//aimed ? 1.0 - AimingHandler.get().getNormalisedRepairProgress() : ;
             double invertZoomProgress = aimed ? (Gun.getScope(heldItem) != null ? 0.0575 : 0.0725) : 0.468;
             float crouch = mc.player.isCrouching() ? 148f : 1f;
 
@@ -512,7 +512,7 @@ public class GunRenderingHandler {
 
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 float side = right ? 1.0F : -1.0F;
-                //double transition = 1.0 - Math.pow(1.0 - AimingHandler.get().getNormalisedAdsProgress(), 2);
+                //double transition = 1.0 - Math.pow(1.0 - AimingHandler.get().getNormalisedRepairProgress(), 2);
 
                 double transition = (float) AimingHandler.get().getNormalisedAdsProgress();
 
@@ -628,7 +628,7 @@ public class GunRenderingHandler {
     }
 
     private void applyReloadTransforms(MatrixStack matrixStack, HandSide hand, float partialTicks, ItemStack modifiedGun) {
-        /*float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks, stack);
+        /*float reloadProgress = ReloadHandler.get().getRepairProgress(partialTicks, stack);
         matrixStack.translate(0, 0.35 * reloadProgress, 0);
         matrixStack.translate(0, 0, -0.1 * reloadProgress);
         matrixStack.rotate(Vector3f.XP.rotationDegrees(45F * reloadProgress));*/
@@ -748,7 +748,7 @@ public class GunRenderingHandler {
     private final OneDimensionalPerlinNoise noiseRotationY = new OneDimensionalPerlinNoise(-0.8f, 0.8f, 2000);
     private final OneDimensionalPerlinNoise aimed_noiseRotationY = new OneDimensionalPerlinNoise(-0.25f, 0.25f, 1600);
     public void applyNoiseMovementTransform(MatrixStack matrixStack){
-        //matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedAdsProgress()), (noiseY.getValue() + additionNoiseY.getValue()) * (1 - AimingHandler.get().getNormalisedAdsProgress()), 0);
+        //matrixStack.translate(noiseX.getValue()* (1 - AimingHandler.get().getNormalisedRepairProgress()), (noiseY.getValue() + additionNoiseY.getValue()) * (1 - AimingHandler.get().getNormalisedRepairProgress()), 0);
         if(AimingHandler.get().getNormalisedAdsProgress() == 1) {
             matrixStack.translate(aimed_noiseX.getValue(), aimed_noiseY.getValue() + additionNoiseY.getValue(), 0);
             matrixStack.rotate(Vector3f.YP.rotationDegrees((float) (aimed_noiseRotationY.getValue())));

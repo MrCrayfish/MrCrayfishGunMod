@@ -52,29 +52,23 @@ public class NetworkRigManager extends ReloadListener<Map<ArmorRigItem, Rig>>
     private Map<ResourceLocation, Rig> registeredRigs = new HashMap<>();
 
     public HashSet<UUID> Ids = new HashSet<>();
-    public Map<UUID, ItemStack> StackIds = new HashMap<>();
     @Override
     protected Map<ArmorRigItem, Rig> prepare(IResourceManager resourceManager, IProfiler profiler)
     {
         Map<ArmorRigItem, Rig> map = Maps.newHashMap();
-        GunMod.LOGGER.log(Level.FATAL,"YO_DATA");
         ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof ArmorRigItem).forEach(item ->
         {
-            GunMod.LOGGER.log(Level.FATAL,"YO_DATA");
             ResourceLocation id = item.getRegistryName();
             if(id != null)
             {
-                GunMod.LOGGER.log(Level.FATAL,"YO_DATA");
                 ResourceLocation resourceLocation = new ResourceLocation(String.format("%s:rigs/%s.json", id.getNamespace(), id.getPath()));
                 try(IResource resource = resourceManager.getResource(resourceLocation); InputStream is = resource.getInputStream();
                     Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)))
                 {
-                    GunMod.LOGGER.log(Level.FATAL,"YO_DATA1");
                     Rig rig = JSONUtils.fromJson(GSON_INSTANCE, reader, Rig.class);
                     if(rig != null && Validator.isValidObject(rig))
                     {
                         map.put((ArmorRigItem) item, rig);
-                        GunMod.LOGGER.log(Level.FATAL,"YO_DATA2");
                     }
                     else
                     {

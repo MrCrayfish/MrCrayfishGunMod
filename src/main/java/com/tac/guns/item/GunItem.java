@@ -164,7 +164,7 @@ public class GunItem extends Item implements IColored
         return this.gun;
     }
 
-    @Override
+    /*@Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
         if(enchantment.type == EnchantmentTypes.SEMI_AUTO_GUN)
@@ -185,5 +185,5 @@ public class GunItem extends Item implements IColored
     public int getItemEnchantability()
     {
         return 5;
-    }
+    }*/
 }

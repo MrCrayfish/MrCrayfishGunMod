@@ -40,9 +40,9 @@ public class elcan_14x_ScopeModel implements IOverrideModel
         matrixStack.push();
 
         if ((OptifineHelper.isShadersEnabled()) || !Config.CLIENT.display.scopeDoubleRender.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
-            /*double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
+            /*double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedRepairProgress(), 2.0D);
             double zScale = 0.05D + 0.75D * (1.0D - transition);
-            //if(AimingHandler.get().getNormalisedAdsProgress() > 0.525)
+            //if(AimingHandler.get().getNormalisedRepairProgress() > 0.525)
                 matrixStack.translate(0,0,transition*0.18);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);*/
             double prog = 0;
@@ -56,8 +56,8 @@ public class elcan_14x_ScopeModel implements IOverrideModel
         }
         /*if (Config.CLIENT.display.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
-            if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
-                prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;
+            if(AimingHandler.get().getNormalisedRepairProgress() > 0.725) {
+                prog = (AimingHandler.get().getNormalisedRepairProgress() - 0.725) * 3.63;
             }
             double transition = 1.0D - Math.pow(1.0D - prog, 2.0D);
             double zScale = 0.05D + 0.95D * (1.0D - transition);
@@ -67,7 +67,7 @@ public class elcan_14x_ScopeModel implements IOverrideModel
         }*/
 
         /*if (OptifineHelper.isShadersEnabled() || !Config.CLIENT.display.scopeDoubleRender.get()) {
-            double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
+            double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedRepairProgress(), 2.0D);
             double zScale = 0.05D + 0.75D * (1.0D - transition);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
@@ -153,7 +153,7 @@ public class elcan_14x_ScopeModel implements IOverrideModel
                 if(AimingHandler.get().isAiming())
                     aimed = true;
 
-                double invertZoomProgress = aimed ? 0.0575 : 0.468;//double invertZoomProgress = aimed ? 0.135 : 0.94;//aimed ? 1.0 - AimingHandler.get().getNormalisedAdsProgress() : ;
+                double invertZoomProgress = aimed ? 0.0575 : 0.468;//double invertZoomProgress = aimed ? 0.135 : 0.94;//aimed ? 1.0 - AimingHandler.get().getNormalisedRepairProgress() : ;
                 //matrixStack.translate(-0.115*Math.asin(((double) (MathHelper.sin(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI)) * GunRenderingHandler.get().walkingCameraYaw * 0.5F) * invertZoomProgress), 0.085*(Math.asin((double) (Math.abs(-MathHelper.cos(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI) * GunRenderingHandler.get().walkingCameraYaw))) * invertZoomProgress * 1.140),0);//(Math.asin((double) (Math.abs(-MathHelper.cos(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI) * GunRenderingHandler.get().walkingCameraYaw))) * invertZoomProgress * 1.140), 0.0D);// * 1.140, 0.0D);
                 //matrixStack.rotate(Vector3f.ZN.rotationDegrees((float)(MathHelper.sin(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI) * GunRenderingHandler.get().walkingCameraYaw * 3.0F) * (float) invertZoomProgress));
                 //matrixStack.rotate(Vector3f.XN.rotationDegrees((float)(Math.abs(MathHelper.cos(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI - 0.2F) * GunRenderingHandler.get().walkingCameraYaw) * 5.0F) * (float) invertZoomProgress));

@@ -19,20 +19,18 @@ import com.tac.guns.init.ModItems;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.interfaces.IProjectileFactory;
 import com.tac.guns.item.GunItem;
+import com.tac.guns.item.IArmorPlate;
 import com.tac.guns.item.IColored;
 import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.*;
 import com.tac.guns.tileentity.FlashLightSource;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
-import com.tac.guns.util.GunEnchantmentHelper;
-import com.tac.guns.util.GunModifierHelper;
-import com.tac.guns.util.InventoryUtil;
-import com.tac.guns.util.UTR;
-import net.minecraft.client.Minecraft;
+import com.tac.guns.util.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
@@ -42,6 +40,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
@@ -49,7 +48,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -63,6 +61,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Level;
@@ -816,6 +815,27 @@ public class ServerPlayHandler
                 }
                 else
                     player.sendStatusMessage(new TranslationTextComponent("Cannot apply enchants anymore"), true);
+            }
+        }
+    }
+
+    /**
+     * @param player
+     */
+    public static void handleArmorFixApplication(ServerPlayerEntity player)
+    {
+        if(WearableHelper.PlayerWornRig(player) != null && !WearableHelper.isFullDurability(WearableHelper.PlayerWornRig(player)))
+        {
+            Rig rig = ((ArmorRigItem)WearableHelper.PlayerWornRig(player).getItem()).getRig();
+            if(player.getHeldItemMainhand().getItem().getRegistryName().equals(rig.getRepair().getItem()))
+            {
+                WearableHelper.tickRepairCurrentDurability(WearableHelper.PlayerWornRig(player));
+                player.getHeldItemMainhand().setCount(player.getHeldItemMainhand().getCount()-1);
+                ResourceLocation repairSound = rig.getSounds().getRepair();
+                if (repairSound != null && player.isAlive()) {
+                    MessageGunSound messageSound = new MessageGunSound(repairSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) (player.getPosY() + 1.0), (float) player.getPosZ(), 1F, 1F, player.getEntityId(), false, false);
+                    PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), messageSound);
+                }
             }
         }
     }

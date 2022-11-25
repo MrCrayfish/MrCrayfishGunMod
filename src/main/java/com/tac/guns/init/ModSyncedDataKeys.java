@@ -40,6 +40,12 @@ public class ModSyncedDataKeys
             .resetOnDeath()
             .build();
 
+    public static final SyncedDataKey<Boolean> QREPAIRING = SyncedDataKey.builder(Serializers.BOOLEAN)
+            .id(new ResourceLocation(Reference.MOD_ID, "qrepairing"))
+            .defaultValueSupplier(() -> false)
+            .resetOnDeath()
+            .build();
+
     public static void register()
     {
         SyncedPlayerData.instance().registerKey(AIMING);
@@ -47,5 +53,6 @@ public class ModSyncedDataKeys
         SyncedPlayerData.instance().registerKey(RELOADING);
         SyncedPlayerData.instance().registerKey(MOVING);
         SyncedPlayerData.instance().registerKey(STOP_ANIMA);
+        SyncedPlayerData.instance().registerKey(QREPAIRING);
     }
 }

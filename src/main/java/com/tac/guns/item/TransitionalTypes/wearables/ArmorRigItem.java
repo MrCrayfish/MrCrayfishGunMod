@@ -1,26 +1,24 @@
 package com.tac.guns.item.TransitionalTypes.wearables;
 
 import com.tac.guns.Reference;
-import com.tac.guns.common.Gun;
 import com.tac.guns.common.NetworkRigManager;
 import com.tac.guns.common.Rig;
-import com.tac.guns.enchantment.EnchantmentTypes;
 import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
 import com.tac.guns.inventory.gear.armor.ArmorRigContainerProvider;
 import com.tac.guns.item.TransitionalTypes.IArmoredRigItem;
-import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.RigEnchantmentHelper;
-import com.tac.guns.util.RigHelper;
+import com.tac.guns.util.WearableHelper;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.KeybindTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -43,8 +41,6 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
     public ArmorRigItem(Properties properties) {
         super(properties);
     }
-
-
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
@@ -124,7 +120,8 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
             }
         }*/
 
-        tooltip.add(new TranslationTextComponent("info.tac.attachment_help", new KeybindTextComponent("key.tac.attachments").getString().toUpperCase(Locale.ENGLISH) + " | " + this.rig.getRepair().getDurability()+ " | " + this.rig.getRepair().getItem()).mergeStyle(TextFormatting.YELLOW));
+        tooltip.add(new TranslationTextComponent("info.tac.attachment_help",
+                new KeybindTextComponent("key.tac.attachments").getString().toUpperCase(Locale.ENGLISH) + " | " + stack.getOrCreateTag().getFloat("RigDurability") + " | " + this.rig.getRepair().getItem()).mergeStyle(TextFormatting.YELLOW));
     }
 
     @Override
@@ -133,16 +130,17 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
         return true;
     }
 
-    /*@Override
+    @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> stacks)
     {
         if(this.isInGroup(group))
         {
             ItemStack stack = new ItemStack(this);
-            stack.getOrCreateTag().putInt("AmmoCount", this.rig.getReloads().getMaxAmmo());
+            stack.getOrCreateTag();
+            WearableHelper.FillDefaults(stack, this.rig);
             stacks.add(stack);
         }
-    }*/
+    }
 
     @Override
     public boolean showDurabilityBar(ItemStack stack)
@@ -155,7 +153,7 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
     {
         stack.getOrCreateTag();
         Rig modifiedRig = this.getModifiedRig(stack);
-        return 1.0 - (RigHelper.getCurrentDurrability(stack) / (double) RigEnchantmentHelper.getModifiedDurability(stack, modifiedRig));
+        return 1.0 - (WearableHelper.GetCurrentDurability(stack) / (double) RigEnchantmentHelper.getModifiedDurability(stack, modifiedRig));
     }
 
     @Override

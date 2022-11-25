@@ -121,6 +121,8 @@ public final class Rig implements INBTSerializable<CompoundNBT>
         @Optional
         private float durability = 40.0f;
         @Optional
+        private float quickRepairability = 0.50f;
+        @Optional
         private boolean quickRepairable = true;
         @TGExclude
         private ResourceLocation repairItem = new ResourceLocation(Reference.MOD_ID, "armor_plate");
@@ -132,6 +134,7 @@ public final class Rig implements INBTSerializable<CompoundNBT>
             tag.putString("RepairItem", this.repairItem.toString());
             tag.putInt("TicksToRepair", this.ticksToRepair);
             tag.putFloat("Durability", this.durability);
+            tag.putFloat("QuickRepairability", this.quickRepairability);
             tag.putBoolean("QuickRepairable", this.quickRepairable);
             return tag;
         }
@@ -151,6 +154,10 @@ public final class Rig implements INBTSerializable<CompoundNBT>
             {
                 this.durability = tag.getFloat("Durability");
             }
+            if(tag.contains("QuickRepairability", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.quickRepairability = tag.getFloat("QuickRepairability");
+            }
             if(tag.contains("QuickRepairable", Constants.NBT.TAG_ANY_NUMERIC))
             {
                 this.quickRepairable = tag.getBoolean("QuickRepairable");
@@ -166,6 +173,7 @@ public final class Rig implements INBTSerializable<CompoundNBT>
             repair.quickRepairable = this.quickRepairable;
             repair.repairItem = this.repairItem;
             repair.durability = this.durability;
+            repair.quickRepairability = this.quickRepairability;
             repair.ticksToRepair = this.ticksToRepair;
             return repair;
         }
@@ -176,6 +184,7 @@ public final class Rig implements INBTSerializable<CompoundNBT>
         }
         public int getTicksToRepair() {return this.ticksToRepair;}
         public float getDurability() {return this.durability;}
+        public float getQuickRepairability() {return this.quickRepairability;}
         public boolean isQuickRepairable()
         {
             return this.quickRepairable;
