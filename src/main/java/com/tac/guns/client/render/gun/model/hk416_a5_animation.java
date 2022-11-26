@@ -151,14 +151,14 @@ public class hk416_a5_animation implements IOverrideModel {
         //if(controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_NORMAL)) {
             matrices.push();
             {
-                //if(transformType.isFirstPerson()/* && HK416A5AnimationController.getInstance().isAnimationRunning()*/) {
+                if(transformType.isFirstPerson()/* && HK416A5AnimationController.getInstance().isAnimationRunning()*/) {
                 controller.applySpecialModelTransform(SpecialModels.HK416_A5_BODY.getModel(), HK416A5AnimationController.INDEX_EXTRA_MAGAZINE, transformType, matrices);
                 if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
                     RenderUtil.renderModel(SpecialModels.HK416_A5_EXTRA_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
                 } else {
                     RenderUtil.renderModel(SpecialModels.HK416_A5_EXTRA_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
                 }
-                //}
+                }
             }
             matrices.pop();
         //}
