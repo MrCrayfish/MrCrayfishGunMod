@@ -83,25 +83,6 @@ public class hk416_a5_animation implements IOverrideModel {
             if (Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.WEIGHTED_STOCK.orElse(ItemStack.EMPTY.getItem())) {
                 RenderUtil.renderModel(SpecialModels.HK416_A5_HEAVY_STOCK.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
-        /*if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem()))
-        {
-            //int overlayTmp = Gun.getAttachment(IAttachment.Type.BARREL, stack).getStack().serializeNBT().getInt("Color");
-            //int overlayTmp = Minecraft.getInstance().getItemColors().getColor(Gun.getAttachment(IAttachment.Type.BARREL, stack).getStack(), 0);
-            //if(overlayTmp == -1)
-            //{
-            //    overlayTmp = overlay;
-            //}
-            *//*
-                Hm, it seems like the getAttachment().stack() method chain does not actually grab the color of the specific attachment
-                I will be making a bug report as I don't think this behavior is correct and something wrong is on either side as this should be clearly possible
-            *//*
-            RenderUtil.renderModel(SpecialModels.AR15_HELLMOUTH_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else
-        {
-            RenderUtil.renderModel(SpecialModels.AR15_HELLMOUTH_MUZZLE.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }*/
-
             if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem())) {
                 matrices.push();
                 matrices.translate(0, 0, -0.0125);
@@ -125,6 +106,7 @@ public class hk416_a5_animation implements IOverrideModel {
             RenderUtil.renderModel(SpecialModels.HK416_A5_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
 
             matrices.push();
+            {
             CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
             float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
 
@@ -146,6 +128,7 @@ public class hk416_a5_animation implements IOverrideModel {
             }
 
             RenderUtil.renderModel(SpecialModels.HK416_A5_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
             matrices.pop();
         }
         matrices.pop();
@@ -165,16 +148,20 @@ public class hk416_a5_animation implements IOverrideModel {
         }
         matrices.pop();
 
-        matrices.push();
-        {
+        //if(controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_NORMAL)) {
+            matrices.push();
+            {
+                //if(transformType.isFirstPerson()/* && HK416A5AnimationController.getInstance().isAnimationRunning()*/) {
                 controller.applySpecialModelTransform(SpecialModels.HK416_A5_BODY.getModel(), HK416A5AnimationController.INDEX_EXTRA_MAGAZINE, transformType, matrices);
                 if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
-                    RenderUtil.renderModel(SpecialModels.HK416_A5_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+                    RenderUtil.renderModel(SpecialModels.HK416_A5_EXTRA_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
                 } else {
-                    RenderUtil.renderModel(SpecialModels.HK416_A5_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+                    RenderUtil.renderModel(SpecialModels.HK416_A5_EXTRA_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
                 }
-        }
-        matrices.pop();
+                //}
+            }
+            matrices.pop();
+        //}
         PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
 }

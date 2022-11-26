@@ -29,6 +29,8 @@ public class M1014AnimationController extends PumpShotgunAnimationController {
 
     public static final AnimationMeta NORMAL_END = new AnimationMeta(new ResourceLocation("tac","animations/m1014_reload_norm_end.gltf"));
 
+    public static final AnimationMeta EMPTY_END = new AnimationMeta(new ResourceLocation("tac","animations/m1014_reload_empty_end.gltf"));
+
     public static final AnimationMeta INSPECT = new AnimationMeta(new ResourceLocation("tac","animations/m1014_inspect.gltf"));
 
 
@@ -43,6 +45,7 @@ public class M1014AnimationController extends PumpShotgunAnimationController {
             Animations.load(LOOP);
             Animations.load(NORMAL_END);
             Animations.load(INSPECT);
+            Animations.load(EMPTY_END);
         } catch (IOException e) {
             GunMod.LOGGER.fatal(e.getStackTrace());
         }
@@ -58,6 +61,7 @@ public class M1014AnimationController extends PumpShotgunAnimationController {
             case RELOAD_INTRO: return INTRO;
             case RELOAD_LOOP: return LOOP;
             case RELOAD_NORMAL_END: return NORMAL_END;
+            case RELOAD_EMPTY_END: return EMPTY_END;
             case INSPECT: return INSPECT;
             default: return null;
         }

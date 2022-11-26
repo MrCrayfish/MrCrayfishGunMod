@@ -30,6 +30,7 @@ public abstract class GunAnimationController {
         RELOAD_INTRO,
         RELOAD_LOOP,
         RELOAD_NORMAL_END,
+        RELOAD_EMPTY_END,
         PUMP,
         PULL_BOLT,
         INSPECT,

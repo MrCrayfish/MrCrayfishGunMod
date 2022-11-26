@@ -89,6 +89,10 @@ public enum AnimationHandler {
         } else {
             if (!controller.getPreviousAnimation().equals(reloadEmptyMeta))
                 controller.stopAnimation();
+
+            if(GunAnimationController.fromItem(itemStack.getItem()) instanceof PumpShotgunAnimationController)
+                ((PumpShotgunAnimationController) GunAnimationController.fromItem(itemStack.getItem())).setEmpty(true);
+
             controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
         }
     }
@@ -223,9 +227,14 @@ public enum AnimationHandler {
         ItemStack stack = Minecraft.getInstance().player.getHeldItemMainhand();
         GunAnimationController controller = GunAnimationController.fromItem(stack.getItem());
         if (controller instanceof PumpShotgunAnimationController) {
-            if(controller.getPreviousAnimation() != null && controller.getPreviousAnimation().equals(controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_LOOP))){
+            if(controller.getPreviousAnimation() != null && controller.getPreviousAnimation().equals(controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_LOOP)) && !ReloadHandler.get().isReloading()){
                 if(!controller.isAnimationRunning()){
-                    controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL_END);
+                    if(((PumpShotgunAnimationController) controller).isEmpty()) {
+                        controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_EMPTY_END);
+                        ((PumpShotgunAnimationController) controller).setEmpty(false);
+                    }
+                    else
+                        controller.runAnimation(GunAnimationController.AnimationLabel.RELOAD_NORMAL_END);
                 }
             }
         }

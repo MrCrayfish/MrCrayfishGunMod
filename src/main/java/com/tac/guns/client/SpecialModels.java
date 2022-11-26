@@ -278,6 +278,7 @@ public enum SpecialModels
     HK416_A5_HEAVY_STOCK("hk416_a5_heavy_stock"),
     HK416_A5_STANDARD_MAG("hk416_a5_standard_mag"),
     HK416_A5_EXTRA_MAG("hk416_a5_extra_mag"),
+    HK416_A5_EXTRA_EXTENDED_MAG("hk416_a5_extra_extended_mag"),
     HK416_A5_TACTICAL_GRIP("hk416_a5_tactical_grip"),
     HK416_A5_LIGHT_GRIP("hk416_a5_light_grip"),
     HK416_A5_LIGHT_STOCK("hk416_a5_light_stock"),
