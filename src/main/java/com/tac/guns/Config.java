@@ -72,7 +72,7 @@ public class Config
 
         public final ForgeConfigSpec.BooleanValue gameplayEnchancedScopeOffset;
         public final ForgeConfigSpec.BooleanValue scopeDoubleRender;
-        public final ForgeConfigSpec.BooleanValue redDotSquish;
+        public final ForgeConfigSpec.BooleanValue redDotSquishUpdate;
         public final ForgeConfigSpec.BooleanValue sight1xRealisticPosition;
 
         public final ForgeConfigSpec.IntValue cameraShakeOnHit;
@@ -88,7 +88,7 @@ public class Config
 
                 this.gameplayEnchancedScopeOffset = builder.comment("Scopes are brought closer to the shooter to help fill FOV with a scope view at all times").define("gameplayEnchancedScopeOffset", true);
                 this.scopeDoubleRender = builder.comment("Enable scope double render, saves on some performance and compatability issues with Optifine").define("scopeDoubleRender", true);
-                this.redDotSquish = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to render in 2d when aimed like the scopeDoubleRender(false) effect.").define("redDotSquish", false);
+                this.redDotSquishUpdate = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to render in 2d when aimed like the scopeDoubleRender(false) effect.").define("redDotSquishUpdate", false);
                 this.sight1xRealisticPosition = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to be viewed realisticly, with the players head static for iron sights, and 1x optics").define("sight1xRealisticPostion", false);
                 this.cameraShakeOnHit = builder.comment("Shake camera when hit, 0 = no camera shake when you are hit, while holding a gun, meant to help reduce jarring feel when attempting to aim.").defineInRange("cameraShakeOnHit", 6, 0, 10);
                 this.cameraShakeOptionGlobal = builder.comment("Enable the cameraShakeOnHit option to always take effect, holding a gun or not, keep false for vanilla gameplay to remain vanilla.").define("cameraShakeOptionGlobal", false);

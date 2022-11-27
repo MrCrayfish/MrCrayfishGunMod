@@ -80,9 +80,9 @@ public class GunOptions
         Config.saveClientConfig();
     });
     public static final BooleanOption REDDOT_SQUISH_EXIST = new BooleanOption("tac.options.reddotSquish", (settings) -> {
-        return Config.CLIENT.display.redDotSquish.get();
+        return Config.CLIENT.display.redDotSquishUpdate.get();
     }, (settings, value) -> {
-        Config.CLIENT.display.redDotSquish.set(value);
+        Config.CLIENT.display.redDotSquishUpdate.set(value);
         Config.saveClientConfig();
     });
 

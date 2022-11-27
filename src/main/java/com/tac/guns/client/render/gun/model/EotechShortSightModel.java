@@ -34,12 +34,12 @@ public class EotechShortSightModel implements IOverrideModel
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay) {
         matrixStack.push();
-        /*if (Config.CLIENT.display.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        /*if (Config.CLIENT.display.redDotSquishUpdate.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
             double zScale = 0.05D + 0.95D * (1.0D - transition);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.CLIENT.display.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if (Config.CLIENT.display.redDotSquishUpdate.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;
@@ -95,7 +95,7 @@ public class EotechShortSightModel implements IOverrideModel
 
                 //matrixStack.translate(0, 0, -0.2);
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(((-size / 2) -0.002015 + scopeData.getReticleXMod()), (1.38 + 0.03308125 + scopeData.getReticleYMod()+0.47275) * 0.0625, (0.075 + scopeData.getReticleZMod() + (!Config.CLIENT.display.redDotSquish.get() ? 1.2625 : 0)) * 0.0625);
+                matrixStack.translate(((-size / 2) -0.002015 + scopeData.getReticleXMod()), (1.38 + 0.03308125 + scopeData.getReticleYMod()+0.47275) * 0.0625, (0.075 + scopeData.getReticleZMod() + (!Config.CLIENT.display.redDotSquishUpdate.get() ? 1.2625 : 0)) * 0.0625);
                 IVertexBuilder builder;
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 

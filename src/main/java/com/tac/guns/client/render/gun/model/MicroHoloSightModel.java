@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
 
 import static com.tac.guns.client.SpecialModels.MICRO_HOLO_BASE;
 
@@ -37,12 +36,12 @@ public class MicroHoloSightModel implements IOverrideModel
             return;
         // Micro holo crashes worlds from previous versions, soon some standard weapons will be able to take micro optics as well, will handle differently if so
         matrixStack.push();
-        /*if (Config.CLIENT.display.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        /*if (Config.CLIENT.display.redDotSquishUpdate.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
             double zScale = 0.05D + 0.95D * (1.0D - transition);
             matrixStack.scale(1.0F, 1.0F, (float)zScale);
         }*/
-        if (Config.CLIENT.display.redDotSquish.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+        if (Config.CLIENT.display.redDotSquishUpdate.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
             if(AimingHandler.get().getNormalisedAdsProgress() > 0.725) {
                 prog = (AimingHandler.get().getNormalisedAdsProgress() - 0.725) * 3.63;
