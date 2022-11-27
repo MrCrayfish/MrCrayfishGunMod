@@ -1,0 +1,19 @@
+{
+  "replace": true,
+  "values": [
+    "#forge:glass",
+    "#forge:glass_panes",
+    "#minecraft:candles",
+    "minecraft:lily_pad",
+    "minecraft:big_dripleaf",
+    "minecraft:big_dripleaf_stem",
+    "minecraft:cocoa",
+    "minecraft:end_rod",
+    "minecraft:scaffolding",
+    "minecraft:sea_pickle",
+    "minecraft:turtle_egg",
+    "minecraft:glowstone",
+    "minecraft:sea_lantern",
+    "minecraft:ice"
+  ]
+}

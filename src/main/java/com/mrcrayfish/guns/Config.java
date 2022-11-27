@@ -219,6 +219,10 @@ public class Config
     {
         public final ForgeConfigSpec.BooleanValue enableBlockRemovalOnExplosions;
         public final ForgeConfigSpec.BooleanValue enableGlassBreaking;
+        public final ForgeConfigSpec.BooleanValue fragileDrops;
+        public final ForgeConfigSpec.DoubleValue breakingChance;
+        public final ForgeConfigSpec.BooleanValue hardnessBreak;
+        public final ForgeConfigSpec.DoubleValue guaranteeMinimum;
         public final ForgeConfigSpec.BooleanValue setFireToBlocks;
 
         public Griefing(ForgeConfigSpec.Builder builder)
@@ -226,7 +230,11 @@ public class Config
             builder.comment("Properties related to gun griefing").push("griefing");
             {
                 this.enableBlockRemovalOnExplosions = builder.comment("If enabled, allows block removal on explosions").define("enableBlockRemovalOnExplosions", true);
-                this.enableGlassBreaking = builder.comment("If enabled, allows guns to shoot out glass").define("enableGlassBreaking", true);
+                this.enableGlassBreaking = builder.comment("If enabled, allows guns to shoot out glass and other fragile objects").define("enableGlassBreaking", true);
+                this.fragileDrops = builder.comment("If enabled, broken fragile block will drop").define("fragileDrops", true);
+                this.breakingChance = builder.comment("Chance for a fragile block to break").defineInRange("breakingChance", 1.0, 0.0, 1.0);
+                this.hardnessBreak = builder.comment("If enabled, breaking chance depend on the hardness of the block").define("hardnessBreak", false);
+                this.guaranteeMinimum = builder.comment("Minimum hardness at which a block will break, -1 to disable").defineInRange("guaranteeMinimum", 0.5, -1.0, Float.MAX_VALUE);
                 this.setFireToBlocks = builder.comment("If true, allows guns enchanted with Fire Starter to light and spread fires on blocks").define("setFireToBlocks", true);
             }
             builder.pop();

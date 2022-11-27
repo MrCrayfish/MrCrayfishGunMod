@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.Gun.Projectile;
+import com.mrcrayfish.guns.common.ModTags;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.event.GunProjectileHitEvent;
 import com.mrcrayfish.guns.init.ModEnchantments;
@@ -52,13 +53,10 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HalfTransparentBlock;
-import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.TargetBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -79,6 +77,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.random.RandomGenerator;
 
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData
 {
@@ -434,9 +433,23 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             BlockState state = this.level.getBlockState(pos);
             Block block = state.getBlock();
 
-            if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && (block instanceof HalfTransparentBlock || block instanceof IronBarsBlock) && state.getMaterial() == Material.GLASS)
+            if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE))
             {
-                this.level.destroyBlock(blockHitResult.getBlockPos(), false);
+                boolean drops = Config.COMMON.gameplay.griefing.fragileDrops.get();
+                float speed = state.getDestroySpeed(getLevel(), pos);
+                float min = Config.COMMON.gameplay.griefing.guaranteeMinimum.get().floatValue();
+                float total = speed - min;
+
+                if (total < 0 && min >= 0) this.level.destroyBlock(pos, drops);
+
+                if (Config.COMMON.gameplay.griefing.hardnessBreak.get()){
+                    if (Math.random() * speed > total) // Stronger block will be less likely to break, also, a negative total will be an instant break
+                        this.level.destroyBlock(pos, drops);
+                }
+                else {
+                    float chance = Config.COMMON.gameplay.griefing.breakingChance.get().floatValue();
+                    if (Math.random() < chance) this.level.destroyBlock(pos, drops);
+                }
             }
 
             if(!state.getMaterial().isReplaceable())
