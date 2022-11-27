@@ -441,7 +441,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 float min = Config.COMMON.gameplay.griefing.guaranteeMinimum.get().floatValue();
                 // If min is under 0, it will still be 0 for this calculation
                 float total = speed - Math.max(0.0f, min);
-                // If min is under 0 (and so total is negative) 100% chance, otherwise, do the normal calculation
+                // If min is over or equal to speed (and so total is negative or zero) 100% chance, otherwise, do the normal calculation
                 float chance = speed <= min ? 1.0f : (Config.COMMON.gameplay.griefing.breakingChance.get().floatValue() / (total+1));
 
                 if (Math.random() < chance) this.level.destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileDrops.get());
