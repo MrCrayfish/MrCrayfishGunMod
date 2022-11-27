@@ -223,6 +223,7 @@ public class Config
         public final ForgeConfigSpec.DoubleValue breakingChance;
         public final ForgeConfigSpec.BooleanValue hardnessBreak;
         public final ForgeConfigSpec.DoubleValue guaranteeMinimum;
+        public final ForgeConfigSpec.DoubleValue unbreakableHardness;
         public final ForgeConfigSpec.BooleanValue setFireToBlocks;
 
         public Griefing(ForgeConfigSpec.Builder builder)
@@ -235,6 +236,7 @@ public class Config
                 this.breakingChance = builder.comment("Chance for a fragile block to break").defineInRange("breakingChance", 1.0, 0.0, 1.0);
                 this.hardnessBreak = builder.comment("If enabled, breaking chance depend on the hardness of the block").define("hardnessBreak", false);
                 this.guaranteeMinimum = builder.comment("Minimum hardness at which a block will break, -1 to disable").defineInRange("guaranteeMinimum", 0.5, -1.0, Float.MAX_VALUE);
+                this.unbreakableHardness = builder.comment("How strong are unbreakable blocks against bullets").defineInRange("unbreakableHardness", 100000.0, -1.0, Float.MAX_VALUE);
                 this.setFireToBlocks = builder.comment("If true, allows guns enchanted with Fire Starter to light and spread fires on blocks").define("setFireToBlocks", true);
             }
             builder.pop();

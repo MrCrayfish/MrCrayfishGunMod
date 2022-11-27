@@ -435,21 +435,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE))
             {
-                boolean drops = Config.COMMON.gameplay.griefing.fragileDrops.get();
                 float speed = state.getDestroySpeed(getLevel(), pos);
+                // If speed is under 0, it will use the unbreakableHardness value
+                speed = speed < 0 ? Config.COMMON.gameplay.griefing.unbreakableHardness.get().floatValue() : speed;
                 float min = Config.COMMON.gameplay.griefing.guaranteeMinimum.get().floatValue();
-                float total = speed - min;
+                // If min is under 0, it will still be 0 for this calculation
+                float total = speed - Math.max(0.0f, min);
+                // If min is under 0 (and so total is negative) 100% chance, otherwise, do the normal calculation
+                float chance = speed <= min ? 1.0f : (Config.COMMON.gameplay.griefing.breakingChance.get().floatValue() / (total+1));
 
-                if (total < 0 && min >= 0) this.level.destroyBlock(pos, drops);
-
-                if (Config.COMMON.gameplay.griefing.hardnessBreak.get()){
-                    if (Math.random() * speed > total) // Stronger block will be less likely to break, also, a negative total will be an instant break
-                        this.level.destroyBlock(pos, drops);
-                }
-                else {
-                    float chance = Config.COMMON.gameplay.griefing.breakingChance.get().floatValue();
-                    if (Math.random() < chance) this.level.destroyBlock(pos, drops);
-                }
+                if (Math.random() < chance) this.level.destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileDrops.get());
             }
 
             if(!state.getMaterial().isReplaceable())
