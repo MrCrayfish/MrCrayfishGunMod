@@ -25,7 +25,7 @@ public class InventoryListener {
     public static Capability<IAmmoItemHandler> ITEM_HANDLER_CAPABILITY = null;
     public static Method addSlotMethod;
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    /*@SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEntityJoin(EntityJoinWorldEvent event) throws InvocationTargetException, IllegalAccessException {
         if(!(event.getEntity() instanceof PlayerEntity)) return;
         PlayerEntity player = (PlayerEntity) event.getEntity();
@@ -36,13 +36,13 @@ public class InventoryListener {
         AmmoItemStackHandler ammoItemHandler = (AmmoItemStackHandler) player.getCapability(ITEM_HANDLER_CAPABILITY).resolve().get();
         addSlotMethod.invoke(player.container, new AmmoPackSlot(ammoItemHandler, 0, 170, 84));
         addSlotMethod.invoke(player.container, new BackpackSlot(ammoItemHandler, 1, 170, 102));
-    }
+    }*/
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) throws InvocationTargetException, IllegalAccessException {
         if(!(event.getObject() instanceof PlayerEntity)) return;
         AmmoInventoryCapability ammoInventoryCapability = new AmmoInventoryCapability(new AmmoItemStackHandler(2));
         event.addCapability(new ResourceLocation("tac", "inventory_capability"), ammoInventoryCapability);
         event.addListener(ammoInventoryCapability.getOptionalStorage()::invalidate);
-    }
+    }*/
 }

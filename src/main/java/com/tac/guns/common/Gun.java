@@ -2023,7 +2023,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
         }
 
-        AmmoItemStackHandler ammoItemHandler = (AmmoItemStackHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
+        /*AmmoItemStackHandler ammoItemHandler = (AmmoItemStackHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
         if(ammoItemHandler != null) {
             for (ItemStack stack : ammoItemHandler.getStacks()) {
                 if (isAmmo(stack, id)) {
@@ -2038,7 +2038,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                     }
                 }
             }
-        }
+        }*/
         return stacks.toArray(new ItemStack[]{});
     }
 
