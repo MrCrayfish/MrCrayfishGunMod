@@ -1,0 +1,78 @@
+{
+  "general": {
+    "rate": 3,
+    "rateSelector": [
+      1
+    ],
+    "gripType": "tac:one_handed_m1911",
+    "recoilAngle": 9.25,
+    "horizontalRecoilAngle": 4.325,
+    "recoilKick": 2.15,
+    "recoilAdsReduction": 0.135,
+    "weaponRecoilOffset": 0.755,
+    "cameraRecoilModifier": 6.05,
+    "recoilDuration": 0.135,
+    "alwaysSpread": true,
+    "spread": 3.5,
+    "weightKilo": 0.9,
+    "movementInaccuracy": 0.65
+  },
+  "reloads": {
+    "magFed": true,
+    "maxAmmo": 23,
+    "reloadMagTimer": 25,
+    "additionalReloadEmptyMagTimer": 7,
+    "maxAdditionalAmmoPerOC": [
+      3,
+      7,
+      10
+    ],
+    "preReloadPauseTicks": 0
+  },
+  "projectile": {
+    "item": "tac:9mm_round",
+    "visible": false,
+    "damage": 5.5,
+    "size": 0.2,
+    "speed": 20.0,
+    "life": 4
+  },
+  "sounds": {
+    "fire": "tac:item.fire_glock",
+    "reloadNormal": "tac:animation.glock17_reload_normal",
+    "reloadEmpty": "tac:animation.glock17_reload_empty",
+    "draw": "tac:animation.glock17_draw",
+    "inspect": "tac:animation.glock17_inspect",
+    "cock": "tac:item.pistol.cock",
+    "silencedFire": "tac:item.fire_glocks"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 10.35,
+      "zOffset": -12.09,
+      "size": 0.7
+    },
+    "weaponType": 2
+  },
+  "modules": {
+    "zoom": {
+      "fovModifier": 0.9,
+      "yOffset": 12.355,
+      "zOffset": -4.4
+    },
+    "attachments": {
+      "pistolBarrel": {
+        "yOffset": -100829.84,
+        "zOffset": -11.55,
+        "scale": 1.00
+      },
+      "pistolScope": {
+        "yOffset": 10.25,
+        "zOffset": 4.715,
+        "scale": 1.80,
+        "doRenderMount": false,
+        "doOnSlideMovement": true
+      }
+    }
+  }
+}
