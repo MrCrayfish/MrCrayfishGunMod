@@ -860,6 +860,23 @@ public class GunModifiers
             return -0.015;
         }
     };
+
+    public static final IGunModifier MK18_MOD1_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*1.125;
+        }
+        @Override
+        public double additionalProjectileGravity() {
+            return -0.01;
+        }
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 0.875;
+        }
+    };
     public static final IGunModifier TYPE81x_MOD = new IGunModifier()
     {
         @Override

@@ -667,5 +667,30 @@
       "sounds": [
          { "name": "tac:animation/m1014_inspect"}
       ]
+   },
+
+   "animation.m4_draw": {
+      "subtitle": "animation.m4_draw",
+      "sounds": [
+         { "name": "tac:animation/m4_draw"}
+      ]
+   },
+   "animation.m4_empty_reload": {
+      "subtitle": "animation.m4_empty_reload",
+      "sounds": [
+         { "name": "tac:animation/m4_empty_reload"}
+      ]
+   },
+   "animation.m4_inspect": {
+      "subtitle": "animation.m4_inspect",
+      "sounds": [
+         { "name": "tac:animation/m4_inspect"}
+      ]
+   },
+   "animation.m4_norm_reload": {
+      "subtitle": "animation.m4_norm_reload",
+      "sounds": [
+         { "name": "tac:animation/m4_norm_reload"}
+      ]
    }
 }

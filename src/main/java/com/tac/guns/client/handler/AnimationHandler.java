@@ -55,6 +55,7 @@ public enum AnimationHandler {
         M60AnimationController.getInstance();
         M1014AnimationController.getInstance();
         TtiG34AnimationController.getInstance();
+        MK18MOD1AnimationController.getInstance();
     }
 
     public void onGunReload(boolean reloading, ItemStack itemStack) {
