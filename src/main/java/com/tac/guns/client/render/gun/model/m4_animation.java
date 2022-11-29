@@ -34,7 +34,7 @@ public class m4_animation implements IOverrideModel {
         M4AnimationController controller = M4AnimationController.getInstance();
         matrices.push();
         {
-            controller.applySpecialModelTransform(SpecialModels.MK18_MOD1_BODY.getModel(), M4AnimationController.INDEX_BODY, transformType, matrices);
+            controller.applySpecialModelTransform(SpecialModels.M4_BODY.getModel(), M4AnimationController.INDEX_BODY, transformType, matrices);
             if (Gun.getScope(stack) == null) {
                 RenderUtil.renderModel(SpecialModels.M4_CARRY.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
@@ -102,7 +102,7 @@ public class m4_animation implements IOverrideModel {
 
         matrices.push();
         {
-            controller.applySpecialModelTransform(SpecialModels.HK416_A5_BODY.getModel(), M4AnimationController.INDEX_MAGAZINE, transformType, matrices);
+            controller.applySpecialModelTransform(SpecialModels.M4_BODY.getModel(), M4AnimationController.INDEX_MAGAZINE, transformType, matrices);
 
             if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
                 RenderUtil.renderModel(SpecialModels.M4_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
