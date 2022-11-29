@@ -860,7 +860,13 @@ public class GunModifiers
             return -0.015;
         }
     };
-
+    public static final IGunModifier M4A1_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*0.925;
+        }
+    };
     public static final IGunModifier MK18_MOD1_MOD = new IGunModifier()
     {
         @Override
