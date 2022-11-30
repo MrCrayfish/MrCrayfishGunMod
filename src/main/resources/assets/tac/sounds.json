@@ -692,5 +692,30 @@
       "sounds": [
          { "name": "tac:animation/m4_norm_reload"}
       ]
+   },
+
+   "animation.sti2011_draw": {
+      "subtitle": "animation.sti2011_draw",
+      "sounds": [
+         { "name": "tac:animation/sti2011_draw"}
+      ]
+   },
+   "animation.sti2011_empty_reload": {
+      "subtitle": "animation.sti2011_empty_reload",
+      "sounds": [
+         { "name": "tac:animation/sti2011_empty_reload"}
+      ]
+   },
+   "animation.sti2011_inspect": {
+      "subtitle": "animation.sti2011_inspect",
+      "sounds": [
+         { "name": "tac:animation/sti2011_inspect"}
+      ]
+   },
+   "animation.sti2011_norm_reload": {
+      "subtitle": "animation.sti2011_norm_reload",
+      "sounds": [
+         { "name": "tac:animation/sti2011_norm_reload"}
+      ]
    }
 }

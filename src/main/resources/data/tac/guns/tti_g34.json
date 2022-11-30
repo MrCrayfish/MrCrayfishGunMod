@@ -14,7 +14,7 @@
     "recoilDuration": 0.135,
     "alwaysSpread": true,
     "spread": 3.5,
-    "weightKilo": 0.9,
+    "weightKilo": 1.7,
     "movementInaccuracy": 0.65
   },
   "reloads": {
