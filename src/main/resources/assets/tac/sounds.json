@@ -717,5 +717,30 @@
       "sounds": [
          { "name": "tac:animation/sti2011_norm_reload"}
       ]
+   },
+
+   "animation.m1911_draw": {
+      "subtitle": "animation.m1911_draw",
+      "sounds": [
+         { "name": "tac:animation/m1911_draw"}
+      ]
+   },
+   "animation.m1911_empty_reload": {
+      "subtitle": "animation.m1911_empty_reload",
+      "sounds": [
+         { "name": "tac:animation/m1911_empty_reload"}
+      ]
+   },
+   "animation.m1911_inspect": {
+      "subtitle": "animation.m1911_inspect",
+      "sounds": [
+         { "name": "tac:animation/m1911_inspect"}
+      ]
+   },
+   "animation.m1911_norm_reload": {
+      "subtitle": "animation.m1911_norm_reload",
+      "sounds": [
+         { "name": "tac:animation/m1911_norm_reload"}
+      ]
    }
 }
