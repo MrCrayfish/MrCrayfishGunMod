@@ -268,8 +268,8 @@
 			"to": [8.875, 10.4375, 7.9375],
 			"rotation": {"angle": 0, "axis": "y", "origin": [7.5, 9.375, 7.9375]},
 			"faces": {
-				"north": {"uv": [1.5, 1.75, 2, 2.125], "texture": "#4"},
-				"south": {"uv": [2.25, 0, 2.75, 0.375], "texture": "#4"}
+				"north": {"uv": [1.5, 1.75, 2, 2.125], "texture": "#4", "tintindex": 1},
+				"south": {"uv": [2.25, 0, 2.75, 0.375], "texture": "#4", "tintindex": 1}
 			}
 		},
 		{

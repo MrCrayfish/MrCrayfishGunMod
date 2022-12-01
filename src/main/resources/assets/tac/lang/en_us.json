@@ -15,7 +15,7 @@
     "item.tac.dp28": "DP-28",
     "item.tac.m16a1": "M16A1",
     "item.tac.mk18": "MK 18",
-    "item.tac.sti2011": "STI 2011",
+    "item.tac.sti2011": "STI P45",
     "item.tac.ak74": "AK-74",
     "item.tac.m92fs": "M92FS",
     "item.tac.nato_556_box_block": "Box of 5.56x45mm Bullets",
@@ -83,6 +83,8 @@
     "item.tac.scar_h": "SCAR H",
     "item.tac.scar_l": "SCAR L",
     "item.tac.mk47": "MK47 MUTANT",
+    "item.tac.tti_g34": "TTI G34",
+    "item.tac.mk18_mod1": "MK18 MOD1",
 
     "item.tac.round45": ".45 ACP Bullet",
     "item.tac.magnumround": ".357 Magnum Bullet",

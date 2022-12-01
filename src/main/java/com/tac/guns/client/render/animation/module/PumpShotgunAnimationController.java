@@ -9,6 +9,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class PumpShotgunAnimationController extends GunAnimationController {
 
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    private boolean empty = false;
     @Override
     protected AnimationSoundMeta getSoundFromLabel(Item item, AnimationLabel label) {
         if (item instanceof GunItem) {
@@ -55,5 +60,9 @@ public abstract class PumpShotgunAnimationController extends GunAnimationControl
             default:
                 super.runAnimation(label, callback);
         }
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 }

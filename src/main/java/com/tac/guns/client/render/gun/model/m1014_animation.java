@@ -64,16 +64,16 @@ public class m1014_animation implements IOverrideModel {
             CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
             float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
 
-            if (Gun.hasAmmo(stack)|| controller.isAnimationRunning()) {
+            if (controller.isAnimationRunning(GunAnimationController.AnimationLabel.INSPECT) || (Gun.hasAmmo(stack) && !controller.isEmpty())/* || controller.isAnimationRunning()*/) {
                 RenderUtil.renderModel(SpecialModels.M1014_SHELL.getModel(), stack, matrices, renderBuffer, light, overlay);
                 // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-            } else if (!Gun.hasAmmo(stack)) {
+                matrices.translate(0, 0, 0.2725f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+            } else if (!Gun.hasAmmo(stack) || controller.isEmpty()) {
                 if (cooldownOg > 0.5) {
                     // Math provided by Bomb787 on GitHub and Curseforge!!!
-                    matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                    matrices.translate(0, 0, 0.2725f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
                 } else {
-                    matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                    matrices.translate(0, 0, 0.2725f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
                 }
             }
             matrices.translate(0, 0, 0.025f);

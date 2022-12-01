@@ -13,7 +13,6 @@
   "client": [
     "client.FirstPersonRendererMixin",
     "client.GameRendererMixin",
-    "client.InventoryScreenMixin",
     "client.MouseHelperMixin",
     "client.WorldRendererMixin",
     "client.ShadersFramebufferMixin"

@@ -118,6 +118,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private float movementInaccuracy = 1F;
         @Optional
+        private float hipFireInaccuracy = 1F;
+        @Optional
         private float levelReq = 300.0F;
         @Optional
         private int upgradeBenchMaxUses = 3;
@@ -148,6 +150,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putFloat("LevelReq", this.levelReq);
             tag.putInt("UpgradeBenchMaxUses", this.upgradeBenchMaxUses);
             tag.putFloat("MovementInaccuracy", this.movementInaccuracy); // Movement inaccuracy modifier
+            tag.putFloat("HipFireInaccuracy", this.hipFireInaccuracy); // Movement inaccuracy modifier
             return tag;
         }
 
@@ -246,6 +249,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.movementInaccuracy = tag.getFloat("MovementInaccuracy");
             }
+            if(tag.contains("HipFireInaccuracy", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.hipFireInaccuracy = tag.getFloat("HipFireInaccuracy");
+            }
         }
 
         /**
@@ -277,6 +284,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.levelReq = this.levelReq;
             general.upgradeBenchMaxUses = this.upgradeBenchMaxUses;
             general.movementInaccuracy = this.movementInaccuracy;
+            general.hipFireInaccuracy = this.hipFireInaccuracy;
             return general;
         }
         /**
@@ -398,7 +406,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public float getSpread()
         {
-            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? (this.spread + GunEditor.get().getSpreadMod())/2f : this.spread/2f;
+            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ?
+                    (this.spread + GunEditor.get().getSpreadMod())/2.2f : this.spread/2.2f;
         }
         /**
          * @return The default Kilogram weight of the weapon
@@ -422,6 +431,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public float getMovementInaccuracy()
         {
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.movementInaccuracy : this.movementInaccuracy;//*1.25f;
+        }
+        /**
+         * @return Percentage of movement inaccuracy modification ((spread * (movement)) * movementInaccuracy)
+         */
+        public float getHipFireInaccuracy()
+        {
+            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.hipFireInaccuracy : this.hipFireInaccuracy;//*1.25f;
         }
     }
 
@@ -2016,10 +2032,6 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 for(ItemStack item : itemHandler.getStacks()) {
                     if(isAmmo(item, id)) {
                         stacks.add(item);
-                    }
-                }
-            }
-        }
         return stacks.toArray(new ItemStack[]{});
     }
 
