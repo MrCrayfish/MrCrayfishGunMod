@@ -2024,14 +2024,18 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         }
         GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
         for(ItemStack stack : ammoItemHandler.getStacks()) {
-            if(isAmmo(stack, id)) {
+            if (isAmmo(stack, id)) {
                 stacks.add(stack);
             }
-            if(stack.getItem() instanceof ArmorRigItem) {
-                GearSlotsHandler itemHandler = (GearSlotsHandler)stack.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
-                for(ItemStack item : itemHandler.getStacks()) {
-                    if(isAmmo(item, id)) {
+            if (stack.getItem() instanceof ArmorRigItem) {
+                GearSlotsHandler itemHandler = (GearSlotsHandler) stack.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
+                for (ItemStack item : itemHandler.getStacks()) {
+                    if (isAmmo(item, id)) {
                         stacks.add(item);
+                    }
+                }
+            }
+        }
         return stacks.toArray(new ItemStack[]{});
     }
 

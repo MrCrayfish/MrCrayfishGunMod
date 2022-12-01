@@ -1,6 +1,6 @@
 package com.tac.guns.util;
 
-import org.apache.commons.beanutils.PropertyUtils;
+//import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

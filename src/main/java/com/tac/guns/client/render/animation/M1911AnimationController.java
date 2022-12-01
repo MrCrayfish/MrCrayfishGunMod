@@ -12,15 +12,15 @@ import java.io.IOException;
 @OnlyIn(Dist.CLIENT)
 public class M1911AnimationController extends PistalAnimationController {
 
-    public static int INDEX_BODY = 5;
+    public static int INDEX_BODY = 11;
 
-    public static int INDEX_SLIDE = 1;
+    public static int INDEX_SLIDE = 4;
 
-    public static int INDEX_MAG = 4;
+    public static int INDEX_MAG = 7;
 
-    public static int INDEX_LEFT_HAND = 0;
+    public static int INDEX_LEFT_HAND = 0; // ALWAYS KEEP l -> left hand BONES
 
-    public static int INDEX_RIGHT_HAND = 8;
+    public static int INDEX_RIGHT_HAND = 9;
 
     public static final AnimationMeta RELOAD_NORM = new AnimationMeta(new ResourceLocation("tac","animations/m1911_reload_norm.gltf"));
 
