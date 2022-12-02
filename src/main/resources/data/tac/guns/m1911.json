@@ -58,8 +58,8 @@
     "zoom":
       {
         "fovModifier": 0.9,
-        "yOffset": 12.05,
-        "zOffset": -10.6
+        "yOffset": 12.5125,
+        "zOffset": -5.78
       },
     "attachments": {}
   }
