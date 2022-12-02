@@ -507,6 +507,7 @@ public enum SpecialModels
     MK47_TACTICAL_STOCK("mk47_tac_stock"),
     MK47_LIGHT_STOCK("mk47_light_stock"),
     MK47_HEAVY_STOCK("mk47_heavy_stock"),
+    MK47_PULL("mk47_pull"),
     KAR98_MOUNT("kar98_mount"),
 
    AR_15_BODY("ar_15_body"),

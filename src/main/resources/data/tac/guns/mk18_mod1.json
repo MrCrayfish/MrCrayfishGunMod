@@ -8,10 +8,10 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 2.125,
+    "recoilAngle": 2.275,
     "horizontalRecoilAngle": 1.925,
-    "recoilKick": 1.475,
-    "recoilAdsReduction": 0.22,
+    "recoilKick": 1.375,
+    "recoilAdsReduction": 0.20,
     "weaponRecoilOffset": 0.78,
     "cameraRecoilModifier": 1.205,
     "recoilDuration": 0.2125,
@@ -30,7 +30,7 @@
       20,
       30
     ],
-    "preReloadPauseTicks": 7
+    "preReloadPauseTicks": 0
   },
   "projectile": {
     "item": "tac:nato_556_bullet",
