@@ -1,8 +1,21 @@
 package com.mrcrayfish.guns.item.attachment.impl;
 
+import com.mrcrayfish.guns.common.properties.SightAnimation;
+import com.mrcrayfish.guns.debug.Debug;
+import com.mrcrayfish.guns.debug.IDebugWidget;
+import com.mrcrayfish.guns.debug.IEditorMenu;
+import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
+import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
+import com.mrcrayfish.guns.debug.client.screen.widget.DebugSlider;
+import com.mrcrayfish.guns.debug.client.screen.widget.DebugToggle;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * An attachment class related to scopes. Scopes need to at least specify the additional zoom (or fov)
@@ -11,32 +24,35 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * <p>
  * Author: MrCrayfish
  */
-public class Scope extends Attachment
+public class Scope extends Attachment implements IEditorMenu
 {
     protected float additionalZoom;
     protected double centerOffset;
     protected boolean stable;
     protected double viewFinderOffset;
-    protected double aimFov;
+    protected double viewportFov;
+    protected SightAnimation sightAnimation;
 
-    protected Scope() {}
+    private Scope() {}
 
-    private Scope(float additionalZoom, double centerOffset, double aimFov, IGunModifier... modifier)
+    private Scope(float additionalZoom, double centerOffset, double viewportFov, IGunModifier... modifier)
     {
         super(modifier);
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
-        this.aimFov = aimFov;
+        this.viewportFov = viewportFov;
+        this.sightAnimation = SightAnimation.DEFAULT;
     }
 
-    private Scope(float additionalZoom, double centerOffset, boolean stable, double viewFinderOffset, double aimFov, IGunModifier... modifiers)
+    private Scope(float additionalZoom, double centerOffset, boolean stable, double viewFinderOffset, double viewportFov, SightAnimation sightAnimation, IGunModifier... modifiers)
     {
         super(modifiers);
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
         this.stable = stable;
         this.viewFinderOffset = viewFinderOffset;
-        this.aimFov = aimFov;
+        this.viewportFov = viewportFov;
+        this.sightAnimation = sightAnimation;
     }
 
     /**
@@ -100,13 +116,50 @@ public class Scope extends Attachment
     /**
      * @return The FOV of the first person viewport when aiming
      */
-    public double getAimFov()
+    public double getViewportFov()
     {
-        return this.aimFov;
+        return this.viewportFov;
+    }
+
+    public SightAnimation getSightAnimation()
+    {
+        return this.sightAnimation;
+    }
+
+    @Override
+    public Component getEditorLabel()
+    {
+        return Component.literal("Scope");
+    }
+
+    @Override
+    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
+    {
+        widgets.add(Pair.of(Component.literal("Additional Zoom"), () -> new DebugSlider(0.0, 0.5, this.additionalZoom, 0.05, 3, value -> this.additionalZoom = value.floatValue())));
+        widgets.add(Pair.of(Component.literal("Center Offset"), () -> new DebugSlider(0.0, 4.0, this.centerOffset, 0.025, 4, value -> this.centerOffset = value)));
+        widgets.add(Pair.of(Component.literal("View Finder Offset"), () -> new DebugSlider(0.0, 5.0, this.viewFinderOffset, 0.05, 3, value -> this.viewFinderOffset = value)));
+        widgets.add(Pair.of(Component.literal("Aim FOV"), () -> new DebugSlider(1.0, 100.0, this.viewportFov, 1.0, 4, value -> this.viewportFov = value)));
+        widgets.add(Pair.of(Component.literal("Sight Animations"), () -> new DebugButton(Component.literal("Edit"), btn -> {
+            Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.sightAnimation));
+        })));
+    }
+
+    public Scope copy()
+    {
+        Scope scope = new Scope();
+        scope.additionalZoom = this.additionalZoom;
+        scope.centerOffset = this.centerOffset;
+        scope.stable = this.stable;
+        scope.viewFinderOffset = this.viewFinderOffset;
+        scope.viewportFov = this.viewportFov;
+        scope.sightAnimation = this.sightAnimation.copy();
+        return scope;
     }
 
     /**
-     * Creates a scope. This method is now deprecated. Use the builder instead.
+     * Deprecated: Use the builder instead.
+     * <p>
+     * Creates a scope. This method is now deprecated.
      *
      * @param additionalZoom the additional zoom this scope provides
      * @param centerOffset   the length to the center of the view finder from the base of the scope model in pixels
@@ -116,7 +169,8 @@ public class Scope extends Attachment
     @Deprecated(since = "1.3.0", forRemoval = true)
     public static Scope create(float additionalZoom, double centerOffset, IGunModifier... modifiers)
     {
-        return new Scope(additionalZoom, centerOffset, 10.0, modifiers);
+        // -1 to indicate that it should use the default fov
+        return new Scope(additionalZoom, centerOffset, -1.0, modifiers);
     }
 
     public static Builder builder()
@@ -130,7 +184,8 @@ public class Scope extends Attachment
         private double centerOffset = 0.0;
         private boolean stable = false;
         private double viewFinderOffset = 0.0;
-        private double aimFov = 10.0;
+        private double viewportFov = 10.0;
+        private SightAnimation sightAnimation = SightAnimation.DEFAULT;
         private IGunModifier[] modifiers = new IGunModifier[]{};
 
         private Builder() {}
@@ -159,9 +214,9 @@ public class Scope extends Attachment
             return this;
         }
 
-        public Builder aimFov(double aimFov)
+        public Builder viewportFov(double viewportFov)
         {
-            this.aimFov = aimFov;
+            this.viewportFov = viewportFov;
             return this;
         }
 
@@ -171,9 +226,15 @@ public class Scope extends Attachment
             return this;
         }
 
+        public Builder sightAnimation(SightAnimation.Builder builder)
+        {
+            this.sightAnimation = builder.build();
+            return this;
+        }
+
         public Scope build()
         {
-            return new Scope(this.additionalZoom, this.centerOffset, this.stable, this.viewFinderOffset, this.aimFov, this.modifiers);
+            return new Scope(this.additionalZoom, this.centerOffset, this.stable, this.viewFinderOffset, this.viewportFov, this.sightAnimation, this.modifiers);
         }
     }
 }

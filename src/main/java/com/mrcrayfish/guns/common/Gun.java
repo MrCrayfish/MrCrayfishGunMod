@@ -6,14 +6,23 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
+import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.compat.BackpackHelper;
 import com.mrcrayfish.guns.debug.Debug;
+import com.mrcrayfish.guns.debug.IDebugWidget;
+import com.mrcrayfish.guns.debug.IEditorMenu;
+import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
+import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
+import com.mrcrayfish.guns.debug.client.screen.widget.DebugSlider;
+import com.mrcrayfish.guns.debug.client.screen.widget.DebugToggle;
+import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.util.GunJsonUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
@@ -21,17 +30,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
-public final class Gun implements INBTSerializable<CompoundTag>
+public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
 {
-    private General general = new General();
-    private Projectile projectile = new Projectile();
-    private Sounds sounds = new Sounds();
-    private Display display = new Display();
-    private Modules modules = new Modules();
+    protected General general = new General();
+    protected Projectile projectile = new Projectile();
+    protected Sounds sounds = new Sounds();
+    protected Display display = new Display();
+    protected Modules modules = new Modules();
 
     public General getGeneral()
     {
@@ -56,6 +68,29 @@ public final class Gun implements INBTSerializable<CompoundTag>
     public Modules getModules()
     {
         return this.modules;
+    }
+
+    @Override
+    public Component getEditorLabel()
+    {
+        return Component.literal("Gun");
+    }
+
+    @Override
+    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
+    {
+        ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
+        ItemStack scope = Gun.getScopeStack(heldItem);
+        if(scope.getItem() instanceof ScopeItem scopeItem)
+        {
+            widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
+                Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, Debug.getScope(scopeItem)));
+            })));
+        }
+
+        widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(Component.literal(">"), btn -> {
+            Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.modules));
+        })));
     }
 
     public static class General implements INBTSerializable<CompoundTag>
@@ -299,6 +334,8 @@ public final class Gun implements INBTSerializable<CompoundTag>
         {
             return this.spread;
         }
+
+
     }
 
     public static class Projectile implements INBTSerializable<CompoundTag>
@@ -663,7 +700,7 @@ public final class Gun implements INBTSerializable<CompoundTag>
     {
         @Optional
         @Nullable
-        private Flash flash;
+        protected Flash flash;
 
         @Nullable
         public Flash getFlash()
@@ -767,16 +804,18 @@ public final class Gun implements INBTSerializable<CompoundTag>
         public Display copy()
         {
             Display display = new Display();
-            if(flash != null)
+            if(this.flash != null)
             {
-                display.flash = flash.copy();
+                display.flash = this.flash.copy();
             }
             return display;
         }
     }
 
-    public static class Modules implements INBTSerializable<CompoundTag>
+    public static class Modules implements INBTSerializable<CompoundTag>, IEditorMenu
     {
+        private transient Zoom cachedZoom;
+
         @Optional
         @Nullable
         private Zoom zoom;
@@ -793,16 +832,49 @@ public final class Gun implements INBTSerializable<CompoundTag>
             return this.attachments;
         }
 
-        public static class Zoom extends Positioned
+        @Override
+        public Component getEditorLabel()
+        {
+            return Component.literal("Modules");
+        }
+
+        @Override
+        public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
+        {
+            widgets.add(Pair.of(Component.literal("Enabled Iron Sights"), () -> new DebugToggle(this.zoom != null, val -> {
+                if(val) {
+                    if(this.cachedZoom != null) {
+                        this.zoom = this.cachedZoom;
+                    } else {
+                        this.zoom = new Zoom();
+                        this.cachedZoom = this.zoom;
+                    }
+                } else {
+                    this.cachedZoom = this.zoom;
+                    this.zoom = null;
+                }
+            })));
+
+            widgets.add(Pair.of(Component.literal("Adjust Iron Sights"), () -> new DebugButton(Component.literal(">"), btn -> {
+                if(btn.active && this.zoom != null) {
+                    Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.zoom));
+                }
+            }, () -> this.zoom != null)));
+        }
+
+        public static class Zoom extends Positioned implements IEditorMenu
         {
             @Optional
             private float fovModifier;
+            @Optional
+            private SightAnimation sightAnimation = new SightAnimation();
 
             @Override
             public CompoundTag serializeNBT()
             {
                 CompoundTag tag = super.serializeNBT();
                 tag.putFloat("FovModifier", this.fovModifier);
+                tag.put("SightAnimation", this.sightAnimation.serializeNBT());
                 return tag;
             }
 
@@ -814,12 +886,17 @@ public final class Gun implements INBTSerializable<CompoundTag>
                 {
                     this.fovModifier = tag.getFloat("FovModifier");
                 }
+                if(tag.contains("SightAnimation", Tag.TAG_COMPOUND))
+                {
+                    this.sightAnimation.deserializeNBT(tag.getCompound("SightAnimation"));
+                }
             }
 
             public JsonObject toJsonObject()
             {
                 JsonObject object = super.toJsonObject();
                 object.addProperty("fovModifier", this.fovModifier);
+                GunJsonUtil.addObjectIfNotEmpty(object, "sightAnimation", this.sightAnimation.toJsonObject());
                 return object;
             }
 
@@ -830,12 +907,74 @@ public final class Gun implements INBTSerializable<CompoundTag>
                 zoom.xOffset = this.xOffset;
                 zoom.yOffset = this.yOffset;
                 zoom.zOffset = this.zOffset;
+                zoom.sightAnimation = this.sightAnimation.copy();
                 return zoom;
+            }
+
+            @Override
+            public Component getEditorLabel()
+            {
+                return Component.literal("Zoom");
+            }
+
+            @Override
+            public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
+            {
+                widgets.add(Pair.of(Component.literal("FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.fovModifier, 0.01, 3, val -> {
+                    this.fovModifier = val.floatValue();
+                })));
+                widgets.add(Pair.of(this.sightAnimation.getEditorLabel(), () -> new DebugButton(Component.literal(">"), btn -> {
+                    Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.sightAnimation));
+                })));
             }
 
             public float getFovModifier()
             {
                 return this.fovModifier;
+            }
+
+            public SightAnimation getAnimation()
+            {
+                return this.sightAnimation;
+            }
+
+            public static Builder builder()
+            {
+                return new Builder();
+            }
+
+            public static class Builder extends Positioned.Builder
+            {
+                private final Zoom zoom;
+
+                protected Builder()
+                {
+                    this(new Zoom());
+                }
+
+                protected Builder(Zoom zoom)
+                {
+                    super(zoom);
+                    this.zoom = zoom;
+                }
+
+                public Builder setFovModifier(float fovModifier)
+                {
+                    this.zoom.fovModifier = fovModifier;
+                    return this;
+                }
+
+                public Builder setAnimation(SightAnimation.Builder builder)
+                {
+                    this.zoom.sightAnimation = builder.build();
+                    return this;
+                }
+
+                @Override
+                public Zoom build()
+                {
+                    return this.zoom.copy();
+                }
             }
         }
 
@@ -1101,6 +1240,52 @@ public final class Gun implements INBTSerializable<CompoundTag>
             positioned.zOffset = this.zOffset;
             return positioned;
         }
+
+        public static class Builder
+        {
+            private final Positioned positioned;
+
+            private Builder()
+            {
+                this(new Positioned());
+            }
+
+            protected Builder(Positioned positioned)
+            {
+                this.positioned = positioned;
+            }
+
+            public Builder setOffset(double xOffset, double yOffset, double zOffset)
+            {
+                this.positioned.xOffset = xOffset;
+                this.positioned.yOffset = yOffset;
+                this.positioned.zOffset = zOffset;
+                return this;
+            }
+
+            public Builder setXOffset(double xOffset)
+            {
+                this.positioned.xOffset = xOffset;
+                return this;
+            }
+
+            public Builder setYOffset(double yOffset)
+            {
+                this.positioned.yOffset = yOffset;
+                return this;
+            }
+
+            public Builder setZOffset(double zOffset)
+            {
+                this.positioned.zOffset = zOffset;
+                return this;
+            }
+
+            public Positioned build()
+            {
+                return this.positioned.copy();
+            }
+        }
     }
 
     public static class ScaledPositioned extends Positioned
@@ -1310,13 +1495,13 @@ public final class Gun implements INBTSerializable<CompoundTag>
             {
                 ItemStack scopeStack = ItemStack.of(attachment.getCompound("Scope"));
                 Scope scope = null;
-                if(scopeStack.getItem() instanceof IScope)
+                if(scopeStack.getItem() instanceof ScopeItem scopeItem)
                 {
                     if(GunMod.isDebugging())
                     {
-                        return Debug.getScope(scopeStack.getItem());
+                        return Debug.getScope(scopeItem);
                     }
-                    scope = ((IScope) scopeStack.getItem()).getProperties();
+                    scope = scopeItem.getProperties();
                 }
                 return scope;
             }
@@ -1378,9 +1563,32 @@ public final class Gun implements INBTSerializable<CompoundTag>
         return tag.getBoolean("IgnoreAmmo") || tag.getInt("AmmoCount") > 0;
     }
 
+    /**
+     * Gets the sight animations for this gun. The animations can change if the
+     * weapon has a scope equipped. Priority is given to the scope first then
+     * falls back to the zoom animations. This does not determine if a gun can
+     * aim down sight, use {@link #canAimDownSight()} instead.
+     *
+     * @param stack       the stack of the weapon
+     * @param modifiedGun the modified gun instance
+     * @return the sight animations or the default
+     */
+    public static SightAnimation getAnimations(ItemStack stack, Gun modifiedGun)
+    {
+        if(hasAttachmentEquipped(stack, modifiedGun, IAttachment.Type.SCOPE))
+        {
+            Scope scope = Gun.getScope(stack);
+            if(scope != null)
+            {
+                return scope.getSightAnimation();
+            }
+        }
+        return modifiedGun.getModules().getZoom() != null ? modifiedGun.getModules().getZoom().getAnimation() : SightAnimation.DEFAULT;
+    }
+
     public static class Builder
     {
-        private Gun gun;
+        private final Gun gun;
 
         private Builder()
         {
@@ -1578,6 +1786,12 @@ public final class Gun implements INBTSerializable<CompoundTag>
             zoom.yOffset = yOffset;
             zoom.zOffset = zOffset;
             this.gun.modules.zoom = zoom;
+            return this;
+        }
+
+        public Builder setZoom(Modules.Zoom.Builder builder)
+        {
+            this.gun.modules.zoom = builder.build();
             return this;
         }
 

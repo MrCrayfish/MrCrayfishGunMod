@@ -14,6 +14,7 @@ import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.Gun;
+import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.event.GunFireEvent;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GrenadeItem;
@@ -40,6 +41,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -213,16 +215,26 @@ public class GunRenderingHandler
 
         // Test if the gun has a scope
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
-        Scope scope = Gun.getScope(player.getMainHandItem());
+        ItemStack heldItem = player.getMainHandItem();
+        if(!(heldItem.getItem() instanceof GunItem gunItem))
+            return;
+
+        Scope scope = Gun.getScope(heldItem);
         if(scope == null)
             return;
 
+        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+        if(!modifiedGun.canAimDownSight())
+            return;
+
         // Change the FOV of the first person viewport based on the scope and aim progress
-        if(AimingHandler.get().getNormalisedAdsProgress() > 0)
-        {
-            double transition = 1.0 - Math.pow(1.0 - AimingHandler.get().getNormalisedAdsProgress(), 2);
-            event.setFOV(Mth.lerp(transition, event.getFOV(), scope.getAimFov()));
-        }
+        if(AimingHandler.get().getNormalisedAdsProgress() <= 0)
+            return;
+
+        double time = AimingHandler.get().getNormalisedAdsProgress();
+        SightAnimation sightAnimation = Gun.getAnimations(heldItem, modifiedGun);
+        time = sightAnimation.getViewportCurve().apply(time);
+        event.setFOV(Mth.lerp(time, event.getFOV(), scope.getViewportFov()));
     }
 
     @SubscribeEvent
@@ -317,7 +329,8 @@ public class GunRenderingHandler
 
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 float side = right ? 1.0F : -1.0F;
-                double transition = AimingHandler.get().getNormalisedAdsProgress();
+                double time = AimingHandler.get().getNormalisedAdsProgress();
+                double transition = Gun.getAnimations(heldItem, modifiedGun).getSightCurve().apply(time);
 
                 /* Reverses the original first person translations */
                 poseStack.translate(-0.56 * side * transition, 0.52 * transition, 0);
@@ -344,7 +357,7 @@ public class GunRenderingHandler
         poseStack.translate(0.56 * offset, -0.52, -0.72);
 
         /* Applies recoil and reload rotations */
-        this.applyAimingTransforms(poseStack, translateX, translateY, translateZ, offset);
+        this.applyAimingTransforms(poseStack, heldItem, modifiedGun, translateX, translateY, translateZ, offset);
         this.applySwayTransforms(poseStack, modifiedGun, player, translateX, translateY, translateZ, event.getPartialTick());
         this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTick());
         this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
@@ -393,14 +406,14 @@ public class GunRenderingHandler
         }
     }
 
-    private void applyAimingTransforms(PoseStack poseStack, float x, float y, float z, int offset)
+    private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, Gun modifiedGun, float x, float y, float z, int offset)
     {
         if(!Config.CLIENT.display.oldAnimations.get())
         {
             poseStack.translate(x * offset, y, z);
             poseStack.translate(0, -0.25, 0.25);
             float aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
-            aiming = (float) (1 - Math.cos((aiming * Math.PI) / 2.0));
+            aiming = Gun.getAnimations(heldItem, modifiedGun).getAimTransformCurve().apply(aiming);
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(aiming * 10F * offset));
             poseStack.mulPose(Vector3f.XP.rotationDegrees(aiming * 5F));
             poseStack.mulPose(Vector3f.YP.rotationDegrees(aiming * 5F * offset));

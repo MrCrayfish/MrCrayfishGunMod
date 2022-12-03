@@ -8,6 +8,7 @@ import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
+import com.mrcrayfish.guns.client.util.Easings;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.S2CMessageUpdateGuns;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InvalidObjectException;
 import java.io.Reader;
+import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +55,8 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
         builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
+        builder.registerTypeAdapter(Easings.class, JsonDeserializers.EASING);
+        builder.excludeFieldsWithModifiers(Modifier.TRANSIENT);
         return builder.create();
     });
 

@@ -8,10 +8,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.debug.IDebugWidget;
 import com.mrcrayfish.guns.debug.IEditorMenu;
 import com.mrcrayfish.guns.util.ScreenUtil;
-import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -42,7 +44,7 @@ public class EditorScreen extends Screen
 
     public EditorScreen(Screen parent, IEditorMenu menu)
     {
-        super(menu.getLabel());
+        super(menu.getEditorLabel());
         this.parent = parent;
         this.menu = menu;
     }
@@ -50,20 +52,29 @@ public class EditorScreen extends Screen
     @Override
     protected void init()
     {
-        List<Pair<Component, Supplier<AbstractWidget>>> widgets = new ArrayList<>();
-        this.menu.getWidgets(widgets);
+        List<Pair<Component, Supplier<IDebugWidget>>> widgets = new ArrayList<>();
+        this.menu.getEditorWidgets(widgets);
 
         this.windowWidth = WIDTH;
         this.windowHeight = widgets.size() * PropertyList.ITEM_HEIGHT + 20 + 10; // 20 is the header
         this.windowLeft = 10;
         this.windowTop = (this.height - this.windowHeight) / 2;
 
+        this.addRenderableWidget(new Button(this.windowLeft + WIDTH - 12 - 4, this.windowTop + 4, 12, 12, Component.literal("<"), btn -> {
+            Minecraft.getInstance().setScreen(this.parent);
+        }));
+
         this.list = new PropertyList();
         this.list.setRenderBackground(false);
         this.list.setRenderTopAndBottom(false);
         this.list.setLeftPos(this.windowLeft + 10);
         this.addWidget(this.list);
-        widgets.forEach(pair -> this.list.addEntry(new PropertyEntry(pair.getLeft(), pair.getRight().get())));
+
+        widgets.forEach(pair -> {
+            if(pair.getRight().get() instanceof AbstractWidget widget) {
+                this.list.addEntry(new PropertyEntry(pair.getLeft(), widget));
+            }
+        });
     }
 
     @Override
