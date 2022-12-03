@@ -7,7 +7,6 @@ import com.tac.guns.Reference;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.ReloadTracker;
 import com.tac.guns.item.GunItem;
-import com.tac.guns.item.IArmorPlate;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -116,7 +115,7 @@ public class HUDRenderingHandler extends AbstractGui {
 
 
 
-        if(ArmorInteractionHandler.get().isRepairing())//Replace with reload bar checker
+        /*if(ArmorInteractionHandler.get().isRepairing())//Replace with reload bar checker
         {
             // FireMode rendering
             RenderSystem.enableAlphaTest();
@@ -164,7 +163,7 @@ public class HUDRenderingHandler extends AbstractGui {
             buffer.finishDrawing();
             WorldVertexBufferUploader.draw(buffer);
             stack.pop();
-        }
+        }*/
 
 
 
