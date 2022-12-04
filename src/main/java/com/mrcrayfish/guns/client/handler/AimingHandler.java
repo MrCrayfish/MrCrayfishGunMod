@@ -158,10 +158,8 @@ public class AimingHandler
         if(modifiedGun.getModules().getZoom() == null)
             return;
 
-        float modifier = modifiedGun.getModules().getZoom().getFovModifier();
-        Scope scope = Gun.getScope(heldItem);
-        if(scope != null) modifier -= scope.getAdditionalZoom();
         double time = Gun.getAnimations(heldItem, modifiedGun).getFovCurve().apply(this.normalisedAdsProgress);
+        float modifier = Gun.getFovModifier(heldItem, modifiedGun);
         modifier = (1.0F - modifier) * (float) time;
         event.setFOV(event.getFOV() - event.getFOV() * modifier);
     }

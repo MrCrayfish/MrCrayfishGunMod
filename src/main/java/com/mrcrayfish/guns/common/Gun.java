@@ -25,6 +25,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -1584,6 +1585,25 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             }
         }
         return modifiedGun.getModules().getZoom() != null ? modifiedGun.getModules().getZoom().getAnimation() : SightAnimation.DEFAULT;
+    }
+
+    public static float getFovModifier(ItemStack stack, Gun modifiedGun)
+    {
+        float modifier = 0.0F;
+        if(hasAttachmentEquipped(stack, modifiedGun, IAttachment.Type.SCOPE))
+        {
+            Scope scope = Gun.getScope(stack);
+            if(scope != null)
+            {
+                if(scope.getFovModifier() < 1.0F)
+                {
+                    return Mth.clamp(scope.getFovModifier(), 0.01F, 1.0F);
+                }
+                modifier -= scope.getAdditionalZoom();
+            }
+        }
+        Modules.Zoom zoom = modifiedGun.getModules().getZoom();
+        return zoom != null ? modifier + zoom.getFovModifier() : 0F;
     }
 
     public static class Builder

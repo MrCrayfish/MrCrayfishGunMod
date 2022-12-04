@@ -1,15 +1,12 @@
 package com.mrcrayfish.guns.item.attachment.impl;
 
 import com.mrcrayfish.guns.common.properties.SightAnimation;
-import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.debug.IDebugWidget;
 import com.mrcrayfish.guns.debug.IEditorMenu;
 import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugSlider;
-import com.mrcrayfish.guns.debug.client.screen.widget.DebugToggle;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,6 +23,7 @@ import java.util.function.Supplier;
  */
 public class Scope extends Attachment implements IEditorMenu
 {
+    protected float aimFovModifier;
     protected float additionalZoom;
     protected double centerOffset;
     protected boolean stable;
@@ -38,15 +36,17 @@ public class Scope extends Attachment implements IEditorMenu
     private Scope(float additionalZoom, double centerOffset, double viewportFov, IGunModifier... modifier)
     {
         super(modifier);
+        this.aimFovModifier = 1.0F;
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
         this.viewportFov = viewportFov;
         this.sightAnimation = SightAnimation.DEFAULT;
     }
 
-    private Scope(float additionalZoom, double centerOffset, boolean stable, double viewFinderOffset, double viewportFov, SightAnimation sightAnimation, IGunModifier... modifiers)
+    private Scope(float aimFovModifier, float additionalZoom, double centerOffset, boolean stable, double viewFinderOffset, double viewportFov, SightAnimation sightAnimation, IGunModifier... modifiers)
     {
         super(modifiers);
+        this.aimFovModifier = aimFovModifier;
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
         this.stable = stable;
@@ -59,6 +59,7 @@ public class Scope extends Attachment implements IEditorMenu
      * Marks this scope to allow it to be stabilised while using a controller. This is essentially
      * holding your breath while looking down the sight.
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public void stabilise()
     {
         this.stable = true;
@@ -70,10 +71,16 @@ public class Scope extends Attachment implements IEditorMenu
      * @param offset the view finder offset
      * @return this scope get
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public Scope viewFinderOffset(double offset)
     {
         this.viewFinderOffset = offset;
         return this;
+    }
+
+    public float getFovModifier()
+    {
+        return this.aimFovModifier;
     }
 
     /**
@@ -81,6 +88,7 @@ public class Scope extends Attachment implements IEditorMenu
      *
      * @return the scopes additional zoom
      */
+    @Deprecated(since = "1.2.9", forRemoval = true)
     public float getAdditionalZoom()
     {
         return this.additionalZoom;
@@ -135,10 +143,11 @@ public class Scope extends Attachment implements IEditorMenu
     @Override
     public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
     {
-        widgets.add(Pair.of(Component.literal("Additional Zoom"), () -> new DebugSlider(0.0, 0.5, this.additionalZoom, 0.05, 3, value -> this.additionalZoom = value.floatValue())));
-        widgets.add(Pair.of(Component.literal("Center Offset"), () -> new DebugSlider(0.0, 4.0, this.centerOffset, 0.025, 4, value -> this.centerOffset = value)));
-        widgets.add(Pair.of(Component.literal("View Finder Offset"), () -> new DebugSlider(0.0, 5.0, this.viewFinderOffset, 0.05, 3, value -> this.viewFinderOffset = value)));
-        widgets.add(Pair.of(Component.literal("Aim FOV"), () -> new DebugSlider(1.0, 100.0, this.viewportFov, 1.0, 4, value -> this.viewportFov = value)));
+        widgets.add(Pair.of(Component.literal("Aim FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.aimFovModifier, 0.05, 3, value -> this.aimFovModifier = value.floatValue())));
+        widgets.add(Pair.of(Component.literal("Zoom (Legacy)"), () -> new DebugSlider(0.0, 0.5, this.additionalZoom, 0.05, 3, value -> this.additionalZoom = value.floatValue())));
+        widgets.add(Pair.of(Component.literal("Reticle Offset"), () -> new DebugSlider(0.0, 4.0, this.centerOffset, 0.025, 4, value -> this.centerOffset = value)));
+        widgets.add(Pair.of(Component.literal("View Finder Distance"), () -> new DebugSlider(0.0, 5.0, this.viewFinderOffset, 0.05, 3, value -> this.viewFinderOffset = value)));
+        widgets.add(Pair.of(Component.literal("Viewport FOV"), () -> new DebugSlider(1.0, 100.0, this.viewportFov, 1.0, 4, value -> this.viewportFov = value)));
         widgets.add(Pair.of(Component.literal("Sight Animations"), () -> new DebugButton(Component.literal("Edit"), btn -> {
             Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.sightAnimation));
         })));
@@ -147,6 +156,7 @@ public class Scope extends Attachment implements IEditorMenu
     public Scope copy()
     {
         Scope scope = new Scope();
+        scope.aimFovModifier = this.aimFovModifier;
         scope.additionalZoom = this.additionalZoom;
         scope.centerOffset = this.centerOffset;
         scope.stable = this.stable;
@@ -180,6 +190,7 @@ public class Scope extends Attachment implements IEditorMenu
 
     public static class Builder
     {
+        private float aimFovModifier = 1.0F;
         private float additionalZoom = 0.0F;
         private double centerOffset = 0.0;
         private boolean stable = false;
@@ -189,6 +200,12 @@ public class Scope extends Attachment implements IEditorMenu
         private IGunModifier[] modifiers = new IGunModifier[]{};
 
         private Builder() {}
+
+        public Builder aimFovModifier(float fovModifier)
+        {
+            this.aimFovModifier = fovModifier;
+            return this;
+        }
 
         public Builder additionalZoom(float additionalZoom)
         {
@@ -234,7 +251,7 @@ public class Scope extends Attachment implements IEditorMenu
 
         public Scope build()
         {
-            return new Scope(this.additionalZoom, this.centerOffset, this.stable, this.viewFinderOffset, this.viewportFov, this.sightAnimation, this.modifiers);
+            return new Scope(this.aimFovModifier, this.additionalZoom, this.centerOffset, this.stable, this.viewFinderOffset, this.viewportFov, this.sightAnimation, this.modifiers);
         }
     }
 }

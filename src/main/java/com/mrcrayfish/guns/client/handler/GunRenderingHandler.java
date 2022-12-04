@@ -234,7 +234,8 @@ public class GunRenderingHandler
         double time = AimingHandler.get().getNormalisedAdsProgress();
         SightAnimation sightAnimation = Gun.getAnimations(heldItem, modifiedGun);
         time = sightAnimation.getViewportCurve().apply(time);
-        event.setFOV(Mth.lerp(time, event.getFOV(), scope.getViewportFov()));
+        double newFov = scope.getViewportFov() > 0 ? scope.getViewportFov() : event.getFOV(); // Backwards compatibility
+        event.setFOV(Mth.lerp(time, event.getFOV(), newFov));
     }
 
     @SubscribeEvent
