@@ -314,12 +314,12 @@ public class GunRenderingHandler
                 if(modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null)
                 {
                     //TODO I NEED A DEBUG MENU LOL
-                    double viewFinderOffset = scope.getViewFinderOffset();
-                    if(OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.75;
+                    double viewFinderDist = scope.getViewFinderDistance();
+                    if(OptifineHelper.isShadersEnabled()) viewFinderDist *= 0.75;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getScope();
                     xOffset = -translateX - scaledPos.getXOffset() * 0.0625 * scaleX;
-                    yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getCenterOffset() * scaleY * 0.0625 * scaledPos.getScale();
-                    zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderOffset * scaleZ * scaledPos.getScale();
+                    yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getReticleOffset() * scaleY * 0.0625 * scaledPos.getScale();
+                    zOffset = -translateZ - scaledPos.getZOffset() * 0.0625 * scaleZ + 0.72 - viewFinderDist * scaleZ * scaledPos.getScale();
                 }
                 else if(modifiedGun.getModules().getZoom() != null)
                 {

@@ -25,32 +25,32 @@ public class Scope extends Attachment implements IEditorMenu
 {
     protected float aimFovModifier;
     protected float additionalZoom;
-    protected double centerOffset;
+    protected double reticleOffset;
     protected boolean stable;
-    protected double viewFinderOffset;
+    protected double viewFinderDist;
     protected double viewportFov;
     protected SightAnimation sightAnimation;
 
     private Scope() {}
 
-    private Scope(float additionalZoom, double centerOffset, double viewportFov, IGunModifier... modifier)
+    private Scope(float additionalZoom, double reticleOffset, double viewportFov, IGunModifier... modifier)
     {
         super(modifier);
         this.aimFovModifier = 1.0F;
         this.additionalZoom = additionalZoom;
-        this.centerOffset = centerOffset;
+        this.reticleOffset = reticleOffset;
         this.viewportFov = viewportFov;
         this.sightAnimation = SightAnimation.DEFAULT;
     }
 
-    private Scope(float aimFovModifier, float additionalZoom, double centerOffset, boolean stable, double viewFinderOffset, double viewportFov, SightAnimation sightAnimation, IGunModifier... modifiers)
+    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, double viewportFov, SightAnimation sightAnimation, IGunModifier... modifiers)
     {
         super(modifiers);
         this.aimFovModifier = aimFovModifier;
         this.additionalZoom = additionalZoom;
-        this.centerOffset = centerOffset;
+        this.reticleOffset = reticleOffset;
         this.stable = stable;
-        this.viewFinderOffset = viewFinderOffset;
+        this.viewFinderDist = viewFinderDist;
         this.viewportFov = viewportFov;
         this.sightAnimation = sightAnimation;
     }
@@ -74,7 +74,7 @@ public class Scope extends Attachment implements IEditorMenu
     @Deprecated(since = "1.3.0", forRemoval = true)
     public Scope viewFinderOffset(double offset)
     {
-        this.viewFinderOffset = offset;
+        this.viewFinderDist = offset;
         return this;
     }
 
@@ -84,6 +84,8 @@ public class Scope extends Attachment implements IEditorMenu
     }
 
     /**
+     * Deprecated: Use {@link #getFovModifier()}
+     * <p>
      * Gets the amount of additional zoom (or reduced fov) this scope provides
      *
      * @return the scopes additional zoom
@@ -95,14 +97,28 @@ public class Scope extends Attachment implements IEditorMenu
     }
 
     /**
+     * Deprecated: Use {@link #getReticleOffset()}
+     * <p>
      * Gets the offset to the center of the scope. Used to render scope cross hair exactly in the
      * middle of the screen.
      *
      * @return the scope center offset
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public double getCenterOffset()
     {
-        return this.centerOffset;
+        return this.reticleOffset;
+    }
+
+    /**
+     * Gets the offset need to translate the gun model so the reticle of the scope aligns with the
+     * center of the screen.
+     *
+     * @return the reticle offset
+     */
+    public double getReticleOffset()
+    {
+        return this.reticleOffset;
     }
 
     /**
@@ -114,11 +130,21 @@ public class Scope extends Attachment implements IEditorMenu
     }
 
     /**
+     * Deprecated: Use {@link #getReticleOffset()}
      * @return The view finder offset of this scope
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public double getViewFinderOffset()
     {
-        return this.viewFinderOffset;
+        return this.viewFinderDist;
+    }
+
+    /**
+     * @return The distance to offset camera from the center of the scope model.
+     */
+    public double getViewFinderDistance()
+    {
+        return this.viewFinderDist;
     }
 
     /**
@@ -145,8 +171,8 @@ public class Scope extends Attachment implements IEditorMenu
     {
         widgets.add(Pair.of(Component.literal("Aim FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.aimFovModifier, 0.05, 3, value -> this.aimFovModifier = value.floatValue())));
         widgets.add(Pair.of(Component.literal("Zoom (Legacy)"), () -> new DebugSlider(0.0, 0.5, this.additionalZoom, 0.05, 3, value -> this.additionalZoom = value.floatValue())));
-        widgets.add(Pair.of(Component.literal("Reticle Offset"), () -> new DebugSlider(0.0, 4.0, this.centerOffset, 0.025, 4, value -> this.centerOffset = value)));
-        widgets.add(Pair.of(Component.literal("View Finder Distance"), () -> new DebugSlider(0.0, 5.0, this.viewFinderOffset, 0.05, 3, value -> this.viewFinderOffset = value)));
+        widgets.add(Pair.of(Component.literal("Reticle Offset"), () -> new DebugSlider(0.0, 4.0, this.reticleOffset, 0.025, 4, value -> this.reticleOffset = value)));
+        widgets.add(Pair.of(Component.literal("View Finder Distance"), () -> new DebugSlider(0.0, 5.0, this.viewFinderDist, 0.05, 3, value -> this.viewFinderDist = value)));
         widgets.add(Pair.of(Component.literal("Viewport FOV"), () -> new DebugSlider(1.0, 100.0, this.viewportFov, 1.0, 4, value -> this.viewportFov = value)));
         widgets.add(Pair.of(Component.literal("Sight Animations"), () -> new DebugButton(Component.literal("Edit"), btn -> {
             Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.sightAnimation));
@@ -158,9 +184,9 @@ public class Scope extends Attachment implements IEditorMenu
         Scope scope = new Scope();
         scope.aimFovModifier = this.aimFovModifier;
         scope.additionalZoom = this.additionalZoom;
-        scope.centerOffset = this.centerOffset;
+        scope.reticleOffset = this.reticleOffset;
         scope.stable = this.stable;
-        scope.viewFinderOffset = this.viewFinderOffset;
+        scope.viewFinderDist = this.viewFinderDist;
         scope.viewportFov = this.viewportFov;
         scope.sightAnimation = this.sightAnimation.copy();
         return scope;
@@ -192,9 +218,9 @@ public class Scope extends Attachment implements IEditorMenu
     {
         private float aimFovModifier = 1.0F;
         private float additionalZoom = 0.0F;
-        private double centerOffset = 0.0;
+        private double reticleOffset = 0.0;
         private boolean stable = false;
-        private double viewFinderOffset = 0.0;
+        private double viewFinderDist = 0.0;
         private double viewportFov = 10.0;
         private SightAnimation sightAnimation = SightAnimation.DEFAULT;
         private IGunModifier[] modifiers = new IGunModifier[]{};
@@ -207,15 +233,29 @@ public class Scope extends Attachment implements IEditorMenu
             return this;
         }
 
+        /**
+         * Deprecated: Use {@link #aimFovModifier(float)} ()}
+         */
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder additionalZoom(float additionalZoom)
         {
             this.additionalZoom = additionalZoom;
             return this;
         }
 
+        /**
+         * Deprecated: Use {@link #reticleOffset(double)} ()}
+         */
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder centerOffset(double centerOffset)
         {
-            this.centerOffset = centerOffset;
+            this.reticleOffset = centerOffset;
+            return this;
+        }
+
+        public Builder reticleOffset(double reticleOffset)
+        {
+            this.reticleOffset = reticleOffset;
             return this;
         }
 
@@ -225,9 +265,19 @@ public class Scope extends Attachment implements IEditorMenu
             return this;
         }
 
+        /**
+         * Deprecated: Use {@link #viewFinderDistance(double)} ()}
+         */
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder viewFinderOffset(double viewFinderOffset)
         {
-            this.viewFinderOffset = viewFinderOffset;
+            this.viewFinderDist = viewFinderOffset;
+            return this;
+        }
+
+        public Builder viewFinderDistance(double viewFinderDist)
+        {
+            this.viewFinderDist = viewFinderDist;
             return this;
         }
 
@@ -251,7 +301,7 @@ public class Scope extends Attachment implements IEditorMenu
 
         public Scope build()
         {
-            return new Scope(this.aimFovModifier, this.additionalZoom, this.centerOffset, this.stable, this.viewFinderOffset, this.viewportFov, this.sightAnimation, this.modifiers);
+            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.viewportFov, this.sightAnimation, this.modifiers);
         }
     }
 }
