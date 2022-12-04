@@ -87,7 +87,7 @@ public class tti_g34_animation implements IOverrideModel {
         matrices.pop();
 
         // reload norm mag
-        if(transformType.isFirstPerson() && controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_NORMAL)) {
+        if(transformType.isFirstPerson() && controller.isAnimationRunning()) {
             matrices.push();
             {
 
@@ -120,6 +120,7 @@ public class tti_g34_animation implements IOverrideModel {
             matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
             GunRenderingHandler.get().opticMovement = 0.185f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0);
         }
+        matrices.translate(0, 0, 0.025F);
         RenderUtil.renderModel(SpecialModels.TTI_G34_SLIDE.getModel(), stack, matrices, renderBuffer, light, overlay);
 
         //Always pop
