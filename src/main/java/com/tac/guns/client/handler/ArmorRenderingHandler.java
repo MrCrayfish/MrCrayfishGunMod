@@ -34,8 +34,8 @@ public enum ArmorRenderingHandler {
         GlStateManager.enableLighting();
         GlStateManager.enableAlphaTest();
         GlStateManager.enableTexture();
-        int blockLight = event.getEntityLiving().isBurning() ? 15 : event.getEntity().world.getLightFor(LightType.BLOCK, new BlockPos(event.getEntity().getEyePosition(event.getPartialRenderTick())));
-        int packedLight = LightTexture.packLight(blockLight, event.getEntity().world.getLightFor(LightType.SKY, new BlockPos(event.getEntity().getEyePosition(event.getPartialRenderTick()))));
+        int blockLight = event.getEntityLiving().isBurning() ? 15 : event.getEntity().world.getLightFor(LightType.BLOCK, new BlockPos(event.getEntity().getPosition()).add(0,2,0));
+        int packedLight = LightTexture.packLight(blockLight, event.getEntity().world.getLightFor(LightType.SKY, new BlockPos(event.getEntity().getPosition()).add(0,2,0)));
         // Test ChestPlate
         event.getMatrixStack().push();
         event.getMatrixStack().rotate(Vector3f.XN.rotationDegrees(180));
@@ -46,7 +46,7 @@ public enum ArmorRenderingHandler {
             event.getMatrixStack().translate(element.getxMod(), -1.325, element.getzMod());
         }*/
         event.getMatrixStack().translate(0, -1.4, 0);
-        model.render(event.getMatrixStack(),event.getBuffers().getBuffer(type), -200, -1,0f,0f,0f,0f);
+        model.render(event.getMatrixStack(),event.getBuffers().getBuffer(type), packedLight, 1,1f,1f,1f,1f);
         event.getMatrixStack().pop();
 
         // Test Head
