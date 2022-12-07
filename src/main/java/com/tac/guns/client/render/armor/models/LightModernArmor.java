@@ -4,10 +4,13 @@ package com.tac.guns.client.render.armor.models;// Made with Blockbench 4.5.2
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-public class LightModernArmor extends EntityModel<Entity> {
+import net.minecraft.entity.LivingEntity;
+
+public class LightModernArmor<T extends LivingEntity> extends BipedModel<T> {
 	private final ModelRenderer Light_Armor;
 	private final ModelRenderer cube_r1;
 	private final ModelRenderer cube_r2;
@@ -37,6 +40,7 @@ public class LightModernArmor extends EntityModel<Entity> {
 	private final ModelRenderer cube_r21;
 
 	public LightModernArmor() {
+		super(0f);
 		textureWidth = 64;
 		textureHeight = 64;
 
@@ -213,10 +217,10 @@ public class LightModernArmor extends EntityModel<Entity> {
 		cube_r21.setTextureOffset(32, 17).addBox(-3.0625F, -0.75F, -0.5F, 4.0F, 1.0F, 1.0F, -0.3125F, false);
 	}
 
-	@Override
+	/*@Override
 	public void setRotationAngles(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
 		//previously the render function, render code was moved to a method below
-	}
+	}*/
 
 	@Override
 	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){

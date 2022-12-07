@@ -17,6 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.GL_QUADS;
@@ -86,10 +87,11 @@ public enum ArmorRenderingHandler {
 
         // Separate this into separate renders, I want to be able to dynamically call
         // PlayerWearableUtil.getArmor.renderModel();
-        /*int blockLight = event.getEntityLiving().isBurning() ? 15 : event.getEntity().world.getLightFor(LightType.BLOCK, new BlockPos(event.getEntity().getPosition()));
-        int packedLight = LightTexture.packLight(blockLight, event.getEntity().world.getLightFor(LightType.SKY, new BlockPos(event.getEntity().getPosition())));*/
+        int blockLight = event.getEntityLiving().isBurning() ? 15 : event.getEntity().world.getLightFor(LightType.BLOCK, new BlockPos(event.getEntity().getPosition()));
+        //int packedLight = LightTexture.packLight(blockLight, event.getEntity().world.getLightFor(LightType.SKY, new BlockPos(event.getEntity().getPosition())));
 
         int worldLight = (int)(event.getLight());
+        int blockLightAdjusted = blockLight == 0 ? 1 : blockLight;
 
         // Test ChestPlate
         event.getMatrixStack().push();
@@ -100,13 +102,17 @@ public enum ArmorRenderingHandler {
             element = ObjectRenderEditor.get().GetFromElements(9);
             event.getMatrixStack().translate(element.getxMod(), -1.325, element.getzMod());
         }*/
-        event.getPlayer().sendStatusMessage(new TranslationTextComponent(""+worldLight), true);
+        event.getPlayer().sendStatusMessage(new TranslationTextComponent(""+worldLight+"gaming"+blockLightAdjusted), true);
         event.getMatrixStack().translate(0, -1.4, 0);
         GlStateManager.enableLighting();
-        int tensMillions = worldLight/15000000;
+
+        worldLight = worldLight == 0 ? 1 : worldLight;
+        int tensMillions = 15000000;
+
 
         // Dividing everything by 5 looks like a good minimum brightness for the render, why do I have to do this at all
-        model.render(event.getMatrixStack(),event.getBuffers().getBuffer(type), worldLight/tensMillions, Integer.MIN_VALUE,1f/tensMillions,1f/tensMillions,1f/tensMillions,1f);//1f*(worldLight / (15728640*2)),1f*(worldLight / (15728640*2)),1f*
+        model.render(event.getMatrixStack(),event.getBuffers().getBuffer(type), (int) (worldLight*(worldLight/((1+((float)blockLightAdjusted/15))))), Integer.MIN_VALUE,0.5f*((float) worldLight/((((float)blockLightAdjusted/15)))),0.5f*((float)worldLight/((((float)blockLightAdjusted/15)))),0.5f*((float)worldLight/((((float)blockLightAdjusted/15)))),0.5f*((float)worldLight/((((float)blockLightAdjusted/15)))));//1f*(worldLight / (15728640*2)),1f*(worldLight / (15728640*2)),1f*
+
         // (worldLight / (15728640*2)),1f);
         event.getMatrixStack().pop();
 
