@@ -1,6 +1,7 @@
 package com.tac.guns.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
@@ -15,11 +16,13 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -60,6 +63,10 @@ public class HUDRenderingHandler extends AbstractGui {
     private static final ResourceLocation[] RELOAD_ICONS = new ResourceLocation[]
             {
                     new ResourceLocation(Reference.MOD_ID, "textures/gui/reloadbar.png")
+            };
+    private static final ResourceLocation[] NOISE_S = new ResourceLocation[]
+            {
+                    new ResourceLocation(Reference.MOD_ID, "textures/screen_effect/noise1.png")
             };
 
     public static HUDRenderingHandler get() {
@@ -113,7 +120,8 @@ public class HUDRenderingHandler extends AbstractGui {
         BufferBuilder buffer;
 
 
-
+        //nightVisionOverlay(stack, true);
+        //randomFilmGrain(stack, event.getPartialTicks());
 
 
         if(ArmorInteractionHandler.get().isRepairing())//Replace with reload bar checker
@@ -298,6 +306,73 @@ public class HUDRenderingHandler extends AbstractGui {
             stack.pop();
         }
     }
+
+
+            // Make me a method that simulates a realistic night vision effect
+            //private void drawNightVision
+
+
+
+
+            /*if (Minecraft.getInstance().gameSettings.viewBobbing) {
+                if (Minecraft.getInstance().player.ticksExisted % 2 == 0) {
+                    Minecraft.getInstance().getTextureManager().bindTexture(NOISE_S[0]);
+                    RenderSystem.enableBlend();
+                    RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.5F);
+                    RenderSystem.disableAlphaTest();
+                    RenderSystem.pushMatrix();
+                    RenderSystem.translatef(0.0F, 0.0F, -0.01F);
+                    float f = 5.0F;
+                    RenderSystem.scalef(f, f, f);
+                    float f1 = (float) (Minecraft.getInstance().player.ticksExisted % 3000) / 3000.0F / f;
+                    float f2 = 0.0F;
+                    float f3 = 0.0F;
+                    float f4 = 0.0F;
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder bufferbuilder = tessellator.getBuffer();
+                    bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                    bufferbuilder.pos(0.0D, (double) Minecraft.getInstance().getMainWindow().getScaledHeight(), (double) Minecraft.getInstance().getMainWindow().getScaledHeight()).tex((float) (f1 + f4), (float) (f2 + f3)).endVertex();
+                    bufferbuilder.pos((double) Minecraft.getInstance().getMainWindow().getScaledWidth(), (double) Minecraft.getInstance().getMainWindow().getScaledHeight(), (double) Minecraft.getInstance().getMainWindow().getScaledHeight()).tex((float) (f1 + 1.0F / f + f4), (float) (f2 + f3)).endVertex();
+                    bufferbuilder.pos((double) Minecraft.getInstance().getMainWindow().getScaledWidth(), 0.0D, (double) Minecraft.getInstance().getMainWindow().getScaledHeight()).tex((float) (f1 + 1.0F / f + f4), (float) (f2 + 1.0F / f + f3)).endVertex();
+                    bufferbuilder.pos(0.0D, 0.0D, (double) Minecraft.getInstance().getMainWindow().getScaledHeight()).tex((float) (f1 + f4), (float) (f2 + 1.0F / f + f3)).endVertex();
+                    tessellator.draw();
+                    RenderSystem.popMatrix();
+                    RenderSystem.enableAlphaTest();
+                    RenderSystem.disableBlend();
+                }
+            }*/
+
+
+
+
+
+
+
+
+        /*() {
+        DynamicTexture noiseTexture = new DynamicTexture(16,16, false);
+        if (noiseTexture == null) {
+            Minecraft.getInstance().getTextureManager().loadTexture(NOISE_TEXTURE, noiseTexture);
+        }
+
+        for (int i = 0; i < 256; ++i) {
+            noiseTextureData[i] = (byte) (Math.random() * 256.0D);
+        }
+
+        noiseTexture.updateDynamicTexture();
+    }*/
+
+
+
+
+
+
+
+
+
+
+
 
     private static IFormattableTextComponent byPaddingZeros(int number) {
         String text = String.format("%0" + (byPaddingZerosCount(number)+1) + "d", 1);
