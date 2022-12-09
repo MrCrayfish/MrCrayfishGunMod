@@ -2,6 +2,8 @@ package com.tac.guns.init;
 
 import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
+import com.tac.guns.client.render.armor.models.MediumArmor;
+import com.tac.guns.client.render.armor.models.ModernArmor;
 import com.tac.guns.common.GunModifiers;
 import com.tac.guns.item.*;
 import com.tac.guns.item.TransitionalTypes.*;
@@ -181,7 +183,7 @@ public class ModItems
    //public static final RegistryObject<Item> LIGHT_GRENADE = REGISTER.register("light_grenade", () ->  new GrenadeItem(new Item.Properties().group(GunMod.GROUP), 20 * 4, 1.1f));
 
     /* Misc */
-    public static final RegistryObject<Item> ARMOR_TEST = REGISTER.register("armor_test", () -> new ArmorRigItem(new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> ARMOR_TEST = REGISTER.register("armor_test", () -> new ArmorRigItem(new MediumArmor(), new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
     public static final RegistryObject<Item> ARMOR_REPAIR_PLATE_TEST = REGISTER.register("armor_plate_test", () -> new ArmorPlateItem(new Item.Properties().maxStackSize(4).group(GunMod.GROUP)));
 
     public static final RegistryObject<Item> MODULE = REGISTER.register("module_item",

@@ -3,6 +3,7 @@ package com.tac.guns.client;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
@@ -13,6 +14,7 @@ import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.handler.command.ScopeEditor;
 import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.armor.VestLayer.VestLayerRender;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
@@ -41,12 +43,10 @@ import com.tac.guns.client.screen.TaCSettingsScreen;
 import com.tac.guns.client.screen.UpgradeBenchScreen;
 import com.tac.guns.client.screen.WorkbenchScreen;
 import com.tac.guns.client.settings.GunOptions;
-import com.tac.guns.client.util.UpgradeBenchRenderUtil;
 import com.tac.guns.init.ModBlocks;
 import com.tac.guns.init.ModContainers;
 import com.tac.guns.init.ModEntities;
 import com.tac.guns.init.ModItems;
-import com.tac.guns.init.ModTileEntities;
 import com.tac.guns.item.IColored;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAttachments;
@@ -65,6 +65,7 @@ import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -72,7 +73,6 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -109,7 +109,6 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDayMemory part of the Timeless dev team, amazing work!!!!!!!!!!!
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
         MinecraftForge.EVENT_BUS.register(AnimationHandler.INSTANCE); //Mainly controls when the animation should play.
-        MinecraftForge.EVENT_BUS.register(ArmorRenderingHandler.INSTANCE); //Test
         if(Config.COMMON.development.enableTDev.get()) {
             MinecraftForge.EVENT_BUS.register(GuiEditor.get());
             MinecraftForge.EVENT_BUS.register(GunEditor.get());
@@ -139,6 +138,14 @@ public class ClientHandler
         AnimationHandler.preloadAnimations();
         new AnimationRunner(); //preload thread pool
         new SecondOrderDynamics(1f,1f,1f, 1f); //preload thread pool
+
+        Map<String, PlayerRenderer> skins = Minecraft.getInstance().getRenderManager().getSkinMap();
+        addVestLayer(skins.get("default"));
+        addVestLayer(skins.get("slim"));
+    }
+    private static void addVestLayer(PlayerRenderer renderer)
+    {
+        renderer.addLayer(new VestLayerRender<>(renderer));
     }
 
     private static void setupRenderLayers()

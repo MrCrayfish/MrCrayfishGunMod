@@ -78,7 +78,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.ConfigGuiHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.network.NetworkDirection;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.lang.reflect.Field;
 import java.sql.Time;

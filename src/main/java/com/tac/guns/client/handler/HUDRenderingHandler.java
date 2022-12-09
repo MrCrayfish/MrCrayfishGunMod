@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -31,7 +32,9 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.Objects;
+import java.util.Random;
 
 public class HUDRenderingHandler extends AbstractGui {
     private static HUDRenderingHandler instance;
@@ -66,7 +69,10 @@ public class HUDRenderingHandler extends AbstractGui {
             };
     private static final ResourceLocation[] NOISE_S = new ResourceLocation[]
             {
-                    new ResourceLocation(Reference.MOD_ID, "textures/screen_effect/noise1.png")
+                    new ResourceLocation(Reference.MOD_ID, "textures/screen_effect/noise1.png"),
+                    new ResourceLocation(Reference.MOD_ID, "textures/screen_effect/noise2.png")
+                    /*new ResourceLocation(Reference.MOD_ID, "textures/screen_effect/noise4.png"),
+                    new ResourceLocation(Reference.MOD_ID, "textures/screen_effect/noise5.png")*/
             };
 
     public static HUDRenderingHandler get() {
@@ -90,18 +96,71 @@ public class HUDRenderingHandler extends AbstractGui {
             this.ammoReserveCount = ReloadTracker.calcMaxReserveAmmo(Gun.findAmmo(Minecraft.getInstance().player, gunItem.getGun().getProjectile().getItem()));
         }
     }
+
+
+    // EnchancedVisuals-1.16.5 helped with this one
+    private ResourceLocation getNoiseTypeResource(boolean doNoise) {
+        long time = Math.abs(System.nanoTime() / 3000000 / 50);
+        return NOISE_S[(int) (time % NOISE_S.length)];
+    }
+
+    // A method that tints the screen green like night vision if true
+    private void renderNightVision(boolean doNightVision) {
+        brightenScreen(doNightVision);
+        if (doNightVision) {
+            RenderSystem.disableDepthTest();
+            RenderSystem.depthMask(false);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.color4f(0.05F, 1.55F, 0.05F, 0.0825F);
+            RenderSystem.disableAlphaTest();
+            RenderSystem.disableTexture();
+            RenderSystem.enableBlend();
+            RenderSystem.shadeModel(7425);
+            RenderSystem.disableFog();
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+
+            bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+            bufferbuilder.pos(0.0D, (double) Minecraft.getInstance().getMainWindow().getScaledHeight(), -90.0D).endVertex();
+            bufferbuilder.pos((double) Minecraft.getInstance().getMainWindow().getScaledWidth(), (double) Minecraft.getInstance().getMainWindow().getScaledHeight(), -90.0D).endVertex();
+            bufferbuilder.pos((double) Minecraft.getInstance().getMainWindow().getScaledWidth(), 0.0D, -90.0D).endVertex();
+            bufferbuilder.pos(0.0D, 0.0D, -90.0D).endVertex();
+            tessellator.draw();
+            RenderSystem.shadeModel(7424);
+            RenderSystem.disableBlend();
+            RenderSystem.enableTexture();
+            RenderSystem.enableAlphaTest();
+            RenderSystem.depthMask(true);
+            RenderSystem.enableDepthTest();
+        }
+    }
+
+    // Final
+    private double defaultGameGamma = 0;
+
+
+    // "Brightens the screen" However this example is more useful less gimick, I want to be a bit more gimicky, but a great V1 to be honest - ClumsyAlien
+    private void brightenScreen(boolean doNightVision) {
+
+        // Basic force gammed night vision
+        if (doNightVision) {
+            if(defaultGameGamma == 0)
+                defaultGameGamma = Minecraft.getInstance().gameSettings.gamma;
+            Minecraft.getInstance().gameSettings.gamma = 200;
+        }
+        else {
+            Minecraft.getInstance().gameSettings.gamma = defaultGameGamma;
+        }
+    }
+
     @SubscribeEvent
-    public void onOverlayRender(RenderGameOverlayEvent event) {
+    public void onOverlayRender(RenderGameOverlayEvent.Post event) {
         if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
         if (Minecraft.getInstance().player == null) {
             return;
         }
-
-
-
-
 
         ClientPlayerEntity player = Minecraft.getInstance().player;
         ItemStack heldItem = player.getHeldItemMainhand();
@@ -117,18 +176,41 @@ public class HUDRenderingHandler extends AbstractGui {
         float fireModeSize = 32.0F * configScaleWeaponFireMode;
         float ReloadBarSize = 32.0F * configScaleWeaponReloadBar;
         RenderSystem.enableAlphaTest();
-        BufferBuilder buffer;
+        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
 
 
-        //nightVisionOverlay(stack, true);
-        //randomFilmGrain(stack, event.getPartialTicks());
+        // All code for rendering night vision, still only a test
+        if(true) {
+            renderNightVision(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get());
+            if(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get()) {
+                int width = event.getWindow().getWidth();
+                int height = event.getWindow().getHeight();
 
+                RenderSystem.enableAlphaTest();
+                RenderSystem.enableBlend();
+                RenderSystem.enableTexture();
+                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+                stack.push();
+
+                Minecraft.getInstance().getTextureManager().bindTexture(getNoiseTypeResource(true));
+                float opacity = 0.25f;//0.125f;// EnchancedVisuals-1.16.5 helped with this one, instead have a fading opacity visual.getOpacity();
+                Matrix4f matrix = stack.getLast().getMatrix();
+                buffer.pos(matrix, 0, width, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, opacity).endVertex();
+                buffer.pos(matrix, width, height, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, opacity).endVertex();
+                buffer.pos(matrix, width, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, opacity).endVertex();
+                buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, opacity).endVertex();
+
+                buffer.finishDrawing();
+                WorldVertexBufferUploader.draw(buffer);
+                stack.pop();
+            }
+        }
 
         if(ArmorInteractionHandler.get().isRepairing())//Replace with reload bar checker
         {
             // FireMode rendering
             RenderSystem.enableAlphaTest();
-            buffer = Tessellator.getInstance().getBuffer();
+
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             stack.push();
             {
@@ -306,14 +388,6 @@ public class HUDRenderingHandler extends AbstractGui {
             stack.pop();
         }
     }
-
-
-            // Make me a method that simulates a realistic night vision effect
-            //private void drawNightVision
-
-
-
-
             /*if (Minecraft.getInstance().gameSettings.viewBobbing) {
                 if (Minecraft.getInstance().player.ticksExisted % 2 == 0) {
                     Minecraft.getInstance().getTextureManager().bindTexture(NOISE_S[0]);
@@ -342,37 +416,6 @@ public class HUDRenderingHandler extends AbstractGui {
                     RenderSystem.disableBlend();
                 }
             }*/
-
-
-
-
-
-
-
-
-        /*() {
-        DynamicTexture noiseTexture = new DynamicTexture(16,16, false);
-        if (noiseTexture == null) {
-            Minecraft.getInstance().getTextureManager().loadTexture(NOISE_TEXTURE, noiseTexture);
-        }
-
-        for (int i = 0; i < 256; ++i) {
-            noiseTextureData[i] = (byte) (Math.random() * 256.0D);
-        }
-
-        noiseTexture.updateDynamicTexture();
-    }*/
-
-
-
-
-
-
-
-
-
-
-
 
     private static IFormattableTextComponent byPaddingZeros(int number) {
         String text = String.format("%0" + (byPaddingZerosCount(number)+1) + "d", 1);

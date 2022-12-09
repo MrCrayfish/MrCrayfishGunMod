@@ -1,11 +1,12 @@
 package com.tac.guns.item.TransitionalTypes.wearables;
 
 import com.tac.guns.Reference;
+import com.tac.guns.client.render.armor.models.ModernArmor;
+import com.tac.guns.client.render.armor.VestLayer.ArmorBase;
 import com.tac.guns.common.NetworkRigManager;
 import com.tac.guns.common.Rig;
 import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
 import com.tac.guns.inventory.gear.armor.ArmorRigContainerProvider;
-import com.tac.guns.item.TransitionalTypes.IArmoredRigItem;
 import com.tac.guns.util.RigEnchantmentHelper;
 import com.tac.guns.util.WearableHelper;
 import net.minecraft.client.util.ITooltipFlag;
@@ -38,8 +39,17 @@ import java.util.WeakHashMap;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ArmorRigItem extends Item implements IArmoredRigItem {
 
+
+
     public ArmorRigItem(Properties properties) {
         super(properties);
+    }
+
+    private ArmorBase armorModel = null;
+    public ArmorRigItem(ArmorBase model, Properties properties)
+    {
+        super(properties);
+        this.armorModel = model;
     }
 
     @Override
@@ -184,27 +194,8 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
         return this.rig;
     }
 
-    /*@Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
-    {
-        if(enchantment.type == EnchantmentTypes.SEMI_AUTO_GUN)
-        {
-            Gun modifiedGun = this.getModifiedGun(stack);
-            return !modifiedGun.getGeneral().isAuto();
-        }
-        return super.canApplyAtEnchantingTable(stack, enchantment);
-    }*/
-
-    /*@Override
-    public boolean isEnchantable(ItemStack stack)
-    {
-        return this.getItemStackLimit(stack) == 1;
-    }
-
     @Override
-    public int getItemEnchantability()
-    {
-        return 5;
+    public ArmorBase getArmorModel() {
+        return this.armorModel == null ? new ModernArmor() : this.armorModel;
     }
-*/
 }
