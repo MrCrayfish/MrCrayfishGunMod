@@ -46,6 +46,7 @@ public class ArmorInteractionHandler
 			final Minecraft mc = Minecraft.getInstance();
 			if(
 				mc.player != null
+                        && WearableHelper.PlayerWornRig(mc.player) != null
 				 && !WearableHelper.isFullDurability(WearableHelper.PlayerWornRig(mc.player))
 			) this.repairing = true; this.repairTime = ((ArmorRigItem)WearableHelper.PlayerWornRig(mc.player).getItem()).getRig().getRepair().getTicksToRepair();// Replace with enchantment checker
 		} );

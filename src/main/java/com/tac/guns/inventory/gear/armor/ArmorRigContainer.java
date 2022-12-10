@@ -3,6 +3,7 @@ package com.tac.guns.inventory.gear.armor;
 import com.tac.guns.init.ModContainers;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
+import com.tac.guns.util.WearableHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -19,12 +20,19 @@ public class ArmorRigContainer extends Container {
     public ArmorRigContainer(int windowId, PlayerInventory inv, ItemStack item) {
         super(ModContainers.ARMOR_TEST.get(), windowId);
         this.item = item;
+
         GearSlotsHandler itemHandler = (GearSlotsHandler)this.item.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
+        int maxSlots = ((ArmorRigItem)inv.player.getHeldItemMainhand().getItem()).getSlots();
+        int slots = maxSlots;
         int i = (this.numRows - 4) * 18;
+        //ItemStackHandler itemHandler = new ItemStackHandler(maxSlots);
 
         for(int j = 0; j < this.numRows; ++j) {
             for(int k = 0; k < 9; ++k) {
-                this.addSlot(new AmmoSlot(itemHandler, k + j * 9, 8 + k * 18, 18 + j * 18));
+                if(slots > 0) {
+                    this.addSlot(new AmmoSlot(itemHandler, k + j * 9, 8 + k * 18, 18 + j * 18));
+                    slots--;
+                }
             }
         }
 
@@ -46,12 +54,22 @@ public class ArmorRigContainer extends Container {
         this.item = item;
         int i = (this.numRows - 4) * 18;
 
-        ItemStackHandler itemHandler = new ItemStackHandler(18);
+        int maxSlots = ((ArmorRigItem)inv.player.getHeldItemMainhand().getItem()).getSlots();
+        int slots = maxSlots;
+        ItemStackHandler itemHandler = new ItemStackHandler(maxSlots);
         for(int j = 0; j < this.numRows; ++j) {
+            for(int k = 0; k < 9; ++k) {
+                if(slots > 0) {
+                    this.addSlot(new AmmoSlot(itemHandler, k + j * 9, 8 + k * 18, 18 + j * 18));
+                    slots--;
+                }
+            }
+        }
+        /*for(int j = 0; j < this.numRows; ++j) {
             for(int k = 0; k < 9; ++k) {
                 this.addSlot(new AmmoSlot(itemHandler, k + j * 9, 8 + k * 18, 18 + j * 18));
             }
-        }
+        }*/
 
         for(int l = 0; l < 3; ++l) {
             for(int j1 = 0; j1 < 9; ++j1) {

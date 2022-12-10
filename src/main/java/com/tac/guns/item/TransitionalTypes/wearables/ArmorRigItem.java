@@ -43,13 +43,27 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
 
     public ArmorRigItem(Properties properties) {
         super(properties);
+        numOfSlots = 9;
     }
 
+    private final int numOfSlots;
+
+    public int getSlots() {
+        return this.numOfSlots;
+    }
     private ArmorBase armorModel = null;
     public ArmorRigItem(ArmorBase model, Properties properties)
     {
         super(properties);
+        numOfSlots = 9;
         this.armorModel = model;
+    }
+
+    public ArmorRigItem(ArmorBase model, int slots, Properties properties)
+    {
+        super(properties);
+        this.armorModel = model;
+        this.numOfSlots = slots;
     }
 
     @Override
