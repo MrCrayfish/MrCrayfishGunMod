@@ -7,34 +7,42 @@ import com.tac.guns.client.CustomRigManager;
 import com.tac.guns.client.audio.GunShotSound;
 import com.tac.guns.client.handler.BulletTrailRenderingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.HUDRenderingHandler;
 import com.tac.guns.client.render.animation.module.AnimationMeta;
 import com.tac.guns.client.render.animation.module.AnimationSoundManager;
 import com.tac.guns.client.render.animation.module.AnimationSoundMeta;
 import com.tac.guns.common.NetworkGunManager;
 import com.tac.guns.common.NetworkRigManager;
 import com.tac.guns.init.ModParticleTypes;
+import com.tac.guns.inventory.gear.InventoryListener;
+import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
+import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
 import com.tac.guns.network.message.*;
 import com.tac.guns.particles.BulletHoleData;
+import com.tac.guns.util.WearableHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nullable;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -235,5 +243,25 @@ public class ClientPlayHandler
     {
         NetworkRigManager.updateRegisteredRigs(message);
         CustomRigManager.updateCustomRigs(message);
+    }
+
+    public static ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+
+    public static void updateRigInv(MessageRigInvToClient message)
+    {
+
+        // rebuild capability for rigs from scratch
+        
+
+        ClientPlayerEntity clientP = Minecraft.getInstance().player;
+        ItemStack stack = WearableHelper.PlayerWornRig(clientP);
+        stack.getCapability(InventoryListener.RIG_HANDLER_CAPABILITY, null)
+                .ifPresent(state -> {
+                    RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(InventoryListener.RIG_HANDLER_CAPABILITY).resolve().get();
+                    itemHandler.deserializeNBT(message.getData());
+                    for (int i = 0; i < message.getData().getInt("Size"); i++) {
+                        stacks.set(i, ItemStack.read(((ListNBT)message.getData().get("Items")).getCompound(i)));
+                    }
+                });
     }
 }

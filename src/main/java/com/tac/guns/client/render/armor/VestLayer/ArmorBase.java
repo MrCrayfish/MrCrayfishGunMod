@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -15,6 +17,7 @@ import java.util.function.Function;
 /**
  * Author: MrCrayfish
  */
+@OnlyIn(Dist.CLIENT)
 public abstract class ArmorBase extends Model
 {
     public ArmorBase()
@@ -40,6 +43,7 @@ public abstract class ArmorBase extends Model
         root.copyModelAngles(body);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void render(MatrixStack matrixStack, IVertexBuilder builder, int p_225598_3_, int p_225598_4_, float p_225598_5_, float p_225598_6_, float p_225598_7_, float p_225598_8_)
     {

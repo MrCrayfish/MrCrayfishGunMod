@@ -16,6 +16,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
@@ -44,11 +48,10 @@ public class ArmorInteractionHandler
 	{
 		InputHandler.ARMOR_REPAIRING.addPressCallBack( () -> {
 			final Minecraft mc = Minecraft.getInstance();
-			if(
-				mc.player != null
-                        && WearableHelper.PlayerWornRig(mc.player) != null
-				 && !WearableHelper.isFullDurability(WearableHelper.PlayerWornRig(mc.player))
-			) this.repairing = true; this.repairTime = ((ArmorRigItem)WearableHelper.PlayerWornRig(mc.player).getItem()).getRig().getRepair().getTicksToRepair();// Replace with enchantment checker
+			if(mc.player != null && WearableHelper.PlayerWornRig(mc.player) != null && !WearableHelper.isFullDurability(WearableHelper.PlayerWornRig(mc.player))) {
+                this.repairing = true;
+                this.repairTime = ((ArmorRigItem) WearableHelper.PlayerWornRig(mc.player).getItem()).getRig().getRepair().getTicksToRepair();// Replace with enchantment checker
+            }
 		} );
 	}
 
@@ -141,16 +144,10 @@ public class ArmorInteractionHandler
         }
     }
 
-    /*@SubscribeEvent
-    public void onClientTick(ClientPlayerNetworkEvent.LoggedOutEvent event)
-    {
-        this.aimingMap.clear();
-    }*/
-
     /**
-     * Prevents the crosshair from rendering when aiming down sight
+     * I think was supposed to be used to replace current crosshair with a repair crosshair, disable for now
      */
-    @SubscribeEvent(receiveCanceled = true)
+    //@SubscribeEvent(receiveCanceled = true)
     public void onRenderOverlay(RenderGameOverlayEvent event)
     {
         //this.normalisedRepairProgress = this.localTracker.getNormalProgress(event.getPartialTicks());
@@ -179,98 +176,10 @@ public class ArmorInteractionHandler
         return this.repairTime != 0 && mc.player.getHeldItemMainhand().getItem().getRegistryName().equals(rig.getRepair().getItem()) && !WearableHelper.isFullDurability(WearableHelper.PlayerWornRig(mc.player));
     }
 
-
-    // TODO: Use for interacting with upgrade or repair station of some sort for extra functionality
-    /*public boolean isLookingAtInteractableBlock()
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.objectMouseOver != null && mc.world != null)
-        {
-            if(mc.objectMouseOver instanceof BlockRayTraceResult)
-            {
-                BlockRayTraceResult result = (BlockRayTraceResult) mc.objectMouseOver;
-                BlockState state = mc.world.getBlockState(result.getPos());
-                Block block = state.getBlock();
-                // Forge should add a tag for intractable blocks so modders can know which blocks can be interacted with :)
-                *//*if(block == ModBlocks.UPGRADE_BENCH.get())
-                    return false;*//*
-                return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || *//* ||*//* BlockTags.DOORS.contains(block) || BlockTags.TRAPDOORS.contains(block) || Tags.Blocks.CHESTS.contains(block) || Tags.Blocks.FENCE_GATES.contains(block);
-            }
-            else if(mc.objectMouseOver instanceof EntityRayTraceResult)
-            {
-                EntityRayTraceResult result = (EntityRayTraceResult) mc.objectMouseOver;
-                return result.getEntity() instanceof ItemFrameEntity;
-            }
-        }
-        return false;
-    }*/
-
     public double getNormalisedRepairProgress()
     {
         return this.normalisedRepairProgress;
     }
 
-    // TODO: Just remove? Tracking can be made simply for armor quick repair
-    /*public class AimTracker
-    {
-        private double currentAim;
-        private double previousAim;
-        private double amplifier = 0.8;
 
-        private void handleAiming(PlayerEntity player, ItemStack heldItem)
-        {
-            this.previousAim = this.currentAim;
-            double vAmplifier = 0.1;
-            if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING) || (player.isUser() && ArmorInteractionHandler.this.isAiming()))
-            {
-                if(this.amplifier < 1.3)
-                {
-                    amplifier += vAmplifier;
-                }
-                if(this.currentAim < MAX_AIM_PROGRESS)
-                {
-                    double speed = GunEnchantmentHelper.getAimDownSightSpeed(heldItem);
-                    speed = GunModifierHelper.getModifiedAimDownSightSpeed(heldItem, speed);
-                    this.currentAim += speed * amplifier;
-                    if(this.currentAim > MAX_AIM_PROGRESS)
-                    {
-                        amplifier = 0.5;
-                        this.currentAim = (int) MAX_AIM_PROGRESS;
-                    }
-                }
-            }
-            else
-            {
-                if(this.currentAim > 0)
-                {
-                    if(this.amplifier < 1.3)
-                    {
-                        amplifier += vAmplifier;
-                    }
-                    double speed = GunEnchantmentHelper.getAimDownSightSpeed(heldItem);
-                    speed = GunModifierHelper.getModifiedAimDownSightSpeed(heldItem, speed);
-                    this.currentAim -= speed * amplifier;
-                    if(this.currentAim < 0)
-                    {
-                        amplifier = 0.5;
-                        this.currentAim = 0;
-                    }
-                }else amplifier = 0.8;
-            }
-        }
-
-        public boolean isAiming()
-        {
-            return this.currentAim != 0 || this.previousAim != 0;
-        }
-
-        public double getNormalProgress(float partialTicks)
-        {
-            return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
-        }
-    }*/
-    //public double getNormalProgress(float partialTicks)
-    //{
-    //    return (this.previousAim + (this.currentAim - this.previousAim) * (this.previousAim == 0 || this.previousAim == MAX_AIM_PROGRESS ? 0 : partialTicks)) / (float) MAX_AIM_PROGRESS;
-    //}
 }

@@ -1,40 +1,46 @@
 package com.tac.guns.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
+import com.tac.guns.client.network.ClientPlayHandler;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.ReloadTracker;
+import com.tac.guns.inventory.gear.InventoryListener;
+import com.tac.guns.inventory.gear.armor.ArmorRigContainer;
+import com.tac.guns.inventory.gear.armor.ArmorRigContainerProvider;
+import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
 import com.tac.guns.item.GunItem;
-import com.tac.guns.item.IArmorPlate;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
+import com.tac.guns.util.WearableHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.Objects;
-import java.util.Random;
 
 public class HUDRenderingHandler extends AbstractGui {
     private static HUDRenderingHandler instance;
@@ -83,6 +89,8 @@ public class HUDRenderingHandler extends AbstractGui {
     }
 
     private int ammoReserveCount = 0;
+    private int rigReserveCount = 0;
+
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent e)
     {
@@ -90,13 +98,69 @@ public class HUDRenderingHandler extends AbstractGui {
             return;
         if(Minecraft.getInstance().player == null)
             return;
-        if(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem)
+
+        ItemStack stack = WearableHelper.PlayerWornRig(Minecraft.getInstance().player);
+        if(stack != null)
+        {
+            for (int i = 0; i < ClientPlayHandler.stacks.size(); i++)
+            {
+                this.rigReserveCount += ClientPlayHandler.stacks.get(i).getCount();
+            }
+        }
+        /*else
+            Minecraft.getInstance().player.sendChatMessage("gaming");*/
+        /*if(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem )
         {
             GunItem gunItem = (GunItem) Minecraft.getInstance().player.getHeldItemMainhand().getItem();
-            this.ammoReserveCount = ReloadTracker.calcMaxReserveAmmo(Gun.findAmmo(Minecraft.getInstance().player, gunItem.getGun().getProjectile().getItem()));
-        }
+            this.ammoReserveCount = ReloadTracker.calcMaxReserveAmmo(Gun.findAmmoStandardOnly(Minecraft.getInstance().player, gunItem.getGun().getProjectile().getItem()));
+            {
+                ItemStack stack = WearableHelper.PlayerWornRig(Minecraft.getInstance().player);
+                if(stack != null) {
+                    if (stack.getItem() instanceof ArmorRigItem) {
+                        ArmorRigContainerProvider itemHandler = new ArmorRigContainerProvider(stack);
+                        if(itemHandler.getContainer() != null)
+                            for (ItemStack item : itemHandler.getContainer().getInventory()) {
+                                if (Gun.isAmmo(item, gunItem.getGun().getProjectile().getItem())) {
+                                    this.ammoReserveCount += item.getCount();
+                                }
+                            }
+                        else
+                            Minecraft.getInstance().player.
+                    }
+                }
+            }
+
+            this.ammoReserveCount+=this.rigReserveCount;
+        }*/
     }
 
+    /*public void updateRigAndHuD_ReserveCounter()
+    {
+        ItemStack stack = WearableHelper.PlayerWornRig(Minecraft.getInstance().player);
+        if(stack != null)
+        {
+            setSize((stack.getItem()).getShareTag(stack).getCompound("storage").contains("Size", Constants.NBT.TAG_INT) ? (stack.getItem()).getShareTag(stack).getCompound("storage").getInt("Size") : stacks.size());
+            ListNBT tagList = ((ArmorRigItem)stack.getItem()).getShareTag(stack).getCompound("storage").getList("Items", Constants.NBT.TAG_COMPOUND); // Items
+            this.ammoReserveCount = 0;
+            for (int i = 0; i < tagList.size(); i++)
+            {
+                CompoundNBT itemTags = tagList.getCompound(i);
+                int slot = itemTags.getInt("Slot");
+
+                if (slot >= 0 && slot < stacks.size())
+                {
+                    stacks.set(slot, ItemStack.read(itemTags));
+                    this.ammoReserveCount += stacks.get(i).getCount();
+                }
+            }
+        }
+    }*/
+
+    private NonNullList<ItemStack> stacks;
+    public void setSize(int size)
+    {
+        stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+    }
 
     // EnchancedVisuals-1.16.5 helped with this one
     private ResourceLocation getNoiseTypeResource(boolean doNoise) {
@@ -180,7 +244,7 @@ public class HUDRenderingHandler extends AbstractGui {
 
 
         // All code for rendering night vision, still only a test
-        if(true) {
+        if(false) {
             renderNightVision(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get());
             if(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get()) {
                 int width = event.getWindow().getWidth();
@@ -258,7 +322,6 @@ public class HUDRenderingHandler extends AbstractGui {
 
 
 
-
         if(!(Minecraft.getInstance().player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof TimelessGunItem))
             return;
         TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
@@ -316,7 +379,8 @@ public class HUDRenderingHandler extends AbstractGui {
             );
             if(player.getHeldItemMainhand().getTag() != null) {
                 IFormattableTextComponent currentAmmo;
-                IFormattableTextComponent reserveAmmo = new TranslationTextComponent("");
+                IFormattableTextComponent reserveAmmo;
+
                 int ammo = player.getHeldItemMainhand().getTag().getInt("AmmoCount");
                 if (player.getHeldItemMainhand().getTag().getInt("AmmoCount") <= gun.getReloads().getMaxAmmo() / 4 && this.ammoReserveCount <= gun.getReloads().getMaxAmmo()) {
                     currentAmmo = byPaddingZeros(ammo).append(new TranslationTextComponent("" + ammo)).mergeStyle(TextFormatting.RED);

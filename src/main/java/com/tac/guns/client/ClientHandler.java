@@ -15,6 +15,9 @@ import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.handler.command.ScopeEditor;
 import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.armor.VestLayer.VestLayerRender;
+import com.tac.guns.client.render.armor.models.CardboardArmor;
+import com.tac.guns.client.render.armor.models.MediumArmor;
+import com.tac.guns.client.render.armor.models.ModernArmor;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
@@ -66,6 +69,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -205,6 +209,13 @@ public class ClientHandler
 
         ModelOverrides.register(ModItems.MINI_DOT.get(), new MiniDotSightModel());
         ModelOverrides.register(ModItems.MICRO_HOLO_SIGHT.get(), new MicroHoloSightModel());
+
+        ModelOverrides.register(ModItems.MINI_DOT.get(), new MiniDotSightModel());
+        ModelOverrides.register(ModItems.MICRO_HOLO_SIGHT.get(), new MicroHoloSightModel());
+
+        VestLayerRender.registerModel(ModItems.LIGHT_ARMOR.getId(), new ModernArmor());
+        VestLayerRender.registerModel(ModItems.MEDIUM_STEEL_ARMOR.getId(), new MediumArmor());
+        VestLayerRender.registerModel(ModItems.CARDBOARD_ARMOR_FUN.getId(), new CardboardArmor());
     }
 
     private static void registerScreenFactories()

@@ -9,8 +9,9 @@ import com.tac.guns.annotation.Optional;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.interfaces.TGExclude;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
-import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
 import com.tac.guns.inventory.gear.InventoryListener;
+import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
+import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IScope;
@@ -616,6 +617,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private boolean ricochet = true;
         @TGExclude
         private ResourceLocation item = new ResourceLocation(Reference.MOD_ID, "basic_ammo");
+        @Optional
+        private int bulletClass = 1;
+        @Optional
+        private float bluntDamagePercentage = 0.20f;
         @Override
         public CompoundNBT serializeNBT()
         {
@@ -631,6 +636,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putInt("TrailColor", this.trailColor);
             tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
             tag.putBoolean("Ricochet", this.ricochet);
+            tag.putInt("BulletClass", this.bulletClass);
+            tag.putFloat("BluntDamagePercentage", this.bluntDamagePercentage);
             return tag;
         }
 
@@ -681,6 +688,14 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.ricochet = tag.getBoolean("Ricochet");
             }
+            if(tag.contains("BulletClass", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.bulletClass = tag.getInt("BulletClass");
+            }
+            if(tag.contains("BluntDamagePercentage", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.bluntDamagePercentage = tag.getFloat("bluntDamagePercentage");
+            }
         }
 
         public Projectile copy()
@@ -697,6 +712,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             projectile.trailColor = this.trailColor;
             projectile.trailLengthMultiplier = this.trailLengthMultiplier;
             projectile.ricochet = this.ricochet;
+            projectile.bulletClass = this.bulletClass;
+            projectile.bluntDamagePercentage = this.bluntDamagePercentage;
             return projectile;
         }
 
@@ -785,6 +802,21 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public boolean isRicochet()
         {
             return this.ricochet;
+        }
+        /**
+         * @return The class of the bullet, meaning what tiers of armor can stop it, a class 1 bullet hitting class 1 armor means only blunt damage is applied
+         */
+        public int getBulletClass()
+        {
+            return this.bulletClass;
+        }
+        /**
+         * @return The percentage of damage applied as blunt when an armor class is met, 0 = armor stops all bullet damage.
+         * 100 means all damage passes no matter, unless blunt damage is disabled within TaC config.
+         */
+        public float getBluntDamagePercentage()
+        {
+            return this.bluntDamagePercentage;
         }
     }
 
@@ -2022,13 +2054,15 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 stacks.add(stack);
             }
         }
+        // Get wearable that holds ammo
         GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
         for(ItemStack stack : ammoItemHandler.getStacks()) {
             if (isAmmo(stack, id)) {
                 stacks.add(stack);
             }
             if (stack.getItem() instanceof ArmorRigItem) {
-                GearSlotsHandler itemHandler = (GearSlotsHandler) stack.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
+                // Get the handler OF the specific armor, seems like repeating compatabilities aren't going well.
+                RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(InventoryListener.RIG_HANDLER_CAPABILITY).resolve().get();
                 for (ItemStack item : itemHandler.getStacks()) {
                     if (isAmmo(item, id)) {
                         stacks.add(item);
@@ -2039,7 +2073,52 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         return stacks.toArray(new ItemStack[]{});
     }
 
-    private static boolean isAmmo(ItemStack stack, ResourceLocation id)
+    public static ItemStack[] findAmmoStandardOnly(PlayerEntity player, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
+    {
+        if(!player.isAlive())
+            return new ItemStack[]{};
+        ArrayList<ItemStack> stacks = new ArrayList<>();
+        if(player.isCreative())
+        {
+            Item item = ForgeRegistries.ITEMS.getValue(id);
+            stacks.add(item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY);
+            return stacks.toArray(new ItemStack[]{});
+        }
+        for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
+        {
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if(isAmmo(stack, id)) {
+                stacks.add(stack);
+            }
+        }
+        return stacks.toArray(new ItemStack[]{});
+    }
+
+    public static ItemStack[] findAmmoRigOnly(PlayerEntity player, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
+    {
+        if(!player.isAlive())
+            return new ItemStack[]{};
+        ArrayList<ItemStack> stacks = new ArrayList<>();
+        GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
+        for(ItemStack stack : ammoItemHandler.getStacks()) {
+            if (isAmmo(stack, id)) {
+                stacks.add(stack);
+            }
+            if (stack.getItem() instanceof ArmorRigItem) {
+                RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(InventoryListener.RIG_HANDLER_CAPABILITY).resolve().get();
+                for (ItemStack item : itemHandler.getStacks()) {
+                    if (isAmmo(item, id)) {
+                        stacks.add(item);
+                    }
+                }
+            }
+        }
+        return stacks.toArray(new ItemStack[]{});
+    }
+
+
+
+    public static boolean isAmmo(ItemStack stack, ResourceLocation id)
     {
         return stack != null && stack.getItem().getRegistryName().equals(id);
     }

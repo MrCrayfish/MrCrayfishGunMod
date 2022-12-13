@@ -503,19 +503,26 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
             damage *= GunModifierHelper.getAdditionalHeadshotDamage(this.weapon) == 0F ? 1F : GunModifierHelper.getAdditionalHeadshotDamage(this.weapon);
         }
+
+        DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
+
+        // Apply a part of damage anyway, also adjust damage, I want damage to be consistent with stats values, separated for Config check, and damageSource modification, without constant copy pasting of code,
+        /*if(Config.COMMON.gameplay.armorBluntDamage.get()) {
+            tac_attackWithBluntDamage(source.setDamageIsAbsolute(), entity, damage);
+            damage *= (1.0-this.modifiedGun.getProjectile().getBluntDamagePercentage());
+        }*/
+
         if(entity instanceof PlayerEntity && WearableHelper.PlayerWornRig((PlayerEntity) entity) != null)
         {
             ItemStack rig = WearableHelper.PlayerWornRig((PlayerEntity) entity);
             if(!WearableHelper.tickFromCurrentDurability(rig, this))
                 PacketHandler.getPlayChannel().sendTo(new MessagePlayerShake((PlayerEntity) entity), ((ServerPlayerEntity)entity).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
             else {
-                DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
-                entity.attackEntityFrom(source, damage);
+                tac_attackEntity(source, entity, damage);
             }
         }
         else {
-            DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
-            entity.attackEntityFrom(source, damage);
+            tac_attackEntity(source, entity, damage);
         }
 
         if(this.shooter instanceof PlayerEntity)
@@ -527,6 +534,33 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         /* Send blood particle to tracking clients. */
         PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(hitVec.x, hitVec.y, hitVec.z));
+    }
+
+    // Apply blunt damage before applying any effects via armor
+    // TODO: Use a new source type, so messages can be "Tickled to death", "Poked to smithereens" etc.
+    private void tac_attackWithBluntDamage(DamageSource source, Entity entity, float damage)
+    {
+        entity.attackEntityFrom(source, (damage*this.modifiedGun.getProjectile().getBluntDamagePercentage()));
+    }
+
+    // tac_ is simply a naming convention for "check tac stuff before you continue this standard mc call", I use it here to explain checking config before applying it's damage, along with armor calculations
+    // Is also "bulletClass" aware, makes this a bit more complex than config checks.
+    private void tac_attackEntity(DamageSource source, Entity entity, float damage)
+    {
+        if(Config.COMMON.gameplay.bulletsIgnoreStandardArmor.get()) {
+            float damageToMcArmor = 0;
+            if (Config.COMMON.gameplay.percentDamageIgnoresStandardArmor.get() > 0) {
+                damageToMcArmor = (float) (damage * Config.COMMON.gameplay.percentDamageIgnoresStandardArmor.get());
+                entity.attackEntityFrom(source, damageToMcArmor); // Apply vanilla armor aware damage
+            }
+
+            source.setDamageBypassesArmor();
+            source.setDamageIsAbsolute();
+            if(!(Config.COMMON.gameplay.percentDamageIgnoresStandardArmor.get() >= 1.0))
+                entity.attackEntityFrom(source, (damage-damageToMcArmor)); // Apply pure damage
+        }
+        else
+            entity.attackEntityFrom(source, damage);
     }
 
     protected void updateWeaponLevels(float damage)

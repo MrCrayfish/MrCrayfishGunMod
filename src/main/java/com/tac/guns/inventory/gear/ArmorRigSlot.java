@@ -1,10 +1,12 @@
-package com.tac.guns.inventory.gear.armor;
+package com.tac.guns.inventory.gear;
 
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+
+// Will be one for backpacks too
 public class ArmorRigSlot extends SlotItemHandler {
 
     public ArmorRigSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {

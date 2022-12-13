@@ -323,6 +323,13 @@ public class Config
         public final ForgeConfigSpec.BooleanValue realisticAimedBreathing;
         public final ForgeConfigSpec.BooleanValue safetyExistence;
 
+        public final ForgeConfigSpec.BooleanValue bulletsIgnoreStandardArmor;
+
+        public final ForgeConfigSpec.DoubleValue percentDamageIgnoresStandardArmor;
+
+        public final ForgeConfigSpec.BooleanValue renderTaCArmor;
+        public final ForgeConfigSpec.BooleanValue armorBluntDamage;
+
         public Gameplay(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Properties relating to gameplay").push("gameplay");
@@ -343,6 +350,15 @@ public class Config
                 this.realisticIronSightFovHandling = builder.comment("Iron sights fov modification will not affect the players fov at all").define("realisticIronSightFovHandling", false);
 
                 this.realisticAimedBreathing = builder.comment("Aiming will present a breathing animation, moving the weapon over time, crouch to lower it's effects").define("realisticAimedBreathing", false);
+
+                this.bulletsIgnoreStandardArmor = builder.comment("Bullets completely ignore Minecraft armor, forcing you to use our armor system.").define("bulletsIgnoreStandardArmor", true);
+                this.percentDamageIgnoresStandardArmor =
+                        builder.comment("The percent of the damage to be applied standard, AKA Minecraft armor reduces this portion of the damage, while the rest passes through freely, only active when either armor hits 0 or no TaC armor worn at " +
+                                "all, 0 = Minecraft armor never effects bullet damage, 1 = Minecraft armor effectiveness doesn't change.").defineInRange(
+                        "percentDamageIgnoresStandardArmor", 0.25, 0.0, 1.0);
+                this.renderTaCArmor = builder.comment("Enable rendering of TaC armor on the player, useful if other armors are taking priority, doesn't fit gameplay theme, or not performant enough.").define("renderTaCArmor",
+                        true);
+                this.armorBluntDamage = builder.comment("All weapons have a percentage of damage applied, no matter the class match up, false means blunt damage is never applied before armor calc.").define("armorBluntDamage", true);
             }
             builder.pop();
         }

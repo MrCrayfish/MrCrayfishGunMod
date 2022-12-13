@@ -14,6 +14,7 @@ public class ArmorRigContainerProvider implements INamedContainerProvider {
 
     private ItemStack item;
 
+    private ArmorRigContainer container;
     public ArmorRigContainerProvider(ItemStack item) {
         this.item = item;
     }
@@ -26,7 +27,11 @@ public class ArmorRigContainerProvider implements INamedContainerProvider {
     @Nullable
     @Override
     public Container createMenu(int windowId, PlayerInventory inv, PlayerEntity player) {
-        ArmorRigContainer container = new ArmorRigContainer(windowId, inv, this.item);
+        this.container = new ArmorRigContainer(windowId, inv, this.item);
         return container;
+    }
+
+    public ArmorRigContainer getContainer() {
+        return this.container;
     }
 }

@@ -17,7 +17,9 @@ import com.tac.guns.entity.GrenadeEntity;
 import com.tac.guns.entity.MissileEntity;
 import com.tac.guns.init.*;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
+import com.tac.guns.inventory.gear.IWearableItemHandler;
 import com.tac.guns.inventory.gear.armor.IAmmoItemHandler;
+import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.network.PacketHandler;
 import net.minecraft.data.DataGenerator;
@@ -249,7 +251,78 @@ public class GunMod
             MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
         }
 
+        // First separate, cause only the held ammo is not synced serverToClient, but the wearable is held fine, just use damned Curios next time.
+        CapabilityManager.INSTANCE.register(IWearableItemHandler.class, new Capability.IStorage<IWearableItemHandler>() {
+            @Override
+            public INBT writeNBT(Capability<IWearableItemHandler> capability, IWearableItemHandler instance, Direction side) {
+                ListNBT nbtTagList = new ListNBT();
+                int size = instance.getSlots();
+                for (int i = 0; i < size; i++) {
+                    ItemStack stack = instance.getStackInSlot(i);
+                    if (!stack.isEmpty()) {
+                        CompoundNBT itemTag = new CompoundNBT();
+                        itemTag.putInt("Slot", i);
+                        stack.write(itemTag);
+                        nbtTagList.add(itemTag);
+                    }
+                }
+                return nbtTagList;
+            }
+
+            @Override
+            public void readNBT(Capability<IWearableItemHandler> capability, IWearableItemHandler instance, Direction side, INBT base) {
+                if (!(instance instanceof IItemHandlerModifiable))
+                    throw new RuntimeException("IItemHandler instance does not implement IItemHandlerModifiable_TaC");
+                IItemHandlerModifiable itemHandlerModifiable = (IItemHandlerModifiable) instance;
+                ListNBT tagList = (ListNBT) base;
+                for (int i = 0; i < tagList.size(); i++) {
+                    CompoundNBT itemTags = tagList.getCompound(i);
+                    int j = itemTags.getInt("Slot");
+
+                    if (j >= 0 && j < instance.getSlots()) {
+                        itemHandlerModifiable.setStackInSlot(j, ItemStack.read(itemTags));
+                    }
+                }
+            }
+        }, GearSlotsHandler::new);
+
         CapabilityManager.INSTANCE.register(IAmmoItemHandler.class, new Capability.IStorage<IAmmoItemHandler>() {
+            @Override
+            public INBT writeNBT(Capability<IAmmoItemHandler> capability, IAmmoItemHandler instance, Direction side) {
+                ListNBT nbtTagList = new ListNBT();
+                int size = instance.getSlots();
+                for (int i = 0; i < size; i++) {
+                    ItemStack stack = instance.getStackInSlot(i);
+                    if (!stack.isEmpty()) {
+                        CompoundNBT itemTag = new CompoundNBT();
+                        itemTag.putInt("Slot", i);
+                        stack.write(itemTag);
+                        nbtTagList.add(itemTag);
+                    }
+                }
+                return nbtTagList;
+            }
+
+            @Override
+            public void readNBT(Capability<IAmmoItemHandler> capability, IAmmoItemHandler instance, Direction side, INBT base) {
+                if (!(instance instanceof IItemHandlerModifiable))
+                    throw new RuntimeException("IItemHandler instance does not implement IItemHandlerModifiable_TaC");
+                IItemHandlerModifiable itemHandlerModifiable = (IItemHandlerModifiable) instance;
+                ListNBT tagList = (ListNBT) base;
+                for (int i = 0; i < tagList.size(); i++) {
+                    CompoundNBT itemTags = tagList.getCompound(i);
+                    int j = itemTags.getInt("Slot");
+
+                    if (j >= 0 && j < instance.getSlots()) {
+                        itemHandlerModifiable.setStackInSlot(j, ItemStack.read(itemTags));
+                    }
+                }
+            }
+        }, RigSlotsHandler::new);
+
+        // Likely will need a while new capability registry?
+
+        /*CapabilityManager.INSTANCE.register(IAmmoItemHandler.class, new Capability.IStorage<IAmmoItemHandler>() {
             @Override
             public INBT writeNBT(Capability<IAmmoItemHandler> capability, IAmmoItemHandler instance, Direction side) {
                 ListNBT nbtTagList = new ListNBT();
@@ -281,7 +354,7 @@ public class GunMod
                     }
                 }
             }
-        }, GearSlotsHandler::new);
+        }, GearSlotsHandler::new);*/
 
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1911"), new OneHandedPoseHighRes_m1911()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1851"), new OneHandedPoseHighRes_m1851()));

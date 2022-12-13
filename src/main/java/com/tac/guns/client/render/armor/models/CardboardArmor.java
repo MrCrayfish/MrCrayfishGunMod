@@ -12,11 +12,14 @@ import com.tac.guns.client.render.armor.VestLayer.ArmorBase;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 // Made with Blockbench 4.5.2
 // Exported for Minecraft version 1.15 - 1.16 with MCP mappings
 // Paste this class into your mod and generate all required imports
 
 
+@OnlyIn(Dist.CLIENT)
 public class CardboardArmor extends ArmorBase {
 	private final ModelRenderer Cardboard_armor;
 	private final ModelRenderer cube_r1;

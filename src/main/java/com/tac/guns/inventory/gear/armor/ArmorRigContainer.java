@@ -1,15 +1,20 @@
 package com.tac.guns.inventory.gear.armor;
 
+import com.tac.guns.common.Gun;
 import com.tac.guns.init.ModContainers;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
+import com.tac.guns.inventory.gear.InventoryListener;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
-import com.tac.guns.util.WearableHelper;
+import com.tac.guns.network.PacketHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class ArmorRigContainer extends Container {
@@ -21,11 +26,12 @@ public class ArmorRigContainer extends Container {
         super(ModContainers.ARMOR_TEST.get(), windowId);
         this.item = item;
 
-        GearSlotsHandler itemHandler = (GearSlotsHandler)this.item.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
+        RigSlotsHandler itemHandler = (RigSlotsHandler) this.item.getCapability(InventoryListener.RIG_HANDLER_CAPABILITY).resolve().get();
         int maxSlots = ((ArmorRigItem)inv.player.getHeldItemMainhand().getItem()).getSlots();
         int slots = maxSlots;
         int i = (this.numRows - 4) * 18;
-        //ItemStackHandler itemHandler = new ItemStackHandler(maxSlots);
+        this.numRows = maxSlots % 9 > 0 ? maxSlots / 9 + 1 : maxSlots / 9;
+        //RigSlotsHandler itemHandler = new RigSlotsHandler(maxSlots);
 
         for(int j = 0; j < this.numRows; ++j) {
             for(int k = 0; k < 9; ++k) {
@@ -54,9 +60,9 @@ public class ArmorRigContainer extends Container {
         this.item = item;
         int i = (this.numRows - 4) * 18;
 
+        ItemStackHandler itemHandler = new ItemStackHandler(18);
         int maxSlots = ((ArmorRigItem)inv.player.getHeldItemMainhand().getItem()).getSlots();
         int slots = maxSlots;
-        ItemStackHandler itemHandler = new ItemStackHandler(maxSlots);
         for(int j = 0; j < this.numRows; ++j) {
             for(int k = 0; k < 9; ++k) {
                 if(slots > 0) {
@@ -121,8 +127,13 @@ public class ArmorRigContainer extends Container {
 
         return itemstack;
     }
-
+    private static boolean isAmmo(ItemStack stack, ResourceLocation id)
+    {
+        return stack != null && stack.getItem().getRegistryName().equals(id);
+    }
     public int getNumRows() {
         return numRows;
     }
+
+
 }

@@ -1,9 +1,9 @@
 package com.tac.guns.inventory.gear.armor;
 
-import com.tac.guns.inventory.gear.InventoryListener;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -11,15 +11,15 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ArmorRigInventoryCapability implements ICapabilityProvider, ICapabilitySerializable<ListNBT> {
+public class ArmorRigInventoryCapability implements ICapabilitySerializable<ListNBT> {
 
-    private Capability capability = InventoryListener.ITEM_HANDLER_CAPABILITY;
-    private IAmmoItemHandler itemHandler;
-    private LazyOptional<IAmmoItemHandler> optionalStorage;
+    @CapabilityInject(IAmmoItemHandler.class)
+    public static Capability<IAmmoItemHandler> capability = null;
 
-    public ArmorRigInventoryCapability(IAmmoItemHandler itemHandler) {
-        this.itemHandler = itemHandler;
-        this.optionalStorage = LazyOptional.of(() -> itemHandler);
+    private IAmmoItemHandler itemHandler = new RigSlotsHandler(27);
+    private LazyOptional<IAmmoItemHandler> optionalStorage = LazyOptional.of(() -> itemHandler);
+    public LazyOptional<IAmmoItemHandler> getOptionalStorage() {
+        return optionalStorage;
     }
 
     @Nonnull
@@ -41,11 +41,4 @@ public class ArmorRigInventoryCapability implements ICapabilityProvider, ICapabi
         capability.getStorage().readNBT(capability, itemHandler, null, nbt);
     }
 
-    public IAmmoItemHandler getItemHandler() {
-        return itemHandler;
-    }
-
-    public LazyOptional<IAmmoItemHandler> getOptionalStorage() {
-        return optionalStorage;
-    }
 }

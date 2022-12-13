@@ -18,7 +18,8 @@ public class SyncedTileEntity extends TileEntity
         super(tileEntityTypeIn);
     }
 
-    protected void syncToClient()
+    // Why protected?
+    public void syncToClient()
     {
         this.markDirty();
         if(this.world != null && !this.world.isRemote)

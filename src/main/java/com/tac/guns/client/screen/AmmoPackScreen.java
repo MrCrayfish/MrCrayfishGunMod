@@ -38,8 +38,8 @@ public class AmmoPackScreen extends ContainerScreen<ArmorRigContainer> implement
         int j = (this.height - this.ySize) / 2;
 
         // Draw for ammo pack, current issue is the number of slots not being drawn correctly, we can't cut this off either due to the background, get design team to create alternative off generic_54.png baseline
-        this.blit(matrixStack, i, j, 0, 0, this.xSize, (this.rows+1) * 18 + 17);
-        this.blit(matrixStack, i, j + (this.rows+1) * 18 + 17, 0, 126, this.xSize, 96);
+        this.blit(matrixStack, i, j, 0, 0, this.xSize, (this.rows) * 18 + 17);
+        this.blit(matrixStack, i, j + (this.rows) * 18 + 17, 0, 126, this.xSize, 96);
         // Draw separately for player inv
     }
 }

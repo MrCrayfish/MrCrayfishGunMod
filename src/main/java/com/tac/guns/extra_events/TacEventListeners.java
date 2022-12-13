@@ -8,12 +8,18 @@ import com.tac.guns.entity.ProjectileEntity;
 import com.tac.guns.event.LevelUpEvent;
 import com.tac.guns.init.ModSounds;
 import com.tac.guns.init.ModSyncedDataKeys;
+import com.tac.guns.inventory.gear.GearSlotsHandler;
 import com.tac.guns.item.TransitionalTypes.M1GunItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.tileentity.UpgradeBenchTileEntity;
+import com.tac.guns.util.WearableHelper;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -37,6 +43,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import static com.tac.guns.inventory.gear.InventoryListener.ITEM_HANDLER_CAPABILITY;
 
 
 /**
@@ -76,21 +84,20 @@ public class TacEventListeners {
         }
     }
 
-
-
-
-    @SubscribeEvent
-    public static void handleArmor(LivingHurtEvent event)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void handleArmor(LivingDeathEvent event)
     {
-        if(event.getSource().damageType == "bullet")
+        if(event.getEntity() instanceof PlayerEntity)
         {
-            /*if(Entity.hasTacArmor()) {
-                float totalArmorDurrability = armor.getDurrability();
-                if (totalArmorDurrability > 0) {
-                    //apply damage to armor
-                }
-            }*/
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+            if(WearableHelper.PlayerWornRig(player) != null)
+            {
+                GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(ITEM_HANDLER_CAPABILITY).resolve().get();
+                Block.spawnAsEntity(player.world, player.getPosition(), (ammoItemHandler.getStackInSlot(0)));
+                Block.spawnAsEntity(player.world, player.getPosition(), (ammoItemHandler.getStackInSlot(1)));
+            }
         }
+        // TODO: Continue for dropping armor on a bot's death
     }
 
 

@@ -1,4 +1,4 @@
-package com.tac.guns.inventory.gear;
+package com.tac.guns.inventory.gear.armor;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -11,19 +11,19 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
-public class GearSlotsHandler implements IWearableItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
+public class RigSlotsHandler implements IAmmoItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundNBT> {
     protected NonNullList<ItemStack> stacks;
 
-    public GearSlotsHandler()
+    public RigSlotsHandler()
     {
-        this(2);
+        this(18);
     }
 
-    public GearSlotsHandler(int size) {
+    public RigSlotsHandler(int size) {
         stacks = NonNullList.withSize(size, ItemStack.EMPTY);
     }
 
-    public GearSlotsHandler(NonNullList<ItemStack> stacks)
+    public RigSlotsHandler(NonNullList<ItemStack> stacks)
     {
         this.stacks = stacks;
     }

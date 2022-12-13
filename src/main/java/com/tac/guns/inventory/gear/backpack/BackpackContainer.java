@@ -2,7 +2,7 @@ package com.tac.guns.inventory.gear.backpack;
 
 import com.tac.guns.init.ModContainers;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
-import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
+import com.tac.guns.inventory.gear.WearableCapabilityProvider;
 import com.tac.guns.inventory.gear.armor.AmmoSlot;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,7 +21,7 @@ public class BackpackContainer extends Container {
     public BackpackContainer(int windowId, PlayerInventory inv, ItemStack item) {
         super(ModContainers.ARMOR_TEST.get(), windowId);
         this.item = item;
-        GearSlotsHandler itemHandler = (GearSlotsHandler)this.item.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
+        GearSlotsHandler itemHandler = (GearSlotsHandler)this.item.getCapability(WearableCapabilityProvider.capability).resolve().get();
         int i = (this.numRows - 4) * 18;
 
         for(int j = 0; j < this.numRows; ++j) {

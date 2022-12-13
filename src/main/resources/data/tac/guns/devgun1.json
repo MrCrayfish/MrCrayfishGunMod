@@ -22,10 +22,11 @@
   "projectile": {
     "item": "tac:762x39",
     "visible": true,
-    "damage": 3.5,
+    "damage": 10.0,
     "size": 0.5,
     "speed": 0.5,
-    "life": 2000
+    "life": 2000,
+    "bluntDamagePercentage": 0.5
   },
   "reloads": {
     "magFed": true,

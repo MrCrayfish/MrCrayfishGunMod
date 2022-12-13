@@ -9,7 +9,10 @@ import com.tac.guns.client.render.armor.VestLayer.ArmorBase;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ModernArmor extends ArmorBase {
 	private final ModelRenderer Light_Armor;
 	private final ModelRenderer cube_r1;

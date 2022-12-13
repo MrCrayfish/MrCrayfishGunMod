@@ -184,12 +184,12 @@ public class ModItems
    //public static final RegistryObject<Item> LIGHT_GRENADE = REGISTER.register("light_grenade", () ->  new GrenadeItem(new Item.Properties().group(GunMod.GROUP), 20 * 4, 1.1f));
 
     /* Misc */
-    public static final RegistryObject<Item> ARMOR_TEST = REGISTER.register("armor_test", () -> new ArmorRigItem(new MediumArmor(), 9, new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
-    public static final RegistryObject<Item> ARMOR_REPAIR_PLATE_TEST = REGISTER.register("armor_plate_test", () -> new ArmorPlateItem(new Item.Properties().maxStackSize(4).group(GunMod.GROUP)));
+    //public static final RegistryObject<Item> ARMOR_TEST = REGISTER.register("armor_test", () -> new ArmorRigItem(new MediumArmor(), 9, new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    //public static final RegistryObject<Item> ARMOR_REPAIR_PLATE_TEST = REGISTER.register("armor_plate_test", () -> new ArmorPlateItem(new Item.Properties().maxStackSize(4).group(GunMod.GROUP)));
 
-    public static final RegistryObject<Item> LIGHT_ARMOR = REGISTER.register("light_armor", () -> new ArmorRigItem(new ModernArmor(), 18, new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
-    public static final RegistryObject<Item> MEDIUM_STEEL_ARMOR = REGISTER.register("medium_steel_armor", () -> new ArmorRigItem(new MediumArmor(), 18, new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
-    public static final RegistryObject<Item> CARDBOARD_ARMOR_FUN = REGISTER.register("cardboard_armor", () -> new ArmorRigItem(new CardboardArmor(), 9, new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> LIGHT_ARMOR = REGISTER.register("light_armor", () -> new ArmorRigItem(18, new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> MEDIUM_STEEL_ARMOR = REGISTER.register("medium_steel_armor", () -> new ArmorRigItem(18, new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
+    public static final RegistryObject<Item> CARDBOARD_ARMOR_FUN = REGISTER.register("cardboard_armor", () -> new ArmorRigItem(9, new Item.Properties().maxStackSize(1).group(GunMod.GROUP)));
 
 
     public static final RegistryObject<Item> LIGHT_ARMOR_REPAIR_PLATE = REGISTER.register("light_armor_plate", () -> new ArmorPlateItem(new Item.Properties().maxStackSize(6).group(GunMod.GROUP)));
