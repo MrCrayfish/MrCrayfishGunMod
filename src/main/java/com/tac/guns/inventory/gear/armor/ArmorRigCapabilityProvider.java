@@ -15,7 +15,7 @@ public class ArmorRigCapabilityProvider implements ICapabilitySerializable<ListN
 
     @CapabilityInject(IAmmoItemHandler.class)
     public static Capability<IAmmoItemHandler> capability = null;
-    private IAmmoItemHandler itemHandler = new GearSlotsHandler(90);
+    private IAmmoItemHandler itemHandler = new RigSlotsHandler(90);
     private LazyOptional<IAmmoItemHandler> optionalStorage = LazyOptional.of(() -> itemHandler);
 
     @Nonnull

@@ -3,8 +3,10 @@ package com.tac.guns.item.TransitionalTypes.wearables;
 import com.tac.guns.Reference;
 import com.tac.guns.common.NetworkRigManager;
 import com.tac.guns.common.Rig;
+import com.tac.guns.inventory.gear.GearSlotsHandler;
 import com.tac.guns.inventory.gear.InventoryListener;
 import com.tac.guns.inventory.gear.WearableCapabilityProvider;
+import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
 import com.tac.guns.inventory.gear.armor.ArmorRigContainerProvider;
 import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
 import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
@@ -97,19 +99,10 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
     public CompoundNBT getShareTag(ItemStack stack)
     {
         CompoundNBT nbt = super.getShareTag(stack);
-        RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(InventoryListener.RIG_HANDLER_CAPABILITY).resolve().get();
-        nbt.put("storage", itemHandler.serializeNBT());
-
-
-
-        /*CompoundNBT nbt = super.getShareTag(inputStack);
-        GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
-        for(ItemStack stack : ammoItemHandler.getStacks()) {
-            if (stack.getItem() instanceof ArmorRigItem) {
-                RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
-                nbt.put("storage", itemHandler.serializeNBT());
-            }
-        }*/
+        if (stack.getItem() instanceof ArmorRigItem) {
+            RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
+            nbt.put("storage", itemHandler.serializeNBT());
+        }
 
         return nbt;
     }
