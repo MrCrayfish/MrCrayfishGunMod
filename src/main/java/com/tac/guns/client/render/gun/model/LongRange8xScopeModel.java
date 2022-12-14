@@ -89,7 +89,7 @@ public class LongRange8xScopeModel implements IOverrideModel
 
                 IVertexBuilder builder;
 
-                if(Config.CLIENT.display.scopeDoubleRender.get())
+                if(Config.CLIENT.display.scopeDoubleRender.get() && !OptifineHelper.isShadersEnabled())
                 {
                     builder = renderTypeBuffer.getBuffer(GunRenderType.getScreen());
                     builder.pos(matrix, 0, size, 0).color(color, color, color, 1.0F).tex(texU, 1.0F - crop).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
