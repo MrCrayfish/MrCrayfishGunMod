@@ -285,6 +285,7 @@
     "tac.options.adsSensitivity": "ADS Sensitivity",
     "tac.options.adsSensitivity.format": "ADS Sensitivity: %s",
     "tac.options.crosshair.format": "Crosshair: %s",
+    "tac.options.weaponsVolume.format": "Gun fire Volume: %s",
     "tac.options.toggleAim": "Toggle ADS",
 
     "tac.crosshair.arrow": "Arrow",

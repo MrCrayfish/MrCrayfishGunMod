@@ -46,11 +46,14 @@ public class Config
         public final ForgeConfigSpec.ConfigValue<String> headshotSound;
         public final ForgeConfigSpec.BooleanValue playSoundWhenCritical;
         public final ForgeConfigSpec.ConfigValue<String> criticalSound;
+        public final ForgeConfigSpec.DoubleValue weaponsVolume;
 
         public Sounds(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Control sounds triggered by guns").push("sounds");
             {
+                this.weaponsVolume = builder.comment("Show your ammunition as numbers, reloading timer, weapon icon, and fire mode all on the HUD.").defineInRange("weaponsVolume", 1.0, 0.0, 1.0);
+
                 this.playSoundWhenHeadshot = builder.comment("If true, a sound will play when you successfully hit a headshot on a entity with a gun").define("playSoundWhenHeadshot", true);
                 this.headshotSound = builder.comment("The sound to play when a headshot occurs").define("headshotSound", "minecraft:entity.player.attack.crit");
                 this.playSoundWhenCritical = builder.comment("If true, a sound will play when you successfully hit a critical on a entity with a gun").define("playSoundWhenCritical", true);
@@ -107,6 +110,7 @@ public class Config
         public final WeaponFireMode weaponFireMode;
         public final WeaponAmmoCounter weaponAmmoCounter;
         public final WeaponReloadTimer weaponReloadTimer;
+
 
         public WeaponGUI(ForgeConfigSpec.Builder builder)
         {

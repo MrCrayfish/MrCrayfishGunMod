@@ -59,10 +59,7 @@ import com.tac.guns.util.math.SecondOrderDynamics;
 import de.javagl.jgltf.model.animation.AnimationRunner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.ControlsScreen;
-import net.minecraft.client.gui.screen.MouseSettingsScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.VideoSettingsScreen;
+import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.renderer.RenderType;
@@ -70,6 +67,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -259,15 +257,14 @@ public class ClientHandler
                 Minecraft.getInstance().displayGuiScreen(new TaCSettingsScreen(screen, Minecraft.getInstance().gameSettings));
             })));
         }
-        /*if(event.getGui() instanceof MainMenuScreen)
+        /*if(event.getGui() instanceof VideoSettingsScreen)
         {
-            MainMenuScreen screen = (MainMenuScreen) event.getGui();
+            VideoSettingsScreen screen = (VideoSettingsScreen) event.getGui();
 
             event.addWidget((new Button(screen.width / 2 - 215, 10, 75, 20, new TranslationTextComponent("tac.options.gui_settings"), (p_213126_1_) -> {
                 Minecraft.getInstance().displayGuiScreen(new TaCSettingsScreen(screen, Minecraft.getInstance().gameSettings));
             })));
-        }
-*/
+        }*/
     }
     
     private static Screen prevScreen = null;

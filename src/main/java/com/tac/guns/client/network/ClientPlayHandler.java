@@ -64,7 +64,8 @@ public class ClientPlayHandler
 
         if(message.getShooterId() == mc.player.getEntityId())
         {
-            Minecraft.getInstance().getSoundHandler().play(new SimpleSound(message.getId(), SoundCategory.PLAYERS, message.getVolume(), message.getPitch(), false, 0, ISound.AttenuationType.LINEAR, 0, 0, 0, true));
+            Minecraft.getInstance().getSoundHandler().play(new SimpleSound(message.getId(), SoundCategory.PLAYERS, (float) (message.getVolume()*Config.CLIENT.sounds.weaponsVolume.get()), message.getPitch(), false, 0, ISound.AttenuationType.LINEAR, 0, 0, 0,
+                    true));
         }
         else
         {
