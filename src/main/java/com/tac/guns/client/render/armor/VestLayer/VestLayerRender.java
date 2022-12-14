@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,11 +36,11 @@ public class VestLayerRender<T extends PlayerEntity, M extends BipedModel<T>> ex
         super(renderer);
     }
 
-    private static final Map<String, ArmorBase> MODELS = new HashMap<>();
+    private static final Map<Item, ArmorBase> MODELS = new HashMap<>();
 
-    public synchronized static <T extends ArmorBase> void registerModel(ResourceLocation id, T model)
+    public synchronized static <T extends ArmorBase> void registerModel(Item item, T model)
     {
-        MODELS.putIfAbsent(id.toString(), model);
+        MODELS.putIfAbsent(item, model);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class VestLayerRender<T extends PlayerEntity, M extends BipedModel<T>> ex
             ItemStack armor = WearableHelper.PlayerWornRig(player);
             stack.push();
             {
-                ResourceLocation modelName = armor.getItem().getRegistryName();
+                Item modelName = armor.getItem();
                 ArmorBase model = MODELS.get(modelName);
                 if(model == null)
                 {

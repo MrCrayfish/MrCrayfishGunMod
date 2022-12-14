@@ -68,6 +68,10 @@ public final class KeyBind
 	KeyBind( String name, int keyCode, Type... inputType ) {
 		this( name, "key.categories.tac", keyCode, inputType );
 	}
+
+	public int getKeyCode() {
+		return keyCode.getKeyCode();
+	}
 	
 	/**
 	 * @see #KeyBind(String, int, Type...)

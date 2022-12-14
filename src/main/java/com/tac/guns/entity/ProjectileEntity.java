@@ -16,6 +16,7 @@ import com.tac.guns.interfaces.IExplosionDamageable;
 import com.tac.guns.interfaces.IHeadshotBox;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.*;
 import com.tac.guns.util.BufferUtil;
@@ -39,6 +40,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SExplosionPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
@@ -505,17 +508,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
-
-        // Apply a part of damage anyway, also adjust damage, I want damage to be consistent with stats values, separated for Config check, and damageSource modification, without constant copy pasting of code,
-        /*if(Config.COMMON.gameplay.armorBluntDamage.get()) {
-            tac_attackWithBluntDamage(source.setDamageIsAbsolute(), entity, damage);
-            damage *= (1.0-this.modifiedGun.getProjectile().getBluntDamagePercentage());
-        }*/
-
         if(entity instanceof PlayerEntity && WearableHelper.PlayerWornRig((PlayerEntity) entity) != null)
         {
-            ItemStack rig = WearableHelper.PlayerWornRig((PlayerEntity) entity);
-            if(!WearableHelper.tickFromCurrentDurability(rig, this))
+            if(!WearableHelper.tickFromCurrentDurability((PlayerEntity) entity, this))
                 PacketHandler.getPlayChannel().sendTo(new MessagePlayerShake((PlayerEntity) entity), ((ServerPlayerEntity)entity).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
             else {
                 tac_attackEntity(source, entity, damage);

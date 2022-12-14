@@ -326,7 +326,7 @@ public class GunMod
             @Override
             public INBT writeNBT(Capability<IAmmoItemHandler> capability, IAmmoItemHandler instance, Direction side) {
                 ListNBT nbtTagList = new ListNBT();
-                int size = instance.getSlots();
+                int size = instance.getNumOfRows();
                 for (int i = 0; i < size; i++) {
                     ItemStack stack = instance.getStackInSlot(i);
                     if (!stack.isEmpty()) {
@@ -349,7 +349,7 @@ public class GunMod
                     CompoundNBT itemTags = tagList.getCompound(i);
                     int j = itemTags.getInt("Slot");
 
-                    if (j >= 0 && j < instance.getSlots()) {
+                    if (j >= 0 && j < instance.getNumOfRows()) {
                         itemHandlerModifiable.setStackInSlot(j, ItemStack.read(itemTags));
                     }
                 }

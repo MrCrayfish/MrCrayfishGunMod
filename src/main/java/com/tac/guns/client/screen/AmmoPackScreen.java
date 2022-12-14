@@ -11,7 +11,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public class AmmoPackScreen extends ContainerScreen<ArmorRigContainer> implements IHasContainer<ArmorRigContainer> {
     private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
-    private final int inventorySlots;
     private final int rows;
 
     public AmmoPackScreen(ArmorRigContainer container, PlayerInventory playerInventory, ITextComponent title) {
@@ -19,8 +18,7 @@ public class AmmoPackScreen extends ContainerScreen<ArmorRigContainer> implement
         this.passEvents = false;
         int i = 222;
         int j = 114;
-        this.inventorySlots = container.getNumRows();
-        this.rows = (inventorySlots % 9 > 0 ? inventorySlots/9+1 : inventorySlots/9);
+        this.rows = container.getNumRows();
         this.ySize = 114 + rows * 18;
         this.playerInventoryTitleY = this.ySize - 94;
     }

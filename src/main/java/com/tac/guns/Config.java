@@ -77,6 +77,7 @@ public class Config
 
         public final ForgeConfigSpec.IntValue cameraShakeOnHit;
         public final ForgeConfigSpec.BooleanValue cameraShakeOptionGlobal;
+        public final ForgeConfigSpec.BooleanValue cameraShakeOnFire;
         public Display(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for display related options").push("display");
@@ -92,6 +93,7 @@ public class Config
                 this.sight1xRealisticPosition = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to be viewed realisticly, with the players head static for iron sights, and 1x optics").define("sight1xRealisticPostion", false);
                 this.cameraShakeOnHit = builder.comment("Shake camera when hit, 0 = no camera shake when you are hit, while holding a gun, meant to help reduce jarring feel when attempting to aim.").defineInRange("cameraShakeOnHit", 6, 0, 10);
                 this.cameraShakeOptionGlobal = builder.comment("Enable the cameraShakeOnHit option to always take effect, holding a gun or not, keep false for vanilla gameplay to remain vanilla.").define("cameraShakeOptionGlobal", false);
+                this.cameraShakeOnFire = builder.comment("Shake camera when firing the weapon, currently in beta but will be expanded on in the future, if it causes vomit, DISABLE, else enjoy!").define("cameraShakeOnFire", true);
             }
             builder.pop();
         }
@@ -330,6 +332,9 @@ public class Config
         public final ForgeConfigSpec.BooleanValue renderTaCArmor;
         public final ForgeConfigSpec.BooleanValue armorBluntDamage;
 
+        public final ForgeConfigSpec.BooleanValue forceCameraShakeOnFire;
+
+
         public Gameplay(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Properties relating to gameplay").push("gameplay");
@@ -359,6 +364,10 @@ public class Config
                 this.renderTaCArmor = builder.comment("Enable rendering of TaC armor on the player, useful if other armors are taking priority, doesn't fit gameplay theme, or not performant enough.").define("renderTaCArmor",
                         true);
                 this.armorBluntDamage = builder.comment("All weapons have a percentage of damage applied, no matter the class match up, false means blunt damage is never applied before armor calc.").define("armorBluntDamage", true);
+
+                this.forceCameraShakeOnFire = builder.comment("Force camera shake on for all players, since control over the weapon is reduced with this off, having a client only options could lead to balance issues.").define("forceCameraShakeOnFire",
+                        false);
+
             }
             builder.pop();
         }

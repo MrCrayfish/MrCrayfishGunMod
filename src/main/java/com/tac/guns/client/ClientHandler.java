@@ -213,9 +213,10 @@ public class ClientHandler
         ModelOverrides.register(ModItems.MINI_DOT.get(), new MiniDotSightModel());
         ModelOverrides.register(ModItems.MICRO_HOLO_SIGHT.get(), new MicroHoloSightModel());
 
-        VestLayerRender.registerModel(ModItems.LIGHT_ARMOR.getId(), new ModernArmor());
-        VestLayerRender.registerModel(ModItems.MEDIUM_STEEL_ARMOR.getId(), new MediumArmor());
-        VestLayerRender.registerModel(ModItems.CARDBOARD_ARMOR_FUN.getId(), new CardboardArmor());
+        // Armor registry, kept manual cause nice and simple, requires registry on client side only
+        VestLayerRender.registerModel(ModItems.LIGHT_ARMOR.get(), new ModernArmor());
+        VestLayerRender.registerModel(ModItems.MEDIUM_STEEL_ARMOR.get(), new MediumArmor());
+        //VestLayerRender.registerModel(ModItems.CARDBOARD_ARMOR_FUN.get(), new CardboardArmor());
     }
 
     private static void registerScreenFactories()

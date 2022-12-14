@@ -1,18 +1,16 @@
 package com.tac.guns.item.TransitionalTypes.wearables;
 
 import com.tac.guns.Reference;
+import com.tac.guns.client.InputHandler;
 import com.tac.guns.common.NetworkRigManager;
 import com.tac.guns.common.Rig;
-import com.tac.guns.inventory.gear.GearSlotsHandler;
-import com.tac.guns.inventory.gear.InventoryListener;
-import com.tac.guns.inventory.gear.WearableCapabilityProvider;
 import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
 import com.tac.guns.inventory.gear.armor.ArmorRigContainerProvider;
 import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
 import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
 import com.tac.guns.util.RigEnchantmentHelper;
 import com.tac.guns.util.WearableHelper;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,14 +21,20 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkHooks;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 import java.util.WeakHashMap;
 
@@ -38,19 +42,20 @@ import java.util.WeakHashMap;
 public class ArmorRigItem extends Item implements IArmoredRigItem {
     public ArmorRigItem(Properties properties) {
         super(properties);
-        numOfSlots = 9;
+        numOfRows = 1;
     }
 
-    private final int numOfSlots;
-    public int getSlots() {
-        return this.numOfSlots;
+    private final int numOfRows;
+    public int getNumOfRows() {
+        return this.numOfRows;
     }
 
-    public ArmorRigItem(/*String model, */int slots, Properties properties)
+    public ArmorRigItem(/*String model, */int rows, Properties properties)
     {
         super(properties);
         //this.armorModelName = model;
-        this.numOfSlots = slots;
+        this.numOfRows = rows
+        ;
     }
     private ArmorRigContainerProvider containerProvider;
     @Override
@@ -82,14 +87,16 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
         return this.rig;
     }
 
-    /*@Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flag)
-    {
-        if(this.rig != null || stack.getTag() != null) {
-            tooltip.add(new TranslationTextComponent("info.tac.attachment_help",
-                    new KeybindTextComponent("key.tac.attachments").getString().toUpperCase(Locale.ENGLISH) + " | " + stack.getOrCreateTag().getFloat("RigDurability") + " | " + this.rig.getRepair().getItem()).mergeStyle(TextFormatting.YELLOW));
-        }
-    }*/
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flag) {
+       super.addInformation(stack, worldIn, tooltip, flag);
+
+       tooltip.add(new TranslationTextComponent("info.tac.current_armor_amount").append(new TranslationTextComponent(ItemStack.DECIMALFORMAT.format(WearableHelper.GetCurrentDurability(stack))+"")).mergeStyle(TextFormatting.BLUE));
+       int scancode = GLFW.glfwGetKeyScancode(InputHandler.ARMOR_REPAIRING.getKeyCode());
+       if(GLFW.glfwGetKeyName(InputHandler.ARMOR_REPAIRING.getKeyCode(),scancode) != null)
+           tooltip.add((new TranslationTextComponent("info.tac.tac_armor_repair1").append(new TranslationTextComponent(GLFW.glfwGetKeyName(InputHandler.ARMOR_REPAIRING.getKeyCode(), scancode)).mergeStyle(TextFormatting.AQUA)).append(new TranslationTextComponent("info.tac.tac_armor_repair2"))).mergeStyle(TextFormatting.YELLOW));
+    }
 
     @Override
     public boolean shouldSyncTag() {return true;}

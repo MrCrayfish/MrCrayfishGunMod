@@ -1,32 +1,25 @@
 package com.tac.guns.common;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.sun.jna.platform.win32.WinNT;
 import com.tac.guns.Reference;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageGunSound;
 import com.tac.guns.util.GunEnchantmentHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.lang.reflect.Array;
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**

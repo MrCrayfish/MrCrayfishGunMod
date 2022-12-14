@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    "iIi",
+    "iii"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:leather"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "result": {
+    "item": "tac:light_armor",
+    "count": 1}
+}

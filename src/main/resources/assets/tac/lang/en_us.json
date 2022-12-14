@@ -103,6 +103,11 @@
     "item.tac.ae50": ".50 AE",
     "item.tac.lapua338": ".338 Lapua",
 
+    "item.tac.cardboard_armor": "Cardboard Armor",
+    "item.tac.light_armor": "Light Modern Armor",
+    "item.tac.medium_steel_armor": "Medium Steel Armor",
+    "item.tac.light_armor_plate": "Armor Repair Plate",
+
     "item.tac.light_grenade": "F1 Grenade",
     "item.tac.baseball_grenade": "M67 Grenade",
     "item.tac.grenade40mm": "40mm Grenade",
@@ -238,6 +243,9 @@
     "info.tac.firemode_auto": "<AUTO>, press %s to change fire mode",
 
     "info.tac.attachment_help": "Press %s in-game for Attachments",
+    "info.tac.tac_armor_repair1": "Hold your ",
+    "info.tac.tac_armor_repair2": " in-game to repair Armor",
+    "info.tac.current_armor_amount": "Current Armor Durability: ",
 
     "key.categories.tac": "Timeless and Classic Guns",
 
@@ -259,6 +267,8 @@
 	"key.tac.co": "Co-key",
 	"key.tac.co_unload": "Co-Unload",
 	"key.tac.co_inspect": "Co-Inspect",
+
+    "key.tac.armor_repairing": "Armor Repairing",
 
     "effect.tac.blinded": "Blinded",
     "effect.tac.deafened": "Deafened",

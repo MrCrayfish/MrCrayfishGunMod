@@ -107,7 +107,7 @@ public class HUDRenderingHandler extends AbstractGui {
             this.ammoReserveCount = ReloadTracker.calcMaxReserveAmmo(Gun.findAmmo(Minecraft.getInstance().player, gunItem.getGun().getProjectile().getItem()));
 
 
-            ItemStack stack = WearableHelper.PlayerWornRig(Minecraft.getInstance().player);
+            /*ItemStack stack = WearableHelper.PlayerWornRig(Minecraft.getInstance().player);
             if (stack != null) {
                 ListNBT tagList = ((ArmorRigItem) stack.getItem()).getShareTag(stack).getCompound("storage").getList("Items", Constants.NBT.TAG_COMPOUND); // Items
                 player.sendStatusMessage(new TranslationTextComponent("" + tagList.getString()), true);
@@ -122,7 +122,8 @@ public class HUDRenderingHandler extends AbstractGui {
                     }
                 }
             }
-            ammoReserveCount += rigReserveCount;
+            ammoReserveCount += rigReserveCount;*/
+
         }
 
     }
@@ -308,7 +309,7 @@ public class HUDRenderingHandler extends AbstractGui {
             stack.pop();
         }
 
-        if(ArmorInteractionHandler.get().isRepairing())//Replace with reload bar checker
+        /*if(ArmorInteractionHandler.get().isRepairing())//Replace with reload bar checker
         {
             // FireMode rendering
             RenderSystem.enableAlphaTest();
@@ -331,7 +332,7 @@ public class HUDRenderingHandler extends AbstractGui {
             buffer.finishDrawing();
             WorldVertexBufferUploader.draw(buffer);
             stack.pop();
-        }
+        }*/
 
 
 

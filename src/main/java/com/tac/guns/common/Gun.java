@@ -566,7 +566,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public int getAdditionalReloadEmptyMagTimer()
         {
-            return (Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.additionalReloadEmptyMagTimer + GunEditor.get().getAdditionalReloadEmptyMagTimerMod()) : this.additionalReloadEmptyMagTimer;
+            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() &&  GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.additionalReloadEmptyMagTimer + GunEditor.get().getAdditionalReloadEmptyMagTimerMod()) : this.additionalReloadEmptyMagTimer;
         }
         /**
          * @return The amount of ammo to add to the weapon each reload cycle

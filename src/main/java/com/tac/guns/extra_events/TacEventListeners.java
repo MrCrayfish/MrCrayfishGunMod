@@ -85,7 +85,7 @@ public class TacEventListeners {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void handleArmor(LivingDeathEvent event)
+    public static void handleDeathWithArmor(LivingDeathEvent event)
     {
         if(event.getEntity() instanceof PlayerEntity)
         {

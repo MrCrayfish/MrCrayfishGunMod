@@ -5,8 +5,14 @@ import com.tac.guns.entity.ProjectileEntity;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
 import com.tac.guns.inventory.gear.InventoryListener;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
+import com.tac.guns.network.PacketHandler;
+import com.tac.guns.network.message.MessageGunSound;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
@@ -47,16 +53,26 @@ public class WearableHelper
         return false;
     }
 
-    public static boolean tickFromCurrentDurability(ItemStack rig, ProjectileEntity proj)
+    public static boolean tickFromCurrentDurability(PlayerEntity player, ProjectileEntity proj)
     {
+        ItemStack rig = PlayerWornRig(player);
         float og = rig.getTag().getFloat("RigDurability");
         rig.getTag().remove("RigDurability");
+
+        if(og == 0)
+            return true;
         if(og - proj.getDamage() > 0)
             rig.getTag().putFloat("RigDurability", og - proj.getDamage());
-        else{
+        else if (og - proj.getDamage() < 0) {
+            ResourceLocation brokenSound = ((ArmorRigItem)rig.getItem()).getRig().getSounds().getBroken();
+            if (brokenSound != null) {
+                MessageGunSound messageSound = new MessageGunSound(brokenSound, SoundCategory.PLAYERS, (float) player.getPosX(), (float) (player.getPosY() + 1.0), (float) player.getPosZ(), 1.5F, 1F, player.getEntityId(), false, false);
+                PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), messageSound);
+            }
             rig.getTag().putFloat("RigDurability", 0);
-            return true;
+            return false;
         }
+
         return false;
     }
 
