@@ -4,6 +4,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
 import com.tac.guns.client.render.animation.Ak47AnimationController;
+import com.tac.guns.client.render.animation.M1911AnimationController;
+import com.tac.guns.client.render.animation.MK47AnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -31,59 +34,69 @@ import net.minecraft.util.math.vector.Vector3f;
 public class mk47_animation implements IOverrideModel {
 
     @Override
-    public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay)
-    {
-        if (Gun.getScope(stack) == null)
-        {
-             RenderUtil.renderModel(SpecialModels.MK47_FSU.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else
-        {
-            RenderUtil.renderModel(SpecialModels.MK47_FS.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        if (Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.LIGHT_STOCK.orElse(ItemStack.EMPTY.getItem())) {
-            RenderUtil.renderModel(SpecialModels.MK47_LIGHT_STOCK.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        if (Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.TACTICAL_STOCK.orElse(ItemStack.EMPTY.getItem())) {
-            RenderUtil.renderModel(SpecialModels.MK47_TACTICAL_STOCK.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        if (Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.WEIGHTED_STOCK.orElse(ItemStack.EMPTY.getItem())) {
-            RenderUtil.renderModel(SpecialModels.MK47_HEAVY_STOCK.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem()))
-        {
-            matrices.push();
-            matrices.translate(0, 0, -0.1f);
-            RenderUtil.renderModel(SpecialModels.MK47_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-            matrices.translate(0, 0, 0.1f);
-            matrices.pop();
+    public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay) {
 
-        } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem())) {
-            RenderUtil.renderModel(SpecialModels.MK47_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-        } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.orElse(ItemStack.EMPTY.getItem())) {
-            RenderUtil.renderModel(SpecialModels.MK47_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else // Default
+        MK47AnimationController controller = MK47AnimationController.getInstance();
+        matrices.push();
         {
-            RenderUtil.renderModel(SpecialModels.MK47_DEFAULT_BARREL.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
+            controller.applySpecialModelTransform(SpecialModels.MK47_BODY.getModel(),MK47AnimationController.INDEX_BODY,transformType,matrices);
+            if (Gun.getScope(stack) == null) {
+                RenderUtil.renderModel(SpecialModels.MK47_FSU.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else {
+                RenderUtil.renderModel(SpecialModels.MK47_FS.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            if (Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.LIGHT_STOCK.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.MK47_LIGHT_STOCK.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            if (Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.TACTICAL_STOCK.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.MK47_TACTICAL_STOCK.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            if (Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.WEIGHTED_STOCK.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.MK47_HEAVY_STOCK.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem())) {
+                matrices.push();
+                matrices.translate(0, 0, -0.1f);
+                RenderUtil.renderModel(SpecialModels.MK47_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+                matrices.translate(0, 0, 0.1f);
+                matrices.pop();
 
-        if(EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0)
-        {
-            RenderUtil.renderModel(SpecialModels.MK47_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.MK47_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.MK47_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else // Default
+            {
+                RenderUtil.renderModel(SpecialModels.MK47_DEFAULT_BARREL.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+
+            RenderUtil.renderModel(SpecialModels.MK47_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
-        else
-        {
-            RenderUtil.renderModel(SpecialModels.MK47_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        RenderUtil.renderModel(SpecialModels.MK47_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
+        matrices.pop();
 
         matrices.push();
-        CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
-        matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1));
-        matrices.translate(0, 0, 0.025f);
-        RenderUtil.renderModel(SpecialModels.MK47_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+        {
+            controller.applySpecialModelTransform(SpecialModels.MK47_BODY.getModel(),MK47AnimationController.INDEX_MAGAZINE,transformType,matrices);
+            if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
+                RenderUtil.renderModel(SpecialModels.MK47_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else {
+                RenderUtil.renderModel(SpecialModels.MK47_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+        }
         matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.MK47_BODY.getModel(),MK47AnimationController.INDEX_BOLT,transformType,matrices);
+            RenderUtil.renderModel(SpecialModels.MK47_PULL.getModel(), stack, matrices, renderBuffer, light, overlay);
+
+            CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
+            float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
+            matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1));
+            matrices.translate(0, 0, 0.025f);
+            RenderUtil.renderModel(SpecialModels.MK47_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
 }

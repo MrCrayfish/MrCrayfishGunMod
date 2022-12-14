@@ -72,20 +72,18 @@ public class m1911_animation implements IOverrideModel {
             controller.applySpecialModelTransform(SpecialModels.M1911.getModel(),M1911AnimationController.INDEX_SLIDE,transformType,matrices);
             AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
             boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
-            if (Gun.hasAmmo(stack) || shouldOffset) {
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.240f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-                GunRenderingHandler.get().opticMovement = 0.240f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
-            } else if (!Gun.hasAmmo(stack)) {
-                if (cooldownOg > 0.5) {
-                    // Math provided by Bomb787 on GitHub and Curseforge!!!
-                    matrices.translate(0, 0, 0.240f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-                    GunRenderingHandler.get().opticMovement = 0.240f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
-                } else {
-                    matrices.translate(0, 0, 0.260f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
-                    GunRenderingHandler.get().opticMovement = 0.260f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0);
-                }
+
+            if(Gun.hasAmmo(stack) || shouldOffset)
+            {
+                matrices.translate(0, 0, 0.1925f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                GunRenderingHandler.get().opticMovement = 0.1925f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
             }
+            else if(!Gun.hasAmmo(stack))
+            {
+                matrices.translate(0, 0, 0.1925f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+                GunRenderingHandler.get().opticMovement = 0.1925f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0);
+            }
+
             matrices.translate(0.00, 0.0, -0.008);
             RenderUtil.renderModel(SpecialModels.M1911_SLIDE.getModel(), stack, matrices, renderBuffer, light, overlay);
         }

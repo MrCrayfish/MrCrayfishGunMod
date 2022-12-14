@@ -742,5 +742,30 @@
       "sounds": [
          { "name": "tac:animation/m1911_norm_reload"}
       ]
+   },
+
+   "animation.mk47_draw": {
+      "subtitle": "animation.mk47_draw",
+      "sounds": [
+         { "name": "tac:animation/mk47_draw"}
+      ]
+   },
+   "animation.mk47_empty_reload": {
+      "subtitle": "animation.mk47_empty_reload",
+      "sounds": [
+         { "name": "tac:animation/mk47_empty_reload"}
+      ]
+   },
+   "animation.mk47_inspect": {
+      "subtitle": "animation.mk47_inspect",
+      "sounds": [
+         { "name": "tac:animation/mk47_inspect"}
+      ]
+   },
+   "animation.mk47_norm_reload": {
+      "subtitle": "animation.mk47_norm_reload",
+      "sounds": [
+         { "name": "tac:animation/mk47_norm_reload"}
+      ]
    }
 }
