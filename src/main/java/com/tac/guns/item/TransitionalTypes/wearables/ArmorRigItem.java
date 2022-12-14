@@ -105,6 +105,7 @@ public class ArmorRigItem extends Item implements IArmoredRigItem {
     @Override
     public CompoundNBT getShareTag(ItemStack stack)
     {
+        stack.getOrCreateTag();
         CompoundNBT nbt = super.getShareTag(stack);
         if (stack.getItem() instanceof ArmorRigItem) {
             RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();

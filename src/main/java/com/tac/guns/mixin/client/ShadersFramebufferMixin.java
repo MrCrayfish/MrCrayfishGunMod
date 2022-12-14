@@ -73,7 +73,7 @@ public class ShadersFramebufferMixin
     /**
      * bindColorImage
      */
-    @Dynamic("Added by OptiFine")
+    /*@Dynamic("Added by OptiFine")
     @Inject(
             method = "renderFinal",
             at = @At(value = "TAIL", ordinal = 0),
@@ -82,9 +82,9 @@ public class ShadersFramebufferMixin
             remap = false // OptiFine added method
     )
     private static void tac_getMappedShaderImage(CallbackInfo ci) {
-        if(ScreenTextureState.instance() != null && Minecraft.getInstance().player != null && Minecraft.getInstance().world != null/* && !OptifineHelper.isRenderingFirstPersonHand()*/) {
+        if(ScreenTextureState.instance() != null && Minecraft.getInstance().player != null && Minecraft.getInstance().world != null*//* && !OptifineHelper.isRenderingFirstPersonHand()*//*) {
             //OptifineHelper.setSkipRenderHands();
             ScreenTextureState.instance().SetImageFromOptifine();
         }
-    }
+    }*/
 }
