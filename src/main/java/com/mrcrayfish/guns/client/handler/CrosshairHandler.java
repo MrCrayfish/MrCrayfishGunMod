@@ -16,6 +16,8 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -112,9 +114,10 @@ public class CrosshairHandler
             return;
 
         Crosshair crosshair = this.getCurrentCrosshair();
-        if(AimingHandler.get().getNormalisedAdsProgress() > 0)
+        if(AimingHandler.get().getNormalisedAdsProgress() > 0.5)
         {
             event.setCanceled(true);
+            return;
         }
 
         if(crosshair == null || crosshair.isDefault())
@@ -164,5 +167,19 @@ public class CrosshairHandler
             return;
 
         crosshair.onGunFired();
+    }
+
+    /* Updates the crosshair if the config is reloaded. */
+    public static void onConfigReload(ModConfigEvent.Reloading event)
+    {
+        ModConfig config = event.getConfig();
+        if(config.getType() == ModConfig.Type.CLIENT && config.getModId().equals(Reference.MOD_ID))
+        {
+            ResourceLocation id = ResourceLocation.tryParse(Config.CLIENT.display.crosshair.get());
+            if(id != null)
+            {
+                CrosshairHandler.get().setCrosshair(id);
+            }
+        }
     }
 }

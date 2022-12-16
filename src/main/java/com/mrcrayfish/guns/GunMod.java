@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.SpecialModels;
+import com.mrcrayfish.guns.client.handler.CrosshairHandler;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
@@ -92,6 +93,7 @@ public class GunMod
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(KeyBinds::registerKeyMappings);
             bus.addListener(SpecialModels::registerAdditional);
+            bus.addListener(CrosshairHandler::onConfigReload);
         });
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
