@@ -1,46 +1,41 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "cgm:stun_grenade"
-    ]
-  },
   "criteria": {
-    "has_iron_ingot": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:nuggets/iron"
-          }
-        ]
-      }
-    },
-    "has_gunpowder": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:gunpowder"
-          }
-        ]
-      }
-    },
     "has_glowstone": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:dusts/glowstone"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_gunpowder": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:gunpowder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_iron_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:nuggets/iron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
         "recipe": "cgm:stun_grenade"
-      }
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
@@ -50,5 +45,10 @@
       "has_glowstone",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cgm:stun_grenade"
+    ]
+  }
 }

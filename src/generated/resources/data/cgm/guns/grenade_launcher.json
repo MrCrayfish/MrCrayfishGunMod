@@ -1,38 +1,20 @@
 {
-  "general": {
-    "rate": 20,
-    "gripType": "cgm:two_handed",
-    "maxAmmo": 1,
-    "recoilAngle": 5.0,
-    "recoilKick": 1.0,
-    "recoilDurationOffset": 0.25
-  },
-  "projectile": {
-    "item": "cgm:grenade",
-    "visible": true,
-    "damage": 15.0,
-    "size": 0.2,
-    "speed": 1.5,
-    "life": 50,
-    "gravity": true
-  },
-  "sounds": {
-    "fire": "cgm:item.grenade_launcher.fire",
-    "reload": "cgm:item.pistol.reload"
-  },
   "display": {
     "flash": {
+      "size": 0.75,
       "yOffset": 3.5,
-      "zOffset": -3.8,
-      "size": 0.75
+      "zOffset": -3.8
     }
   },
+  "general": {
+    "gripType": "cgm:two_handed",
+    "maxAmmo": 1,
+    "rate": 20,
+    "recoilAngle": 5.0,
+    "recoilDurationOffset": 0.25,
+    "recoilKick": 1.0
+  },
   "modules": {
-    "zoom": {
-      "yOffset": 5.7,
-      "zOffset": 3.0,
-      "fovModifier": 0.6
-    },
     "attachments": {
       "scope": {
         "yOffset": 5.2,
@@ -42,6 +24,24 @@
         "yOffset": 3.6,
         "zOffset": 8.2
       }
+    },
+    "zoom": {
+      "fovModifier": 0.6,
+      "yOffset": 5.7,
+      "zOffset": 3.0
     }
+  },
+  "projectile": {
+    "damage": 15.0,
+    "gravity": true,
+    "item": "cgm:grenade",
+    "life": 50,
+    "size": 0.2,
+    "speed": 1.5,
+    "visible": true
+  },
+  "sounds": {
+    "fire": "cgm:item.grenade_launcher.fire",
+    "reload": "cgm:item.pistol.reload"
   }
 }

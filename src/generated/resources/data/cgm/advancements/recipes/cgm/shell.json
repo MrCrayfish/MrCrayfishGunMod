@@ -1,13 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "cgm:shell"
-    ]
-  },
   "criteria": {
     "has_copper_ingot": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -16,33 +10,34 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_gold_nugget": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:nuggets/gold"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_gunpowder": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:gunpowder"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
         "recipe": "cgm:shell"
-      }
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
@@ -52,5 +47,10 @@
       "has_gunpowder",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cgm:shell"
+    ]
+  }
 }

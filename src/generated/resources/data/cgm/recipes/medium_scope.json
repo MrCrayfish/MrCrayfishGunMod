@@ -2,16 +2,16 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "tag": "forge:nuggets/iron",
-      "count": 4
+      "count": 4,
+      "tag": "forge:nuggets/iron"
     },
     {
-      "tag": "forge:glass_panes",
-      "count": 1
+      "count": 1,
+      "tag": "forge:glass_panes"
     },
     {
-      "tag": "forge:dusts/redstone",
-      "count": 4
+      "count": 4,
+      "tag": "forge:dusts/redstone"
     }
   ],
   "result": {

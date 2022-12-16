@@ -1,36 +1,36 @@
 {
+  "display": {
+    "flash": {
+      "size": 2.0,
+      "yOffset": 4.3,
+      "zOffset": -8.01
+    }
+  },
   "general": {
-    "rate": 80,
     "gripType": "cgm:bazooka",
     "maxAmmo": 1,
+    "rate": 80,
     "recoilAngle": 10.0,
     "recoilDurationOffset": 0.25
   },
+  "modules": {
+    "zoom": {
+      "fovModifier": 0.5,
+      "xOffset": 3.5,
+      "yOffset": 4.3,
+      "zOffset": 16.0
+    }
+  },
   "projectile": {
-    "item": "cgm:missile",
-    "visible": true,
     "damage": 25.0,
+    "item": "cgm:missile",
+    "life": 150,
     "size": 0.2,
     "speed": 2.0,
-    "life": 150
+    "visible": true
   },
   "sounds": {
     "fire": "cgm:item.bazooka.fire",
     "reload": "cgm:item.pistol.reload"
-  },
-  "display": {
-    "flash": {
-      "yOffset": 4.3,
-      "zOffset": -8.01,
-      "size": 2.0
-    }
-  },
-  "modules": {
-    "zoom": {
-      "xOffset": 3.5,
-      "yOffset": 4.3,
-      "zOffset": 16.0,
-      "fovModifier": 0.5
-    }
   }
 }

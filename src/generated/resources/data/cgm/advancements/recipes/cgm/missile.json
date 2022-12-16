@@ -1,36 +1,31 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "cgm:missile"
-    ]
-  },
   "criteria": {
-    "has_iron_ingot": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:nuggets/iron"
-          }
-        ]
-      }
-    },
     "has_gunpowder": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:gunpowder"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_iron_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:nuggets/iron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
         "recipe": "cgm:missile"
-      }
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
@@ -39,5 +34,10 @@
       "has_gunpowder",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cgm:missile"
+    ]
+  }
 }

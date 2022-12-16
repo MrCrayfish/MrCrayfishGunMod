@@ -2,16 +2,16 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "tag": "forge:ingots/iron",
-      "count": 44
+      "count": 44,
+      "tag": "forge:ingots/iron"
     },
     {
-      "item": "minecraft:redstone",
-      "count": 4
+      "count": 4,
+      "item": "minecraft:redstone"
     },
     {
-      "tag": "forge:dyes/red",
-      "count": 1
+      "count": 1,
+      "tag": "forge:dyes/red"
     }
   ],
   "result": {

@@ -2,12 +2,12 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "tag": "forge:nuggets/iron",
-      "count": 8
+      "count": 8,
+      "tag": "forge:nuggets/iron"
     },
     {
-      "item": "minecraft:gray_wool",
-      "count": 1
+      "count": 1,
+      "item": "minecraft:gray_wool"
     }
   ],
   "result": {

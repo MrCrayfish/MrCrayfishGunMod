@@ -2,16 +2,16 @@
   "type": "cgm:workbench",
   "materials": [
     {
-      "tag": "forge:nuggets/iron",
-      "count": 1
+      "count": 1,
+      "tag": "forge:nuggets/iron"
     },
     {
-      "tag": "forge:gunpowder",
-      "count": 4
+      "count": 4,
+      "tag": "forge:gunpowder"
     }
   ],
   "result": {
-    "item": "cgm:grenade",
-    "count": 2
+    "count": 2,
+    "item": "cgm:grenade"
   }
 }
