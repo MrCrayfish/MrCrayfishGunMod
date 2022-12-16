@@ -135,11 +135,6 @@ public class GunMod
 
     public static boolean isDebugging()
     {
-        return true || !FMLEnvironment.production && debugging;
-    }
-
-    public static void setDebugging(boolean debugging)
-    {
-        GunMod.debugging = debugging;
+        return !FMLEnvironment.production;
     }
 }
