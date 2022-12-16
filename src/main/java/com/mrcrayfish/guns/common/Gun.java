@@ -19,6 +19,7 @@ import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.util.GunJsonUtil;
+import com.mrcrayfish.guns.util.SuperBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -944,31 +945,33 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
                 return new Builder();
             }
 
-            public static class Builder extends Positioned.Builder
-            {
-                private final Zoom zoom;
+            public static class Builder extends AbstractBuilder<Builder> {}
 
-                protected Builder()
+            protected static abstract class AbstractBuilder<T extends AbstractBuilder<T>> extends Positioned.AbstractBuilder<T>
+            {
+                protected final Zoom zoom;
+
+                protected AbstractBuilder()
                 {
                     this(new Zoom());
                 }
 
-                protected Builder(Zoom zoom)
+                protected AbstractBuilder(Zoom zoom)
                 {
                     super(zoom);
                     this.zoom = zoom;
                 }
 
-                public Builder setFovModifier(float fovModifier)
+                public T setFovModifier(float fovModifier)
                 {
                     this.zoom.fovModifier = fovModifier;
-                    return this;
+                    return this.self();
                 }
 
-                public Builder setAnimation(SightAnimation.Builder builder)
+                public T setAnimation(SightAnimation.Builder builder)
                 {
                     this.zoom.sightAnimation = builder.build();
-                    return this;
+                    return this.self();
                 }
 
                 @Override
@@ -1242,46 +1245,49 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             return positioned;
         }
 
-        public static class Builder
+        public static class Builder extends AbstractBuilder<Builder> {}
+
+        protected static abstract class AbstractBuilder<T extends AbstractBuilder<T>> extends SuperBuilder<Positioned, T>
         {
             private final Positioned positioned;
 
-            private Builder()
+            private AbstractBuilder()
             {
                 this(new Positioned());
             }
 
-            protected Builder(Positioned positioned)
+            protected AbstractBuilder(Positioned positioned)
             {
                 this.positioned = positioned;
             }
 
-            public Builder setOffset(double xOffset, double yOffset, double zOffset)
+            public T setOffset(double xOffset, double yOffset, double zOffset)
             {
                 this.positioned.xOffset = xOffset;
                 this.positioned.yOffset = yOffset;
                 this.positioned.zOffset = zOffset;
-                return this;
+                return this.self();
             }
 
-            public Builder setXOffset(double xOffset)
+            public T setXOffset(double xOffset)
             {
                 this.positioned.xOffset = xOffset;
-                return this;
+                return this.self();
             }
 
-            public Builder setYOffset(double yOffset)
+            public T setYOffset(double yOffset)
             {
                 this.positioned.yOffset = yOffset;
-                return this;
+                return this.self();
             }
 
-            public Builder setZOffset(double zOffset)
+            public T setZOffset(double zOffset)
             {
                 this.positioned.zOffset = zOffset;
-                return this;
+                return this.self();
             }
 
+            @Override
             public Positioned build()
             {
                 return this.positioned.copy();
