@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InventoryScreen.class)
 public class InventoryScreenMixin {
 
-    // Refactor to be customizable, refactor armor to be curios compatible, and refactor to be either customizable, or able to be turned off, due to conflicts with other mods.
+    // Refactor to be customizable, refactor armor to be curiosLoaded compatible, and refactor to be either customizable, or able to be turned off, due to conflicts with other mods.
     @Inject(at = @At("TAIL"), method = "drawGuiContainerBackgroundLayer(Lcom/mojang/blaze3d/matrix/MatrixStack;FII)V")
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y, CallbackInfo ci) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

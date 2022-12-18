@@ -203,9 +203,6 @@ public enum SpecialModels
     M4_LIGHT_STOCK("m4_light_stock"),
     M1A1_SMG_BODY("m1a1_smg"),
     M1A1_SMG_BOLT("m1a1_smg_bolt"),
-    MK14_BODY("mk14"),
-    MK14_BOLT("mk14_bolt"),
-    MK14_FLASHLIGHT("mk14_flashlight"),
     SPAS_12_BODY("spas_12"),
     SPAS_12_BOLT("spas_12_bolt"),
     SPAS_12_PUMP("spas_12_pump"),
@@ -576,7 +573,16 @@ public enum SpecialModels
     Sx8_BODY("optics/8x_scope"),
     //Everything from this point on is all LOD renders
 
-    M1911_LOD("lods/m1911_lod");
+    M1911_LOD("lods/m1911_lod"),
+    // Tests to create new auto registry per gunAnimationFile, registries per file still need to be here anyway? f me
+    MK14_BODY1 ("mk14"),
+    BOLT1("mk14_bolt"),
+    STANDARD_MAG1 ("mk14_standard_mag"),
+    EXTENDED_MAG1("mk14_extended_mag"),
+    T_GRIP1("mk14_tac_grip"),
+    L_GRIP1 ("mk14_light_grip"),
+    SCOPE_MOUNT1 ("mk14_mount"),
+    BOLT_HANDLE1 ("mk14_bolt_handle");
 
     /**
      * The location of an item model in the [MOD_ID]/models/special/[NAME] folder
@@ -600,6 +606,16 @@ public enum SpecialModels
      * @param modelName name of the model file
      */
     SpecialModels(String modelName)
+    {
+        this(new ResourceLocation(Reference.MOD_ID, "special/" + modelName), true);
+    }
+
+    /**
+     * Sets the model's location
+     *
+     * @param modelName name of the model file
+     */
+    SpecialModels(SpecialModel modelName)
     {
         this(new ResourceLocation(Reference.MOD_ID, "special/" + modelName), true);
     }

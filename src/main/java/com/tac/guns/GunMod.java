@@ -37,6 +37,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
@@ -45,10 +46,14 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypeMessage;
+import top.theillusivec4.curios.api.SlotTypePreset;
 
 import java.lang.reflect.Field;
 import java.util.Locale;
@@ -57,8 +62,8 @@ import java.util.Locale;
 public class GunMod
 {
     public static boolean controllableLoaded = false;
+    public static boolean curiosLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    public static boolean cabLoaded = false;
 
     public static final ItemGroup GROUP = new  ItemGroup(Reference.MOD_ID)
     {
@@ -221,6 +226,8 @@ public class GunMod
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        // Do so right away, I want to make sure I hit this during Curios load
+        bus.addListener(this::onEnqueueIMC);
         ModBlocks.REGISTER.register(bus);
         ModContainers.REGISTER.register(bus);
         ModEffects.REGISTER.register(bus);
@@ -236,16 +243,20 @@ public class GunMod
         bus.addListener(this::onClientSetup);
         bus.addListener(this::dataSetup);
         controllableLoaded = ModList.get().isLoaded("controllable");
+        curiosLoaded = ModList.get().isLoaded("curios");
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
+        // Map projectile items to entities and renderer's
         //ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
         ProjectileManager.getInstance().registerFactory(ModItems.RPG7_MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.RPG7_MISSILE.get(), worldIn, entity, weapon, item, modifiedGun, 1.5F));
         ProjectileManager.getInstance().registerFactory(ModItems.GRENADE_40MM.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun)); //, 1.5F
 
+        // Register all custom networking
         PacketHandler.init();
 
+        // Updated hitboxes for better serverside feel
         if(Config.COMMON.gameplay.improvedHitboxes.get())
         {
             MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
@@ -320,42 +331,6 @@ public class GunMod
             }
         }, RigSlotsHandler::new);
 
-        // Likely will need a while new capability registry?
-
-        /*CapabilityManager.INSTANCE.register(IAmmoItemHandler.class, new Capability.IStorage<IAmmoItemHandler>() {
-            @Override
-            public INBT writeNBT(Capability<IAmmoItemHandler> capability, IAmmoItemHandler instance, Direction side) {
-                ListNBT nbtTagList = new ListNBT();
-                int size = instance.getNumOfRows();
-                for (int i = 0; i < size; i++) {
-                    ItemStack stack = instance.getStackInSlot(i);
-                    if (!stack.isEmpty()) {
-                        CompoundNBT itemTag = new CompoundNBT();
-                        itemTag.putInt("Slot", i);
-                        stack.write(itemTag);
-                        nbtTagList.add(itemTag);
-                    }
-                }
-                return nbtTagList;
-            }
-
-            @Override
-            public void readNBT(Capability<IAmmoItemHandler> capability, IAmmoItemHandler instance, Direction side, INBT base) {
-                if (!(instance instanceof IItemHandlerModifiable))
-                    throw new RuntimeException("IItemHandler instance does not implement IItemHandlerModifiable");
-                IItemHandlerModifiable itemHandlerModifiable = (IItemHandlerModifiable) instance;
-                ListNBT tagList = (ListNBT) base;
-                for (int i = 0; i < tagList.size(); i++) {
-                    CompoundNBT itemTags = tagList.getCompound(i);
-                    int j = itemTags.getInt("Slot");
-
-                    if (j >= 0 && j < instance.getNumOfRows()) {
-                        itemHandlerModifiable.setStackInSlot(j, ItemStack.read(itemTags));
-                    }
-                }
-            }
-        }, GearSlotsHandler::new);*/
-
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1911"), new OneHandedPoseHighRes_m1911()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1851"), new OneHandedPoseHighRes_m1851()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "two_handed_m1894"), new TwoHandedPoseHighRes_m1894()));
@@ -366,8 +341,18 @@ public class GunMod
         GripType.registerType(new GripType(new ResourceLocation("tac", "two_handed_vector"), new TwoHandedPoseHighRes_vector()));
         GripType.registerType(new GripType(new ResourceLocation("tac", "one_handed_m1873"), new OneHandedPoseHighRes_m1873()));
 
+        // Custom commands handlers, called in common so any future server side command registry would be useable
         MinecraftForge.EVENT_BUS.register(CommandsManager.class);
         MinecraftForge.EVENT_BUS.register(CommandsHandler.class);
+    }
+
+    private void onEnqueueIMC(InterModEnqueueEvent event)
+    {
+        if(!curiosLoaded)
+            return;
+
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BACK.getMessageBuilder().build());
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BODY.getMessageBuilder().build());
     }
 
     private void dataSetup(GatherDataEvent event)
@@ -384,8 +369,11 @@ public class GunMod
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        ClientHandler.setup( event.getMinecraftSupplier().get() );
+        // Too much to keep in Gunmod file
+        ClientHandler.setup(event.getMinecraftSupplier().get());
 
+
+        // Auto register code animation files, such as firing, animation mapping is called in these files too
         for (Field field : ModItems.class.getDeclaredFields()) {
             RegistryObject<?> object;
             try {

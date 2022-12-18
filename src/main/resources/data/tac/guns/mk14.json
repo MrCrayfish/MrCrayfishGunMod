@@ -1,28 +1,28 @@
 {
   "general": {
     "auto": false,
-    "rate": 5,
+    "rate": 4,
     "rateSelector": [
       0,
       1
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 3.15,
-    "horizontalRecoilAngle": 1.85,
-    "recoilKick": 2.225,
+    "recoilAngle": 3.8,
+    "horizontalRecoilAngle": 6.35,
+    "recoilKick": 1.325,
     "recoilAdsReduction": 0.225,
-    "weaponRecoilOffset": 0.965,
-    "cameraRecoilModifier": 1.675,
-    "recoilDuration": 0.205,
+    "weaponRecoilOffset": 0.655,
+    "cameraRecoilModifier": 2.775,
+    "recoilDuration": 0.155,
     "alwaysSpread": true,
-    "spread": 1.125,
-    "weightKilo": 5.35
+    "spread": 1.225,
+    "weightKilo": 5.75
   },
   "reloads": {
     "magFed": true,
-    "maxAmmo": 20,
-    "reloadMagTimer": 63,
-    "additionalReloadEmptyMagTimer": 14,
+    "maxAmmo": 10,
+    "reloadMagTimer": 29,
+    "additionalReloadEmptyMagTimer": 19,
     "maxAdditionalAmmoPerOC": [
       5,
       7,
@@ -33,15 +33,18 @@
   "projectile": {
     "item": "tac:bullet_308",
     "visible": true,
-    "damage": 15.5,
+    "damage": 16.0,
     "size": 0.1,
     "speed": 46.5,
-    "life": 6,
+    "life": 7,
     "ricochet": true
   },
   "sounds": {
     "fire": "tac:item.dmr_fire",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.m4_norm_reload",
+    "reloadEmpty": "tac:animation.m4_empty_reload",
+    "draw": "tac:animation.m4_draw",
+    "inspect": "tac:animation.m4_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.dmr_fire_s"
   },
@@ -61,16 +64,16 @@
     "zoom":
       {
         "fovModifier": 0.8,
-        "yOffset": 7.885,
-        "zOffset": -0.55
+        "yOffset": 8.715,
+        "zOffset": -3.93
       },
     "attachments": {
       "scope": {
-        "yOffset": 7.25,
-        "zOffset": 1.025,
+        "yOffset": 8.15,
+        "zOffset": 5.225,
         "scale": 1.00
       },
-      "sideRail": {
+      "underBarrel": {
         "yOffset": 7.799,
         "zOffset": -2.35,
         "scale": 0.00
