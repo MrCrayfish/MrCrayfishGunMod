@@ -76,7 +76,7 @@ public class GunEnchantmentHelper
         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.ACCELERATOR.get(), weapon);
         if(level > 0)
         {
-            return 1.0 + 0.15 * level;
+            return 1.0 + 0.5 * level;
         }
         return 1.0;
     }
