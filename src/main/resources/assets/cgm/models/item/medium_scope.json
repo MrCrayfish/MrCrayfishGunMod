@@ -3,7 +3,6 @@
 	"textures": {
 		"1": "cgm:items/medium_scope",
 		"2": "cgm:effect/holo_reticle",
-		"3": "cgm:effect/scope_vignette",
 		"particle": "cgm:effect/holo_reticle"
 	},
 	"elements": [
@@ -107,18 +106,19 @@
 			}
 		},
 		{
-			"from": [7.9, 9.525, 8],
-			"to": [8.1, 9.725, 8],
+			"from": [7.925, 9.55, 8],
+			"to": [8.075, 9.7, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.625, 8]},
 			"faces": {
-				"south": {"uv": [0, 0, 15, 15], "texture": "#2", "emissivity": 15}
+				"south": {"uv": [0, 0, 11, 11], "texture": "#2"}
 			}
 		},
 		{
-			"from": [7.375, 9, 6.725],
-			"to": [8.625, 10.25, 9.525],
+			"from": [7.99, 9.615, 8.005],
+			"to": [8.01, 9.635, 8.005],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.625, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#3"},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#3"}
+				"south": {"uv": [0, 11, 1, 12], "texture": "#2", "tintindex": 2, "emissivity": 15}
 			}
 		}
 	],

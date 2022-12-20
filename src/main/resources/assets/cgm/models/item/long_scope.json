@@ -1,9 +1,9 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
+	"texture_size": [128, 128],
 	"textures": {
 		"1": "cgm:items/long_scope",
 		"2": "cgm:effect/long_scope_reticle",
-		"3": "cgm:effect/scope_vignette",
 		"particle": "cgm:items/long_scope"
 	},
 	"elements": [
@@ -153,7 +153,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
 				"south": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
-				"up": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
+				"up": {"uv": [0, 13, 14, 15], "rotation": 270, "texture": "#1", "tintindex": 0},
 				"down": {"uv": [14, 7, 0, 9], "rotation": 90, "texture": "#1", "tintindex": 0}
 			}
 		},
@@ -167,7 +167,7 @@
 				"south": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
 				"west": {"uv": [0, 2, 14, 3], "texture": "#1", "tintindex": 0},
 				"up": {"uv": [0, 0, 14, 2], "rotation": 90, "texture": "#1", "tintindex": 0},
-				"down": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0}
+				"down": {"uv": [0, 13, 14, 15], "rotation": 90, "texture": "#1", "tintindex": 0}
 			}
 		},
 		{
@@ -178,7 +178,7 @@
 				"north": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
 				"south": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
 				"up": {"uv": [0, 3, 14, 4], "rotation": 90, "texture": "#1", "tintindex": 0},
-				"down": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0}
+				"down": {"uv": [0, 13, 14, 15], "rotation": 90, "texture": "#1", "tintindex": 0}
 			}
 		},
 		{
@@ -189,7 +189,7 @@
 				"north": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0},
 				"south": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0},
 				"up": {"uv": [0, 4, 14, 3], "rotation": 90, "texture": "#1", "tintindex": 0},
-				"down": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0}
+				"down": {"uv": [14, 13, 0, 15], "rotation": 270, "texture": "#1", "tintindex": 0}
 			}
 		},
 		{
@@ -198,7 +198,7 @@
 			"rotation": {"angle": 45, "axis": "z", "origin": [7.95, 9.45, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
-				"east": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
+				"east": {"uv": [0, 13, 14, 15], "texture": "#1", "tintindex": 0},
 				"south": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
 				"west": {"uv": [0, 6, 14, 7], "texture": "#1", "tintindex": 0}
 			}
@@ -211,7 +211,7 @@
 				"north": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0},
 				"east": {"uv": [14, 6, 0, 7], "texture": "#1", "tintindex": 0},
 				"south": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0},
-				"west": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0}
+				"west": {"uv": [14, 13, 0, 15], "texture": "#1", "tintindex": 0}
 			}
 		},
 		{
@@ -219,7 +219,7 @@
 			"to": [7.45009, 9.78129, 10.5],
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
-				"east": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
+				"east": {"uv": [0, 13, 14, 15], "texture": "#1", "tintindex": 0},
 				"south": {"uv": [0, 0, 1, 1], "texture": "#1", "tintindex": 0},
 				"west": {"uv": [0, 4, 14, 6], "texture": "#1", "tintindex": 0}
 			}
@@ -232,22 +232,21 @@
 				"north": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0},
 				"east": {"uv": [14, 4, 0, 6], "texture": "#1", "tintindex": 0},
 				"south": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0},
-				"west": {"uv": [1, 0, 0, 1], "texture": "#1", "tintindex": 0}
+				"west": {"uv": [14, 13, 0, 15], "texture": "#1", "tintindex": 0}
 			}
 		},
 		{
 			"from": [7.45, 8.85, 8],
 			"to": [8.55, 9.95, 8],
 			"faces": {
-				"south": {"uv": [0, 0, 15.875, 15.875], "texture": "#2", "emissivity": 15}
+				"south": {"uv": [0, 0, 15.875, 15.875], "texture": "#2"}
 			}
 		},
 		{
-			"from": [7.45, 8.85, 5.6],
-			"to": [8.55, 9.95, 10.4],
+			"from": [7.975, 9.375, 8.005],
+			"to": [8.025, 9.425, 8.005],
 			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#3"},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#3"}
+				"south": {"uv": [15.375, 15.375, 16, 16], "texture": "#2", "tintindex": 2, "emissivity": 15}
 			}
 		}
 	],
