@@ -7,10 +7,7 @@ import com.mrcrayfish.guns.client.handler.*;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.render.gun.model.BazookaModel;
 import com.mrcrayfish.guns.client.render.gun.model.GrenadeLauncherModel;
-import com.mrcrayfish.guns.client.render.gun.model.LongScopeModel;
-import com.mrcrayfish.guns.client.render.gun.model.MediumScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.MiniGunModel;
-import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.SimpleModel;
 import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
@@ -20,9 +17,9 @@ import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModItems;
-import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
+import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
@@ -32,6 +29,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MouseSettingsScreen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -118,6 +116,15 @@ public class ClientHandler
                     return Minecraft.getInstance().getItemColors().getColor(renderingWeapon, index);
                 }
             }
+            if(index == 2 && stack.getItem() instanceof IScope)
+            {
+                CompoundTag tag = stack.getTag();
+                if(tag != null && tag.contains("ReticleColor", Tag.TAG_INT))
+                {
+                    return tag.getInt("ReticleColor");
+                }
+                return 0xFFFF0000;
+            }
             return -1;
         };
         ForgeRegistries.ITEMS.forEach(item ->
@@ -141,11 +148,6 @@ public class ClientHandler
         ModelOverrides.register(ModItems.PISTOL.get(), new SimpleModel(SpecialModels.PISTOL::getModel));
         ModelOverrides.register(ModItems.RIFLE.get(), new SimpleModel(SpecialModels.RIFLE::getModel));
         ModelOverrides.register(ModItems.SHOTGUN.get(), new SimpleModel(SpecialModels.SHOTGUN::getModel));
-
-        /* Attachments */
-        ModelOverrides.register(ModItems.SHORT_SCOPE.get(), new ShortScopeModel());
-        ModelOverrides.register(ModItems.MEDIUM_SCOPE.get(), new MediumScopeModel());
-        ModelOverrides.register(ModItems.LONG_SCOPE.get(), new LongScopeModel());
     }
 
     private static void registerScreenFactories()

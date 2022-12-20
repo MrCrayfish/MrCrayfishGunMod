@@ -21,6 +21,7 @@ import static org.lwjgl.opengl.GL11.*;
  * <p>
  * Author: MrCrayfish
  */
+@Deprecated(since = "1.3.0", forRemoval = true)
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ScreenTextureState extends RenderStateShard.TexturingStateShard
 {
