@@ -63,6 +63,7 @@ public class GunMod
 {
     public static boolean controllableLoaded = false;
     public static boolean curiosLoaded = false;
+    public static String curiosRigSlotId = "armor_rig";
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
     public static final ItemGroup GROUP = new  ItemGroup(Reference.MOD_ID)
@@ -263,7 +264,7 @@ public class GunMod
         }
 
         // First separate, cause only the held ammo is not synced serverToClient, but the wearable is held fine, just use damned Curios next time.
-        CapabilityManager.INSTANCE.register(IWearableItemHandler.class, new Capability.IStorage<IWearableItemHandler>() {
+        /*CapabilityManager.INSTANCE.register(IWearableItemHandler.class, new Capability.IStorage<IWearableItemHandler>() {
             @Override
             public INBT writeNBT(Capability<IWearableItemHandler> capability, IWearableItemHandler instance, Direction side) {
                 ListNBT nbtTagList = new ListNBT();
@@ -295,7 +296,7 @@ public class GunMod
                     }
                 }
             }
-        }, GearSlotsHandler::new);
+        }, GearSlotsHandler::new);*/
 
         CapabilityManager.INSTANCE.register(IAmmoItemHandler.class, new Capability.IStorage<IAmmoItemHandler>() {
             @Override
@@ -352,7 +353,7 @@ public class GunMod
             return;
 
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BACK.getMessageBuilder().build());
-        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BODY.getMessageBuilder().build());
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder(GunMod.curiosRigSlotId).size(1).priority(101).build());
     }
 
     private void dataSetup(GatherDataEvent event)

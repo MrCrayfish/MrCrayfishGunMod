@@ -15,6 +15,10 @@ import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
+import com.tac.guns.network.PacketHandler;
+import com.tac.guns.network.message.MessageRigInvToClient;
+import com.tac.guns.network.message.MessageToClientRigInv;
+import com.tac.guns.network.message.MessageUpdateGunID;
 import com.tac.guns.util.WearableHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -24,6 +28,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,6 +45,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.network.NetworkDirection;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -92,7 +98,9 @@ public class HUDRenderingHandler extends AbstractGui {
     }
 
     private int ammoReserveCount = 0;
-    private int rigReserveCount = 0;
+    public int rigReserveCount = 0;
+
+    private ResourceLocation heldAmmoID = new ResourceLocation("");
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent e)
@@ -105,76 +113,15 @@ public class HUDRenderingHandler extends AbstractGui {
         if(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem) {
             GunItem gunItem = (GunItem) Minecraft.getInstance().player.getHeldItemMainhand().getItem();
             this.ammoReserveCount = ReloadTracker.calcMaxReserveAmmo(Gun.findAmmo(Minecraft.getInstance().player, gunItem.getGun().getProjectile().getItem()));
-
-
-            /*ItemStack stack = WearableHelper.PlayerWornRig(Minecraft.getInstance().player);
-            if (stack != null) {
-                ListNBT tagList = ((ArmorRigItem) stack.getItem()).getShareTag(stack).getCompound("storage").getList("Items", Constants.NBT.TAG_COMPOUND); // Items
-                player.sendStatusMessage(new TranslationTextComponent("" + tagList.getString()), true);
-                this.rigReserveCount = 0;
-                for (int i = 0; i < tagList.size(); i++) {
-                    CompoundNBT itemTags = tagList.getCompound(i);
-                    int slot = itemTags.getInt("Slot");
-
-                    if (slot >= 0 && slot < stacks.size()) {
-                        stacks.add(ItemStack.read(itemTags));
-                        this.rigReserveCount += stacks.get(i).getCount();
-                    }
-                }
+            // Only send if current id doesn't equal previous id, otherwise other serverside actions can force this to change like reloading
+            if(gunItem.getGun().getProjectile().getItem().compareTo(heldAmmoID) != 0) {
+                PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(gunItem.getGun().getProjectile().getItem()));
+                heldAmmoID = gunItem.getGun().getProjectile().getItem();
             }
-            ammoReserveCount += rigReserveCount;*/
-
+            this.ammoReserveCount+=rigReserveCount;
         }
 
     }
-
-    /*public void updateRigAndHuD_ReserveCounter()
-    {
-        ItemStack stack = WearableHelper.PlayerWornRig(Minecraft.getInstance().player);
-        if(stack != null)
-        {
-            setSize((stack.getItem()).getShareTag(stack).getCompound("storage").contains("Size", Constants.NBT.TAG_INT) ? (stack.getItem()).getShareTag(stack).getCompound("storage").getInt("Size") : stacks.size());
-            ListNBT tagList = ((ArmorRigItem)stack.getItem()).getShareTag(stack).getCompound("storage").getList("Items", Constants.NBT.TAG_COMPOUND); // Items
-            this.ammoReserveCount = 0;
-            for (int i = 0; i < tagList.size(); i++)
-            {
-                CompoundNBT itemTags = tagList.getCompound(i);
-                int slot = itemTags.getInt("Slot");
-
-                if (slot >= 0 && slot < stacks.size())
-                {
-                    stacks.set(slot, ItemStack.read(itemTags));
-                    this.ammoReserveCount += stacks.get(i).getCount();
-                }
-            }
-        }
-    }*/
-/*else
-            Minecraft.getInstance().player.sendChatMessage("gaming");*/
-        /*if(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem )
-        {
-            GunItem gunItem = (GunItem) Minecraft.getInstance().player.getHeldItemMainhand().getItem();
-            this.ammoReserveCount = ReloadTracker.calcMaxReserveAmmo(Gun.findAmmoStandardOnly(Minecraft.getInstance().player, gunItem.getGun().getProjectile().getItem()));
-            {
-                ItemStack stack = WearableHelper.PlayerWornRig(Minecraft.getInstance().player);
-                if(stack != null) {
-                    if (stack.getItem() instanceof ArmorRigItem) {
-                        ArmorRigContainerProvider itemHandler = new ArmorRigContainerProvider(stack);
-                        if(itemHandler.getContainer() != null)
-                            for (ItemStack item : itemHandler.getContainer().getInventory()) {
-                                if (Gun.isAmmo(item, gunItem.getGun().getProjectile().getItem())) {
-                                    this.ammoReserveCount += item.getCount();
-                                }
-                            }
-                        else
-                            Minecraft.getInstance().player.
-                    }
-                }
-            }
-
-            this.ammoReserveCount+=this.rigReserveCount;
-        }*/
-    private ArrayList<ItemStack> stacks = new ArrayList<>();
 
     // EnchancedVisuals-1.16.5 helped with this one
     private ResourceLocation getNoiseTypeResource(boolean doNoise) {

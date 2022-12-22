@@ -59,6 +59,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -838,5 +839,21 @@ public class ServerPlayHandler
                 }
             }
         }
+    }
+
+    /**
+     * @param player
+     */
+    public static void handleRigAmmoCount(ServerPlayerEntity player, ResourceLocation id)
+    {
+        if(WearableHelper.PlayerWornRig(player) != null)
+        {
+            ItemStack rig = WearableHelper.PlayerWornRig(player);
+            if(rig != null) {
+                PacketHandler.getPlayChannel().sendTo(new MessageRigInvToClient(rig, id), ((ServerPlayerEntity)player).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+            }
+        }
+        else
+            PacketHandler.getPlayChannel().sendTo(new MessageRigInvToClient(), ((ServerPlayerEntity)player).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
     }
 }

@@ -41,19 +41,19 @@ public class InventoryListener {
         if(addSlotMethod == null) {
             addSlotMethod = ObfuscationReflectionHelper.findMethod(Container.class, "func_75146_a", Slot.class);
         }
-        GearSlotsHandler wearableItemHandler = (GearSlotsHandler) player.getCapability(ITEM_HANDLER_CAPABILITY).resolve().get();
-        addSlotMethod.invoke(player.container, new ArmorRigSlot(wearableItemHandler, 0, 170, 84)); // Rig
-        addSlotMethod.invoke(player.container, new BackpackSlot(wearableItemHandler, 1, 170, 102)); // Backpack
+        //GearSlotsHandler wearableItemHandler = (GearSlotsHandler) player.getCapability(ITEM_HANDLER_CAPABILITY).resolve().get();
+        //addSlotMethod.invoke(player.container, new ArmorRigSlot(wearableItemHandler, 0, 170, 84)); // Rig
+        //addSlotMethod.invoke(player.container, new BackpackSlot(wearableItemHandler, 1, 170, 102)); // Backpack
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) throws InvocationTargetException, IllegalAccessException {
         if(!(event.getObject() instanceof PlayerEntity)) return;
 
         WearableCapabilityProvider wearableCapability = new WearableCapabilityProvider();
         event.addCapability(new ResourceLocation("tac", "inventory_capability"), wearableCapability);
         event.addListener(wearableCapability. getOptionalStorage()::invalidate);
-    }
+    }*/
 
     @SubscribeEvent
     public static void onAttachCapabilitiesStack(AttachCapabilitiesEvent<ItemStack> event) throws InvocationTargetException, IllegalAccessException {

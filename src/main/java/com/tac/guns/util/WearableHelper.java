@@ -1,5 +1,6 @@
 package com.tac.guns.util;
 
+import com.tac.guns.GunMod;
 import com.tac.guns.common.Rig;
 import com.tac.guns.entity.ProjectileEntity;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
@@ -12,9 +13,15 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -26,13 +33,38 @@ public class WearableHelper
     @Nullable
     public static ItemStack PlayerWornRig(PlayerEntity player)
     {
-        GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
-        for(ItemStack stack : ammoItemHandler.getStacks()) {
-            if(stack.getItem() instanceof ArmorRigItem)
-                return stack;
+        // Change slot for body
+        if(GunMod.curiosLoaded)
+        {
+            AtomicReference<ItemStack> backpack = new AtomicReference<>(ItemStack.EMPTY);
+            LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosHelper().getCuriosHandler(player);
+            optional.ifPresent(itemHandler ->
+            {
+                Optional<ICurioStacksHandler> stacksOptional = itemHandler.getStacksHandler(GunMod.curiosRigSlotId);
+                stacksOptional.ifPresent(stacksHandler ->
+                {
+                    ItemStack stack = stacksHandler.getStacks().getStackInSlot(0);
+                    if(stack.getItem() instanceof ArmorRigItem)
+                    {
+                        backpack.set(stack);
+                    }
+                });
+            });
+            if(backpack.get() != ItemStack.EMPTY)
+                return backpack.get();
+            else
+                return null;
         }
-        return null;
+        else {
+            GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
+            for (ItemStack stack : ammoItemHandler.getStacks()) {
+                if (stack.getItem() instanceof ArmorRigItem)
+                    return stack;
+            }
+            return null;
+        }
     }
+
     public static void FillDefaults(ItemStack item, Rig rig)
     {
         item.getTag().putFloat("RigDurability", RigEnchantmentHelper.getModifiedDurability(item, rig));

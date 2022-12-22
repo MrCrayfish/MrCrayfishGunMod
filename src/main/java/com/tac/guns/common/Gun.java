@@ -6,21 +6,28 @@ import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.annotation.Ignored;
 import com.tac.guns.annotation.Optional;
+import com.tac.guns.client.handler.HUDRenderingHandler;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.interfaces.TGExclude;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
 import com.tac.guns.inventory.gear.InventoryListener;
+import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
 import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
 import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IScope;
 import com.tac.guns.item.attachment.impl.Scope;
+import com.tac.guns.util.WearableHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
@@ -2055,67 +2062,71 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             }
         }
         // Get wearable that holds ammo
-        GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
-        for(ItemStack stack : ammoItemHandler.getStacks()) {
-            if (isAmmo(stack, id)) {
-                stacks.add(stack);
-            }
-            if (stack.getItem() instanceof ArmorRigItem) {
-                // Get the handler OF the specific armor, seems like repeating compatabilities aren't going well.
-                RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(InventoryListener.RIG_HANDLER_CAPABILITY).resolve().get();
-                for (ItemStack item : itemHandler.getStacks()) {
-                    if (isAmmo(item, id)) {
-                        stacks.add(item);
-                    }
-                }
-            }
-        }
-        return stacks.toArray(new ItemStack[]{});
-    }
-
-    public static ItemStack[] findAmmoStandardOnly(PlayerEntity player, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
-    {
-        if(!player.isAlive())
-            return new ItemStack[]{};
-        ArrayList<ItemStack> stacks = new ArrayList<>();
-        if(player.isCreative())
+        ItemStack wornRig = WearableHelper.PlayerWornRig(player);
+        if(wornRig != null)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            stacks.add(item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY);
-            return stacks.toArray(new ItemStack[]{});
-        }
-        for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
-        {
-            ItemStack stack = player.inventory.getStackInSlot(i);
-            if(isAmmo(stack, id)) {
-                stacks.add(stack);
+            ListNBT nbtTagList = (ListNBT) ((ArmorRigItem)wornRig.getItem()).getShareTag(wornRig).getCompound("storage").get("Items");
+            for (int i = 0; i < ((ArmorRigItem)wornRig.getItem()).getShareTag(wornRig).getCompound("storage").getInt("Size"); i++)
+            {
+                ItemStack ammoStack = ItemStack.read(nbtTagList.getCompound(i));
+                if(isAmmo(ammoStack, id))
+                    stacks.add(ammoStack);
+                //Minecraft.getInstance().player.sendChatMessage(""+ammoStack.getItem().getRegistryName());
             }
         }
+
         return stacks.toArray(new ItemStack[]{});
     }
 
-    public static ItemStack[] findAmmoRigOnly(PlayerEntity player, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
+    // Only for HuD renderer, maybe reload check before message is sent
+    public static ItemStack[] findAmmoRigOnly(ItemStack rig, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
     {
-        if(!player.isAlive())
-            return new ItemStack[]{};
         ArrayList<ItemStack> stacks = new ArrayList<>();
-        GearSlotsHandler ammoItemHandler = (GearSlotsHandler) player.getCapability(InventoryListener.ITEM_HANDLER_CAPABILITY).resolve().get();
-        for(ItemStack stack : ammoItemHandler.getStacks()) {
-            if (isAmmo(stack, id)) {
-                stacks.add(stack);
-            }
-            if (stack.getItem() instanceof ArmorRigItem) {
-                RigSlotsHandler itemHandler = (RigSlotsHandler) stack.getCapability(InventoryListener.RIG_HANDLER_CAPABILITY).resolve().get();
-                for (ItemStack item : itemHandler.getStacks()) {
-                    if (isAmmo(item, id)) {
-                        stacks.add(item);
-                    }
-                }
+        if(rig != null)
+        {
+            ListNBT nbtTagList = (ListNBT) ((ArmorRigItem)rig.getItem()).getShareTag(rig).getCompound("storage").get("Items");
+            for (int i = 0; i < ((ArmorRigItem)rig.getItem()).getShareTag(rig).getCompound("storage").getInt("Size"); i++)
+            {
+                stacks.add(ItemStack.read(nbtTagList.getCompound(i)));
             }
         }
         return stacks.toArray(new ItemStack[]{});
     }
 
+    public static int ammoCountInRig(ItemStack rig, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
+    {
+        int counter = 0;
+        ItemStack[] stacks = findAmmoRigOnly(rig, id);
+        for (ItemStack x : stacks)
+        {
+            if(x != null && x != ItemStack.EMPTY && x.getCount() != 0 && isAmmo(x, id))
+                counter+=x.getCount();
+        }
+        return counter;
+    }
+
+
+    public static int ammoCountInRig(CompoundNBT rigData, ResourceLocation id) // Refactor to return multiple stacks, reload to take as much of value as required from hash
+    {
+        int counter = 0;
+        ArrayList<ItemStack> stacks = new ArrayList<>();
+        ListNBT nbtTagList = (ListNBT) rigData.getCompound("storage").get("Items");
+        for (int i = 0; i < rigData.getCompound("storage").getInt("Size"); i++)
+        {
+            stacks.add(ItemStack.read(nbtTagList.getCompound(i)));
+        }
+        for (ItemStack x : stacks)
+        {
+            if(x != null && x != ItemStack.EMPTY && x.getCount() != 0 && isAmmo(x, id))
+                counter+=x.getCount();
+        }
+        /*RigSlotsHandler itemHandler = (RigSlotsHandler) rig.getCapability(ArmorRigCapabilityProvider.capability).resolve().get();
+        for (ItemStack x : itemHandler.getStacks()) {
+            if(Gun.isAmmo(x, id))
+                counter+=x);
+        }*/
+        return counter;
+    }
 
 
     public static boolean isAmmo(ItemStack stack, ResourceLocation id)

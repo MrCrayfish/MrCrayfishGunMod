@@ -1,6 +1,7 @@
 package com.tac.guns.network.message;
 
 import com.tac.guns.client.network.ClientPlayHandler;
+import com.tac.guns.common.Gun;
 import com.tac.guns.common.network.ServerPlayHandler;
 import com.tac.guns.inventory.gear.InventoryListener;
 import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -20,45 +22,40 @@ public class MessageRigInvToClient implements IMessage
 {
 	public MessageRigInvToClient() {}
 
-	private CompoundNBT data;
-
-	public CompoundNBT getData()
+	private int count;
+	public int getCount()
 	{
-		return this.data;
+		return this.count;
 	}
 
-	public MessageRigInvToClient(CompoundNBT nbt)
+	private boolean onlyResetRigCount = false;
+	public boolean getOnlyResetRigCount()
 	{
-		data = nbt;
+		return this.onlyResetRigCount;
 	}
-
-	public MessageRigInvToClient(ListNBT nbt)
+	public MessageRigInvToClient(boolean reset) {this.onlyResetRigCount = reset;}
+	public MessageRigInvToClient(ItemStack rig, ResourceLocation id)
 	{
-		data = new CompoundNBT();
-		ListNBT dataList = new ListNBT();
-		for (int i = 0; i < nbt.size(); i++)
-		{
-			dataList.add(nbt.getCompound(i));
-		}
-		this.data.put("Items", dataList);
-		this.data.putInt("Size", nbt.size());
+		this.count = Gun.ammoCountInRig(rig, id);
 	}
 
 	public void encode(PacketBuffer buffer)
 	{
-		buffer.writeCompoundTag(this.data);
+		buffer.writeInt(this.count);
 	}
 
 	public void decode(PacketBuffer buffer)
 	{
-		this.data = buffer.readCompoundTag();
+		this.count = buffer.readInt();
 	}
 
 
 	public void handle(Supplier<NetworkEvent.Context> context) {
 		NetworkEvent.Context ctx = context.get();
-		ctx.enqueueWork(() -> ClientPlayHandler.updateRigInv(this));
-		ctx.setPacketHandled(true);
+		ctx.enqueueWork(() ->
+		{
+				ClientPlayHandler.updateRigInv(this);
+		});
 		ctx.setPacketHandled(true);
 	}
 }
