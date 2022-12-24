@@ -264,7 +264,7 @@ public class GunMod
         }
 
         // First separate, cause only the held ammo is not synced serverToClient, but the wearable is held fine, just use damned Curios next time.
-        /*CapabilityManager.INSTANCE.register(IWearableItemHandler.class, new Capability.IStorage<IWearableItemHandler>() {
+        CapabilityManager.INSTANCE.register(IWearableItemHandler.class, new Capability.IStorage<IWearableItemHandler>() {
             @Override
             public INBT writeNBT(Capability<IWearableItemHandler> capability, IWearableItemHandler instance, Direction side) {
                 ListNBT nbtTagList = new ListNBT();
@@ -296,7 +296,7 @@ public class GunMod
                     }
                 }
             }
-        }, GearSlotsHandler::new);*/
+        }, GearSlotsHandler::new);
 
         CapabilityManager.INSTANCE.register(IAmmoItemHandler.class, new Capability.IStorage<IAmmoItemHandler>() {
             @Override

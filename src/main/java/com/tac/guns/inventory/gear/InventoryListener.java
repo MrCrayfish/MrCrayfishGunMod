@@ -31,7 +31,7 @@ public class InventoryListener {
 
     @CapabilityInject(IAmmoItemHandler.class)
     public static Capability<IAmmoItemHandler> RIG_HANDLER_CAPABILITY = null;
-    public static Method addSlotMethod;
+    /*public static Method addSlotMethod;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEntityJoin(EntityJoinWorldEvent event) throws InvocationTargetException, IllegalAccessException {
@@ -41,10 +41,10 @@ public class InventoryListener {
         if(addSlotMethod == null) {
             addSlotMethod = ObfuscationReflectionHelper.findMethod(Container.class, "func_75146_a", Slot.class);
         }
-        //GearSlotsHandler wearableItemHandler = (GearSlotsHandler) player.getCapability(ITEM_HANDLER_CAPABILITY).resolve().get();
-        //addSlotMethod.invoke(player.container, new ArmorRigSlot(wearableItemHandler, 0, 170, 84)); // Rig
-        //addSlotMethod.invoke(player.container, new BackpackSlot(wearableItemHandler, 1, 170, 102)); // Backpack
-    }
+    //    GearSlotsHandler wearableItemHandler = (GearSlotsHandler) player.getCapability(ITEM_HANDLER_CAPABILITY).resolve().get();
+    //    addSlotMethod.invoke(player.container, new ArmorRigSlot(wearableItemHandler, 0, 170, 84)); // Rig
+    //    addSlotMethod.invoke(player.container, new BackpackSlot(wearableItemHandler, 1, 170, 102)); // Backpack
+    }*/
 
     /*@SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) throws InvocationTargetException, IllegalAccessException {

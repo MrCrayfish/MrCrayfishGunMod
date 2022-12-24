@@ -297,14 +297,14 @@ public class ReloadHandler {
                             return;
                         }
                         ItemStack rig = WearableHelper.PlayerWornRig(player);
-                        if(!player.isCreative() && rig != null){
+                        if(!player.isCreative() && rig != null)
+                        {
                             PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(((GunItem)stack.getItem()).getGun().getProjectile().getItem()));
-                            if(rigAmmoCount < 1)
-                            {
+                            if (Gun.findAmmo(player, gun.getProjectile().getItem()).length < 1 && rigAmmoCount < 1) {
                                 return;
                             }
                         }
-                        else if (Gun.findAmmo(player, gun.getProjectile().getItem()).length < 1) {
+                        else if (!player.isCreative() && Gun.findAmmo(player, gun.getProjectile().getItem()).length < 1) {
                             return;
                         }
                         if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))

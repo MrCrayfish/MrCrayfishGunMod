@@ -5,7 +5,10 @@ import com.tac.guns.client.handler.AnimationHandler;
 import com.tac.guns.client.render.animation.module.AnimationMeta;
 import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.init.ModSyncedDataKeys;
+import com.tac.guns.item.GunItem;
 import com.tac.guns.network.CommonStateBox;
+import com.tac.guns.network.PacketHandler;
+import com.tac.guns.network.message.MessageToClientRigInv;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.item.ItemStack;
@@ -46,9 +49,11 @@ public class FirstPersonRendererMixin {
             //Stop the previous item's animation
             AnimationMeta meta = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.DRAW);
             if(!controller.getPreviousAnimation().equals(meta)) controller.stopAnimation();
+            PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(((GunItem)mainHandItemStack.getItem()).getGun().getProjectile().getItem()));
             controller.runAnimation(GunAnimationController.AnimationLabel.DRAW);
         }else if(controller != null && controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.DRAW) != null) {
             this.itemStackMainHand = mainHandItemStack;
+            PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(((GunItem)mainHandItemStack.getItem()).getGun().getProjectile().getItem()));
             controller.runAnimation(GunAnimationController.AnimationLabel.DRAW);
         }
     }
