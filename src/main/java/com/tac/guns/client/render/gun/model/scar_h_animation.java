@@ -6,6 +6,7 @@ import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.render.animation.HK416A5AnimationController;
 import com.tac.guns.client.render.animation.M4AnimationController;
 import com.tac.guns.client.render.animation.SCAR_HAnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
 import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
@@ -56,6 +57,7 @@ public class scar_h_animation implements IOverrideModel {
                 matrices.push();
                 matrices.translate(0, 0, -0.1f);
                 RenderUtil.renderModel(SpecialModels.SCAR_H_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+                matrices.translate(0, 0, 0.1f);
                 matrices.pop();
             } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem())) {
                 RenderUtil.renderModel(SpecialModels.SCAR_H_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
@@ -98,7 +100,9 @@ public class scar_h_animation implements IOverrideModel {
             CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
             float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
 
-            if (Gun.hasAmmo(stack)) {
+            AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
+            boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
+            if(Gun.hasAmmo(stack) || shouldOffset) {
                 // Math provided by Bomb787 on GitHub and Curseforge!!!
                 matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
             } else if (!Gun.hasAmmo(stack)) {
