@@ -61,6 +61,7 @@ public enum AnimationHandler {
         M1911AnimationController.getInstance();
         MK47AnimationController.getInstance();
         MK14AnimationController.getInstance();
+        SCAR_HAnimationController.getInstance();
         //SPR15AnimationController.getInstance();
     }
 

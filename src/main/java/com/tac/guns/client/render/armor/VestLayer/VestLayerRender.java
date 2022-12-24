@@ -80,6 +80,10 @@ public class VestLayerRender<T extends PlayerEntity, M extends BipedModel<T>> ex
                     model = new ModernArmor();
                 }
                 model.rotateToPlayerBody(this.getEntityModel().bipedBody); // Default rotation, keep for now? It's a global, maybe force more work on the model implementation side rather then core?
+                if(this.getEntityModel().isSneak)
+                {
+                    stack.translate(0,0,-0.5);
+                }
                 IVertexBuilder builder = ItemRenderer.getBuffer(renderTypeBuffer, model.getRenderType(model.getTexture()), false, false);
                 model.render(stack, builder, p_225628_3_, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
             }

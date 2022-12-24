@@ -8,7 +8,7 @@
     "gripType": "tac:one_handed_m1911",
     "recoilAngle": 17.275,
     "horizontalRecoilAngle": 7.125,
-    "recoilKick": 2.725,
+    "recoilKick": 2.225,
     "recoilAdsReduction": 0.125,
     "weaponRecoilOffset": 0.775,
     "cameraRecoilModifier": 3.375,

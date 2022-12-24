@@ -297,7 +297,7 @@ public class ReloadHandler {
                             return;
                         }
                         ItemStack rig = WearableHelper.PlayerWornRig(player);
-                        if(rig != null){
+                        if(!player.isCreative() && rig != null){
                             PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(((GunItem)stack.getItem()).getGun().getProjectile().getItem()));
                             if(rigAmmoCount < 1)
                             {
