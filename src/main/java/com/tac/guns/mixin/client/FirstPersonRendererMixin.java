@@ -49,12 +49,11 @@ public class FirstPersonRendererMixin {
             //Stop the previous item's animation
             AnimationMeta meta = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.DRAW);
             if(!controller.getPreviousAnimation().equals(meta)) controller.stopAnimation();
-            PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(((GunItem)mainHandItemStack.getItem()).getGun().getProjectile().getItem()));
             controller.runAnimation(GunAnimationController.AnimationLabel.DRAW);
         }else if(controller != null && controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.DRAW) != null) {
             this.itemStackMainHand = mainHandItemStack;
-            PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(((GunItem)mainHandItemStack.getItem()).getGun().getProjectile().getItem()));
             controller.runAnimation(GunAnimationController.AnimationLabel.DRAW);
+            PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(((GunItem)mainHandItemStack.getItem()).getGun().getProjectile().getItem()));
         }
     }
     /*

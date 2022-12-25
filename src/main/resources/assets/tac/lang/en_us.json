@@ -409,5 +409,7 @@
     "tac.button.aim": "Aim Down Sight",
     "tac.button.reload": "Reload / Unload",
     "tac.button.attachments": "Modify Attachments",
-    "tac.button.steadyAim": "Steady Aim"
+    "tac.button.steadyAim": "Steady Aim",
+
+    "curios.identifier.armor_rig": "Timeless Armor"
 }

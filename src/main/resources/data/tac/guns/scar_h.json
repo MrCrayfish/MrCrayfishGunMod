@@ -8,9 +8,9 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 5.275,
-    "horizontalRecoilAngle": 3.25,
-    "recoilKick": 2.05,
+    "recoilAngle": 4.875,
+    "horizontalRecoilAngle": 3.45,
+    "recoilKick": 2.1,
     "recoilAdsReduction": 0.25,
     "weaponRecoilOffset": 0.825,
     "cameraRecoilModifier": 0.925,
@@ -23,7 +23,7 @@
   "projectile": {
     "item": "tac:bullet_308",
     "visible": true,
-    "damage": 19,
+    "damage": 18,
     "size": 0.2,
     "speed": 40.5,
     "life": 10
@@ -42,10 +42,10 @@
   },
   "sounds": {
     "fire": "tac:item.mk14",
-    "reloadNormal": "tac:animation.deagle_reload_norm",
-    "reloadEmpty": "tac:animation.deagle_reload_empty",
-    "draw": "tac:animation.deagle_draw",
-    "inspect": "tac:animation.deagle_inspect",
+    "reloadNormal": "tac:animation.scar_h_norm_reload",
+    "reloadEmpty": "tac:animation.scar_h_empty_reload",
+    "draw": "tac:animation.scar_h_draw",
+    "inspect": "tac:animation.scar_h_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.remington_700s"
   },

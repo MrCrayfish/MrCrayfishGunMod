@@ -107,7 +107,7 @@ dependencies {
     implementation ('com.fasterxml.jackson.core:jackson-databind:2.12.4')
     //implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
 
-    implementation fg.deobf('curse.maven:curios-309927:3456953')
+    implementation fg.deobf('curse.maven:curios-309927:3661903')
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 /*repositories {

@@ -33,18 +33,18 @@
   "projectile": {
     "item": "tac:bullet_308",
     "visible": true,
-    "damage": 21.0,
+    "damage": 22.0,
     "size": 0.1,
     "speed": 46.5,
-    "life": 11,
+    "life": 14,
     "ricochet": true
   },
   "sounds": {
     "fire": "tac:item.dmr_fire",
-    "reloadNormal": "tac:animation.m4_norm_reload",
-    "reloadEmpty": "tac:animation.m4_empty_reload",
-    "draw": "tac:animation.m4_draw",
-    "inspect": "tac:animation.m4_inspect",
+    "reloadNormal": "tac:animation.mk14_norm_reload",
+    "reloadEmpty": "tac:animation.mk14_empty_reload",
+    "draw": "tac:animation.mk14_draw",
+    "inspect": "tac:animation.mk14_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.dmr_fire_s"
   },
