@@ -304,11 +304,12 @@ public class AimingHandler
                     return false;*/
                 return block instanceof ContainerBlock || block.hasTileEntity(state) || block == Blocks.CRAFTING_TABLE || block == ModBlocks.WORKBENCH.get() || /* ||*/ BlockTags.DOORS.contains(block) || BlockTags.TRAPDOORS.contains(block) || Tags.Blocks.CHESTS.contains(block) || Tags.Blocks.FENCE_GATES.contains(block);
             }
-            else if(mc.objectMouseOver instanceof EntityRayTraceResult)
+            // FOR TEST PURPOSES ONLY
+            /*else if(mc.objectMouseOver instanceof EntityRayTraceResult)
             {
                 EntityRayTraceResult result = (EntityRayTraceResult) mc.objectMouseOver;
                 return result.getEntity() instanceof ItemFrameEntity;
-            }
+            }*/
         }
         return false;
     }

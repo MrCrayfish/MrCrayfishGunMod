@@ -30,9 +30,3 @@ description='''
     versionRange="[0.6.0,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.tac]]
-    modId="chiselsandbits"
-    mandatory=false
-    versionRange="[1.0.63,)"
-    ordering="NONE"
-    side="BOTH"

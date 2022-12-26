@@ -3,30 +3,21 @@ package com.tac.guns.client;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
-import com.tac.guns.client.handler.AimingHandler;
-import com.tac.guns.client.handler.AnimationHandler;
-import com.tac.guns.client.handler.ArmorRenderingHandler;
-import com.tac.guns.client.handler.BulletTrailRenderingHandler;
-import com.tac.guns.client.handler.CrosshairHandler;
-import com.tac.guns.client.handler.FireModeSwitchEvent;
-import com.tac.guns.client.handler.GunRenderingHandler;
-import com.tac.guns.client.handler.HUDRenderingHandler;
-import com.tac.guns.client.handler.MovementAdaptationsHandler;
-import com.tac.guns.client.handler.RecoilHandler;
-import com.tac.guns.client.handler.ReloadHandler;
-import com.tac.guns.client.handler.ScopeJitterHandler;
-import com.tac.guns.client.handler.ShootingHandler;
-import com.tac.guns.client.handler.SightSwitchEvent;
-import com.tac.guns.client.handler.SoundHandler;
+import com.tac.guns.client.handler.*;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.handler.command.ScopeEditor;
 import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.armor.VestLayer.VestLayerRender;
+import com.tac.guns.client.render.armor.models.CardboardArmor;
+import com.tac.guns.client.render.armor.models.MediumArmor;
+import com.tac.guns.client.render.armor.models.ModernArmor;
 import com.tac.guns.client.render.entity.GrenadeRenderer;
 import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
@@ -55,12 +46,10 @@ import com.tac.guns.client.screen.TaCSettingsScreen;
 import com.tac.guns.client.screen.UpgradeBenchScreen;
 import com.tac.guns.client.screen.WorkbenchScreen;
 import com.tac.guns.client.settings.GunOptions;
-import com.tac.guns.client.util.UpgradeBenchRenderUtil;
 import com.tac.guns.init.ModBlocks;
 import com.tac.guns.init.ModContainers;
 import com.tac.guns.init.ModEntities;
 import com.tac.guns.init.ModItems;
-import com.tac.guns.init.ModTileEntities;
 import com.tac.guns.item.IColored;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAttachments;
@@ -70,15 +59,15 @@ import com.tac.guns.util.math.SecondOrderDynamics;
 import de.javagl.jgltf.model.animation.AnimationRunner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.ControlsScreen;
-import net.minecraft.client.gui.screen.MouseSettingsScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.VideoSettingsScreen;
+import net.minecraft.client.gui.screen.*;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -86,7 +75,6 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -115,6 +103,7 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(HUDRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(FireModeSwitchEvent.get()); // Technically now a handler but, yes I need some naming reworks
         MinecraftForge.EVENT_BUS.register(SightSwitchEvent.get()); // Still, as well an event, am uncertain on what to name it, in short handles upcoming advanced iron sights
+        MinecraftForge.EVENT_BUS.register(ArmorInteractionHandler.get());
 
         //MinecraftForge.EVENT_BUS.register(FlashlightHandler.get()); // Completely broken... Needs a full rework
         //MinecraftForge.EVENT_BUS.register(FloodLightSource.get());
@@ -122,7 +111,6 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDayMemory part of the Timeless dev team, amazing work!!!!!!!!!!!
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
         MinecraftForge.EVENT_BUS.register(AnimationHandler.INSTANCE); //Mainly controls when the animation should play.
-        MinecraftForge.EVENT_BUS.register(ArmorRenderingHandler.INSTANCE); //Test
         if(Config.COMMON.development.enableTDev.get()) {
             MinecraftForge.EVENT_BUS.register(GuiEditor.get());
             MinecraftForge.EVENT_BUS.register(GunEditor.get());
@@ -152,6 +140,14 @@ public class ClientHandler
         AnimationHandler.preloadAnimations();
         new AnimationRunner(); //preload thread pool
         new SecondOrderDynamics(1f,1f,1f, 1f); //preload thread pool
+
+        Map<String, PlayerRenderer> skins = Minecraft.getInstance().getRenderManager().getSkinMap();
+        addVestLayer(skins.get("default"));
+        addVestLayer(skins.get("slim"));
+    }
+    private static void addVestLayer(PlayerRenderer renderer)
+    {
+        renderer.addLayer(new VestLayerRender<>(renderer));
     }
 
     private static void setupRenderLayers()
@@ -211,6 +207,14 @@ public class ClientHandler
 
         ModelOverrides.register(ModItems.MINI_DOT.get(), new MiniDotSightModel());
         ModelOverrides.register(ModItems.MICRO_HOLO_SIGHT.get(), new MicroHoloSightModel());
+
+        ModelOverrides.register(ModItems.MINI_DOT.get(), new MiniDotSightModel());
+        ModelOverrides.register(ModItems.MICRO_HOLO_SIGHT.get(), new MicroHoloSightModel());
+
+        // Armor registry, kept manual cause nice and simple, requires registry on client side only
+        VestLayerRender.registerModel(ModItems.LIGHT_ARMOR.get(), new ModernArmor());
+        VestLayerRender.registerModel(ModItems.MEDIUM_STEEL_ARMOR.get(), new MediumArmor());
+        //VestLayerRender.registerModel(ModItems.CARDBOARD_ARMOR_FUN.get(), new CardboardArmor());
     }
 
     private static void registerScreenFactories()
@@ -219,7 +223,7 @@ public class ClientHandler
         ScreenManager.registerFactory(ModContainers.UPGRADE_BENCH.get(), UpgradeBenchScreen::new);
         ScreenManager.registerFactory(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
         ScreenManager.registerFactory(ModContainers.INSPECTION.get(), InspectScreen::new);
-        ScreenManager.registerFactory(ModContainers.AMMOPACK.get(), AmmoPackScreen::new);
+        ScreenManager.registerFactory(ModContainers.ARMOR_TEST.get(), AmmoPackScreen::new);
         //ScreenManager.registerFactory(ModContainers.COLOR_BENCH.get(), ColorBenchAttachmentScreen::new);
     }
 
@@ -253,15 +257,14 @@ public class ClientHandler
                 Minecraft.getInstance().displayGuiScreen(new TaCSettingsScreen(screen, Minecraft.getInstance().gameSettings));
             })));
         }
-        /*if(event.getGui() instanceof MainMenuScreen)
+        /*if(event.getGui() instanceof VideoSettingsScreen)
         {
-            MainMenuScreen screen = (MainMenuScreen) event.getGui();
+            VideoSettingsScreen screen = (VideoSettingsScreen) event.getGui();
 
             event.addWidget((new Button(screen.width / 2 - 215, 10, 75, 20, new TranslationTextComponent("tac.options.gui_settings"), (p_213126_1_) -> {
                 Minecraft.getInstance().displayGuiScreen(new TaCSettingsScreen(screen, Minecraft.getInstance().gameSettings));
             })));
-        }
-*/
+        }*/
     }
     
     private static Screen prevScreen = null;

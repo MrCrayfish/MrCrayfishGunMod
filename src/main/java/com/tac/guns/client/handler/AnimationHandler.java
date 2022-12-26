@@ -3,18 +3,7 @@ package com.tac.guns.client.handler;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Reference;
 import com.tac.guns.client.InputHandler;
-import com.tac.guns.client.render.animation.AA12AnimationController;
-import com.tac.guns.client.render.animation.AWPAnimationController;
-import com.tac.guns.client.render.animation.Ak47AnimationController;
-import com.tac.guns.client.render.animation.Dp28AnimationController;
-import com.tac.guns.client.render.animation.Glock17AnimationController;
-import com.tac.guns.client.render.animation.HK416A5AnimationController;
-import com.tac.guns.client.render.animation.HkMp5a5AnimationController;
-import com.tac.guns.client.render.animation.M1014AnimationController;
-import com.tac.guns.client.render.animation.M60AnimationController;
-import com.tac.guns.client.render.animation.M870AnimationController;
-import com.tac.guns.client.render.animation.Mp7AnimationController;
-import com.tac.guns.client.render.animation.Type81AnimationController;
+import com.tac.guns.client.render.animation.*;
 import com.tac.guns.client.render.animation.module.AnimationMeta;
 import com.tac.guns.client.render.animation.module.AnimationSoundManager;
 import com.tac.guns.client.render.animation.module.Animations;
@@ -65,6 +54,15 @@ public enum AnimationHandler {
         AWPAnimationController.getInstance();
         M60AnimationController.getInstance();
         M1014AnimationController.getInstance();
+        TtiG34AnimationController.getInstance();
+        MK18MOD1AnimationController.getInstance();
+        M4AnimationController.getInstance();
+        STI2011AnimationController.getInstance();
+        M1911AnimationController.getInstance();
+        MK47AnimationController.getInstance();
+        MK14AnimationController.getInstance();
+        SCAR_HAnimationController.getInstance();
+        //SPR15AnimationController.getInstance();
     }
 
     public void onGunReload(boolean reloading, ItemStack itemStack) {

@@ -62,7 +62,8 @@ public final class InputHandler
 		FIRE_SELECT = new KeyBind( "key.tac.fireSelect", GLFW.GLFW_KEY_G ),
 		INSPECT = new KeyBind( "key.tac.inspect", GLFW.GLFW_KEY_H ),
 		SIGHT_SWITCH = new KeyBind( "key.tac.sight_switch", GLFW.GLFW_KEY_V ),
-		ACTIVATE_SIDE_RAIL = new KeyBind( "key.tac.activateSideRail", GLFW.GLFW_KEY_B );
+		ACTIVATE_SIDE_RAIL = new KeyBind( "key.tac.activateSideRail", GLFW.GLFW_KEY_B ),
+				ARMOR_REPAIRING = new KeyBind( "key.tac.armor_repairing", GLFW.GLFW_KEY_K);
 		
 
 		// TODO: remove this key maybe? At least not used now.
@@ -125,7 +126,8 @@ public final class InputHandler
 			FIRE_SELECT,
 			INSPECT,
 			SIGHT_SWITCH,
-			ACTIVATE_SIDE_RAIL
+			ACTIVATE_SIDE_RAIL,
+			ARMOR_REPAIRING
 //			, COLOR_BENCH
 		);
 		

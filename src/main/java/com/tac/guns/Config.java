@@ -46,11 +46,14 @@ public class Config
         public final ForgeConfigSpec.ConfigValue<String> headshotSound;
         public final ForgeConfigSpec.BooleanValue playSoundWhenCritical;
         public final ForgeConfigSpec.ConfigValue<String> criticalSound;
+        public final ForgeConfigSpec.DoubleValue weaponsVolume;
 
         public Sounds(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Control sounds triggered by guns").push("sounds");
             {
+                this.weaponsVolume = builder.comment("Show your ammunition as numbers, reloading timer, weapon icon, and fire mode all on the HUD.").defineInRange("weaponsVolume", 1.0, 0.0, 1.0);
+
                 this.playSoundWhenHeadshot = builder.comment("If true, a sound will play when you successfully hit a headshot on a entity with a gun").define("playSoundWhenHeadshot", true);
                 this.headshotSound = builder.comment("The sound to play when a headshot occurs").define("headshotSound", "minecraft:entity.player.attack.crit");
                 this.playSoundWhenCritical = builder.comment("If true, a sound will play when you successfully hit a critical on a entity with a gun").define("playSoundWhenCritical", true);
@@ -77,6 +80,7 @@ public class Config
 
         public final ForgeConfigSpec.IntValue cameraShakeOnHit;
         public final ForgeConfigSpec.BooleanValue cameraShakeOptionGlobal;
+        public final ForgeConfigSpec.BooleanValue cameraShakeOnFire;
         public Display(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Configuration for display related options").push("display");
@@ -92,6 +96,7 @@ public class Config
                 this.sight1xRealisticPosition = builder.comment("Enable 0 fov multiplied sights (Dot/Holo sights) to be viewed realisticly, with the players head static for iron sights, and 1x optics").define("sight1xRealisticPostion", false);
                 this.cameraShakeOnHit = builder.comment("Shake camera when hit, 0 = no camera shake when you are hit, while holding a gun, meant to help reduce jarring feel when attempting to aim.").defineInRange("cameraShakeOnHit", 6, 0, 10);
                 this.cameraShakeOptionGlobal = builder.comment("Enable the cameraShakeOnHit option to always take effect, holding a gun or not, keep false for vanilla gameplay to remain vanilla.").define("cameraShakeOptionGlobal", false);
+                this.cameraShakeOnFire = builder.comment("Shake camera when firing the weapon, currently in beta but will be expanded on in the future, if it causes vomit, DISABLE, else enjoy!").define("cameraShakeOnFire", true);
             }
             builder.pop();
         }
@@ -105,6 +110,7 @@ public class Config
         public final WeaponFireMode weaponFireMode;
         public final WeaponAmmoCounter weaponAmmoCounter;
         public final WeaponReloadTimer weaponReloadTimer;
+
 
         public WeaponGUI(ForgeConfigSpec.Builder builder)
         {
@@ -323,6 +329,16 @@ public class Config
         public final ForgeConfigSpec.BooleanValue realisticAimedBreathing;
         public final ForgeConfigSpec.BooleanValue safetyExistence;
 
+        public final ForgeConfigSpec.BooleanValue bulletsIgnoreStandardArmor;
+
+        public final ForgeConfigSpec.DoubleValue percentDamageIgnoresStandardArmor;
+
+        public final ForgeConfigSpec.BooleanValue renderTaCArmor;
+        public final ForgeConfigSpec.BooleanValue armorBluntDamage;
+
+        public final ForgeConfigSpec.BooleanValue forceCameraShakeOnFire;
+
+
         public Gameplay(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Properties relating to gameplay").push("gameplay");
@@ -343,6 +359,19 @@ public class Config
                 this.realisticIronSightFovHandling = builder.comment("Iron sights fov modification will not affect the players fov at all").define("realisticIronSightFovHandling", false);
 
                 this.realisticAimedBreathing = builder.comment("Aiming will present a breathing animation, moving the weapon over time, crouch to lower it's effects").define("realisticAimedBreathing", false);
+
+                this.bulletsIgnoreStandardArmor = builder.comment("Bullets completely ignore Minecraft armor, forcing you to use our armor system.").define("bulletsIgnoreStandardArmor", true);
+                this.percentDamageIgnoresStandardArmor =
+                        builder.comment("The percent of the damage to be applied standard, AKA Minecraft armor reduces this portion of the damage, while the rest passes through freely, only active when either armor hits 0 or no TaC armor worn at " +
+                                "all, 0 = Minecraft armor never effects bullet damage, 1 = Minecraft armor effectiveness doesn't change.").defineInRange(
+                        "percentDamageIgnoresStandardArmor", 0.25, 0.0, 1.0);
+                this.renderTaCArmor = builder.comment("Enable rendering of TaC armor on the player, useful if other armors are taking priority, doesn't fit gameplay theme, or not performant enough.").define("renderTaCArmor",
+                        true);
+                this.armorBluntDamage = builder.comment("All weapons have a percentage of damage applied, no matter the class match up, false means blunt damage is never applied before armor calc.").define("armorBluntDamage", true);
+
+                this.forceCameraShakeOnFire = builder.comment("Force camera shake on for all players, since control over the weapon is reduced with this off, having a client only options could lead to balance issues.").define("forceCameraShakeOnFire",
+                        false);
+
             }
             builder.pop();
         }

@@ -2,12 +2,12 @@
   "type": "tac:workbench",
   "result": {
     "item": "tac:ae50",
-    "count": 4
+    "count": 8
   },
   "materials": [
     {
       "item": "minecraft:iron_nugget",
-      "count": 18
+      "count": 14
     },
     {
       "item": "minecraft:gunpowder",

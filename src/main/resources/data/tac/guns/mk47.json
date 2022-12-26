@@ -8,40 +8,43 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 3.875,
-    "horizontalRecoilAngle": 1.4,
-    "recoilKick": 1.3,
-    "recoilAdsReduction": 0.25,
-    "weaponRecoilOffset": 0.8,
-    "cameraRecoilModifier": 1.7,
-    "recoilDuration": 0.175,
+    "recoilAngle": 3.525,
+    "horizontalRecoilAngle": 3.25,
+    "recoilKick": 2.3,
+    "recoilAdsReduction": 0.235,
+    "weaponRecoilOffset": 0.805,
+    "cameraRecoilModifier": 1.5,
+    "recoilDuration": 0.155,
     "alwaysSpread": true,
-    "spread": 2.225,
+    "spread": 2.325,
     "weightKilo": 4.0
   },
   "projectile": {
     "item": "tac:762x39",
     "visible": true,
-    "damage": 8.25,
+    "damage": 8.75,
     "size": 0.2,
-    "speed": 22.0,
+    "speed": 20.0,
     "life": 11
   },
   "reloads": {
     "magFed": true,
     "maxAmmo": 30,
-    "reloadMagTimer": 52,
+    "reloadMagTimer": 46,
     "additionalReloadEmptyMagTimer": 12,
     "maxAdditionalAmmoPerOC": [
       10,
       15,
       20
     ],
-    "preReloadPauseTicks": 6
+    "preReloadPauseTicks": 0
   },
   "sounds": {
     "fire": "tac:item.fal_fire",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.mk47_norm_reload",
+    "reloadEmpty": "tac:animation.mk47_empty_reload",
+    "draw": "tac:animation.mk47_draw",
+    "inspect": "tac:animation.mk47_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.remington_700s"
   },
@@ -60,7 +63,7 @@
   "modules": {
     "zoom": {
       "fovModifier": 0.8,
-      "yOffset": 12.395,
+      "yOffset": 12.415,
       "zOffset": 0.8
     },
     "attachments": {

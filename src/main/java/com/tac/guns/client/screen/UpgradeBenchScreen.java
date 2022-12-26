@@ -118,7 +118,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
         /*for(RequirementItem material : this.requirements)
         {
             material.update(this.workbench.getStackInSlot(0),
-                    this.workbench.getStackInSlot(1).getCount());
+                    this.workbench.getStackInSlot(1).getId());
         }*/
 
         /*boolean canCraft = true;
@@ -490,7 +490,7 @@ public class UpgradeBenchScreen extends ContainerScreen<UpgradeBenchContainer>
     private List<RequirementItem> getRequirements()
     {
         List<RequirementItem> materials = NonNullList.withSize(6,
-                new RequirementItem(this.workbench.getStackInSlot(1).getCount(),
+                new RequirementItem(this.workbench.getStackInSlot(1).getId(),
                         levelReqPerEnch));
         //List<MaterialItem> filteredMaterials = this.requirements.stream().filter(materialItem ->
         // this.checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : !materialItem.stack.isEmpty()).collect(Collectors.toList());

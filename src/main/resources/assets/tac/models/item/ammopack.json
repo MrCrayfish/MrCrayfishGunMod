@@ -1,5 +1,0 @@
-{
-  "loader": "forge:obj",
-  "model": "tac:models/item/bulletproof_rig_v1.obj",
-  "flip-v": true
-}

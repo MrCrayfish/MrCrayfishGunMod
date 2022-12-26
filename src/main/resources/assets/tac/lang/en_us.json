@@ -15,7 +15,7 @@
     "item.tac.dp28": "DP-28",
     "item.tac.m16a1": "M16A1",
     "item.tac.mk18": "MK 18",
-    "item.tac.sti2011": "STI 2011",
+    "item.tac.sti2011": "STI P45",
     "item.tac.ak74": "AK-74",
     "item.tac.m92fs": "M92FS",
     "item.tac.nato_556_box_block": "Box of 5.56x45mm Bullets",
@@ -83,6 +83,8 @@
     "item.tac.scar_h": "SCAR H",
     "item.tac.scar_l": "SCAR L",
     "item.tac.mk47": "MK47 MUTANT",
+    "item.tac.tti_g34": "TTI G34",
+    "item.tac.mk18_mod1": "MK18 MOD1",
 
     "item.tac.round45": ".45 ACP Bullet",
     "item.tac.magnumround": ".357 Magnum Bullet",
@@ -100,6 +102,11 @@
     "item.tac.bullet68": "6.8mm SIG",
     "item.tac.ae50": ".50 AE",
     "item.tac.lapua338": ".338 Lapua",
+
+    "item.tac.cardboard_armor": "Cardboard Armor",
+    "item.tac.light_armor": "Light Modern Armor",
+    "item.tac.medium_steel_armor": "Medium Steel Armor",
+    "item.tac.light_armor_plate": "Armor Repair Plate",
 
     "item.tac.light_grenade": "F1 Grenade",
     "item.tac.baseball_grenade": "M67 Grenade",
@@ -236,6 +243,9 @@
     "info.tac.firemode_auto": "<AUTO>, press %s to change fire mode",
 
     "info.tac.attachment_help": "Press %s in-game for Attachments",
+    "info.tac.tac_armor_repair1": "Hold your ",
+    "info.tac.tac_armor_repair2": " in-game to repair Armor",
+    "info.tac.current_armor_amount": "Current Armor Durability: ",
 
     "key.categories.tac": "Timeless and Classic Guns",
 
@@ -258,6 +268,8 @@
 	"key.tac.co_unload": "Co-Unload",
 	"key.tac.co_inspect": "Co-Inspect",
 
+    "key.tac.armor_repairing": "Armor Repairing",
+
     "effect.tac.blinded": "Blinded",
     "effect.tac.deafened": "Deafened",
 
@@ -273,6 +285,7 @@
     "tac.options.adsSensitivity": "ADS Sensitivity",
     "tac.options.adsSensitivity.format": "ADS Sensitivity: %s",
     "tac.options.crosshair.format": "Crosshair: %s",
+    "tac.options.weaponsVolume.format": "Gun fire Volume: %s",
     "tac.options.toggleAim": "Toggle ADS",
 
     "tac.crosshair.arrow": "Arrow",
@@ -396,5 +409,7 @@
     "tac.button.aim": "Aim Down Sight",
     "tac.button.reload": "Reload / Unload",
     "tac.button.attachments": "Modify Attachments",
-    "tac.button.steadyAim": "Steady Aim"
+    "tac.button.steadyAim": "Steady Aim",
+
+    "curios.identifier.armor_rig": "Timeless Armor"
 }

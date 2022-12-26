@@ -164,7 +164,7 @@ public class ColorBenchContainer extends Container
                     slot.onSlotChanged();
                 }
 
-                if (slotStack.getCount() == copyStack.getCount()) {
+                if (slotStack.getId() == copyStack.getId()) {
                     return ItemStack.EMPTY;
                 }
 

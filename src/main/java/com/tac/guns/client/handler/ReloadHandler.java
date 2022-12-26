@@ -12,10 +12,12 @@ import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageReload;
+import com.tac.guns.network.message.MessageToClientRigInv;
 import com.tac.guns.network.message.MessageUnload;
 import com.tac.guns.network.message.MessageUpdateGunID;
 import com.tac.guns.util.GunEnchantmentHelper;
 
+import com.tac.guns.util.WearableHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -180,7 +182,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
         return this.reloadTimer;
     }
 
-    public float getReloadProgress(float partialTicks)
+    public float getRepairProgress(float partialTicks)
     {
         return (this.prevReloadTimer + (this.reloadTimer - this.prevReloadTimer) * partialTicks) / 5F;
     }
@@ -204,6 +206,8 @@ public class ReloadHandler {
     private boolean empty;
     private boolean prevState = false;
     private ItemStack prevItemStack;
+
+    public int rigAmmoCount = 0;
 
     private ReloadHandler()
     {
@@ -292,7 +296,15 @@ public class ReloadHandler {
                         if (tag.getInt("AmmoCount") >= GunEnchantmentHelper.getAmmoCapacity(stack, gun)) {
                             return;
                         }
-                        if (Gun.findAmmo(player, gun.getProjectile().getItem()).length < 1) {
+                        ItemStack rig = WearableHelper.PlayerWornRig(player);
+                        if(!player.isCreative() && rig != null)
+                        {
+                            PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(((GunItem)stack.getItem()).getGun().getProjectile().getItem()));
+                            if (Gun.findAmmo(player, gun.getProjectile().getItem()).length < 1 && rigAmmoCount < 1) {
+                                return;
+                            }
+                        }
+                        else if (!player.isCreative() && Gun.findAmmo(player, gun.getProjectile().getItem()).length < 1) {
                             return;
                         }
                         if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
@@ -321,7 +333,6 @@ public class ReloadHandler {
                 CompoundNBT tag = stack.getTag();
                 if (tag != null) {
                     Gun gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-
                     if (this.startUpReloadTimer == -1)
                         this.startUpReloadTimer = gun.getReloads().getPreReloadPauseTicks();
 
@@ -416,11 +427,7 @@ public class ReloadHandler {
         if (tag != null) {
             isEmpty = tag.getInt("AmmoCount") <= 0;
         }
-        return this.startUpReloadTimer == 0 ?
-                (
-                        gunItem.getGun().getReloads().isMagFed() ?
-                                (isEmpty ? ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / ((float) gunItem.getGun().getReloads().getReloadMagTimer() + gunItem.getGun().getReloads().getAdditionalReloadEmptyMagTimer())) : ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / (float) gunItem.getGun().getReloads().getReloadMagTimer()))
-                                : ((this.reloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks)) / ((float) gunItem.getGun().getReloads().getinterReloadPauseTicks()))
+        return this.startUpReloadTimer == 0 ? (gunItem.getGun().getReloads().isMagFed() ? (isEmpty ? ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / ((float) gunItem.getGun().getReloads().getReloadMagTimer() + gunItem.getGun().getReloads().getAdditionalReloadEmptyMagTimer())) : ((this.prevReloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks) + this.startUpReloadTimer) / (float) gunItem.getGun().getReloads().getReloadMagTimer())) : ((this.reloadTimer + ((this.reloadTimer - this.prevReloadTimer) * partialTicks)) / ((float) gunItem.getGun().getReloads().getinterReloadPauseTicks()))
                 )
                 : 1F;
     }
@@ -443,7 +450,7 @@ public class ReloadHandler {
         }
     }
 
-    /*public float getReloadProgress(float partialTicks, ItemStack stack)
+    /*public float getRepairProgress(float partialTicks, ItemStack stack)
     {
         boolean isEmpty = false;
         GunItem gunItem = (GunItem)stack.getItem();

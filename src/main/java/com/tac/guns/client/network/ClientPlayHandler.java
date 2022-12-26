@@ -3,36 +3,51 @@ package com.tac.guns.client.network;
 import com.tac.guns.Config;
 import com.tac.guns.client.BulletTrail;
 import com.tac.guns.client.CustomGunManager;
+import com.tac.guns.client.CustomRigManager;
 import com.tac.guns.client.audio.GunShotSound;
 import com.tac.guns.client.handler.BulletTrailRenderingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.HUDRenderingHandler;
+import com.tac.guns.client.handler.ReloadHandler;
 import com.tac.guns.client.render.animation.module.AnimationMeta;
 import com.tac.guns.client.render.animation.module.AnimationSoundManager;
 import com.tac.guns.client.render.animation.module.AnimationSoundMeta;
+import com.tac.guns.common.Gun;
 import com.tac.guns.common.NetworkGunManager;
+import com.tac.guns.common.NetworkRigManager;
 import com.tac.guns.init.ModParticleTypes;
+import com.tac.guns.inventory.gear.InventoryListener;
+import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
+import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
+import com.tac.guns.item.GunItem;
 import com.tac.guns.network.message.*;
 import com.tac.guns.particles.BulletHoleData;
+import com.tac.guns.util.WearableHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nullable;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -54,7 +69,8 @@ public class ClientPlayHandler
 
         if(message.getShooterId() == mc.player.getEntityId())
         {
-            Minecraft.getInstance().getSoundHandler().play(new SimpleSound(message.getId(), SoundCategory.PLAYERS, message.getVolume(), message.getPitch(), false, 0, ISound.AttenuationType.LINEAR, 0, 0, 0, true));
+            Minecraft.getInstance().getSoundHandler().play(new SimpleSound(message.getId(), SoundCategory.PLAYERS, (float) (message.getVolume()*Config.CLIENT.sounds.weaponsVolume.get()), message.getPitch(), false, 0, ISound.AttenuationType.LINEAR, 0, 0, 0,
+                    true));
         }
         else
         {
@@ -229,4 +245,24 @@ public class ClientPlayHandler
         NetworkGunManager.updateRegisteredGuns(message);
         CustomGunManager.updateCustomGuns(message);
     }
+    public static void handleUpdateRigs(MessageUpdateRigs message)
+    {
+        NetworkRigManager.updateRegisteredRigs(message);
+        CustomRigManager.updateCustomRigs(message);
+    }
+
+    public static void updateRigInv(MessageRigInvToClient message)
+    {
+        // Incase I manage to adjust counts on accident
+        //HUDRenderingHandler.get().serverSideRig = message.getRig().copy();
+        if(message.getOnlyResetRigCount()){HUDRenderingHandler.get().rigReserveCount = 0; ReloadHandler.get().rigAmmoCount = 0;}
+        else {
+            HUDRenderingHandler.get().rigReserveCount = 0;
+            HUDRenderingHandler.get().rigReserveCount += message.getCount();
+            ReloadHandler.get().rigAmmoCount = 0;
+            ReloadHandler.get().rigAmmoCount += message.getCount();
+        }
+
+    }
+
 }

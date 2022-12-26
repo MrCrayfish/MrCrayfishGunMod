@@ -16,14 +16,13 @@ import com.tac.guns.interfaces.IExplosionDamageable;
 import com.tac.guns.interfaces.IHeadshotBox;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
+import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.MessageBlood;
-import com.tac.guns.network.message.MessageProjectileHitBlock;
-import com.tac.guns.network.message.MessageProjectileHitEntity;
-import com.tac.guns.network.message.MessageRemoveProjectile;
+import com.tac.guns.network.message.*;
 import com.tac.guns.util.BufferUtil;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
+import com.tac.guns.util.WearableHelper;
 import com.tac.guns.util.math.ExtendedEntityRayTraceResult;
 import com.tac.guns.world.ProjectileExplosion;
 import net.minecraft.block.*;
@@ -41,6 +40,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SExplosionPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
@@ -50,6 +51,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -488,7 +490,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             {
                 this.remove();
             }
-
             entity.hurtResistantTime = 0;
         }
     }
@@ -507,8 +508,17 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
-        entity.attackEntityFrom(source, damage);
-
+        if(entity instanceof PlayerEntity && WearableHelper.PlayerWornRig((PlayerEntity) entity) != null)
+        {
+            if(!WearableHelper.tickFromCurrentDurability((PlayerEntity) entity, this))
+                PacketHandler.getPlayChannel().sendTo(new MessagePlayerShake((PlayerEntity) entity), ((ServerPlayerEntity)entity).connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+            else {
+                tac_attackEntity(source, entity, damage);
+            }
+        }
+        else {
+            tac_attackEntity(source, entity, damage);
+        }
 
         if(this.shooter instanceof PlayerEntity)
         {
@@ -519,6 +529,33 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         /* Send blood particle to tracking clients. */
         PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageBlood(hitVec.x, hitVec.y, hitVec.z));
+    }
+
+    // Apply blunt damage before applying any effects via armor
+    // TODO: Use a new source type, so messages can be "Tickled to death", "Poked to smithereens" etc.
+    private void tac_attackWithBluntDamage(DamageSource source, Entity entity, float damage)
+    {
+        entity.attackEntityFrom(source, (damage*this.modifiedGun.getProjectile().getBluntDamagePercentage()));
+    }
+
+    // tac_ is simply a naming convention for "check tac stuff before you continue this standard mc call", I use it here to explain checking config before applying it's damage, along with armor calculations
+    // Is also "bulletClass" aware, makes this a bit more complex than config checks.
+    private void tac_attackEntity(DamageSource source, Entity entity, float damage)
+    {
+        if(Config.COMMON.gameplay.bulletsIgnoreStandardArmor.get()) {
+            float damageToMcArmor = 0;
+            if (Config.COMMON.gameplay.percentDamageIgnoresStandardArmor.get() > 0) {
+                damageToMcArmor = (float) (damage * Config.COMMON.gameplay.percentDamageIgnoresStandardArmor.get());
+                entity.attackEntityFrom(source, damageToMcArmor); // Apply vanilla armor aware damage
+            }
+
+            source.setDamageBypassesArmor();
+            source.setDamageIsAbsolute();
+            if(!(Config.COMMON.gameplay.percentDamageIgnoresStandardArmor.get() >= 1.0))
+                entity.attackEntityFrom(source, (damage-damageToMcArmor)); // Apply pure damage
+        }
+        else
+            entity.attackEntityFrom(source, damage);
     }
 
     protected void updateWeaponLevels(float damage)

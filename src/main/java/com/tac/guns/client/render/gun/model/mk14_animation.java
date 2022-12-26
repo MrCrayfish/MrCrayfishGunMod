@@ -1,21 +1,26 @@
 package com.tac.guns.client.render.gun.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tac.guns.Config;
+import com.tac.guns.client.SpecialModel;
 import com.tac.guns.client.SpecialModels;
+import com.tac.guns.client.render.animation.MK14AnimationController;
+import com.tac.guns.client.render.animation.MK18MOD1AnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
-import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
+import com.tac.guns.init.ModEnchantments;
 import com.tac.guns.init.ModItems;
 import com.tac.guns.item.attachment.IAttachment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.math.vector.Vector3f;
 
 /*
  * Because the revolver has a rotating chamber, we need to render it in a
@@ -27,48 +32,107 @@ import net.minecraft.util.math.vector.Vector3f;
  */
 public class mk14_animation implements IOverrideModel {
 
+    private final SpecialModel MK14_BODY = new SpecialModel("mk14");
+    private final SpecialModel BOLT = new SpecialModel("mk14_bolt");
+    private final SpecialModel BOLT_HANDLE = new SpecialModel("mk14_bolt_handle");
+    private final SpecialModel STANDARD_MAG = new SpecialModel("mk14_standard_mag");
+    private final SpecialModel EXTENDED_MAG = new SpecialModel("mk14_extended_mag");
+    private final SpecialModel T_GRIP = new SpecialModel("mk14_tac_grip");
+    private final SpecialModel L_GRIP = new SpecialModel("mk14_light_grip");
+    private final SpecialModel SCOPE_MOUNT = new SpecialModel("mk14_mount");
+
     @Override
     public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay)
     {
-        if(ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GUI) && Config.CLIENT.quality.reducedGuiWeaponQuality.get())
-        {
-            matrices.push();
-            matrices.rotate(Vector3f.XP.rotationDegrees(-60.0F));
-            matrices.rotate(Vector3f.YP.rotationDegrees(225.0F));
-            matrices.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
-            matrices.translate(0.9,0,0);
-            matrices.scale(1.5F,1.5F,1.5F);
-            RenderUtil.renderModel(stack, stack, matrices, renderBuffer, light, overlay);
-            matrices.pop();
-            return;
-        }
-        /*if(Gun.getAttachment(IAttachment.Type.SIDE_RAIL, stack).getItem() == ModItems.STANDARD_FLASHLIGHT.orElse(ItemStack.EMPTY.getItem()))
-        {
-            RenderUtil.renderModel(SpecialModels.MK14_FLASHLIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }*/
-        RenderUtil.renderModel(SpecialModels.MK14_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
+        MK14AnimationController controller = MK14AnimationController.getInstance();
         matrices.push();
-        CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
-
-        if(Gun.hasAmmo(stack))
         {
-            // Math provided by Bomb787 on GitHub and Curseforge!!!
-            matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-        }
-        else if(!Gun.hasAmmo(stack))
-        {
-            if(cooldownOg > 0.5){
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+            controller.applySpecialModelTransform(MK14_BODY.getModel(), MK14AnimationController.INDEX_BODY, transformType, matrices);
+            if (Gun.getScope(stack) != null) {
+                RenderUtil.renderModel(SCOPE_MOUNT.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
-            else
+
+            if (Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.LIGHT_GRIP.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(L_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
+
+            } else if (Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.SPECIALISED_GRIP.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(T_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+
+            if (Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.LIGHT_GRIP.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(L_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
+
+            } else if (Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.SPECIALISED_GRIP.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(T_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+
+            RenderUtil.renderModel(MK14_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
+
+        } matrices.pop();
+
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(MK14_BODY.getModel(), MK14AnimationController.INDEX_BOLT, transformType, matrices);
+            CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
+            float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
+
+            AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
+            boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
+            if(Gun.hasAmmo(stack) || shouldOffset)
             {
-                matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+                //RenderUtil.renderModel(SpecialModels.M1_GARAND.getModel(), stack, matrices, renderBuffer, light, overlay);
+                // Math provided by Bomb787 on GitHub and Curseforge!!!
+                matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
             }
-        }
+            else if(!Gun.hasAmmo(stack))
+            {
+                if(cooldownOg > 0.5){
+                    // Math provided by Bomb787 on GitHub and Curseforge!!!
+                    matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
+                }
+                else
+                {
+                    matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+                }
+            }
+            RenderUtil.renderModel(BOLT_HANDLE.getModel(), stack, matrices, renderBuffer, light, overlay);
 
-        RenderUtil.renderModel(SpecialModels.MK14_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
-        matrices.pop();
+            if(Gun.hasAmmo(stack)|| shouldOffset)
+            {
+                // Math provided by Bomb787 on GitHub and Curseforge!!!
+                matrices.translate(0, -0.0335f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0), 0);
+            }
+            else if(!Gun.hasAmmo(stack))
+            {
+                if(cooldownOg > 0.5){
+                    // Math provided by Bomb787 on GitHub and Curseforge!!!
+                    matrices.translate(0, -0.0335f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0), 0);
+                }
+                else
+                {
+                    matrices.translate(0, -0.0335f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0), 0);
+                }
+            }
+            RenderUtil.renderModel(BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+        } matrices.pop();
+
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(MK14_BODY.getModel(), MK14AnimationController.INDEX_MAGAZINE, transformType, matrices);
+
+            if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
+                RenderUtil.renderModel(EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else {
+                RenderUtil.renderModel(STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+        } matrices.pop();
+
+        matrices.push();
+        {
+            matrices.translate(0, 0, 0.2175f);
+            PlayerHandAnimation.render(controller, transformType, matrices, renderBuffer, light);
+        }matrices.pop();
     }
 }

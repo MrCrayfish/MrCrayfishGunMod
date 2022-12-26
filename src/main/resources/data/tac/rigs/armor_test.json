@@ -1,0 +1,23 @@
+{
+  "general": {
+    "armorClass": 1,
+    "ergonomics": 1,
+    "speedReduction": 0.0,
+    "movementInaccuracy": 1.0
+  },
+  "repair": {
+    "ticksToRepair": 55,
+    "durability": 75.0,
+    "quickRepairability": 0.25,
+    "quickRepairable": true,
+    "repairItem": "tac:10_gauge_round"
+  },
+  "sounds": {
+    "step": "tac:item.fire_m16",
+    "on":"tac:item.fire_m16",
+    "off":"tac:item.fire_m16",
+    "hit":"tac:item.fire_m16",
+    "broken":"tac:item.fire_m16",
+    "repair":"tac:item.fire_m16"
+  }
+}

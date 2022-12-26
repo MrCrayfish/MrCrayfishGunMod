@@ -25,7 +25,7 @@ public class TwoHandedPoseHighRes_ak47 extends TwoHandedPose {
 		matrixStack.translate(0, 0, -1);
 		matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
 
-		//float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks, stack);
+		//float reloadProgress = ReloadHandler.get().getRepairProgress(partialTicks, stack);
 		//extraMatrixStack.translate(reloadProgress * 1.25, -reloadProgress, -reloadProgress * 1.5);
 
 
@@ -105,7 +105,7 @@ public class TwoHandedPoseHighRes_ak47 extends TwoHandedPose {
 		matrixStack.translate(0, 0, -1);
 		matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
 
-		//float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks, stack);
+		//float reloadProgress = ReloadHandler.get().getRepairProgress(partialTicks, stack);
 		//extraMatrixStack.translate(reloadProgress * 1.25, -reloadProgress, -reloadProgress * 1.5);
 
 		float sideFloat = hand.opposite() == HandSide.RIGHT ? -0.25F : -1;

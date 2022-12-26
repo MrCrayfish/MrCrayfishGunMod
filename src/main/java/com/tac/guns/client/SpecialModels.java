@@ -57,11 +57,6 @@ public enum SpecialModels
     M16_A1_STANDARD_MAG("m16a1_standard_mag"),
     M16_A1_EXTENDED_MAG("m16a1_extended_mag"),
     M16_A1_FRONT_SIGHT("m16a1_front_sight"),
-    MK18_BODY("mk18_body"),
-    MK18_BOLT("mk18_bolt"),
-    MK18_SIGHTS("mk18_sights"),
-    MK18_STOCK("mk18_stock"),
-    MK18_STANDARD_MAG("mk18_standard_mag"),
     STI2011_BODY("sti2011_body"),
     STI2011_SLIDE("sti2011_slide"),
     STI2011_STANDARD_MAG("sti2011_standard_mag"),
@@ -208,9 +203,6 @@ public enum SpecialModels
     M4_LIGHT_STOCK("m4_light_stock"),
     M1A1_SMG_BODY("m1a1_smg"),
     M1A1_SMG_BOLT("m1a1_smg_bolt"),
-    MK14_BODY("mk14"),
-    MK14_BOLT("mk14_bolt"),
-    MK14_FLASHLIGHT("mk14_flashlight"),
     SPAS_12_BODY("spas_12"),
     SPAS_12_BOLT("spas_12_bolt"),
     SPAS_12_PUMP("spas_12_pump"),
@@ -512,6 +504,7 @@ public enum SpecialModels
     MK47_TACTICAL_STOCK("mk47_tac_stock"),
     MK47_LIGHT_STOCK("mk47_light_stock"),
     MK47_HEAVY_STOCK("mk47_heavy_stock"),
+    MK47_PULL("mk47_pull"),
     KAR98_MOUNT("kar98_mount"),
 
    AR_15_BODY("ar_15_body"),
@@ -547,6 +540,29 @@ public enum SpecialModels
     SPR_15_DEFAULT_GRIP("spr15_default_grip"),
     SPR_15_LIGHT_GRIP("spr15_light_grip"),
     SPR_15_TAC_GRIP("spr15_tac_grip"),
+    TTI_G34("tti_g34"),
+    TTI_G34_SLIDE("tti_g34_slide"),
+    TTI_G34_STANDARD_MAG("tti_g34_standard_mag"),
+    TTI_G34_EXTENDED_MAG("tti_g34_extended_mag"),
+    TTI_G34_SUPPRESSOR("tti_g34_suppressor"),
+
+
+    MK18_MOD1_BODY("mk18_mod1"),
+    MK18_MOD1_BOLT("mk18_mod1_bolt"),
+    MK18_MOD1_COMPENSATOR("mk18_mod1_c_muzzle"),
+    MK18_MOD1_DEFAULT_BARREL("mk18_mod1_d_muzzle"),
+    MK18_MOD1_EXTENDED_MAG("mk18_mod1_extended_mag"),
+    MK18_MOD1_SUPPRESSOR("mk18_mod1_s_muzzle"),
+    MK18_MOD1_STANDARD_MAG("mk18_mod1_standard_mag"),
+    MK18_MOD1_SIGHT("mk18_mod1_sight"),
+    MK18_MOD1_SIGHT_FOLDED("mk18_mod1_sight_folded"),
+    MK18_MOD1_BRAKE("mk18_mod1_b_muzzle"),
+    MK18_MOD1_B5_STOCK("mk18_mod1_b5_stock"),
+    //MK18_MOD1_LIGHT_STOCK("spr15_light_stock"),
+    //MK18_MOD1_HEAVY_STOCK("spr15_heavy_stock"),
+    //MK18_MOD1_DEFAULT_GRIP("mk18_mod1_default_grip"),
+    MK18_MOD1_LIGHT_GRIP("mk18_mod1_light_grip"),
+    MK18_MOD1_TAC_GRIP("mk18_mod1_tac_grip"),
     //Everything from this point on is all scope additions
 
     MINI_DOT_BASE("optics/mini_dot_base"),
@@ -557,7 +573,16 @@ public enum SpecialModels
     Sx8_BODY("optics/8x_scope"),
     //Everything from this point on is all LOD renders
 
-    M1911_LOD("lods/m1911_lod");
+    M1911_LOD("lods/m1911_lod"),
+    // Tests to create new auto registry per gunAnimationFile, registries per file still need to be here anyway? f me
+    MK14_BODY1 ("mk14"),
+    BOLT1("mk14_bolt"),
+    STANDARD_MAG1 ("mk14_standard_mag"),
+    EXTENDED_MAG1("mk14_extended_mag"),
+    T_GRIP1("mk14_tac_grip"),
+    L_GRIP1 ("mk14_light_grip"),
+    SCOPE_MOUNT1 ("mk14_mount"),
+    BOLT_HANDLE1 ("mk14_bolt_handle");
 
     /**
      * The location of an item model in the [MOD_ID]/models/special/[NAME] folder
@@ -581,6 +606,16 @@ public enum SpecialModels
      * @param modelName name of the model file
      */
     SpecialModels(String modelName)
+    {
+        this(new ResourceLocation(Reference.MOD_ID, "special/" + modelName), true);
+    }
+
+    /**
+     * Sets the model's location
+     *
+     * @param modelName name of the model file
+     */
+    SpecialModels(SpecialModel modelName)
     {
         this(new ResourceLocation(Reference.MOD_ID, "special/" + modelName), true);
     }

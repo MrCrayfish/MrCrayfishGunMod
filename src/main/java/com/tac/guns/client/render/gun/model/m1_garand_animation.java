@@ -51,7 +51,7 @@ public class m1_garand_animation implements IOverrideModel {
 
         if(Gun.hasAmmo(stack))
         {
-            RenderUtil.renderModel(SpecialModels.M1_GARAND.getModel(), stack, matrices, renderBuffer, light, overlay);
+            //RenderUtil.renderModel(SpecialModels.M1_GARAND.getModel(), stack, matrices, renderBuffer, light, overlay);
             // Math provided by Bomb787 on GitHub and Curseforge!!!
             matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
         }

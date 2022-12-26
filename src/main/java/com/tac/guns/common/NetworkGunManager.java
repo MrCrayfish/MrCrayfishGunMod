@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -57,6 +58,7 @@ public class NetworkGunManager extends ReloadListener<Map<GunItem, Gun>>
     protected Map<GunItem, Gun> prepare(IResourceManager resourceManager, IProfiler profiler)
     {
         Map<GunItem, Gun> map = Maps.newHashMap();
+        GunMod.LOGGER.log(Level.FATAL,"YO_DATA_GUN");
         ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof GunItem).forEach(item ->
         {
             ResourceLocation id = item.getRegistryName();

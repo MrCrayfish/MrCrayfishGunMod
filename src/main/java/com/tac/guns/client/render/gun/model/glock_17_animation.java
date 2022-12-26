@@ -162,7 +162,7 @@ public class glock_17_animation implements IOverrideModel {
 
         AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
         boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
-        if(Gun.hasAmmo(stack) || shouldOffset )
+        if(Gun.hasAmmo(stack) || shouldOffset)
         {
              matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
              GunRenderingHandler.get().opticMovement = 0.185f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
