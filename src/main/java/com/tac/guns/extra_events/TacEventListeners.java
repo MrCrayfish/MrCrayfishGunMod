@@ -84,7 +84,7 @@ public class TacEventListeners {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void handleDeathWithArmor(LivingDeathEvent event)
     {
         if(event.getEntity() instanceof PlayerEntity)
@@ -98,7 +98,7 @@ public class TacEventListeners {
             }
         }
         // TODO: Continue for dropping armor on a bot's death
-    }
+    }*/
 
 
 
