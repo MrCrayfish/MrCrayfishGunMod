@@ -9,8 +9,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        //classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        //classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7.+'
         classpath 'org.codehaus.groovy:groovy-all:2.4.15'
     }
@@ -22,8 +22,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 //apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = "0.3.0.101-1.16.5"
-group = "com.tac"
+version = "0.3.3-1.16.5"
 archivesBaseName = "tac-a"
 
 //name = "tac-a-0.3.0.44-1.16.5"
@@ -104,13 +103,13 @@ dependencies {
     //implementation 'com.google.code.gson:gson:2.9.0'
     implementation ('com.fasterxml.jackson.core:jackson-databind:2.12.4')
 }
-/*repositories {
+repositories {
     maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven {
         url = "https://www.cursemaven.com"
     }
-}*/
-repositories {
+}
+/*repositories {
     maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven {
         url "https://cursemaven.com"
@@ -118,7 +117,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-}
+}*/
 jar {
     manifest {
         attributes([
