@@ -116,7 +116,7 @@ public class HUDRenderingHandler extends AbstractGui {
             // Only send if current id doesn't equal previous id, otherwise other serverside actions can force this to change like reloading
             if(player.isCreative())
                 return;
-            if(gunItem.getGun().getProjectile().getItem().compareTo(heldAmmoID) != 0) {
+            if(gunItem.getGun().getProjectile().getItem().compareTo(heldAmmoID) != 0 || ammoReserveCount == 0) {
                 PacketHandler.getPlayChannel().sendToServer(new MessageToClientRigInv(gunItem.getGun().getProjectile().getItem()));
                 heldAmmoID = gunItem.getGun().getProjectile().getItem();
                 this.ammoReserveCount+=rigReserveCount;
