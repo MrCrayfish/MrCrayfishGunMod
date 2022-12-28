@@ -125,6 +125,24 @@ public class HUDRenderingHandler extends AbstractGui {
 
     }
 
+
+    // Jitter minecraft player screen a tiny bit per system nano time
+    private void jitterScreen (float partialTicks) {
+        long time = System.nanoTime();
+        float jitterX = (float) (Math.sin(time / 1000000000.0) * 0.0005);
+        float jitterY = (float) (Math.cos(time / 1000000000.0) * 0.0005);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);//beginWrite(false);
+        GL11.glPushMatrix();
+        GL11.glTranslatef(jitterX, jitterY, 0);
+        tessellator.draw();
+    }
+
+
+
+
+
     // EnchancedVisuals-1.16.5 helped with this one
     private ResourceLocation getNoiseTypeResource(boolean doNoise) {
         long time = Math.abs(System.nanoTime() / 3000000 / 50);

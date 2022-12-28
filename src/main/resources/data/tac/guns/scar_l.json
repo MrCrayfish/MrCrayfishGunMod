@@ -2,28 +2,28 @@
   "general": {
     "auto": true,
     "rate": 3,
-    "burstRate": 22,
     "rateSelector": [
       0,
       1,
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 1.4,
-    "horizontalRecoilAngle": 0.35,
-    "recoilKick": 0.5,
-    "recoilAdsReduction": 0.3,
-    "weaponRecoilOffset": 0.96,
-    "cameraRecoilModifier": 0.975,
-    "recoilDuration": 0.1825,
+    "recoilAngle": 1.825,
+    "horizontalRecoilAngle": 1.15,
+    "recoilKick": 1.4,
+    "recoilAdsReduction": 0.22,
+    "weaponRecoilOffset": 0.725,
+    "cameraRecoilModifier": 1.075,
+    "recoilDuration": 0.225,
     "alwaysSpread": true,
-    "spread": 1.05,
-    "weightKilo": 4.80
+    "spread": 1.5,
+    "weightKilo": 4.60,
+    "movementInaccuracy": 1.05
   },
   "projectile": {
     "item": "tac:nato_556_bullet",
     "visible": true,
-    "damage": 7.0,
+    "damage": 7.5,
     "size": 0.2,
     "speed": 45.5,
     "life": 9
@@ -31,18 +31,21 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 30,
-    "reloadMagTimer": 48,
-    "additionalReloadEmptyMagTimer": 20,
+    "reloadMagTimer": 46,
+    "additionalReloadEmptyMagTimer": 12,
     "maxAdditionalAmmoPerOC": [
       10,
       20,
       30
     ],
-    "preReloadPauseTicks": 8
+    "preReloadPauseTicks": 0
   },
   "sounds": {
     "fire": "tac:item.sig552",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.scar_h_norm_reload",
+    "reloadEmpty": "tac:animation.scar_l_empty_reload",
+    "draw": "tac:animation.scar_h_draw",
+    "inspect": "tac:animation.scar_h_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.remington_700s"
   },
@@ -52,8 +55,8 @@
       "zOffset": -16.77,
       "size": 0.675
     },
-    "hipfireScale": 1.55,
-    "hipfireMoveScale": 0.71,
+    "hipfireScale": 2.25,
+    "hipfireMoveScale": 1.0,
     "hipfireRecoilScale": 0.95,
     "showDynamicHipfire": true,
     "weaponType": 0

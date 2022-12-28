@@ -2,6 +2,10 @@ package com.tac.guns.client.render.gun.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.client.SpecialModels;
+import com.tac.guns.client.render.animation.SCAR_LAnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
@@ -29,77 +33,87 @@ public class scar_l_animation implements IOverrideModel {
     @Override
     public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay)
     {
-        if(Gun.getScope(stack) == null)
+        SCAR_LAnimationController controller = SCAR_LAnimationController.getInstance();
+        matrices.push();
         {
-            RenderUtil.renderModel(SpecialModels.SCAR_L_FSU.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else
-        {
-            RenderUtil.renderModel(SpecialModels.SCAR_L_FS.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
+            controller.applySpecialModelTransform(SpecialModels.SCAR_L_BODY.getModel(), SCAR_LAnimationController.INDEX_BODY, transformType, matrices);
+            if (Gun.getScope(stack) == null) {
+                RenderUtil.renderModel(SpecialModels.SCAR_L_FSU.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else {
+                RenderUtil.renderModel(SpecialModels.SCAR_L_FS.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
 
-        if(Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.LIGHT_GRIP.orElse(ItemStack.EMPTY.getItem()))
-        {
-            RenderUtil.renderModel(SpecialModels.SCAR_L_LIGHT_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
+            if (Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.LIGHT_GRIP.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.SCAR_L_LIGHT_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
 
-        }
-        else if(Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.SPECIALISED_GRIP.orElse(ItemStack.EMPTY.getItem()))
-        {
-            RenderUtil.renderModel(SpecialModels.SCAR_L_TAC_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
+            } else if (Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.SPECIALISED_GRIP.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.SCAR_L_TAC_GRIP.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
 
-        if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem()))
-        {
-            //matrices.push();
-            //matrices.translate(0, 0, -0.1f);
-            RenderUtil.renderModel(SpecialModels.SCAR_L_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-            //matrices.translate(0, 0, 0.1f);
-            //matrices.pop();
-        }
-        else if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem()))
-        {
-            RenderUtil.renderModel(SpecialModels.SCAR_L_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else if(Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.orElse(ItemStack.EMPTY.getItem()))
-        {
-            RenderUtil.renderModel(SpecialModels.SCAR_L_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else
-            RenderUtil.renderModel(SpecialModels.SCAR_L_DEFAULT_BARREL.getModel(), stack, matrices, renderBuffer, light, overlay);
-        if(EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0)
-        {
-            RenderUtil.renderModel(SpecialModels.SCAR_L_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
-        else
-        {
-            RenderUtil.renderModel(SpecialModels.SCAR_L_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
-        }
+            if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem())) {
+                matrices.push();
+                matrices.translate(0, 0, -0.1f);
+                RenderUtil.renderModel(SpecialModels.SCAR_L_SUPPRESSOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+                matrices.translate(0, 0, 0.1f);
+                matrices.pop();
+            } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.SCAR_L_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.SCAR_L_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else
+                RenderUtil.renderModel(SpecialModels.SCAR_L_DEFAULT_BARREL.getModel(), stack, matrices, renderBuffer, light, overlay);
 
-        RenderUtil.renderModel(SpecialModels.SCAR_L_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
-        //RenderUtil.renderModel(SpecialModels.M4_BOLT_HANDLE.getModel(), stack, matrices, renderBuffer, light, overlay);
+            RenderUtil.renderModel(SpecialModels.SCAR_L_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
 
         matrices.push();
-        CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
-        float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
-
-        if(Gun.hasAmmo(stack))
         {
-            // Math provided by Bomb787 on GitHub and Curseforge!!!
-            matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-        }
-        else if(!Gun.hasAmmo(stack))
-        {
-            if(cooldownOg > 0.5){
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-            }
-            else
-            {
-                matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+            controller.applySpecialModelTransform(SpecialModels.SCAR_L_BODY.getModel(), SCAR_LAnimationController.INDEX_MAGAZINE, transformType, matrices);
+            if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 1) {
+                RenderUtil.renderModel(SpecialModels.SCAR_L_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            } else {
+                RenderUtil.renderModel(SpecialModels.SCAR_L_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
         }
-        matrices.translate(0, 0, 0.025f);
-        RenderUtil.renderModel(SpecialModels.SCAR_L_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
         matrices.pop();
+
+        matrices.push();
+        {
+            if(transformType.isFirstPerson() && controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_NORMAL)) {
+                controller.applySpecialModelTransform(SpecialModels.SCAR_L_BODY.getModel(), SCAR_LAnimationController.INDEX_MAGAZINE2, transformType, matrices);
+                if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 1) {
+                    RenderUtil.renderModel(SpecialModels.SCAR_L_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+                } else {
+                    RenderUtil.renderModel(SpecialModels.SCAR_L_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+                }
+            }
+        }
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.SCAR_L_BODY.getModel(), SCAR_LAnimationController.INDEX_BOLT, transformType, matrices);
+            CooldownTracker tracker = Minecraft.getInstance().player.getCooldownTracker();
+            float cooldownOg = tracker.getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
+
+            AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
+            boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
+            if(Gun.hasAmmo(stack) || shouldOffset) {
+                // Math provided by Bomb787 on GitHub and Curseforge!!!
+                matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+            } else if (!Gun.hasAmmo(stack)) {
+                if (cooldownOg > 0.5) {
+                    // Math provided by Bomb787 on GitHub and Curseforge!!!
+                    matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                } else {
+                    matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                }
+            }
+            matrices.translate(0, 0, 0.025f);
+            RenderUtil.renderModel(SpecialModels.SCAR_L_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
 }

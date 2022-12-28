@@ -794,6 +794,31 @@
       ]
    },
 
+   "animation.scar_l_draw": {
+      "subtitle": "animation.scar_l_draw",
+      "sounds": [
+         { "name": "tac:animation/scar_l_draw"}
+      ]
+   },
+   "animation.scar_l_empty_reload": {
+      "subtitle": "animation.scar_l_empty_reload",
+      "sounds": [
+         { "name": "tac:animation/scar_l_reload_empty"}
+      ]
+   },
+   "animation.scar_l_inspect": {
+      "subtitle": "animation.scar_l_inspect",
+      "sounds": [
+         { "name": "tac:animation/scar_l_inspect"}
+      ]
+   },
+   "animation.scar_l_norm_reload": {
+      "subtitle": "animation.scar_l_norm_reload",
+      "sounds": [
+         { "name": "tac:animation/scar_l_reload_norm"}
+      ]
+   },
+   
    "animation.mk14_draw": {
       "subtitle": "animation.mk14_draw",
       "sounds": [

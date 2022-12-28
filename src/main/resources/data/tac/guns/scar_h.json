@@ -12,12 +12,12 @@
     "horizontalRecoilAngle": 2.85,
     "recoilKick": 1.875,
     "recoilAdsReduction": 0.235,
-    "weaponRecoilOffset": 0.845,
+    "weaponRecoilOffset": 0.805,
     "cameraRecoilModifier": 1.125,
     "recoilDuration": 0.235,
     "alwaysSpread": true,
     "spread": 1.5,
-    "weightKilo": 5.80,
+    "weightKilo": 5.90,
     "movementInaccuracy": 1.75
   },
   "projectile": {
@@ -42,10 +42,10 @@
   },
   "sounds": {
     "fire": "tac:item.mk14",
-    "reloadNormal": "tac:animation.scar_h_norm_reload",
+    "reloadNormal": "tac:animation.scar_l_norm_reload",
     "reloadEmpty": "tac:animation.scar_h_empty_reload",
-    "draw": "tac:animation.scar_h_draw",
-    "inspect": "tac:animation.scar_h_inspect",
+    "draw": "tac:animation.scar_l_draw",
+    "inspect": "tac:animation.scar_l_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.remington_700s"
   },
