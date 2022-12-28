@@ -1,7 +1,5 @@
 package com.tac.guns.client;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -9,16 +7,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.client.util.InputMappings.Type;
 import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +41,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber( modid = Reference.MOD_ID, value = Dist.CLIENT )
 public final class InputHandler
 {
-	// FIXME: adapt translation for these keys
 	/**
 	 * Universal keys. These keys will always update
 	 */
@@ -63,10 +65,9 @@ public final class InputHandler
 		INSPECT = new KeyBind( "key.tac.inspect", GLFW.GLFW_KEY_H ),
 		SIGHT_SWITCH = new KeyBind( "key.tac.sight_switch", GLFW.GLFW_KEY_V ),
 		ACTIVATE_SIDE_RAIL = new KeyBind( "key.tac.activateSideRail", GLFW.GLFW_KEY_B ),
-				ARMOR_REPAIRING = new KeyBind( "key.tac.armor_repairing", GLFW.GLFW_KEY_K);
+		ARMOR_REPAIRING = new KeyBind( "key.tac.armor_repairing", GLFW.GLFW_KEY_K);
 		
-
-		// TODO: remove this key maybe? At least not used now.
+		// TODO: remove this key maybe? At least not used now. #(line: 129)
 //		COLOR_BENCH = new KeyBind( "key.tac.color_bench", GLFW.GLFW_KEY_PAGE_DOWN );
 	
 	/**
@@ -74,7 +75,7 @@ public final class InputHandler
 	 */
 	public static final KeyBind
 		CO = new KeyBind( "key.tac.co", GLFW.GLFW_KEY_LEFT_ALT ),
-
+		
 		CO_UNLOAD = new KeyBind( "key.tac.co_unload", GLFW.GLFW_KEY_R ),
 		CO_INSPECT = new KeyBind( "key.tac.co_inspect", -1 );
 	
@@ -104,6 +105,11 @@ public final class InputHandler
 	private static final ArrayList< KeyBind > NORMAL_KEYS = new ArrayList<>();
 	
 	private static final ArrayList< KeyBind > CO_KEYS = new ArrayList<>();
+	
+	/**
+	 * Is used to save and read key bindings
+	 */
+	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
 	
 	public static void initKeys()
 	{
@@ -196,12 +202,10 @@ public final class InputHandler
 			flag |= key.clearKeyBind();
 
 		// Make sure only one aim key is bounden
-		if(
-			AIM_HOLD.keyCode() != InputMappings.INPUT_INVALID
-			&& AIM_TOGGLE.keyCode() != InputMappings.INPUT_INVALID
-		) {
-			( oriAimKey == AIM_HOLD ? AIM_HOLD : AIM_TOGGLE )
-				.$keyCode( InputMappings.INPUT_INVALID );
+		final Input none = InputMappings.INPUT_INVALID;
+		if( AIM_HOLD.keyCode() != none && AIM_TOGGLE.keyCode() != none )
+		{
+			oriAimKey.$keyCode( none );
 			flag = true;
 		}
 		
@@ -213,39 +217,42 @@ public final class InputHandler
 			saveTo( file );
 	}
 	
+	/**
+	 * Save key binds into given ".json" file
+	 */
 	static void saveTo( File file )
 	{
-		try( BufferedWriter out = new BufferedWriter( new FileWriter( file ) ) )
+		final HashMap< String, String > mapper = new HashMap<>();
+		try( FileWriter out = new FileWriter( file ) )
 		{
-			for( KeyBind key : KeyBind.REGISTRY.values() )
-			{
-				out.write( key.name() + "=" + key.keyCode() );
-				out.newLine();
-			}
+			KeyBind.REGISTRY.values()
+				.forEach( kb -> mapper.put( kb.name(), kb.keyCode().toString() ) );
+			out.write( GSON.toJson( mapper ) );
 		}
 		catch( IOException e ) { GunMod.LOGGER.error( "Fail write key bindings", e ); }
 	}
 	
+	/**
+	 * Read key binds from given ".json" file
+	 */
 	static void readFrom( File file )
 	{
-		try( BufferedReader in = new BufferedReader( new FileReader( file ) ) )
+		try( FileReader in = new FileReader( file ) )
 		{
-			for( String line; ( line = in.readLine() ) != null; )
-			{
-				final int i = line.indexOf( '=' );
+			final JsonObject obj = GSON.fromJson( in, JsonObject.class );
+			obj.entrySet().forEach( e -> {
 				try
 				{
-					KeyBind.REGISTRY.get( line.substring( 0, i ) ).$keyCode(
-						InputMappings.getInputByName( line.substring( i + 1 ) )
-					);
+					KeyBind.REGISTRY.get( e.getKey() )
+						.$keyCode( InputMappings.getInputByName( e.getValue().getAsString() ) );
 				}
-				catch( NullPointerException e ) {
-					GunMod.LOGGER.error( "Key bind " + line + " do not exist");
+				catch( NullPointerException ee ) {
+					GunMod.LOGGER.error( "Key bind " + e.getKey() + " do not exist" );
 				}
-				catch( StringIndexOutOfBoundsException | NumberFormatException e ) {
-					GunMod.LOGGER.error( "Key code format broken: " + line );
+				catch( IllegalArgumentException ee ) {
+					GunMod.LOGGER.error( "Bad key code: " + e );
 				}
-			}
+			} );
 		}
 		catch( IOException e ) { GunMod.LOGGER.error( "Fail read key bind", e ); }
 	}

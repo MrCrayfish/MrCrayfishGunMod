@@ -155,8 +155,8 @@ public enum AnimationHandler {
     			controller.runAnimation( GunAnimationController.AnimationLabel.INSPECT );
     		}
     	};
-    	InputHandler.INSPECT.addPressCallBack( callback );
-    	InputHandler.CO_INSPECT.addPressCallBack( callback );
+    	InputHandler.INSPECT.addPressCallback( callback );
+    	InputHandler.CO_INSPECT.addPressCallback( callback );
     }
     
     @SubscribeEvent

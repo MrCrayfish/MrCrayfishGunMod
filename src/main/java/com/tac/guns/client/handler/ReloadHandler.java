@@ -211,7 +211,7 @@ public class ReloadHandler {
 
     private ReloadHandler()
     {
-    	InputHandler.RELOAD.addPressCallBack( () -> {
+    	InputHandler.RELOAD.addPressCallback( () -> {
     		final ClientPlayerEntity player = Minecraft.getInstance().player;
 			if( player == null ) return;
 			
@@ -239,8 +239,8 @@ public class ReloadHandler {
 				channel.sendToServer( new MessageUnload() );
 			}
     	};
-    	InputHandler.UNLOAD.addPressCallBack( callback );
-    	InputHandler.CO_UNLOAD.addPressCallBack( callback );
+    	InputHandler.UNLOAD.addPressCallback( callback );
+    	InputHandler.CO_UNLOAD.addPressCallback( callback );
     }
 
     @SubscribeEvent
