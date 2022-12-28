@@ -46,7 +46,7 @@ public class ArmorInteractionHandler
     private int prevRepairTime = 0;
 	private ArmorInteractionHandler()
 	{
-		InputHandler.ARMOR_REPAIRING.addPressCallBack( () -> {
+		InputHandler.ARMOR_REPAIRING.addPressCallback( () -> {
 			final Minecraft mc = Minecraft.getInstance();
 			if(mc.player != null && WearableHelper.PlayerWornRig(mc.player) != null && !WearableHelper.isFullDurability(WearableHelper.PlayerWornRig(mc.player))) {
                 this.repairing = true;

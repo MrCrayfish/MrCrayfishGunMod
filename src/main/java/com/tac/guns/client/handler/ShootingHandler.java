@@ -314,6 +314,7 @@ public class  ShootingHandler
         }
         CooldownTracker tracker = player.getCooldownTracker();
 
+        // TODO: from here to implement rpm system
         if(!tracker.hasCooldown(heldItem.getItem()))
         {
             GunItem gunItem = (GunItem) heldItem.getItem();

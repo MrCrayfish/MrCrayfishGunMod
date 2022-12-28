@@ -58,7 +58,7 @@ public final class KeyBind
 	 */
 	private KeyBinding keyBind;
 	
-	private final LinkedList< Runnable > pressCallBacks = new LinkedList<>();
+	private final LinkedList< Runnable > pressCallbacks = new LinkedList<>();
 	
 	/**
 	 * Use {@link #KeyBind(String, String, int, Type...)} if you want to specify key category
@@ -122,7 +122,7 @@ public final class KeyBind
 	 * Add a callback that will be invoked on the press of this key. It will only be invoked once
 	 * until the key is released and pressed again.
 	 */
-	public void addPressCallBack( Runnable callback ) { this.pressCallBacks.add( callback ); }
+	public void addPressCallback( Runnable callback ) { this.pressCallbacks.add( callback ); }
 	
 	void update()
 	{
@@ -132,7 +132,7 @@ public final class KeyBind
 		{
 			// Previously not pressed, update #down and fire callbacks
 			this.down = true;
-			this.pressCallBacks.forEach( Runnable::run );
+			this.pressCallbacks.forEach( Runnable::run );
 		}
 	}
 	

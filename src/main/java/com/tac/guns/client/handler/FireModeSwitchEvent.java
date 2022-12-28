@@ -29,7 +29,7 @@ public class FireModeSwitchEvent
     
     private FireModeSwitchEvent()
     {
-    	InputHandler.FIRE_SELECT.addPressCallBack( () -> {
+    	InputHandler.FIRE_SELECT.addPressCallback( () -> {
     		if( Minecraft.getInstance().player != null )
     			PacketHandler.getPlayChannel().sendToServer( new MessageFireMode() );
     	} );
