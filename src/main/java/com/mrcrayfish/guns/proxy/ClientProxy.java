@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.proxy;
 
 import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.client.ControllerEvents;
@@ -209,7 +210,7 @@ public class ClientProxy extends CommonProxy
 			Controller controller = Controllable.getController();
 			if(controller != null)
 			{
-				zooming |= controller.getLTriggerValue() >= 0.5;
+				zooming |= controller.isButtonPressed(Buttons.LEFT_TRIGGER);
 			}
 		}
 

@@ -28,7 +28,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
  */
 public class ControllerEvents
 {
-    private boolean shooting = false;
     private int reloadCounter = -1;
 
     @SubscribeEvent
@@ -36,7 +35,7 @@ public class ControllerEvents
     {
         EntityPlayer player = Minecraft.getMinecraft().player;
         World world = Minecraft.getMinecraft().world;
-        if(player != null && world != null)
+        if(player != null && world != null && Minecraft.getMinecraft().currentScreen == null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
             switch(event.getButton())
@@ -52,11 +51,6 @@ public class ControllerEvents
                     }
                     break;
                 case Buttons.LEFT_TRIGGER:
-                    if(heldItem.getItem() instanceof ItemGun)
-                    {
-                        event.setCanceled(true);
-                    }
-                    break;
                 case Buttons.RIGHT_THUMB_STICK:
                     if(heldItem.getItem() instanceof ItemGun)
                     {
@@ -69,7 +63,7 @@ public class ControllerEvents
                         event.setCanceled(true);
                         if(event.getState())
                         {
-                            reloadCounter = 0;
+                            this.reloadCounter = 0;
                         }
                     }
                     break;
@@ -93,27 +87,14 @@ public class ControllerEvents
                 if (scope != null)
                 {
                     ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
-                    if(scopeType != null)
+                    switch(scopeType)
                     {
-                        switch(scopeType)
-                        {
-                            case LONG:
-                                if(event.getController().getState().rightStickClick)
-                                {
-                                    event.setYawSpeed(1.5F);
-                                    event.setPitchSpeed(1.0F);
-                                }
-                                else
-                                {
-                                    event.setYawSpeed(3.5F);
-                                    event.setPitchSpeed(3.0F);
-                                }
-                                break;
-                            case MEDIUM:
-                                event.setYawSpeed(6.66F);
-                                event.setPitchSpeed(5.0F);
-                                break;
-                        }
+                        case LONG:
+                        case MEDIUM:
+                            boolean isSteadyAiming = event.getController().isButtonPressed(Buttons.RIGHT_THUMB_STICK);
+                            event.setYawSpeed(isSteadyAiming ? 2.5F : 5.0F);
+                            event.setPitchSpeed(isSteadyAiming ? 1.875F : 3.75F);
+                            break;
                     }
                 }
             }
@@ -124,8 +105,7 @@ public class ControllerEvents
     public void updateAvailableActions(AvailableActionsEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        if(mc.currentScreen != null)
-            return;
+        if(mc.currentScreen != null) return;
 
         EntityPlayer player = Minecraft.getMinecraft().player;
         if(player != null)
@@ -147,9 +127,12 @@ public class ControllerEvents
                 if (scope != null && MrCrayfishGunMod.proxy.isZooming())
                 {
                     ItemScope.Type scopeType = ItemScope.Type.getFromStack(scope);
-                    if(scopeType == ItemScope.Type.LONG)
+                    switch(scopeType)
                     {
-                        event.getActions().put(Buttons.RIGHT_THUMB_STICK, new Action("Hold Breath", Action.Side.RIGHT));
+                        case LONG:
+                        case MEDIUM:
+                            event.getActions().put(Buttons.RIGHT_THUMB_STICK, new Action("Steady Aim", Action.Side.RIGHT));
+                            break;
                     }
                 }
             }
@@ -171,7 +154,7 @@ public class ControllerEvents
         if(player == null)
             return;
 
-        if(controller.getState().rightTrigger > 0.05)
+        if(controller.isButtonPressed(Buttons.RIGHT_TRIGGER) && Minecraft.getMinecraft().currentScreen == null)
         {
             ItemStack heldItem = player.getHeldItemMainhand();
             if(heldItem.getItem() instanceof ItemGun)
@@ -186,7 +169,7 @@ public class ControllerEvents
 
         if(mc.currentScreen == null && reloadCounter != -1)
         {
-            if(controller.getState().x)
+            if(controller.isButtonPressed(Buttons.X))
             {
                 reloadCounter++;
             }
@@ -198,7 +181,7 @@ public class ControllerEvents
             PacketHandler.INSTANCE.sendToServer(new MessageUnload());
             reloadCounter = -1;
         }
-        else if(reloadCounter > 0 && !controller.getState().x)
+        else if(reloadCounter > 0 && !controller.isButtonPressed(Buttons.X))
         {
             if(!Minecraft.getMinecraft().player.getDataManager().get(CommonEvents.RELOADING))
             {
