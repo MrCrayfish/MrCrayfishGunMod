@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.guns.GunConfig;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -37,7 +38,7 @@ public class ModelChainGun implements IOverrideModel
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                shooting |= controller.getState().rightTrigger >= 0.5;
+                shooting |= controller.isButtonPressed(Buttons.RIGHT_TRIGGER);
             }
         }
 
