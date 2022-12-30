@@ -195,7 +195,10 @@ public class ClientPlayHandler
         if(world == null)
             return;
 
-        SoundEvent event = getHitSound(message.isCritical(), message.isHeadshot(), message.isPlayer());
+        HUDRenderingHandler.get().hitMarkerTracker = (int) HUDRenderingHandler.hitMarkerRatio;
+        HUDRenderingHandler.get().hitMarkerHeadshot = message.isHeadshot();
+
+        SoundEvent event = getHitSound(message.isCritical(), message.isHeadshot(), message.isPlayer()); // Hit marker sound, after sound set HuD renderder hitmarker ticker to 3 fade in and out quick, use textured crosshair as a base
         if(event == null)
             return;
 
@@ -226,6 +229,11 @@ public class ClientPlayHandler
         {
             return SoundEvents.ENTITY_PLAYER_HURT;
         }
+        else
+        {
+            return SoundEvents.BLOCK_GLASS_BREAK; // Hitmarker
+        }
+
         return null;
     }
 

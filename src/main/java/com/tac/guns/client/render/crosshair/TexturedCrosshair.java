@@ -21,6 +21,16 @@ public class TexturedCrosshair extends Crosshair
     protected ResourceLocation texture;
     protected boolean blend;
 
+    private boolean isHitMarker;
+
+    public TexturedCrosshair(ResourceLocation id, boolean blend, boolean isHitMarker)
+    {
+        super(id);
+        this.texture = new ResourceLocation(id.getNamespace(), "textures/crosshair_hit/" + id.getPath() + ".png");
+        this.isHitMarker = isHitMarker;
+        this.blend = blend;
+    }
+
     public TexturedCrosshair(ResourceLocation id)
     {
         this(id, true);
@@ -31,6 +41,38 @@ public class TexturedCrosshair extends Crosshair
         super(id);
         this.texture = new ResourceLocation(id.getNamespace(), "textures/crosshair/" + id.getPath() + ".png");
         this.blend = blend;
+    }
+
+    public void renderHitMarker(Minecraft mc, MatrixStack stack, int windowWidth, int windowHeight, float alpha)
+    {
+        //float alpha = 1.0F * Math.abs((stepping-1)*0.5f) ;
+        float size = 8.0F;
+        stack.translate((windowWidth - size) / 2F, (windowHeight - size) / 2F, 0);
+
+        mc.getTextureManager().bindTexture(this.texture);
+        RenderSystem.enableBlend();
+        RenderSystem.enableAlphaTest();
+
+        if(this.blend)
+        {
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        }
+
+        Matrix4f matrix = stack.getLast().getMatrix();
+        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        buffer.pos(matrix, 0, size, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.pos(matrix, size, size, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.pos(matrix, size, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+        buffer.finishDrawing();
+        RenderSystem.enableAlphaTest();
+        WorldVertexBufferUploader.draw(buffer);
+
+        if(this.blend)
+        {
+            RenderSystem.defaultBlendFunc();
+        }
     }
 
     @Override

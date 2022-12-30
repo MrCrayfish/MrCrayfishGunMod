@@ -1,4 +1,4 @@
-package com.tac.guns.client.render.gun.model;
+package com.tac.guns.client.render.gun.model.scope;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -25,18 +25,21 @@ import net.minecraft.util.math.vector.Vector3f;
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
  */
-public class CoyoteSightModel implements IOverrideModel
+public class EotechNSightModel implements IOverrideModel
 {
-    private static final ResourceLocation RED_DOT_RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/items/timeless_scopes/dot_reticle.png");
+    private static final ResourceLocation RED_DOT_RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/items/timeless_scopes/eotech_cqb_reticle.png");
+    //private static final ResourceLocation RED_DOT_RETICLE_GLOW = new ResourceLocation(Reference.MOD_ID, "textures/effect/red_dot_reticle_glow.png");
+    //private static final ResourceLocation VIGNETTE = new ResourceLocation(Reference.MOD_ID, "textures/effect/scope_vignette.png");
 
     @Override
     public void render(float partialTicks, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay) {
-
         matrixStack.push();
-        /*if(Config.CLIENT.display.redDotSquishUpdate.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
-            double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
-            double zScale = 0.05D + 0.95D * (1.0D - transition);
-            matrixStack.scale(1.0F, 1.0F, (float)zScale);
+        /*if (Config.CLIENT.display.redDotSquishUpdate.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
+            if(AimingHandler.get().getNormalisedAdsProgress() > 0.5) {
+                double transition = 1.0D - Math.pow(1.0D - AimingHandler.get().getNormalisedAdsProgress(), 2.0D);
+                double zScale = 0.05D + 0.95D * (1.0D - transition);
+                matrixStack.scale(1.0F, 1.0F, (float) zScale);
+            }
         }*/
         if (Config.CLIENT.display.redDotSquishUpdate.get() && transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player)) {
             double prog = 0;
@@ -63,32 +66,30 @@ public class CoyoteSightModel implements IOverrideModel
             }
 
         }
-        int bodyColor = RenderUtil.getItemStackColor(stack, parent, IAttachment.Type.SCOPE_BODY_COLOR,0);
-
-        matrixStack.translate(0, 0.074, -0.035-0.1025);
+        matrixStack.translate(0, 0.055, 0);
 
         RenderUtil.renderModel(stack, parent, matrixStack, renderTypeBuffer, light, overlay);
 
-        matrixStack.translate(0, -0.030, 0);
+        matrixStack.translate(0, -0.049, 0);
         matrixStack.pop();
-        matrixStack.translate(0, 0.044, -0.035-0.1025);
+        matrixStack.translate(0, 0.006, 0);
         if(transformType.isFirstPerson() && entity.equals(Minecraft.getInstance().player))
         {
-            ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "coyote" ? new ScopeData("") : ScopeEditor.get().getScopeData();
+            ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "eotechn" ? new ScopeData("") : ScopeEditor.get().getScopeData();
             matrixStack.push();
             {
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
                 float size = 1.4F / 16.0F;
-                matrixStack.translate(((-size / 2) -0.0035 + scopeData.getReticleXMod()), (0.85 -0.164 + scopeData.getReticleYMod()) * 0.0625, (0.075+ 0.5895 + scopeData.getReticleZMod()) * 0.0625);
+                matrixStack.translate(((-size / 2) -0.001485 + scopeData.getReticleXMod()), (0.975 + 0.03575125 + 0.3995025 + scopeData.getReticleYMod()) * 0.0625, (0.075 + scopeData.getReticleZMod()) * 0.0625);
 
                 IVertexBuilder builder;
 
                 double invertProgress = (1.0 - AimingHandler.get().getNormalisedAdsProgress());
                 matrixStack.translate(-0.04 * invertProgress, 0.01 * invertProgress, 0);
 
-                double scale = 4.0 -3.2175052 + scopeData.getReticleSizeMod();
+                double scale = 4.5 -1.9125028 -0.28499985 -0.79499936 + scopeData.getReticleSizeMod();
                 matrixStack.translate(size / 2, size / 2, 0);
                 matrixStack.translate(-(size / scale) / 2, -(size / scale) / 2, 0);
                 matrixStack.translate(0, 0, 0.0001);
@@ -102,7 +103,6 @@ public class CoyoteSightModel implements IOverrideModel
 
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
 
-                //matrixStack.scale(1.5f,1.5f,1.5f);
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
                 // Walking bobbing
                 boolean aimed = false;
@@ -111,7 +111,7 @@ public class CoyoteSightModel implements IOverrideModel
                     aimed = true;
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
                 double invertZoomProgress = aimed ? 0.0575 : 0.468;//double invertZoomProgress = aimed ? 0.135 : 0.94;//aimed ? 1.0 - AimingHandler.get().getNormalisedAdsProgress() : ;
-                //matrixStack.translate(-0.9*Math.asin(((double) (MathHelper.sin(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI)) * GunRenderingHandler.get().walkingCameraYaw * 0.5F) * invertZoomProgress), 0.9*(Math.asin((double) (Math.abs(-MathHelper.cos(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI) * GunRenderingHandler.get().walkingCameraYaw))) * invertZoomProgress * 1.140),0);//(Math.asin((double) (Math.abs(-MathHelper.cos(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI) * GunRenderingHandler.get().walkingCameraYaw))) * invertZoomProgress * 1.140), 0.0D);// * 1.140, 0.0D);
+                //matrixStack.translate(-1.00*Math.asin(((double) (MathHelper.sin(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI)) * GunRenderingHandler.get().walkingCameraYaw * 0.5F) * invertZoomProgress), 1.00*(Math.asin((double) (Math.abs(-MathHelper.cos(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI) * GunRenderingHandler.get().walkingCameraYaw))) * invertZoomProgress * 1.140),0);//(Math.asin((double) (Math.abs(-MathHelper.cos(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI) * GunRenderingHandler.get().walkingCameraYaw))) * invertZoomProgress * 1.140), 0.0D);// * 1.140, 0.0D);
                 //matrixStack.rotate(Vector3f.ZN.rotationDegrees((float)(MathHelper.sin(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI) * GunRenderingHandler.get().walkingCameraYaw * 3.0F) * (float) invertZoomProgress));
                 //matrixStack.rotate(Vector3f.XN.rotationDegrees((float)(Math.abs(MathHelper.cos(GunRenderingHandler.get().walkingDistance*GunRenderingHandler.get().walkingCrouch * (float) Math.PI - 0.2F) * GunRenderingHandler.get().walkingCameraYaw) * 5.0F) * (float) invertZoomProgress));
 

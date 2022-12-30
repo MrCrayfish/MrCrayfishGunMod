@@ -1,10 +1,14 @@
 package com.tac.guns.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tac.guns.Config;
 import com.tac.guns.Reference;
+import com.tac.guns.client.handler.command.GuiEditor;
+import com.tac.guns.client.handler.command.ObjectRenderEditor;
 import com.tac.guns.client.network.ClientPlayHandler;
+import com.tac.guns.client.render.crosshair.TexturedCrosshair;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.ReloadTracker;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
@@ -198,6 +202,13 @@ public class HUDRenderingHandler extends AbstractGui {
         }
     }
 
+    private static ResourceLocation fleshHitMarker = new ResourceLocation(Reference.MOD_ID, "textures/crosshair_hit/hit_marker.png");
+    public int hitMarkerTracker = 0;
+    public boolean hitMarkerHeadshot = false;
+
+    public static final float hitMarkerRatio = 25.0f;
+
+
     @SubscribeEvent
     public void onOverlayRender(RenderGameOverlayEvent.Post event) {
         if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
@@ -222,14 +233,47 @@ public class HUDRenderingHandler extends AbstractGui {
         float ReloadBarSize = 32.0F * configScaleWeaponReloadBar;
         RenderSystem.enableAlphaTest();
         BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        int width = event.getWindow().getWidth();
+        int height = event.getWindow().getHeight();
 
+        if(this.hitMarkerTracker > 0 && !AimingHandler.get().isAiming())//Hit Markers
+        {
+            ObjectRenderEditor.RENDER_Element data = new ObjectRenderEditor.RENDER_Element(0,0,0,0);
+            if(GuiEditor.get() != null)
+            {
+                if(ObjectRenderEditor.get().currElement == 1 && ObjectRenderEditor.get().GetFromElements(ObjectRenderEditor.get().currElement) != null)
+                    data = ObjectRenderEditor.get().GetFromElements(ObjectRenderEditor.get().currElement);
+            }
+
+            RenderSystem.enableAlphaTest();
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            stack.push();
+            {
+                float size = 0.2f;
+                stack.translate(anchorPointX - (size+data.getxMod()*10+(107.9*10)) / 4F, anchorPointY + (size*1.625F+data.getyMod()*10+(-24.5*10)) / 5F * 3F, 0);
+                stack.scale(size,size,size);
+
+                Minecraft.getInstance().getTextureManager().bindTexture(fleshHitMarker); // Future options to render bar types
+
+                float opac = Math.max(Math.min(this.hitMarkerTracker / hitMarkerRatio, 100f), 0.25f);
+
+                Matrix4f matrix = stack.getLast().getMatrix();
+                buffer.pos(matrix, 0, ReloadBarSize, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, opac).endVertex();
+                buffer.pos(matrix, ReloadBarSize, ReloadBarSize, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, opac).endVertex();
+                buffer.pos(matrix, ReloadBarSize, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, opac).endVertex();
+                buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, opac).endVertex();
+            }
+            buffer.finishDrawing();
+            WorldVertexBufferUploader.draw(buffer);
+            stack.pop();
+
+            this.hitMarkerTracker--;
+        }
 
         // All code for rendering night vision, still only a test
         if(false) {
             renderNightVision(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get());
             if(Config.CLIENT.weaponGUI.weaponTypeIcon.showWeaponIcon.get()) {
-                int width = event.getWindow().getWidth();
-                int height = event.getWindow().getHeight();
 
                 RenderSystem.enableAlphaTest();
                 RenderSystem.enableBlend();

@@ -1,4 +1,4 @@
-package com.tac.guns.client.render.gun.model;
+package com.tac.guns.client.render.gun.model.scope;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
