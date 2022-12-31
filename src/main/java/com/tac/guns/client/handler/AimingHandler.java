@@ -74,7 +74,7 @@ public class AimingHandler
 
 	private AimingHandler()
 	{
-		InputHandler.SIGHT_SWITCH.addPressCallBack( () -> {
+		InputHandler.SIGHT_SWITCH.addPressCallback( () -> {
 			final Minecraft mc = Minecraft.getInstance();
 			if(
 				mc.player != null
@@ -85,7 +85,7 @@ public class AimingHandler
 			) this.currentScopeZoomIndex++;
 		} );
 		
-		InputHandler.AIM_TOGGLE.addPressCallBack( () -> {
+		InputHandler.AIM_TOGGLE.addPressCallback( () -> {
 			final Minecraft mc = Minecraft.getInstance();
 			if(
 				mc.player != null

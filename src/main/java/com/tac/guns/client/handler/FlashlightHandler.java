@@ -41,7 +41,7 @@ public class FlashlightHandler
     
     private FlashlightHandler()
     {
-    	InputHandler.ACTIVATE_SIDE_RAIL.addPressCallBack( () -> {
+    	InputHandler.ACTIVATE_SIDE_RAIL.addPressCallback( () -> {
     		final Minecraft mc = Minecraft.getInstance();
     		final PlayerEntity player = mc.player;
     		if(

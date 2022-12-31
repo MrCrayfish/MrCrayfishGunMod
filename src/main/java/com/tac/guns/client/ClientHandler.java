@@ -8,7 +8,21 @@ import java.util.Map;
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
 import com.tac.guns.Reference;
-import com.tac.guns.client.handler.*;
+import com.tac.guns.client.handler.AimingHandler;
+import com.tac.guns.client.handler.AnimationHandler;
+import com.tac.guns.client.handler.ArmorInteractionHandler;
+import com.tac.guns.client.handler.BulletTrailRenderingHandler;
+import com.tac.guns.client.handler.CrosshairHandler;
+import com.tac.guns.client.handler.FireModeSwitchEvent;
+import com.tac.guns.client.handler.GunRenderingHandler;
+import com.tac.guns.client.handler.HUDRenderingHandler;
+import com.tac.guns.client.handler.MovementAdaptationsHandler;
+import com.tac.guns.client.handler.RecoilHandler;
+import com.tac.guns.client.handler.ReloadHandler;
+import com.tac.guns.client.handler.ScopeJitterHandler;
+import com.tac.guns.client.handler.ShootingHandler;
+import com.tac.guns.client.handler.SightSwitchEvent;
+import com.tac.guns.client.handler.SoundHandler;
 import com.tac.guns.client.handler.command.GuiEditor;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.client.handler.command.ObjectRenderEditor;
@@ -53,12 +67,15 @@ import com.tac.guns.item.IColored;
 import com.tac.guns.network.PacketHandler;
 import com.tac.guns.network.message.MessageAttachments;
 import com.tac.guns.network.message.MessageInspection;
-
 import com.tac.guns.util.math.SecondOrderDynamics;
+
 import de.javagl.jgltf.model.animation.AnimationRunner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.screen.ControlsScreen;
+import net.minecraft.client.gui.screen.MouseSettingsScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.VideoSettingsScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.client.renderer.RenderType;
@@ -119,11 +136,11 @@ public class ClientHandler
 
         // Load key binds
         InputHandler.initKeys();
-        keyBindsFile = new File( mc.gameDir, "config/tac-key-binds.txt" );
+        keyBindsFile = new File( mc.gameDir, "config/tac-key-binds.json" );
         if( !keyBindsFile.exists() )
         {
         	try { keyBindsFile.createNewFile(); }
-        	catch( IOException e ) { GunMod.LOGGER.error( "Fail to create key binds file" ); }
+        	catch( IOException e ) { GunMod.LOGGER.error( "Fail to create key bindings file" ); }
         	InputHandler.saveTo( keyBindsFile );
         }
         else InputHandler.readFrom( keyBindsFile );
@@ -282,7 +299,7 @@ public class ClientHandler
     
     static
     {
-    	InputHandler.ATTACHMENTS.addPressCallBack( () -> {
+    	InputHandler.ATTACHMENTS.addPressCallback( () -> {
     		final Minecraft mc = Minecraft.getInstance();
     		if( mc.player != null && mc.currentScreen == null )
     			PacketHandler.getPlayChannel().sendToServer( new MessageAttachments() );
@@ -298,8 +315,8 @@ public class ClientHandler
     			) == null
     		) PacketHandler.getPlayChannel().sendToServer( new MessageInspection() );
     	};
-    	InputHandler.INSPECT.addPressCallBack( callback );
-    	InputHandler.CO_INSPECT.addPressCallBack( callback );
+    	InputHandler.INSPECT.addPressCallback( callback );
+    	InputHandler.CO_INSPECT.addPressCallback( callback );
     }
 
     /* Uncomment for debugging headshot hit boxes */

@@ -1,5 +1,18 @@
 package com.tac.guns.common.network;
 
+import static net.minecraft.entity.ai.attributes.Attributes.MOVEMENT_SPEED;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Predicate;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
@@ -7,8 +20,17 @@ import com.tac.guns.Reference;
 import com.tac.guns.client.handler.MovementAdaptationsHandler;
 import com.tac.guns.client.handler.ShootingHandler;
 import com.tac.guns.client.screen.UpgradeBenchScreen;
-import com.tac.guns.common.*;
-import com.tac.guns.common.container.*;
+import com.tac.guns.common.Gun;
+import com.tac.guns.common.NetworkGunManager;
+import com.tac.guns.common.ProjectileManager;
+import com.tac.guns.common.Rig;
+import com.tac.guns.common.ShootTracker;
+import com.tac.guns.common.SpreadTracker;
+import com.tac.guns.common.container.AttachmentContainer;
+import com.tac.guns.common.container.ColorBenchContainer;
+import com.tac.guns.common.container.InspectionContainer;
+import com.tac.guns.common.container.UpgradeBenchContainer;
+import com.tac.guns.common.container.WorkbenchContainer;
 import com.tac.guns.crafting.WorkbenchRecipe;
 import com.tac.guns.crafting.WorkbenchRecipes;
 import com.tac.guns.entity.ProjectileEntity;
@@ -19,18 +41,26 @@ import com.tac.guns.init.ModItems;
 import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.interfaces.IProjectileFactory;
 import com.tac.guns.item.GunItem;
-import com.tac.guns.item.IArmorPlate;
 import com.tac.guns.item.IColored;
 import com.tac.guns.item.ScopeItem;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.network.PacketHandler;
-import com.tac.guns.network.message.*;
+import com.tac.guns.network.message.MessageBulletTrail;
+import com.tac.guns.network.message.MessageGunSound;
+import com.tac.guns.network.message.MessageRigInvToClient;
+import com.tac.guns.network.message.MessageSaveItemUpgradeBench;
+import com.tac.guns.network.message.MessageShoot;
+import com.tac.guns.network.message.MessageUpgradeBenchApply;
 import com.tac.guns.tileentity.FlashLightSource;
 import com.tac.guns.tileentity.UpgradeBenchTileEntity;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
-import com.tac.guns.util.*;
+import com.tac.guns.util.GunEnchantmentHelper;
+import com.tac.guns.util.GunModifierHelper;
+import com.tac.guns.util.InventoryUtil;
+import com.tac.guns.util.WearableHelper;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
@@ -40,7 +70,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
@@ -53,7 +82,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -62,20 +95,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Predicate;
-
-import static net.minecraft.entity.ai.attributes.Attributes.MOVEMENT_SPEED;
 
 
 /**
@@ -111,13 +131,20 @@ public class ServerPlayHandler
                     player.rotationYaw = message.getRotationYaw();
                     player.rotationPitch = message.getRotationPitch();
 
-                    ShootTracker tracker = ShootTracker.getShootTracker(player);
-                    if(tracker.hasCooldown(item))
-                    {
-                        GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
-                        ShootingHandler.get().setShootingError(true);
-                        return;
-                    }
+                    // CHECK HERE:
+                    //     Old server side fire rate control. This has to be disabled to make the \
+                    //     demo version of this new RPM system to work. This requires to be \
+                    //     refactor if you want server side restriction to work with the new RPM \
+                    //     system.
+//                    ShootTracker tracker = ShootTracker.getShootTracker(player);
+//                    if(tracker.hasCooldown(item))
+//                    {
+//                        GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
+//                        ShootingHandler.get().setShootingError(true);
+//                        return;
+//                    }
+//                    tracker.putCooldown(heldItem, item, modifiedGun);
+
 
                     tracker.putCooldown(heldItem, item, modifiedGun);
 
@@ -176,7 +203,10 @@ public class ServerPlayHandler
                         double posY = player.getPosY() + player.getEyeHeight();
                         double posZ = player.getPosZ();
                         float volume = GunModifierHelper.getFireSoundVolume(heldItem);
-                        float pitch = 0.9F + world.rand.nextFloat() * 0.2F;
+                        
+                        // PATCH NOTE: Neko required to remove the random pitch effect in sound
+                        final float pitch = 1F; // 0.9F + world.rand.nextFloat() * 0.2F;
+                        
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
                         MessageGunSound messageSound = new MessageGunSound(fireSound, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId(), muzzle, false);
