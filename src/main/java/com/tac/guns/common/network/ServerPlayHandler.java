@@ -131,14 +131,19 @@ public class ServerPlayHandler
                     player.rotationYaw = message.getRotationYaw();
                     player.rotationPitch = message.getRotationPitch();
 
-                    ShootTracker tracker = ShootTracker.getShootTracker(player);
-                    if(tracker.hasCooldown(item)) // TODO: server side cooldown for rpm system
-                    {
-                        GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
-                        ShootingHandler.get().setShootingError(true);
-                        return;
-                    }
-                    tracker.putCooldown(heldItem, item, modifiedGun);
+                    // CHECK HERE:
+                    //     Old server side fire rate control. This has to be disabled to make the \
+                    //     demo version of this new RPM system to work. This requires to be \
+                    //     refactor if you want server side restriction to work with the new RPM \
+                    //     system.
+//                    ShootTracker tracker = ShootTracker.getShootTracker(player);
+//                    if(tracker.hasCooldown(item))
+//                    {
+//                        GunMod.LOGGER.warn(player.getName().getUnformattedComponentText() + "(" + player.getUniqueID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
+//                        ShootingHandler.get().setShootingError(true);
+//                        return;
+//                    }
+//                    tracker.putCooldown(heldItem, item, modifiedGun);
 
                     if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.RELOADING))
                     {
