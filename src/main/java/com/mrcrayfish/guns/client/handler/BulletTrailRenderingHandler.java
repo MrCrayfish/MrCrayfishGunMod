@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrcrayfish.guns.client.BulletTrail;
 import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.util.RenderUtil;
-import com.mrcrayfish.guns.util.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -111,9 +110,6 @@ public class BulletTrailRenderingHandler
 
     private void renderBulletTrail(BulletTrail trail, PoseStack poseStack, float deltaTicks)
     {
-        if(OptifineHelper.isShadersEnabled())
-            return;
-
         Minecraft mc = Minecraft.getInstance();
         Entity entity = mc.getCameraEntity();
         if(entity == null || trail.isDead())
