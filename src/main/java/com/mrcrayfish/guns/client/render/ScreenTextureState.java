@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.util.OptifineHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraftforge.api.distmarker.Dist;
@@ -69,10 +68,6 @@ public class ScreenTextureState extends RenderStateShard.TexturingStateShard
 
     private void onRenderWorldLast(RenderLevelLastEvent event)
     {
-        // Yep scopes will never work with shaders
-        if(OptifineHelper.isShadersEnabled())
-            return;
-
         Window mainWindow = Minecraft.getInstance().getWindow();
 
         // OpenGL will spit out an error (GL_INVALID_VALUE) if the window is minimised (or draw calls stop)

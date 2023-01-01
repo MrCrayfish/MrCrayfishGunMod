@@ -25,7 +25,6 @@ import com.mrcrayfish.guns.item.attachment.impl.Barrel;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
-import com.mrcrayfish.guns.util.OptifineHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -315,7 +314,6 @@ public class GunRenderingHandler
                 {
                     //TODO I NEED A DEBUG MENU LOL
                     double viewFinderDist = scope.getViewFinderDistance();
-                    if(OptifineHelper.isShadersEnabled()) viewFinderDist *= 0.75;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getScope();
                     xOffset = -translateX - scaledPos.getXOffset() * 0.0625 * scaleX;
                     yOffset = -translateY + (8 - scaledPos.getYOffset()) * 0.0625 * scaleY - scope.getReticleOffset() * scaleY * 0.0625 * scaledPos.getScale();
