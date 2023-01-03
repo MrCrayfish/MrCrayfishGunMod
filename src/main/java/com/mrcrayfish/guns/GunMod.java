@@ -94,6 +94,7 @@ public class GunMod
             bus.addListener(KeyBinds::registerKeyMappings);
             bus.addListener(SpecialModels::registerAdditional);
             bus.addListener(CrosshairHandler::onConfigReload);
+            bus.addListener(ClientHandler::onFrameworkClientRegister);
         });
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");

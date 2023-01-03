@@ -32,7 +32,7 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
-public class GunItem extends Item implements IColored
+public class GunItem extends Item implements IColored, IMeta
 {
     private WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
 
@@ -152,10 +152,6 @@ public class GunItem extends Item implements IColored
 
     public Gun getModifiedGun(ItemStack stack)
     {
-        if(GunMod.isDebugging())
-        {
-            return Debug.getGun(this);
-        }
         CompoundTag tagCompound = stack.getTag();
         if(tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND))
         {
@@ -172,6 +168,10 @@ public class GunItem extends Item implements IColored
                     return gunCopy;
                 }
             });
+        }
+        if(GunMod.isDebugging())
+        {
+            return Debug.getGun(this);
         }
         return this.gun;
     }

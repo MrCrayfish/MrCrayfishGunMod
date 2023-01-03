@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.client;
 
+import com.mrcrayfish.framework.api.client.event.FrameworkClientEvent;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.*;
@@ -189,6 +190,11 @@ public class ClientHandler
                 mc.setScreen(new EditorScreen(null, new Debug.Menu()));
             }
         }
+    }
+
+    public static void onFrameworkClientRegister(FrameworkClientEvent.Register event)
+    {
+        event.registerDataLoader(MetaLoader.getInstance());
     }
 
     /* Uncomment for debugging headshot hit boxes */

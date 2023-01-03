@@ -9,7 +9,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 /**
  * Author: MrCrayfish
  */
-public class AttachmentItem extends Item
+public class AttachmentItem extends Item implements IMeta
 {
     public AttachmentItem(Properties properties)
     {
