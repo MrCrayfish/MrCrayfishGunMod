@@ -27,7 +27,8 @@ import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 
-import static com.tac.guns.client.SpecialModels.*;
+import static com.tac.guns.client.SpecialModels.Sx8_BODY;
+import static com.tac.guns.client.SpecialModels.Sx8_FRONT;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs

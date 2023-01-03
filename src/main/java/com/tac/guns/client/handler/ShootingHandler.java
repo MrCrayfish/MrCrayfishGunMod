@@ -1,5 +1,6 @@
 package com.tac.guns.client.handler;
 
+import net.minecraftforge.eventbus.api.EventPriority;
 import org.lwjgl.glfw.GLFW;
 
 import com.tac.guns.Config;
@@ -129,7 +130,29 @@ public class  ShootingHandler
     }
     
     // CHECK HERE: Indicates the ticks left for next shot
-    static float shootTickGapLeft = 0F;
+    private static float shootTickGapLeft = 0F;
+
+    public float getShootTickGapLeft(){
+        return shootTickGapLeft;
+    }
+
+    public static float shootMsGap = 0F;
+    public float getshootMsGap(){
+        return shootMsGap;
+    }
+    public static float calcShootTickGap(int rpm)
+    {
+        float shootTickGap = 60F / rpm * 20F;
+        return shootTickGap;
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void renderTick(TickEvent.RenderTickEvent evt)
+    {
+        if(shootMsGap > 0F)
+            shootMsGap -= evt.renderTickTime;
+    }
+
     @SubscribeEvent
     public void onHandleShooting( TickEvent.ClientTickEvent evt )
     {
@@ -152,17 +175,6 @@ public class  ShootingHandler
                 final float dist = Math.abs( player.moveForward ) / 2.5F
                 	+ Math.abs( player.moveStrafing ) / 1.25F
                     + ( player.getMotion().y > 0D ? 0.5F : 0F );
-                /*
-                 * PATCH NOTE: this is meaningless as actually it will always send the value of
-                 * {@local dist} to the server side. It is commented rather than deleted as I am not
-                 * sure if there exists any side effects removing the method call in if statement.
-                 * 
-                 * TODO: validate side effects
-                 */
-//              if(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING) != dist || dist != 0)
-//                  PacketHandler.getPlayChannel().sendToServer(new MessageUpdateMoveInacc(dist));
-//              else
-//                  PacketHandler.getPlayChannel().sendToServer(new MessageUpdateMoveInacc(0));
                 PacketHandler.getPlayChannel().sendToServer( new MessageUpdateMoveInacc( dist ) );
                 
                 // Update #shooting state if it has changed
@@ -173,7 +185,7 @@ public class  ShootingHandler
 //              {
 //                  shooting |= ControllerHandler.isShooting();
 //              }
-                if( shooting ^ this.shooting )
+                if(shooting ^ this.shooting )
                 {
                 	this.shooting = shooting;
                 	PacketHandler.getPlayChannel().sendToServer( new MessageShooting( shooting ) );
@@ -231,27 +243,11 @@ public class  ShootingHandler
                     CooldownTracker tracker = player.getCooldownTracker();
                     if(this.burstTracker > 0)
                     {
-                        //player.sendMessage(new TranslationTextComponent("Bursting"), UUID.randomUUID());
                         if(!tracker.hasCooldown(heldItem.getItem())) {
                             fire(player, heldItem);
                             this.burstTracker--;
                         }
-                        //LOGGER.log(Level.FATAL, "At least catching");
                     }
-                    //else {
-                        //player.sendMessage(new TranslationTextComponent("End"), UUID.randomUUID());
-                        //this.clickUp = true;
-                    //}
-                    /*else if(this.burstTracker > 0 && heldItem.getTag().getInt("AmmoCount") > 0)
-                    {
-                        LOGGER.log(Level.FATAL, "Reset without second fire");
-                        //if(!tracker.hasCooldown(heldItem.getItem()))
-                        //{
-                            this.burstTracker = 0;
-                            this.clickUp = true;
-                            this.burstCooldown = gun.getGeneral().getBurstRate();
-                        //}
-                    }*/
                     return;
                 }
                 else if( InputHandler.PULL_TRIGGER.down )
@@ -261,7 +257,6 @@ public class  ShootingHandler
                         fire(player, heldItem);
                         return;
                     }
-                    //if(this.burstTracker == 0 || this.burstCooldown == 0) {
                     if (heldItem.getTag().getInt("CurrentFireMode") == 3 && !Config.CLIENT.controls.burstPress.get() && !this.clickUp && this.burstCooldown == 0) {
                         if (this.shootErr) {
                             if (this.burstTracker > 0)
@@ -283,7 +278,6 @@ public class  ShootingHandler
                         }
                         return;
                     }
-                    //}
                 }
                 else if(this.clickUp || InputHandler.PULL_TRIGGER.down )
                 {
@@ -327,13 +321,11 @@ public class  ShootingHandler
                 return;
             
             // CHECK HERE: Change this to test different rpm settings.
-            final float rpm = 850F; // Rounds per sec. Should come from gun properties in the end.
-            shootTickGapLeft += 60F / rpm * 20F;
+            // TODO: Test serverside, possible issues 0.3.4-alpha
+            final float rpm = modifiedGun.getGeneral().getRate(); // Rounds per sec. Should come from gun properties in the end.
+            shootTickGapLeft += calcShootTickGap((int) rpm);
+            shootMsGap += calcShootTickGap((int) rpm);
             
-            // CHECK HERE: Old client side fire rate control code
-//            int rate = GunEnchantmentHelper.getRate(heldItem, modifiedGun);
-//            rate = GunModifierHelper.getModifiedRate(heldItem, rate);
-//            tracker.setCooldown(heldItem.getItem(), rate);
             PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player.getYaw(1), player.getPitch(1)));
 
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));

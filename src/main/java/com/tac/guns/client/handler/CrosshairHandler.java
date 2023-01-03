@@ -148,11 +148,12 @@ public class CrosshairHandler
         Crosshair crosshair = this.getCurrentCrosshair();
         if((crosshair == null|| crosshair.isDefault()))
             return;
-
+        if(ShootingHandler.get().isShooting())
+            crosshair.onGunFired();
         crosshair.tick();
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onGunFired(GunFireEvent.Post event)
     {
         Crosshair crosshair = this.getCurrentCrosshair();
@@ -160,5 +161,5 @@ public class CrosshairHandler
             return;
 
         crosshair.onGunFired();
-    }
+    }*/
 }

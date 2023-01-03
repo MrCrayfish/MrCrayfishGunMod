@@ -1,7 +1,9 @@
 package com.tac.guns.client.render.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.tac.guns.common.Gun;
 import com.tac.guns.client.SpecialModels;
+import com.tac.guns.client.handler.ShootingHandler;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.entity.MissileEntity;
 import net.minecraft.client.Minecraft;

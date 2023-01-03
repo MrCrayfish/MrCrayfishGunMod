@@ -22,7 +22,7 @@ apply plugin: 'org.spongepowered.mixin'
 //apply plugin: 'eclipse'
 //apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = "0.3.3.1-1.16.5"
+version = "0.3.4.2-1.16.5"
 group = "com.tac"
 archivesBaseName = "tac-d"
 

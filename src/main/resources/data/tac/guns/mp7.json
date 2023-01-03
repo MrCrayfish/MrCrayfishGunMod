@@ -1,7 +1,7 @@
 {
   "general": {
     "auto": true,
-    "rate": 2,
+    "rate": 970,
     "rateSelector": [0,1,2],
     "gripType": "tac:two_handed_vector",
     "recoilAngle": 1.125,

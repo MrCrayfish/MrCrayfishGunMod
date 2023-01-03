@@ -1,7 +1,7 @@
 {
   "general": {
     "auto": true,
-    "rate": 2,
+    "rate": 800,
     "burstRate": 12,
     "rateSelector": [
       0,
@@ -10,11 +10,11 @@
       3
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 2.225,
-    "horizontalRecoilAngle": 1.825,
-    "recoilKick": 1.575,
-    "recoilAdsReduction": 0.24,
-    "weaponRecoilOffset": 0.825,
+    "recoilAngle": 1.625,
+    "horizontalRecoilAngle": 1.425,
+    "recoilKick": 1.375,
+    "recoilAdsReduction": 0.225,
+    "weaponRecoilOffset": 0.65,
     "cameraRecoilModifier": 1.1,
     "recoilDuration": 0.275,
     "alwaysSpread": true,
@@ -58,9 +58,6 @@
       "zOffset": -10.525,
       "size": 0.38
     },
-    "hipfireScale": 0.70,
-    "hipfireMoveScale": 0.55,
-    "hipfireRecoilScale": 1.31,
     "weaponType": 4
   },
   "modules": {

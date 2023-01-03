@@ -146,7 +146,7 @@ public class ServerPlayHandler
 //                    tracker.putCooldown(heldItem, item, modifiedGun);
 
 
-                    tracker.putCooldown(heldItem, item, modifiedGun);
+                    //tracker.putCooldown(heldItem, item, modifiedGun);
 
                     if(!modifiedGun.getGeneral().isAlwaysSpread() && modifiedGun.getGeneral().getSpread() > 0.0F)
                     {
@@ -166,7 +166,7 @@ public class ServerPlayHandler
                         spawnedProjectiles[i] = projectileEntity;
                         projectileEntity.tick();
                     }
-                    if(true)//!projectileProps.isVisible())
+                    if(!projectileProps.isVisible())
                     {
                         MessageBulletTrail messageBulletTrail = new MessageBulletTrail(spawnedProjectiles, projectileProps, player.getEntityId());
                         PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getPosX(), player.getPosY(), player.getPosZ(), Config.COMMON.network.projectileTrackingRange.get(), player.world.getDimensionKey())), messageBulletTrail);

@@ -677,8 +677,8 @@ public class GunRenderingHandler {
         }
     //    this.weaponsHorizontalAngle = ((float) (gun.getGeneral().getHorizontalRecoilAngle() * recoilNormal) * (float) RecoilHandler.get().getAdsRecoilReduction(gun));
         this.weaponsHorizontalAngle = ((float) (RecoilHandler.get().getGunHorizontalRecoilAngle() * recoilNormal) * (float) RecoilHandler.get().getAdsRecoilReduction(gun));
-        float newKick = recoilDynamics.update(0.05f, (float) kick * kickReduction);
-        float newSway = swayDynamics.update(0.05f, recoilSway * recoilReduction * weaponsHorizontalAngle);
+        float newKick = recoilDynamics.update(0.11f, (float) kick * kickReduction);
+        float newSway = swayDynamics.update(0.03f, recoilSway * recoilReduction * weaponsHorizontalAngle);
         matrixStack.translate(0, 0, newKick);
         matrixStack.translate(0, 0, 0.35);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(newSway * 0.5f));

@@ -1,7 +1,7 @@
 {
   "general": {
     "auto": true,
-    "rate": 3,
+    "rate": 600,
     "rateSelector": [
       0,
       1,
@@ -55,11 +55,7 @@
       "zOffset": -16.77,
       "size": 0.675
     },
-    "hipfireScale": 2.25,
-    "hipfireMoveScale": 1.0,
-    "hipfireRecoilScale": 0.95,
-    "showDynamicHipfire": true,
-    "weaponType": 0
+    "hipfireScale": 2.5
   },
   "modules": {
     "zoom": {
