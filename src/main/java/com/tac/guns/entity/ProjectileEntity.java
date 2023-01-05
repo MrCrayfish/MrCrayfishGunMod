@@ -163,10 +163,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if(!SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
             {
                 gunSpread *= modifiedGun.getGeneral().getHipFireInaccuracy();
-            }
-            if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
-            {
-                gunSpread *= Math.max(1 , (2F * ( 1 + SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING))) * modifiedGun.getGeneral().getMovementInaccuracy());
+                if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
+                {
+                    gunSpread *= Math.max(1 , (2F * ( 1 + SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING))) * modifiedGun.getGeneral().getMovementInaccuracy());
+                }
             }
             if(((PlayerEntity) shooter).isCrouching() && modifiedGun.getGeneral().getProjectileAmount() == 1)
             {
@@ -465,6 +465,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                     this.world.setBlockState(offsetPos, fireState, 11);
                 }
             }
+            //TODO: Add wall pen, simple, similar to ricochet but without anything crazy nor issues caused with block-face detection
+            this.life = 0;
             return;
         }
 
@@ -761,6 +763,44 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+
+
+    /**
+     * A custom implementation of
+     * that allows you to pass a predicate to ignore certain blocks when checking for collisions,
+     * along with keeping track if passing through multiple blocks
+     *
+     * Should be used for checking if the first block is wallbangable, and second block being air.
+     *
+     * @param world     the world to perform the ray trace
+     * @param context   the ray trace context
+     * @param ignorePredicate the block state predicate
+     * @return a result of the raytrace
+     */
+
+    private static BlockRayTraceResult rayTraceBlocksPassThrough(World world, RayTraceContext context, Predicate<BlockState> ignorePredicate)
+    {
+        //TODO: Reperform raytrace after first hit, if the distance of the next hit is between 0-1.1 blocks then end as a block hit, else return wallbang
+        return performRayTrace(context, (rayTraceContext, blockPos) -> {
+            BlockState blockState = world.getBlockState(blockPos);
+            if(ignorePredicate.test(blockState)) return null;
+            FluidState fluidState = world.getFluidState(blockPos);
+            Vector3d startVec = rayTraceContext.getStartVec();
+            Vector3d endVec = rayTraceContext.getEndVec();
+            VoxelShape blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
+            BlockRayTraceResult blockResult = world.rayTraceBlocks(startVec, endVec, blockPos, blockShape, blockState);
+            VoxelShape fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
+            BlockRayTraceResult fluidResult = fluidShape.rayTrace(startVec, endVec, blockPos);
+            double blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.getStartVec().squareDistanceTo(blockResult.getHitVec());
+            double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.getStartVec().squareDistanceTo(fluidResult.getHitVec());
+            return blockDistance <= fluidDistance ? blockResult : fluidResult;
+        }, (rayTraceContext) -> {
+            Vector3d Vector3d = rayTraceContext.getStartVec().subtract(rayTraceContext.getEndVec());
+            return BlockRayTraceResult.createMiss(rayTraceContext.getEndVec(), Direction.getFacingFromVector(Vector3d.x, Vector3d.y, Vector3d.z), new BlockPos(rayTraceContext.getEndVec()));
+        });
+    }
+
+
     /**
      * A custom implementation of
      * that allows you to pass a predicate to ignore certain blocks when checking for collisions.

@@ -126,7 +126,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private float movementInaccuracy = 1F;
         @Optional
-        private float hipFireInaccuracy = 1F;
+        private float hipFireInaccuracy = 3.25F;
         @Optional
         private float levelReq = 300.0F;
         @Optional

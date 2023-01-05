@@ -202,7 +202,8 @@ public class HUDRenderingHandler extends AbstractGui {
         }
     }
 
-    private static ResourceLocation fleshHitMarker = new ResourceLocation(Reference.MOD_ID, "textures/crosshair_hit/hit_marker.png");
+    private static ResourceLocation fleshHitMarker = new ResourceLocation(Reference.MOD_ID, "textures/crosshair_hit/hit_marker_128x.png");
+    private static ResourceLocation fleshHitMarkerADS = new ResourceLocation(Reference.MOD_ID, "textures/crosshair_hit/hit_marker_ads_128x.png");
     public int hitMarkerTracker = 0;
     public boolean hitMarkerHeadshot = false;
 
@@ -231,12 +232,15 @@ public class HUDRenderingHandler extends AbstractGui {
         float counterSize = 1.8F * configScaleWeaponCounter;
         float fireModeSize = 32.0F * configScaleWeaponFireMode;
         float ReloadBarSize = 32.0F * configScaleWeaponReloadBar;
+
+        float hitMarkerSize = 128.0F;
+
         RenderSystem.enableAlphaTest();
         BufferBuilder buffer = Tessellator.getInstance().getBuffer();
         int width = event.getWindow().getWidth();
         int height = event.getWindow().getHeight();
 
-        if(this.hitMarkerTracker > 0 && !AimingHandler.get().isAiming())//Hit Markers
+        if(this.hitMarkerTracker > 0 && ((AimingHandler.get().isAiming() && Gun.getScope(heldItem) == null) || !AimingHandler.get().isAiming()))//Hit Markers
         {
             ObjectRenderEditor.RENDER_Element data = new ObjectRenderEditor.RENDER_Element(0,0,0,0);
             if(GuiEditor.get() != null)
@@ -249,18 +253,25 @@ public class HUDRenderingHandler extends AbstractGui {
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             stack.push();
             {
-                float size = 0.2f;
-                stack.translate(anchorPointX - (size+data.getxMod()*10+(107.9*10)) / 4F, anchorPointY + (size*1.625F+data.getyMod()*10+(-24.5*10)) / 5F * 3F, 0);
+                //stack.translate(width / 2F, height / 2F, 0);
+                float size = 0.1f;
+                stack.translate(anchorPointX - (size+data.getxMod()*10+(109.15*10)) / 4F, anchorPointY + (size*1.625F+data.getyMod()*10+(-25.1*10)) / 5F * 3F, 0);
                 stack.scale(size,size,size);
 
-                Minecraft.getInstance().getTextureManager().bindTexture(fleshHitMarker); // Future options to render bar types
+                ResourceLocation hitMarker;
+                if(AimingHandler.get().isAiming())
+                    hitMarker = fleshHitMarkerADS;
+                else
+                    hitMarker = fleshHitMarker;
+
+                Minecraft.getInstance().getTextureManager().bindTexture(hitMarker); // Future options to render bar types
 
                 float opac = Math.max(Math.min(this.hitMarkerTracker / hitMarkerRatio, 100f), 0.25f);
 
                 Matrix4f matrix = stack.getLast().getMatrix();
-                buffer.pos(matrix, 0, ReloadBarSize, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, opac).endVertex();
-                buffer.pos(matrix, ReloadBarSize, ReloadBarSize, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, opac).endVertex();
-                buffer.pos(matrix, ReloadBarSize, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, opac).endVertex();
+                buffer.pos(matrix, 0, hitMarkerSize, 0).tex(0, 1).color(1.0F, 1.0F, 1.0F, opac).endVertex();
+                buffer.pos(matrix, hitMarkerSize, hitMarkerSize, 0).tex(1, 1).color(1.0F, 1.0F, 1.0F, opac).endVertex();
+                buffer.pos(matrix, hitMarkerSize, 0, 0).tex(1, 0).color(1.0F, 1.0F, 1.0F, opac).endVertex();
                 buffer.pos(matrix, 0, 0, 0).tex(0, 0).color(1.0F, 1.0F, 1.0F, opac).endVertex();
             }
             buffer.finishDrawing();
