@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.client.util.PropertyHelper;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.compat.PlayerReviveHelper;
 import com.mrcrayfish.guns.debug.Debug;
@@ -158,7 +159,7 @@ public class AimingHandler
         if(modifiedGun.getModules().getZoom() == null)
             return;
 
-        double time = Gun.getAnimations(heldItem, modifiedGun).getFovCurve().apply(this.normalisedAdsProgress);
+        double time = PropertyHelper.getSightAnimations(heldItem, modifiedGun).getFovCurve().apply(this.normalisedAdsProgress);
         float modifier = Gun.getFovModifier(heldItem, modifiedGun);
         modifier = (1.0F - modifier) * (float) time;
         event.setFOV(event.getFOV() - event.getFOV() * modifier);

@@ -336,8 +336,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         {
             return this.spread;
         }
-
-
     }
 
     public static class Projectile implements INBTSerializable<CompoundTag>
@@ -1568,29 +1566,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
     {
         CompoundTag tag = gunStack.getOrCreateTag();
         return tag.getBoolean("IgnoreAmmo") || tag.getInt("AmmoCount") > 0;
-    }
-
-    /**
-     * Gets the sight animations for this gun. The animations can change if the
-     * weapon has a scope equipped. Priority is given to the scope first then
-     * falls back to the zoom animations. This does not determine if a gun can
-     * aim down sight, use {@link #canAimDownSight()} instead.
-     *
-     * @param stack       the stack of the weapon
-     * @param modifiedGun the modified gun instance
-     * @return the sight animations or the default
-     */
-    public static SightAnimation getAnimations(ItemStack stack, Gun modifiedGun)
-    {
-        if(hasAttachmentEquipped(stack, modifiedGun, IAttachment.Type.SCOPE))
-        {
-            Scope scope = Gun.getScope(stack);
-            if(scope != null)
-            {
-                return scope.getSightAnimation();
-            }
-        }
-        return modifiedGun.getModules().getZoom() != null ? modifiedGun.getModules().getZoom().getAnimation() : SightAnimation.DEFAULT;
     }
 
     public static float getFovModifier(ItemStack stack, Gun modifiedGun)

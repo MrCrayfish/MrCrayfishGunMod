@@ -66,6 +66,8 @@ public class Scope extends Attachment implements IEditorMenu
     }
 
     /**
+     * Deprecated: Use meta files instead
+     * <p>
      * Sets the offset distance from the camera to the view finder
      *
      * @param offset the view finder offset
@@ -97,7 +99,7 @@ public class Scope extends Attachment implements IEditorMenu
     }
 
     /**
-     * Deprecated: Use {@link #getReticleOffset()}
+     * Deprecated: Use meta files instead
      * <p>
      * Gets the offset to the center of the scope. Used to render scope cross hair exactly in the
      * middle of the screen.
@@ -111,11 +113,14 @@ public class Scope extends Attachment implements IEditorMenu
     }
 
     /**
+     * Deprecated: Use meta files instead
+     * <p>
      * Gets the offset need to translate the gun model so the reticle of the scope aligns with the
      * center of the screen.
      *
      * @return the reticle offset
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public double getReticleOffset()
     {
         return this.reticleOffset;
@@ -130,7 +135,7 @@ public class Scope extends Attachment implements IEditorMenu
     }
 
     /**
-     * Deprecated: Use {@link #getReticleOffset()}
+     * Deprecated: Use meta files instead
      * @return The view finder offset of this scope
      */
     @Deprecated(since = "1.3.0", forRemoval = true)
@@ -142,6 +147,7 @@ public class Scope extends Attachment implements IEditorMenu
     /**
      * @return The distance to offset camera from the center of the scope model.
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public double getViewFinderDistance()
     {
         return this.viewFinderDist;
@@ -244,7 +250,7 @@ public class Scope extends Attachment implements IEditorMenu
         }
 
         /**
-         * Deprecated: Use {@link #reticleOffset(double)} ()}
+         * Deprecated: Use meta files instead
          */
         @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder centerOffset(double centerOffset)
@@ -253,6 +259,10 @@ public class Scope extends Attachment implements IEditorMenu
             return this;
         }
 
+        /**
+         * Deprecated: Use meta files instead
+         */
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder reticleOffset(double reticleOffset)
         {
             this.reticleOffset = reticleOffset;
@@ -266,7 +276,7 @@ public class Scope extends Attachment implements IEditorMenu
         }
 
         /**
-         * Deprecated: Use {@link #viewFinderDistance(double)} ()}
+         * Deprecated: Use meta files instead
          */
         @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder viewFinderOffset(double viewFinderOffset)
@@ -275,6 +285,10 @@ public class Scope extends Attachment implements IEditorMenu
             return this;
         }
 
+        /**
+         * Deprecated: Use meta files instead
+         */
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder viewFinderDistance(double viewFinderDist)
         {
             this.viewFinderDist = viewFinderDist;
@@ -293,6 +307,10 @@ public class Scope extends Attachment implements IEditorMenu
             return this;
         }
 
+        /**
+         * Deprecated: Use meta files instead
+         */
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder sightAnimation(SightAnimation.Builder builder)
         {
             this.sightAnimation = builder.build();
