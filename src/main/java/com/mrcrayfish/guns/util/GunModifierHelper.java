@@ -97,6 +97,7 @@ public class GunModifierHelper
         return Mth.clamp(volume, 0.0F, 16.0F);
     }
 
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public static double getMuzzleFlashSize(ItemStack weapon, double size)
     {
         for(int i = 0; i < IAttachment.Type.values().length; i++)
@@ -108,6 +109,19 @@ public class GunModifierHelper
             }
         }
         return size;
+    }
+
+    public static double getMuzzleFlashScale(ItemStack weapon, double scale)
+    {
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                scale = modifier.modifyMuzzleFlashScale(scale);
+            }
+        }
+        return scale;
     }
 
     public static float getKickReduction(ItemStack weapon)

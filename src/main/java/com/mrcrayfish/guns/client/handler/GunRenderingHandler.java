@@ -758,6 +758,11 @@ public class GunRenderingHandler
         float scaleX = ((float) flashScale.x / 2F) - ((float) flashScale.x / 2F) * (1.0F - partialTicks);
         float scaleY = ((float) flashScale.y / 2F) - ((float) flashScale.y / 2F) * (1.0F - partialTicks);
         poseStack.scale(scaleX, scaleY, 1.0F);
+        
+        float scaleModifier = (float) GunModifierHelper.getMuzzleFlashScale(weapon, 1.0);
+        poseStack.scale(scaleModifier, scaleModifier, 1.0F);
+
+        // Center the texture
         poseStack.translate(-0.5, -0.5, 0);
 
         float minU = weapon.isEnchanted() ? 0.5F : 0.0F;
