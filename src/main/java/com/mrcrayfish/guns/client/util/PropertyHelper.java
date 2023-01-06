@@ -12,6 +12,7 @@ import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.item.IMeta;
 import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
+import com.mrcrayfish.guns.item.attachment.IBarrel;
 import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,7 @@ public final class PropertyHelper
     public static final String MODEL_KEY = "cgm:model";
     public static final String WEAPON_KEY = "cgm:weapon";
     public static final String SCOPE_KEY = "cgm:scope";
+    public static final String BARREL_KEY = "cgm:barrel";
     public static final Vec3 GUN_DEFAULT_ORIGIN = new Vec3(8.0, 0.0, 8.0);
     public static final Vec3 ATTACHMENT_DEFAULT_ORIGIN = new Vec3(8.0, 8.0, 8.0);
     public static final Vec3 DEFAULT_SCALE = new Vec3(1.0, 1.0, 1.0);
@@ -138,9 +140,9 @@ public final class PropertyHelper
         return Vec3.ZERO;
     }
 
-    public static Vec3 getAttachmentScale(ItemStack stack, Gun modifiedGun, IAttachment.Type type)
+    public static Vec3 getAttachmentScale(ItemStack weapon, Gun modifiedGun, IAttachment.Type type)
     {
-        DataObject scopeObject = getObjectByPath(stack, WEAPON_KEY, "attachments", type.getSerializeKey());
+        DataObject scopeObject = getObjectByPath(weapon, WEAPON_KEY, "attachments", type.getSerializeKey());
         if(scopeObject.has("scale", DataType.ARRAY))
         {
             DataArray scaleArray = scopeObject.getDataArray("scale");
@@ -150,6 +152,54 @@ public final class PropertyHelper
         if(positioned != null)
         {
             return new Vec3(positioned.getScale(), positioned.getScale(), positioned.getScale());
+        }
+        return DEFAULT_SCALE;
+    }
+
+    public static boolean hasMuzzleFlash(ItemStack weapon, Gun modifiedGun)
+    {
+        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
+        return weaponObject.has("muzzleFlash", DataType.OBJECT) || modifiedGun.getDisplay().getFlash() != null;
+    }
+
+    public static Vec3 getMuzzleFlashPosition(ItemStack weapon, Gun modifiedGun)
+    {
+        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
+        if(weaponObject.has("muzzleFlash", DataType.OBJECT))
+        {
+            DataObject muzzleObject = weaponObject.getDataObject("muzzleFlash");
+            DataArray translationArray = muzzleObject.getDataArray("translation");
+            return arrayToVec3(translationArray, Vec3.ZERO);
+        }
+        Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
+        if(muzzleFlash != null)
+        {
+            double displayX = muzzleFlash.getXOffset();
+            double displayY = muzzleFlash.getYOffset();
+            double displayZ = muzzleFlash.getZOffset();
+            return new Vec3(displayX, displayY, displayZ).add(GUN_DEFAULT_ORIGIN);
+        }
+        return Vec3.ZERO;
+    }
+
+    public static Vec3 getMuzzleFlashScale(ItemStack weapon, Gun modifiedGun)
+    {
+        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
+        if(weaponObject.has("muzzleFlash", DataType.OBJECT))
+        {
+            DataObject muzzleObject = weaponObject.getDataObject("muzzleFlash");
+            if(muzzleObject.has("scale", DataType.ARRAY))
+            {
+                DataArray scaleArray = muzzleObject.getDataArray("scale");
+                return arrayToVec3(scaleArray, DEFAULT_SCALE);
+            }
+            return DEFAULT_SCALE;
+        }
+        Gun.Display.Flash muzzleFlash = modifiedGun.getDisplay().getFlash();
+        if(muzzleFlash != null)
+        {
+            double scale = muzzleFlash.getSize();
+            return new Vec3(scale, scale, 1.0);
         }
         return DEFAULT_SCALE;
     }
@@ -205,6 +255,20 @@ public final class PropertyHelper
         // Fallback to the zoom object
         var zoom = modifiedGun.getModules().getZoom();
         return zoom != null ? zoom.getAnimation() : SightAnimation.DEFAULT;
+    }
+
+    public static double getBarrelLength(ItemStack stack)
+    {
+        DataObject customObject = getObjectByPath(stack, BARREL_KEY);
+        if(customObject.has("length", DataType.NUMBER))
+        {
+            return customObject.getDataNumber("length").asDouble();
+        }
+        if(stack.getItem() instanceof IBarrel barrel)
+        {
+            return barrel.getProperties().getLength();
+        }
+        return 0;
     }
 
     private static SightAnimation objectToSightAnimation(DataObject object)
