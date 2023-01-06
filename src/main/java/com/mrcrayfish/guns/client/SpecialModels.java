@@ -6,15 +6,11 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.client.event.ModelEvent;
 
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public enum SpecialModels
 {
     ASSAULT_RIFLE("gun/assault_rifle"),
@@ -88,20 +84,17 @@ public enum SpecialModels
         return this.cachedModel;
     }
 
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
-    public static void register(ModelRegistryEvent event)
+    public static void registerAdditional(ModelEvent.RegisterAdditional event)
     {
         for(SpecialModels model : values())
         {
             if(model.specialModel)
             {
-                ForgeModelBakery.addSpecialModel(model.modelLocation);
+                event.register(model.modelLocation);
             }
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static void clearCache()
     {
         for(SpecialModels model : values())

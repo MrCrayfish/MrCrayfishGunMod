@@ -12,8 +12,8 @@ import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -106,9 +106,9 @@ public class CrosshairHandler
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.PreLayer event)
+    public void onRenderOverlay(RenderGuiOverlayEvent.Pre event)
     {
-        if(event.getOverlay() != ForgeIngameGui.CROSSHAIR_ELEMENT)
+        if(event.getOverlay() != VanillaGuiOverlay.CROSSHAIR.type())
             return;
 
         Crosshair crosshair = this.getCurrentCrosshair();

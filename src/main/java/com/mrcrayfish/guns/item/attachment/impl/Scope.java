@@ -13,8 +13,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public class Scope extends Attachment
 {
-    private float additionalZoom;
-    private double centerOffset;
+    private final float additionalZoom;
+    private final double centerOffset;
     private boolean stable;
     private double viewFinderOffset;
 
@@ -23,6 +23,15 @@ public class Scope extends Attachment
         super(modifier);
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
+    }
+
+    private Scope(float additionalZoom, double centerOffset, boolean stable, double viewFinderOffset, IGunModifier... modifiers)
+    {
+        super(modifiers);
+        this.additionalZoom = additionalZoom;
+        this.centerOffset = centerOffset;
+        this.stable = stable;
+        this.viewFinderOffset = viewFinderOffset;
     }
 
     /**
@@ -88,15 +97,67 @@ public class Scope extends Attachment
     }
 
     /**
-     * Creates a scope get
+     * Creates a scope. This method is now deprecated. Use the builder instead.
      *
      * @param additionalZoom the additional zoom this scope provides
      * @param centerOffset   the length to the center of the view finder from the base of the scope model in pixels
      * @param modifiers      an array of gun modifiers
      * @return a scope get
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public static Scope create(float additionalZoom, double centerOffset, IGunModifier... modifiers)
     {
         return new Scope(additionalZoom, centerOffset, modifiers);
+    }
+
+    public static Builder builder()
+    {
+        return new Builder();
+    }
+
+    public static class Builder
+    {
+        private float additionalZoom;
+        private double centerOffset;
+        private boolean stable;
+        private double viewFinderOffset;
+        private IGunModifier[] modifiers = new IGunModifier[]{};
+
+        private Builder() {}
+
+        public Builder additionalZoom(float additionalZoom)
+        {
+            this.additionalZoom = additionalZoom;
+            return this;
+        }
+
+        public Builder centerOffset(double centerOffset)
+        {
+            this.centerOffset = centerOffset;
+            return this;
+        }
+
+        public Builder stable(boolean stable)
+        {
+            this.stable = stable;
+            return this;
+        }
+
+        public Builder viewFinderOffset(double viewFinderOffset)
+        {
+            this.viewFinderOffset = viewFinderOffset;
+            return this;
+        }
+
+        public Builder modifiers(IGunModifier... modifiers)
+        {
+            this.modifiers = modifiers;
+            return this;
+        }
+
+        public Scope build()
+        {
+            return new Scope(this.additionalZoom, this.centerOffset, this.stable, this.viewFinderOffset, this.modifiers);
+        }
     }
 }

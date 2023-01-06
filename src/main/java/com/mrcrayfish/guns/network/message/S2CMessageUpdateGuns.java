@@ -17,15 +17,15 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageUpdateGuns extends PlayMessage<MessageUpdateGuns>
+public class S2CMessageUpdateGuns extends PlayMessage<S2CMessageUpdateGuns>
 {
     private ImmutableMap<ResourceLocation, Gun> registeredGuns;
     private ImmutableMap<ResourceLocation, CustomGun> customGuns;
 
-    public MessageUpdateGuns() {}
+    public S2CMessageUpdateGuns() {}
 
     @Override
-    public void encode(MessageUpdateGuns message, FriendlyByteBuf buffer)
+    public void encode(S2CMessageUpdateGuns message, FriendlyByteBuf buffer)
     {
         Validate.notNull(NetworkGunManager.get());
         Validate.notNull(CustomGunLoader.get());
@@ -34,16 +34,16 @@ public class MessageUpdateGuns extends PlayMessage<MessageUpdateGuns>
     }
 
     @Override
-    public MessageUpdateGuns decode(FriendlyByteBuf buffer)
+    public S2CMessageUpdateGuns decode(FriendlyByteBuf buffer)
     {
-        MessageUpdateGuns message = new MessageUpdateGuns();
+        S2CMessageUpdateGuns message = new S2CMessageUpdateGuns();
         message.registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
         message.customGuns = CustomGunLoader.readCustomGuns(buffer);
         return message;
     }
 
     @Override
-    public void handle(MessageUpdateGuns message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageUpdateGuns message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() -> ClientPlayHandler.handleUpdateGuns(message));
         supplier.get().setPacketHandled(true);

@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageProjectileHitBlock extends PlayMessage<MessageProjectileHitBlock>
+public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjectileHitBlock>
 {
     private double x;
     private double y;
@@ -20,9 +20,9 @@ public class MessageProjectileHitBlock extends PlayMessage<MessageProjectileHitB
     private BlockPos pos;
     private Direction face;
 
-    public MessageProjectileHitBlock() {}
+    public S2CMessageProjectileHitBlock() {}
 
-    public MessageProjectileHitBlock(double x, double y, double z, BlockPos pos, Direction face)
+    public S2CMessageProjectileHitBlock(double x, double y, double z, BlockPos pos, Direction face)
     {
         this.x = x;
         this.y = y;
@@ -32,7 +32,7 @@ public class MessageProjectileHitBlock extends PlayMessage<MessageProjectileHitB
     }
 
     @Override
-    public void encode(MessageProjectileHitBlock message, FriendlyByteBuf buffer)
+    public void encode(S2CMessageProjectileHitBlock message, FriendlyByteBuf buffer)
     {
         buffer.writeDouble(message.x);
         buffer.writeDouble(message.y);
@@ -42,18 +42,18 @@ public class MessageProjectileHitBlock extends PlayMessage<MessageProjectileHitB
     }
 
     @Override
-    public MessageProjectileHitBlock decode(FriendlyByteBuf buffer)
+    public S2CMessageProjectileHitBlock decode(FriendlyByteBuf buffer)
     {
         double x = buffer.readDouble();
         double y = buffer.readDouble();
         double z = buffer.readDouble();
         BlockPos pos = buffer.readBlockPos();
         Direction face = buffer.readEnum(Direction.class);
-        return new MessageProjectileHitBlock(x, y, z, pos, face);
+        return new S2CMessageProjectileHitBlock(x, y, z, pos, face);
     }
 
     @Override
-    public void handle(MessageProjectileHitBlock message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageProjectileHitBlock message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHitBlock(message));
         supplier.get().setPacketHandled(true);

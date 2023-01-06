@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageGunSound extends PlayMessage<MessageGunSound>
+public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound>
 {
     private ResourceLocation id;
     private SoundSource category;
@@ -25,9 +25,9 @@ public class MessageGunSound extends PlayMessage<MessageGunSound>
     private boolean muzzle;
     private boolean reload;
 
-    public MessageGunSound() {}
+    public S2CMessageGunSound() {}
 
-    public MessageGunSound(ResourceLocation id, SoundSource category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle, boolean reload)
+    public S2CMessageGunSound(ResourceLocation id, SoundSource category, float x, float y, float z, float volume, float pitch, int shooterId, boolean muzzle, boolean reload)
     {
         this.id = id;
         this.category = category;
@@ -42,9 +42,9 @@ public class MessageGunSound extends PlayMessage<MessageGunSound>
     }
 
     @Override
-    public void encode(MessageGunSound message, FriendlyByteBuf buffer)
+    public void encode(S2CMessageGunSound message, FriendlyByteBuf buffer)
     {
-        buffer.writeUtf(message.id.toString());
+        buffer.writeResourceLocation(message.id);
         buffer.writeEnum(message.category);
         buffer.writeFloat(message.x);
         buffer.writeFloat(message.y);
@@ -57,9 +57,9 @@ public class MessageGunSound extends PlayMessage<MessageGunSound>
     }
 
     @Override
-    public MessageGunSound decode(FriendlyByteBuf buffer)
+    public S2CMessageGunSound decode(FriendlyByteBuf buffer)
     {
-        ResourceLocation id = ResourceLocation.tryParse(buffer.readUtf());
+        ResourceLocation id = buffer.readResourceLocation();
         SoundSource category = buffer.readEnum(SoundSource.class);
         float x = buffer.readFloat();
         float y = buffer.readFloat();
@@ -69,11 +69,11 @@ public class MessageGunSound extends PlayMessage<MessageGunSound>
         int shooterId = buffer.readInt();
         boolean muzzle = buffer.readBoolean();
         boolean reload = buffer.readBoolean();
-        return new MessageGunSound(id, category, x, y, z, volume, pitch, shooterId, muzzle, reload);
+        return new S2CMessageGunSound(id, category, x, y, z, volume, pitch, shooterId, muzzle, reload);
     }
 
     @Override
-    public void handle(MessageGunSound message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageGunSound message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageGunSound(message));
         supplier.get().setPacketHandled(true);

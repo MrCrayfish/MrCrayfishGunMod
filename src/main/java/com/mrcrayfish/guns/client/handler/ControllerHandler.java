@@ -16,8 +16,8 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageAttachments;
-import com.mrcrayfish.guns.network.message.MessageUnload;
+import com.mrcrayfish.guns.network.message.C2SMessageAttachments;
+import com.mrcrayfish.guns.network.message.C2SMessageUnload;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -87,7 +87,7 @@ public class ControllerHandler
                     event.setCanceled(true);
                     if(event.getState())
                     {
-                        PacketHandler.getPlayChannel().sendToServer(new MessageAttachments());
+                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
                     }
                 }
             }
@@ -193,7 +193,7 @@ public class ControllerHandler
         if(this.reloadCounter > 40)
         {
             ReloadHandler.get().setReloading(false);
-            PacketHandler.getPlayChannel().sendToServer(new MessageUnload());
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
             this.reloadCounter = -1;
         }
         else if(this.reloadCounter > 0 && !Controllable.isButtonPressed(GunButtonBindings.RELOAD.getButton()))

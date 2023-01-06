@@ -4,17 +4,19 @@
     "compatibilityLevel": "JAVA_8",
     "minVersion": "0.8",
     "refmap": "cgm.refmap.json",
+    "plugin": "com.mrcrayfish.guns.mixin.MixinPlugin",
     "mixins": [
         "common.EndPortalBlockMixin",
         "common.LivingEntityMixin",
         "common.SittingPhaseMixin"
     ],
     "client": [
-        "client.PlayerItemInHandLayerMixin",
-        "client.PlayerModelMixin",
         "client.GameRendererMixin",
         "client.LevelRendererMixin",
-        "client.MouseHandlerMixin"
+        "client.MinecraftMixin",
+        "client.MouseHandlerMixin",
+        "client.PlayerItemInHandLayerMixin",
+        "client.PlayerModelMixin"
     ],
     "injectors": {
         "defaultRequire": 1

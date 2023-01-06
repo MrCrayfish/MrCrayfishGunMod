@@ -98,13 +98,13 @@ public class BulletTrailRenderingHandler
     }
 
     @SubscribeEvent
-    public void onRespawn(ClientPlayerNetworkEvent.RespawnEvent event)
+    public void onRespawn(ClientPlayerNetworkEvent.Clone event)
     {
         this.bullets.clear();
     }
 
     @SubscribeEvent
-    public void onLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    public void onLoggedOut(ClientPlayerNetworkEvent.LoggingOut event)
     {
         this.bullets.clear();
     }

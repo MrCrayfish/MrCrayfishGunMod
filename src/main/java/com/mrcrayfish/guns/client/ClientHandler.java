@@ -13,14 +13,13 @@ import com.mrcrayfish.guns.client.render.gun.model.ShortScopeModel;
 import com.mrcrayfish.guns.client.render.gun.model.SimpleModel;
 import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
-import com.mrcrayfish.guns.client.settings.GunOptions;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageAttachments;
+import com.mrcrayfish.guns.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;
@@ -70,8 +69,6 @@ public class ClientHandler
             MinecraftForge.EVENT_BUS.register(new ControllerHandler());
             GunButtonBindings.register();
         }
-
-        KeyBinds.register();
 
         setupRenderLayers();
         registerColors();
@@ -150,11 +147,10 @@ public class ClientHandler
     }
 
     @SubscribeEvent
-    public static void onScreenInit(ScreenEvent.InitScreenEvent.Post event)
+    public static void onScreenInit(ScreenEvent.Init.Post event)
     {
-        if(event.getScreen() instanceof MouseSettingsScreen)
+        if(event.getScreen() instanceof MouseSettingsScreen screen)
         {
-            MouseSettingsScreen screen = (MouseSettingsScreen) event.getScreen();
             if(mouseOptionsField == null)
             {
                 mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "f_96218_");
@@ -173,14 +169,14 @@ public class ClientHandler
     }
 
     @SubscribeEvent
-    public static void onKeyPressed(InputEvent.KeyInputEvent event)
+    public static void onKeyPressed(InputEvent.Key event)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.screen == null)
         {
             if(KeyBinds.KEY_ATTACHMENTS.consumeClick())
             {
-                PacketHandler.getPlayChannel().sendToServer(new MessageAttachments());
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
         }
     }

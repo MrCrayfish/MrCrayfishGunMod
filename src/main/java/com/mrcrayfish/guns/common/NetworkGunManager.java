@@ -10,7 +10,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
+import com.mrcrayfish.guns.network.message.S2CMessageUpdateGuns;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +31,6 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.InvalidObjectException;
 import java.io.Reader;
@@ -83,6 +82,10 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
                     // Makes sure the file name matches exactly with the id of the gun
                     if(!id.getPath().equals(splitPath[splitPath.length - 1]))
+                        return;
+
+                    // Also check if the mod id matches with the gun's registered namespace
+                    if (!id.getNamespace().equals(resourceLocation.getNamespace()))
                         return;
 
                     manager.getResource(resourceLocation).ifPresent(resource ->
@@ -168,7 +171,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredGuns(MessageUpdateGuns message)
+    public static boolean updateRegisteredGuns(S2CMessageUpdateGuns message)
     {
         return updateRegisteredGuns(message.getRegisteredGuns());
     }
@@ -237,7 +240,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
     {
         if(event.getPlayer() == null)
         {
-            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new MessageUpdateGuns());
+            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new S2CMessageUpdateGuns());
         }
     }
 
