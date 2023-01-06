@@ -682,7 +682,7 @@ public class GunRenderingHandler
                         poseStack.pushPose();
 
                         /* Reverse center translation from rendering */
-                        poseStack.translate(0.5, 0.0, 0.5);
+                        poseStack.translate(0.5, 0.0, 0.5); // TODO should this be weapon origin?
 
                         /* Translate model according to origin */
                         Vec3 origin = PropertyHelper.getModelOrigin(attachmentStack, PropertyHelper.ATTACHMENT_DEFAULT_ORIGIN);
@@ -732,49 +732,42 @@ public class GunRenderingHandler
 
     private void drawMuzzleFlash(ItemStack weapon, Gun modifiedGun, float random, boolean flip, PoseStack poseStack, MultiBufferSource buffer, float partialTicks)
     {
-        poseStack.pushPose();
-
-        Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
-        if(muzzleFlash == null)
+        if(!PropertyHelper.hasMuzzleFlash(weapon, modifiedGun))
             return;
 
-        double displayX = muzzleFlash.getXOffset() * 0.0625;
-        double displayY = muzzleFlash.getYOffset() * 0.0625;
-        double displayZ = muzzleFlash.getZOffset() * 0.0625;
-        poseStack.translate(displayX, displayY, displayZ);
-        poseStack.translate(0, -0.5, 0);
+        poseStack.pushPose();
+
+        Vec3 weaponOrigin = PropertyHelper.getModelOrigin(weapon, PropertyHelper.GUN_DEFAULT_ORIGIN);
+        Vec3 flashPosition = PropertyHelper.getMuzzleFlashPosition(weapon, modifiedGun).subtract(weaponOrigin);
+        poseStack.translate(weaponOrigin.x * 0.0625, weaponOrigin.y * 0.0625, weaponOrigin.z * 0.0625);
+        poseStack.translate(flashPosition.x * 0.0625, flashPosition.y * 0.0625, flashPosition.z * 0.0625);
+        poseStack.translate(-0.5, -0.5, -0.5);
 
         ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
         if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
         {
-            Barrel barrel = ((IBarrel) barrelStack.getItem()).getProperties();
-            Gun.ScaledPositioned positioned = modifiedGun.getModules().getAttachments().getBarrel();
-            if(positioned != null)
-            {
-                poseStack.translate(0, 0, -barrel.getLength() * 0.0625 * positioned.getScale());
-            }
+            Vec3 scale = PropertyHelper.getAttachmentScale(weapon, modifiedGun, IAttachment.Type.BARREL);
+            double length = PropertyHelper.getBarrelLength(barrelStack);
+            poseStack.translate(0, 0, -length * 0.0625 * scale.z);
         }
 
-        poseStack.scale(0.5F, 0.5F, 0.0F);
-
-        float scale = 0.5F + 0.5F * (1.0F - partialTicks);
-        poseStack.scale(scale, scale, 1.0F);
-
-        double partialSize = modifiedGun.getDisplay().getFlash().getSize() / 5.0;
-        float size = (float) (modifiedGun.getDisplay().getFlash().getSize() - partialSize + partialSize * random);
-        size = (float) GunModifierHelper.getMuzzleFlashSize(weapon, size);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(360F * random));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(flip ? 180F : 0F));
-        poseStack.translate(-size / 2, -size / 2, 0);
+
+        Vec3 flashScale = PropertyHelper.getMuzzleFlashScale(weapon, modifiedGun);
+        float scaleX = ((float) flashScale.x / 2F) - ((float) flashScale.x / 2F) * (1.0F - partialTicks);
+        float scaleY = ((float) flashScale.y / 2F) - ((float) flashScale.y / 2F) * (1.0F - partialTicks);
+        poseStack.scale(scaleX, scaleY, 1.0F);
+        poseStack.translate(-0.5, -0.5, 0);
 
         float minU = weapon.isEnchanted() ? 0.5F : 0.0F;
         float maxU = weapon.isEnchanted() ? 1.0F : 0.5F;
         Matrix4f matrix = poseStack.last().pose();
         VertexConsumer builder = buffer.getBuffer(GunRenderType.getMuzzleFlash());
         builder.vertex(matrix, 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(maxU, 1.0F).uv2(15728880).endVertex();
-        builder.vertex(matrix, size, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(minU, 1.0F).uv2(15728880).endVertex();
-        builder.vertex(matrix, size, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(minU, 0).uv2(15728880).endVertex();
-        builder.vertex(matrix, 0, size, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(maxU, 0).uv2(15728880).endVertex();
+        builder.vertex(matrix, 1, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(minU, 1.0F).uv2(15728880).endVertex();
+        builder.vertex(matrix, 1, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(minU, 0).uv2(15728880).endVertex();
+        builder.vertex(matrix, 0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(maxU, 0).uv2(15728880).endVertex();
 
         poseStack.popPose();
     }
