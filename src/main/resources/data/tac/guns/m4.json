@@ -1,7 +1,7 @@
 {
   "general": {
     "auto": true,
-    "rate": 900,
+    "rate": 800,
     "rateSelector": [
       0,
       1,
@@ -16,9 +16,14 @@
     "cameraRecoilDuration": 1.025,
     "cameraRecoilModifier": 1.125,
     "recoilDuration": 0.225,
-    "alwaysSpread": false,
-    "spread": 10.925,
-    "weightKilo": 3.55
+    "weightKilo": 3.55,
+
+    "spread": 1.75,
+    "firstShotSpread": 0.165,
+    "hipFireInaccuracy": 4.15,
+    "projToMinAccuracy": 6,
+    "msToAccuracyReset": 160,
+    "movementInaccuracy": 0.5
   },
   "reloads": {
     "magFed": true,

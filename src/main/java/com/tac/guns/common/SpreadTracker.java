@@ -1,9 +1,6 @@
 package com.tac.guns.common;
 
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.tac.guns.Config;
 import com.tac.guns.Reference;
-import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -32,21 +29,22 @@ public class SpreadTracker
     {
         Pair<MutableLong, MutableInt> entry = SPREAD_TRACKER_MAP.computeIfAbsent(item, gun -> Pair.of(new MutableLong(-1), new MutableInt()));
         MutableLong lastFire = entry.getLeft();
+        Gun gun = item.getGun();
         if(lastFire.getValue() != -1)
         {
             MutableInt spreadCount = entry.getRight();
             long deltaTime = System.currentTimeMillis() - lastFire.getValue();
-            if(deltaTime < Config.COMMON.projectileSpread.spreadThreshold.get())
+            if(deltaTime < gun.getGeneral().getMsToAccuracyReset())
             {
-                if(spreadCount.getValue() < Config.COMMON.projectileSpread.maxCount.get())
+                if(spreadCount.getValue() < gun.getGeneral().getProjCountAccuracy())
                 {
                     spreadCount.increment();
 
-                    /* Increases the spread count quicker if the player is not aiming down sight */
-                    if(spreadCount.getValue() < Config.COMMON.projectileSpread.maxCount.get() && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING))
+                    /* Increases the spread count quicker if the player is not aiming down sight *//*
+                    if(spreadCount.getValue() < gun.getGeneral().getProjCountAccuracy() && !SyncedPlayerData.instance().get(player, ModSyncedDataKeys.AIMING))
                     {
                         spreadCount.increment();
-                    }
+                    }*/
                 }
             }
             else
@@ -60,11 +58,14 @@ public class SpreadTracker
     public float getSpread(GunItem item)
     {
         Pair<MutableLong, MutableInt> entry = SPREAD_TRACKER_MAP.get(item);
+        Gun gun = item.getGun();
         if(entry != null)
         {
-            return (float) entry.getRight().getValue() / (float) Config.COMMON.projectileSpread.maxCount.get();
+            if(entry.getRight().getValue() == 1)
+                return 0f; // Will apply first shot accuracy if 0
+            return (float) entry.getRight().getValue() / (float) gun.getGeneral().getProjCountAccuracy();
         }
-        return 0F;
+        return 0f;
     }
 
     public static SpreadTracker get(PlayerEntity player)
