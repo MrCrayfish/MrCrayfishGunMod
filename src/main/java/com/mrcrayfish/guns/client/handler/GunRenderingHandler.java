@@ -337,7 +337,7 @@ public class GunRenderingHandler
                 if(modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null)
                 {
                     /* Translate to the mounting position of scopes */
-                    Vec3 scopePosition = PropertyHelper.getAttachmentPosition(heldItem, modifiedGun, IAttachment.Type.SCOPE);
+                    Vec3 scopePosition = PropertyHelper.getAttachmentPosition(heldItem, modifiedGun, IAttachment.Type.SCOPE).subtract(gunOrigin);
                     xOffset += scopePosition.x * 0.0625 * scaleX;
                     yOffset += scopePosition.y * 0.0625 * scaleY;
                     zOffset += scopePosition.z * 0.0625 * scaleZ;
@@ -693,20 +693,24 @@ public class GunRenderingHandler
                     {
                         poseStack.pushPose();
 
-                        /* Reverse center translation from rendering */
-                        poseStack.translate(0.5, 0.0, 0.5); // TODO should this be weapon origin?
-
-                        /* Translate model according to origin */
+                        /* Translates the attachment to a standard position by removing the origin */
                         Vec3 origin = PropertyHelper.getModelOrigin(attachmentStack, PropertyHelper.ATTACHMENT_DEFAULT_ORIGIN);
-                        poseStack.translate(-origin.x * 0.0625, -origin.y * 0.0625, -origin.y * 0.0625);
+                        poseStack.translate(-origin.x * 0.0625, -origin.y * 0.0625, -origin.z * 0.0625);
 
-                        /* Translation to the position this attachment attaches to the weapon */
-                        Vec3 translation = PropertyHelper.getAttachmentPosition(stack, modifiedGun, type);
+                        /* Translation to the origin on the weapon */
+                        Vec3 gunOrigin = PropertyHelper.getModelOrigin(stack, PropertyHelper.GUN_DEFAULT_ORIGIN);
+                        poseStack.translate(gunOrigin.x * 0.0625, gunOrigin.y * 0.0625, gunOrigin.z * 0.0625);
+
+                        /* Translate to the position this attachment mounts on the weapon */
+                        Vec3 translation = PropertyHelper.getAttachmentPosition(stack, modifiedGun, type).subtract(gunOrigin);
                         poseStack.translate(translation.x * 0.0625, translation.y * 0.0625, translation.z * 0.0625);
 
-                        /* Scale the attachment to fit the size of the weapon */
+                        /* Scales the attachment. Also translates the delta of the attachment origin to (8, 8, 8) since this is the centered origin for scaling */
                         Vec3 scale = PropertyHelper.getAttachmentScale(stack, modifiedGun, type);
+                        Vec3 center = origin.subtract(8, 8, 8).scale(0.0625);
+                        poseStack.translate(center.x, center.y, center.z);
                         poseStack.scale((float) scale.x, (float) scale.y, (float) scale.z);
+                        poseStack.translate(-center.x, -center.y, -center.z);
 
                             IOverrideModel model = ModelOverrides.getModel(attachmentStack);
                             if(model != null)
@@ -749,17 +753,19 @@ public class GunRenderingHandler
 
         poseStack.pushPose();
 
+        // Translate to the position where the muzzle flash should spawn
         Vec3 weaponOrigin = PropertyHelper.getModelOrigin(weapon, PropertyHelper.GUN_DEFAULT_ORIGIN);
         Vec3 flashPosition = PropertyHelper.getMuzzleFlashPosition(weapon, modifiedGun).subtract(weaponOrigin);
         poseStack.translate(weaponOrigin.x * 0.0625, weaponOrigin.y * 0.0625, weaponOrigin.z * 0.0625);
         poseStack.translate(flashPosition.x * 0.0625, flashPosition.y * 0.0625, flashPosition.z * 0.0625);
         poseStack.translate(-0.5, -0.5, -0.5);
 
+        // Legacy method to move muzzle flash to be at the end of the barrel attachment
         ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
-        if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel)
+        if(!barrelStack.isEmpty() && barrelStack.getItem() instanceof IBarrel barrel && !PropertyHelper.isUsingBarrelMuzzleFlash(barrelStack))
         {
             Vec3 scale = PropertyHelper.getAttachmentScale(weapon, modifiedGun, IAttachment.Type.BARREL);
-            double length = PropertyHelper.getBarrelLength(barrelStack);
+            double length = barrel.getProperties().getLength();
             poseStack.translate(0, 0, -length * 0.0625 * scale.z);
         }
 
@@ -770,7 +776,7 @@ public class GunRenderingHandler
         float scaleX = ((float) flashScale.x / 2F) - ((float) flashScale.x / 2F) * (1.0F - partialTicks);
         float scaleY = ((float) flashScale.y / 2F) - ((float) flashScale.y / 2F) * (1.0F - partialTicks);
         poseStack.scale(scaleX, scaleY, 1.0F);
-        
+
         float scaleModifier = (float) GunModifierHelper.getMuzzleFlashScale(weapon, 1.0);
         poseStack.scale(scaleModifier, scaleModifier, 1.0F);
 
