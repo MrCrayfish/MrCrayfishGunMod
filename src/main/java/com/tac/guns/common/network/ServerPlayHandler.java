@@ -152,7 +152,7 @@ public class ServerPlayHandler
                     {
                         SpreadTracker.get(player).update(player, item);
                     }
-
+                    // 2.925
                     int count = modifiedGun.getGeneral().getProjectileAmount();
                     Gun.Projectile projectileProps = modifiedGun.getProjectile();
                     ProjectileEntity[] spawnedProjectiles = new ProjectileEntity[count];

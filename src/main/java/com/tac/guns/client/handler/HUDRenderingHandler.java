@@ -207,7 +207,7 @@ public class HUDRenderingHandler extends AbstractGui {
     public int hitMarkerTracker = 0;
     public boolean hitMarkerHeadshot = false;
 
-    public static final float hitMarkerRatio = 25.0f;
+    public static final float hitMarkerRatio = 12.5f;
 
 
     @SubscribeEvent
