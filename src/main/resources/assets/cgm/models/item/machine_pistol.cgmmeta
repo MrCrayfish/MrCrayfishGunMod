@@ -1,0 +1,23 @@
+{
+    "cgm:weapon": {
+        "attachments": {
+            "barrel": {
+                "translation": [8.0, 3.2, 10.2],
+                "scale": [0.5, 0.5, 0.5]
+            },
+            "scope": {
+                "translation": [8.0, 4.0, 13.5]
+            },
+            "stock": {
+                "translation": [8.0, 3.2, 16.2]
+            }
+        },
+        "ironSight": {
+            "camera": [8.0, 4.8, 20.0]
+        },
+        "muzzleFlash": {
+            "translation": [8.0, 3.2, 10.19],
+            "scale": [0.5, 0.5, 0.5]
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "cgm:model": {
+        "origin": [8.0, 8.0, 8.0]
+    },
+    "cgm:scope": {
+        "camera": [8.0, 9.4, 30.0],
+        "sightAnimation": {
+            "viewportCurve": "ease_out_cubic",
+            "sightCurve": "ease_out_quad",
+            "fovCurve": "ease_out_quad",
+            "aimTransformCurve": "ease_in_quad"
+        }
+    }
+}

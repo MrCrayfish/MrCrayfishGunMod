@@ -1,0 +1,8 @@
+{
+    "cgm:weapon": {
+        "muzzleFlash": {
+            "translation": [8.0, 2.7, -3.51],
+            "scale": [0.5, 0.5, 0.5]
+        }
+    }
+}
