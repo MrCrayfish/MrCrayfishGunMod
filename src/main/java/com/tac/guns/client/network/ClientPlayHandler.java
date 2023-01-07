@@ -231,7 +231,7 @@ public class ClientPlayHandler
         }
         else
         {
-            return SoundEvents.BLOCK_GLASS_BREAK; // Hitmarker
+            return SoundEvents.ENTITY_PLAYER_ATTACK_WEAK; // Hitmarker
         }
 
         return null;

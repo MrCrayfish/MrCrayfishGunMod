@@ -3,7 +3,10 @@ package com.tac.guns.client.render.crosshair;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.client.handler.AimingHandler;
+import com.tac.guns.common.SpreadTracker;
+import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.TransitionalTypes.TimelessGunItem;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
@@ -13,6 +16,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -127,7 +131,7 @@ public class DynamicScalingTexturedCrosshair extends TexturedCrosshair implement
                 scale += this.getVerticalMovementScale() * gunItem.getGun().getDisplay().getHipfireMoveScale();
 
             this.scale(scale * (gunItem.getGun().getGeneral().getHipFireInaccuracy()) * (gunItem.getGun().getDisplay().getHipfireScale()) * ((GunModifierHelper.getModifiedSpread(playerEntity.getHeldItemMainhand(),
-                    gunItem.getGun().getGeneral().getSpread())/1.5f)*GunEnchantmentHelper.getSpreadModifier(playerEntity.getHeldItemMainhand())));
+                    gunItem.getGun().getGeneral().getSpread()/2f))*GunEnchantmentHelper.getSpreadModifier(playerEntity.getHeldItemMainhand())));
             //this.scale *= GunModifierHelper.getModifiedSpread(playerEntity.getMainHandItem(), gunItem.getGun().getGeneral().getSpread());
         }
     }

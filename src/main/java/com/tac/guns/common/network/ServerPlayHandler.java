@@ -152,7 +152,9 @@ public class ServerPlayHandler
                     {
                         SpreadTracker.get(player).update(player, item);
                     }
-                    // 2.925
+                    //TODO: Change the function of the spread tracker so it trackers accuracy per specificlly held weapon, so first shot accuracy and
+                    //  total bullets before hitting max accuracy is tracked per weapon.
+                    //m4 og spread 2.925
                     int count = modifiedGun.getGeneral().getProjectileAmount();
                     Gun.Projectile projectileProps = modifiedGun.getProjectile();
                     ProjectileEntity[] spawnedProjectiles = new ProjectileEntity[count];

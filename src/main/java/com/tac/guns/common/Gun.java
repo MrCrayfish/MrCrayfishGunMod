@@ -6,28 +6,19 @@ import com.tac.guns.Config;
 import com.tac.guns.Reference;
 import com.tac.guns.annotation.Ignored;
 import com.tac.guns.annotation.Optional;
-import com.tac.guns.client.handler.HUDRenderingHandler;
 import com.tac.guns.client.handler.command.GunEditor;
 import com.tac.guns.interfaces.TGExclude;
-import com.tac.guns.inventory.gear.GearSlotsHandler;
-import com.tac.guns.inventory.gear.InventoryListener;
-import com.tac.guns.inventory.gear.armor.ArmorRigCapabilityProvider;
-import com.tac.guns.inventory.gear.armor.ArmorRigInventoryCapability;
-import com.tac.guns.inventory.gear.armor.RigSlotsHandler;
 import com.tac.guns.item.TransitionalTypes.wearables.ArmorRigItem;
 import com.tac.guns.item.attachment.IAttachment;
 import com.tac.guns.item.attachment.IScope;
 import com.tac.guns.item.attachment.impl.Scope;
 import com.tac.guns.util.WearableHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
@@ -115,9 +106,15 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private int projectileAmount = 1;
         @Optional
-        private boolean alwaysSpread = true;
+        private int projToMinAccuracy = 5;
         @Optional
-        private float spread;
+        private int msToAccuracyReset = 425;
+        @Optional
+        private boolean alwaysSpread = false;
+        @Optional
+        private float spread = 1.0f;
+        @Optional
+        private float firstShotSpread = 0.0f;
         @Optional
         private float weightKilo = 0.0F;
         @Ignored
@@ -152,8 +149,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putFloat("VisualRecoilDuration", this.visualRecoilPercent);
             tag.putFloat("RecoilAdsReduction", this.recoilAdsReduction);
             tag.putInt("ProjectileAmount", this.projectileAmount);
+            tag.putInt("ProjToMinAccuracy", this.projToMinAccuracy);
+            tag.putInt("MsToAccuracyRest", this.msToAccuracyReset);
             tag.putBoolean("AlwaysSpread", this.alwaysSpread);
             tag.putFloat("Spread", this.spread);
+            tag.putFloat("FirstShotSpread", this.firstShotSpread);
             tag.putFloat("WeightKilo", this.weightKilo);
             tag.putFloat("LevelReq", this.levelReq);
             tag.putInt("UpgradeBenchMaxUses", this.upgradeBenchMaxUses);
@@ -233,6 +233,14 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.projectileAmount = tag.getInt("ProjectileAmount");
             }
+            if(tag.contains("ProjToMinAccuracy", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.projToMinAccuracy = tag.getInt("ProjToMinAccuracy");
+            }
+            if(tag.contains("MsToAccuracyRest", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.msToAccuracyReset = tag.getInt("MsToAccuracyRest");
+            }
             if(tag.contains("UpgradeBenchMaxUses", Constants.NBT.TAG_ANY_NUMERIC))
             {
                 this.upgradeBenchMaxUses = tag.getInt("UpgradeBenchMaxUses");
@@ -244,6 +252,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             if(tag.contains("Spread", Constants.NBT.TAG_ANY_NUMERIC))
             {
                 this.spread = tag.getFloat("Spread");
+            }
+            if(tag.contains("FirstShotSpread", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.firstShotSpread = tag.getFloat("FirstShotSpread");
             }
             if(tag.contains("WeightKilo", Constants.NBT.TAG_ANY_NUMERIC))
             {
@@ -286,8 +298,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             general.visualRecoilPercent = this.visualRecoilPercent;
             general.recoilAdsReduction = this.recoilAdsReduction;
             general.projectileAmount = this.projectileAmount;
+            general.projToMinAccuracy = this.projToMinAccuracy;
+            general.msToAccuracyReset = this.msToAccuracyReset;
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
+            general.firstShotSpread = this.firstShotSpread;
             general.weightKilo = this.weightKilo;
             general.levelReq = this.levelReq;
             general.upgradeBenchMaxUses = this.upgradeBenchMaxUses;
@@ -415,7 +430,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public float getSpread()
         {
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ?
-                    (this.spread + GunEditor.get().getSpreadMod())/2.2f : this.spread/2.2f;
+                    (this.spread + GunEditor.get().getSpreadMod()) : this.spread;
         }
         /**
          * @return The default Kilogram weight of the weapon
@@ -447,6 +462,28 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         {
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.hipFireInaccuracy : this.hipFireInaccuracy;//*1.25f;
         }
+        /**
+         * @return The amount of projectiles the weapon fires before hitting minimum accuracy
+         */
+        public int getProjCountAccuracy()
+        {
+            return this.projToMinAccuracy;
+        }
+        /**
+         * @return The initial amount of degrees applied to the initial pitch and yaw direction of
+         * the fired projectile.
+         */
+        public float getFirstShotSpread()
+        {
+            return this.firstShotSpread;
+        }
+        /**
+         * @return Miliseconds to wait per last fired shot before attempting to reset projectile count for accuracy calculation
+         */
+        public int getMsToAccuracyReset()
+        {
+            return this.msToAccuracyReset;
+        }
     }
 
     public static class Reloads implements INBTSerializable<CompoundNBT>
@@ -462,8 +499,6 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private int reloadAmount = 1;
         @Optional
         private int[] maxAdditionalAmmoPerOC = new int[]{};
-      /*@Optional                                          Impl at some point, allow additional reload times per OC (OverCap)
-        private int[] maxAdditionalAmmoPerOC = new int[]{};*/
         @Optional
         private int preReloadPauseTicks = 0;
         @Optional

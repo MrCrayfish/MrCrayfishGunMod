@@ -155,10 +155,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if(shooter instanceof PlayerEntity)
         {
-            gunSpread*=0.7F;
             if(!modifiedGun.getGeneral().isAlwaysSpread())
             {
-                gunSpread *= SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
+                float modSpread = SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
+                if(modSpread != 0)
+                    gunSpread *= SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
+                else
+                    gunSpread = modifiedGun.getGeneral().getFirstShotSpread();
             }
             if(!SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
             {
@@ -466,7 +469,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 }
             }
             //TODO: Add wall pen, simple, similar to ricochet but without anything crazy nor issues caused with block-face detection
-            this.life = 0;
+            this.remove();
             return;
         }
 
@@ -478,25 +481,29 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             {
                 return;
             }
-            if(!entity.isAlive())
-            {
-                return;
-            }
 
             int fireStarterLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
             if(fireStarterLevel > 0)
             {
                 entity.setFire(2);
             }
-
-            this.onHitEntity(entity, result.getHitVec(), startVec, endVec, entityRayTraceResult.isHeadshot());
-
-            int collateralLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
-            if(collateralLevel == 0)
+            if(!entity.isAlive())
             {
-                this.remove();
+                entity.hurtResistantTime = 0;
             }
-            entity.hurtResistantTime = 0;
+            else if(entity.isAlive())
+            {
+                this.onHitEntity(entity, result.getHitVec(), startVec, endVec, entityRayTraceResult.isHeadshot());
+
+                int collateralLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
+                if(collateralLevel == 0)
+                {
+                    this.remove();
+                }
+
+                entity.hurtResistantTime = 0;
+            }
+
         }
     }
 
