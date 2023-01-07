@@ -29,20 +29,18 @@ public class Scope extends Attachment implements IEditorMenu
     protected double reticleOffset;
     protected boolean stable;
     protected double viewFinderDist;
-    protected double viewportFov;
 
     private Scope() {}
 
-    private Scope(float additionalZoom, double reticleOffset, double viewportFov, IGunModifier... modifier)
+    private Scope(float additionalZoom, double reticleOffset, IGunModifier... modifier)
     {
         super(modifier);
         this.aimFovModifier = 1.0F;
         this.additionalZoom = additionalZoom;
         this.reticleOffset = reticleOffset;
-        this.viewportFov = viewportFov;
     }
 
-    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, double viewportFov, IGunModifier... modifiers)
+    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, IGunModifier... modifiers)
     {
         super(modifiers);
         this.aimFovModifier = aimFovModifier;
@@ -50,7 +48,6 @@ public class Scope extends Attachment implements IEditorMenu
         this.reticleOffset = reticleOffset;
         this.stable = stable;
         this.viewFinderDist = viewFinderDist;
-        this.viewportFov = viewportFov;
     }
 
     /**
@@ -152,14 +149,6 @@ public class Scope extends Attachment implements IEditorMenu
         return this.viewFinderDist;
     }
 
-    /**
-     * @return The FOV of the first person viewport when aiming
-     */
-    public double getViewportFov()
-    {
-        return this.viewportFov;
-    }
-
     @Override
     public Component getEditorLabel()
     {
@@ -173,7 +162,6 @@ public class Scope extends Attachment implements IEditorMenu
         widgets.add(Pair.of(new TextComponent("Zoom (Legacy)"), () -> new DebugSlider(0.0, 0.5, this.additionalZoom, 0.05, 3, value -> this.additionalZoom = value.floatValue())));
         widgets.add(Pair.of(new TextComponent("Reticle Offset"), () -> new DebugSlider(0.0, 4.0, this.reticleOffset, 0.025, 4, value -> this.reticleOffset = value)));
         widgets.add(Pair.of(new TextComponent("View Finder Distance"), () -> new DebugSlider(0.0, 5.0, this.viewFinderDist, 0.05, 3, value -> this.viewFinderDist = value)));
-        widgets.add(Pair.of(new TextComponent("Viewport FOV"), () -> new DebugSlider(1.0, 100.0, this.viewportFov, 1.0, 4, value -> this.viewportFov = value)));
     }
 
     public Scope copy()
@@ -184,7 +172,6 @@ public class Scope extends Attachment implements IEditorMenu
         scope.reticleOffset = this.reticleOffset;
         scope.stable = this.stable;
         scope.viewFinderDist = this.viewFinderDist;
-        scope.viewportFov = this.viewportFov;
         return scope;
     }
 
@@ -202,7 +189,7 @@ public class Scope extends Attachment implements IEditorMenu
     public static Scope create(float additionalZoom, double centerOffset, IGunModifier... modifiers)
     {
         // -1 to indicate that it should use the default fov
-        return new Scope(additionalZoom, centerOffset, -1.0, modifiers);
+        return new Scope(additionalZoom, centerOffset, modifiers);
     }
 
     public static Builder builder()
@@ -217,8 +204,6 @@ public class Scope extends Attachment implements IEditorMenu
         private double reticleOffset = 0.0;
         private boolean stable = false;
         private double viewFinderDist = 0.0;
-        private double viewportFov = 10.0;
-        private SightAnimation sightAnimation = SightAnimation.DEFAULT;
         private IGunModifier[] modifiers = new IGunModifier[]{};
 
         private Builder() {}
@@ -285,12 +270,6 @@ public class Scope extends Attachment implements IEditorMenu
             return this;
         }
 
-        public Builder viewportFov(double viewportFov)
-        {
-            this.viewportFov = viewportFov;
-            return this;
-        }
-
         public Builder modifiers(IGunModifier... modifiers)
         {
             this.modifiers = modifiers;
@@ -299,7 +278,7 @@ public class Scope extends Attachment implements IEditorMenu
 
         public Scope build()
         {
-            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.viewportFov, this.modifiers);
+            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.modifiers);
         }
     }
 }
