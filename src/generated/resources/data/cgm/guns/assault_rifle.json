@@ -37,9 +37,6 @@
     },
     "zoom": {
       "fovModifier": 0.6,
-      "sightAnimation": {
-        "aimTransformCurve": "ease_in_cubic"
-      },
       "yOffset": 5.2,
       "zOffset": 3.2
     }
