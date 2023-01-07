@@ -10,7 +10,6 @@ import com.mrcrayfish.guns.client.MetaLoader;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.item.IMeta;
-import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IBarrel;
 import com.mrcrayfish.guns.item.attachment.IScope;
@@ -273,9 +272,7 @@ public final class PropertyHelper
             return objectToSightAnimation(sightObject);
         }
 
-        // Fallback to the zoom object
-        var zoom = modifiedGun.getModules().getZoom();
-        return zoom != null ? zoom.getAnimation() : SightAnimation.DEFAULT;
+        return SightAnimation.DEFAULT;
     }
 
     public static boolean isUsingBarrelMuzzleFlash(ItemStack barrel)
@@ -289,16 +286,16 @@ public final class PropertyHelper
         ObjectCache cache = ObjectCache.getInstance(CACHE_KEY);
         Optional<SightAnimation> cachedValue = cache.get(object.getId());
         return cachedValue.orElseGet(() -> cache.store(object.getId(), () -> {
-            return SightAnimation.builder()
-                .setViewportCurve(Easings.byName(getString(object, "viewportCurve").orElse("linear")))
-                .setSightCurve(Easings.byName(getString(object, "sightCurve").orElse("linear")))
-                .setFovCurve(Easings.byName(getString(object, "fovCurve").orElse("linear")))
-                .setAimTransformCurve(Easings.byName(getString(object, "aimTransformCurve").orElse("linear")))
-                .build();
+            SightAnimation.Builder builder = SightAnimation.builder();
+            getOptionalString(object, "viewportCurve").ifPresent(s -> builder.setViewportCurve(Easings.byName(s)));
+            getOptionalString(object, "sightCurve").ifPresent(s -> builder.setSightCurve(Easings.byName(s)));
+            getOptionalString(object, "fovCurve").ifPresent(s -> builder.setFovCurve(Easings.byName(s)));
+            getOptionalString(object, "aimTransformCurve").ifPresent(s -> builder.setAimTransformCurve(Easings.byName(s)));
+            return builder.build();
         }));
     }
 
-    private static Optional<String> getString(DataObject src, String key)
+    private static Optional<String> getOptionalString(DataObject src, String key)
     {
         if(src.has(key, DataType.STRING))
         {

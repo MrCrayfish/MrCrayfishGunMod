@@ -867,15 +867,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         {
             @Optional
             private float fovModifier;
-            @Optional
-            private SightAnimation sightAnimation = new SightAnimation();
 
             @Override
             public CompoundTag serializeNBT()
             {
                 CompoundTag tag = super.serializeNBT();
                 tag.putFloat("FovModifier", this.fovModifier);
-                tag.put("SightAnimation", this.sightAnimation.serializeNBT());
                 return tag;
             }
 
@@ -887,17 +884,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
                 {
                     this.fovModifier = tag.getFloat("FovModifier");
                 }
-                if(tag.contains("SightAnimation", Tag.TAG_COMPOUND))
-                {
-                    this.sightAnimation.deserializeNBT(tag.getCompound("SightAnimation"));
-                }
             }
 
             public JsonObject toJsonObject()
             {
                 JsonObject object = super.toJsonObject();
                 object.addProperty("fovModifier", this.fovModifier);
-                GunJsonUtil.addObjectIfNotEmpty(object, "sightAnimation", this.sightAnimation.toJsonObject());
                 return object;
             }
 
@@ -908,7 +900,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
                 zoom.xOffset = this.xOffset;
                 zoom.yOffset = this.yOffset;
                 zoom.zOffset = this.zOffset;
-                zoom.sightAnimation = this.sightAnimation.copy();
                 return zoom;
             }
 
@@ -924,19 +915,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
                 widgets.add(Pair.of(new TextComponent("FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.fovModifier, 0.01, 3, val -> {
                     this.fovModifier = val.floatValue();
                 })));
-                widgets.add(Pair.of(this.sightAnimation.getEditorLabel(), () -> new DebugButton(new TextComponent(">"), btn -> {
-                    Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.sightAnimation));
-                })));
             }
 
             public float getFovModifier()
             {
                 return this.fovModifier;
-            }
-
-            public SightAnimation getAnimation()
-            {
-                return this.sightAnimation;
             }
 
             public static Builder builder()
@@ -964,12 +947,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
                 public T setFovModifier(float fovModifier)
                 {
                     this.zoom.fovModifier = fovModifier;
-                    return this.self();
-                }
-
-                public T setAnimation(SightAnimation.Builder builder)
-                {
-                    this.zoom.sightAnimation = builder.build();
                     return this.self();
                 }
 
