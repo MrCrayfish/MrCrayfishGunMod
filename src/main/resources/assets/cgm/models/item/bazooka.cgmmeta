@@ -1,0 +1,12 @@
+{
+    "cgm:weapon": {
+        "ironSight": {
+            "camera": [4.5, 4.3, 10.0],
+            "viewportFov": 60.0
+        },
+        "muzzleFlash": {
+            "translation": [4.5, 4.3, -0.01],
+            "scale": [1.5, 1.5, 1.5]
+        }
+    }
+}

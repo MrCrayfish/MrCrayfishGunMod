@@ -231,10 +231,6 @@ public class GunRenderingHandler
         if(!(heldItem.getItem() instanceof GunItem gunItem))
             return;
 
-        Scope scope = Gun.getScope(heldItem);
-        if(scope == null)
-            return;
-
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
         if(!modifiedGun.canAimDownSight())
             return;
@@ -248,8 +244,8 @@ public class GunRenderingHandler
         SightAnimation sightAnimation = PropertyHelper.getSightAnimations(heldItem, modifiedGun);
         time = sightAnimation.getViewportCurve().apply(time);
 
-        ItemStack scopeStack = Gun.getScopeStack(heldItem);
-        double viewportFov = PropertyHelper.getScopeViewportFov(scopeStack);
+        // Apply the new FOV
+        double viewportFov = PropertyHelper.getViewportFov(heldItem, modifiedGun);
         double newFov = viewportFov > 0 ? viewportFov : event.getFOV(); // Backwards compatibility
         event.setFOV(Mth.lerp(time, event.getFOV(), newFov));
     }

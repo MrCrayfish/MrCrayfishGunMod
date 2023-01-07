@@ -272,7 +272,7 @@ public final class PropertyHelper
         }
 
         // Try and get the animations from the weapon
-        DataObject customObject = getObjectByPath(weapon, WEAPON_KEY);
+        DataObject customObject = getObjectByPath(weapon, WEAPON_KEY, "ironSight");
         if(customObject.get("sightAnimation") instanceof DataObject sightObject)
         {
             return objectToSightAnimation(sightObject);
@@ -281,13 +281,27 @@ public final class PropertyHelper
         return SightAnimation.DEFAULT;
     }
 
-    public static double getScopeViewportFov(ItemStack stack)
+    public static double getViewportFov(ItemStack weapon, Gun modifiedGun)
     {
-        DataObject customObject = getObjectByPath(stack, SCOPE_KEY);
+        // Get the viewport from the attached scope
+        if(Gun.hasAttachmentEquipped(weapon, modifiedGun, IAttachment.Type.SCOPE))
+        {
+            ItemStack scopeStack = Gun.getScopeStack(weapon);
+            DataObject customObject = getObjectByPath(scopeStack, SCOPE_KEY);
+            if(customObject.has("viewportFov", DataType.NUMBER))
+            {
+                return Mth.clamp(customObject.getDataNumber("viewportFov").asDouble(), 1.0, 100.0);
+            }
+        }
+
+        // Otherwise get it from the weapon
+        DataObject customObject = getObjectByPath(weapon, WEAPON_KEY, "ironSight");
         if(customObject.has("viewportFov", DataType.NUMBER))
         {
             return Mth.clamp(customObject.getDataNumber("viewportFov").asDouble(), 1.0, 100.0);
         }
+
+        // Return zero, which means current fov is used
         return 0;
     }
 
