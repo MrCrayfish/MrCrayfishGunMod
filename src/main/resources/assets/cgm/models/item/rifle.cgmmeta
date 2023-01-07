@@ -9,14 +9,15 @@
                 "translation": [8.0, 4.3, 11.3]
             },
             "stock": {
-                "translation": [8.0, 3.1294, 8.3]
+                "translation": [8.0, 3.1294, 16.3]
             },
             "underBarrel": {
-                "translation": [8.0, 2.63, -0.5]
+                "translation": [8.0, 2.63, 7.5]
             }
         },
         "ironSight": {
-            "camera": [8.0, 4.8365, 18.0]
+            "camera": [8.0, 4.8365, 18.0],
+            "viewportFov": 60.0
         },
         "muzzleFlash": {
             "translation": [8.0, 3.8365, -2.225],
