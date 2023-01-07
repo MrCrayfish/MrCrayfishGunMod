@@ -1746,6 +1746,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             return this;
         }
 
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setMuzzleFlash(double size, double xOffset, double yOffset, double zOffset)
         {
             Display.Flash flash = new Display.Flash();
@@ -1768,12 +1769,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             return this;
         }
 
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setZoom(Modules.Zoom.Builder builder)
         {
             this.gun.modules.zoom = builder.build();
             return this;
         }
 
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setScope(float scale, double xOffset, double yOffset, double zOffset)
         {
             ScaledPositioned positioned = new ScaledPositioned();
@@ -1785,6 +1788,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             return this;
         }
 
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setBarrel(float scale, double xOffset, double yOffset, double zOffset)
         {
             ScaledPositioned positioned = new ScaledPositioned();
@@ -1796,6 +1800,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             return this;
         }
 
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setStock(float scale, double xOffset, double yOffset, double zOffset)
         {
             ScaledPositioned positioned = new ScaledPositioned();
@@ -1807,6 +1812,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             return this;
         }
 
+        @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setUnderBarrel(float scale, double xOffset, double yOffset, double zOffset)
         {
             ScaledPositioned positioned = new ScaledPositioned();

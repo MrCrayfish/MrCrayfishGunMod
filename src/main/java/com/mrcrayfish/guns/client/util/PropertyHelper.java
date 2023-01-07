@@ -261,7 +261,6 @@ public final class PropertyHelper
                 {
                     return objectToSightAnimation(sightObject);
                 }
-                return scope.getProperties().getSightAnimation();
             }
         }
 

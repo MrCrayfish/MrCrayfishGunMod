@@ -30,7 +30,6 @@ public class Scope extends Attachment implements IEditorMenu
     protected boolean stable;
     protected double viewFinderDist;
     protected double viewportFov;
-    protected SightAnimation sightAnimation;
 
     private Scope() {}
 
@@ -41,10 +40,9 @@ public class Scope extends Attachment implements IEditorMenu
         this.additionalZoom = additionalZoom;
         this.reticleOffset = reticleOffset;
         this.viewportFov = viewportFov;
-        this.sightAnimation = SightAnimation.DEFAULT;
     }
 
-    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, double viewportFov, SightAnimation sightAnimation, IGunModifier... modifiers)
+    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, double viewportFov, IGunModifier... modifiers)
     {
         super(modifiers);
         this.aimFovModifier = aimFovModifier;
@@ -53,7 +51,6 @@ public class Scope extends Attachment implements IEditorMenu
         this.stable = stable;
         this.viewFinderDist = viewFinderDist;
         this.viewportFov = viewportFov;
-        this.sightAnimation = sightAnimation;
     }
 
     /**
@@ -93,7 +90,7 @@ public class Scope extends Attachment implements IEditorMenu
      *
      * @return the scopes additional zoom
      */
-    @Deprecated(since = "1.2.9", forRemoval = true)
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public float getAdditionalZoom()
     {
         return this.additionalZoom;
@@ -130,6 +127,7 @@ public class Scope extends Attachment implements IEditorMenu
     /**
      * @return If this scope can be stabilised
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public boolean isStable()
     {
         return this.stable;
@@ -162,11 +160,6 @@ public class Scope extends Attachment implements IEditorMenu
         return this.viewportFov;
     }
 
-    public SightAnimation getSightAnimation()
-    {
-        return this.sightAnimation;
-    }
-
     @Override
     public Component getEditorLabel()
     {
@@ -181,9 +174,6 @@ public class Scope extends Attachment implements IEditorMenu
         widgets.add(Pair.of(new TextComponent("Reticle Offset"), () -> new DebugSlider(0.0, 4.0, this.reticleOffset, 0.025, 4, value -> this.reticleOffset = value)));
         widgets.add(Pair.of(new TextComponent("View Finder Distance"), () -> new DebugSlider(0.0, 5.0, this.viewFinderDist, 0.05, 3, value -> this.viewFinderDist = value)));
         widgets.add(Pair.of(new TextComponent("Viewport FOV"), () -> new DebugSlider(1.0, 100.0, this.viewportFov, 1.0, 4, value -> this.viewportFov = value)));
-        widgets.add(Pair.of(new TextComponent("Sight Animations"), () -> new DebugButton(new TextComponent("Edit"), btn -> {
-            Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.sightAnimation));
-        })));
     }
 
     public Scope copy()
@@ -195,7 +185,6 @@ public class Scope extends Attachment implements IEditorMenu
         scope.stable = this.stable;
         scope.viewFinderDist = this.viewFinderDist;
         scope.viewportFov = this.viewportFov;
-        scope.sightAnimation = this.sightAnimation.copy();
         return scope;
     }
 
@@ -308,19 +297,9 @@ public class Scope extends Attachment implements IEditorMenu
             return this;
         }
 
-        /**
-         * Deprecated: Use meta files instead
-         */
-        @Deprecated(since = "1.3.0", forRemoval = true)
-        public Builder sightAnimation(SightAnimation.Builder builder)
-        {
-            this.sightAnimation = builder.build();
-            return this;
-        }
-
         public Scope build()
         {
-            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.viewportFov, this.sightAnimation, this.modifiers);
+            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.viewportFov, this.modifiers);
         }
     }
 }
