@@ -231,10 +231,14 @@ public class GunRenderingHandler
         if(AimingHandler.get().getNormalisedAdsProgress() <= 0)
             return;
 
+        // Calculate the time curve
         double time = AimingHandler.get().getNormalisedAdsProgress();
         SightAnimation sightAnimation = PropertyHelper.getSightAnimations(heldItem, modifiedGun);
         time = sightAnimation.getViewportCurve().apply(time);
-        double newFov = scope.getViewportFov() > 0 ? scope.getViewportFov() : event.getFOV(); // Backwards compatibility
+
+        ItemStack scopeStack = Gun.getScopeStack(heldItem);
+        double viewportFov = PropertyHelper.getScopeViewportFov(scopeStack);
+        double newFov = viewportFov > 0 ? viewportFov : event.getFOV(); // Backwards compatibility
         event.setFOV(Mth.lerp(time, event.getFOV(), newFov));
     }
 

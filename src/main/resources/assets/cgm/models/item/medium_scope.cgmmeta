@@ -4,6 +4,7 @@
     },
     "cgm:scope": {
         "camera": [8.0, 9.625, 30.0],
+        "viewportFov": 20.0,
         "sightAnimation": {
             "viewportCurve": "ease_out_cubic",
             "sightCurve": "ease_out_quad",

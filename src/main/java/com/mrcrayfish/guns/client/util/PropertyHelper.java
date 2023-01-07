@@ -16,6 +16,7 @@ import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
@@ -224,6 +225,12 @@ public final class PropertyHelper
         return DEFAULT_SCALE;
     }
 
+    public static boolean isUsingBarrelMuzzleFlash(ItemStack barrel)
+    {
+        DataObject customObject = getObjectByPath(barrel, BARREL_KEY);
+        return customObject.has("muzzleFlash", DataType.OBJECT);
+    }
+
     public static int getScopeReticleColor(ItemStack stack)
     {
         // Prioritise getting the reticle colour from the ItemStack tag
@@ -274,10 +281,14 @@ public final class PropertyHelper
         return SightAnimation.DEFAULT;
     }
 
-    public static boolean isUsingBarrelMuzzleFlash(ItemStack barrel)
+    public static double getScopeViewportFov(ItemStack stack)
     {
-        DataObject customObject = getObjectByPath(barrel, BARREL_KEY);
-        return customObject.has("muzzleFlash", DataType.OBJECT);
+        DataObject customObject = getObjectByPath(stack, SCOPE_KEY);
+        if(customObject.has("viewportFov", DataType.NUMBER))
+        {
+            return Mth.clamp(customObject.getDataNumber("viewportFov").asDouble(), 1.0, 100.0);
+        }
+        return 0;
     }
 
     private static SightAnimation objectToSightAnimation(DataObject object)
