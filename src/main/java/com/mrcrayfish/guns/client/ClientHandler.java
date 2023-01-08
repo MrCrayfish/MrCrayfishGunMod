@@ -167,8 +167,7 @@ public class ClientHandler
         {
             if(KeyBinds.KEY_ATTACHMENTS.isDown())
             {
-                System.out.println("YO");
-                //PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
             /*else if(event.getKey() == GLFW.GLFW_KEY_KP_9)
             {
