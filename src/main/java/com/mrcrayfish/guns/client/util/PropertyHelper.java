@@ -9,6 +9,7 @@ import com.mrcrayfish.guns.cache.ObjectCache;
 import com.mrcrayfish.guns.client.MetaLoader;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.properties.SightAnimation;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IMeta;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IBarrel;
@@ -38,6 +39,7 @@ public final class PropertyHelper
     public static final Vec3 GUN_DEFAULT_ORIGIN = new Vec3(8.0, 0.0, 8.0);
     public static final Vec3 ATTACHMENT_DEFAULT_ORIGIN = new Vec3(8.0, 8.0, 8.0);
     public static final Vec3 DEFAULT_SCALE = new Vec3(1.0, 1.0, 1.0);
+    public static final Vec3 RED = new Vec3(255.0, 0.0, 0.0);
 
     public static void resetCache()
     {
@@ -231,7 +233,7 @@ public final class PropertyHelper
         return customObject.has("muzzleFlash", DataType.OBJECT);
     }
 
-    public static int getScopeReticleColor(ItemStack stack)
+    public static int getReticleColor(ItemStack stack)
     {
         // Prioritise getting the reticle colour from the ItemStack tag
         CompoundTag tag = stack.getTag();
@@ -240,15 +242,22 @@ public final class PropertyHelper
             return tag.getInt("ReticleColor");
         }
 
-        // Attempt to get the colour from Open Model or CGM Meta
-        DataObject customObject = PropertyHelper.getCustomData(stack);
-        if(customObject.has(SCOPE_KEY, DataType.OBJECT))
+        // Attempt to get the colour from the item's meta
+        boolean isScope = stack.getItem() instanceof IScope;
+        DataObject object = isScope ? getObjectByPath(stack, SCOPE_KEY) : getObjectByPath(stack, WEAPON_KEY, "ironSight");
+        if(object.has("reticleColor", DataType.NUMBER))
         {
-            DataObject scopeObject = customObject.getDataObject(SCOPE_KEY);
-            if(scopeObject.has("reticleColor", DataType.NUMBER))
-            {
-                return scopeObject.getDataNumber("reticleColor").asInt();
-            }
+            return object.getDataNumber("reticleColor").asInt();
+        }
+        else if(object.has("reticleColor", DataType.ARRAY))
+        {
+            DataArray array = object.getDataArray("reticleColor");
+            Vec3 color = arrayToVec3(array, RED);
+            int a = 255;
+            int r = Mth.clamp((int) color.x, 0, 255);
+            int g = Mth.clamp((int) color.y, 0, 255);
+            int b = Mth.clamp((int) color.z, 0, 255);
+            return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF));
         }
 
         // Default is red
