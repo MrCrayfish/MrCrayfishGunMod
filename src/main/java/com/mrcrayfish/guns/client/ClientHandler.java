@@ -5,7 +5,6 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.*;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
-import com.mrcrayfish.guns.client.render.gun.model.BazookaModel;
 import com.mrcrayfish.guns.client.render.gun.model.GrenadeLauncherModel;
 import com.mrcrayfish.guns.client.render.gun.model.MiniGunModel;
 import com.mrcrayfish.guns.client.render.gun.model.SimpleModel;
@@ -19,7 +18,6 @@ import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
-import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
@@ -29,7 +27,6 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MouseSettingsScreen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
@@ -104,9 +101,9 @@ public class ClientHandler
                     return Minecraft.getInstance().getItemColors().getColor(renderingWeapon, index);
                 }
             }
-            if(index == 2 && stack.getItem() instanceof IScope)
+            if(index == 2) // Reticle colour
             {
-                return PropertyHelper.getScopeReticleColor(stack);
+                return PropertyHelper.getReticleColor(stack);
             }
             return -1;
         };
@@ -123,7 +120,7 @@ public class ClientHandler
     {
         /* Weapons */
         ModelOverrides.register(ModItems.ASSAULT_RIFLE.get(), new SimpleModel(SpecialModels.ASSAULT_RIFLE::getModel));
-        ModelOverrides.register(ModItems.BAZOOKA.get(), new BazookaModel(SpecialModels.BAZOOKA::getModel));
+        ModelOverrides.register(ModItems.BAZOOKA.get(), new SimpleModel(SpecialModels.BAZOOKA::getModel));
         ModelOverrides.register(ModItems.GRENADE_LAUNCHER.get(), new GrenadeLauncherModel());
         ModelOverrides.register(ModItems.HEAVY_RIFLE.get(), new SimpleModel(SpecialModels.HEAVY_RIFLE::getModel));
         ModelOverrides.register(ModItems.MACHINE_PISTOL.get(), new SimpleModel(SpecialModels.MACHINE_PISTOL::getModel));
