@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.item.attachment;
 
 import com.mrcrayfish.guns.item.attachment.impl.Attachment;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -20,6 +21,15 @@ public interface IAttachment<T extends Attachment>
      * @return The additional properties about this attachment
      */
     T getProperties();
+
+    /**
+     * @param stack Weapon stack
+     * @return If attachment can be attached to gun
+     */
+    default boolean canAttachTo(ItemStack stack)
+    {
+        return true;
+    }
 
     enum Type
     {
