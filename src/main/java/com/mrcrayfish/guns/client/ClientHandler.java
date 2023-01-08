@@ -163,16 +163,17 @@ public class ClientHandler
     public static void onKeyPressed(InputEvent.Key event)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && mc.screen == null)
+        if(mc.player != null && mc.screen == null && event.getAction() == GLFW.GLFW_PRESS)
         {
-            if(KeyBinds.KEY_ATTACHMENTS.consumeClick())
+            if(KeyBinds.KEY_ATTACHMENTS.isDown())
             {
-                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+                System.out.println("YO");
+                //PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
-            else if(event.getKey() == GLFW.GLFW_KEY_KP_9)
+            /*else if(event.getKey() == GLFW.GLFW_KEY_KP_9)
             {
                 mc.setScreen(new EditorScreen(null, new Debug.Menu()));
-            }
+            }*/
         }
     }
 
