@@ -31,6 +31,11 @@ public class AttachmentSlot extends Slot
         this.player = player;
     }
 
+    public IAttachment.Type getType()
+    {
+        return this.type;
+    }
+
     @Override
     public boolean isActive()
     {
