@@ -45,4 +45,5 @@ description="MrCrayfish's Gun Mod adds in simple and straight forward weapons in
 
 [modproperties.cgm]
     catalogueImageIcon="cgm_icon.png"
+    catalogueBackground="cgm_background.png"
     configuredBackground="minecraft:textures/block/stone_bricks.png"

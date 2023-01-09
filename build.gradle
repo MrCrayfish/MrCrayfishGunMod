@@ -93,7 +93,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.1.1'
     implementation fg.deobf('curse.maven:framework-549225:4287474')
     implementation fg.deobf('curse.maven:configured-457570:4011355')
-    implementation fg.deobf('curse.maven:catalogue-459701:3873264')
+    implementation fg.deobf('curse.maven:catalogue-459701:4171024')
     implementation fg.deobf('curse.maven:backpacked-352835:3923045')
     compileOnly fg.deobf('curse.maven:controllable-317269:3936915')
     compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.274")
