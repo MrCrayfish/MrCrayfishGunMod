@@ -21,7 +21,7 @@ import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageAttachments;
+import com.mrcrayfish.guns.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;
@@ -181,7 +181,7 @@ public class ClientHandler
         {
             if(KeyBinds.KEY_ATTACHMENTS.consumeClick())
             {
-                PacketHandler.getPlayChannel().sendToServer(new MessageAttachments());
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
         }
     }

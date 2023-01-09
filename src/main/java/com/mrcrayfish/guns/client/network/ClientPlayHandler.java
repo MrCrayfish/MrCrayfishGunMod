@@ -9,14 +9,14 @@ import com.mrcrayfish.guns.client.handler.BulletTrailRenderingHandler;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.init.ModParticleTypes;
-import com.mrcrayfish.guns.network.message.MessageBlood;
-import com.mrcrayfish.guns.network.message.MessageBulletTrail;
-import com.mrcrayfish.guns.network.message.MessageGunSound;
-import com.mrcrayfish.guns.network.message.MessageProjectileHitBlock;
-import com.mrcrayfish.guns.network.message.MessageProjectileHitEntity;
-import com.mrcrayfish.guns.network.message.MessageRemoveProjectile;
-import com.mrcrayfish.guns.network.message.MessageStunGrenade;
-import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
+import com.mrcrayfish.guns.network.message.S2CMessageBlood;
+import com.mrcrayfish.guns.network.message.S2CMessageBulletTrail;
+import com.mrcrayfish.guns.network.message.S2CMessageGunSound;
+import com.mrcrayfish.guns.network.message.S2CMessageProjectileHitBlock;
+import com.mrcrayfish.guns.network.message.S2CMessageProjectileHitEntity;
+import com.mrcrayfish.guns.network.message.S2CMessageRemoveProjectile;
+import com.mrcrayfish.guns.network.message.S2CMessageStunGrenade;
+import com.mrcrayfish.guns.network.message.S2CMessageUpdateGuns;
 import com.mrcrayfish.guns.particles.BulletHoleData;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,13 +39,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.Objects;
 
 /**
  * Author: MrCrayfish
  */
 public class ClientPlayHandler
 {
-    public static void handleMessageGunSound(MessageGunSound message)
+    public static void handleMessageGunSound(S2CMessageGunSound message)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null)
@@ -66,7 +67,7 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageBlood(MessageBlood message)
+    public static void handleMessageBlood(S2CMessageBlood message)
     {
         if(!Config.CLIENT.particle.enableBlood.get())
         {
@@ -82,7 +83,7 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageBulletTrail(MessageBulletTrail message)
+    public static void handleMessageBulletTrail(S2CMessageBulletTrail message)
     {
         Level world = Minecraft.getInstance().level;
         if(world != null)
@@ -105,7 +106,7 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleExplosionStunGrenade(MessageStunGrenade message)
+    public static void handleExplosionStunGrenade(S2CMessageStunGrenade message)
     {
         Minecraft mc = Minecraft.getInstance();
         ParticleEngine particleManager = mc.particleEngine;
@@ -134,7 +135,7 @@ public class ClientPlayHandler
         return manager.createParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
 
-    public static void handleProjectileHitBlock(MessageProjectileHitBlock message)
+    public static void handleProjectileHitBlock(S2CMessageProjectileHitBlock message)
     {
         Minecraft mc = Minecraft.getInstance();
         Level world = mc.level;
@@ -168,7 +169,7 @@ public class ClientPlayHandler
         return -0.25 + random.nextDouble() * 0.5;
     }
 
-    public static void handleProjectileHitEntity(MessageProjectileHitEntity message)
+    public static void handleProjectileHitEntity(S2CMessageProjectileHitEntity message)
     {
         Minecraft mc = Minecraft.getInstance();
         Level world = mc.level;
@@ -209,12 +210,12 @@ public class ClientPlayHandler
     }
 
 
-    public static void handleRemoveProjectile(MessageRemoveProjectile message)
+    public static void handleRemoveProjectile(S2CMessageRemoveProjectile message)
     {
         BulletTrailRenderingHandler.get().remove(message.getEntityId());
     }
 
-    public static void handleUpdateGuns(MessageUpdateGuns message)
+    public static void handleUpdateGuns(S2CMessageUpdateGuns message)
     {
         NetworkGunManager.updateRegisteredGuns(message);
         CustomGunManager.updateCustomGuns(message);

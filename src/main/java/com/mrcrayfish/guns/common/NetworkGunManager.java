@@ -10,7 +10,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Validator;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
+import com.mrcrayfish.guns.network.message.S2CMessageUpdateGuns;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -167,7 +167,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredGuns(MessageUpdateGuns message)
+    public static boolean updateRegisteredGuns(S2CMessageUpdateGuns message)
     {
         return updateRegisteredGuns(message.getRegisteredGuns());
     }
@@ -236,7 +236,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
     {
         if(event.getPlayer() == null)
         {
-            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new MessageUpdateGuns());
+            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new S2CMessageUpdateGuns());
         }
     }
 

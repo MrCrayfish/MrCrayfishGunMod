@@ -5,7 +5,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.init.ModItems;
-import com.mrcrayfish.guns.network.message.MessageUpdateGuns;
+import com.mrcrayfish.guns.network.message.S2CMessageUpdateGuns;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -29,7 +29,7 @@ public class CustomGunManager
 {
     private static Map<ResourceLocation, CustomGun> customGunMap;
 
-    public static boolean updateCustomGuns(MessageUpdateGuns message)
+    public static boolean updateCustomGuns(S2CMessageUpdateGuns message)
     {
         return updateCustomGuns(message.getCustomGuns());
     }

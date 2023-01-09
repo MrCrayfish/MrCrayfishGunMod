@@ -14,31 +14,31 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public class MessageReload extends PlayMessage<MessageReload>
+public class C2SMessageReload extends PlayMessage<C2SMessageReload>
 {
     private boolean reload;
 
-    public MessageReload() {}
+    public C2SMessageReload() {}
 
-    public MessageReload(boolean reload)
+    public C2SMessageReload(boolean reload)
     {
         this.reload = reload;
     }
 
     @Override
-    public void encode(MessageReload message, FriendlyByteBuf buffer)
+    public void encode(C2SMessageReload message, FriendlyByteBuf buffer)
     {
         buffer.writeBoolean(message.reload);
     }
 
     @Override
-    public MessageReload decode(FriendlyByteBuf buffer)
+    public C2SMessageReload decode(FriendlyByteBuf buffer)
     {
-        return new MessageReload(buffer.readBoolean());
+        return new C2SMessageReload(buffer.readBoolean());
     }
 
     @Override
-    public void handle(MessageReload message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(C2SMessageReload message, Supplier<NetworkEvent.Context> supplier)
     {
         supplier.get().enqueueWork(() ->
         {

@@ -18,7 +18,7 @@ import com.mrcrayfish.guns.item.IAmmo;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
-import com.mrcrayfish.guns.network.message.MessageCraft;
+import com.mrcrayfish.guns.network.message.C2SMessageCraft;
 import com.mrcrayfish.guns.util.InventoryUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -193,7 +193,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
             ResourceLocation registryName = recipe.getId();
-            PacketHandler.getPlayChannel().sendToServer(new MessageCraft(registryName, this.workbench.getBlockPos()));
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageCraft(registryName, this.workbench.getBlockPos()));
         }));
         this.btnCraft.active = false;
         this.checkBoxMaterials = this.addRenderableWidget(new CheckBox(this.leftPos + 172, this.topPos + 51, new TranslatableComponent("gui.cgm.workbench.show_remaining")));
