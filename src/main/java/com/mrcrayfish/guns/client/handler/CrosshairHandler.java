@@ -12,6 +12,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
@@ -136,6 +137,9 @@ public class CrosshairHandler
         event.setCanceled(true);
 
         if(!mc.options.getCameraType().isFirstPerson())
+            return;
+
+        if(mc.player.getUseItem().getItem() == Items.SHIELD)
             return;
 
         PoseStack stack = event.getPoseStack();

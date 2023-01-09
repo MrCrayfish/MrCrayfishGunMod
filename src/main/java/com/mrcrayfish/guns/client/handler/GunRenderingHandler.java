@@ -14,6 +14,7 @@ import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
 import com.mrcrayfish.guns.client.render.gun.ModelOverrides;
 import com.mrcrayfish.guns.client.util.PropertyHelper;
 import com.mrcrayfish.guns.client.util.RenderUtil;
+import com.mrcrayfish.guns.common.GripType;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.event.GunFireEvent;
@@ -49,6 +50,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -389,6 +391,7 @@ public class GunRenderingHandler
         this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTick());
         this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
         this.applyReloadTransforms(poseStack, event.getPartialTick());
+        this.applyShieldTransforms(poseStack, player, modifiedGun, event.getPartialTick());
 
         /* Determines the lighting for the weapon. Weapon will appear bright from muzzle flash or light sources */
         int blockLight = player.isOnFire() ? 15 : player.level.getBrightness(LightLayer.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTick())));
@@ -517,6 +520,16 @@ public class GunRenderingHandler
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(recoilSway * recoilReduction));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(recoilLift * recoilReduction));
         poseStack.translate(0, 0, -0.15);
+    }
+
+    private void applyShieldTransforms(PoseStack poseStack, LocalPlayer player, Gun modifiedGun, float partialTick)
+    {
+        if(player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD && modifiedGun.getGeneral().getGripType() == GripType.ONE_HANDED)
+        {
+            double time = Mth.clamp((player.getTicksUsingItem() + partialTick), 0.0, 4.0) / 4.0;
+            poseStack.translate(0, 0.35 * time, 0);
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(45F * (float) time));
+        }
     }
 
     @SubscribeEvent
