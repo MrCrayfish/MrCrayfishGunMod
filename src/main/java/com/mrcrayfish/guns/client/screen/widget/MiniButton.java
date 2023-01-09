@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class MiniButton extends Button
@@ -19,7 +20,7 @@ public class MiniButton extends Button
 
     public MiniButton(int x, int y, int u, int v, ResourceLocation texture, OnPress onPress, OnTooltip onTooltip)
     {
-        super(x, y, 10, 10, CommonComponents.EMPTY, onPress, onTooltip);
+        super(x, y, 10, 10, TextComponent.EMPTY, onPress, onTooltip);
         this.u = u;
         this.v = v;
         this.texture = texture;

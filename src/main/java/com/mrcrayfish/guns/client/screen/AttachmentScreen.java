@@ -24,10 +24,12 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -43,7 +45,7 @@ import java.util.List;
 public class AttachmentScreen extends AbstractContainerScreen<AttachmentContainer>
 {
     private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("cgm:textures/gui/attachments.png");
-    private static final Component CONFIG_TOOLTIP = Component.translatable("cgm.button.config.tooltip");
+    private static final Component CONFIG_TOOLTIP = new TranslatableComponent("cgm.button.config.tooltip");
 
     private final Inventory playerInventory;
     private final Container weaponInventory;
@@ -132,12 +134,12 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
                 IAttachment.Type type = IAttachment.Type.values()[i];
                 if(!this.menu.getSlot(i).isActive())
                 {
-                    this.renderComponentTooltip(poseStack, Arrays.asList(Component.translatable("slot.cgm.attachment." + type.getTranslationKey()), Component.translatable("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Arrays.asList(new TranslatableComponent("slot.cgm.attachment." + type.getTranslationKey()), new TranslatableComponent("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
                 }
                 else if(this.weaponInventory.getItem(i).isEmpty())
                 {
 
-                    this.renderComponentTooltip(poseStack, Collections.singletonList(Component.translatable("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Collections.singletonList(new TranslatableComponent("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
                 }
             }
         }
@@ -289,20 +291,20 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     {
         ModList.get().getModContainerById(Reference.MOD_ID).ifPresent(container ->
         {
-            Screen screen = container.getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class).map(function -> function.screenFunction().apply(this.minecraft, null)).orElse(null);
+            Screen screen = container.getCustomExtension(ConfigGuiHandler.ConfigGuiFactory.class).map(function -> function.screenFunction().apply(this.minecraft, null)).orElse(null);
             if(screen != null)
             {
                 this.minecraft.setScreen(screen);
             }
             else if(this.minecraft != null && this.minecraft.player != null)
             {
-                MutableComponent modName = Component.literal("Configured");
+                MutableComponent modName = new TextComponent("Configured");
                 modName.setStyle(modName.getStyle()
                         .withColor(ChatFormatting.YELLOW)
                         .withUnderlined(true)
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("cgm.chat.open_curseforge_page")))
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("cgm.chat.open_curseforge_page")))
                         .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
-                Component message = Component.translatable("cgm.chat.install_configured", modName);
+                Component message = new TranslatableComponent("cgm.chat.install_configured", modName);
                 this.minecraft.player.displayClientMessage(message, false);
             }
         });

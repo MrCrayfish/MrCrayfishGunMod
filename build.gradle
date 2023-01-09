@@ -1,6 +1,3 @@
-//import groovy.json.JsonOutput
-//import groovy.json.JsonSlurper
-
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
@@ -77,14 +74,6 @@ minecraft {
     }
 }
 
-//processResources {
-//    doLast {
-//        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
-//            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
-//        }
-//    }
-//}
-
 repositories {
     mavenLocal()
     maven {
@@ -94,21 +83,21 @@ repositories {
         name "Progwml6 maven"
         url "https://dvs1.progwml6.com/files/maven/"
     }
-    maven {
+    /*maven {
         name "ModMaven"
         url "https://modmaven.k-4u.nl"
-    }
+    }*/
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
-    implementation fg.deobf('curse.maven:framework-549225:3723144')
-    implementation fg.deobf('curse.maven:configured-457570:3721946')
-    implementation fg.deobf('curse.maven:catalogue-459701:3721991')
-    implementation fg.deobf('curse.maven:backpacked-352835:3723045')
-    compileOnly fg.deobf('curse.maven:controllable-317269:3707285')
-    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.4.171:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.5.4.171")
+    minecraft 'net.minecraftforge:forge:1.18.2-40.2.0'
+    implementation fg.deobf('curse.maven:framework-549225:4287475')
+    implementation fg.deobf('curse.maven:configured-457570:4010624')
+    implementation fg.deobf('curse.maven:catalogue-459701:3803098')
+    implementation fg.deobf('curse.maven:backpacked-352835:3923041')
+    compileOnly fg.deobf('curse.maven:controllable-317269:4120618')
+    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.1.255:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.1.255")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
