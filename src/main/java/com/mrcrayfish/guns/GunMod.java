@@ -1,8 +1,10 @@
 package com.mrcrayfish.guns;
 
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.KeyBinds;
+import com.mrcrayfish.guns.client.MetaLoader;
 import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.handler.CrosshairHandler;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
@@ -90,6 +92,7 @@ public class GunMod
         bus.addListener(this::onGatherData);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(CrosshairHandler::onConfigReload);
+            FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
         });
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
