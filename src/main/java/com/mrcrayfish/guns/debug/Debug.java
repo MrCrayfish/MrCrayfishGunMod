@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.debug;
 
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
@@ -13,6 +14,9 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -24,11 +28,23 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class Debug
 {
     private static final Map<Item, Gun> GUNS = new HashMap<>();
     private static final Map<Item, Scope> SCOPES = new HashMap<>();
     private static boolean forceAim = false;
+
+    @SubscribeEvent
+    public static void onServerStarting(ServerStartedEvent event)
+    {
+        // Resets the cache every time when joining a world
+        event.getServer().execute(() ->
+        {
+            GUNS.clear();
+            SCOPES.clear();
+        });
+    }
 
     public static Gun getGun(GunItem item)
     {
