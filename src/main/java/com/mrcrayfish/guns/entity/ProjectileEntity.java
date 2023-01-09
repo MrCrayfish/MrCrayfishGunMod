@@ -4,6 +4,7 @@ import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.Gun.Projectile;
+import com.mrcrayfish.guns.common.ModTags;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.event.GunProjectileHitEvent;
 import com.mrcrayfish.guns.init.ModEnchantments;
@@ -52,13 +53,10 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HalfTransparentBlock;
-import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.TargetBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -434,9 +432,17 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             BlockState state = this.level.getBlockState(pos);
             Block block = state.getBlock();
 
-            if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && (block instanceof HalfTransparentBlock || block instanceof IronBarsBlock) && state.getMaterial() == Material.GLASS)
+            if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE))
             {
-                this.level.destroyBlock(blockHitResult.getBlockPos(), false);
+                float destroySpeed = state.getDestroySpeed(this.level, pos);
+                if(destroySpeed >= 0)
+                {
+                    float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
+                    if(this.random.nextFloat() < chance)
+                    {
+                        this.level.destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
+                    }
+                }
             }
 
             if(!state.getMaterial().isReplaceable())
