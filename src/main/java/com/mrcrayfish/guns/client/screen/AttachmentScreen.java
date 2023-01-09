@@ -1,31 +1,41 @@
 package com.mrcrayfish.guns.client.screen;
 
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.math.Matrix4f;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
+import com.mrcrayfish.guns.client.screen.widget.MiniButton;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.Container;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -33,6 +43,7 @@ import java.util.Collections;
 public class AttachmentScreen extends AbstractContainerScreen<AttachmentContainer>
 {
     private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("cgm:textures/gui/attachments.png");
+    private static final Component CONFIG_TOOLTIP = Component.translatable("cgm.button.config.tooltip");
 
     private final Inventory playerInventory;
     private final Container weaponInventory;
@@ -51,6 +62,44 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         this.playerInventory = playerInventory;
         this.weaponInventory = screenContainer.getWeaponInventory();
         this.imageHeight = 184;
+    }
+
+    @Override
+    protected void init()
+    {
+        super.init();
+
+        List<MiniButton> buttons = this.gatherButtons();
+        for(int i = 0; i < buttons.size(); i++)
+        {
+            MiniButton button = buttons.get(i);
+            switch(Config.CLIENT.buttonAlignment.get())
+            {
+                case LEFT -> {
+                    int titleWidth = this.minecraft.font.width(this.title);
+                    button.x = this.leftPos + titleWidth + 8 + 3 + i * 13;
+                }
+                case RIGHT -> {
+                    button.x = this.leftPos + this.imageWidth - 7 - 10 - (buttons.size() - 1 - i) * 13;
+                }
+            }
+            button.y = this.topPos + 5;
+            this.addRenderableWidget(button);
+        }
+    }
+
+    private List<MiniButton> gatherButtons()
+    {
+        List<MiniButton> buttons = new ArrayList<>();
+        if(!Config.CLIENT.hideConfigButton.get())
+        {
+            buttons.add(new MiniButton(0, 0, 192, 0, GUI_TEXTURES, onPress -> {
+                this.openConfigScreen();
+            }, (button, matrixStack, mouseX, mouseY) -> {
+                this.renderTooltip(matrixStack, CONFIG_TOOLTIP, mouseX, mouseY);
+            }));
+        }
+        return buttons;
     }
 
     @Override
@@ -83,15 +132,23 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
                 IAttachment.Type type = IAttachment.Type.values()[i];
                 if(!this.menu.getSlot(i).isActive())
                 {
-                    this.renderComponentTooltip(poseStack, Arrays.asList(new TranslatableComponent("slot.cgm.attachment." + type.getTranslationKey()), new TranslatableComponent("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Arrays.asList(Component.translatable("slot.cgm.attachment." + type.getTranslationKey()), Component.translatable("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
                 }
                 else if(this.weaponInventory.getItem(i).isEmpty())
                 {
 
-                    this.renderComponentTooltip(poseStack, Collections.singletonList(new TranslatableComponent("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Collections.singletonList(Component.translatable("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
                 }
             }
         }
+
+        this.children().forEach(widget ->
+        {
+            if(widget instanceof Button button && button.isHoveredOrFocused())
+            {
+                button.renderToolTip(poseStack, mouseX, mouseY);
+            }
+        });
     }
 
     @Override
@@ -226,5 +283,28 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             }
         }
         return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    private void openConfigScreen()
+    {
+        ModList.get().getModContainerById(Reference.MOD_ID).ifPresent(container ->
+        {
+            Screen screen = container.getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class).map(function -> function.screenFunction().apply(this.minecraft, null)).orElse(null);
+            if(screen != null)
+            {
+                this.minecraft.setScreen(screen);
+            }
+            else if(this.minecraft != null && this.minecraft.player != null)
+            {
+                MutableComponent modName = Component.literal("Configured");
+                modName.setStyle(modName.getStyle()
+                        .withColor(ChatFormatting.YELLOW)
+                        .withUnderlined(true)
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("cgm.chat.open_curseforge_page")))
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
+                Component message = Component.translatable("cgm.chat.install_configured", modName);
+                this.minecraft.player.displayClientMessage(message, false);
+            }
+        });
     }
 }

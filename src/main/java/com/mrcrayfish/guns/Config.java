@@ -2,6 +2,7 @@ package com.mrcrayfish.guns;
 
 import com.mrcrayfish.guns.client.SwayType;
 import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
+import com.mrcrayfish.guns.client.screen.ButtonAlignment;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -20,6 +21,8 @@ public class Config
         public final Particle particle;
         public final Controls controls;
         public final Experimental experimental;
+        public final ForgeConfigSpec.BooleanValue hideConfigButton;
+        public final ForgeConfigSpec.EnumValue<ButtonAlignment> buttonAlignment;
 
         public Client(ForgeConfigSpec.Builder builder)
         {
@@ -32,6 +35,8 @@ public class Config
                 this.experimental = new Experimental(builder);
             }
             builder.pop();
+            this.hideConfigButton = builder.comment("If enabled, hides the config button from the backpack screen").define("hideConfigButton", false);
+            this.buttonAlignment = builder.comment("The alignment of the buttons in the backpack inventory screen").defineEnum("buttonAlignment", ButtonAlignment.RIGHT);
         }
     }
 
