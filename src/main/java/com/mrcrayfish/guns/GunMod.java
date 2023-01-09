@@ -90,6 +90,7 @@ public class GunMod
     {
         event.enqueueWork(() ->
         {
+            PacketHandler.init();
             ModRecipeType.init();
             ModSyncedDataKeys.register();
             CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"), WorkbenchIngredient.Serializer.INSTANCE);
