@@ -100,6 +100,8 @@ public class GunRenderingHandler
     private float fallSway;
     private float prevFallSway;
 
+    private boolean usedConfiguredFov;
+
     @Nullable
     private ItemStack renderingWeapon;
 
@@ -109,6 +111,11 @@ public class GunRenderingHandler
     public ItemStack getRenderingWeapon()
     {
         return this.renderingWeapon;
+    }
+
+    public void setUsedConfiguredFov(boolean value)
+    {
+        this.usedConfiguredFov = value;
     }
 
     @SubscribeEvent
@@ -197,6 +204,33 @@ public class GunRenderingHandler
         this.entityIdToRandomValue.put(entityId, this.random.nextFloat());
     }
 
+    /**
+     * Handles calculating the FOV of the first person viewport when aiming with a scope. Changing
+     * the FOV allows the user to look through the model of the scope. At a high FOV, the model is
+     * very hard to see through, so by lowering the FOV it makes it possible to look through it. This
+     * avoids having to render the game twice, which saves a lot of performance.
+     */
+    @SubscribeEvent
+    public void onComputeFov(EntityViewRenderEvent.FieldOfView event)
+    {
+        // We only want to modify the FOV of the viewport for rendering hand/items in first person
+        if(this.usedConfiguredFov)
+            return;
+
+        // Test if the gun has a scope
+        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
+        Scope scope = Gun.getScope(player.getMainHandItem());
+        if(scope == null)
+            return;
+
+        // Change the FOV of the first person viewport based on the scope and aim progress
+        if(AimingHandler.get().getNormalisedAdsProgress() > 0)
+        {
+            double transition = 1.0 - Math.pow(1.0 - AimingHandler.get().getNormalisedAdsProgress(), 2);
+            event.setFOV(Mth.lerp(transition, event.getFOV(), scope.getAimFov()));
+        }
+    }
+
     @SubscribeEvent
     public void onRenderOverlay(RenderHandEvent event)
     {
@@ -272,6 +306,7 @@ public class GunRenderingHandler
                 /* Creates the required offsets to position the scope into the middle of the screen. */
                 if(modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null)
                 {
+                    //TODO I NEED A DEBUG MENU LOL
                     double viewFinderOffset = scope.getViewFinderOffset();
                     if(OptifineHelper.isShadersEnabled()) viewFinderOffset *= 0.75;
                     Gun.ScaledPositioned scaledPos = modifiedGun.getModules().getAttachments().getScope();
@@ -288,7 +323,7 @@ public class GunRenderingHandler
 
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 float side = right ? 1.0F : -1.0F;
-                double transition = 1.0 - Math.pow(1.0 - AimingHandler.get().getNormalisedAdsProgress(), 2);
+                double transition = AimingHandler.get().getNormalisedAdsProgress();
 
                 /* Reverses the original first person translations */
                 poseStack.translate(-0.56 * side * transition, 0.52 * transition, 0);

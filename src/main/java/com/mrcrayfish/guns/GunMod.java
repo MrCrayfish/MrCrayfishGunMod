@@ -34,12 +34,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(Reference.MOD_ID)
 public class GunMod
 {
+    public static boolean debugging = false;
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
     public static boolean playerReviveLoaded = false;
@@ -120,5 +122,15 @@ public class GunMod
         generator.addProvider(new ItemTagGen(generator, blockTagGen, existingFileHelper));
         generator.addProvider(new LanguageGen(generator));
         generator.addProvider(new GunGen(generator));
+    }
+
+    public static boolean isDebugging()
+    {
+        return true || !FMLEnvironment.production && debugging;
+    }
+
+    public static void setDebugging(boolean debugging)
+    {
+        GunMod.debugging = debugging;
     }
 }

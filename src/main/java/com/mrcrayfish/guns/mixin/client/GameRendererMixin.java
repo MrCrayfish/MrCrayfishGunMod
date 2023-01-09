@@ -2,8 +2,10 @@ package com.mrcrayfish.guns.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.guns.Config;
+import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.init.ModEffects;
 import com.mojang.blaze3d.platform.Window;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
@@ -13,6 +15,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin
@@ -36,5 +40,11 @@ public class GameRendererMixin
             Window window = Minecraft.getInstance().getWindow();
             GuiComponent.fill(new PoseStack(), 0, 0, window.getScreenWidth(), window.getScreenHeight(), ((int) (percent * Config.SERVER.alphaOverlay.get() + 0.5) << 24) | 16777215);
         }
+    }
+
+    @Inject(method = "getFov", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void headGetFov(Camera camera, float partialTick, boolean worldFov, CallbackInfoReturnable<Double> cir)
+    {
+        GunRenderingHandler.get().setUsedConfiguredFov(worldFov);
     }
 }

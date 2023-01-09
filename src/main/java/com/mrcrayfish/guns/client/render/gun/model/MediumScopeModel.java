@@ -48,6 +48,9 @@ public class MediumScopeModel implements IOverrideModel
         BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
         Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, overlay, GunModel.wrap(bakedModel));
 
+        if(true) return;
+
+
         if(transformType.firstPerson() && entity != null && entity.equals(Minecraft.getInstance().player))
         {
             if(entity.getMainArm() == HumanoidArm.LEFT)

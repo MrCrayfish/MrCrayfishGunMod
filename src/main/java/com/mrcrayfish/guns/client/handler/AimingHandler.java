@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.client.handler;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.compat.PlayerReviveHelper;
+import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
@@ -137,27 +138,27 @@ public class AimingHandler
     public void onFovUpdate(FOVModifierEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON)
-        {
-            ItemStack heldItem = mc.player.getMainHandItem();
-            if(heldItem.getItem() instanceof GunItem gunItem)
-            {
-                if(AimingHandler.get().getNormalisedAdsProgress() != 0 && !ModSyncedDataKeys.RELOADING.getValue(mc.player))
-                {
-                    Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-                    if(modifiedGun.getModules().getZoom() != null)
-                    {
-                        float newFov = modifiedGun.getModules().getZoom().getFovModifier();
-                        Scope scope = Gun.getScope(heldItem);
-                        if(scope != null)
-                        {
-                            newFov -= scope.getAdditionalZoom();
-                        }
-                        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));
-                    }
-                }
-            }
-        }
+        if(mc.player == null || mc.player.getMainHandItem().isEmpty() || mc.options.getCameraType() != CameraType.FIRST_PERSON)
+            return;
+
+        ItemStack heldItem = mc.player.getMainHandItem();
+        if(!(heldItem.getItem() instanceof GunItem gunItem))
+            return;
+
+        if(AimingHandler.get().getNormalisedAdsProgress() == 0)
+            return;
+
+        if(ModSyncedDataKeys.RELOADING.getValue(mc.player))
+            return;
+
+        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+        if(modifiedGun.getModules().getZoom() == null)
+            return;
+
+        float newFov = modifiedGun.getModules().getZoom().getFovModifier();
+        Scope scope = Gun.getScope(heldItem);
+        if(scope != null) newFov -= scope.getAdditionalZoom();
+        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));
     }
 
     @SubscribeEvent
@@ -189,6 +190,9 @@ public class AimingHandler
         if(mc.player.isSpectator())
             return false;
 
+        if(Debug.isForceAim())
+            return true;
+
         if(mc.screen != null)
             return false;
 
@@ -200,7 +204,7 @@ public class AimingHandler
             return false;
 
         Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-        if(gun.getModules().getZoom() == null)
+        if(!gun.canAimDownSight())
             return false;
 
         if(!this.localTracker.isAiming() && this.isLookingAtInteractableBlock())

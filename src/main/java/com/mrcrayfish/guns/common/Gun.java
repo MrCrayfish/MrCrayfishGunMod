@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.compat.BackpackHelper;
+import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IScope;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
@@ -1310,6 +1311,10 @@ public final class Gun implements INBTSerializable<CompoundTag>
                 Scope scope = null;
                 if(scopeStack.getItem() instanceof IScope)
                 {
+                    if(GunMod.isDebugging())
+                    {
+                        return Debug.getScope(scopeStack.getItem());
+                    }
                     scope = ((IScope) scopeStack.getItem()).getProperties();
                 }
                 return scope;

@@ -13,25 +13,30 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public class Scope extends Attachment
 {
-    private final float additionalZoom;
-    private final double centerOffset;
-    private boolean stable;
-    private double viewFinderOffset;
+    protected float additionalZoom;
+    protected double centerOffset;
+    protected boolean stable;
+    protected double viewFinderOffset;
+    protected double aimFov;
 
-    private Scope(float additionalZoom, double centerOffset, IGunModifier... modifier)
+    protected Scope() {}
+
+    private Scope(float additionalZoom, double centerOffset, double aimFov, IGunModifier... modifier)
     {
         super(modifier);
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
+        this.aimFov = aimFov;
     }
 
-    private Scope(float additionalZoom, double centerOffset, boolean stable, double viewFinderOffset, IGunModifier... modifiers)
+    private Scope(float additionalZoom, double centerOffset, boolean stable, double viewFinderOffset, double aimFov, IGunModifier... modifiers)
     {
         super(modifiers);
         this.additionalZoom = additionalZoom;
         this.centerOffset = centerOffset;
         this.stable = stable;
         this.viewFinderOffset = viewFinderOffset;
+        this.aimFov = aimFov;
     }
 
     /**
@@ -60,7 +65,6 @@ public class Scope extends Attachment
      *
      * @return the scopes additional zoom
      */
-    @OnlyIn(Dist.CLIENT)
     public float getAdditionalZoom()
     {
         return this.additionalZoom;
@@ -72,7 +76,6 @@ public class Scope extends Attachment
      *
      * @return the scope center offset
      */
-    @OnlyIn(Dist.CLIENT)
     public double getCenterOffset()
     {
         return this.centerOffset;
@@ -81,7 +84,6 @@ public class Scope extends Attachment
     /**
      * @return If this scope can be stabilised
      */
-    @OnlyIn(Dist.CLIENT)
     public boolean isStable()
     {
         return this.stable;
@@ -90,10 +92,17 @@ public class Scope extends Attachment
     /**
      * @return The view finder offset of this scope
      */
-    @OnlyIn(Dist.CLIENT)
     public double getViewFinderOffset()
     {
         return this.viewFinderOffset;
+    }
+
+    /**
+     * @return The FOV of the first person viewport when aiming
+     */
+    public double getAimFov()
+    {
+        return this.aimFov;
     }
 
     /**
@@ -107,7 +116,7 @@ public class Scope extends Attachment
     @Deprecated(since = "1.3.0", forRemoval = true)
     public static Scope create(float additionalZoom, double centerOffset, IGunModifier... modifiers)
     {
-        return new Scope(additionalZoom, centerOffset, modifiers);
+        return new Scope(additionalZoom, centerOffset, 10.0, modifiers);
     }
 
     public static Builder builder()
@@ -117,10 +126,11 @@ public class Scope extends Attachment
 
     public static class Builder
     {
-        private float additionalZoom;
-        private double centerOffset;
-        private boolean stable;
-        private double viewFinderOffset;
+        private float additionalZoom = 0.0F;
+        private double centerOffset = 0.0;
+        private boolean stable = false;
+        private double viewFinderOffset = 0.0;
+        private double aimFov = 10.0;
         private IGunModifier[] modifiers = new IGunModifier[]{};
 
         private Builder() {}
@@ -149,6 +159,12 @@ public class Scope extends Attachment
             return this;
         }
 
+        public Builder aimFov(double aimFov)
+        {
+            this.aimFov = aimFov;
+            return this;
+        }
+
         public Builder modifiers(IGunModifier... modifiers)
         {
             this.modifiers = modifiers;
@@ -157,7 +173,7 @@ public class Scope extends Attachment
 
         public Scope build()
         {
-            return new Scope(this.additionalZoom, this.centerOffset, this.stable, this.viewFinderOffset, this.modifiers);
+            return new Scope(this.additionalZoom, this.centerOffset, this.stable, this.viewFinderOffset, this.aimFov, this.modifiers);
         }
     }
 }
