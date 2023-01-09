@@ -27,12 +27,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.FOVModifierEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -135,8 +134,11 @@ public class AimingHandler
     }
 
     @SubscribeEvent
-    public void onFovUpdate(FOVModifierEvent event)
+    public void onFovUpdate(EntityViewRenderEvent.FieldOfView event)
     {
+        if(!GunRenderingHandler.get().getUsedConfiguredFov())
+            return;
+
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || mc.player.getMainHandItem().isEmpty() || mc.options.getCameraType() != CameraType.FIRST_PERSON)
             return;
@@ -155,10 +157,12 @@ public class AimingHandler
         if(modifiedGun.getModules().getZoom() == null)
             return;
 
-        float newFov = modifiedGun.getModules().getZoom().getFovModifier();
+        float modifier = modifiedGun.getModules().getZoom().getFovModifier();
         Scope scope = Gun.getScope(heldItem);
-        if(scope != null) newFov -= scope.getAdditionalZoom();
-        event.setNewfov(newFov + (1.0F - newFov) * (1.0F - (float) this.normalisedAdsProgress));
+        if(scope != null) modifier -= scope.getAdditionalZoom();
+        double time = Gun.getAnimations(heldItem, modifiedGun).getFovCurve().apply(this.normalisedAdsProgress);
+        modifier = (1.0F - modifier) * (float) time;
+        event.setFOV(event.getFOV() - event.getFOV() * modifier);
     }
 
     @SubscribeEvent

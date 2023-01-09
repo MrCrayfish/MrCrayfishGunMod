@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.debug.client.screen.widget;
 
+import com.mrcrayfish.guns.debug.IDebugWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 
@@ -8,7 +9,7 @@ import java.util.function.Consumer;
 /**
  * Author: MrCrayfish
  */
-public class DebugToggle extends DebugButton
+public class DebugToggle extends DebugButton implements IDebugWidget
 {
     private boolean enabled;
     private final Consumer<Boolean> callback;

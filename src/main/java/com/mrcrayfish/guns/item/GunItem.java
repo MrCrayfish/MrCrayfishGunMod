@@ -1,8 +1,10 @@
 package com.mrcrayfish.guns.item;
 
+import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.GunItemStackRenderer;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.NetworkGunManager;
+import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
@@ -152,6 +154,10 @@ public class GunItem extends Item implements IColored
 
     public Gun getModifiedGun(ItemStack stack)
     {
+        if(GunMod.isDebugging())
+        {
+            return Debug.getGun(this);
+        }
         CompoundTag tagCompound = stack.getTag();
         if(tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND))
         {
