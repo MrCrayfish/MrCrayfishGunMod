@@ -137,6 +137,6 @@ public class GunMod
 
     public static boolean isDebugging()
     {
-        return !FMLEnvironment.production;
+        return false;//!FMLEnvironment.production;
     }
 }
