@@ -2,6 +2,9 @@ package com.mrcrayfish.guns;
 
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
+import com.mrcrayfish.guns.client.KeyBinds;
+import com.mrcrayfish.guns.client.SpecialModels;
+import com.mrcrayfish.guns.client.handler.CrosshairHandler;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.crafting.ModRecipeType;
@@ -22,10 +25,12 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -83,6 +88,9 @@ public class GunMod
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            bus.addListener(CrosshairHandler::onConfigReload);
+        });
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
