@@ -51,6 +51,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.TargetBlock;
@@ -465,6 +466,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                     serverPlayer.awardStat(Stats.TARGET_HIT);
                     CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
                 }
+            }
+
+            if(block instanceof BellBlock bell)
+            {
+                bell.attemptToRing(this.level, pos, blockHitResult.getDirection());
             }
 
             int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
