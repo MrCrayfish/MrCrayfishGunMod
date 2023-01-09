@@ -1,0 +1,27 @@
+{
+  "values": [
+    "#forge:glass_panes",
+    "#forge:glass",
+    "#minecraft:candles",
+    "minecraft:lily_pad",
+    "minecraft:cocoa",
+    "minecraft:end_rod",
+    "minecraft:scaffolding",
+    "minecraft:sea_pickle",
+    "minecraft:turtle_egg",
+    "minecraft:glowstone",
+    "minecraft:sea_lantern",
+    "minecraft:ice",
+    "minecraft:blue_ice",
+    "minecraft:frosted_ice",
+    "minecraft:packed_ice",
+    "minecraft:bamboo",
+    "minecraft:small_amethyst_bud",
+    "minecraft:medium_amethyst_bud",
+    "minecraft:large_amethyst_bud",
+    "minecraft:amethyst_cluster",
+    "minecraft:lantern",
+    "minecraft:soul_lantern",
+    "minecraft:pointed_dripstone"
+  ]
+}
