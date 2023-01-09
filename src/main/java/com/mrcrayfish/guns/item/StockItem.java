@@ -46,6 +46,12 @@ public class StockItem extends AttachmentItem implements IStock, IColored
     }
 
     @Override
+    public boolean canAttachTo(ItemStack stack)
+    {
+        return false;
+    }
+
+    @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
     {
         return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);

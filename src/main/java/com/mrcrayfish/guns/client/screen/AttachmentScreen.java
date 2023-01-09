@@ -10,6 +10,7 @@ import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.client.screen.widget.MiniButton;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.container.AttachmentContainer;
+import com.mrcrayfish.guns.common.container.slot.AttachmentSlot;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import net.minecraft.ChatFormatting;
@@ -29,6 +30,8 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
@@ -136,9 +139,12 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
                 {
                     this.renderComponentTooltip(poseStack, Arrays.asList(new TranslatableComponent("slot.cgm.attachment." + type.getTranslationKey()), new TranslatableComponent("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
                 }
+                else if(this.menu.getSlot(i) instanceof AttachmentSlot slot && slot.getItem().isEmpty() && !this.isCompatible(this.menu.getCarried(), slot))
+                {
+                    this.renderComponentTooltip(poseStack, Arrays.asList(new TranslatableComponent("slot.cgm.attachment.incompatible").withStyle(ChatFormatting.YELLOW)), mouseX, mouseY);
+                }
                 else if(this.weaponInventory.getItem(i).isEmpty())
                 {
-
                     this.renderComponentTooltip(poseStack, Collections.singletonList(new TranslatableComponent("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
                 }
             }
@@ -213,7 +219,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
          * for the weapon, it will draw a cross instead. */
         for(int i = 0; i < IAttachment.Type.values().length; i++)
         {
-            if(!this.menu.getSlot(i).isActive())
+            if(!this.canPlaceAttachmentInSlot(this.menu.getCarried(), this.menu.getSlot(i)))
             {
                 this.blit(poseStack, left + 8, top + 17 + i * 18, 176, 0, 16, 16);
             }
@@ -222,6 +228,46 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
                 this.blit(poseStack, left + 8, top + 17 + i * 18, 176, 16 + i * 16, 16, 16);
             }
         }
+    }
+
+    private boolean canPlaceAttachmentInSlot(ItemStack stack, Slot slot)
+    {
+        if(!slot.isActive())
+            return false;
+
+        if(!slot.equals(this.getSlotUnderMouse()))
+            return true;
+
+        if(!slot.getItem().isEmpty())
+            return true;
+
+        if(!(slot instanceof AttachmentSlot s))
+            return true;
+
+        if(!(stack.getItem() instanceof IAttachment<?> a))
+            return true;
+
+        if(!s.getType().equals(a.getType()))
+            return true;
+
+        return s.mayPlace(stack);
+    }
+
+    private boolean isCompatible(ItemStack stack, AttachmentSlot slot)
+    {
+        if(stack.isEmpty())
+            return true;
+
+        if(!(stack.getItem() instanceof IAttachment<?> attachment))
+            return false;
+
+        if(!attachment.getType().equals(slot.getType()))
+            return true;
+
+        if(!attachment.canAttachTo(stack))
+            return false;
+
+        return slot.mayPlace(stack);
     }
 
     @Override
