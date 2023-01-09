@@ -435,7 +435,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE))
             {
                 float destroySpeed = state.getDestroySpeed(this.level, pos);
-                if(destroySpeed > 0)
+                if(destroySpeed >= 0)
                 {
                     float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
                     if(this.random.nextFloat() < chance)
