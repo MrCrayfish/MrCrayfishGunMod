@@ -1,12 +1,9 @@
 package com.mrcrayfish.guns.client;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mrcrayfish.framework.api.client.resources.IDataLoader;
 import com.mrcrayfish.framework.api.client.resources.IResourceSupplier;
 import com.mrcrayfish.framework.api.serialize.DataObject;
 import com.mrcrayfish.guns.item.IMeta;
-import com.mrcrayfish.guns.item.attachment.IAttachment;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.Util;

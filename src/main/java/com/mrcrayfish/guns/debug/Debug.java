@@ -1,19 +1,13 @@
 package com.mrcrayfish.guns.debug;
 
-import com.mrcrayfish.guns.client.util.Easings;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
-import com.mrcrayfish.guns.debug.client.screen.widget.DebugEnum;
-import com.mrcrayfish.guns.debug.client.screen.widget.DebugSlider;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugToggle;
-import com.mrcrayfish.guns.interfaces.IGunModifier;
 import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.ScopeItem;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

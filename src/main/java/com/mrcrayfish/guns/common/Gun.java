@@ -6,7 +6,6 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
-import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.compat.BackpackHelper;
 import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.debug.IDebugWidget;

@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.mixin;
 
-import com.mrcrayfish.framework.Framework;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;

@@ -77,14 +77,7 @@ public class ReloadHandler
 
         if(KeyBinds.KEY_RELOAD.isDown() && event.getAction() == GLFW.GLFW_PRESS)
         {
-            if(!ModSyncedDataKeys.RELOADING.getValue(player))
-            {
-                this.setReloading(true);
-            }
-            else
-            {
-                this.setReloading(false);
-            }
+            this.setReloading(!ModSyncedDataKeys.RELOADING.getValue(player));
         }
         if(KeyBinds.KEY_UNLOAD.consumeClick() && event.getAction() == GLFW.GLFW_PRESS)
         {

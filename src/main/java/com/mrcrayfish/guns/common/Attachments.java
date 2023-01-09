@@ -1,7 +1,5 @@
 package com.mrcrayfish.guns.common;
 
-import com.mrcrayfish.guns.client.util.Easings;
-import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.item.attachment.impl.Scope;
 
 /**

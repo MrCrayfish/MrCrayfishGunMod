@@ -5,7 +5,6 @@ import com.mrcrayfish.guns.client.handler.AimingHandler;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.item.GunItem;
-import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;

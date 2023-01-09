@@ -13,7 +13,6 @@ import com.mrcrayfish.guns.item.StockItem;
 import com.mrcrayfish.guns.item.StunGrenadeItem;
 import com.mrcrayfish.guns.item.UnderBarrelItem;
 import com.mrcrayfish.guns.item.attachment.impl.Barrel;
-import com.mrcrayfish.guns.item.attachment.impl.Scope;
 import com.mrcrayfish.guns.item.attachment.impl.Stock;
 import com.mrcrayfish.guns.item.attachment.impl.UnderBarrel;
 import net.minecraft.world.item.Item;

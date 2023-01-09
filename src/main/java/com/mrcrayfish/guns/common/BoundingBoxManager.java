@@ -25,6 +25,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+//TODO retrieve this data from a datapack
+
 /**
  * Author: MrCrayfish
  */

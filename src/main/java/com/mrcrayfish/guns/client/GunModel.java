@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.client;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 /**
  * A wrapper for baked model to prevent custom rendering handling.

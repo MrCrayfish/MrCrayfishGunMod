@@ -1,13 +1,9 @@
 package com.mrcrayfish.guns.item.attachment.impl;
 
-import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.debug.IDebugWidget;
 import com.mrcrayfish.guns.debug.IEditorMenu;
-import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
-import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugSlider;
 import com.mrcrayfish.guns.interfaces.IGunModifier;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.tuple.Pair;
 

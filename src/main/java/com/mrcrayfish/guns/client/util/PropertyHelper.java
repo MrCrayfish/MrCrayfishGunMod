@@ -9,7 +9,6 @@ import com.mrcrayfish.guns.cache.ObjectCache;
 import com.mrcrayfish.guns.client.MetaLoader;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.common.properties.SightAnimation;
-import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IMeta;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.item.attachment.IBarrel;

@@ -3,7 +3,6 @@ package com.mrcrayfish.guns.common.properties;
 import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.client.util.Easings;
-import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.debug.IDebugWidget;
 import com.mrcrayfish.guns.debug.IEditorMenu;

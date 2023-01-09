@@ -1,7 +1,6 @@
 package com.mrcrayfish.guns.datagen;
 
 import com.mrcrayfish.guns.Reference;
-import com.mrcrayfish.guns.common.ModTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;

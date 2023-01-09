@@ -1,14 +1,6 @@
 package com.mrcrayfish.guns.client.settings;
 
-import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.client.handler.CrosshairHandler;
-import com.mrcrayfish.guns.client.render.crosshair.Crosshair;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-
 import java.text.DecimalFormat;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish

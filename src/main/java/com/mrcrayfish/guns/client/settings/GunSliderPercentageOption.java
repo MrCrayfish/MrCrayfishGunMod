@@ -1,12 +1,5 @@
 package com.mrcrayfish.guns.client.settings;
 
-import net.minecraft.client.Options;
-import net.minecraft.network.chat.Component;
-
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 /**
  * Author: MrCrayfish
  */
