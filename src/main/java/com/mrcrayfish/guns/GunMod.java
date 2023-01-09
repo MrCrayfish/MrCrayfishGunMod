@@ -5,7 +5,6 @@ import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
-import com.mrcrayfish.guns.common.ModTags;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.datagen.BlockTagGen;

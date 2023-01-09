@@ -219,11 +219,8 @@ public class Config
     {
         public final ForgeConfigSpec.BooleanValue enableBlockRemovalOnExplosions;
         public final ForgeConfigSpec.BooleanValue enableGlassBreaking;
-        public final ForgeConfigSpec.BooleanValue fragileDrops;
-        public final ForgeConfigSpec.DoubleValue breakingChance;
-        public final ForgeConfigSpec.BooleanValue hardnessBreak;
-        public final ForgeConfigSpec.DoubleValue guaranteeMinimum;
-        public final ForgeConfigSpec.DoubleValue unbreakableHardness;
+        public final ForgeConfigSpec.BooleanValue fragileBlockDrops;
+        public final ForgeConfigSpec.DoubleValue fragileBaseBreakChance;
         public final ForgeConfigSpec.BooleanValue setFireToBlocks;
 
         public Griefing(ForgeConfigSpec.Builder builder)
@@ -232,11 +229,8 @@ public class Config
             {
                 this.enableBlockRemovalOnExplosions = builder.comment("If enabled, allows block removal on explosions").define("enableBlockRemovalOnExplosions", true);
                 this.enableGlassBreaking = builder.comment("If enabled, allows guns to shoot out glass and other fragile objects").define("enableGlassBreaking", true);
-                this.fragileDrops = builder.comment("If enabled, broken fragile block will drop").define("fragileDrops", true);
-                this.breakingChance = builder.comment("Chance for a fragile block to break").defineInRange("breakingChance", 1.0, 0.0, 1.0);
-                this.hardnessBreak = builder.comment("If enabled, breaking chance depend on the hardness of the block").define("hardnessBreak", false);
-                this.guaranteeMinimum = builder.comment("Minimum hardness at which a block will break, -1 to disable").defineInRange("guaranteeMinimum", 0.5, -1.0, Float.MAX_VALUE);
-                this.unbreakableHardness = builder.comment("How strong are unbreakable blocks against bullets").defineInRange("unbreakableHardness", 100000.0, -1.0, Float.MAX_VALUE);
+                this.fragileBlockDrops = builder.comment("If enabled, fragile blocks will drop their loot when broken").define("fragileBlockDrops", true);
+                this.fragileBaseBreakChance = builder.comment("The chance that a fragile block is broken when impacted by a bullet").defineInRange("fragileBlockBreakChance", 1.0, 0.0, 1.0);
                 this.setFireToBlocks = builder.comment("If true, allows guns enchanted with Fire Starter to light and spread fires on blocks").define("setFireToBlocks", true);
             }
             builder.pop();

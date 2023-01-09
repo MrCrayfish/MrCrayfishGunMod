@@ -5,16 +5,15 @@ import com.mrcrayfish.guns.common.ModTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagBuilder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class BlockTagGen extends BlockTagsProvider
 {
-    public BlockTagGen(DataGenerator generatorIn, ExistingFileHelper existingFileHelper)
+    public BlockTagGen(DataGenerator generator, ExistingFileHelper existingFileHelper)
     {
-        super(generatorIn, Reference.MOD_ID, existingFileHelper);
+        super(generator, Reference.MOD_ID, existingFileHelper);
     }
 
     @Override

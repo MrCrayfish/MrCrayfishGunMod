@@ -77,7 +77,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.random.RandomGenerator;
 
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData
 {
@@ -435,16 +434,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             if(Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE))
             {
-                float speed = state.getDestroySpeed(getLevel(), pos);
-                // If speed is under 0, it will use the unbreakableHardness value
-                speed = speed < 0 ? Config.COMMON.gameplay.griefing.unbreakableHardness.get().floatValue() : speed;
-                float min = Config.COMMON.gameplay.griefing.guaranteeMinimum.get().floatValue();
-                // If min is under 0, it will still be 0 for this calculation
-                float total = speed - Math.max(0.0f, min);
-                // If min is over or equal to speed (and so total is negative or zero) 100% chance, otherwise, do the normal calculation
-                float chance = speed <= min ? 1.0f : (Config.COMMON.gameplay.griefing.breakingChance.get().floatValue() / (total+1));
-
-                if (Math.random() < chance) this.level.destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileDrops.get());
+                float destroySpeed = state.getDestroySpeed(this.level, pos);
+                if(destroySpeed > 0)
+                {
+                    float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
+                    if(this.random.nextFloat() < chance)
+                    {
+                        this.level.destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
+                    }
+                }
             }
 
             if(!state.getMaterial().isReplaceable())
