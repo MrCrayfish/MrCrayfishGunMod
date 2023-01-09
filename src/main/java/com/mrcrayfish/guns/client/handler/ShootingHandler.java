@@ -11,9 +11,12 @@ import com.mrcrayfish.guns.network.message.C2SMessageShooting;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
 import com.mrcrayfish.guns.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -84,9 +87,19 @@ public class ShootingHandler
         else if(event.isUseItem())
         {
             ItemStack heldItem = player.getMainHandItem();
-            if(heldItem.getItem() instanceof GunItem && AimingHandler.get().isZooming() && AimingHandler.get().isLookingAtInteractableBlock())
+            if(heldItem.getItem() instanceof GunItem)
             {
-                event.setCanceled(true);
+                if(event.getHand() == InteractionHand.OFF_HAND)
+                {
+                    event.setCanceled(true);
+                    event.setSwingHand(false);
+                    return;
+                }
+                if(AimingHandler.get().isZooming() && AimingHandler.get().isLookingAtInteractableBlock())
+                {
+                    event.setCanceled(true);
+                    event.setSwingHand(false);
+                }
             }
         }
     }
