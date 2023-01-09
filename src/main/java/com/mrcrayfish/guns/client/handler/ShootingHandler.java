@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.common.GripType;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.compat.PlayerReviveHelper;
 import com.mrcrayfish.guns.event.GunFireEvent;
@@ -87,10 +88,19 @@ public class ShootingHandler
         else if(event.isUseItem())
         {
             ItemStack heldItem = player.getMainHandItem();
-            if(heldItem.getItem() instanceof GunItem)
+            if(heldItem.getItem() instanceof GunItem gunItem)
             {
                 if(event.getHand() == InteractionHand.OFF_HAND)
                 {
+                    // Allow shields to be used if weapon is one-handed
+                    if(player.getOffhandItem().getItem() == Items.SHIELD)
+                    {
+                        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+                        if(modifiedGun.getGeneral().getGripType() == GripType.ONE_HANDED)
+                        {
+                            return;
+                        }
+                    }
                     event.setCanceled(true);
                     event.setSwingHand(false);
                     return;
@@ -191,6 +201,9 @@ public class ShootingHandler
             return;
         
         if(player.isSpectator())
+            return;
+
+        if(player.getUseItem().getItem() == Items.SHIELD)
             return;
 
         ItemCooldowns tracker = player.getCooldowns();

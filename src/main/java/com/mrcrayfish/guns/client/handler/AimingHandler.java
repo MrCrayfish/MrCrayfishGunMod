@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.client.util.PropertyHelper;
+import com.mrcrayfish.guns.common.GripType;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.compat.PlayerReviveHelper;
 import com.mrcrayfish.guns.debug.Debug;
@@ -21,6 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -208,6 +210,9 @@ public class AimingHandler
 
         Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
         if(!gun.canAimDownSight())
+            return false;
+
+        if(mc.player.getOffhandItem().getItem() == Items.SHIELD && gun.getGeneral().getGripType() == GripType.ONE_HANDED)
             return false;
 
         if(!this.localTracker.isAiming() && this.isLookingAtInteractableBlock())
