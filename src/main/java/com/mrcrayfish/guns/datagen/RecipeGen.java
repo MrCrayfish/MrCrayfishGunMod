@@ -158,26 +158,26 @@ public class RecipeGen extends RecipeProvider
         // Scope Attachments
         WorkbenchRecipeBuilder.crafting(ModItems.SHORT_SCOPE.get())
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 2))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GLASS_PANES, 1))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.GEMS_AMETHYST, 1))
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.DUSTS_REDSTONE, 2))
                 .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_glass_pane", has(Tags.Items.GLASS_PANES))
+                .addCriterion("has_amethyst", has(Tags.Items.GEMS_AMETHYST))
                 .addCriterion("has_redstone", has(Tags.Items.DUSTS_REDSTONE))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.MEDIUM_SCOPE.get())
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GLASS_PANES, 1))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.GEMS_AMETHYST, 1))
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.DUSTS_REDSTONE, 4))
                 .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_glass_pane", has(Tags.Items.GLASS_PANES))
+                .addCriterion("has_amethyst", has(Tags.Items.GEMS_AMETHYST))
                 .addCriterion("has_redstone", has(Tags.Items.DUSTS_REDSTONE))
                 .build(consumer);
         WorkbenchRecipeBuilder.crafting(ModItems.LONG_SCOPE.get())
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 6))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GLASS_PANES, 2))
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.GEMS_AMETHYST, 2))
                 .addIngredient(WorkbenchIngredient.of(Tags.Items.DYES_BLACK, 1))
                 .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_glass_pane", has(Tags.Items.GLASS_PANES))
+                .addCriterion("has_amethyst", has(Tags.Items.GEMS_AMETHYST))
                 .addCriterion("has_black_dye", has(Tags.Items.DYES_BLACK))
                 .build(consumer);
 

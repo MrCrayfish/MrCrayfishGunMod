@@ -16,12 +16,12 @@
         ]
       }
     },
-    "has_glass_pane": {
+    "has_amethyst": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:glass_panes"
+            "tag": "forge:gems/amethyst"
           }
         ]
       }
@@ -46,7 +46,7 @@
   "requirements": [
     [
       "has_iron_ingot",
-      "has_glass_pane",
+      "has_amethyst",
       "has_redstone",
       "has_the_recipe"
     ]

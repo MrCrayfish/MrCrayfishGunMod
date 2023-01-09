@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "#forge:glass_panes",
     "#forge:glass",
