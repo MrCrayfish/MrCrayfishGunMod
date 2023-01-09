@@ -23,18 +23,20 @@ public interface IAttachment<T extends Attachment>
 
     enum Type
     {
-        SCOPE("scope", "Scope"),
-        BARREL("barrel", "Barrel"),
-        STOCK("stock", "Stock"),
-        UNDER_BARREL("under_barrel", "Under_Barrel");
+        SCOPE("scope", "Scope", "scope"),
+        BARREL("barrel", "Barrel", "barrel"),
+        STOCK("stock", "Stock", "stock"),
+        UNDER_BARREL("under_barrel", "Under_Barrel", "underBarrel");
 
-        private String translationKey;
-        private String tagKey;
+        private final String translationKey;
+        private final String tagKey;
+        private final String serializeKey;
 
-        Type(String translationKey, String tagKey)
+        Type(String translationKey, String tagKey, String serializeKey)
         {
             this.translationKey = translationKey;
             this.tagKey = tagKey;
+            this.serializeKey = serializeKey;
         }
 
         public String getTranslationKey()
@@ -45,6 +47,11 @@ public interface IAttachment<T extends Attachment>
         public String getTagKey()
         {
             return this.tagKey;
+        }
+
+        public String getSerializeKey()
+        {
+            return this.serializeKey;
         }
 
         @Nullable

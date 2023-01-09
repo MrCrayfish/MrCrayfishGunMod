@@ -55,7 +55,7 @@ public enum Easings implements StringRepresentable
 
     public static Easings byName(String name)
     {
-        return BY_NAME.getOrDefault(name.toLowerCase(Locale.ROOT), Easings.LINEAR);
+        return BY_NAME.getOrDefault(name, Easings.LINEAR);
     }
 
     @Override

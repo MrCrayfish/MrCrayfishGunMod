@@ -11,6 +11,7 @@ import com.mrcrayfish.guns.client.render.gun.model.SimpleModel;
 import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
 import com.mrcrayfish.guns.client.settings.GunOptions;
+import com.mrcrayfish.guns.client.util.PropertyHelper;
 import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.init.ModBlocks;
@@ -30,12 +31,11 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Unit;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -79,15 +79,6 @@ public class ClientHandler
         registerColors();
         registerModelOverrides();
         registerScreenFactories();
-
-        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        if(resourceManager instanceof ReloadableResourceManager)
-        {
-            ((ReloadableResourceManager) resourceManager).registerReloadListener((stage, manager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) ->
-            {
-                return stage.wait(Unit.INSTANCE).thenRunAsync(SpecialModels::clearCache);
-            });
-        }
     }
 
     private static void setupRenderLayers()
@@ -117,12 +108,7 @@ public class ClientHandler
             }
             if(index == 2 && stack.getItem() instanceof IScope)
             {
-                CompoundTag tag = stack.getTag();
-                if(tag != null && tag.contains("ReticleColor", Tag.TAG_INT))
-                {
-                    return tag.getInt("ReticleColor");
-                }
-                return 0xFFFF0000;
+                return PropertyHelper.getScopeReticleColor(stack);
             }
             return -1;
         };
@@ -193,6 +179,14 @@ public class ClientHandler
                 mc.setScreen(new EditorScreen(null, new Debug.Menu()));
             }
         }
+    }
+
+    public static void onRegisterReloadListener(RegisterClientReloadListenersEvent event)
+    {
+        event.registerReloadListener((ResourceManagerReloadListener) manager -> {
+            SpecialModels.clearCache();
+            PropertyHelper.resetCache();
+        });
     }
 
     /* Uncomment for debugging headshot hit boxes */

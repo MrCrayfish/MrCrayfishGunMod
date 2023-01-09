@@ -22,6 +22,7 @@ import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.network.PacketHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -92,6 +93,7 @@ public class GunMod
         bus.addListener(this::onGatherData);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(CrosshairHandler::onConfigReload);
+            bus.addListener(ClientHandler::onRegisterReloadListener);
             FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
         });
         controllableLoaded = ModList.get().isLoaded("controllable");
