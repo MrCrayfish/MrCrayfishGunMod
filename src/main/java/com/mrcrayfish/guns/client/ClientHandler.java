@@ -11,6 +11,8 @@ import com.mrcrayfish.guns.client.render.gun.model.SimpleModel;
 import com.mrcrayfish.guns.client.screen.AttachmentScreen;
 import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
 import com.mrcrayfish.guns.client.util.PropertyHelper;
+import com.mrcrayfish.guns.debug.IEditorMenu;
+import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModItems;
@@ -23,6 +25,7 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MouseSettingsScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.Tag;
@@ -185,6 +188,11 @@ public class ClientHandler
     public static void onFrameworkClientRegister(FrameworkClientEvent.Register event)
     {
         event.registerDataLoader(MetaLoader.getInstance());
+    }
+
+    public static Screen createEditorScreen(IEditorMenu menu)
+    {
+        return new EditorScreen(Minecraft.getInstance().screen, menu);
     }
 
     /* Uncomment for debugging headshot hit boxes */
