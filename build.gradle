@@ -5,7 +5,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 
-version = "1.3.0-1.19.2"
+version = "1.3.1-1.19.2"
 group = "com.mrcrayfish"
 archivesBaseName = "gun-mod"
 
