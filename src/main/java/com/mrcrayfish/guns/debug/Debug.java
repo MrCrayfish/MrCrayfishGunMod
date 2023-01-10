@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.debug;
 
 import com.mrcrayfish.guns.Reference;
+import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.common.Gun;
-import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugToggle;
 import com.mrcrayfish.guns.item.GunItem;
@@ -14,8 +14,10 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -77,16 +79,18 @@ public class Debug
         @Override
         public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
         {
-            ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-            if(heldItem.getItem() instanceof GunItem gunItem)
-            {
-                widgets.add(Pair.of(new TranslatableComponent(gunItem.getDescriptionId()), () -> new DebugButton(new TextComponent("Edit"), btn -> {
-                    Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, getGun(gunItem)));
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
+                if(heldItem.getItem() instanceof GunItem gunItem)
+                {
+                    widgets.add(Pair.of(new TranslatableComponent(gunItem.getDescriptionId()), () -> new DebugButton(new TextComponent("Edit"), btn -> {
+                        Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(getGun(gunItem)));
+                    })));
+                }
+                widgets.add(Pair.of(new TextComponent("Settings"), () -> new DebugButton(new TextComponent(">"), btn -> {
+                    Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(new Settings()));
                 })));
-            }
-            widgets.add(Pair.of(new TextComponent("Settings"), () -> new DebugButton(new TextComponent(">"), btn -> {
-                Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, new Settings()));
-            })));
+            });
         }
     }
 
@@ -101,7 +105,9 @@ public class Debug
         @Override
         public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
         {
-            widgets.add(Pair.of(new TextComponent("Force Aim"), () -> new DebugToggle(Debug.forceAim, value -> Debug.forceAim = value)));
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                widgets.add(Pair.of(new TextComponent("Force Aim"), () -> new DebugToggle(Debug.forceAim, value -> Debug.forceAim = value)));
+            });
         }
     }
 }

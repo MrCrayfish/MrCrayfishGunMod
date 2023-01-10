@@ -6,7 +6,6 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
-import com.mrcrayfish.guns.common.properties.SightAnimation;
 import com.mrcrayfish.guns.compat.BackpackHelper;
 import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.debug.IDebugWidget;
@@ -31,7 +30,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -82,18 +83,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
     @Override
     public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
     {
-        ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-        ItemStack scope = Gun.getScopeStack(heldItem);
-        if(scope.getItem() instanceof ScopeItem scopeItem)
-        {
-            widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(new TextComponent("Edit"), btn -> {
-                Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, Debug.getScope(scopeItem)));
-            })));
-        }
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
+            ItemStack scope = Gun.getScopeStack(heldItem);
+            if(scope.getItem() instanceof ScopeItem scopeItem)
+            {
+                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(new TextComponent("Edit"), btn -> {
+                    Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, Debug.getScope(scopeItem)));
+                })));
+            }
 
-        widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(new TextComponent(">"), btn -> {
-            Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.modules));
-        })));
+            widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(new TextComponent(">"), btn -> {
+                Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.modules));
+            })));
+        });
     }
 
     public static class General implements INBTSerializable<CompoundTag>
@@ -842,25 +845,27 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         @Override
         public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
         {
-            widgets.add(Pair.of(new TextComponent("Enabled Iron Sights"), () -> new DebugToggle(this.zoom != null, val -> {
-                if(val) {
-                    if(this.cachedZoom != null) {
-                        this.zoom = this.cachedZoom;
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                widgets.add(Pair.of(new TextComponent("Enabled Iron Sights"), () -> new DebugToggle(this.zoom != null, val -> {
+                    if(val) {
+                        if(this.cachedZoom != null) {
+                            this.zoom = this.cachedZoom;
+                        } else {
+                            this.zoom = new Zoom();
+                            this.cachedZoom = this.zoom;
+                        }
                     } else {
-                        this.zoom = new Zoom();
                         this.cachedZoom = this.zoom;
+                        this.zoom = null;
                     }
-                } else {
-                    this.cachedZoom = this.zoom;
-                    this.zoom = null;
-                }
-            })));
+                })));
 
-            widgets.add(Pair.of(new TextComponent("Adjust Iron Sights"), () -> new DebugButton(new TextComponent(">"), btn -> {
-                if(btn.active && this.zoom != null) {
-                    Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.zoom));
-                }
-            }, () -> this.zoom != null)));
+                widgets.add(Pair.of(new TextComponent("Adjust Iron Sights"), () -> new DebugButton(new TextComponent(">"), btn -> {
+                    if(btn.active && this.zoom != null) {
+                        Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.zoom));
+                    }
+                }, () -> this.zoom != null)));
+            });
         }
 
         public static class Zoom extends Positioned implements IEditorMenu
@@ -912,9 +917,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             @Override
             public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets)
             {
-                widgets.add(Pair.of(new TextComponent("FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.fovModifier, 0.01, 3, val -> {
-                    this.fovModifier = val.floatValue();
-                })));
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                    widgets.add(Pair.of(new TextComponent("FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.fovModifier, 0.01, 3, val -> {
+                        this.fovModifier = val.floatValue();
+                    })));
+                });
             }
 
             public float getFovModifier()
