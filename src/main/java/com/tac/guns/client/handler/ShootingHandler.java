@@ -1,5 +1,7 @@
 package com.tac.guns.client.handler;
 
+import com.tac.guns.common.SpreadTracker;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.lwjgl.glfw.GLFW;
 
@@ -14,8 +16,6 @@ import com.tac.guns.network.message.MessageEmptyMag;
 import com.tac.guns.network.message.MessageShoot;
 import com.tac.guns.network.message.MessageShooting;
 import com.tac.guns.network.message.MessageUpdateMoveInacc;
-import com.tac.guns.util.GunEnchantmentHelper;
-import com.tac.guns.util.GunModifierHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -308,7 +308,6 @@ public class  ShootingHandler
             this.shooting = false;
             return;
         }
-        CooldownTracker tracker = player.getCooldownTracker();
 
         // CHECK HERE: Restrict the fire rate
 //      if(!tracker.hasCooldown(heldItem.getItem()))
@@ -325,9 +324,9 @@ public class  ShootingHandler
             final float rpm = modifiedGun.getGeneral().getRate(); // Rounds per sec. Should come from gun properties in the end.
             shootTickGapLeft += calcShootTickGap((int) rpm);
             shootMsGap += calcShootTickGap((int) rpm);
-            
-            PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player.getYaw(1), player.getPitch(1)));
-
+            RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
+            RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
+            PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player.getYaw(1), player.getPitch(1), RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw));
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
         }
     }

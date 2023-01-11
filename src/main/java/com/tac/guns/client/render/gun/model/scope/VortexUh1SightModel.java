@@ -115,9 +115,9 @@ public class VortexUh1SightModel implements IOverrideModel
 
                 //matrixStack.translate(0, 0, (GunRenderingHandler.get().kick * -GunRenderingHandler.get().kickReduction)*0.75);
                 matrixStack.translate(0, 0, -0.35);
-                matrixStack.rotate(Vector3f.YN.rotationDegrees((GunRenderingHandler.get().recoilSway * GunRenderingHandler.get().recoilReduction)*0.5F));
-                matrixStack.rotate(Vector3f.ZN.rotationDegrees((GunRenderingHandler.get().recoilSway * GunRenderingHandler.get().weaponsHorizontalAngle * 0.65f * GunRenderingHandler.get().recoilReduction)*0.5F)); // seems to be interesting to increase the force of
-                //matrixStack.rotate(Vector3f.ZP.rotationDegrees(recoilSway * 2.5f * recoilReduction)); // seems to be interesting to increase the force of
+                matrixStack.rotate(Vector3f.YN.rotationDegrees((GunRenderingHandler.get().newSwayYaw * GunRenderingHandler.get().recoilReduction)*0.5F));
+                matrixStack.rotate(Vector3f.ZN.rotationDegrees((GunRenderingHandler.get().newSwayYaw * GunRenderingHandler.get().weaponsHorizontalAngle * 0.65f * GunRenderingHandler.get().recoilReduction)*0.5F)); // seems to be interesting to increase the force of
+                //matrixStack.rotate(Vector3f.ZP.rotationDegrees(newSwayYaw * 2.5f * recoilReduction)); // seems to be interesting to increase the force of
                 matrixStack.rotate(Vector3f.XP.rotationDegrees((GunRenderingHandler.get().recoilLift * GunRenderingHandler.get().recoilReduction) * 0.75F));
                 matrixStack.translate(0, 0, 0.35);
 

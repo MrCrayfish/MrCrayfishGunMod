@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import net.minecraft.util.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -78,10 +79,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -112,7 +109,7 @@ public class ServerPlayHandler
      *
      * @param player the player for who's weapon to fire
      */
-    public static void handleShoot(MessageShoot message, ServerPlayerEntity player)
+    public static void handleShoot(MessageShoot message, ServerPlayerEntity player, float randP, float randY)
     {
         if(!player.isSpectator())
         {
@@ -161,7 +158,7 @@ public class ServerPlayHandler
                     for(int i = 0; i < count; i++)
                     {
                         IProjectileFactory factory = ProjectileManager.getInstance().getFactory(projectileProps.getItem());
-                        ProjectileEntity projectileEntity = factory.create(world, player, heldItem, item, modifiedGun);
+                        ProjectileEntity projectileEntity = factory.create(world, player, heldItem, item, modifiedGun, randP, randY);
                         projectileEntity.setWeapon(heldItem);
                         projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                         world.addEntity(projectileEntity);

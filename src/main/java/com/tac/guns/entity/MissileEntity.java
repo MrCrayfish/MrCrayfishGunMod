@@ -27,7 +27,7 @@ public class MissileEntity extends ProjectileEntity
 
     public MissileEntity(EntityType<? extends ProjectileEntity> entityType, World worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun, float power)
     {
-        super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+        super(entityType, worldIn, shooter, weapon, item, modifiedGun,0,0);
         this.power = power;
     }
 

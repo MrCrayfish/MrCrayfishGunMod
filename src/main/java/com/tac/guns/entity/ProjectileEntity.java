@@ -81,12 +81,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected double modifiedGravity;
     public int life;
 
+    private float randomRecoilP = 0f;
+    private float randomRecoilY = 0f;
+
     public ProjectileEntity(EntityType<? extends Entity> entityType, World worldIn)
     {
         super(entityType, worldIn);
     }
 
-    public ProjectileEntity(EntityType<? extends Entity> entityType, World worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
+    public ProjectileEntity(EntityType<? extends Entity> entityType, World worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun, float randP, float randY)
     {
         this(entityType, worldIn);
         this.shooterId = shooter.getEntityId();
@@ -97,6 +100,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.entitySize = new EntitySize(this.projectile.getSize(), this.projectile.getSize(), false);
         this.modifiedGravity = modifiedGun.getProjectile().isGravity() ? GunModifierHelper.getModifiedProjectileGravity(weapon, -0.05) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.getLife());
+        this.randomRecoilP = randP;
+        this.randomRecoilY = randY;
 
         /* Get speed and set motion */
         Vector3d dir = this.getDirection(shooter, weapon, item, modifiedGun);
@@ -177,7 +182,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
 
-        return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.rotationYaw - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
+        return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + randomRecoilP * gunSpread, shooter.rotationYaw - (gunSpread / 2.0F) + randomRecoilY * gunSpread);
     }
 
     public void setWeapon(ItemStack weapon)

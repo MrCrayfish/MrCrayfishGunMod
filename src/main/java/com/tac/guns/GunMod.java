@@ -252,8 +252,8 @@ public class GunMod
     {
         // Map projectile items to entities and renderer's
         //ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
-        ProjectileManager.getInstance().registerFactory(ModItems.RPG7_MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.RPG7_MISSILE.get(), worldIn, entity, weapon, item, modifiedGun, 1.5F));
-        ProjectileManager.getInstance().registerFactory(ModItems.GRENADE_40MM.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun)); //, 1.5F
+        ProjectileManager.getInstance().registerFactory(ModItems.RPG7_MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun, randP, randY) -> new MissileEntity(ModEntities.RPG7_MISSILE.get(), worldIn, entity, weapon, item, modifiedGun, 1.5F));
+        ProjectileManager.getInstance().registerFactory(ModItems.GRENADE_40MM.get(), (worldIn, entity, weapon, item, modifiedGun, randP, randY) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun)); //, 1.5F
 
         // Register all custom networking
         PacketHandler.init();
