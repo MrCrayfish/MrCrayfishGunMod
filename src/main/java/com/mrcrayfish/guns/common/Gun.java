@@ -6,11 +6,11 @@ import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
+import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.compat.BackpackHelper;
 import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.debug.IDebugWidget;
 import com.mrcrayfish.guns.debug.IEditorMenu;
-import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugSlider;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugToggle;
@@ -89,12 +89,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             if(scope.getItem() instanceof ScopeItem scopeItem)
             {
                 widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(new TextComponent("Edit"), btn -> {
-                    Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, Debug.getScope(scopeItem)));
+                    Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(Debug.getScope(scopeItem)));
                 })));
             }
 
             widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(new TextComponent(">"), btn -> {
-                Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.modules));
+                Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(this.modules));
             })));
         });
     }
@@ -862,7 +862,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
 
                 widgets.add(Pair.of(new TextComponent("Adjust Iron Sights"), () -> new DebugButton(new TextComponent(">"), btn -> {
                     if(btn.active && this.zoom != null) {
-                        Minecraft.getInstance().setScreen(new EditorScreen(Minecraft.getInstance().screen, this.zoom));
+                        Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(this.zoom));
                     }
                 }, () -> this.zoom != null)));
             });
