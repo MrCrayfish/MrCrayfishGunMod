@@ -83,6 +83,7 @@
     "container.cgm.attachments": "Modificar Acessórios",
     "container.cgm.attachments.window_help": "Clique para mover e girar",
     "slot.cgm.attachment.not_applicable": "§cNão Aplicável",
+    "slot.cgm.attachment.incompatible": "Isso não parece se encaixar...",
     "slot.cgm.attachment.scope": "Mira",
     "slot.cgm.attachment.barrel": "Cano",
     "slot.cgm.attachment.stock": "Coronha",
@@ -139,8 +140,11 @@
     "cgm.button.steadyAim": "Mira Firme",
     "cgm.category.workbench.title": "Assembling",
     "cgm.category.workbench.materials": "Materials",
-    "cgm.action.aim": "Aim",
-    "cgm.action.shoot": "Shoot",
-    "cgm.action.reload": "Reload",
-    "cgm.action.steady_aim": "Steady Aim"
+    "cgm.action.aim": "Mirar",
+    "cgm.action.shoot": "Atirar",
+    "cgm.action.reload": "Recaregar",
+    "cgm.action.steady_aim": "Mira Firme",
+    "cgm.button.config.tooltip": "Opções de Configuração",
+    "cgm.chat.open_curseforge_page": "Abra a página do CurseForge",
+    "cgm.chat.install_configured": "Instale %s para acessar as opções de configuração"
 }
