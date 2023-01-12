@@ -109,13 +109,13 @@ public class  ShootingHandler
             {
                 event.setCanceled(true);
             }
-            if( InputHandler.PULL_TRIGGER.down )
+            if( InputHandler.PULL_TRIGGER.down && Config.CLIENT.controls.burstPress.get())
             {
                 if(heldItem.getItem() instanceof TimelessGunItem && heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstCooldown == 0)
                 {
                     if(this.burstCooldown == 0)
                         fire(player, heldItem);
-                    this.burstTracker = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstCount()-1;
+                    this.burstTracker = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstCount();
                     this.burstCooldown = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstRate();
                 }
                 else if(this.burstCooldown == 0)
@@ -234,12 +234,12 @@ public class  ShootingHandler
                 if(heldItem.getTag().getInt("CurrentFireMode") == 3 && Config.CLIENT.controls.burstPress.get())
                 {
                     //player.sendMessage(new TranslationTextComponent("base"), UUID.randomUUID());
-                    if(this.shootErr)
+                    /*if(this.shootErr)
                     {
                         if(this.burstTracker > 0)
                             this.burstTracker++;
                         this.shootErr = false;
-                    }
+                    }*/
                     CooldownTracker tracker = player.getCooldownTracker();
                     if(this.burstTracker > 0)
                     {
@@ -258,28 +258,26 @@ public class  ShootingHandler
                         return;
                     }
                     if (heldItem.getTag().getInt("CurrentFireMode") == 3 && !Config.CLIENT.controls.burstPress.get() && !this.clickUp && this.burstCooldown == 0) {
-                        if (this.shootErr) {
+                        /*if (this.shootErr) {
                             if (this.burstTracker > 0)
                                 this.burstTracker--;
                             this.shootErr = false;
-                        }
-                        CooldownTracker tracker = player.getCooldownTracker();
-                        if (this.burstTracker < gun.getGeneral().getBurstCount()-1) {
-                            if (!tracker.hasCooldown(heldItem.getItem())) {
+                        }*/
+                        if (this.burstTracker < gun.getGeneral().getBurstCount()) {
+                            if (ShootingHandler.get().getshootMsGap() <= 0) {
                                 fire(player, heldItem);
-                                this.burstTracker++;
+                                if(!this.shootErr)
+                                    this.burstTracker++;
                             }
                         } else if (heldItem.getTag().getInt("AmmoCount") > 0 && this.burstTracker > 0) {
-                            if (!tracker.hasCooldown(heldItem.getItem())) {
-                                this.burstTracker = 0;
-                                this.clickUp = true;
-                                this.burstCooldown = gun.getGeneral().getBurstRate();
-                            }
+                            this.burstTracker = 0;
+                            this.clickUp = true;
+                            this.burstCooldown = gun.getGeneral().getBurstRate();
                         }
                         return;
                     }
                 }
-                else if(this.clickUp || InputHandler.PULL_TRIGGER.down )
+                else if(this.clickUp /*|| InputHandler.PULL_TRIGGER.down*/ )
                 {
                     if(heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstTracker > 0) {
                         this.burstCooldown = gunItem.getGun().getGeneral().getBurstRate();
@@ -327,6 +325,7 @@ public class  ShootingHandler
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
             PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player.getYaw(1), player.getPitch(1), RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw));
+            this.burstTracker++;
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
         }
     }

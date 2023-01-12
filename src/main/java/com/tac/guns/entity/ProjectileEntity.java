@@ -170,6 +170,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             if(!SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
             {
+                if(gunSpread < 0.5)
+                    gunSpread+=0.5f;
                 gunSpread *= modifiedGun.getGeneral().getHipFireInaccuracy();
                 if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
                 {
@@ -182,7 +184,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
 
-        return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + randomRecoilP * gunSpread, shooter.rotationYaw - (gunSpread / 2.0F) + randomRecoilY * gunSpread);
+        return this.getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread, shooter.rotationYaw - (gunSpread / 2.0F) + rand.nextFloat() * gunSpread);
     }
 
     public void setWeapon(ItemStack weapon)

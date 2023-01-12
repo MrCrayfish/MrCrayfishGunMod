@@ -21,7 +21,7 @@
     "spread": 1.4,
     "firstShotSpread": 0.115,
     "hipFireInaccuracy": 5.6,
-    "projToMinAccuracy": 7,
+    "projToMinAccuracy": 6,
     "msToAccuracyReset": 150,
     "movementInaccuracy": 0.425
   },

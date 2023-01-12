@@ -783,14 +783,14 @@ public class GunRenderingHandler {
         this.weaponsHorizontalAngle = ((float) (RecoilHandler.get().getGunHorizontalRecoilAngle() * recoilNormal) * (float) RecoilHandler.get().getAdsRecoilReduction(gun));
         float newKick = recoilDynamics.update(kickTiming, (float) kick * kickReduction);
 
-        // TODO: Make each shot have a SINGLE random gen value to calculate spread, send to server as well
         matrixStack.translate(0, 0, newKick);
         matrixStack.translate(0, 0, 0.35);
 
+        // TODO: have T/Time updatable per gun, weapons like the pistols, especially the deagle benifits from forcing accurate shots and awaiting front sight reset, unlike the m4 which should have little effect
         newSwayYaw = swayYawDynamics.update(0.09f, newSwayYawYaw * recoilReduction * weaponsHorizontalAngle);
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(newSwayPitch * 0.575f));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(newSwayPitch * 0.2875f));
         newSwayPitch = swayPitchDynamics.update(0.21f, newSwayYawPitch * recoilReduction * recoilLift);
-        matrixStack.rotate(Vector3f.ZN.rotationDegrees(newSwayPitch*0.325f));
+        matrixStack.rotate(Vector3f.ZN.rotationDegrees(newSwayPitch*0.215f));
 
         //matrixStack.rotate(Vector3f.ZP.rotationDegrees(newSwayYaw * recoilReduction)); // seems to be interesting to increase the force of
 
@@ -887,6 +887,8 @@ public class GunRenderingHandler {
         prevTime = date.getTime();
     }
 
+
+    // TODO: Update noises for breathing animation per new weapon held, aka give weapons customization of their breathing, pistols for example should be realatively unstable, along with lighter weapons
     private final OneDimensionalPerlinNoise noiseX = new OneDimensionalPerlinNoise(-0.003f, 0.003f, 2400);
     private final OneDimensionalPerlinNoise noiseY = new OneDimensionalPerlinNoise(-0.003f, 0.003f, 2800);
     {

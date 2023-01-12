@@ -230,68 +230,7 @@ public class RecoilHandler
     }
 
     private static Random rand = new Random();
-    private Vector3d nextShotAccuracy = null;
     public float lastRandPitch = 0f;
     public float lastRandYaw = 0f;
 
-    public Vector3d setNextAccuracyRecoilVectorRendered(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
-    {
-        float gunSpread = GunModifierHelper.getModifiedSpread(weapon, modifiedGun.getGeneral().getSpread()) * GunEnchantmentHelper.getSpreadModifier(weapon);
-        if(shooter instanceof PlayerEntity)
-        {
-            if(!modifiedGun.getGeneral().isAlwaysSpread())
-            {
-                float modSpread = SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
-                if(modSpread != 0)
-                    gunSpread *= SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
-                else
-                    gunSpread = modifiedGun.getGeneral().getFirstShotSpread();
-            }
-            if(!SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
-            {
-                gunSpread *= modifiedGun.getGeneral().getHipFireInaccuracy();
-                if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
-                {
-                    gunSpread *= Math.max(1 , (2F * ( 1 + SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING))) * modifiedGun.getGeneral().getMovementInaccuracy());
-                }
-            }
-            if(((PlayerEntity) shooter).isCrouching() && modifiedGun.getGeneral().getProjectileAmount() == 1)
-            {
-                gunSpread *= 0.75F;
-            }
-        }
-        lastRandPitch = rand.nextFloat();
-        lastRandYaw = rand.nextFloat();
-        this.nextShotAccuracy = getVectorFromRotation((gunSpread / 2.0F) + lastRandPitch * gunSpread, (gunSpread / 2.0F) + lastRandYaw * gunSpread);
-        return getVectorFromRotation((gunSpread / 2.0F) + lastRandPitch * gunSpread, (gunSpread / 2.0F) + lastRandYaw * gunSpread);
-    }
-
-    /*public Vector3d setNextAccuracyRecoilVectorProjectile(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
-    {
-        float gunSpread = GunModifierHelper.getModifiedSpread(weapon, modifiedGun.getGeneral().getSpread()) * GunEnchantmentHelper.getSpreadModifier(weapon);
-        if(shooter instanceof PlayerEntity)
-        {
-            if(!modifiedGun.getGeneral().isAlwaysSpread())
-            {
-                float modSpread = SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
-                if(modSpread != 0)
-                    gunSpread *= SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
-                else
-                    gunSpread = modifiedGun.getGeneral().getFirstShotSpread();
-            }
-            if(!SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
-            {
-                gunSpread *= modifiedGun.getGeneral().getHipFireInaccuracy();
-                if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
-                {
-                    gunSpread *= Math.max(1 , (2F * ( 1 + SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING))) * modifiedGun.getGeneral().getMovementInaccuracy());
-                }
-            }
-            if(((PlayerEntity) shooter).isCrouching() && modifiedGun.getGeneral().getProjectileAmount() == 1)
-            {
-                gunSpread *= 0.75F;
-            }
-        }
-        return getVectorFromRotation(shooter.rotationPitch - (gunSpread / 2.0F) + lastRand * gunSpread, shooter.rotationYaw - (gunSpread / 2.0F) + lastRand * gunSpread);
-    }*/
 }
