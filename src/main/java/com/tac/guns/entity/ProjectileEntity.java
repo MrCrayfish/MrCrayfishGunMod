@@ -165,14 +165,17 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 float modSpread = SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
                 if(modSpread != 0)
                     gunSpread *= SpreadTracker.get((PlayerEntity) shooter).getSpread(item);
-                else
+                else {
                     gunSpread = modifiedGun.getGeneral().getFirstShotSpread();
+                    gunSpread = GunModifierHelper.getModifiedFirstShotSpread(weapon, gunSpread);
+                }
             }
             if(!SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.AIMING))
             {
                 if(gunSpread < 0.5)
                     gunSpread+=0.5f;
                 gunSpread *= modifiedGun.getGeneral().getHipFireInaccuracy();
+                gunSpread = GunModifierHelper.getModifiedHipFireSpread(weapon, gunSpread);
                 if(SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING) != 0)
                 {
                     gunSpread *= Math.max(1 , (2F * ( 1 + SyncedPlayerData.instance().get((PlayerEntity) shooter, ModSyncedDataKeys.MOVING))) * modifiedGun.getGeneral().getMovementInaccuracy());

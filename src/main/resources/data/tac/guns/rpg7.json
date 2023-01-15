@@ -24,7 +24,7 @@
   },
   "projectile": {
     "item": "tac:rpg7_missile",
-    "visible": true,
+    "visible": false,
     "gravity": true,
     "damage": 26,
     "size": 0.2,

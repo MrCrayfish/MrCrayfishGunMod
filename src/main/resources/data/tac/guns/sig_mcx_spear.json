@@ -33,7 +33,7 @@
   },
   "projectile": {
     "item": "tac:bullet68",
-    "visible": true,
+    "visible": false,
     "damage": 10.0,
     "size": 0.125,
     "speed": 51.5,

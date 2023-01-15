@@ -430,7 +430,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public float getSpread()
         {
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ?
-                    (this.spread + GunEditor.get().getSpreadMod()) : this.spread;
+                    (this.spread*0.75f + GunEditor.get().getSpreadMod()) : this.spread*0.75f;
         }
         /**
          * @return The default Kilogram weight of the weapon
@@ -460,7 +460,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public float getHipFireInaccuracy()
         {
-            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.hipFireInaccuracy : this.hipFireInaccuracy;//*1.25f;
+            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.hipFireInaccuracy*1.25f :
+                    this.hipFireInaccuracy*1.25f;//*1.25f;
         }
         /**
          * @return The amount of projectiles the weapon fires before hitting minimum accuracy
@@ -654,7 +655,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private int trailColor = 0xFFD289;
         @Optional
-        private double trailLengthMultiplier = 8.25;
+        private double trailLengthMultiplier = 0.5;
         @Optional
         private boolean ricochet = true;
         @TGExclude

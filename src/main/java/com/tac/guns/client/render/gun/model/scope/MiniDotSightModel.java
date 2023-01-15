@@ -104,18 +104,14 @@ public class MiniDotSightModel implements IOverrideModel
                 alpha = (float) (1F * AimingHandler.get().getNormalisedAdsProgress());
 
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
-                // Walking bobbing
-                boolean aimed = false;
-                /* The new controlled bobbing */
-                if(AimingHandler.get().isAiming())
-                    aimed = true;
+
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true, 1.0f);
                 GunRenderingHandler.get().applyNoiseMovementTransform(matrixStack, -1.25f);
                 GunRenderingHandler.get().applyJumpingTransforms(matrixStack, partialTicks,-0.65f);
 
                 matrixStack.translate(0, 0, -0.35);
-                matrixStack.rotate(Vector3f.YP.rotationDegrees(GunRenderingHandler.get().newSwayYaw));
-                matrixStack.rotate(Vector3f.ZN.rotationDegrees(GunRenderingHandler.get().newSwayPitch));
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(GunRenderingHandler.get().newSwayYaw*0.85f));
+                matrixStack.rotate(Vector3f.ZN.rotationDegrees(GunRenderingHandler.get().newSwayPitch*0.85f));
                 matrixStack.rotate(Vector3f.XP.rotationDegrees((GunRenderingHandler.get().recoilLift * GunRenderingHandler.get().recoilReduction) * 1.15F));
                 matrixStack.translate(0, 0, 0.35);
 

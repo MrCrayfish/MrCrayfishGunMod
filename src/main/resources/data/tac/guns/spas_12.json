@@ -27,7 +27,7 @@
   },
   "projectile": {
     "item": "tac:10_gauge_round",
-    "visible": true,
+    "visible": false,
     "damage": 22,
     "size": 0.3,
     "speed": 20.5,

@@ -109,13 +109,12 @@ public class  ShootingHandler
             {
                 event.setCanceled(true);
             }
-            if( InputHandler.PULL_TRIGGER.down && Config.CLIENT.controls.burstPress.get())
+            if( InputHandler.PULL_TRIGGER.down )
             {
                 if(heldItem.getItem() instanceof TimelessGunItem && heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstCooldown == 0)
                 {
-                    if(this.burstCooldown == 0)
-                        fire(player, heldItem);
                     this.burstTracker = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstCount();
+                    fire(player, heldItem);
                     this.burstCooldown = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstRate();
                 }
                 else if(this.burstCooldown == 0)
@@ -178,8 +177,7 @@ public class  ShootingHandler
                 PacketHandler.getPlayChannel().sendToServer( new MessageUpdateMoveInacc( dist ) );
                 
                 // Update #shooting state if it has changed
-                final boolean shooting = InputHandler.PULL_TRIGGER.down && !this.clickUp
-                	&& GunRenderingHandler.get().sprintTransition == 0;
+                final boolean shooting = InputHandler.PULL_TRIGGER.down && GunRenderingHandler.get().sprintTransition == 0;
                 // TODO: check if this is needed
 //              if(GunMod.controllableLoaded)
 //              {
@@ -233,21 +231,8 @@ public class  ShootingHandler
                 TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
                 if(heldItem.getTag().getInt("CurrentFireMode") == 3 && Config.CLIENT.controls.burstPress.get())
                 {
-                    //player.sendMessage(new TranslationTextComponent("base"), UUID.randomUUID());
-                    /*if(this.shootErr)
-                    {
-                        if(this.burstTracker > 0)
-                            this.burstTracker++;
-                        this.shootErr = false;
-                    }*/
-                    CooldownTracker tracker = player.getCooldownTracker();
                     if(this.burstTracker > 0)
-                    {
-                        if(!tracker.hasCooldown(heldItem.getItem())) {
-                            fire(player, heldItem);
-                            this.burstTracker--;
-                        }
-                    }
+                        fire(player, heldItem);
                     return;
                 }
                 else if( InputHandler.PULL_TRIGGER.down )
@@ -258,11 +243,6 @@ public class  ShootingHandler
                         return;
                     }
                     if (heldItem.getTag().getInt("CurrentFireMode") == 3 && !Config.CLIENT.controls.burstPress.get() && !this.clickUp && this.burstCooldown == 0) {
-                        /*if (this.shootErr) {
-                            if (this.burstTracker > 0)
-                                this.burstTracker--;
-                            this.shootErr = false;
-                        }*/
                         if (this.burstTracker < gun.getGeneral().getBurstCount()) {
                             if (ShootingHandler.get().getshootMsGap() <= 0) {
                                 fire(player, heldItem);
@@ -325,7 +305,8 @@ public class  ShootingHandler
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
             PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player.getYaw(1), player.getPitch(1), RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw));
-            this.burstTracker++;
+            if(Config.CLIENT.controls.burstPress.get()) this.burstTracker--;
+            else this.burstTracker++;
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
         }
     }

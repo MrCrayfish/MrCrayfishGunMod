@@ -33,7 +33,7 @@
   },
   "projectile": {
     "item": "tac:round45",
-    "visible": true,
+    "visible": false,
     "damage": 4.0,
     "size": 0.1,
     "speed": 14.5,
