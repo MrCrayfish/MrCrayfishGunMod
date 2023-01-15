@@ -1,12 +1,14 @@
 package com.tac.guns.crafting;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import com.tac.guns.init.ModRecipeSerializers;
 import com.tac.guns.tileentity.WorkbenchTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -17,10 +19,10 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
 {
     private final ResourceLocation id;
     private final ItemStack item;
-    private final ImmutableList<ItemStack> materials;
+    private final ImmutableList<Pair<Ingredient, Integer>> materials;
     private final String group;
 
-    public WorkbenchRecipe(ResourceLocation id, ItemStack item, ImmutableList<ItemStack> materials, String group)
+    public WorkbenchRecipe(ResourceLocation id, ItemStack item, ImmutableList<Pair<Ingredient, Integer>> materials, String group)
     {
         this.id = id;
         this.item = item;
@@ -33,7 +35,7 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
         return this.item.copy();
     }
 
-    public ImmutableList<ItemStack> getMaterials()
+    public ImmutableList<Pair<Ingredient, Integer>> getMaterials()
     {
         return this.materials;
     }

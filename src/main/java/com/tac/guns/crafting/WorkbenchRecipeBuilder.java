@@ -2,6 +2,7 @@ package com.tac.guns.crafting;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import com.tac.guns.Reference;
 import com.tac.guns.init.ModRecipeSerializers;
 import net.minecraft.advancements.Advancement;
@@ -13,6 +14,7 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -28,7 +30,7 @@ public class WorkbenchRecipeBuilder
 {
     private final Item result;
     private final int count;
-    private final List<ItemStack> materials;
+    private final List<Pair<Ingredient, Integer>> materials;
     private final Advancement.Builder advancementBuilder;
     private String group;
 
@@ -69,7 +71,24 @@ public class WorkbenchRecipeBuilder
      */
     public WorkbenchRecipeBuilder addIngredient(IItemProvider item, int quantity)
     {
-        this.materials.add(new ItemStack(item, quantity));
+        this.materials.add(new Pair<>(Ingredient.fromItems(item), quantity));
+        return this;
+    }
+
+    /**
+     * Adds an ingredient of the given item.
+     */
+    public WorkbenchRecipeBuilder addIngredient(Ingredient itemIn)
+    {
+        return this.addIngredient(itemIn, 1);
+    }
+
+    /**
+     * Adds the given ingredient multiple times.
+     */
+    public WorkbenchRecipeBuilder addIngredient(Ingredient item, int quantity)
+    {
+        this.materials.add(new Pair<>(item, quantity));
         return this;
     }
 
@@ -105,6 +124,11 @@ public class WorkbenchRecipeBuilder
      */
     public void build(Consumer<IFinishedRecipe> consumerIn, String save)
     {
+        this.build(consumerIn, Reference.MOD_ID, save);
+    }
+
+    public void build(Consumer<IFinishedRecipe> consumerIn, String modid, String save)
+    {
         ResourceLocation resourcelocation = Registry.ITEM.getKey(this.result);
         if(new ResourceLocation(Reference.MOD_ID, save).equals(resourcelocation))
         {
@@ -112,7 +136,7 @@ public class WorkbenchRecipeBuilder
         }
         else
         {
-            this.build(consumerIn, new ResourceLocation(Reference.MOD_ID, save));
+            this.build(consumerIn, new ResourceLocation(modid, save));
         }
     }
 
@@ -143,11 +167,11 @@ public class WorkbenchRecipeBuilder
         private final Item item;
         private final int count;
         private final String group;
-        private final List<ItemStack> materials;
+        private final List<Pair<Ingredient, Integer>> materials;
         private final Advancement.Builder advancement;
         private final ResourceLocation advancementId;
 
-        public Result(ResourceLocation id, IItemProvider item, int count, String group, List<ItemStack> materials, Advancement.Builder advancement, ResourceLocation advancementId)
+        public Result(ResourceLocation id, IItemProvider item, int count, String group, List<Pair<Ingredient, Integer>> materials, Advancement.Builder advancement, ResourceLocation advancementId)
         {
             this.id = id;
             this.item = item.asItem();
@@ -165,12 +189,12 @@ public class WorkbenchRecipeBuilder
                 json.addProperty("group", this.group);
 
             JsonArray input = new JsonArray();
-            for(ItemStack material : this.materials)
+            for(Pair<Ingredient, Integer> material : this.materials)
             {
                 JsonObject resultObject = new JsonObject();
-                resultObject.addProperty("item", Registry.ITEM.getKey(material.getItem()).toString());
-                if(material.getCount() > 1)
-                    resultObject.addProperty("count", material.getCount());
+                resultObject.add("item", material.getFirst().serialize());
+                if(material.getSecond() > 1)
+                    resultObject.addProperty("count", material.getSecond());
                 input.add(resultObject);
             }
             json.add("materials", input);

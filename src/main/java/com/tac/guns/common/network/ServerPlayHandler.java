@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.item.crafting.Ingredient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -260,20 +262,25 @@ public class ServerPlayHandler
                     return;
                 }
 
-                List<ItemStack> materials = recipe.getMaterials();
+                List<Pair<Ingredient, Integer>> materials = recipe.getMaterials();
                 if(materials != null)
                 {
-                    for(ItemStack stack : materials)
+                    for(Pair<Ingredient, Integer> stack : materials)
                     {
-                        if(!InventoryUtil.hasItemStack(player, stack))
-                        {
-                            return;
+                        for(ItemStack itemcandidate:stack.getFirst().getMatchingStacks()) {
+                            itemcandidate.setCount(stack.getSecond());
+                            if (!InventoryUtil.hasItemStack(player, itemcandidate)) {
+                                return;
+                            }
                         }
                     }
 
-                    for(ItemStack stack : materials)
+                    for(Pair<Ingredient, Integer> stack : materials)
                     {
-                        InventoryUtil.removeItemStack(player, stack);
+                        for(ItemStack itemcandidate:stack.getFirst().getMatchingStacks()) {
+                            itemcandidate.setCount(stack.getSecond());
+                            InventoryUtil.removeItemStack(player, itemcandidate);
+                        }
                     }
 
                     WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();
