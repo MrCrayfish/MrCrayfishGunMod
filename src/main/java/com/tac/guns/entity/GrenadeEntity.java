@@ -24,7 +24,7 @@ public class GrenadeEntity extends ProjectileEntity
 
     public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, World world, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun)
     {
-        super(entityType, world, shooter, weapon, item, modifiedGun);
+        super(entityType, world, shooter, weapon, item, modifiedGun, 0, 0);
     }
 
     @Override

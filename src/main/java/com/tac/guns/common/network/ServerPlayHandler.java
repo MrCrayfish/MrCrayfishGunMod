@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -80,10 +82,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -114,7 +112,7 @@ public class ServerPlayHandler
      *
      * @param player the player for who's weapon to fire
      */
-    public static void handleShoot(MessageShoot message, ServerPlayerEntity player)
+    public static void handleShoot(MessageShoot message, ServerPlayerEntity player, float randP, float randY)
     {
         if(!player.isSpectator())
         {
@@ -163,7 +161,7 @@ public class ServerPlayHandler
                     for(int i = 0; i < count; i++)
                     {
                         IProjectileFactory factory = ProjectileManager.getInstance().getFactory(projectileProps.getItem());
-                        ProjectileEntity projectileEntity = factory.create(world, player, heldItem, item, modifiedGun);
+                        ProjectileEntity projectileEntity = factory.create(world, player, heldItem, item, modifiedGun, randP, randY);
                         projectileEntity.setWeapon(heldItem);
                         projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                         world.addEntity(projectileEntity);
@@ -207,10 +205,10 @@ public class ServerPlayHandler
                         double posY = player.getPosY() + player.getEyeHeight();
                         double posZ = player.getPosZ();
                         float volume = GunModifierHelper.getFireSoundVolume(heldItem);
-                        
+
                         // PATCH NOTE: Neko required to remove the random pitch effect in sound
                         final float pitch = 1F; // 0.9F + world.rand.nextFloat() * 0.2F;
-                        
+
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
                         MessageGunSound messageSound = new MessageGunSound(fireSound, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId(), muzzle, false);
@@ -262,14 +260,13 @@ public class ServerPlayHandler
                     return;
                 }
 
-                List<Pair<Ingredient, Integer>> materials = recipe.getMaterials();
+                ImmutableList<Pair<Ingredient, Integer>> materials = recipe.getMaterials();
                 if(materials != null)
                 {
                     for(Pair<Ingredient, Integer> stack : materials)
                     {
-                        for(ItemStack itemcandidate:stack.getFirst().getMatchingStacks()) {
-                            itemcandidate.setCount(stack.getSecond());
-                            if (!InventoryUtil.hasItemStack(player, itemcandidate)) {
+                        for(ItemStack itemstack: stack.getFirst().getMatchingStacks()) {
+                            if (!InventoryUtil.hasItemStack(player, itemstack)) {
                                 return;
                             }
                         }
@@ -277,9 +274,10 @@ public class ServerPlayHandler
 
                     for(Pair<Ingredient, Integer> stack : materials)
                     {
-                        for(ItemStack itemcandidate:stack.getFirst().getMatchingStacks()) {
-                            itemcandidate.setCount(stack.getSecond());
-                            InventoryUtil.removeItemStack(player, itemcandidate);
+                        for(ItemStack itemstack: stack.getFirst().getMatchingStacks()) {
+                            if(InventoryUtil.removeItemStack(player, itemstack)){
+                                break;
+                            }
                         }
                     }
 

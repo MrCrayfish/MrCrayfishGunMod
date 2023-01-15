@@ -109,11 +109,15 @@ public class EotechShortSightModel implements IOverrideModel
                 alpha = AimingHandler.get().getNormalisedAdsProgress() != 0 &&  AimingHandler.get().getNormalisedAdsProgress() != 1 ? (float) (0.5F * AimingHandler.get().getNormalisedAdsProgress()) : (float) AimingHandler.get().getNormalisedAdsProgress();
 
                 builder = renderTypeBuffer.getBuffer(RenderType.getEntityTranslucent(RED_DOT_RETICLE));
-                GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true);
+
+                GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true, 1.0f);
+                GunRenderingHandler.get().applyNoiseMovementTransform(matrixStack, -1.5f);
+                GunRenderingHandler.get().applyJumpingTransforms(matrixStack, partialTicks,-0.8f);
+
                 matrixStack.translate(0, 0, -0.35);
-                matrixStack.rotate(Vector3f.YN.rotationDegrees((GunRenderingHandler.get().recoilSway * GunRenderingHandler.get().recoilReduction)*0.5F));
-                matrixStack.rotate(Vector3f.ZN.rotationDegrees((GunRenderingHandler.get().recoilSway * GunRenderingHandler.get().weaponsHorizontalAngle * 0.65f * GunRenderingHandler.get().recoilReduction)*0.5F)); // seems to be interesting to increase the force of
-                matrixStack.rotate(Vector3f.XP.rotationDegrees((GunRenderingHandler.get().recoilLift * GunRenderingHandler.get().recoilReduction) * 0.75F));
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(GunRenderingHandler.get().newSwayYaw*0.5f));
+                matrixStack.rotate(Vector3f.ZN.rotationDegrees(GunRenderingHandler.get().newSwayPitch*0.5f));
+                matrixStack.rotate(Vector3f.XP.rotationDegrees((GunRenderingHandler.get().recoilLift * GunRenderingHandler.get().recoilReduction) * 0.85F));
                 matrixStack.translate(0, 0, 0.35);
 
                 builder.pos(matrix, 0, (float) (size / scale), 0).color(red, green, blue, alpha).tex(0.0F, 0.9375F).overlay(overlay).lightmap(15728880).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();

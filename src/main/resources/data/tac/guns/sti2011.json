@@ -6,17 +6,21 @@
       1
     ],
     "gripType": "tac:one_handed_m1911",
-    "recoilAngle": 13.75,
-    "horizontalRecoilAngle": 6.325,
+    "recoilAngle": 11.75,
+    "horizontalRecoilAngle": 5.325,
     "recoilKick": 1.725,
-    "recoilAdsReduction": 0.135,
-    "weaponRecoilOffset": 0.675,
-    "cameraRecoilModifier": 6.05,
-    "recoilDuration": 0.135,
-    "alwaysSpread": true,
-    "spread": 2.65,
+    "recoilAdsReduction": 0.165,
+    "weaponRecoilOffset": 0.725,
+    "cameraRecoilModifier": 5.35,
+    "recoilDuration": 0.235,
     "weightKilo": 1.7,
-    "movementInaccuracy": 0.775
+
+    "spread": 1.25,
+    "firstShotSpread": 0.13,
+    "hipFireInaccuracy": 3.45,
+    "projToMinAccuracy": 3,
+    "msToAccuracyReset": 310,
+    "movementInaccuracy": 0.45
   },
   "reloads": {
     "magFed": true,

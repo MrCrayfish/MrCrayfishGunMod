@@ -75,16 +75,12 @@ public class sti2011_animation implements IOverrideModel {
             matrices.translate(0.00, 0.0, 0.035); // Issues with the slide starting out further forward, seems to be ~ a 0.035 movement
             if (Gun.hasAmmo(stack) || shouldOffset) {
                 // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.260f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-                GunRenderingHandler.get().opticMovement = 0.260f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
-            } else if (!Gun.hasAmmo(stack)) {
-                if (cooldownOg > 0.5) {
-                    // Math provided by Bomb787 on GitHub and Curseforge!!!
-                    matrices.translate(0, 0, 0.260f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-                    GunRenderingHandler.get().opticMovement = 0.260f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
-                } else {
-                    matrices.translate(0, 0, 0.260f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
-                    GunRenderingHandler.get().opticMovement = 0.260f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0);
+                matrices.translate(0, 0, 0.235f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                GunRenderingHandler.get().opticMovement = 0.235f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
+            }
+            else if (!Gun.hasAmmo(stack)) {
+                {
+                    matrices.translate(0, 0, 0.235f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
                 }
             }
             matrices.translate(0.00, 0.0, -0.008);

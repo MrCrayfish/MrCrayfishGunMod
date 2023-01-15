@@ -37,7 +37,7 @@ import com.tac.guns.client.render.entity.ProjectileRenderer;
 import com.tac.guns.client.render.entity.ThrowableGrenadeRenderer;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.gun.model.scope.ACOG_4x_ScopeModel;
-import com.tac.guns.client.render.gun.model.scope.AimpointT1SightModel;
+import com.tac.guns.client.render.gun.model.scope.AimpointT2SightModel;
 import com.tac.guns.client.render.gun.model.scope.CoyoteSightModel;
 import com.tac.guns.client.render.gun.model.scope.EotechNSightModel;
 import com.tac.guns.client.render.gun.model.scope.EotechShortSightModel;
@@ -209,7 +209,7 @@ public class ClientHandler
         ModelOverrides.register(ModItems.SLX_2X.get(), new SLX_2X_ScopeModel());
         ModelOverrides.register(ModItems.ACOG_4.get(), new ACOG_4x_ScopeModel());
         ModelOverrides.register(ModItems.ELCAN_DR_14X.get(), new elcan_14x_ScopeModel());
-        ModelOverrides.register(ModItems.AIMPOINT_T1_SIGHT.get(), new AimpointT1SightModel());
+        ModelOverrides.register(ModItems.AIMPOINT_T2_SIGHT.get(), new AimpointT2SightModel());
         ModelOverrides.register(ModItems.EOTECH_N_SIGHT.get(), new EotechNSightModel());
         ModelOverrides.register(ModItems.VORTEX_UH_1.get(), new VortexUh1SightModel());
         ModelOverrides.register(ModItems.EOTECH_SHORT_SIGHT.get(), new EotechShortSightModel());

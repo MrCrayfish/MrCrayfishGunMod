@@ -11,6 +11,7 @@ import com.tac.guns.client.network.ClientPlayHandler;
 import com.tac.guns.client.render.crosshair.TexturedCrosshair;
 import com.tac.guns.common.Gun;
 import com.tac.guns.common.ReloadTracker;
+import com.tac.guns.common.SpreadTracker;
 import com.tac.guns.inventory.gear.GearSlotsHandler;
 import com.tac.guns.inventory.gear.InventoryListener;
 import com.tac.guns.inventory.gear.armor.ArmorRigContainer;
@@ -240,6 +241,7 @@ public class HUDRenderingHandler extends AbstractGui {
         int width = event.getWindow().getWidth();
         int height = event.getWindow().getHeight();
 
+
         if(this.hitMarkerTracker > 0 && ((AimingHandler.get().isAiming() && Gun.getScope(heldItem) == null) || !AimingHandler.get().isAiming()))//Hit Markers
         {
             ObjectRenderEditor.RENDER_Element data = new ObjectRenderEditor.RENDER_Element(0,0,0,0);
@@ -253,10 +255,10 @@ public class HUDRenderingHandler extends AbstractGui {
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             stack.push();
             {
-                //stack.translate(width / 2F, height / 2F, 0);
-                float size = 0.1f;
-                stack.translate(anchorPointX - (size+data.getxMod()*10+(109.15*10)) / 4F, anchorPointY + (size*1.625F+data.getyMod()*10+(-25.1*10)) / 5F * 3F, 0);
-                stack.scale(size,size,size);
+                stack.translate(width / 2F, height / 2F, 0);
+                //float size = 0.1f;
+                //stack.translate(anchorPointX - (size+data.getxMod()*10+(109.15*10)) / 4F, anchorPointY + (size*1.625F+data.getyMod()*10+(-25.1*10)) / 5F * 3F, 0);
+                //stack.scale(size,size,size);
 
                 ResourceLocation hitMarker;
                 if(AimingHandler.get().isAiming())
@@ -362,6 +364,7 @@ public class HUDRenderingHandler extends AbstractGui {
             return;
         TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
         Gun gun = gunItem.getGun();
+
         if(!Config.CLIENT.weaponGUI.weaponGui.get()) {
             return;
         }

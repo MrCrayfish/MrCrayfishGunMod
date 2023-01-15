@@ -27,5 +27,5 @@ public interface IProjectileFactory
      * @param modifiedGun the properties of the gun
      * @return a projectile entity
      */
-    ProjectileEntity create(World worldIn, LivingEntity entity, ItemStack weapon, GunItem item, Gun modifiedGun);
+    ProjectileEntity create(World worldIn, LivingEntity entity, ItemStack weapon, GunItem item, Gun modifiedGun, float randP, float randY);
 }

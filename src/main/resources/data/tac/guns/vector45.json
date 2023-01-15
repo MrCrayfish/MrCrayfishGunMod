@@ -17,10 +17,14 @@
     "weaponRecoilOffset": 0.9275,
     "cameraRecoilModifier": 0.865,
     "recoilDuration": 0.1375,
-    "alwaysSpread": true,
-    "spread": 7.25,
     "weightKilo": 2.9,
-    "movementInaccuracy": 0.325
+
+    "spread": 3.25,
+    "firstShotSpread": 0.245,
+    "hipFireInaccuracy": 3.1,
+    "projToMinAccuracy": 6,
+    "msToAccuracyReset": 110,
+    "movementInaccuracy": 0.225
   },
   "reloads": {
     "magFed": true,

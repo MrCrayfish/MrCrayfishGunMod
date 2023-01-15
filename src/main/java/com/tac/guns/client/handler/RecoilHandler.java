@@ -1,23 +1,25 @@
 package com.tac.guns.client.handler;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.tac.guns.Config;
-import com.tac.guns.GunMod;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.SpreadTracker;
 import com.tac.guns.event.GunFireEvent;
+import com.tac.guns.init.ModSyncedDataKeys;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.util.GunEnchantmentHelper;
 import com.tac.guns.util.GunModifierHelper;
-import com.tac.guns.util.math.SecondOrderDynamics;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.Level;
 
 import java.util.Random;
 
@@ -42,8 +44,6 @@ public class RecoilHandler
     private double gunRecoilNormal;
     private double gunRecoilAngle;
     private double gunHorizontalRecoilAngle;
-    private float gunRecoilRandom;
-
     public float cameraRecoil; // READONLY
 
     private float progressCameraRecoil;
@@ -90,7 +90,8 @@ public class RecoilHandler
         this.progressCameraRecoil = 0F;
 
         // Horizontal Recoil
-        this.gunRecoilRandom = random.nextFloat();
+        this.lastRandPitch = random.nextFloat();
+        this.lastRandYaw = random.nextFloat();
 
         float horizontalRandomAmount = this.random.nextFloat()*(1.22f - 0.75f) + 0.75f;
 
@@ -139,11 +140,11 @@ public class RecoilHandler
         }
         else if(startProgress > progressForward)
         {
-            mc.player.rotationPitch += ((endProgress - startProgress) / (1-progressForward) ) * this.cameraRecoil / (cameraRecoilModifer*1.05); // 0.75F
+            mc.player.rotationPitch += ((endProgress - startProgress) / (1-progressForward) ) * this.cameraRecoil / (cameraRecoilModifer*1.025); // 0.75F
             if(recoilRand == 1)
-                mc.player.rotationYaw -= ((endProgress - startProgress) / (1-progressForward)) * -this.horizontalCameraRecoil / (cameraRecoilModifer*1.05);
+                mc.player.rotationYaw -= ((endProgress - startProgress) / (1-progressForward)) * -this.horizontalCameraRecoil / (cameraRecoilModifer*1.025);
             else
-                mc.player.rotationYaw -= ((endProgress - startProgress) / (1-progressForward)) * this.horizontalCameraRecoil / (cameraRecoilModifer*1.05);
+                mc.player.rotationYaw -= ((endProgress - startProgress) / (1-progressForward)) * this.horizontalCameraRecoil / (cameraRecoilModifer*1.025);
         }
 
         this.progressCameraRecoil += recoilAmount;
@@ -217,10 +218,19 @@ public class RecoilHandler
         return this.gunHorizontalRecoilAngle;
     }
 
-    public float getGunRecoilRandom()
+    public double getRecoilProgress() {return timer / (double)recoilDuration;}
+
+    private static Vector3d getVectorFromRotation(float pitch, float yaw)
     {
-        return this.gunRecoilRandom;
+        float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
+        return new Vector3d((double) (f1 * f2), (double) f3, (double) (f * f2));
     }
 
-    public double getRecoilProgress() {return timer / (double)recoilDuration;}
+    private static Random rand = new Random();
+    public float lastRandPitch = 0f;
+    public float lastRandYaw = 0f;
+
 }
