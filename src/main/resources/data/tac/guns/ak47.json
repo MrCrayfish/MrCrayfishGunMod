@@ -51,7 +51,7 @@
     "draw": "tac:animation.ak47_draw",
     "inspect": "tac:animation.ak47_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.fire_ak47s"
+    "silencedFire": "tac:item.ak47_fire_s"
   },
   "display": {
     "flash": {
