@@ -20,7 +20,7 @@
             "viewportFov": 60.0
         },
         "muzzleFlash": {
-            "translation": [8.0, 3.6, 3.89],
+            "translation": [8.0, 3.6, 1.59],
             "scale": [0.5, 0.5, 0.5]
         }
     }
