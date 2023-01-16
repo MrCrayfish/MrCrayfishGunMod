@@ -204,7 +204,7 @@ public class ServerPlayHandler
                         float volume = GunModifierHelper.getFireSoundVolume(heldItem);
                         
                         // PATCH NOTE: Neko required to remove the random pitch effect in sound
-                        final float pitch = 1F; // 0.9F + world.rand.nextFloat() * 0.2F;
+                        final float pitch = 0.9F + world.rand.nextFloat() * 0.125F;
                         
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
@@ -688,9 +688,16 @@ public class ServerPlayHandler
         //if(MovementAdaptationsHandler.get().previousGun == null || gun.serializeNBT().getId() == MovementAdaptationsHandler.get().previousGun)
             if ((MovementAdaptationsHandler.get().isReadyToUpdate()) || MovementAdaptationsHandler.get().getPreviousWeight() != gun.getGeneral().getWeightKilo())
             {
-                float speed = (float)player.getAttribute(MOVEMENT_SPEED).getValue() / (1+((gun.getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem) - GunEnchantmentHelper.getWeightModifier(heldItem)) * 0.0275f)); // * 0.01225f));// //(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem)) / 3.775F));
+                // TODO: Show that the speed effect is now only half
+                float speed =
+                        (float)player.getAttribute(MOVEMENT_SPEED).getValue()
+                                /
+                        (1+(((gun.getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem) - GunEnchantmentHelper.getWeightModifier(heldItem))/2)
+                                * 0.0275f))
+                        ; // * 0.01225f));// //(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem)) / 3.775F));
+
                 if(player.isSprinting())
-                    speed = Math.max(Math.min(speed, 0.1F), 0.075F) * 0.9F;
+                    speed = Math.max(Math.min(speed, 0.1F), 0.075F) * 0.95F;
                 else
                     speed = Math.max(Math.min(speed, 0.1F), 0.075F);
                 changeGunSpeedMod(player, "GunSpeedMod", -((double)((0.1 - speed)*10)));//*1000
