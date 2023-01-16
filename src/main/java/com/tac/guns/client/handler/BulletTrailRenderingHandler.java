@@ -135,7 +135,7 @@ public class BulletTrailRenderingHandler
         matrixStack.translate(bulletX - view.getX(), bulletY - view.getY(), bulletZ - view.getZ());
 
        matrixStack.rotate(Vector3f.YP.rotationDegrees(bulletTrail.getYaw()));
-       matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 88f));
+       matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 90.125f));
 
         Vector3d motionVec = new Vector3d(motion.x, motion.y, motion.z);
         float trailLength = (float) ((motionVec.length() / 3.0F) * bulletTrail.getTrailLengthMultiplier());
@@ -158,14 +158,14 @@ public class BulletTrailRenderingHandler
         {*/
             RenderType bulletType = GunRenderType.getBulletTrail();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
-            builder.pos(matrix4f, 0, 0, -0.095F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, 0, 0.095F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0,  trailLength/4,-0.025F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0,  trailLength/4,0.025F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, -0.09F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0.09F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, 0, -0.2F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, 0, 0.2F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0,  -trailLength,0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0,  trailLength,0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, -0.2F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0.2F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
             builder.pos(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, trailLength, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
             Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(bulletType);
 
             /*RenderType bulletType = GunRenderType.getBulletTrail();

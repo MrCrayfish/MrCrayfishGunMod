@@ -86,11 +86,6 @@ public class MovementAdaptationsHandler
             }
         }
     }
-    //private float revisionFov(float speed)
-    //{
-    //    return speed > 0.1 ? speed : 1f;
-    //}
-
     @SubscribeEvent(priority=EventPriority.LOWEST)
     public void onJump(LivingEvent.LivingJumpEvent event)
     {
@@ -99,7 +94,9 @@ public class MovementAdaptationsHandler
         if(speed < 0.077f)
             event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/2.5,event.getEntityLiving().getMotion().getY()/1.125,event.getEntityLiving().getMotion().getZ()/2.5);
         else if(speed < 0.9f)
-            event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/1.75,event.getEntityLiving().getMotion().getY(),event.getEntityLiving().getMotion().getZ()/1.75);
+            event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/1.5,event.getEntityLiving().getMotion().getY(),event.getEntityLiving().getMotion().getZ()/1.5);
+        else if(speed < 0.95f)
+            event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/1.25,event.getEntityLiving().getMotion().getY(),event.getEntityLiving().getMotion().getZ()/1.25);
     }
 
     @SubscribeEvent//(priority = EventPriority.HIGH)
@@ -108,22 +105,7 @@ public class MovementAdaptationsHandler
         if (Minecraft.getInstance().player == null) {
             return;
         }
-        /*float dist =
-                (Math.abs(Minecraft.getInstance().player.moveForward)/4+
-                        Math.abs(Minecraft.getInstance().player.moveStrafing)/1.5f)*
-                        (Minecraft.getInstance().player.moveVertical != 0 ? 3:1);
-        if(dist != 0)
-            SyncedPlayerData.instance().set(Minecraft.getInstance().player, ModSyncedDataKeys.MOVING, dist);
-        else
-            SyncedPlayerData.instance().set(Minecraft.getInstance().player, ModSyncedDataKeys.MOVING, 0f);*/
         PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement());
     }
-    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void movementRec(TickEvent.ClientTickEvent event)
-    {
-        if (Minecraft.getInstance().player == null || !Config.COMMON.projectileSpread.movementInaccuracy.get()) {
-            return;
-        }
-        PacketHandler.getPlayChannel().sendToServer(new MessageUpdatePlayerMovement(true));
-    }*/
+
 }

@@ -12,7 +12,7 @@
     "weaponRecoilOffset": 0.915,
     "cameraRecoilModifier": 5.25,
     "recoilDuration": 0.075,
-    "weightKilo": 0.9,
+    "weightKilo": 0.0,
 
     "spread": 1.7,
     "firstShotSpread": 0.175,

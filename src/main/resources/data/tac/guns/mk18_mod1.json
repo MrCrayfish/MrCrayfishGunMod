@@ -51,7 +51,7 @@
     "draw": "tac:animation.m4_draw",
     "inspect": "tac:animation.m4_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.fire_m16s"
+    "silencedFire": "tac:item.ar15_fire_s"
   },
   "display": {
     "flash": {

@@ -89,10 +89,42 @@
          { "name": "tac:item/m4a1_fire_s" }
       ]
    },
-
-
-
-
+   "item.m16a4_fire_s": {
+      "subtitle": "subtitle.tac.m16a4_fire_s",
+      "sounds": [
+         { "name": "tac:item/m16a4_fire_s" }
+      ]
+   },
+   "item.m92fs_fire_suppressed": {
+      "subtitle": "subtitle.tac.m92fs_fire_suppressed",
+      "sounds": [
+         { "name": "tac:item/m92fs_fire_suppressed" }
+      ]
+   },
+   "item.mk14ebr_fire": {
+      "subtitle": "subtitle.tac.mk14ebr_fire",
+      "sounds": [
+         { "name": "tac:item/mk14ebr_fire" }
+      ]
+   },
+   "item.mk14ebr_fire_s": {
+      "subtitle": "subtitle.tac.mk14ebr_fire_s",
+      "sounds": [
+         { "name": "tac:item/mk14ebr_fire_s" }
+      ]
+   },
+   "item.mk47_fire": {
+      "subtitle": "subtitle.tac.mk47_fire",
+      "sounds": [
+         { "name": "tac:item/mk47_fire" }
+      ]
+   },
+   "item.mk47_fire_s": {
+      "subtitle": "subtitle.tac.mk47_fire_s",
+      "sounds": [
+         { "name": "tac:item/mk47_fire_s" }
+      ]
+   },
 
 
 

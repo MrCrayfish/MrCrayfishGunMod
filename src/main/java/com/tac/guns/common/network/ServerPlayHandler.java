@@ -686,13 +686,13 @@ public class ServerPlayHandler
 
         Gun gun = ((TimelessGunItem) heldItem.getItem()).getGun();
         //if(MovementAdaptationsHandler.get().previousGun == null || gun.serializeNBT().getId() == MovementAdaptationsHandler.get().previousGun)
-            if (((gun.getGeneral().getWeightKilo() > 0) && MovementAdaptationsHandler.get().isReadyToUpdate()) || MovementAdaptationsHandler.get().getPreviousWeight() != gun.getGeneral().getWeightKilo())
+            if ((MovementAdaptationsHandler.get().isReadyToUpdate()) || MovementAdaptationsHandler.get().getPreviousWeight() != gun.getGeneral().getWeightKilo())
             {
                 float speed = (float)player.getAttribute(MOVEMENT_SPEED).getValue() / (1+((gun.getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem) - GunEnchantmentHelper.getWeightModifier(heldItem)) * 0.0275f)); // * 0.01225f));// //(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem)) / 3.775F));
                 if(player.isSprinting())
-                    speed = Math.max(Math.min(speed, 0.12F), 0.075F) * 0.775F;
+                    speed = Math.max(Math.min(speed, 0.1F), 0.075F) * 0.9F;
                 else
-                    speed = Math.max(Math.min(speed, 0.095F), 0.075F);
+                    speed = Math.max(Math.min(speed, 0.1F), 0.075F);
                 changeGunSpeedMod(player, "GunSpeedMod", -((double)((0.1 - speed)*10)));//*1000
 
                 MovementAdaptationsHandler.get().setReadyToReset(true);
@@ -705,9 +705,8 @@ public class ServerPlayHandler
 
         MovementAdaptationsHandler.get().setPreviousWeight(gun.getGeneral().getWeightKilo());
         //DEBUGGING AND BALANCE TOOL
-        //player.sendStatusMessage(new TranslationTextComponent(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING)+""), true);
-        //new TranslationTextComponent("Speed is: " + player
-                // .getAttribute(MOVEMENT_SPEED).getValue()) ,true);
+        player.sendStatusMessage(new TranslationTextComponent("Speed is: " + player.getAttribute(MOVEMENT_SPEED).getValue()) ,true);
+        //new TranslationTextComponent("Speed is: " + player.getAttribute(MOVEMENT_SPEED).getValue()) ,true); new TranslationTextComponent(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING)+""), true);
     }
 
     public static void handleGunID(ServerPlayerEntity player, boolean regenerate)
