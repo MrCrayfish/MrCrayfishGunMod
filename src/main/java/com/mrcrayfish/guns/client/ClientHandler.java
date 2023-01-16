@@ -184,7 +184,6 @@ public class ClientHandler
     public static void onRegisterReloadListener(RegisterClientReloadListenersEvent event)
     {
         event.registerReloadListener((ResourceManagerReloadListener) manager -> {
-            SpecialModels.clearCache();
             PropertyHelper.resetCache();
         });
     }

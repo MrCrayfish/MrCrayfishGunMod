@@ -6,6 +6,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,17 +34,11 @@ public enum SpecialModels
     /**
      * The location of an item model in the [MOD_ID]/models/special/[NAME] folder
      */
-    private ResourceLocation modelLocation;
-
-    /**
-     * Determines if the model should be loaded as a special model.
-     */
-    private boolean specialModel;
+    private final ResourceLocation modelLocation;
 
     /**
      * Cached model
      */
-    @OnlyIn(Dist.CLIENT)
     private BakedModel cachedModel;
 
     /**
@@ -53,19 +48,7 @@ public enum SpecialModels
      */
     SpecialModels(String modelName)
     {
-        this(new ResourceLocation(Reference.MOD_ID, "special/" + modelName), true);
-    }
-
-    /**
-     * Sets the model's location
-     *
-     * @param resource name of the model file
-     * @param specialModel if the model is a special model
-     */
-    SpecialModels(ResourceLocation resource, boolean specialModel)
-    {
-        this.modelLocation = resource;
-        this.specialModel = specialModel;
+        this.modelLocation = new ResourceLocation(Reference.MOD_ID, "special/" + modelName);
     }
 
     /**
@@ -73,43 +56,38 @@ public enum SpecialModels
      *
      * @return isolated model
      */
-    @OnlyIn(Dist.CLIENT)
     public BakedModel getModel()
     {
         if(this.cachedModel == null)
         {
-            BakedModel model = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
-            if(model == Minecraft.getInstance().getModelManager().getMissingModel())
-            {
-                return model;
-            }
-            this.cachedModel = model;
+            this.cachedModel = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
         }
         return this.cachedModel;
     }
 
+    /**
+     * Registers the special models into the Forge Model Bakery. This is only called once on the
+     * load of the game.
+     */
     @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
     public static void register(ModelRegistryEvent event)
     {
         for(SpecialModels model : values())
         {
-            if(model.specialModel)
-            {
-                ForgeModelBakery.addSpecialModel(model.modelLocation);
-            }
+            ForgeModelBakery.addSpecialModel(model.modelLocation);
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void clearCache()
+    /**
+     * Clears the cached BakedModel since it's been rebuilt. This is needed since the models may
+     * have changed when a resource pack was applied, or if resources are reloaded.
+     */
+    @SubscribeEvent
+    public static void onBake(ModelBakeEvent event)
     {
         for(SpecialModels model : values())
         {
-            if(model.specialModel)
-            {
-                model.cachedModel = null;
-            }
+            model.cachedModel = null;
         }
     }
 }
