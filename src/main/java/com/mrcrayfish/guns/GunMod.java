@@ -91,7 +91,6 @@ public class GunMod
         bus.addListener(ModSyncedDataKeys::onFrameworkRegister);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(KeyBinds::registerKeyMappings);
-            bus.addListener(SpecialModels::registerAdditional);
             bus.addListener(CrosshairHandler::onConfigReload);
             bus.addListener(ClientHandler::onRegisterReloadListener);
             bus.addListener(ClientHandler::onFrameworkClientRegister);
