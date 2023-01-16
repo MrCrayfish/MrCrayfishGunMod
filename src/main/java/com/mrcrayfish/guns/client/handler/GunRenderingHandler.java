@@ -915,7 +915,7 @@ public class GunRenderingHandler
             return;
 
         ItemStack heldItem = mc.player.getMainHandItem();
-        float targetAngle = heldItem.getItem() instanceof GunItem ? mc.player.input.leftImpulse: 0F;
+        float targetAngle = heldItem.getItem() instanceof GunItem || !Config.CLIENT.display.restrictCameraRollToWeapons.get() ? mc.player.input.leftImpulse: 0F;
         float speed = mc.player.input.leftImpulse != 0 ? 0.1F : 0.15F;
         this.immersiveRoll = Mth.lerp(speed, this.immersiveRoll, targetAngle);
 
