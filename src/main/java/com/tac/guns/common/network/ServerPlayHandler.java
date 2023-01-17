@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Level;
@@ -202,10 +205,10 @@ public class ServerPlayHandler
                         double posY = player.getPosY() + player.getEyeHeight();
                         double posZ = player.getPosZ();
                         float volume = GunModifierHelper.getFireSoundVolume(heldItem);
-                        
+
                         // PATCH NOTE: Neko required to remove the random pitch effect in sound
                         final float pitch = 1F; // 0.9F + world.rand.nextFloat() * 0.2F;
-                        
+
                         double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                         boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
                         MessageGunSound messageSound = new MessageGunSound(fireSound, SoundCategory.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getEntityId(), muzzle, false);
@@ -257,20 +260,25 @@ public class ServerPlayHandler
                     return;
                 }
 
-                List<ItemStack> materials = recipe.getMaterials();
+                ImmutableList<Pair<Ingredient, Integer>> materials = recipe.getMaterials();
                 if(materials != null)
                 {
-                    for(ItemStack stack : materials)
+                    for(Pair<Ingredient, Integer> stack : materials)
                     {
-                        if(!InventoryUtil.hasItemStack(player, stack))
-                        {
-                            return;
+                        for(ItemStack itemstack: stack.getFirst().getMatchingStacks()) {
+                            if (!InventoryUtil.hasItemStack(player, itemstack)) {
+                                return;
+                            }
                         }
                     }
 
-                    for(ItemStack stack : materials)
+                    for(Pair<Ingredient, Integer> stack : materials)
                     {
-                        InventoryUtil.removeItemStack(player, stack);
+                        for(ItemStack itemstack: stack.getFirst().getMatchingStacks()) {
+                            if(InventoryUtil.removeItemStack(player, itemstack)){
+                                break;
+                            }
+                        }
                     }
 
                     WorkbenchTileEntity workbenchTileEntity = workbench.getWorkbench();

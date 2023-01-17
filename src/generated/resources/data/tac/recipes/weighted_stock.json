@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 34
+    },
+    {
+      "item": {
+        "item": "minecraft:white_wool"
+      },
+      "count": 16
+    }
+  ],
+  "result": {
+    "item": "tac:weighted_stock"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#I#",
+    "D#D",
+    "GDG"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:glass"
+    },
+    "I": {
+      "tag": "forge:storage_blocks/iron"
+    },
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "G": {
+      "tag": "forge:ingots/gold"
+    }
+  },
+  "result": {
+    "item": "tac:module_item",
+    "count": 3
+  }
+}

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.datafixers.util.Pair;
 import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -32,6 +33,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -284,12 +286,14 @@ public class WorkbenchScreen extends ContainerScreen<WorkbenchContainer>
 
         this.materials.clear();
 
-        List<ItemStack> materials = recipe.getMaterials();
+        List<Pair<Ingredient, Integer>> materials = recipe.getMaterials();
         if(materials != null)
         {
-            for(ItemStack material : materials)
+            for(Pair<Ingredient, Integer> material : materials)
             {
-                MaterialItem item = new MaterialItem(material);
+                ItemStack stack = material.getFirst().getMatchingStacks()[0];
+                stack.setCount(material.getSecond());
+                MaterialItem item = new MaterialItem(stack);
                 item.update();
                 this.materials.add(item);
             }

@@ -1,0 +1,14 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 10
+    }
+  ],
+  "result": {
+    "item": "tac:muzzle_brake"
+  }
+}

@@ -397,7 +397,7 @@
     "tac.options.doubleRender": "망원조준경 이중 렌더링 활성화",
 
     "info.tac.current_level": "현재 레벨",
-    "info.tac.out_of_ammo": "재장전!",
+    "info.tac.out_of_ammo": "탄약이 떨어졌습니다!",
 
     "tac.options.screenFormat": "TAC GUI 설정",
 

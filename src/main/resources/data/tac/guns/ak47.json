@@ -8,6 +8,7 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
+
     "recoilAngle": 4.325,
     "horizontalRecoilAngle": 2.75,
     "recoilKick": 1.675,
@@ -29,8 +30,8 @@
     "visible": false,
     "damage": 9.5,
     "size": 0.2,
-    "speed": 26.5,
-    "life": 10
+    "speed": 22.5,
+    "life": 11
   },
   "reloads": {
     "magFed": true,

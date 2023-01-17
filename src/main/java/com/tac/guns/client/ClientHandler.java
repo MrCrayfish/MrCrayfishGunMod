@@ -37,7 +37,7 @@ import com.tac.guns.client.render.entity.ProjectileRenderer;
 import com.tac.guns.client.render.entity.ThrowableGrenadeRenderer;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.render.gun.model.scope.ACOG_4x_ScopeModel;
-import com.tac.guns.client.render.gun.model.scope.AimpointT2SightModel;
+import com.tac.guns.client.render.gun.model.scope.AimpointT1SightModel;
 import com.tac.guns.client.render.gun.model.scope.CoyoteSightModel;
 import com.tac.guns.client.render.gun.model.scope.EotechNSightModel;
 import com.tac.guns.client.render.gun.model.scope.EotechShortSightModel;
@@ -104,8 +104,7 @@ public class ClientHandler
 
     private static File keyBindsFile;
     
-    public static void setup( Minecraft mc )
-    {
+    public static void setup( Minecraft mc ) {
         MinecraftForge.EVENT_BUS.register(AimingHandler.get());
         MinecraftForge.EVENT_BUS.register(BulletTrailRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(CrosshairHandler.get());
@@ -125,7 +124,7 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(ScopeJitterHandler.getInstance()); // All built by MayDayMemory part of the Timeless dev team, amazing work!!!!!!!!!!!
         MinecraftForge.EVENT_BUS.register(MovementAdaptationsHandler.get());
         MinecraftForge.EVENT_BUS.register(AnimationHandler.INSTANCE); //Mainly controls when the animation should play.
-        if(Config.COMMON.development.enableTDev.get()) {
+        if (Config.COMMON.development.enableTDev.get()) {
             MinecraftForge.EVENT_BUS.register(GuiEditor.get());
             MinecraftForge.EVENT_BUS.register(GunEditor.get());
             MinecraftForge.EVENT_BUS.register(ScopeEditor.get());
@@ -136,14 +135,15 @@ public class ClientHandler
 
         // Load key binds
         InputHandler.initKeys();
-        keyBindsFile = new File( mc.gameDir, "config/tac-key-binds.json" );
-        if( !keyBindsFile.exists() )
-        {
-        	try { keyBindsFile.createNewFile(); }
-        	catch( IOException e ) { GunMod.LOGGER.error( "Fail to create key bindings file" ); }
-        	InputHandler.saveTo( keyBindsFile );
-        }
-        else InputHandler.readFrom( keyBindsFile );
+        keyBindsFile = new File(mc.gameDir, "config/tac-key-binds.json");
+        if (!keyBindsFile.exists()) {
+            try {
+                keyBindsFile.createNewFile();
+            } catch (IOException e) {
+                GunMod.LOGGER.error("Fail to create key bindings file");
+            }
+            InputHandler.saveTo(keyBindsFile);
+        } else InputHandler.readFrom(keyBindsFile);
 
         setupRenderLayers();
         registerEntityRenders();
@@ -153,7 +153,7 @@ public class ClientHandler
 
         AnimationHandler.preloadAnimations();
         new AnimationRunner(); //preload thread pool
-        new SecondOrderDynamics(1f,1f,1f, 1f); //preload thread pool
+        new SecondOrderDynamics(1f, 1f, 1f, 1f); //preload thread pool
 
         Map<String, PlayerRenderer> skins = Minecraft.getInstance().getRenderManager().getSkinMap();
         addVestLayer(skins.get("default"));
@@ -209,7 +209,7 @@ public class ClientHandler
         ModelOverrides.register(ModItems.SLX_2X.get(), new SLX_2X_ScopeModel());
         ModelOverrides.register(ModItems.ACOG_4.get(), new ACOG_4x_ScopeModel());
         ModelOverrides.register(ModItems.ELCAN_DR_14X.get(), new elcan_14x_ScopeModel());
-        ModelOverrides.register(ModItems.AIMPOINT_T2_SIGHT.get(), new AimpointT2SightModel());
+        ModelOverrides.register(ModItems.AIMPOINT_T1_SIGHT.get(), new AimpointT1SightModel());
         ModelOverrides.register(ModItems.EOTECH_N_SIGHT.get(), new EotechNSightModel());
         ModelOverrides.register(ModItems.VORTEX_UH_1.get(), new VortexUh1SightModel());
         ModelOverrides.register(ModItems.EOTECH_SHORT_SIGHT.get(), new EotechShortSightModel());
@@ -297,26 +297,25 @@ public class ClientHandler
     	prevScreen = gui;
     }
     
-    static
-    {
-    	InputHandler.ATTACHMENTS.addPressCallback( () -> {
-    		final Minecraft mc = Minecraft.getInstance();
-    		if( mc.player != null && mc.currentScreen == null )
-    			PacketHandler.getPlayChannel().sendToServer( new MessageAttachments() );
-    	} );
-    	
-    	final Runnable callback = () -> {
-    		final Minecraft mc = Minecraft.getInstance();
-    		if(
-    			mc.player != null
-    			&& mc.currentScreen == null
-    			&& GunAnimationController.fromItem(
-    				Minecraft.getInstance().player.inventory.getCurrentItem().getItem()
-    			) == null
-    		) PacketHandler.getPlayChannel().sendToServer( new MessageInspection() );
-    	};
-    	InputHandler.INSPECT.addPressCallback( callback );
-    	InputHandler.CO_INSPECT.addPressCallback( callback );
+    static {
+        InputHandler.ATTACHMENTS.addPressCallback(() -> {
+            final Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null && mc.currentScreen == null)
+                PacketHandler.getPlayChannel().sendToServer(new MessageAttachments());
+        });
+
+        final Runnable callback = () -> {
+            final Minecraft mc = Minecraft.getInstance();
+            if (
+                    mc.player != null
+                            && mc.currentScreen == null
+                            && GunAnimationController.fromItem(
+                            Minecraft.getInstance().player.inventory.getCurrentItem().getItem()
+                    ) == null
+            ) PacketHandler.getPlayChannel().sendToServer(new MessageInspection());
+        };
+        InputHandler.INSPECT.addPressCallback(callback);
+        InputHandler.CO_INSPECT.addPressCallback(callback);
     }
 
     /* Uncomment for debugging headshot hit boxes */

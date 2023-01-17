@@ -82,7 +82,7 @@ public class MiniDotSightModel implements IOverrideModel
 
                 matrixStack.translate(-0.0035, -0.0045, 0); //tdev adjustment for reticle
                 float size = 2.25F / 16.0F;
-                matrixStack.translate(-size / 2, (0.30) * 0.0625, (-0.175) * 0.0625);
+                matrixStack.translate(-size / 2, (0.30) * 0.0625, (0.275) * 0.0625);
 
                 IVertexBuilder builder;
 

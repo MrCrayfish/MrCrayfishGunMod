@@ -1,0 +1,25 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 30
+    },
+    {
+      "item": {
+        "tag": "forge:glass_panes"
+      },
+      "count": 26
+    },
+    {
+      "item": {
+        "tag": "forge:storage_blocks/redstone"
+      }
+    }
+  ],
+  "result": {
+    "item": "tac:elcan_14x"
+  }
+}
