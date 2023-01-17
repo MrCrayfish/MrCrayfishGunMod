@@ -14,11 +14,11 @@
     "recoilDuration": 0.075,
     "weightKilo": 0.0,
 
-    "spread": 1.7,
+    "spread": 1.2,
     "firstShotSpread": 0.175,
     "hipFireInaccuracy": 2.15,
     "projToMinAccuracy": 3,
-    "msToAccuracyReset": 720,
+    "msToAccuracyReset": 620,
     "movementInaccuracy": 0.225
   },
   "reloads": {
@@ -39,7 +39,7 @@
     "damage": 5.0,
     "size": 0.2,
     "speed": 17.0,
-    "life": 4
+    "life": 8
   },
   "sounds": {
     "fire": "tac:item.fire_glock",

@@ -690,14 +690,14 @@ public class ServerPlayHandler
             {
                 // TODO: Show that the speed effect is now only half
                 float speed =
-                        (float)player.getAttribute(MOVEMENT_SPEED).getValue()
+                        0.1f
                                 /
-                        (1+(((gun.getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem) - GunEnchantmentHelper.getWeightModifier(heldItem))/2)
+                                (1+(((gun.getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem) - GunEnchantmentHelper.getWeightModifier(heldItem))/2)
                                 * 0.0275f))
                         ; // * 0.01225f));// //(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem)) / 3.775F));
 
                 if(player.isSprinting())
-                    speed = Math.max(Math.min(speed, 0.1F), 0.075F) * 0.95F;
+                    speed = Math.max(Math.min(speed, 0.1F), 0.075F)*0.97f;
                 else
                     speed = Math.max(Math.min(speed, 0.1F), 0.075F);
                 changeGunSpeedMod(player, "GunSpeedMod", -((double)((0.1 - speed)*10)));//*1000
