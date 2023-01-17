@@ -1,0 +1,26 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 24
+    },
+    {
+      "item": {
+        "tag": "forge:glass_panes"
+      },
+      "count": 20
+    },
+    {
+      "item": {
+        "tag": "forge:storage_blocks/redstone"
+      },
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "tac:qmk152"
+  }
+}

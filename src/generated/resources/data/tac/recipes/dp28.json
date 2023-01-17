@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 42
+    },
+    {
+      "item": {
+        "tag": "minecraft:acacia_logs"
+      },
+      "count": 6
+    }
+  ],
+  "result": {
+    "item": "tac:dp28"
+  }
+}

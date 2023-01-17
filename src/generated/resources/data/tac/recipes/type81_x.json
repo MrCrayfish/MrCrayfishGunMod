@@ -1,0 +1,14 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 28
+    }
+  ],
+  "result": {
+    "item": "tac:type81_x"
+  }
+}

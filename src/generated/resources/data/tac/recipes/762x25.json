@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:nuggets/iron"
+      },
+      "count": 14
+    },
+    {
+      "item": {
+        "tag": "forge:gunpowder"
+      }
+    }
+  ],
+  "result": {
+    "item": "tac:762x25",
+    "count": 24
+  }
+}

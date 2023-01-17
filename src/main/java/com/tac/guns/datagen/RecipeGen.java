@@ -304,7 +304,7 @@ public class RecipeGen extends RecipeProvider
                 .addIngredient(Tags.Items.STORAGE_BLOCKS_REDSTONE, 2)
                 .build(consumer);
 
-        WorkbenchRecipeBuilder.workbenchRecipe(ModItems.AIMPOINT_T2_SIGHT.get())
+        WorkbenchRecipeBuilder.workbenchRecipe(ModItems.AIMPOINT_T1_SIGHT.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 8)
                 .addIngredient(Tags.Items.GLASS_PANES, 4)
                 .addIngredient(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)

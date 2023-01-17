@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "iIi",
+    "i i"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:logs"
+    },
+    "I": {
+      "tag": "forge:storage_blocks/iron"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "tac:workbench"
+  }
+}
