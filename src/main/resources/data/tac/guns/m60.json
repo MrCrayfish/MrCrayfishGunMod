@@ -17,7 +17,13 @@
     "alwaysSpread": true,
     "spread": 3.15,
     "weightKilo": 10.3,
-    "movementInaccuracy": 12.0
+
+    "spread": 2.05,
+    "firstShotSpread": 0.235,
+    "hipFireInaccuracy": 7.8,
+    "projToMinAccuracy": 12,
+    "msToAccuracyReset": 460,
+    "movementInaccuracy": 3.15
   },
   "reloads": {
     "magFed": true,

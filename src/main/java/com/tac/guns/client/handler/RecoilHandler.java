@@ -128,8 +128,8 @@ public class RecoilHandler
         float startProgress = (this.progressCameraRecoil / this.cameraRecoil);
         float endProgress = ((this.progressCameraRecoil + recoilAmount) / this.cameraRecoil);
 
-        float progressForward = mc.player.getHeldItemMainhand().getItem() instanceof GunItem ? ((GunItem) mc.player.getHeldItemMainhand().getItem()).getGun().getGeneral().getRecoilDuration() : 0.25F;//0.25F;//startProgress < 0.25F && startProgress > 0.125F ? 0.125F : proggress; // 0.25
-
+        float progressForward = mc.player.getHeldItemMainhand().getItem() instanceof GunItem ? ((GunItem) mc.player.getHeldItemMainhand().getItem()).getGun().getGeneral().getRecoilDuration() *
+                GunModifierHelper.getRecoilSmootheningTime(mc.player.getHeldItemMainhand()) : 0.25F;
         if(startProgress < progressForward) // && startProgress > 0.125F
         {
             mc.player.rotationPitch -= ((endProgress - startProgress) / progressForward) * this.cameraRecoil / cameraRecoilModifer;
@@ -177,14 +177,16 @@ public class RecoilHandler
         GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
         float cooldown = (float) timer / recoilDuration;
-/*float cooldown ;
+
+        float recoilTimeOffset = modifiedGun.getGeneral().getWeaponRecoilOffset();
+        /*float cooldown ;
         if((tracker.getCooldown(gunItem, Minecraft.getInstance().getRenderPartialTicks()))<0.5f)
             cooldown = 0;/*(tracker.getCooldown(gunItem,
                     Minecraft.getInstance().getRenderPartialTicks()));
         else
         cooldown = (tracker.getCooldown(gunItem,
                 Minecraft.getInstance().getRenderPartialTicks())-0.5f)*2f;*/
-        if(cooldown >= modifiedGun.getGeneral().getWeaponRecoilOffset())// || tooFast) // Actually have any visual recoil at Rate 1???
+        if(cooldown >= recoilTimeOffset)// || tooFast) // Actually have any visual recoil at Rate 1???
         {
             float amount = 1F * ((1.0F - cooldown) / (1-modifiedGun.getGeneral().getWeaponRecoilOffset()));
             this.gunRecoilNormal = 1 - (--amount);

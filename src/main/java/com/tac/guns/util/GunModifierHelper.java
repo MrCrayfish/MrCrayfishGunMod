@@ -112,6 +112,42 @@ public class GunModifierHelper
         return spread;
     }
 
+    public static float getModifiedFirstShotSpread(ItemStack weapon, float spread)
+    {
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                spread = modifier.modifyFirstShotSpread(spread);
+            }
+        }
+        IGunModifier[] modifiers = getModifiers(weapon);
+        for(IGunModifier modifier : modifiers)
+        {
+            spread = modifier.modifyFirstShotSpread(spread);
+        }
+        return spread;
+    }
+
+    public static float getModifiedHipFireSpread(ItemStack weapon, float spread)
+    {
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                spread = modifier.modifyHipFireSpread(spread);
+            }
+        }
+        IGunModifier[] modifiers = getModifiers(weapon);
+        for(IGunModifier modifier : modifiers)
+        {
+            spread = modifier.modifyHipFireSpread(spread);
+        }
+        return spread;
+    }
+
     public static double getModifiedProjectileSpeed(ItemStack weapon, double speed)
     {
         for(int i = 0; i < IAttachment.Type.values().length; i++)
@@ -184,6 +220,25 @@ public class GunModifierHelper
             kickReduction *= MathHelper.clamp(modifier.kickModifier(), 0.0F, 1.0F);
         }
         return 1.0F - kickReduction;
+    }
+
+    public static float getRecoilSmootheningTime(ItemStack weapon)
+    {
+        float recoilTime = 1;
+        for(int i = 0; i < IAttachment.Type.values().length; i++)
+        {
+            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for(IGunModifier modifier : modifiers)
+            {
+                recoilTime *= MathHelper.clamp(modifier.modifyRecoilSmoothening(), 1.0F, 2.0F);
+            }
+        }
+        IGunModifier[] modifiers = getModifiers(weapon);
+        for(IGunModifier modifier : modifiers)
+        {
+            recoilTime *= MathHelper.clamp(modifier.modifyRecoilSmoothening(), 1.0F, 2.0F);
+        }
+        return recoilTime;
     }
 
     public static float getRecoilModifier(ItemStack weapon)

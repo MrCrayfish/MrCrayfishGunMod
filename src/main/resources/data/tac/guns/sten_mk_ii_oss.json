@@ -25,7 +25,7 @@
   },
   "projectile": {
     "item": "tac:9mm_round",
-    "visible": true,
+    "visible": false,
     "damage": 4.25,
     "size": 0.1,
     "speed": 14.5,

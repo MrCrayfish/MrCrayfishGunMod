@@ -33,7 +33,7 @@
   },
   "projectile": {
     "item": "tac:nato_556_bullet",
-    "visible": true,
+    "visible": false,
     "damage": 6,
     "size": 0.1,
     "speed": 34.5,
