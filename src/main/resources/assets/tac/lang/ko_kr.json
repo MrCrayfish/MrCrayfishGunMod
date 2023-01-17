@@ -224,7 +224,6 @@
     "info.tac.damage": "피해량: %s",
     "info.tac.ignore_ammo": "무한 탄약",
     "info.tac.ammo": "탄약: %s",
-
     "info.tac.ammo_type": "탄종: %s",
 
     "info.tac.oldRifleScope": "해당 조준경 슬롯에는 %s만 사용 가능합니다.",
@@ -413,5 +412,7 @@
     "tac.button.steadyAim": "조준 안정화",
 
     "curios.identifier.armor_rig": "타임리스 앤 클래식 보호구",
+
+    "recipe.gunworkbench": "총기 작업대",
     "key.tac.aim_sights": "토글식 정조준"
 }

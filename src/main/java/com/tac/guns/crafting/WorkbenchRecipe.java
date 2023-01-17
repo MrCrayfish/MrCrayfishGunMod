@@ -9,8 +9,13 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -87,4 +92,19 @@ public class WorkbenchRecipe implements IRecipe<WorkbenchTileEntity>
     {
         return group;
     }
+
+    public NonNullList<List<ItemStack>> getIngredientStacks(){
+        NonNullList<List<ItemStack>> list = NonNullList.create();
+        this.materials.forEach((entry)->{
+            ItemStack[] stacklist = entry.getFirst().getMatchingStacks();
+            int count = entry.getSecond();
+            for (int i=0; i<stacklist.length; i++){
+                stacklist[i].setCount(count);
+            }
+            List<ItemStack> slot = Arrays.asList(stacklist);
+            list.add(slot);
+        });
+        return list;
+    }
+
 }
