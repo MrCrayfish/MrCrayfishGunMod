@@ -24,7 +24,7 @@
   },
   "projectile": {
     "item": "tac:grenade40mm",
-    "visible": true,
+    "visible": false,
     "gravity": true,
     "damage": 22,
     "size": 0.2,

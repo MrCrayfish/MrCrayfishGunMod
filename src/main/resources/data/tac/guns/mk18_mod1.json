@@ -12,13 +12,17 @@
     "horizontalRecoilAngle": 2.025,
     "recoilKick": 1.325,
     "recoilAdsReduction": 0.205,
-    "weaponRecoilOffset": 0.895,
-    "cameraRecoilModifier": 1.375,
-    "recoilDuration": 0.115,
-    "alwaysSpread": true,
-    "spread": 2.55,
-    "weightKilo": 2.75,
-    "movementInaccuracy": 0.8
+    "weaponRecoilOffset": 0.855,
+    "cameraRecoilModifier": 1.475,
+    "recoilDuration": 0.185,
+    "weightKilo": 2.65,
+
+    "spread": 1.375,
+    "firstShotSpread": 0.0925,
+    "hipFireInaccuracy": 4.05,
+    "projToMinAccuracy": 6,
+    "msToAccuracyReset": 140,
+    "movementInaccuracy": 0.225
   },
   "reloads": {
     "magFed": true,
@@ -34,7 +38,7 @@
   },
   "projectile": {
     "item": "tac:nato_556_bullet",
-    "visible": true,
+    "visible": false,
     "damage": 6.25,
     "size": 0.1,
     "speed": 29.5,

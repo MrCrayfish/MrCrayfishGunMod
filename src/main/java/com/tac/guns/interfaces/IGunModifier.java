@@ -105,6 +105,38 @@ public interface IGunModifier
     }
 
     /**
+     * Modify the spread when firing the first shot until the accuracyReset timer is passed.
+     *
+     * @param spread the current weapon spread
+     * @return a new spread for the weapon
+     */
+    default float modifyFirstShotSpread(float spread)
+    {
+        return spread;
+    }
+
+    /**
+     * Modify the spread when firing a at the hip projectile.
+     *
+     * @param spread the current weapon spread
+     * @return a new spread for the weapon
+     */
+    default float modifyHipFireSpread(float spread)
+    {
+        return spread;
+    }
+
+    /**
+     * Modify the recoil time of recoil, increasing camera and visual recoil time, making the feel smoother and easier to maintain target holds
+     *
+     * @return a new spread for the weapon
+     */
+    default float modifyRecoilSmoothening()
+    {
+        return 1.0f;
+    }
+
+    /**
      * Add additional gravity to the projectile without changing the base gravity.
      *
      * @return additional gravity to add to the projectile
@@ -201,7 +233,7 @@ public interface IGunModifier
     }
 
     /**
-     * Modifies the fire rate of a weapon. The lower the number, the faster the weapon will fire.
+     * Modifies the fire rate of a weapon. The higher the number, the faster the weapon will fire.
      *
      * @param rate the current fire rate
      * @return the new fire rate

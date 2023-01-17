@@ -1,4 +1,103 @@
 {
+   "item.aa12_s": {
+      "subtitle": "subtitle.tac.aa12_fire_s",
+      "sounds": [
+         { "name": "tac:item/aa12_fire_s" }
+      ]
+   },
+   "item.db_fire": {
+      "subtitle": "subtitle.tac.db_fire",
+      "sounds": [
+         { "name": "tac:item/db_fire" }
+      ]
+   },
+   "item.db_fire2": {
+      "subtitle": "subtitle.tac.db_fire2",
+      "sounds": [
+         { "name": "tac:item/db2_fire" }
+      ]
+   },
+   "item.m590": {
+      "subtitle": "subtitle.tac.m590",
+      "sounds": [
+         { "name": "tac:item/m590" }
+      ]
+   },
+   "item.m590_fire_s": {
+      "subtitle": "subtitle.tac.m590_fire_s",
+      "sounds": [
+         { "name": "tac:item/m590_fire_s" }
+      ]
+   },
+   "item.m870_fire": {
+         "subtitle": "subtitle.tac.m870_fire",
+         "sounds": [
+            { "name": "tac:item/m870_fire" }
+         ]
+      },
+   "item.m1014_fire": {
+         "subtitle": "subtitle.tac.m1014_fire",
+         "sounds": [
+            { "name": "tac:item/m1014_fire" }
+         ]
+      },
+   "item.m1014_fire_s": {
+         "subtitle": "subtitle.tac.m1014_fire_s",
+         "sounds": [
+            { "name": "tac:item/m1014_fire_s" }
+         ]
+      },
+   "item.spas12_fire": {
+      "subtitle": "subtitle.tac.spas12_fire",
+      "sounds": [
+         { "name": "tac:item/spas12_fire" }
+      ]
+   },
+   "item.ak47_fire_s": {
+      "subtitle": "subtitle.tac.ak47_fire_s",
+      "sounds": [
+         { "name": "tac:item/ak47_fire_s" }
+      ]
+   },
+   "item.ar10_fire_s": {
+      "subtitle": "subtitle.tac.ar10_fire_s",
+      "sounds": [
+         { "name": "tac:item/ar10_fire_s" }
+      ]
+   },
+   "item.ar15_fire_s": {
+      "subtitle": "subtitle.tac.ar15_fire_s",
+      "sounds": [
+         { "name": "tac:item/ar15_fire_s" }
+      ]
+   },
+   "item.fnfal_fire_s": {
+      "subtitle": "subtitle.tac.fnfal_fire_s",
+      "sounds": [
+         { "name": "tac:item/fnfal_fire_s" }
+      ]
+   },
+   "item.m1garand_fire_s": {
+      "subtitle": "subtitle.tac.m1garand_fire_s",
+      "sounds": [
+         { "name": "tac:item/m1garand_fire_s" }
+      ]
+   },
+   "item.m4a1_fire_s": {
+      "subtitle": "subtitle.tac.m4a1_fire_s",
+      "sounds": [
+         { "name": "tac:item/m4a1_fire_s" }
+      ]
+   },
+
+
+
+
+
+
+
+
+
    "item.fire_m1911": {
       "subtitle": "subtitle.tac.fire_1911fire",
       "sounds": [
@@ -105,12 +204,6 @@
       "subtitle": "subtitle.tac.fire_thompsonfire",
       "sounds": [
          { "name": "tac:item/thompson_fire" }
-      ]
-   },
-   "item.fire_db": {
-      "subtitle": "subtitle.tac.fire_dbfire",
-      "sounds": [
-         { "name": "tac:item/db_fire" }
       ]
    },
    "item.dmr_fire": {
@@ -304,12 +397,6 @@
       "subtitle": "subtitle.tac.sks",
       "sounds": [
          { "name": "tac:item/sks" }
-      ]
-   },
-   "item.m590": {
-      "subtitle": "subtitle.tac.m590",
-      "sounds": [
-         { "name": "tac:item/m590" }
       ]
    },
    "item.m203": {
