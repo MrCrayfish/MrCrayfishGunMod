@@ -25,14 +25,23 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 public final class KeyBind
 {
 	public static final HashMap< String, KeyBind > REGISTRY = new HashMap<>();
-	
-	private static final long HANDLE = Minecraft.getInstance().getMainWindow().getHandle();
+
+	private static long getHandle(){
+		long value;
+		try{
+			value = Minecraft.getInstance().getMainWindow().getHandle();
+		}
+		catch (NullPointerException e){
+			value = 0;
+		}
+		return value;
+	}
+
+	private static final Function< Integer, Boolean >
+		UPDATER_KEYBOARD = key -> GLFW.glfwGetKey( getHandle(), key ) == GLFW.GLFW_PRESS;
 	
 	private static final Function< Integer, Boolean >
-		UPDATER_KEYBOARD = key -> GLFW.glfwGetKey( HANDLE, key ) == GLFW.GLFW_PRESS;
-	
-	private static final Function< Integer, Boolean >
-		UPDATER_MOUSE = key -> GLFW.glfwGetMouseButton( HANDLE, key ) == GLFW.GLFW_PRESS;
+		UPDATER_MOUSE = key -> GLFW.glfwGetMouseButton( getHandle(), key ) == GLFW.GLFW_PRESS;
 	
 	private static final Function< Integer, Boolean > UPDATER_NONE = key -> false;
 	

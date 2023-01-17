@@ -84,6 +84,10 @@ minecraft {
     }
 }
 
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
 //processResources {
 //    doLast {
 //        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {

@@ -5,16 +5,12 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.tac.guns.Reference;
 import com.tac.guns.init.ModRecipeSerializers;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -31,7 +27,6 @@ public class WorkbenchRecipeBuilder
     private final Item result;
     private final int count;
     private final List<Pair<Ingredient, Integer>> materials;
-    private final Advancement.Builder advancementBuilder;
     private String group;
 
     public WorkbenchRecipeBuilder(IItemProvider item, int count)
@@ -39,7 +34,6 @@ public class WorkbenchRecipeBuilder
         this.result = item.asItem();
         this.count = count;
         this.materials = new ArrayList<>();
-        this.advancementBuilder = Advancement.Builder.builder();
     }
 
     /**
@@ -75,6 +69,18 @@ public class WorkbenchRecipeBuilder
         return this;
     }
 
+    public WorkbenchRecipeBuilder addIngredient(ITag.INamedTag<Item> item, int quantity)
+    {
+        this.materials.add(new Pair<>(Ingredient.fromTag(item), quantity));
+        return this;
+    }
+
+    public WorkbenchRecipeBuilder addIngredient(ITag.INamedTag<Item> item)
+    {
+        this.materials.add(new Pair<>(Ingredient.fromTag(item), 1));
+        return this;
+    }
+
     /**
      * Adds an ingredient of the given item.
      */
@@ -91,16 +97,6 @@ public class WorkbenchRecipeBuilder
         this.materials.add(new Pair<>(item, quantity));
         return this;
     }
-
-    /**
-     * Adds a criterion needed to unlock the recipe.
-     */
-    public WorkbenchRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn)
-    {
-        this.advancementBuilder.withCriterion(name, criterionIn);
-        return this;
-    }
-
     /**
      * Sets the group to place this recipe in.
      */
@@ -136,7 +132,7 @@ public class WorkbenchRecipeBuilder
         }
         else
         {
-            this.build(consumerIn, new ResourceLocation(modid, save));
+            this.build(consumerIn, new ResourceLocation(modid, "craft_"+save));
         }
     }
 
@@ -145,22 +141,8 @@ public class WorkbenchRecipeBuilder
      */
     public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id)
     {
-        this.validate(id);
-        this.advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", RecipeUnlockedTrigger.create(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
-        consumerIn.accept(new Result(id, this.result, this.count, this.group == null ? "" : this.group, this.materials, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath())));
+        consumerIn.accept(new Result(id, this.result, this.count, this.group == null ? "" : this.group, this.materials));
     }
-
-    /**
-     * Makes sure that this recipe is valid and obtainable.
-     */
-    private void validate(ResourceLocation id)
-    {
-        if(this.advancementBuilder.getCriteria().isEmpty())
-        {
-            throw new IllegalStateException("No way of obtaining recipe " + id);
-        }
-    }
-
     public static class Result implements IFinishedRecipe
     {
         private final ResourceLocation id;
@@ -168,18 +150,14 @@ public class WorkbenchRecipeBuilder
         private final int count;
         private final String group;
         private final List<Pair<Ingredient, Integer>> materials;
-        private final Advancement.Builder advancement;
-        private final ResourceLocation advancementId;
 
-        public Result(ResourceLocation id, IItemProvider item, int count, String group, List<Pair<Ingredient, Integer>> materials, Advancement.Builder advancement, ResourceLocation advancementId)
+        public Result(ResourceLocation id, IItemProvider item, int count, String group, List<Pair<Ingredient, Integer>> materials)
         {
             this.id = id;
             this.item = item.asItem();
             this.count = count;
             this.group = group;
             this.materials = materials;
-            this.advancement = advancement;
-            this.advancementId = advancementId;
         }
 
         @Override
@@ -221,13 +199,13 @@ public class WorkbenchRecipeBuilder
         @Override
         public JsonObject getAdvancementJson()
         {
-            return this.advancement.serialize();
+            return new JsonObject();
         }
 
         @Override
         public ResourceLocation getAdvancementID()
         {
-            return advancementId;
+            return new ResourceLocation("", "");
         }
     }
 }
