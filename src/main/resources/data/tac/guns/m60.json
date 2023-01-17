@@ -1,7 +1,7 @@
 {
   "general": {
     "auto": true,
-    "rate": 600,
+    "rate": 3,
     "rateSelector": [
       0,
       2
@@ -14,14 +14,10 @@
     "weaponRecoilOffset": 0.675,
     "cameraRecoilModifier": 1.15,
     "recoilDuration": 0.335,
+    "alwaysSpread": true,
+    "spread": 3.15,
     "weightKilo": 10.3,
-
-    "spread": 2.75,
-    "firstShotSpread": 0.265,
-    "hipFireInaccuracy": 7.8,
-    "projToMinAccuracy": 12,
-    "msToAccuracyReset": 460,
-    "movementInaccuracy": 3.15
+    "movementInaccuracy": 12.0
   },
   "reloads": {
     "magFed": true,

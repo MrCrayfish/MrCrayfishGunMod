@@ -26,7 +26,7 @@ import net.minecraft.util.math.vector.Vector3f;
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
  */
-public class AimpointT2SightModel implements IOverrideModel
+public class AimpointT1SightModel implements IOverrideModel
 {
     private static final ResourceLocation RED_DOT_RETICLE = new ResourceLocation(Reference.MOD_ID, "textures/items/timeless_scopes/dot_reticle.png");
     private static final ResourceLocation GLASS = new ResourceLocation(Reference.MOD_ID, "textures/items/aimpoint_t1_glass.png");
