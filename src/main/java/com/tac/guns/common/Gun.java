@@ -460,7 +460,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public float getHipFireInaccuracy()
         {
-            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.hipFireInaccuracy*1.25f :
+            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.general) ? this.hipFireInaccuracy*1.75f :
                     this.hipFireInaccuracy*1.75f;//*1.25f;
         }
         /**

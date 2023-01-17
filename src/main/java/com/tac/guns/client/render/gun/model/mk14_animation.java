@@ -71,46 +71,41 @@ public class mk14_animation implements IOverrideModel {
 
         matrices.push();
         {
+
             controller.applySpecialModelTransform(MK14_BODY.getModel(), MK14AnimationController.INDEX_BOLT, transformType, matrices);
             Gun gun = ((GunItem) stack.getItem()).getGun();
         float cooldownOg = ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate()) < 0 ? 1 : ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate());
-        
+
 
             AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
             boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
-            if(Gun.hasAmmo(stack) || shouldOffset)
-            {
-                //RenderUtil.renderModel(SpecialModels.M1_GARAND.getModel(), stack, matrices, renderBuffer, light, overlay);
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-            }
-            else if(!Gun.hasAmmo(stack))
-            {
-                if(cooldownOg > 0.5){
+            if(transformType.isFirstPerson()) {
+                if (Gun.hasAmmo(stack) || shouldOffset) {
+                    //RenderUtil.renderModel(SpecialModels.M1_GARAND.getModel(), stack, matrices, renderBuffer, light, overlay);
                     // Math provided by Bomb787 on GitHub and Curseforge!!!
-                    matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-                }
-                else
-                {
-                    matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+                    matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                } else if (!Gun.hasAmmo(stack)) {
+                    if (cooldownOg > 0.5) {
+                        // Math provided by Bomb787 on GitHub and Curseforge!!!
+                        matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                    } else {
+                        matrices.translate(0, 0, 0.205f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                    }
                 }
             }
             RenderUtil.renderModel(BOLT_HANDLE.getModel(), stack, matrices, renderBuffer, light, overlay);
 
-            if(Gun.hasAmmo(stack)|| shouldOffset)
-            {
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, -0.0335f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0), 0);
-            }
-            else if(!Gun.hasAmmo(stack))
-            {
-                if(cooldownOg > 0.5){
+            if(transformType.isFirstPerson()) {
+                if (Gun.hasAmmo(stack) || shouldOffset) {
                     // Math provided by Bomb787 on GitHub and Curseforge!!!
-                    matrices.translate(0, -0.0335f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0), 0);
-                }
-                else
-                {
-                    matrices.translate(0, -0.0335f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0), 0);
+                    matrices.translate(0, -0.0335f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0), 0);
+                } else if (!Gun.hasAmmo(stack)) {
+                    if (cooldownOg > 0.5) {
+                        // Math provided by Bomb787 on GitHub and Curseforge!!!
+                        matrices.translate(0, -0.0335f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0), 0);
+                    } else {
+                        matrices.translate(0, -0.0335f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0), 0);
+                    }
                 }
             }
             RenderUtil.renderModel(BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
