@@ -63,28 +63,24 @@ public class sti2011_animation implements IOverrideModel {
 
         matrices.push();
         {
+            if(transformType.isFirstPerson()) {
+                controller.applySpecialModelTransform(SpecialModels.STI2011_BODY.getModel(), STI2011AnimationController.INDEX_SLIDE, transformType, matrices);
+                Gun gun = ((GunItem) stack.getItem()).getGun();
+                float cooldownOg = ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate()) < 0 ? 1 : ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate());
 
-            controller.applySpecialModelTransform(SpecialModels.STI2011_BODY.getModel(),STI2011AnimationController.INDEX_SLIDE,transformType,matrices);
-            Gun gun = ((GunItem) stack.getItem()).getGun();
-        float cooldownOg = ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate()) < 0 ? 1 : ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate());
-        
+                AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
+                boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
 
-            AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
-            boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
 
-            matrices.translate(0.00, 0.0, 0.035); // Issues with the slide starting out further forward, seems to be ~ a 0.035 movement
-            if (Gun.hasAmmo(stack) || shouldOffset) {
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.260f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-                GunRenderingHandler.get().opticMovement = 0.260f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
-            } else if (!Gun.hasAmmo(stack)) {
-                if (cooldownOg > 0.5) {
+                matrices.translate(0.00, 0.0, 0.035); // Issues with the slide starting out further forward, seems to be ~ a 0.035 movement
+                if (Gun.hasAmmo(stack) || shouldOffset) {
                     // Math provided by Bomb787 on GitHub and Curseforge!!!
-                    matrices.translate(0, 0, 0.260f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-                    GunRenderingHandler.get().opticMovement = 0.260f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
-                } else {
-                    matrices.translate(0, 0, 0.260f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
-                    GunRenderingHandler.get().opticMovement = 0.260f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0);
+                    matrices.translate(0, 0, 0.235f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                    GunRenderingHandler.get().opticMovement = 0.235f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0);
+                } else if (!Gun.hasAmmo(stack)) {
+                    {
+                        matrices.translate(0, 0, 0.235f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                    }
                 }
             }
             matrices.translate(0.00, 0.0, -0.008);

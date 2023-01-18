@@ -9,13 +9,18 @@
     "horizontalRecoilAngle": 5.575,
     "recoilKick": 2.15,
     "recoilAdsReduction": 0.145,
-    "weaponRecoilOffset": 0.8225,
-    "cameraRecoilModifier": 5.5,
-    "recoilDuration": 0.175,
-    "alwaysSpread": true,
-    "spread": 4.62,
-    "weightKilo": 0.9,
-    "movementInaccuracy": 0.6
+
+    "weaponRecoilOffset": 0.915,
+    "cameraRecoilModifier": 5.25,
+    "recoilDuration": 0.075,
+    "weightKilo": 0.0,
+
+    "spread": 1.2,
+    "firstShotSpread": 0.175,
+    "hipFireInaccuracy": 2.15,
+    "projToMinAccuracy": 3,
+    "msToAccuracyReset": 620,
+    "movementInaccuracy": 0.225
   },
   "reloads": {
     "magFed": true,
@@ -35,7 +40,7 @@
     "damage": 5.0,
     "size": 0.2,
     "speed": 17.0,
-    "life": 4
+    "life": 8
   },
   "sounds": {
     "fire": "tac:item.fire_glock",

@@ -80,25 +80,22 @@ public class type81_x_animation implements IOverrideModel {
         //Always push
         matrices.push();
         {
-            controller.applySpecialModelTransform(SpecialModels.TYPE81_X.getModel(),Type81AnimationController.INDEX_BOLT,transformType,matrices);
-            AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
-            boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
-            if(shouldOffset)
-                GunRenderingHandler.get().slideKeep = 20;
-            if(Gun.hasAmmo(stack) || GunRenderingHandler.get().slideKeep > 0 || shouldOffset)
-            {
-                matrices.translate(0, 0, 0.280f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-                GunRenderingHandler.get().slideKeep--;
-            }
-            else if(!Gun.hasAmmo(stack))
-            {
-                if(cooldownOg > 0.5){
-                    // Math provided by Bomb787 on GitHub and Curseforge!!!
-                    matrices.translate(0, 0, 0.280f * (-4.5 * Math.pow(cooldownOg-0.5, 2) + 1.0));
-                }
-                else
-                {
-                    matrices.translate(0, 0, 0.280f * (-4.5 * Math.pow(0.5-0.5, 2) + 1.0));
+            if(transformType.isFirstPerson()) {
+                controller.applySpecialModelTransform(SpecialModels.TYPE81_X.getModel(), Type81AnimationController.INDEX_BOLT, transformType, matrices);
+                AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
+                boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
+                if (shouldOffset)
+                    GunRenderingHandler.get().slideKeep = 20;
+                if (Gun.hasAmmo(stack) || GunRenderingHandler.get().slideKeep > 0 || shouldOffset) {
+                    matrices.translate(0, 0, 0.280f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                    GunRenderingHandler.get().slideKeep--;
+                } else if (!Gun.hasAmmo(stack)) {
+                    if (cooldownOg > 0.5) {
+                        // Math provided by Bomb787 on GitHub and Curseforge!!!
+                        matrices.translate(0, 0, 0.280f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                    } else {
+                        matrices.translate(0, 0, 0.280f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                    }
                 }
             }
             matrices.translate(0, 0, 0.025F);

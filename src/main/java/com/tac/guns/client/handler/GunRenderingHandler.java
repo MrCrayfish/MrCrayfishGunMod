@@ -178,14 +178,16 @@ public class GunRenderingHandler {
 
     @SubscribeEvent
     public void onCameraSetup(EntityViewRenderEvent.CameraSetup event){
-        if(Config.COMMON.gameplay.forceCameraShakeOnFire.get() || Config.CLIENT.display.cameraShakeOnFire.get()) {
+        if(!(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem) || Minecraft.getInstance().player.getHeldItemMainhand().getTag().isEmpty())
+            return;
+        if((Config.COMMON.gameplay.forceCameraShakeOnFire.get() || Config.CLIENT.display.cameraShakeOnFire.get()) && Minecraft.getInstance().player.getHeldItemMainhand().getTag().getInt("CurrentFireMode") != 0){
             float cameraShakeDuration = 0.06f; //TODO: Force to be adjusted per shot later in 0.3.4-0.3.5, customizable per gun
             long alphaTime = System.currentTimeMillis() - fireTime;
             float progress = (alphaTime < cameraShakeDuration * 1000 ? 1 - alphaTime / (cameraShakeDuration * 1000f) : 0);
             //apply camera shake when firing.
             float alpha = (progress
                     * (Math.random() - 0.5 < 0 ? -1 : 1)
-                    * 0.8f);
+                    * 0.9f);
             event.setPitch(event.getPitch() - Math.abs(alpha));
             event.setRoll(event.getRoll() + alpha * 0.5f);
         }
@@ -193,7 +195,9 @@ public class GunRenderingHandler {
 
     @SubscribeEvent
     public void onFovModifying(EntityViewRenderEvent.FOVModifier event){
-        if(Config.COMMON.gameplay.forceCameraShakeOnFire.get() || Config.CLIENT.display.cameraShakeOnFire.get()) {
+        if(!(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem) || Minecraft.getInstance().player.getHeldItemMainhand().getTag().isEmpty())
+            return;
+        if((Config.COMMON.gameplay.forceCameraShakeOnFire.get() || Config.CLIENT.display.cameraShakeOnFire.get()) && Minecraft.getInstance().player.getHeldItemMainhand().getTag().getInt("CurrentFireMode") != 0) {
             float cameraShakeDuration = 0.06f * (AimingHandler.get().isAiming() ? 1.5f : 1f);
             long alphaTime = System.currentTimeMillis() - fireTime;
             float progress = (alphaTime < cameraShakeDuration * 1000 ? 1 - alphaTime / (cameraShakeDuration * 1000f) : 0);
