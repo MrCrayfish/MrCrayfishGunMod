@@ -655,7 +655,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         private int trailColor = 0xFFD289;
         @Optional
-        private double trailLengthMultiplier = 4.25;
+        private double trailLengthMultiplier = 4.35;
+        @Optional
+        private float trailRotationMultiplier = 0.0175f;
         @Optional
         private boolean ricochet = true;
         @TGExclude
@@ -678,6 +680,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             tag.putBoolean("DamageReduceOverLife", this.damageReduceOverLife);
             tag.putInt("TrailColor", this.trailColor);
             tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
+            tag.putFloat("TrailRotationMultiplier", this.trailRotationMultiplier);
             tag.putBoolean("Ricochet", this.ricochet);
             tag.putInt("BulletClass", this.bulletClass);
             tag.putFloat("BluntDamagePercentage", this.bluntDamagePercentage);
@@ -727,6 +730,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 this.trailLengthMultiplier = tag.getDouble("TrailLengthMultiplier");
             }
+            if(tag.contains("TrailRotationMultiplier", Constants.NBT.TAG_ANY_NUMERIC))
+            {
+                this.trailRotationMultiplier = tag.getFloat("TrailRotationMultiplier");
+            }
             if(tag.contains("Ricochet", Constants.NBT.TAG_ANY_NUMERIC))
             {
                 this.ricochet = tag.getBoolean("Ricochet");
@@ -754,6 +761,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             projectile.damageReduceOverLife = this.damageReduceOverLife;
             projectile.trailColor = this.trailColor;
             projectile.trailLengthMultiplier = this.trailLengthMultiplier;
+            projectile.trailRotationMultiplier = this.trailRotationMultiplier;
             projectile.ricochet = this.ricochet;
             projectile.bulletClass = this.bulletClass;
             projectile.bluntDamagePercentage = this.bluntDamagePercentage;
@@ -839,6 +847,13 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public double getTrailLengthMultiplier()
         {
             return this.trailLengthMultiplier;
+        }
+        /**
+         * @return The multiplier to change the rotation from muzzle to bullet, this helps close bullet trails render properly without purely relying on eye / view position
+         */
+        public float getTrailRotationMultiplier()
+        {
+            return this.trailRotationMultiplier;
         }
         /**
          * @return If the bullet will bounce off of hard blocks
