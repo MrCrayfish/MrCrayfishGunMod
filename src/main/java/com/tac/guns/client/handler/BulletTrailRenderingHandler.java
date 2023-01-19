@@ -2,6 +2,7 @@ package com.tac.guns.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.tac.guns.Config;
 import com.tac.guns.client.BulletTrail;
 import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.util.RenderUtil;
@@ -18,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
@@ -25,6 +27,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static net.minecraft.entity.ai.attributes.Attributes.MOVEMENT_SPEED;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -53,6 +57,8 @@ public class BulletTrailRenderingHandler
      */
     public void add(BulletTrail trail)
     {
+        //if(Config.CLIENT.particle.)
+
         // Prevents trails being added when not in a world
         World world = Minecraft.getInstance().world;
         if(world != null)
@@ -121,9 +127,10 @@ public class BulletTrailRenderingHandler
 
         Minecraft mc = Minecraft.getInstance();
         Entity entity = mc.getRenderViewEntity();
-        if(entity == null || bulletTrail.isDead() || bulletTrail.getAge() < 1)
+        if(entity == null || bulletTrail.isDead())
             return;
-
+        /*if(!AimingHandler.get().isAiming() && bulletTrail.getAge() < 1)
+            return;*/
         matrixStack.push();
 
         Vector3d view = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
@@ -132,23 +139,42 @@ public class BulletTrailRenderingHandler
         double bulletX = position.x + motion.x * partialTicks;
         double bulletY = position.y + motion.y * partialTicks;
         double bulletZ = position.z + motion.z * partialTicks;
-        matrixStack.translate(bulletX - view.getX(), bulletY - view.getY(), bulletZ - view.getZ());
+        //TODO: Use muzzle flash location of entity render as the render position for muzzle flash start
+
+        if(ShootingHandler.get().isShooting() && Minecraft.getInstance().player.isEntityEqual(entity))
+        {
+            //Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent(Minecraft.getInstance().player.rotationYaw+"") ,true);
+            //matrixStack.translate(bulletX - view.getX(), bulletY - view.getY()-0.165f, bulletZ - view.getZ());
+            matrixStack.translate(bulletX - view.getX(), bulletY - view.getY() -0.175f, bulletZ - view.getZ());
+            if(!AimingHandler.get().isAiming()) {
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(0.05f));
+                //matrixStack.rotate(Vector3f.ZN.rotationDegrees(0.0775f));
+            }
+        }
+        else
+            matrixStack.translate(bulletX - view.getX(), bulletY - view.getY()-0.205f, bulletZ - view.getZ());
+        //matrixStack.translate(0, -0.5, 0);
+        //matrixStack.translate(bulletX - view.getX()-0.15f, bulletY - view.getY()-0.3f, bulletZ - view.getZ());
 
        matrixStack.rotate(Vector3f.YP.rotationDegrees(bulletTrail.getYaw()));
+       //matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 90.125f));
        matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 90.125f));
 
         Vector3d motionVec = new Vector3d(motion.x, motion.y, motion.z);
-        float trailLength = (float) ((motionVec.length() / 3.0F) * bulletTrail.getTrailLengthMultiplier());
+        float length = (float) motionVec.length();
+        if(bulletTrail.getAge() < 1)
+            length*=0.965f;
+        float trailLength = (float) ((length / 3.0F) * bulletTrail.getTrailLengthMultiplier());
         float red = (float) (bulletTrail.getTrailColor() >> 16 & 255) / 255.0F;
         float green = (float) (bulletTrail.getTrailColor() >> 8 & 255) / 255.0F;
         float blue = (float) (bulletTrail.getTrailColor() & 255) / 255.0F;
-        float alpha = 0.35F;
+        float alpha = 0.275F;
 
         // Prevents the trail length from being longer than the distance to shooter
         Entity shooter = bulletTrail.getShooter();
         if(shooter != null)
         {
-            trailLength = (float) Math.min(trailLength, shooter.getEyePosition(partialTicks).distanceTo(new Vector3d(bulletX,bulletY, bulletZ)));
+            trailLength = (float) Math.min(trailLength+0.125, shooter.getEyePosition(partialTicks).distanceTo(new Vector3d(bulletX,bulletY, bulletZ)));
         }
 
         Matrix4f matrix4f = matrixStack.getLast().getMatrix();

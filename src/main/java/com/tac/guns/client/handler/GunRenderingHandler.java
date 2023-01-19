@@ -1299,7 +1299,7 @@ public class GunRenderingHandler {
         if (modifiedGun.getDisplay().getFlash() == null) {
             return;
         }
-        if (modifiedGun.canAttachType(IAttachment.Type.BARREL) && GunModifierHelper.isSilencedFire(weapon)) return;
+        //if (modifiedGun.canAttachType(IAttachment.Type.BARREL) && GunModifierHelper.isSilencedFire(weapon)) return;
 
         if (transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND || transformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
             if (this.entityIdForMuzzleFlash.contains(entity.getEntityId()) ) {
@@ -1309,6 +1309,9 @@ public class GunRenderingHandler {
         }
     }
 
+    public double displayX = 0;
+    public double displayY = 0;
+    public double displayZ = 0;
     private void drawMuzzleFlash(ItemStack weapon, Gun modifiedGun, float random, boolean flip, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
         matrixStack.push();
 
@@ -1316,9 +1319,9 @@ public class GunRenderingHandler {
         if (muzzleFlash == null)
             return;
 
-        double displayX = muzzleFlash.getXOffset() * 0.0625;
-        double displayY = muzzleFlash.getYOffset() * 0.0625;
-        double displayZ = (muzzleFlash.getZOffset()+this.muzzleExtraOnEnch) * 0.0625;
+        displayX = muzzleFlash.getXOffset() * 0.0625;
+        displayY = muzzleFlash.getYOffset() * 0.0625;
+        displayZ = (muzzleFlash.getZOffset()+this.muzzleExtraOnEnch) * 0.0625;
 
         if(GunRenderingHandler.get().muzzleExtraOnEnch != 0)
             this.muzzleExtraOnEnch = 0;

@@ -76,7 +76,7 @@ public class BulletTrail
 
         Entity entity = Minecraft.getInstance().getRenderViewEntity();
         double distance = entity != null ? Math.sqrt(entity.getDistanceSq(this.position)) : Double.MAX_VALUE;
-        if(this.age >= this.maxAge || distance > 256)
+        if(this.age >= this.maxAge || distance > 1024)
         {
             this.dead = true;
         }

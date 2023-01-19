@@ -17,14 +17,13 @@
     "weaponRecoilOffset": 0.9275,
     "cameraRecoilModifier": 0.865,
     "recoilDuration": 0.1375,
+    "weightKilo": 1.45,
 
-    "weightKilo": 2.1,
-
-    "spread": 1.85,
-    "firstShotSpread": 0.145,
-    "hipFireInaccuracy": 3.1,
-    "projToMinAccuracy": 6,
-    "msToAccuracyReset": 110,
+    "spread": 1.65,
+    "firstShotSpread": 0.155,
+    "hipFireInaccuracy": 3.2,
+    "projToMinAccuracy": 9,
+    "msToAccuracyReset": 130,
     "movementInaccuracy": 0.225
   },
   "reloads": {
@@ -41,9 +40,9 @@
     "visible": false,
     "damage": 7.0,
     "size": 0.225,
-    "speed": 9.5,
-    "life": 9,
-    "trailLengthMultiplier": 5.15
+    "speed": 12.5,
+    "life": 16,
+    "trailLengthMultiplier": 4.05
   },
   "sounds": {
     "fire": "tac:item.vector",

@@ -201,7 +201,7 @@ public class GunModifiers
         @Override
         public float additionalWeaponWeight() { return 0.425F; }
         @Override
-        public float modifyWeaponWeight() { return 0.35F; }
+        public float modifyWeaponWeight() { return 0.5F; }
     };
 
     public static final IGunModifier TACTICAL_STOCK_MODIFIER = new IGunModifier()
@@ -242,7 +242,7 @@ public class GunModifiers
         public float additionalWeaponWeight() { return 0.3F; }
 
         @Override
-        public float modifyWeaponWeight() { return 0.15F; }
+        public float modifyWeaponWeight() { return 0.3F; }
     };
     public static final IGunModifier LIGHT_STOCK_MODIFIER = new IGunModifier()
     {
@@ -355,7 +355,7 @@ public class GunModifiers
         }
 
         @Override
-        public float modifyRecoilSmoothening() {return 1.20F;}
+        public float modifyRecoilSmoothening() {return 1.225F;}
 
         @Override
         public double modifyMuzzleFlashSize(double size)
@@ -367,10 +367,10 @@ public class GunModifiers
         public float additionalWeaponWeight() { return 0.325F; }
 
         @Override
-        public float modifyWeaponWeight() { return 0.30F; }
+        public float modifyWeaponWeight() { return 0.35F; }
         @Override
         public double modifyAimDownSightSpeed(double speed) {
-            return speed*0.85;
+            return speed*0.75;
         }
 
         @Override
@@ -382,7 +382,7 @@ public class GunModifiers
     {
         @Override
         public double modifyAimDownSightSpeed(double speed) {
-            return speed*0.875;
+            return speed*0.775;
         }
 
         @Override
