@@ -4,6 +4,7 @@ package com.tac.guns.item.TransitionalTypes;
 import com.tac.guns.Config;
 import com.tac.guns.GunMod;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.network.ServerPlayHandler;
 import com.tac.guns.interfaces.IGunModifier;
 import com.tac.guns.item.GunItem;
 import com.tac.guns.util.GunEnchantmentHelper;
@@ -93,11 +94,11 @@ public class TimelessGunItem extends GunItem {
         }
         GunItem gun = (GunItem) stack.getItem();
         if (tagCompound != null) {
-            float speed = 0.1f / (1 + ((gun.getGun().getGeneral().getWeightKilo() * (1 + GunModifierHelper.getModifierOfWeaponWeight(stack)) + GunModifierHelper.getAdditionalWeaponWeight(stack) - GunEnchantmentHelper.getWeightModifier(stack)) * 0.0275f));
-            speed = Math.max(Math.min(speed, 0.095F), 0.075F);
-            if (speed > 0.09)
+            float speed = ServerPlayHandler.calceldGunWeightSpeed(gun.getGun(), stack);
+            speed = Math.max(Math.min(speed, 0.1F), 0.075F);
+            if (speed > 0.095)
                 tooltip.add((new TranslationTextComponent("info.tac.lightWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_AQUA)));
-            else if (speed < 0.09 && speed > 0.0825)
+            else if (speed < 0.095 && speed > 0.085)
                 tooltip.add((new TranslationTextComponent("info.tac.standardWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_GREEN)));
             else
                 tooltip.add((new TranslationTextComponent("info.tac.heavyWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_RED)));

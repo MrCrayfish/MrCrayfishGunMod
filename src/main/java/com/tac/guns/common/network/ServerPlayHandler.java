@@ -697,12 +697,13 @@ public class ServerPlayHandler
             if ((MovementAdaptationsHandler.get().isReadyToUpdate()) || MovementAdaptationsHandler.get().getPreviousWeight() != gun.getGeneral().getWeightKilo())
             {
                 // TODO: Show that the speed effect is now only half
-                float speed =
-                        0.1f
-                                /
-                                (1+(((gun.getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem) - GunEnchantmentHelper.getWeightModifier(heldItem))/2)
-                                * 0.0275f))
-                        ; // * 0.01225f));// //(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem)) / 3.775F));
+                float speed = calceldGunWeightSpeed(gun, heldItem);
+
+                /*0.1f
+                        /
+                        (1+(((gun.getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem) - GunEnchantmentHelper.getWeightModifier(heldItem))/2)
+                        * 0.0275f))
+                ; // * 0.01225f));// //(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem)) / 3.775F));*/
 
                 if(player.isSprinting())
                     speed = Math.max(Math.min(speed, 0.1F), 0.075F)*0.965f;
@@ -722,6 +723,12 @@ public class ServerPlayHandler
         //DEBUGGING AND BALANCE TOOL
         //player.sendStatusMessage(new TranslationTextComponent("Speed is: " + player.getAttribute(MOVEMENT_SPEED).getValue()) ,true);
         //new TranslationTextComponent("Speed is: " + player.getAttribute(MOVEMENT_SPEED).getValue()) ,true); new TranslationTextComponent(SyncedPlayerData.instance().get(player, ModSyncedDataKeys.MOVING)+""), true);
+    }
+
+    public static float calceldGunWeightSpeed(Gun gun, ItemStack gunStack)
+    {
+        return 0.1f / (1+(((gun.getGeneral().getWeightKilo()*(1+GunModifierHelper.getModifierOfWeaponWeight(gunStack)) + GunModifierHelper.getAdditionalWeaponWeight(gunStack) - GunEnchantmentHelper.getWeightModifier(gunStack))/2)
+                        * 0.0275f));
     }
 
     public static void handleGunID(ServerPlayerEntity player, boolean regenerate)
