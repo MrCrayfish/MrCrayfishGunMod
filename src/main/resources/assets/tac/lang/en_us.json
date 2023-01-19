@@ -411,7 +411,5 @@
     "tac.button.attachments": "Modify Attachments",
     "tac.button.steadyAim": "Steady Aim",
 
-    "curios.identifier.armor_rig": "Timeless Armor",
-
-    "recipe.gunworkbench": "Gun workbench"
+    "curios.identifier.armor_rig": "Timeless Armor"
 }
