@@ -8,21 +8,20 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
+    "recoilAngle": 4.175,
+    "horizontalRecoilAngle": 2.55,
+    "recoilKick": 1.875,
+    "recoilAdsReduction": 0.25,
+    "weaponRecoilOffset": 0.717,
+    "cameraRecoilModifier": 1.425,
+    "recoilDuration": 0.215,
+    "weightKilo": 4.4,
 
-    "recoilAngle": 3.25,
-    "horizontalRecoilAngle": 2.15,
-    "recoilKick": 1.625,
-    "recoilAdsReduction": 0.235,
-    "weaponRecoilOffset": 0.785,
-    "cameraRecoilModifier": 0.905,
-    "recoilDuration": 0.18,
-    "weightKilo": 4.0,
-
-    "spread": 1.7,
-    "firstShotSpread": 0.1375,
+    "spread": 1.6,
+    "firstShotSpread": 0.135,
     "hipFireInaccuracy": 6.05,
     "projToMinAccuracy": 6,
-    "msToAccuracyReset": 150,
+    "msToAccuracyReset": 130,
     "movementInaccuracy": 0.55
   },
   "projectile": {
@@ -30,8 +29,8 @@
     "visible": false,
     "damage": 9.5,
     "size": 0.2,
-    "speed": 22.5,
-    "life": 11
+    "speed": 19.5,
+    "life": 12
   },
   "reloads": {
     "magFed": true,
@@ -52,7 +51,7 @@
     "draw": "tac:animation.ak47_draw",
     "inspect": "tac:animation.ak47_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.ak47_fire_s"
+    "silencedFire": "tac:item.fire_ak47s"
   },
   "display": {
     "flash": {

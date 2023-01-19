@@ -213,7 +213,7 @@ public class  ShootingHandler
             if(this.burstCooldown > 0)
                 this.burstCooldown -= 1;
     }
-    
+
     @SubscribeEvent
     public void onPostClientTick(TickEvent.ClientTickEvent event)
     {
@@ -232,7 +232,6 @@ public class  ShootingHandler
                 TimelessGunItem gunItem = (TimelessGunItem) heldItem.getItem();
                 if(heldItem.getTag().getInt("CurrentFireMode") == 3 && Config.CLIENT.controls.burstPress.get())
                 {
-
                     if(this.burstTracker > 0)
                         fire(player, heldItem);
                     return;
@@ -248,19 +247,18 @@ public class  ShootingHandler
                         if (this.burstTracker < gun.getGeneral().getBurstCount()) {
                             if (ShootingHandler.get().getshootMsGap() <= 0) {
                                 fire(player, heldItem);
-                                this.burstTracker++;
+                                if(!this.shootErr)
+                                    this.burstTracker++;
                             }
                         } else if (heldItem.getTag().getInt("AmmoCount") > 0 && this.burstTracker > 0) {
-                            if (!tracker.hasCooldown(heldItem.getItem())) {
-                                this.burstTracker = 0;
-                                this.clickUp = true;
-                                this.burstCooldown = gun.getGeneral().getBurstRate();
-                            }
+                            this.burstTracker = 0;
+                            this.clickUp = true;
+                            this.burstCooldown = gun.getGeneral().getBurstRate();
                         }
                         return;
                     }
                 }
-                else if(this.clickUp || InputHandler.PULL_TRIGGER.down )
+                else if(this.clickUp /*|| InputHandler.PULL_TRIGGER.down*/ )
                 {
                     if(heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstTracker > 0) {
                         this.burstCooldown = gunItem.getGun().getGeneral().getBurstRate();

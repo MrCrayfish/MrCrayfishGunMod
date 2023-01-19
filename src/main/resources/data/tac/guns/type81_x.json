@@ -1,20 +1,24 @@
 {
   "general": {
     "auto": true,
-    "rate": 3,
+    "rate": 600,
     "rateSelector": [0,1,2],
     "gripType":  "tac:two_handed_ak47",
-    "recoilAngle": 2.325,
-    "horizontalRecoilAngle": 2.385,
-    "recoilKick": 1.15,
+    "recoilAngle": 2.725,
+    "horizontalRecoilAngle": 2.325,
+    "recoilKick": 1.85,
     "recoilAdsReduction": 0.225,
-    "weaponRecoilOffset": 0.825,
-    "cameraRecoilModifier": 1.725,
-    "recoilDuration": 0.1825,
-    "alwaysSpread": true,
-    "spread": 2.825,
+    "weaponRecoilOffset": 0.805,
+    "cameraRecoilModifier": 1.625,
+    "recoilDuration": 0.275,
     "weightKilo": 4.1,
-    "movementInaccuracy": 0.9
+
+    "spread": 2.25,
+    "firstShotSpread": 0.135,
+    "hipFireInaccuracy": 5.2,
+    "projToMinAccuracy": 4,
+    "msToAccuracyReset": 220,
+    "movementInaccuracy": 0.875
   },
   "projectile": {
     "item":  "tac:762x39",
