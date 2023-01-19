@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 72
+    },
+    {
+      "item": {
+        "tag": "forge:gems/diamond"
+      },
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "tac:deagle_357"
+  }
+}

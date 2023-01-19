@@ -1,0 +1,26 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 16
+    },
+    {
+      "item": {
+        "tag": "forge:glass_panes"
+      },
+      "count": 10
+    },
+    {
+      "item": {
+        "tag": "forge:storage_blocks/redstone"
+      },
+      "count": 2
+    }
+  ],
+  "result": {
+    "item": "tac:eotech_n"
+  }
+}

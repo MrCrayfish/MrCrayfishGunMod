@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 86
+    },
+    {
+      "item": {
+        "tag": "forge:gems/diamond"
+      },
+      "count": 10
+    }
+  ],
+  "result": {
+    "item": "tac:mk18_mod1"
+  }
+}

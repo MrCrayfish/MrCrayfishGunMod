@@ -1,0 +1,14 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 18
+    }
+  ],
+  "result": {
+    "item": "tac:glock_17"
+  }
+}

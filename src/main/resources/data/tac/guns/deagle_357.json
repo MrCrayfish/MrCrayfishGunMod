@@ -1,6 +1,6 @@
 {
   "general": {
-    "rate": 220,
+    "rate": 210,
     "rateSelector": [
       0,
       1
@@ -13,7 +13,6 @@
     "weaponRecoilOffset": 0.735,
     "cameraRecoilModifier": 3.175,
     "recoilDuration": 0.1175,
-    "alwaysSpread": true,
     "weightKilo": 2.4,
 
     "spread": 0.825,

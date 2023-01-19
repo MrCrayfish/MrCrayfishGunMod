@@ -1,0 +1,26 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 20
+    },
+    {
+      "item": {
+        "tag": "forge:ingots/gold"
+      },
+      "count": 20
+    },
+    {
+      "item": {
+        "tag": "forge:gems/diamond"
+      },
+      "count": 6
+    }
+  ],
+  "result": {
+    "item": "tac:tti_g34"
+  }
+}

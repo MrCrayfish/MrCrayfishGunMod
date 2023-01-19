@@ -1,0 +1,21 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:nuggets/iron"
+      },
+      "count": 32
+    },
+    {
+      "item": {
+        "tag": "forge:gunpowder"
+      },
+      "count": 4
+    }
+  ],
+  "result": {
+    "item": "tac:lapua338",
+    "count": 4
+  }
+}

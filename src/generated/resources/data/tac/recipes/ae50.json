@@ -1,0 +1,26 @@
+{
+  "type": "tac:workbench",
+  "materials": [
+    {
+      "item": {
+        "tag": "forge:nuggets/iron"
+      },
+      "count": 14
+    },
+    {
+      "item": {
+        "tag": "forge:gunpowder"
+      },
+      "count": 3
+    },
+    {
+      "item": {
+        "tag": "forge:gems/diamond"
+      }
+    }
+  ],
+  "result": {
+    "item": "tac:ae50",
+    "count": 8
+  }
+}

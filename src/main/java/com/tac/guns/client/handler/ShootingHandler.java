@@ -113,6 +113,7 @@ public class  ShootingHandler
             {
                 if(heldItem.getItem() instanceof TimelessGunItem && heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstCooldown == 0)
                 {
+
                     this.burstTracker = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstCount();
                     fire(player, heldItem);
                     this.burstCooldown = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstRate();
@@ -212,7 +213,7 @@ public class  ShootingHandler
             if(this.burstCooldown > 0)
                 this.burstCooldown -= 1;
     }
-    
+
     @SubscribeEvent
     public void onPostClientTick(TickEvent.ClientTickEvent event)
     {
@@ -305,6 +306,7 @@ public class  ShootingHandler
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
             PacketHandler.getPlayChannel().sendToServer(new MessageShoot(player.getYaw(1), player.getPitch(1), RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw));
+
             if(Config.CLIENT.controls.burstPress.get()) this.burstTracker--;
             else this.burstTracker++;
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));

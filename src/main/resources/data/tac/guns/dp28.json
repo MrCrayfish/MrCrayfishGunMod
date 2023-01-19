@@ -16,7 +16,7 @@
     "recoilDuration": 0.335,
     "weightKilo": 9.5,
 
-    "spread": 1.95,
+    "spread": 2.25,
     "firstShotSpread": 0.245,
     "hipFireInaccuracy": 7.2,
     "projToMinAccuracy": 8,

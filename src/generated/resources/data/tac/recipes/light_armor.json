@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    "iIi",
+    "iii"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:leather"
+    },
+    "I": {
+      "tag": "forge:storage_blocks/iron"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "tac:light_armor"
+  }
+}

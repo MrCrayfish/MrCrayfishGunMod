@@ -16,11 +16,11 @@
     "recoilDuration": 0.335,
     "weightKilo": 10.3,
 
-    "spread": 2.05,
-    "firstShotSpread": 0.235,
+    "spread": 1.45,
+    "firstShotSpread": 0.215,
     "hipFireInaccuracy": 7.8,
     "projToMinAccuracy": 12,
-    "msToAccuracyReset": 460,
+    "msToAccuracyReset": 580,
     "movementInaccuracy": 3.15
   },
   "reloads": {
