@@ -1,6 +1,6 @@
 {
   "general": {
-    "rate": 210,
+    "rate": 220,
     "rateSelector": [
       0,
       1
@@ -40,8 +40,8 @@
     "visible": false,
     "damage": 16,
     "size": 0.2,
-    "speed": 30.0,
-    "life": 11
+    "speed": 18.0,
+    "life": 32
   },
   "sounds": {
     "fire": "tac:item.deagle",

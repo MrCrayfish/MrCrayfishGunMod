@@ -849,7 +849,7 @@ public class GunModifiers
         }
         @Override
         public double additionalProjectileGravity() {
-            return -0.025;
+            return -0.015;
         }
     };
 
@@ -937,6 +937,70 @@ public class GunModifiers
         @Override
         public double additionalProjectileGravity() {
             return -0.01;
+        }
+    };
+
+    public static final IGunModifier GLOCK17_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 0.85;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*1.35;
+        }
+
+        @Override
+        public double additionalProjectileGravity() {
+            return -0.02;
+        }
+    };
+    public static final IGunModifier TTI34_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*1.25;
+        }
+
+        @Override
+        public double additionalProjectileGravity() {
+            return -0.01;
+        }
+    };
+    public static final IGunModifier M1911_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.15;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*1.15;
+        }
+
+        @Override
+        public double additionalProjectileGravity() {
+            return -0.02;
+        }
+    };
+    public static final IGunModifier STI2011_MOD = new IGunModifier()
+    {
+        @Override
+        public double modifyFireSoundRadius(double radius)
+        {
+            return radius * 1.15;
+        }
+        @Override
+        public double modifyAimDownSightSpeed(double speed) {
+            return speed*1.225;
+        }
+
+        @Override
+        public double additionalProjectileGravity() {
+            return -0.02;
         }
     };
 }
