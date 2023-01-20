@@ -96,9 +96,9 @@ public class TimelessGunItem extends GunItem {
         if (tagCompound != null) {
             float speed = ServerPlayHandler.calceldGunWeightSpeed(gun.getGun(), stack);
             speed = Math.max(Math.min(speed, 0.1F), 0.075F);
-            if (speed > 0.095)
+            if (speed > 0.094f)
                 tooltip.add((new TranslationTextComponent("info.tac.lightWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_AQUA)));
-            else if (speed < 0.095 && speed > 0.085)
+            else if (speed < 0.095 && speed > 0.0875)
                 tooltip.add((new TranslationTextComponent("info.tac.standardWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_GREEN)));
             else
                 tooltip.add((new TranslationTextComponent("info.tac.heavyWeightGun", new TranslationTextComponent(-((int) ((0.1 - speed) * 1000)) + "%").mergeStyle(TextFormatting.RED)).mergeStyle(TextFormatting.DARK_RED)));

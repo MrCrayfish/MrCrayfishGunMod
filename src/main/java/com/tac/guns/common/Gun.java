@@ -656,6 +656,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private int trailColor = 0xFFD289;
         @Optional
         private double trailLengthMultiplier = 4.35;
+
+        //TODO: Actually use per gun now, currently not in use (UNUSED)
         @Optional
         private float trailRotationMultiplier = 0.0175f;
         @Optional
@@ -806,11 +808,11 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         public double getSpeed()
         {
             return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.projectile) ?
-                    (this.speed + GunEditor.get().getSpeedMod()) : this.speed/1.2;
+                    (this.speed + GunEditor.get().getSpeedMod()) : this.speed/1.15;
         }
 
         /**
-         * @return The amount of ticks before this projectile is removed
+         * @return The amount of ticks before tsis projectile is removed
          */
         public int getLife()
         {

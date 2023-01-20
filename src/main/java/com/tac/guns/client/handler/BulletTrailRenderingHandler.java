@@ -122,7 +122,7 @@ public class BulletTrailRenderingHandler
      */
     private void renderBulletTrail(BulletTrail bulletTrail, MatrixStack matrixStack, float partialTicks)
     {
-        if(OptifineHelper.isShadersEnabled())
+        if(!Config.CLIENT.display.showFirstPersonBulletTrails.get())
             return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -143,8 +143,6 @@ public class BulletTrailRenderingHandler
 
         if(ShootingHandler.get().isShooting() && Minecraft.getInstance().player.isEntityEqual(entity))
         {
-            //Minecraft.getInstance().player.sendStatusMessage(new TranslationTextComponent(Minecraft.getInstance().player.rotationYaw+"") ,true);
-            //matrixStack.translate(bulletX - view.getX(), bulletY - view.getY()-0.165f, bulletZ - view.getZ());
             matrixStack.translate(bulletX - view.getX(), bulletY - view.getY() -0.175f, bulletZ - view.getZ());
             if(!AimingHandler.get().isAiming()) {
                 matrixStack.rotate(Vector3f.YP.rotationDegrees(0.05f));
@@ -153,11 +151,8 @@ public class BulletTrailRenderingHandler
         }
         else
             matrixStack.translate(bulletX - view.getX(), bulletY - view.getY()-0.205f, bulletZ - view.getZ());
-        //matrixStack.translate(0, -0.5, 0);
-        //matrixStack.translate(bulletX - view.getX()-0.15f, bulletY - view.getY()-0.3f, bulletZ - view.getZ());
 
        matrixStack.rotate(Vector3f.YP.rotationDegrees(bulletTrail.getYaw()));
-       //matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 90.125f));
        matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 90.125f));
 
         Vector3d motionVec = new Vector3d(motion.x, motion.y, motion.z);

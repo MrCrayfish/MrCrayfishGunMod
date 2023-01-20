@@ -35,7 +35,7 @@ public class PlayerHandAnimation {
                 }*/
 
                 //When performing a tactical sprint, apply additional actions
-                if(GunRenderingHandler.get().wSpeed > 0.09) {
+                if(GunRenderingHandler.get().wSpeed > 0.094f) {
                     ObjectRenderEditor.RENDER_Element element =
                             new ObjectRenderEditor.RENDER_Element(0,0,0.25f,0);
                     float transition = GunRenderingHandler.get().sOT;

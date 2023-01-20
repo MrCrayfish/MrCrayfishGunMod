@@ -705,8 +705,10 @@ public class ServerPlayHandler
                         * 0.0275f))
                 ; // * 0.01225f));// //(1+GunModifierHelper.getModifierOfWeaponWeight(heldItem)) + GunModifierHelper.getAdditionalWeaponWeight(heldItem)) / 3.775F));*/
 
-                if(player.isSprinting())
-                    speed = Math.max(Math.min(speed, 0.1F), 0.075F)*0.965f;
+                if(player.isSprinting() && speed > 0.094f )
+                    speed = Math.max(Math.min(speed, 0.12F), 0.075F);
+                else if(player.isSprinting())
+                    speed = Math.max(Math.min(speed, 0.12F), 0.075F)*0.955f;
                 else
                     speed = Math.max(Math.min(speed, 0.1F), 0.075F);
                 changeGunSpeedMod(player, "GunSpeedMod", -((double)((0.1 - speed)*10)));//*1000

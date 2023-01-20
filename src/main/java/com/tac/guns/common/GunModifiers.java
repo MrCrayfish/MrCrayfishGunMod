@@ -367,16 +367,17 @@ public class GunModifiers
         public float additionalWeaponWeight() { return 0.325F; }
 
         @Override
-        public float modifyWeaponWeight() { return 0.35F; }
+        public float modifyWeaponWeight() { return 0.25F; }
         @Override
         public double modifyAimDownSightSpeed(double speed) {
             return speed*0.75;
         }
 
-        @Override
+        //TODO: Model the firerate change, likely wait for more then a single suppressor attachment, tactical suppressor for "flowthrough"
+        /*@Override
         public int modifyFireRate(int rate) {
             return (int)(rate*1.15);
-        }
+        }*/
     };
     public static final IGunModifier PISTOL_SILENCER = new IGunModifier()
     {
@@ -765,7 +766,7 @@ public class GunModifiers
 
         @Override
         public double additionalProjectileGravity() {
-            return -0.02;
+            return -0.01;
         }
     };
 
@@ -807,7 +808,7 @@ public class GunModifiers
         }
         @Override
         public double additionalProjectileGravity() {
-            return -0.025;
+            return -0.0175;
         }
     };
     public static final IGunModifier AA_12_MOD = new IGunModifier()

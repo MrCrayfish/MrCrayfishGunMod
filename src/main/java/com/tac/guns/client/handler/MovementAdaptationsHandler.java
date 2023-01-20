@@ -80,7 +80,7 @@ public class MovementAdaptationsHandler
             if(heldItem.getItem() instanceof TimelessGunItem)
             {
                 if(event.getEntity().isSprinting())
-                    event.setNewfov(1.125f);
+                    event.setNewfov(1.135f);
                 else
                     event.setNewfov(1f);
             }
@@ -91,10 +91,10 @@ public class MovementAdaptationsHandler
     {
         if (!(event.getEntityLiving().getHeldItemMainhand().getItem() instanceof TimelessGunItem))
             return;
-        if(speed < 0.077f)
-            event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/2.5,event.getEntityLiving().getMotion().getY()/1.125,event.getEntityLiving().getMotion().getZ()/2.5);
+        if(speed < 0.0875f)
+            event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/2.25,event.getEntityLiving().getMotion().getY()/1.125,event.getEntityLiving().getMotion().getZ()/2.25);
         else if(speed < 0.9f)
-            event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/1.5,event.getEntityLiving().getMotion().getY(),event.getEntityLiving().getMotion().getZ()/1.5);
+            event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/1.75,event.getEntityLiving().getMotion().getY(),event.getEntityLiving().getMotion().getZ()/1.75);
         else if(speed < 0.95f)
             event.getEntityLiving().setMotion(event.getEntityLiving().getMotion().getX()/1.25,event.getEntityLiving().getMotion().getY(),event.getEntityLiving().getMotion().getZ()/1.25);
     }

@@ -35,6 +35,7 @@ public class TaCSettingsScreen extends SettingsScreen {
                 return new AbstractOption[p_223702_0_];
             }));
             this.optionsList.addOption(GunOptions.DOUBLE_RENDER_EXIST/*, GunOptions.REDDOT_SQUISH_EXIST*/);
+            this.optionsList.addOption(GunOptions.SHOW_FPS_TRAILS_EXIST);
 
             this.optionsList.addOption(GunOptions.Fire_Volume);
 

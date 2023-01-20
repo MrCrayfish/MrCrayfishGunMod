@@ -79,6 +79,12 @@ public class GunOptions
         Config.CLIENT.display.scopeDoubleRender.set(value);
         Config.saveClientConfig();
     });
+    public static final BooleanOption SHOW_FPS_TRAILS_EXIST = new BooleanOption("tac.options.showFirstPersonBulletTrails", (settings) -> {
+        return Config.CLIENT.display.showFirstPersonBulletTrails.get();
+    }, (settings, value) -> {
+        Config.CLIENT.display.showFirstPersonBulletTrails.set(value);
+        Config.saveClientConfig();
+    });
     public static final BooleanOption REDDOT_SQUISH_EXIST = new BooleanOption("tac.options.reddotSquish", (settings) -> {
         return Config.CLIENT.display.redDotSquishUpdate.get();
     }, (settings, value) -> {

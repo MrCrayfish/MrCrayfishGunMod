@@ -8,18 +8,18 @@
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 4.175,
+    "recoilAngle": 3.375,
     "horizontalRecoilAngle": 2.55,
-    "recoilKick": 1.875,
-    "recoilAdsReduction": 0.25,
-    "weaponRecoilOffset": 0.717,
-    "cameraRecoilModifier": 1.425,
-    "recoilDuration": 0.215,
+    "recoilKick": 1.725,
+    "recoilAdsReduction": 0.23,
+    "weaponRecoilOffset": 0.75,
+    "cameraRecoilModifier": 1.25,
+    "recoilDuration": 0.195,
     "weightKilo": 4.4,
 
-    "spread": 1.6,
-    "firstShotSpread": 0.135,
-    "hipFireInaccuracy": 6.05,
+    "spread": 1.675,
+    "firstShotSpread": 0.13,
+    "hipFireInaccuracy": 6.25,
     "projToMinAccuracy": 6,
     "msToAccuracyReset": 130,
     "movementInaccuracy": 0.55
@@ -27,7 +27,7 @@
   "projectile": {
     "item": "tac:762x39",
     "visible": false,
-    "damage": 9.5,
+    "damage": 9,
     "size": 0.2,
     "speed": 19.5,
     "life": 12
@@ -59,8 +59,8 @@
       "zOffset": -20.75,
       "size": 0.8
     },
-    "hipfireScale": 0.575,
-    "hipfireMoveScale": 0.41,
+    "hipfireScale": 0.775,
+    "hipfireMoveScale": 0.8,
     "hipfireRecoilScale": 0.75,
     "showDynamicHipfire": true,
     "weaponType": 0
@@ -69,7 +69,7 @@
     "zoom": {
       "fovModifier": 0.8,
       "yOffset": 11.075,
-      "zOffset": -3.4
+      "zOffset": -2.1
     },
     "attachments": {
       "barrel": {

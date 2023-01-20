@@ -17,6 +17,7 @@ import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
+import com.tac.guns.common.network.ServerPlayHandler;
 import com.tac.guns.common.tooling.CommandsHandler;
 import com.tac.guns.event.GunFireEvent;
 import com.tac.guns.event.GunReloadEvent;
@@ -703,9 +704,9 @@ public class GunRenderingHandler {
         float leftHanded = hand == HandSide.LEFT ? -1 : 1;
         this.sOT = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
         //TODO: Speed of the held weapon, make a static method? it's not that useful but will be cleaner
-        this.wSpeed = 0.1f / (1 + ((modifiedGun.getGun().getGeneral().getWeightKilo() * (1 + GunModifierHelper.getModifierOfWeaponWeight(gun)) + GunModifierHelper.getAdditionalWeaponWeight(gun) - GunEnchantmentHelper.getWeightModifier(gun)) * 0.0275f));
+        this.wSpeed = ServerPlayHandler.calceldGunWeightSpeed(modifiedGun.getGun(), gun);
         // Light weight animation, used for SMGS and light rifles like the hk416
-        if (wSpeed > 0.09) {
+        if (wSpeed > 0.094f) {
             // Translation
             float result = sprintDynamicsHSS.update(0.05f, sOT) * draw;
 
@@ -813,7 +814,7 @@ public class GunRenderingHandler {
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-3f*speedUp));
         matrixStack.translate(0, 0, -0.25 + 0.07 * speedUp);
         matrixStack.translate(0.45 * delta,0.25 * delta2,0);
-        if(wSpeed > 0.09) matrixStack.rotate(Vector3f.XP.rotationDegrees(delta * 5f * sprintTransition));
+        if(wSpeed > 0.094f) matrixStack.rotate(Vector3f.XP.rotationDegrees(delta * 5f * sprintTransition));
         else  matrixStack.rotate(Vector3f.XP.rotationDegrees(delta * 5f));
     }
     public void applyBobbingTransforms(MatrixStack matrixStack, boolean convert, float effectMultiplier){
@@ -828,7 +829,7 @@ public class GunRenderingHandler {
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-3f * effectMultiplier * speedUp));
         matrixStack.translate(0, 0, -0.25 + 0.07 * effectMultiplier* speedUp);
         matrixStack.translate(0.45 * effectMultiplier * delta,0.25 * effectMultiplier * delta2,0);
-        if(wSpeed > 0.09) matrixStack.rotate(Vector3f.XP.rotationDegrees(delta * effectMultiplier * 5f * sprintTransition));
+        if(wSpeed > 0.094f) matrixStack.rotate(Vector3f.XP.rotationDegrees(delta * effectMultiplier * 5f * sprintTransition));
         else  matrixStack.rotate(Vector3f.XP.rotationDegrees(delta * effectMultiplier * 5f));
     }
 
@@ -1163,6 +1164,7 @@ public class GunRenderingHandler {
         event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
     }
 
+    //TODO: Rebuild to support 2d rendering
     @SubscribeEvent
     public void onRenderEntityItem(RenderItemEvent.Gui.Pre event) {
         Minecraft mc = Minecraft.getInstance();
