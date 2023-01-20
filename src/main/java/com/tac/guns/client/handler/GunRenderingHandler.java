@@ -856,7 +856,7 @@ public class GunRenderingHandler {
             acceleration -= partialTime * stepLength;
             if(acceleration > 0) acceleration = 0;
         }
-        float maxMotion = 0.3f;
+        float maxMotion = 0.265f;
         float transition = - jumpingDynamics.update(0.05f, (Math.abs(acceleration) < maxMotion ? (acceleration / maxMotion) * 0.15f : Math.abs(acceleration) / acceleration * 0.15f) * (sprintTransition/3f + 1) * (1f - 0.7f * (float) AimingHandler.get().getNormalisedAdsProgress()));
         if(transition > 0) transition *= 0.8f;
         matrixStack.translate(0, transition,0);
@@ -883,7 +883,7 @@ public class GunRenderingHandler {
             acceleration -= partialTime * stepLength;
             if(acceleration > 0) acceleration = 0;
         }
-        float maxMotion = 0.3f;
+        float maxMotion = 0.265f;
         float transition = - jumpingDynamics.update(0.05f, (Math.abs(acceleration) < maxMotion ? (acceleration / maxMotion) * 0.15f : Math.abs(acceleration) / acceleration * 0.15f) * (sprintTransition/3f + 1) * (1f - 0.7f * (float) AimingHandler.get().getNormalisedAdsProgress()));
         if(transition > 0) transition *= 0.8f;
         if(reverser != 0) transition *= reverser;

@@ -289,7 +289,7 @@
     "tac.options.weaponsVolume.format": "Gun fire Volume: %s",
     "tac.options.toggleAim": "Toggle ADS",
 
-    "tac.options.tac.options.showFirstPersonBulletTrails": "Show FPS trails",
+    "tac.options.showFirstPersonBulletTrails": "Show FPS trails",
 
     "tac.crosshair.arrow": "Arrow",
     "tac.crosshair.better_default": "Better Default",

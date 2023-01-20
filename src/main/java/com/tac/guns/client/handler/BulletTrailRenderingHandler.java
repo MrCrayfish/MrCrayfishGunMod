@@ -169,7 +169,7 @@ public class BulletTrailRenderingHandler
         Entity shooter = bulletTrail.getShooter();
         if(shooter != null)
         {
-            trailLength = (float) Math.min(trailLength+0.125, shooter.getEyePosition(partialTicks).distanceTo(new Vector3d(bulletX,bulletY, bulletZ)));
+            trailLength = (float) Math.min(trailLength+0.025, shooter.getEyePosition(partialTicks).distanceTo(new Vector3d(bulletX,bulletY, bulletZ)));
         }
 
         Matrix4f matrix4f = matrixStack.getLast().getMatrix();

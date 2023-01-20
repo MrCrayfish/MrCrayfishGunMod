@@ -162,6 +162,30 @@ public abstract class Attachment
                 addPerk(positivePerks, "perk.tac.projectile_spread.positive", new TranslationTextComponent("+" + String.valueOf(Math.round((10.0F - outputSpread) * 10f)) + "% Accuracy").mergeStyle(TextFormatting.GREEN));
             }
 
+            /* Test for modified projectile spread */
+            float inputFirstSpread = 10.0F;
+            float outputFirstSpread = inputFirstSpread;
+            for (IGunModifier modifier : modifiers) {
+                outputFirstSpread = modifier.modifyFirstShotSpread(outputFirstSpread);
+            }
+            if (outputFirstSpread > inputFirstSpread) {
+                addPerk(negativePerks, "perk.tac.projectile_spread.negative", new TranslationTextComponent("" + String.valueOf(Math.round((10.0F - outputFirstSpread) * 10f)) + "% First Shot Accuracy").mergeStyle(TextFormatting.RED));
+            } else if (outputFirstSpread < inputFirstSpread) {
+                addPerk(positivePerks, "perk.tac.projectile_spread.positive", new TranslationTextComponent("+" + String.valueOf(Math.round((10.0F - outputFirstSpread) * 10f)) + "% First Shot Accuracy").mergeStyle(TextFormatting.GREEN));
+            }
+
+            /* Test for modified projectile spread */
+            float inputHipFireSpread = 10.0F;
+            float outputHipFireSpread = inputHipFireSpread;
+            for (IGunModifier modifier : modifiers) {
+                outputHipFireSpread = modifier.modifyHipFireSpread(outputHipFireSpread);
+            }
+            if (outputHipFireSpread > inputHipFireSpread) {
+                addPerk(negativePerks, "perk.tac.projectile_spread.negative", new TranslationTextComponent("" + String.valueOf(Math.round((10.0F - outputHipFireSpread) * 10f)) + "% Hipfire Accuracy").mergeStyle(TextFormatting.RED));
+            } else if (outputHipFireSpread < inputHipFireSpread) {
+                addPerk(positivePerks, "perk.tac.projectile_spread.positive", new TranslationTextComponent("+" + String.valueOf(Math.round((10.0F - outputHipFireSpread) * 10f)) + "% Hipfire Accuracy").mergeStyle(TextFormatting.GREEN));
+            }
+
             /* Test for modified projectile life */
             int inputLife = 100;
             int outputLife = inputLife;
