@@ -45,7 +45,7 @@
     "life": 14
   },
   "sounds": {
-    "fire": "tac:item.fire_m16",
+    "fire": "tac:item.ar15_fire",
     "reloadNormal": "tac:animation.m4_norm_reload",
     "reloadEmpty": "tac:animation.m4_empty_reload",
     "draw": "tac:animation.m4_draw",

@@ -45,13 +45,13 @@
     "preReloadPauseTicks": 0
   },
   "sounds": {
-    "fire": "tac:item.sig552",
+    "fire": "tac:item.scarl_fire",
     "reloadNormal": "tac:animation.scar_h_norm_reload",
     "reloadEmpty": "tac:animation.scar_l_empty_reload",
     "draw": "tac:animation.scar_h_draw",
     "inspect": "tac:animation.scar_h_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.remington_700s"
+    "silencedFire": "tac:item.scarl_fire_s"
   },
   "display": {
     "flash": {

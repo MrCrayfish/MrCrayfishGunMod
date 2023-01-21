@@ -47,7 +47,7 @@
     "ricochet": true
   },
   "sounds": {
-    "fire": "tac:item.sig552",
+    "fire": "tac:item.hk416_fire",
     "reloadNormal": "tac:animation.hk416_a5_reload",
     "reloadEmpty": "tac:animation.hk416_a5_reload_empty",
     "draw": "tac:animation.hk416_a5_draw",
@@ -60,11 +60,7 @@
       "yOffset": 9.35,
       "zOffset": -13.325,
       "size": 1.10
-    },
-    "hipfireScale": 0.75,
-    "hipfireMoveScale": 0.55,
-    "hipfireRecoilScale": 0.91,
-    "weaponType": 0
+    }
   },
   "modules": {
     "zoom": {

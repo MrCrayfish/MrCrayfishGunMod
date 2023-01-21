@@ -40,12 +40,12 @@
     "visible": false,
     "damage": 7.0,
     "size": 0.225,
-    "speed": 12.5,
-    "life": 16,
+    "speed": 11.5,
+    "life": 19,
     "trailLengthMultiplier": 4.05
   },
   "sounds": {
-    "fire": "tac:item.vector",
+    "fire": "tac:item.vector_fire",
     "reloadNormal": "tac:animation.vector45_reload_norm",
     "reloadEmpty": "tac:animation.vector45_reload_empty",
     "draw": "tac:animation.vector45_draw",

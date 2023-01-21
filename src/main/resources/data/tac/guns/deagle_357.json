@@ -43,7 +43,7 @@
     "life": 32
   },
   "sounds": {
-    "fire": "tac:item.deagle",
+    "fire": "tac:item.deagle_fire",
     "reloadNormal": "tac:animation.deagle_reload_norm",
     "reloadEmpty": "tac:animation.deagle_reload_empty",
     "draw": "tac:animation.deagle_draw",

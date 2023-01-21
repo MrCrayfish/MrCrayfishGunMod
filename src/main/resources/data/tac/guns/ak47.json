@@ -45,25 +45,20 @@
     "preReloadPauseTicks": 0
   },
   "sounds": {
-    "fire": "tac:item.fire_ak47",
+    "fire": "tac:item.ak47_fire",
     "reloadNormal": "tac:animation.ak47_reload_norm",
     "reloadEmpty": "tac:animation.ak47_reload_empty",
     "draw": "tac:animation.ak47_draw",
     "inspect": "tac:animation.ak47_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.fire_ak47s"
+    "silencedFire": "tac:item.ak47_fire_s"
   },
   "display": {
     "flash": {
       "yOffset": 9.0,
       "zOffset": -20.75,
       "size": 0.8
-    },
-    "hipfireScale": 0.775,
-    "hipfireMoveScale": 0.8,
-    "hipfireRecoilScale": 0.75,
-    "showDynamicHipfire": true,
-    "weaponType": 0
+    }
   },
   "modules": {
     "zoom": {

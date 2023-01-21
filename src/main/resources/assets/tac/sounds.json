@@ -125,6 +125,468 @@
          { "name": "tac:item/mk47_fire_s" }
       ]
    },
+   "item.qbz95_fire_s": {
+      "subtitle": "subtitle.tac.qbz95_fire_s",
+      "sounds": [
+         { "name": "tac:item/qbz95_fire_s" }
+      ]
+   },
+   "item.qbz95_fire": {
+      "subtitle": "subtitle.tac.qbz95_fire",
+      "sounds": [
+         { "name": "tac:item/qbz95_fire" }
+      ]
+   },
+   "item.qbz191_fire_s": {
+      "subtitle": "subtitle.tac.qbz191_fire_s",
+      "sounds": [
+         { "name": "tac:item/qbz191_fire_s" }
+      ]
+   },
+   "item.qbz191_fire": {
+      "subtitle": "subtitle.tac.qbz191_fire",
+      "sounds": [
+         { "name": "tac:item/qbz191_fire" }
+      ]
+   },
+   "item.scarh_fire": {
+         "subtitle": "subtitle.tac.scarh_fire",
+         "sounds": [
+            { "name": "tac:item/scarh_fire" }
+         ]
+      },
+   "item.scarh_fire_s": {
+      "subtitle": "subtitle.tac.scarh_fire_s",
+      "sounds": [
+         { "name": "tac:item/scarh_fire_s" }
+      ]
+   },
+   "item.scarl_fire": {
+            "subtitle": "subtitle.tac.scarl_fire",
+            "sounds": [
+               { "name": "tac:item/scarl_fire" }
+            ]
+         },
+   "item.scarl_fire_s": {
+         "subtitle": "subtitle.tac.scarl_fire_s",
+         "sounds": [
+            { "name": "tac:item/scarl_fire_s" }
+         ]
+      },
+   "item.hk416_fire": {
+         "subtitle": "subtitle.tac.hk416_fire",
+         "sounds": [
+            { "name": "tac:item/hk416_fire" }
+         ]
+      },
+   "item.sigmcxspear_fire": {
+            "subtitle": "subtitle.tac.sigmcxspear_fire",
+            "sounds": [
+               { "name": "tac:item/sigmcxspear_fire" }
+            ]
+         },
+   "item.sks_fire": {
+      "subtitle": "subtitle.tac.sks_fire",
+      "sounds": [
+         { "name": "tac:item/sks_fire" }
+      ]
+   },
+   "item.sks_fire_s": {
+      "subtitle": "subtitle.tac.sks_fire_s",
+      "sounds": [
+         { "name": "tac:item/sks_fire_s" }
+      ]
+   },
+   "item.skstti_fire": {
+         "subtitle": "subtitle.tac.skstti_fire",
+         "sounds": [
+            { "name": "tac:item/skstti_fire" }
+         ]
+      },
+   "item.type81_fire": {
+         "subtitle": "subtitle.tac.type81_fire",
+         "sounds": [
+            { "name": "tac:item/type81_fire" }
+         ]
+      },
+   "item.type81_fire_s": {
+         "subtitle": "subtitle.tac.type81_fire_s",
+         "sounds": [
+            { "name": "tac:item/type81_fire_s" }
+         ]
+      },
+   "item.x95r_fire_s": {
+         "subtitle": "subtitle.tac.x95r_fire_s",
+         "sounds": [
+            { "name": "tac:item/x95r_fire_s" }
+         ]
+      },
+   "item.x95r_fire": {
+         "subtitle": "subtitle.tac.x95r_fire",
+         "sounds": [
+            { "name": "tac:item/x95r_fire" }
+         ]
+      },
+   "item.aiawp_fire_s": {
+      "subtitle": "subtitle.tac.aiawp_fire_s",
+      "sounds": [
+         { "name": "tac:item/aiawp_fire_s" }
+      ]
+   },
+   "item.aiawp_fire": {
+         "subtitle": "subtitle.tac.aiawp_fire",
+         "sounds": [
+            { "name": "tac:item/aiawp_fire" }
+         ]
+      },
+   "item.ak47_fire": {
+         "subtitle": "subtitle.tac.ak47_fire",
+         "sounds": [
+            { "name": "tac:item/ak47_fire" }
+         ]
+      },
+   "item.ar10_fire": {
+      "subtitle": "subtitle.tac.ar10_fire",
+      "sounds": [
+         { "name": "tac:item/ar10_fire" }
+      ]
+   },
+   "item.ar15_fire": {
+      "subtitle": "subtitle.tac.ar15_fire",
+      "sounds": [
+         { "name": "tac:item/ar15_fire" }
+      ]
+   },
+   "item.delisle_fire_s": {
+      "subtitle": "subtitle.tac.delisle_fire_s",
+      "sounds": [
+         { "name": "tac:item/delisle_fire_s" }
+      ]
+   },
+   "item.espadon_fire": {
+      "subtitle": "subtitle.tac.espadon_fire",
+      "sounds": [
+         { "name": "tac:item/espadon_fire" }
+      ]
+   },
+   "item.espadon_fire_s": {
+      "subtitle": "subtitle.tac.espadon_fire_s",
+      "sounds": [
+         { "name": "tac:item/espadon_fire_s" }
+      ]
+   },
+   "item.fnfal_fire": {
+      "subtitle": "subtitle.tac.fnfal_fire",
+      "sounds": [
+         { "name": "tac:item/fnfal_fire" }
+      ]
+   },
+   "item.frf2_fire_s": {
+      "subtitle": "subtitle.tac.frf2_fire_s",
+      "sounds": [
+         { "name": "tac:item/frf2_fire_s" }
+      ]
+   },
+   "item.kar98_fire": {
+      "subtitle": "subtitle.tac.kar98_fire",
+      "sounds": [
+         { "name": "tac:item/kar98_fire" }
+      ]
+   },
+   "item.kar98_fire_s": {
+      "subtitle": "subtitle.tac.kar98_fire_s",
+      "sounds": [
+         { "name": "tac:item/kar98_fire_s" }
+      ]
+   },
+   "item.leeenfield3_fire": {
+      "subtitle": "subtitle.tac.leeenfield3_fire",
+      "sounds": [
+         { "name": "tac:item/leeenfield3_fire" }
+      ]
+   },
+   "item.m4a1_fire": {
+      "subtitle": "subtitle.tac.m4a1_fire",
+      "sounds": [
+         { "name": "tac:item/m4a1_fire" }
+      ]
+   },
+   "item.m16a1_fire": {
+      "subtitle": "subtitle.tac.m16a1_fire",
+      "sounds": [
+         { "name": "tac:item/m16a1_fire" }
+      ]
+   },
+   "item.m16a4_fire": {
+      "subtitle": "subtitle.tac.m16a4_fire",
+      "sounds": [
+         { "name": "tac:item/m16a4_fire" }
+      ]
+   },
+   "item.m24_fire": {
+      "subtitle": "subtitle.tac.m24_fire",
+      "sounds": [
+         { "name": "tac:item/m24_fire" }
+      ]
+   },
+   "item.m24_fire_s": {
+      "subtitle": "subtitle.tac.m24_fire_s",
+      "sounds": [
+         { "name": "tac:item/m24_fire_s" }
+      ]
+   },
+   "item.m82_fire": {
+      "subtitle": "subtitle.tac.m82_fire",
+      "sounds": [
+         { "name": "tac:item/m82a2_fire" }
+      ]
+   },
+   "item.m1903_fire": {
+      "subtitle": "subtitle.tac.m1903",
+      "sounds": [
+         { "name": "tac:item/m1903" }
+      ]
+   },
+   "item.mosinnagant_fire": {
+      "subtitle": "subtitle.tac.mosinnagant_fire",
+      "sounds": [
+         { "name": "tac:item/mosinnagant_fire" }
+      ]
+   },
+   "item.mosinnagant_fire_s": {
+      "subtitle": "subtitle.tac.mosinnagant_fire_s",
+      "sounds": [
+         { "name": "tac:item/mosinnagant_fire_s" }
+      ]
+   },
+   "item.ttisti2011_fire_s": {
+      "subtitle": "subtitle.tac.ttisti2011_fire_s",
+      "sounds": [
+         { "name": "tac:item/ttisti2011_fire_s" }
+      ]
+   },
+   "item.beretta92f_fire": {
+      "subtitle": "subtitle.tac.beretta92f_fire",
+      "sounds": [
+         { "name": "tac:item/beretta92f_fire" }
+      ]
+   },
+   "item.beretta92f_fire_s": {
+      "subtitle": "subtitle.tac.beretta92f_fire_s",
+      "sounds": [
+         { "name": "tac:item/beretta92f_fire_s" }
+      ]
+   },
+   "item.c96_fire_s": {
+      "subtitle": "subtitle.tac.c96_fire_s",
+      "sounds": [
+         { "name": "tac:item/c96_fire_s" }
+      ]
+   },
+   "item.c96_fire": {
+      "subtitle": "subtitle.tac.c96_fire",
+      "sounds": [
+         { "name": "tac:item/c96_fire" }
+      ]
+   },
+   "item.cz75_fire_s": {
+      "subtitle": "subtitle.tac.cz75_fire_s",
+      "sounds": [
+         { "name": "tac:item/cz75_fire_s" }
+      ]
+   },
+   "item.cz75_fire": {
+      "subtitle": "subtitle.tac.cz75_fire",
+      "sounds": [
+         { "name": "tac:item/cz75_fire" }
+      ]
+   },
+   "item.cz75auto_fire_s": {
+      "subtitle": "subtitle.tac.cz75auto_fire_s",
+      "sounds": [
+         { "name": "tac:item/cz75auto_fire_s" }
+      ]
+   },
+   "item.cz75auto_fire": {
+      "subtitle": "subtitle.tac.cz75auto_fire",
+      "sounds": [
+         { "name": "tac:item/cz75auto_fire" }
+      ]
+   },
+   "item.deagle_fire": {
+      "subtitle": "subtitle.tac.deagle_fire",
+      "sounds": [
+         { "name": "tac:item/deagle_fire" }
+      ]
+   },
+   "item.deagle_fire_s": {
+      "subtitle": "subtitle.tac.deagle_fire_s",
+      "sounds": [
+         { "name": "tac:item/deagle_fire_s" }
+      ]
+   },
+   "item.glock17_fire_s": {
+      "subtitle": "subtitle.tac.glock17_fire_s",
+      "sounds": [
+         { "name": "tac:item/glock17_fire_s" }
+      ]
+   },
+   "item.glock17_fire": {
+      "subtitle": "subtitle.tac.glock17_fire",
+      "sounds": [
+         { "name": "tac:item/glock17_fire" }
+      ]
+   },
+   "item.glock18_fire_s": {
+      "subtitle": "subtitle.tac.glock18_fire_s",
+      "sounds": [
+         { "name": "tac:item/glock18_fire_s" }
+      ]
+   },
+   "item.glock18_fire": {
+      "subtitle": "subtitle.tac.glock18_fire",
+      "sounds": [
+         { "name": "tac:item/glock18_fire" }
+      ]
+   },
+   "item.hkmk23_fire_s": {
+      "subtitle": "subtitle.tac.hkmk23_fire_s",
+      "sounds": [
+         { "name": "tac:item/hkmk23_fire_s" }
+      ]
+   },
+   "item.hkmk23_fire": {
+      "subtitle": "subtitle.tac.hkmk23_fire",
+      "sounds": [
+         { "name": "tac:item/hkmk23_fire" }
+      ]
+   },
+   "item.m1911_fire": {
+      "subtitle": "subtitle.tac.m1911_fire",
+      "sounds": [
+         { "name": "tac:item/m1911_fire" }
+      ]
+   },
+   "item.m1911_fire_s": {
+      "subtitle": "subtitle.tac.m1911_fire_s",
+      "sounds": [
+         { "name": "tac:item/m1911_fire_s" }
+      ]
+   },
+   "item.ppk_fire": {
+      "subtitle": "subtitle.tac.ppk_fire",
+      "sounds": [
+         { "name": "tac:item/ppk_fire" }
+      ]
+   },
+   "item.ppk_fire_s": {
+      "subtitle": "subtitle.tac.ppk_fire_s",
+      "sounds": [
+         { "name": "tac:item/ppk_fire_s" }
+      ]
+   },
+   "item.qsz92_fire_s": {
+      "subtitle": "subtitle.tac.qsz92_fire_s",
+      "sounds": [
+         { "name": "tac:item/qsz92_fire_s" }
+      ]
+   },
+   "item.qsz92_fire": {
+      "subtitle": "subtitle.tac.qsz92_fire",
+      "sounds": [
+         { "name": "tac:item/qsz92_fire" }
+      ]
+   },
+   "item.scorpion_fire": {
+      "subtitle": "subtitle.tac.scorpion_fire",
+      "sounds": [
+         { "name": "tac:item/scorpion_fire" }
+      ]
+   },
+   "item.ttisti2011_fire": {
+      "subtitle": "subtitle.tac.ttisti2011_fire",
+      "sounds": [
+         { "name": "tac:item/ttisti2011_fire" }
+      ]
+   },
+   "item.m1917_s": {
+      "subtitle": "subtitle.tac.m1917_s",
+      "sounds": [
+         { "name": "tac:item/m1917_s" }
+      ]
+   },
+   "item.mac10_fire": {
+      "subtitle": "subtitle.tac.mac10_fire",
+      "sounds": [
+         { "name": "tac:item/mac10_fire" }
+      ]
+   },
+   "item.mp5a5_fire": {
+      "subtitle": "subtitle.tac.mp5a5_fire",
+      "sounds": [
+         { "name": "tac:item/mp5a5_fire" }
+      ]
+   },
+   "item.mp7_fire": {
+      "subtitle": "subtitle.tac.mp7_fire",
+      "sounds": [
+         { "name": "tac:item/mp7_fire" }
+      ]
+   },
+   "item.mp9_fire": {
+      "subtitle": "subtitle.tac.mp9_fire",
+      "sounds": [
+         { "name": "tac:item/mp9_fire" }
+      ]
+   },
+   "item.stenmk2_fire": {
+      "subtitle": "subtitle.tac.stenmk2_fire",
+      "sounds": [
+         { "name": "tac:item/stenmk2_fire" }
+      ]
+   },
+   "item.vector_fire": {
+      "subtitle": "subtitle.tac.vector_fire",
+      "sounds": [
+         { "name": "tac:item/vector_fire" }
+      ]
+   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
