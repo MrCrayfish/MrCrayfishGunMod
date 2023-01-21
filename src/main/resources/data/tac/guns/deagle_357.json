@@ -1,6 +1,6 @@
 {
   "general": {
-    "rate": 210,
+    "rate": 200,
     "rateSelector": [
       0,
       1
@@ -49,7 +49,7 @@
     "draw": "tac:animation.deagle_draw",
     "inspect": "tac:animation.deagle_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.deagles"
+    "silencedFire": "tac:item.deagle_fire_s"
   },
   "display": {
     "flash": {

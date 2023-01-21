@@ -48,7 +48,7 @@
     "ricochet": true
   },
   "sounds": {
-    "fire": "tac:item.mp5_fire",
+    "fire": "tac:item.mp5a5_fire",
     "reloadNormal": "tac:animation.hk_mp5a5_reload_norm",
     "reloadEmpty": "tac:animation.hk_mp5a5_reload_empty",
     "draw": "tac:animation.hk_mp5a5_draw",

@@ -1,6 +1,6 @@
 {
   "general": {
-    "rate": 20,
+    "rate": 65,
     "rateSelector": [
       0,
       1
@@ -37,12 +37,12 @@
     "damage": 24.5,
     "size": 0.3,
     "speed": 23.5,
-    "life": 3,
+    "life": 4,
     "ricochet": false
   },
   "sounds": {
-    "fire": "tac:item.m870",
-    "pump": "tac:item.m870",
+    "fire": "tac:item.m870_fire",
+    "pump": "tac:item.m8701",
     "reload": "tac:item.pistol.reload",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.fire_m16s"

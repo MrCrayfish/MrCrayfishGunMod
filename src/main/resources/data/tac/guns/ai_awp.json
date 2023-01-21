@@ -45,14 +45,14 @@
     "life": 7
   },
   "sounds": {
-    "fire": "tac:item.ai_awp",
+    "fire": "tac:item.aiawp_fire",
     "reloadNormal": "tac:animation.awp_reload_norm",
     "reloadEmpty": "tac:animation.awp_reload_empty",
     "draw": "tac:animation.awp_draw",
     "inspect": "tac:animation.awp_inspect",
     "pullBolt": "tac:animation.awp_bolt",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.remington_700s"
+    "silencedFire": "tac:item.aiawp_fire_s"
   },
   "display": {
     "flash": {

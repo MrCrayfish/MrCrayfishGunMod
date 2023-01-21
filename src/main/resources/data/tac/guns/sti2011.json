@@ -1,6 +1,6 @@
 {
   "general": {
-    "rate": 350,
+    "rate": 300,
     "rateSelector": [
       0,
       1
@@ -43,13 +43,13 @@
     "life": 5
   },
   "sounds": {
-    "fire": "tac:item.fire_m1911",
+    "fire": "tac:item.ttisti2011_fire",
     "reloadNormal": "tac:animation.sti2011_norm_reload",
     "reloadEmpty": "tac:animation.sti2011_empty_reload",
     "draw": "tac:animation.sti2011_draw",
     "inspect": "tac:animation.sti2011_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.fire_m1911s"
+    "silencedFire": "tac:item.ttisti2011_fire_s"
   },
   "display": {
     "flash": {

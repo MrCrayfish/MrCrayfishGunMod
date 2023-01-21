@@ -105,10 +105,7 @@ public class scar_h_animation implements IOverrideModel {
                     // Math provided by Bomb787 on GitHub and Curseforge!!!
                     matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
                 } else if (!Gun.hasAmmo(stack)) {
-                    if (cooldownOg > 0.5) {
-                        // Math provided by Bomb787 on GitHub and Curseforge!!!
-                        matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-                    } else {
+                   {
                         matrices.translate(0, 0, 0.225f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
                     }
                 }

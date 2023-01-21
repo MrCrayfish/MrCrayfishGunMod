@@ -8,13 +8,13 @@
     ],
     "gripType": "tac:two_handed_ak47",
     "maxAmmo": 9,
-    "recoilAngle": 7.15,
-    "horizontalRecoilAngle": 3.35,
+    "recoilAngle": 6.15,
+    "horizontalRecoilAngle": 2.45,
     "recoilKick": 3.155,
     "recoilAdsReduction": 0.275,
     "weaponRecoilOffset": 0.725,
     "recoilDuration": 0.185,
-    "cameraRecoilModifier": 0.825,
+    "cameraRecoilModifier": 0.625,
     "projectileAmount": 12,
     "weightKilo": 5.0,
 
@@ -54,7 +54,7 @@
     "draw": "tac:animation.aa12_draw",
     "inspect": "tac:animation.aa12_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.fire_m16s"
+    "silencedFire": "tac:item.aa12_s"
   },
   "display": {
     "flash": {

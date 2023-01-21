@@ -51,18 +51,14 @@
     "draw": "tac:animation.vector45_draw",
     "inspect": "tac:animation.vector45_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.fire_m1911s"
+    "silencedFire": "tac:item.m1911_fire_s"
   },
   "display": {
     "flash": {
       "yOffset": 11.35,
       "zOffset": -11.0,
       "size": 1.10
-    },
-    "hipfireScale": 0.425,
-    "hipfireMoveScale": 0.725,
-    "hipfireRecoilScale": 0.95,
-    "weaponType": 4
+    }
   },
   "modules": {
     "zoom":{

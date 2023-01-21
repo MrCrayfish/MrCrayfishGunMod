@@ -362,11 +362,11 @@ public class RecipeGen extends RecipeProvider
                 .addIngredient(Tags.Items.STORAGE_BLOCKS_REDSTONE, 2)
                 .build(consumer);
 
-        WorkbenchRecipeBuilder.workbenchRecipe(ModItems.SLX_2X.get())
+        /*WorkbenchRecipeBuilder.workbenchRecipe(ModItems.SLX_2X.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 15)
                 .addIngredient(Tags.Items.GLASS_PANES, 10)
                 .addIngredient(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .build(consumer);
+                .build(consumer);*/
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.SRS_RED_DOT_SIGHT.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 8)

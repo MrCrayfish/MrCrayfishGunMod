@@ -42,7 +42,7 @@
     "ricochet": false
   },
   "sounds": {
-    "fire": "tac:item.m870",
+    "fire": "tac:item.m1014_fire",
     "reloadIntro": "tac:animation.m1014_reload_intro",
     "reloadLoop": "tac:animation.m1014_reload_loop",
     "reloadEnd": "tac:animation.m1014_reload_norm_end",

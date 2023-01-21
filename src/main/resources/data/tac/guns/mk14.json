@@ -45,13 +45,13 @@
     "ricochet": true
   },
   "sounds": {
-    "fire": "tac:item.dmr_fire",
+    "fire": "tac:item.mk14ebr_fire",
     "reloadNormal": "tac:animation.mk14_norm_reload",
     "reloadEmpty": "tac:animation.mk14_empty_reload",
     "draw": "tac:animation.mk14_draw",
     "inspect": "tac:animation.mk14_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.dmr_fire_s"
+    "silencedFire": "tac:item.mk14ebr_fire_s"
   },
   "display": {
     "flash": {

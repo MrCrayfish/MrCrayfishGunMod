@@ -154,9 +154,9 @@ public class elcan_14x_ScopeModel implements IOverrideModel
 
                 GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true, 0.085f);
                 GunRenderingHandler.get().applyNoiseMovementTransform(matrixStack, -0.11f);
-                GunRenderingHandler.get().applyJumpingTransforms(matrixStack, partialTicks,-0.11f);
+                GunRenderingHandler.get().applyJumpingTransforms(matrixStack, partialTicks,-0.0625f);
 
-                float recoilReversedMod = 0.15f;
+                float recoilReversedMod = 0.075f;
                 matrixStack.translate(0, 0, -0.35);
                 matrixStack.rotate(Vector3f.YP.rotationDegrees(GunRenderingHandler.get().newSwayYaw*recoilReversedMod));
                 matrixStack.rotate(Vector3f.ZN.rotationDegrees(GunRenderingHandler.get().newSwayPitch*recoilReversedMod));
