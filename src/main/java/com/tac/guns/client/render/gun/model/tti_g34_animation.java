@@ -115,8 +115,9 @@ public class tti_g34_animation implements IOverrideModel {
                 matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
                 GunRenderingHandler.get().opticMovement = 0.185f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0);
             }
+        } else {
+            matrices.translate(0, 0, 0.025F);
         }
-        matrices.translate(0, 0, 0.025F);
         RenderUtil.renderModel(SpecialModels.TTI_G34_SLIDE.getModel(), stack, matrices, renderBuffer, light, overlay);
 
         //Always pop

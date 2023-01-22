@@ -77,11 +77,11 @@ public class ak47_animation implements IOverrideModel {
                 Hm, it seems like the getAttachment().stack() method chain does not actually grab the color of the specific attachment
                 I will be making a bug report as I don't think this behavior is correct and something wrong is on either side as this should be clearly possible
             */
-                matrices.translate(0, 0, -0.225f);
+                matrices.translate(0, 0, -0.295f);
 
                 RenderUtil.renderModel(SpecialModels.AK47_SILENCER.getModel(), stack, matrices, renderBuffer, light, overlay);
 
-                matrices.translate(0, 0, 0.225f);
+                matrices.translate(0, 0, 0.295f);
             } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem())) {
                 RenderUtil.renderModel(SpecialModels.AK47_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
             } else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.orElse(ItemStack.EMPTY.getItem())) {

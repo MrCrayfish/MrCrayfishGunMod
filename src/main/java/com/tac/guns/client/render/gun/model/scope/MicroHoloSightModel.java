@@ -53,7 +53,7 @@ public class MicroHoloSightModel implements IOverrideModel
         }
         if(!parent.isEmpty()) {
             GunItem gunItem = ((GunItem) parent.getItem());
-            if (gunItem.getGun().getModules().getAttachments().getPistolScope().getDoOnSlideMovement()) {
+            if (gunItem.getGun().getModules().getAttachments().getPistolScope().getDoOnSlideMovement() && transformType.isFirstPerson()) {
                 //matrixStack.translate(0, 0, 0.025F);
                 matrixStack.translate(0, 0, GunRenderingHandler.get().opticMovement * 0.505);
             }

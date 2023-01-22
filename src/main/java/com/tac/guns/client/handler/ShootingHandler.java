@@ -1,5 +1,6 @@
 package com.tac.guns.client.handler;
 
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.common.SpreadTracker;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -28,6 +29,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.awt.event.MouseMotionAdapter;
 
 /**
  * Author: Forked from MrCrayfish, continued by Timeless devs
@@ -113,7 +116,6 @@ public class  ShootingHandler
             {
                 if(heldItem.getItem() instanceof TimelessGunItem && heldItem.getTag().getInt("CurrentFireMode") == 3 && this.burstCooldown == 0)
                 {
-
                     this.burstTracker = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstCount();
                     fire(player, heldItem);
                     this.burstCooldown = ((TimelessGunItem)heldItem.getItem()).getGun().getGeneral().getBurstRate();
@@ -149,8 +151,22 @@ public class  ShootingHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderTick(TickEvent.RenderTickEvent evt)
     {
+        if(Minecraft.getInstance().player == null || !Minecraft.getInstance().player.isAlive() || Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem)
+            return;
+        GunAnimationController controller = GunAnimationController.fromItem(Minecraft.getInstance().player.getHeldItemMainhand().getItem());
+        if(controller == null)
+            return;
         if(shootMsGap > 0F)
             shootMsGap -= evt.renderTickTime;
+        else if (controller.isAnimationRunning() && (shootMsGap < 0F && this.burstTracker != 0))
+        {
+            if(controller.isAnimationRunning(GunAnimationController.AnimationLabel.PUMP) || controller.isAnimationRunning(GunAnimationController.AnimationLabel.PULL_BOLT))
+                return;
+            if(Config.CLIENT.controls.burstPress.get())
+                this.burstTracker = 0;
+            this.clickUp = true;
+        }
+
     }
 
     @SubscribeEvent
