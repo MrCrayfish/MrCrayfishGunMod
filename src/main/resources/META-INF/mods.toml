@@ -4,11 +4,11 @@ license="GPL3"
 
 [[mods]]
 modId="tac"
-version="0.2.0"
-displayName="Timeless and Classics"
+version="0.3.4"
+displayName="Timeless and Classics Guns"
 updateJSONURL=""
 displayURL=""
-authors="Timeless Development Tema"
+authors="Timeless Development Team"
 description='''
 '''
 

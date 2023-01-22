@@ -151,13 +151,15 @@ public class  ShootingHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderTick(TickEvent.RenderTickEvent evt)
     {
+        if(shootMsGap > 0F)
+            shootMsGap -= evt.renderTickTime;
+        else if (shootMsGap < -0.05F)
+            shootMsGap = 0F;
         if(Minecraft.getInstance().player == null || !Minecraft.getInstance().player.isAlive() || Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem)
             return;
         GunAnimationController controller = GunAnimationController.fromItem(Minecraft.getInstance().player.getHeldItemMainhand().getItem());
         if(controller == null)
             return;
-        if(shootMsGap > 0F)
-            shootMsGap -= evt.renderTickTime;
         else if (controller.isAnimationRunning() && (shootMsGap < 0F && this.burstTracker != 0))
         {
             if(controller.isAnimationRunning(GunAnimationController.AnimationLabel.PUMP) || controller.isAnimationRunning(GunAnimationController.AnimationLabel.PULL_BOLT))
