@@ -141,6 +141,8 @@ public enum SpecialModels
     AA_12_LIGHT_GRIP("aa_12_light_grip"),
     AA_12_SIGHT("aa_12_sight"),
     AA_12_SILENCER("aa_12_suppressor"),
+    AA_12_BRAKE("aa_12_brake"),
+    AA_12_COMPENSATOR("aa_12_compensator"),
     AA_12_STANDARD_MAG("aa_12_standard_mag"),
     AA_12_MUZZLE("aa_12_muzzle"),
     AA_12_FRONT_RAIL("aa_12_front_rail"),

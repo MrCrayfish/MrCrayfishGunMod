@@ -59,7 +59,15 @@ public class aa_12_animation implements IOverrideModel {
                 RenderUtil.renderModel(SpecialModels.AA_12_SILENCER.getModel(), stack, matrices, renderBuffer, light, overlay);
                 matrices.translate(0,0,.1);
                 matrices.pop();
-            } else {
+            }
+            else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_COMPENSATOR.orElse(ItemStack.EMPTY.getItem())) {
+
+                RenderUtil.renderModel(SpecialModels.AA_12_BRAKE.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            else if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.MUZZLE_BRAKE.orElse(ItemStack.EMPTY.getItem())) {
+                RenderUtil.renderModel(SpecialModels.AA_12_COMPENSATOR.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            else {
                 RenderUtil.renderModel(SpecialModels.AA_12_MUZZLE.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
             if (Gun.getAttachment(IAttachment.Type.UNDER_BARREL, stack).getItem() == ModItems.SPECIALISED_GRIP.orElse(ItemStack.EMPTY.getItem())) {
