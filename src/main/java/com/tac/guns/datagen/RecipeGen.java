@@ -15,11 +15,15 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+//@OnlyIn(Dist.DEDICATED_SERVER)
 public class RecipeGen extends RecipeProvider
 {
     public RecipeGen(DataGenerator generator)
@@ -30,6 +34,8 @@ public class RecipeGen extends RecipeProvider
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
         // Dye Item
+        /*if(Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER)
+            return;*/
         consumer.accept(new IFinishedRecipe() {
             @Override
             public void serialize(JsonObject json) {
