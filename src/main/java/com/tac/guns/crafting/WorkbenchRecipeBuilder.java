@@ -199,13 +199,13 @@ public class WorkbenchRecipeBuilder
         @Override
         public JsonObject getAdvancementJson()
         {
-            return new JsonObject();
+            return null;
         }
 
         @Override
         public ResourceLocation getAdvancementID()
         {
-            return new ResourceLocation("", "");
+            return null;
         }
     }
 }
