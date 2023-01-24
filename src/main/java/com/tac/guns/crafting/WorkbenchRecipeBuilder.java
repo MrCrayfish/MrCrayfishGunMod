@@ -5,10 +5,6 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.tac.guns.Reference;
 import com.tac.guns.init.ModRecipeSerializers;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -18,7 +14,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraftforge.common.extensions.IForgeAdvancementBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +34,6 @@ public class WorkbenchRecipeBuilder
         this.result = item.asItem();
         this.count = count;
         this.materials = new ArrayList<>();
-        this.advancementBuilder = Advancement.Builder.builder();
     }
 
     /**
@@ -141,21 +135,12 @@ public class WorkbenchRecipeBuilder
             this.build(consumerIn, new ResourceLocation(modid, "craft_"+save));
         }
     }
-    private final Advancement.Builder advancementBuilder;
-    private void validate(ResourceLocation id)
-    {
-        if(this.advancementBuilder.getCriteria().isEmpty())
-        {
-            throw new IllegalStateException("No way of obtaining recipe " + id);
-        }
-    }
 
     /**
      * Builds this recipe into an {@link IFinishedRecipe}.
      */
     public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id)
     {
-        advancementBuilder.build(id);
         consumerIn.accept(new Result(id, this.result, this.count, this.group == null ? "" : this.group, this.materials));
     }
     public static class Result implements IFinishedRecipe
@@ -186,9 +171,8 @@ public class WorkbenchRecipeBuilder
             {
                 JsonObject resultObject = new JsonObject();
                 resultObject.add("item", material.getFirst().serialize());
-               /* if(material.getSecond() > 1)
-                    */
-                resultObject.addProperty("count", material.getSecond());
+                if(material.getSecond() > 1)
+                    resultObject.addProperty("count", material.getSecond());
                 input.add(resultObject);
             }
             json.add("materials", input);
@@ -215,13 +199,13 @@ public class WorkbenchRecipeBuilder
         @Override
         public JsonObject getAdvancementJson()
         {
-            return new JsonObject();
+            return null;
         }
 
         @Override
         public ResourceLocation getAdvancementID()
         {
-            return new ResourceLocation(Reference.MOD_ID, "");
+            return null;
         }
     }
 }
