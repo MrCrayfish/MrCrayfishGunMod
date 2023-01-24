@@ -49,8 +49,11 @@ public class WorkbenchRecipeSerializer extends net.minecraftforge.registries.For
         ItemStack result = buffer.readItemStack();
         ImmutableList.Builder<Pair<Ingredient, Integer>> builder = ImmutableList.builder();
         int size = buffer.readVarInt();
-        for(int i = 0; i < size; i++)
-            builder.add(new Pair<>(Ingredient.read(buffer), buffer.readVarInt()));
+        for(int i = 0; i < size; i++) {
+            Ingredient ingredient = Ingredient.read(buffer);
+            int count = buffer.readVarInt();
+            builder.add(new Pair<>(ingredient, count));
+        }
         return new WorkbenchRecipe(recipeId, result, builder.build(), group);
     }
 
