@@ -36,7 +36,7 @@ public class RecipeGen extends RecipeProvider
         // Dye Item
         /*if(Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER)
             return;*/
-        consumer.accept(new IFinishedRecipe() {
+        /*consumer.accept(new IFinishedRecipe() {
             @Override
             public void serialize(JsonObject json) {
             }
@@ -61,7 +61,7 @@ public class RecipeGen extends RecipeProvider
             public ResourceLocation getAdvancementID() {
                 return new ResourceLocation("");
             }
-        });
+        });*/
 
         ShapedRecipeBuilder.shapedRecipe(ModBlocks.WORKBENCH.get())
                 .patternLine("###")
@@ -133,7 +133,7 @@ public class RecipeGen extends RecipeProvider
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.DP28.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 42)
-                .addIngredient(ItemTags.ACACIA_LOGS, 6)
+                .addIngredient(Tags.Items.LEATHER, 6)
                 .build(consumer);
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.GLOCK_17.get())
@@ -158,7 +158,7 @@ public class RecipeGen extends RecipeProvider
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.M870_CLASSIC.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 80)
-                .addIngredient(ItemTags.OAK_LOGS, 8)
+                .addIngredient(Tags.Items.LEATHER, 8)
                 .build(consumer);
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.M1014.get())
@@ -167,7 +167,7 @@ public class RecipeGen extends RecipeProvider
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.M1911.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 26)
-                .addIngredient(ItemTags.OAK_LOGS, 3)
+                .addIngredient(Tags.Items.LEATHER, 3)
                 .build(consumer);
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.MK14.get())
@@ -376,7 +376,6 @@ public class RecipeGen extends RecipeProvider
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.SRS_RED_DOT_SIGHT.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 8)
-                .addIngredient(Items.DAYLIGHT_DETECTOR, 3)
                 .addIngredient(Tags.Items.STORAGE_BLOCKS_REDSTONE, 2)
                 .build(consumer);
 
@@ -393,23 +392,23 @@ public class RecipeGen extends RecipeProvider
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.SPECIALISED_GRIP.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 14)
-                .addIngredient(Items.WHITE_WOOL, 2)
+                .addIngredient(Tags.Items.LEATHER, 2)
                 .build(consumer);
 
         //Stock
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.LIGHT_STOCK.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 9)
-                .addIngredient(Items.WHITE_WOOL, 6)
+                .addIngredient(Tags.Items.LEATHER, 6)
                 .build(consumer);
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.TACTICAL_STOCK.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 19)
-                .addIngredient(Items.WHITE_WOOL, 8)
+                .addIngredient(Tags.Items.LEATHER, 8)
                 .build(consumer);
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.WEIGHTED_STOCK.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 34)
-                .addIngredient(Items.WHITE_WOOL, 16)
+                .addIngredient(Tags.Items.LEATHER, 16)
                 .build(consumer);
 
         //Barrel
@@ -423,7 +422,7 @@ public class RecipeGen extends RecipeProvider
 
         WorkbenchRecipeBuilder.workbenchRecipe(ModItems.SILENCER.get())
                 .addIngredient(Tags.Items.INGOTS_IRON, 18)
-                .addIngredient(Items.WHITE_WOOL, 6)
+                .addIngredient(Tags.Items.LEATHER, 6)
                 .build(consumer);
 
     }

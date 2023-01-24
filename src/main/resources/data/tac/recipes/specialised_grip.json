@@ -5,16 +5,16 @@
       "item": {
         "tag": "forge:ingots/iron"
       },
-      "count": 42
+      "count": 14
     },
     {
       "item": {
-        "tag": "minecraft:acacia_logs"
+        "tag": "forge:leather"
       },
-      "count": 6
+      "count": 2
     }
   ],
   "result": {
-    "item": "tac:dp28"
+    "item": "tac:specialised_grip"
   }
 }

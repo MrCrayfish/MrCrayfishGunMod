@@ -5,16 +5,16 @@
       "item": {
         "tag": "forge:ingots/iron"
       },
-      "count": 14
+      "count": 26
     },
     {
       "item": {
-        "item": "minecraft:white_wool"
+        "tag": "forge:leather"
       },
-      "count": 2
+      "count": 3
     }
   ],
   "result": {
-    "item": "tac:specialised_grip"
+    "item": "tac:m1911"
   }
 }

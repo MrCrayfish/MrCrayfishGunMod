@@ -5,16 +5,16 @@
       "item": {
         "tag": "forge:ingots/iron"
       },
-      "count": 9
+      "count": 42
     },
     {
       "item": {
-        "item": "minecraft:white_wool"
+        "tag": "forge:leather"
       },
       "count": 6
     }
   ],
   "result": {
-    "item": "tac:light_stock"
+    "item": "tac:dp28"
   }
 }

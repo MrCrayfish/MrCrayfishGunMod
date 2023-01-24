@@ -5,16 +5,17 @@
       "item": {
         "tag": "forge:nuggets/iron"
       },
-      "count": 8
+      "count": 12
     },
     {
       "item": {
         "tag": "forge:gunpowder"
-      }
+      },
+      "count": 1
     }
   ],
   "result": {
-    "item": "tac:win_30-30",
-    "count": 5
+    "item": "tac:10_gauge_round",
+    "count": 8
   }
 }

@@ -5,22 +5,17 @@
       "item": {
         "tag": "forge:nuggets/iron"
       },
-      "count": 14
+      "count": 4
     },
     {
       "item": {
         "tag": "forge:gunpowder"
       },
-      "count": 3
-    },
-    {
-      "item": {
-        "tag": "forge:gems/diamond"
-      }
+      "count": 1
     }
   ],
   "result": {
-    "item": "tac:ae50",
-    "count": 8
+    "item": "tac:9mm_round",
+    "count": 12
   }
 }

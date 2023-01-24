@@ -5,16 +5,22 @@
       "item": {
         "tag": "forge:ingots/iron"
       },
+      "count": 30
+    },
+    {
+      "item": {
+        "tag": "forge:glass_panes"
+      },
       "count": 26
     },
     {
       "item": {
-        "tag": "minecraft:oak_logs"
+        "tag": "forge:storage_blocks/redstone"
       },
-      "count": 3
+      "count": 1
     }
   ],
   "result": {
-    "item": "tac:m1911"
+    "item": "tac:elcan_14x"
   }
 }

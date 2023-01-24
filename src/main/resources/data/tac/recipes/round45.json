@@ -3,18 +3,19 @@
   "materials": [
     {
       "item": {
-        "tag": "forge:ingots/iron"
+        "tag": "forge:nuggets/iron"
       },
-      "count": 19
+      "count": 9
     },
     {
       "item": {
-        "item": "minecraft:white_wool"
+        "tag": "forge:gunpowder"
       },
-      "count": 8
+      "count": 1
     }
   ],
   "result": {
-    "item": "tac:tactical_stock"
+    "item": "tac:round45",
+    "count": 8
   }
 }

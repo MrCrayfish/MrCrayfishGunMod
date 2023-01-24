@@ -9,7 +9,7 @@
     },
     {
       "item": {
-        "item": "minecraft:white_wool"
+        "tag": "forge:leather"
       },
       "count": 16
     }

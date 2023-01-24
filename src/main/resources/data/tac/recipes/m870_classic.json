@@ -5,16 +5,16 @@
       "item": {
         "tag": "forge:ingots/iron"
       },
-      "count": 18
+      "count": 80
     },
     {
       "item": {
-        "item": "minecraft:white_wool"
+        "tag": "forge:leather"
       },
-      "count": 6
+      "count": 8
     }
   ],
   "result": {
-    "item": "tac:silencer"
+    "item": "tac:m870_classic"
   }
 }

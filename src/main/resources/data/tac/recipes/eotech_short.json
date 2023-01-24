@@ -5,21 +5,22 @@
       "item": {
         "tag": "forge:ingots/iron"
       },
-      "count": 16
+      "count": 20
     },
     {
       "item": {
         "tag": "forge:glass_panes"
       },
-      "count": 15
+      "count": 14
     },
     {
       "item": {
         "tag": "forge:storage_blocks/redstone"
-      }
+      },
+      "count": 1
     }
   ],
   "result": {
-    "item": "tac:vortex_uh_1"
+    "item": "tac:eotech_short"
   }
 }
