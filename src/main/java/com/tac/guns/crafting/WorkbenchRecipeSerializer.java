@@ -30,10 +30,16 @@ public class WorkbenchRecipeSerializer extends net.minecraftforge.registries.For
         {
             JsonObject itemObject = input.get(i).getAsJsonObject();
             Ingredient ingredient = Ingredient.deserialize(itemObject.get("item"));
-            int count = JSONUtils.getInt(itemObject, "count");
+
+            int count;
+            try {
+                count = JSONUtils.getInt(itemObject, "count");
+            }
+            catch (JsonSyntaxException e){
+                count = 1;
+            }
             builder.add(new Pair<>(ingredient, count));
-        }
-        if(!json.has("result"))
+        }if(!json.has("result"))
             throw new JsonSyntaxException("Missing result entry");
 
         JsonObject resultObject = JSONUtils.getJsonObject(json, "result");
@@ -51,7 +57,7 @@ public class WorkbenchRecipeSerializer extends net.minecraftforge.registries.For
         int size = buffer.readVarInt();
         for(int i = 0; i < size; i++) {
             Ingredient ingredient = Ingredient.read(buffer);
-            int count = buffer.readVarInt();
+            int count = buffer.readByte();
             builder.add(new Pair<>(ingredient, count));
         }
         return new WorkbenchRecipe(recipeId, result, builder.build(), group);
@@ -66,7 +72,7 @@ public class WorkbenchRecipeSerializer extends net.minecraftforge.registries.For
         for(Pair<Ingredient, Integer> stack : recipe.getMaterials())
         {
             stack.getFirst().write(buffer);
-            buffer.writeInt(stack.getSecond());
+            buffer.writeByte(stack.getSecond());
         }
     }
 }
