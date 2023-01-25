@@ -1,0 +1,12 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:muzzle_compensator"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    }
+  ]
+}

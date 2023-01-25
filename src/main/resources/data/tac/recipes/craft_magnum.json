@@ -1,0 +1,21 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:magnumround",
+    "count": 6
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 12
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    }
+  ]
+}

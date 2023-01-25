@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:smle_iii"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 60
+    },
+    {
+      "item": "minecraft:spruce_log",
+      "count": 10
+    }
+  ]
+}

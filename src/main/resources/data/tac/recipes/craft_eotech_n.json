@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:eotech_n"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 16
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 10
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 2
+    }
+  ]
+}

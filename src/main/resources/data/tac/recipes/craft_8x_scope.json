@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:8x_scope"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 36
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 60
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:mini_dot"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 6
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 1
+    }
+  ]
+}

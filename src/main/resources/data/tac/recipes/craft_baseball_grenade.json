@@ -1,0 +1,17 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:baseball_grenade",
+    "count": 1
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 24
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:srs_red_dot"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "item": "minecraft:daylight_sensor",
+      "count": 3
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 2
+    }
+  ]
+}

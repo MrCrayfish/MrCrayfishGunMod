@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:mosin"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 40
+    },
+    {
+      "item": "minecraft:acacia_log",
+      "count": 10
+    }
+  ]
+}

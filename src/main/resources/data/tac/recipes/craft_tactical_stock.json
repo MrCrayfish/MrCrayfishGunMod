@@ -1,0 +1,16 @@
+{
+  "type": "tac:workbench",
+  "result": {
+    "item": "tac:tactical_stock"
+  },
+  "materials": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 19
+    },
+    {
+      "item": "minecraft:white_wool",
+      "count": 8
+    }
+  ]
+}
