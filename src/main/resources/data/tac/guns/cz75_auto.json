@@ -21,8 +21,8 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 16,
-    "reloadMagTimer": 42,
-    "additionalReloadEmptyMagTimer": -9,
+    "reloadMagTimer": 21,
+    "additionalReloadEmptyMagTimer": 14,
     "maxAdditionalAmmoPerOC": [
       8,
       14,
@@ -40,7 +40,10 @@
   },
   "sounds": {
     "fire": "tac:item.m45",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.cz75_auto_reload_norm",
+    "reloadEmpty": "tac:animation.cz75_auto_reload_empty",
+    "draw": "tac:animation.cz75_auto_draw",
+    "inspect": "tac:animation.cz75_auto_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.fire_m92fss"
   },

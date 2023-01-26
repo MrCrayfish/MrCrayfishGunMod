@@ -1423,5 +1423,130 @@
       "sounds": [
          { "name": "tac:animation/mk14_reload_norm"}
       ]
+   },
+
+   "animation.db_shortgun_draw": {
+      "subtitle": "animation.db_shortgun_draw",
+      "sounds": [
+         { "name": "tac:animation/db_shortgun_draw"}
+      ]
+   },
+   "animation.db_shortgun_reload_norm": {
+      "subtitle": "animation.db_shortgun_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/db_shortgun_reload_norm"}
+      ]
+   },
+   "animation.db_shortgun_inspect": {
+      "subtitle": "animation.db_shortgun_inspect",
+      "sounds": [
+         { "name": "tac:animation/db_shortgun_inspect"}
+      ]
+   },
+   "animation.db_shortgun_reload_empty": {
+      "subtitle": "animation.db_shortgun_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/db_shortgun_reload_empty"}
+      ]
+   },
+
+   "animation.cz75_draw": {
+      "subtitle": "animation.cz75_draw",
+      "sounds": [
+         { "name": "tac:animation/cz75_draw"}
+      ]
+   },
+   "animation.cz75_reload_norm": {
+      "subtitle": "animation.cz75_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/cz75_reload_norm"}
+      ]
+   },
+   "animation.cz75_inspect": {
+      "subtitle": "animation.cz75_inspect",
+      "sounds": [
+         { "name": "tac:animation/cz75_inspect"}
+      ]
+   },
+   "animation.cz75_reload_empty": {
+      "subtitle": "animation.cz75_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/cz75_reload_empty"}
+      ]
+   },
+
+   "animation.cz75_auto_draw": {
+      "subtitle": "animation.cz75_auto_draw",
+      "sounds": [
+         { "name": "tac:animation/cz75_auto_draw"}
+      ]
+   },
+   "animation.cz75_auto_reload_norm": {
+      "subtitle": "animation.cz75_auto_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/cz75_auto_reload_norm"}
+      ]
+   },
+   "animation.cz75_auto_inspect": {
+      "subtitle": "animation.cz75_auto_inspect",
+      "sounds": [
+         { "name": "tac:animation/cz75_auto_inspect"}
+      ]
+   },
+   "animation.cz75_auto_reload_empty": {
+      "subtitle": "animation.cz75_auto_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/cz75_auto_reload_empty"}
+      ]
+   },
+
+   "animation.fn_fal_draw": {
+      "subtitle": "animation.fn_fal_draw",
+      "sounds": [
+         { "name": "tac:animation/fn_fal_draw"}
+      ]
+   },
+   "animation.fn_fal_reload_norm": {
+      "subtitle": "animation.fn_fal_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/fn_fal_reload_norm"}
+      ]
+   },
+   "animation.fn_fal_inspect": {
+      "subtitle": "animation.fn_fal_inspect",
+      "sounds": [
+         { "name": "tac:animation/fn_fal_inspect"}
+      ]
+   },
+   "animation.fn_fal_reload_empty": {
+      "subtitle": "animation.fn_fal_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/fn_fal_reload_empty"}
+      ]
+   },
+
+   "animation.m16a4_draw": {
+      "subtitle": "animation.m16a4_draw",
+      "sounds": [
+         { "name": "tac:animation/m16a4_draw"}
+      ]
+   },
+   "animation.m16a4_reload_norm": {
+      "subtitle": "animation.m16a4_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/m16a4_reload_norm"}
+      ]
+   },
+   "animation.m16a4_inspect": {
+      "subtitle": "animation.m16a4_inspect",
+      "sounds": [
+         { "name": "tac:animation/m16a4_inspect"}
+      ]
+   },
+   "animation.m16a4_reload_empty": {
+      "subtitle": "animation.m16a4_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/m16a4_reload_empty"}
+      ]
    }
 }

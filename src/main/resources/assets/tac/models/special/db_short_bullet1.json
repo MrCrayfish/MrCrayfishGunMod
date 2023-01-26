@@ -1,0 +1,76 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [128, 128],
+	"textures": {
+		"1": "tac:items/db_short/db_12_gauge_uv",
+		"particle": "tac:items/db_short/db_12_gauge_uv"
+	},
+	"elements": [
+		{
+			"from": [8.75, 10.4375, 7.6875],
+			"to": [10.25, 11.9375, 12.6875],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-2.5, -0.8125, 12.9375]},
+			"faces": {
+				"north": {"uv": [7, 5, 6, 4], "rotation": 180, "texture": "#1"},
+				"east": {"uv": [2, 0, 3, 3], "rotation": 90, "texture": "#1"},
+				"south": {"uv": [7, 6, 6, 7], "texture": "#1"},
+				"west": {"uv": [4, 0, 5, 3], "rotation": 270, "texture": "#1"},
+				"up": {"uv": [0, 4, 1, 7], "texture": "#1"},
+				"down": {"uv": [0, 0, 1, 3], "rotation": 180, "texture": "#1"}
+			}
+		},
+		{
+			"from": [8.625, 10.3125, 12.6875],
+			"to": [10.375, 12.0625, 12.9375],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-2.5, -0.8125, 12.9375]},
+			"faces": {
+				"north": {"uv": [7, 3, 6, 2], "rotation": 180, "texture": "#1"},
+				"east": {"uv": [4, 4, 5, 5], "rotation": 90, "texture": "#1"},
+				"south": {"uv": [5, 6, 4, 7], "texture": "#1"},
+				"west": {"uv": [2, 6, 3, 7], "rotation": 270, "texture": "#1"},
+				"up": {"uv": [6, 0, 7, 1], "texture": "#1"},
+				"down": {"uv": [2, 4, 3, 5], "rotation": 180, "texture": "#1"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 0.25, -3.5],
+			"scale": [0.275, 0.275, 0.275]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 0.25, -3.5],
+			"scale": [0.275, 0.275, 0.275]
+		},
+		"firstperson_righthand": {
+			"translation": [-5, 4, -2.25],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_lefthand": {
+			"translation": [-5, 4, -2.25],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"ground": {
+			"translation": [0, 5, 0],
+			"scale": [0.275, 0.275, 0.275]
+		},
+		"gui": {
+			"rotation": [30, -145, 0],
+			"translation": [-0.25, -1.25, 0],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [0.5, -0.75, -1.75],
+			"scale": [0.55, 0.55, 0.55]
+		}
+	},
+	"groups": [
+		{
+			"name": "12_gauge",
+			"origin": [2, 0, 2],
+			"color": 0,
+			"children": [0, 1]
+		}
+	]
+}
