@@ -20,7 +20,7 @@
   "reloads": {
     "magFed": true,
     "maxAmmo": 2,
-    "reloadMagTimer": 34,
+    "reloadMagTimer": 28,
     "additionalReloadEmptyMagTimer": 0,
     "maxAdditionalAmmoPerOC": [
       0,
@@ -40,7 +40,10 @@
   },
   "sounds": {
     "fire": "tac:item.fire_db",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.db_shortgun_reload_norm",
+    "reloadEmpty": "tac:animation.db_shortgun_reload_empty",
+    "draw": "tac:animation.db_shortgun_draw",
+    "inspect": "tac:animation.db_shortgun_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.fire_m16s"
   },

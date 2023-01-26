@@ -2232,251 +2232,6 @@
 			}
 		},
 		{
-			"name": "octagon",
-			"from": [5.9, 8.88816, 7.65],
-			"to": [6.1, 9.1781, 7.75],
-			"rotation": {"angle": 45, "axis": "x", "origin": [7.4, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [3.125, 8.625, 3.14063, 8.64063], "texture": "#4"},
-				"east": {"uv": [8.625, 3.25, 8.64063, 3.26563], "texture": "#4"},
-				"south": {"uv": [8.625, 3.375, 8.64063, 3.39063], "texture": "#4"},
-				"west": {"uv": [8.625, 3.5, 8.64063, 3.51563], "texture": "#4"},
-				"up": {"uv": [8.64063, 3.64063, 8.625, 3.625], "texture": "#4"},
-				"down": {"uv": [8.64063, 3.75, 8.625, 3.76563], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [5.9, 8.88816, 7.65],
-			"to": [6.1, 9.1781, 7.75],
-			"rotation": {"angle": 0, "axis": "y", "origin": [7.4, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [3.875, 8.625, 3.89063, 8.64063], "texture": "#4"},
-				"east": {"uv": [8.625, 3.875, 8.64063, 3.89063], "texture": "#4"},
-				"south": {"uv": [4, 8.625, 4.01563, 8.64063], "texture": "#4"},
-				"west": {"uv": [8.625, 4, 8.64063, 4.01563], "texture": "#4"},
-				"up": {"uv": [4.26563, 8.64063, 4.25, 8.625], "texture": "#4"},
-				"down": {"uv": [8.64063, 4.25, 8.625, 4.26563], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [5.9, 8.88816, 8.25],
-			"to": [6.1, 9.1781, 8.35],
-			"rotation": {"angle": 45, "axis": "x", "origin": [7.4, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [8.625, 4.375, 8.64063, 4.39063], "texture": "#4"},
-				"east": {"uv": [4.5, 8.625, 4.51563, 8.64063], "texture": "#4"},
-				"south": {"uv": [8.625, 4.5, 8.64063, 4.51563], "texture": "#4"},
-				"west": {"uv": [4.625, 8.625, 4.64063, 8.64063], "texture": "#4"},
-				"up": {"uv": [4.76563, 8.64063, 4.75, 8.625], "texture": "#4"},
-				"down": {"uv": [4.89063, 8.625, 4.875, 8.64063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [5.9, 8.88816, 8.25],
-			"to": [6.1, 9.1781, 8.35],
-			"rotation": {"angle": 0, "axis": "y", "origin": [7.4, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [5, 8.625, 5.01563, 8.64063], "texture": "#4"},
-				"east": {"uv": [8.625, 5, 8.64063, 5.01563], "texture": "#4"},
-				"south": {"uv": [5.125, 8.625, 5.14063, 8.64063], "texture": "#4"},
-				"west": {"uv": [8.625, 5.125, 8.64063, 5.14063], "texture": "#4"},
-				"up": {"uv": [5.26563, 8.64063, 5.25, 8.625], "texture": "#4"},
-				"down": {"uv": [8.64063, 5.25, 8.625, 5.26563], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [5.9, 8.68313, 7.85503],
-			"to": [6.1, 8.78313, 8.14497],
-			"rotation": {"angle": 45, "axis": "x", "origin": [7.4, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [5.375, 8.625, 5.39063, 8.64063], "texture": "#4"},
-				"east": {"uv": [5.5, 8.625, 5.51563, 8.64063], "texture": "#4"},
-				"south": {"uv": [5.625, 8.625, 5.64063, 8.64063], "texture": "#4"},
-				"west": {"uv": [5.75, 8.625, 5.76563, 8.64063], "texture": "#4"},
-				"up": {"uv": [5.89063, 8.64063, 5.875, 8.625], "texture": "#4"},
-				"down": {"uv": [6.01563, 8.625, 6, 8.64063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [5.9, 8.68313, 7.85503],
-			"to": [6.1, 8.78313, 8.14497],
-			"rotation": {"angle": 0, "axis": "y", "origin": [7.4, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [6.125, 8.625, 6.14063, 8.64063], "texture": "#4"},
-				"east": {"uv": [8.625, 6.125, 8.64063, 6.14063], "texture": "#4"},
-				"south": {"uv": [6.25, 8.625, 6.26563, 8.64063], "texture": "#4"},
-				"west": {"uv": [8.625, 6.25, 8.64063, 6.26563], "texture": "#4"},
-				"up": {"uv": [6.39063, 8.64063, 6.375, 8.625], "texture": "#4"},
-				"down": {"uv": [8.64063, 6.375, 8.625, 6.39063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [5.9, 9.28313, 7.85503],
-			"to": [6.1, 9.38313, 8.14497],
-			"rotation": {"angle": 45, "axis": "x", "origin": [7.4, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [6.5, 8.625, 6.51563, 8.64063], "texture": "#4"},
-				"east": {"uv": [8.625, 6.5, 8.64063, 6.51563], "texture": "#4"},
-				"south": {"uv": [8.625, 6.625, 8.64063, 6.64063], "texture": "#4"},
-				"west": {"uv": [8.625, 6.75, 8.64063, 6.76563], "texture": "#4"},
-				"up": {"uv": [8.64063, 6.89063, 8.625, 6.875], "texture": "#4"},
-				"down": {"uv": [7.01563, 8.625, 7, 8.64063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [5.9, 9.28313, 7.85503],
-			"to": [6.1, 9.38313, 8.14497],
-			"rotation": {"angle": 0, "axis": "y", "origin": [7.4, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [8.625, 7, 8.64063, 7.01563], "texture": "#4"},
-				"east": {"uv": [7.125, 8.625, 7.14063, 8.64063], "texture": "#4"},
-				"south": {"uv": [7.25, 8.625, 7.26563, 8.64063], "texture": "#4"},
-				"west": {"uv": [7.375, 8.625, 7.39063, 8.64063], "texture": "#4"},
-				"up": {"uv": [7.51563, 8.64063, 7.5, 8.625], "texture": "#4"},
-				"down": {"uv": [7.64063, 8.625, 7.625, 8.64063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.1, 8.91922, 7.725],
-			"to": [7.1, 9.14704, 8.275],
-			"rotation": {"angle": 45, "axis": "x", "origin": [8, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [1.9375, 7.4375, 2, 7.45313], "texture": "#4"},
-				"east": {"uv": [8.125, 5.25, 8.15625, 5.26563], "texture": "#4"},
-				"south": {"uv": [2.1875, 7.4375, 2.25, 7.45313], "texture": "#4"},
-				"west": {"uv": [5.375, 8.125, 5.40625, 8.14063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [7, 8.81922, 8.025],
-			"to": [7.1375, 9.24704, 8.775],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.03313, 8]},
-			"faces": {
-				"west": {"uv": [6.9375, 3.75, 6.98438, 3.78125], "texture": "#4"},
-				"up": {"uv": [6.51563, 7.67188, 6.5, 7.625], "texture": "#4"},
-				"down": {"uv": [7.64063, 6.5, 7.625, 6.54688], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.57011, 8.81922, 8.26377],
-			"to": [6.70761, 9.24704, 8.45127],
-			"rotation": {"angle": 22.5, "axis": "y", "origin": [8.07011, 9.03313, 7.43877]},
-			"faces": {
-				"east": {"uv": [5.5, 8.125, 5.51563, 8.15625], "texture": "#4"},
-				"south": {"uv": [5.625, 8.125, 5.64063, 8.15625], "texture": "#4"},
-				"west": {"uv": [5.75, 8.125, 5.76563, 8.15625], "texture": "#4"},
-				"up": {"uv": [8.64063, 7.64063, 8.625, 7.625], "texture": "#4"},
-				"down": {"uv": [8.64063, 7.75, 8.625, 7.76563], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.1, 8.91922, 7.725],
-			"to": [7.1, 9.14704, 8.275],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.03313, 8]},
-			"faces": {
-				"north": {"uv": [2.3125, 7.4375, 2.375, 7.45313], "texture": "#4"},
-				"east": {"uv": [5.875, 8.125, 5.90625, 8.14063], "texture": "#4"},
-				"south": {"uv": [2.4375, 7.4375, 2.5, 7.45313], "texture": "#4"},
-				"west": {"uv": [6, 8.125, 6.03125, 8.14063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.1, 8.75813, 7.88609],
-			"to": [7.1, 9.30813, 8.11391],
-			"rotation": {"angle": 45, "axis": "x", "origin": [8, 9.03313, 8]},
-			"faces": {
-				"east": {"uv": [6.125, 8.125, 6.14063, 8.15625], "texture": "#4"},
-				"west": {"uv": [8.125, 6.125, 8.14063, 6.15625], "texture": "#4"},
-				"up": {"uv": [2.625, 7.45313, 2.5625, 7.4375], "texture": "#4"},
-				"down": {"uv": [2.75, 7.4375, 2.6875, 7.45313], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.1, 8.75813, 7.88609],
-			"to": [7.1, 9.30813, 8.11391],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.03313, 8]},
-			"faces": {
-				"east": {"uv": [6.25, 8.125, 6.26563, 8.15625], "texture": "#4"},
-				"west": {"uv": [8.125, 6.25, 8.14063, 6.28125], "texture": "#4"},
-				"up": {"uv": [2.875, 7.45313, 2.8125, 7.4375], "texture": "#4"},
-				"down": {"uv": [3, 7.4375, 2.9375, 7.45313], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.644, 8.88983, 7.659],
-			"to": [6.884, 9.17233, 8.341],
-			"rotation": {"angle": 45, "axis": "x", "origin": [8, 9.03108, 8]},
-			"faces": {
-				"north": {"uv": [7.875, 8.625, 7.89063, 8.64063], "texture": "#4"},
-				"east": {"uv": [6.625, 7.625, 6.67188, 7.64063], "texture": "#4"},
-				"south": {"uv": [8.625, 7.875, 8.64063, 7.89063], "texture": "#4"},
-				"west": {"uv": [7.625, 6.625, 7.67188, 6.64063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.644, 8.88983, 7.659],
-			"to": [6.884, 9.17233, 8.341],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.03108, 8]},
-			"faces": {
-				"north": {"uv": [8, 8.625, 8.01563, 8.64063], "texture": "#4"},
-				"east": {"uv": [7.625, 6.75, 7.67188, 6.76563], "texture": "#4"},
-				"south": {"uv": [8.625, 8, 8.64063, 8.01563], "texture": "#4"},
-				"west": {"uv": [7.625, 6.875, 7.67188, 6.89063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.644, 8.69008, 7.85875],
-			"to": [6.884, 9.37208, 8.14125],
-			"rotation": {"angle": 45, "axis": "x", "origin": [8, 9.03108, 8]},
-			"faces": {
-				"east": {"uv": [7.625, 7, 7.64063, 7.04688], "texture": "#4"},
-				"west": {"uv": [7.625, 7.125, 7.64063, 7.17188], "texture": "#4"},
-				"up": {"uv": [8.14063, 8.64063, 8.125, 8.625], "texture": "#4"},
-				"down": {"uv": [8.26563, 8.625, 8.25, 8.64063], "texture": "#4"}
-			}
-		},
-		{
-			"name": "octagon",
-			"from": [6.644, 8.69008, 7.85875],
-			"to": [6.884, 9.37208, 8.14125],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.03108, 8]},
-			"faces": {
-				"east": {"uv": [7.1875, 7.625, 7.20313, 7.67188], "texture": "#4"},
-				"west": {"uv": [7.3125, 7.625, 7.32813, 7.67188], "texture": "#4"},
-				"up": {"uv": [8.39063, 8.64063, 8.375, 8.625], "texture": "#4"},
-				"down": {"uv": [8.64063, 8.375, 8.625, 8.39063], "texture": "#4"}
-			}
-		},
-		{
-			"from": [7.0625, 8.77063, 7.75],
-			"to": [7.1875, 9.33313, 14.0625],
-			"rotation": {"angle": 0, "axis": "y", "origin": [0, 9.58313, 7.6875]},
-			"faces": {
-				"north": {"uv": [6.375, 8.125, 6.39063, 8.15625], "texture": "#4"},
-				"east": {"uv": [3.9375, 0, 4.32813, 0.03125], "texture": "#4"},
-				"south": {"uv": [8.125, 6.375, 8.14063, 6.40625], "texture": "#4"},
-				"west": {"uv": [3.9375, 3.125, 4.32813, 3.15625], "texture": "#4"},
-				"up": {"uv": [1.51563, 5.57813, 1.5, 5.1875], "texture": "#4"},
-				"down": {"uv": [1.76563, 5.1875, 1.75, 5.57813], "texture": "#4"}
-			}
-		},
-		{
 			"from": [7.375, 9.52063, 12.0625],
 			"to": [8.625, 9.70813, 18],
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, 9.58313, 7.6875]},
@@ -2641,15 +2396,11 @@
 			"name": "fn_fal",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "rear sight",
 					"origin": [0, 8.62207, 19.14996],
 					"color": 1,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						0,
 						1,
@@ -2667,8 +2418,6 @@
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [12, 13, 14, 15]
 						}
 					]
@@ -2677,31 +2426,23 @@
 					"name": "safety",
 					"origin": [8, 8, 8],
 					"color": 2,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 2,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [16, 17, 18, 19]
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 2,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [20, 21, 22, 23]
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 2,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [24, 25, 26, 27, 28, 29]
 						}
 					]
@@ -2710,15 +2451,11 @@
 					"name": "locking lever",
 					"origin": [0, 0, 0],
 					"color": 4,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 4,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [30, 31, 32, 33]
 						},
 						34,
@@ -2735,8 +2472,6 @@
 					"name": "pins",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						42,
 						43,
@@ -2744,8 +2479,6 @@
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 8,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [44, 45, 46, 47, 48, 49, 50, 51]
 						},
 						52,
@@ -2757,37 +2490,27 @@
 					"name": "receiver",
 					"origin": [0, 7.75, 7.6875],
 					"color": 8,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 7.75, 7.6875],
 							"color": 8,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88]
 						},
 						{
 							"name": "group",
 							"origin": [0, 7.75, 7.6875],
 							"color": 8,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "*part",
 									"origin": [8, 8, 8],
 									"color": 8,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [7, 5.8125, 13.25],
 											"color": 8,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": [89]
 										},
 										90,
@@ -2814,8 +2537,6 @@
 											"name": "group",
 											"origin": [0, -0.24406, 0.8095],
 											"color": 8,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": [110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126]
 										},
 										127,
@@ -2830,8 +2551,6 @@
 											"name": "octagon",
 											"origin": [8, 8, 8],
 											"color": 8,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": [135, 136, 137, 138]
 										},
 										139,
@@ -2850,8 +2569,6 @@
 									"name": "magazine catch",
 									"origin": [0, 0, 0],
 									"color": 8,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [149, 150, 151, 152, 153]
 								}
 							]
@@ -2862,31 +2579,23 @@
 					"name": "trigger",
 					"origin": [0, -10.0153, 5.27988],
 					"color": 6,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [154, 155, 156, 157, 158, 159, 160, 161]
 				},
 				{
 					"name": "ring",
 					"origin": [8, 8, 8],
 					"color": 7,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 7,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [162, 163, 164, 165]
 						},
 						{
 							"name": "group",
 							"origin": [7, 5.8125, 13.25],
 							"color": 7,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [166, 167, 168, 169]
 						}
 					]
@@ -2895,77 +2604,26 @@
 					"name": "grip",
 					"origin": [0, 0, 0],
 					"color": 5,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "pistol grip",
 							"origin": [0, 0, 0],
 							"color": 5,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182]
 						},
 						{
 							"name": "pistol grip",
 							"origin": [0, 0, 0],
 							"color": 5,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196]
 						}
-					]
-				},
-				{
-					"name": "pull handle",
-					"origin": [0, 7.75, 7.6875],
-					"color": 0,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
-					"children": [
-						{
-							"name": "group",
-							"origin": [8, 8, 8],
-							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
-							"children": [
-								{
-									"name": "octagon",
-									"origin": [8, 8, 8],
-									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
-									"children": [197, 198, 199, 200, 201, 202, 203, 204]
-								},
-								{
-									"name": "octagon",
-									"origin": [8, 8, 8],
-									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
-									"children": [205, 206, 207, 208, 209, 210]
-								},
-								{
-									"name": "octagon",
-									"origin": [8, 8, 8],
-									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
-									"children": [211, 212, 213, 214]
-								}
-							]
-						},
-						215
 					]
 				},
 				{
 					"name": "cover",
 					"origin": [0, 7.75, 7.6875],
 					"color": 4,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
-					"children": [216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227]
+					"children": [197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208]
 				}
 			]
 		},
@@ -2973,69 +2631,51 @@
 			"name": "fn_fal_standard_barrel",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "short barrel",
 					"origin": [8, 8, 8],
 					"color": 1,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "ring",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "ring",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "ring",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "gas block",
 							"origin": [8, 8.1875, 4.75],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "gas tube",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "gas tube",
 									"origin": [8, 8, 8],
 									"color": 1,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								}
 							]
@@ -3044,16 +2684,12 @@
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						}
 					]
@@ -3064,15 +2700,11 @@
 			"name": "fn_fal_bolt",
 			"origin": [-0.50822, 3.9566, 7.6875],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "bolt",
 					"origin": [-0.50822, 3.9566, 7.6875],
 					"color": 3,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": []
 				}
 			]
@@ -3081,15 +2713,11 @@
 			"name": "fn_fal_standard_handguard",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "handguard",
 					"origin": [8, 7.1875, 4.4375],
 					"color": 7,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": []
 				}
 			]
@@ -3098,22 +2726,16 @@
 			"name": "fn_fal_standard_mag",
 			"origin": [12.4375, 8, 8],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "m+b",
 					"origin": [12.4375, 8, 8],
 					"color": 0,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "magazine",
 							"origin": [11.6875, 0, 0],
 							"color": 8,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						}
 					]
@@ -3124,69 +2746,51 @@
 			"name": "fn_fal_extended_barrel",
 			"origin": [8, 8, 8],
 			"color": 2,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "compensator",
 					"origin": [3.4375, 8, 8],
 					"color": 2,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": []
 				},
 				{
 					"name": "barrel",
 					"origin": [8, 8, 8],
 					"color": 1,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "ring",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "ring",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "ring",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "gas block",
 							"origin": [8, 8.1875, 4.75],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "octagon",
 									"origin": [8, 8, 8],
 									"color": 1,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								}
 							]
@@ -3195,15 +2799,11 @@
 							"name": "gas tube",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "gas tube",
 									"origin": [8, 8, 8],
 									"color": 1,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								}
 							]
@@ -3212,24 +2812,18 @@
 							"name": "group",
 							"origin": [-4.5625, 8.84108, 2.43816],
 							"color": 2,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 1,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						}
 					]
@@ -3240,44 +2834,32 @@
 			"name": "fn_fal_extended_handguard",
 			"origin": [8, 8, 8],
 			"color": 9,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "rail handguard",
 					"origin": [8, 7.1875, 4.4375],
 					"color": 9,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "rail",
 							"origin": [0, 7.75, 7.6875],
 							"color": 9,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 9,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3286,23 +2868,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 9,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3311,23 +2887,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 9,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3336,23 +2906,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 9,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3361,23 +2925,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 9,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3386,23 +2944,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 9,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3411,23 +2963,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 9,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 9,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3438,15 +2984,11 @@
 							"name": "pins",
 							"origin": [9.84375, 9.70813, -4.46875],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "group",
 									"origin": [7.78924, 10.28268, 5.75],
 									"color": 9,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								}
 							]
@@ -3459,22 +3001,16 @@
 			"name": "fn_fal_extended_mag",
 			"origin": [8, 8, 8],
 			"color": 5,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "extdm+b",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "magazine",
 							"origin": [11.6875, 0, 0],
 							"color": 8,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						}
 					]
@@ -3485,45 +3021,33 @@
 			"name": "fn_fal_heavy_stock",
 			"origin": [8, 8, 8],
 			"color": 4,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "heavy stock",
 					"origin": [0, 0, 0],
 					"color": 4,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "pins",
 							"origin": [7.875, 7.52063, 22.53125],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "group",
 							"origin": [8.375, 0, 1.375],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "group",
 									"origin": [8.375, 0, 1.375],
 									"color": 4,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								},
 								{
 									"name": "group",
 									"origin": [8.375, 0, 1.375],
 									"color": 4,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								}
 							]
@@ -3532,24 +3056,18 @@
 							"name": "cheek rest",
 							"origin": [8.63254, 14.02848, 27.52096],
 							"color": 4,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 4,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 4,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						}
 					]
@@ -3560,77 +3078,57 @@
 			"name": "fn_fal_light_stock",
 			"origin": [8, 8, 8],
 			"color": 8,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "light stock",
 					"origin": [0, 0, 0],
 					"color": 8,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [8, 5.45035, 28.52338],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "pins",
 							"origin": [8, 8.2316, 30.83588],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "group",
 							"origin": [8, 8, 8],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "octagon",
 									"origin": [8, 8, 8],
 									"color": 8,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								},
 								{
 									"name": "octagon",
 									"origin": [8, 8, 8],
 									"color": 8,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								},
 								{
 									"name": "octagon",
 									"origin": [8, 8, 8],
 									"color": 8,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								},
 								{
 									"name": "group",
 									"origin": [7.5, 0.02063, -0.5625],
 									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								},
 								{
 									"name": "octagon",
 									"origin": [8, 8, 8],
 									"color": 8,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								}
 							]
@@ -3639,15 +3137,11 @@
 							"name": "group",
 							"origin": [8, 7.08646, 26.29947],
 							"color": 8,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "group",
 									"origin": [7.5, 0, 0],
 									"color": 8,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": []
 								}
 							]
@@ -3660,38 +3154,28 @@
 			"name": "fn_fal_tactical_stock",
 			"origin": [8, 8, 8],
 			"color": 4,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "stock",
 					"origin": [0, 0, 0],
 					"color": 4,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "group",
 							"origin": [0, 8.84108, 2.43816],
 							"color": 4,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "group",
 							"origin": [0, 0.015, -0.375],
 							"color": 4,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "group",
 							"origin": [0, 0.015, -0.375],
 							"color": 4,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						}
 					]
@@ -3702,52 +3186,38 @@
 			"name": "fn_fal_mount",
 			"origin": [8, 8, 8],
 			"color": 6,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "rail cover",
 					"origin": [0, 7.75, 7.6875],
 					"color": 6,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "pin",
 							"origin": [8, 8, 8],
 							"color": 6,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "rail",
 							"origin": [0, 7.75, 7.6875],
 							"color": 6,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": [
 								{
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3756,23 +3226,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3781,23 +3245,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3806,23 +3264,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3831,23 +3283,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3856,23 +3302,17 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										},
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3881,15 +3321,11 @@
 									"name": "group",
 									"origin": [14.2909, 13.61748, 7.6875],
 									"color": 0,
-									"nbt": "{}",
-									"armAnimationEnabled": false,
 									"children": [
 										{
 											"name": "group",
 											"origin": [14.2909, 13.61748, 7.6875],
 											"color": 6,
-											"nbt": "{}",
-											"armAnimationEnabled": false,
 											"children": []
 										}
 									]
@@ -3904,15 +3340,11 @@
 			"name": "fn_fal_lightweight_grip",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "Magpul M-LOK Handstop",
 					"origin": [-11.375, 7.25596, 5.85706],
 					"color": 8,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": []
 				}
 			]
@@ -3921,22 +3353,16 @@
 			"name": "fn_fal_tactical_grip",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "Magpul RVG M-LOK",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "magpul rvg",
 							"origin": [8.36601, 6.79862, 2.65625],
 							"color": 0,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						}
 					]
@@ -3947,54 +3373,40 @@
 			"name": "7.62x51",
 			"origin": [0, 0, 0],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": []
 		},
 		{
 			"name": "fn_fal_default_stock",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"nbt": "{}",
-			"armAnimationEnabled": false,
 			"children": [
 				{
 					"name": "fakeCap",
 					"origin": [0, 0, 0],
 					"color": 6,
-					"nbt": "{}",
-					"armAnimationEnabled": false,
 					"children": [
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 6,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 6,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 6,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						},
 						{
 							"name": "octagon",
 							"origin": [8, 8, 8],
 							"color": 6,
-							"nbt": "{}",
-							"armAnimationEnabled": false,
 							"children": []
 						}
 					]
