@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.tac.guns.client.KeyBind;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 
@@ -566,10 +567,10 @@ public class GunEditor
     private boolean altToggle = false;
     private void handlePositionedMod(InputEvent.KeyInputEvent event, TimelessGunItem gunItem) {
         double stepModifier = 1;
-        boolean isLeft = event.getKey() == GLFW.GLFW_KEY_LEFT;
-        boolean isRight = event.getKey() == GLFW.GLFW_KEY_RIGHT;
-        boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
-        boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
+        boolean isLeft = InputHandler.LEFT.down;
+        boolean isRight = InputHandler.RIGHT.down;
+        boolean isUp = InputHandler.UP.down;
+        boolean isDown = InputHandler.DOWN.down;
         //boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
         //boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
         //boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify

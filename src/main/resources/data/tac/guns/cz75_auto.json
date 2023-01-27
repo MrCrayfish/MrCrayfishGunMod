@@ -1,22 +1,27 @@
 {
   "general": {
     "auto": true,
-    "rate": 2,
+    "rate": 650,
     "rateSelector": [
       0,
       2
     ],
     "gripType": "tac:one_handed_m1911",
-    "recoilAngle": 3.425,
-    "horizontalRecoilAngle": 1.92,
-    "recoilKick": 1.2125,
-    "recoilAdsReduction": 0.185,
-    "weaponRecoilOffset": 0.9815,
-    "cameraRecoilModifier": 1.675,
-    "recoilDuration": 0.175,
-    "alwaysSpread": true,
-    "spread": 4.325,
-    "weightKilo": 1.1
+    "recoilAngle": 2.825,
+    "horizontalRecoilAngle": 2.35,
+    "recoilKick": 2.25,
+    "recoilAdsReduction": 0.1925,
+    "weaponRecoilOffset": 0.975,
+    "cameraRecoilModifier": 1.875,
+    "recoilDuration": 0.125,
+    "weightKilo": 2.2,
+
+    "spread": 1.825,
+    "firstShotSpread": 0.25,
+    "hipFireInaccuracy": 3.2,
+    "projToMinAccuracy": 3,
+    "msToAccuracyReset": 220,
+    "movementInaccuracy": 0.125
   },
   "reloads": {
     "magFed": true,
@@ -35,17 +40,17 @@
     "visible": false,
     "damage": 5,
     "size": 0.2,
-    "speed": 18.0,
-    "life": 4
+    "speed": 17.0,
+    "life": 6
   },
   "sounds": {
-    "fire": "tac:item.m45",
+    "fire": "tac:item.cz75auto_fire",
     "reloadNormal": "tac:animation.cz75_auto_reload_norm",
     "reloadEmpty": "tac:animation.cz75_auto_reload_empty",
     "draw": "tac:animation.cz75_auto_draw",
     "inspect": "tac:animation.cz75_auto_inspect",
     "cock": "tac:item.pistol.cock",
-    "silencedFire": "tac:item.fire_m92fss"
+    "silencedFire": "tac:item.cz75auto_fire_s"
   },
   "display": {
     "flash": {
@@ -58,8 +63,8 @@
   "modules": {
     "zoom": {
       "fovModifier": 0.9,
-      "yOffset": 11.175,
-      "zOffset": -13.5
+      "yOffset": 11.4,
+      "zOffset": -5.85
     },
     "attachments": {
       "barrel": {

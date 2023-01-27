@@ -1,30 +1,35 @@
 {
   "general": {
     "auto": true,
-    "rate": 3,
+    "rate": 600,
     "rateSelector": [
       0,
       1,
       2
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 3.435,
-    "horizontalRecoilAngle": 1.65,
-    "recoilKick": 1.6,
-    "recoilAdsReduction": 0.2775,
-    "weaponRecoilOffset": 0.9725,
-    "cameraRecoilModifier": 0.55,
-    "recoilDuration": 0.1775,
-    "alwaysSpread": true,
-    "spread": 2.275,
-    "weightKilo": 5.10
+    "recoilAngle": 6.335,
+    "horizontalRecoilAngle": 4.15,
+    "recoilKick": 2.5,
+    "recoilAdsReduction": 0.235,
+    "weaponRecoilOffset": 0.925,
+    "cameraRecoilModifier": 1.825,
+    "recoilDuration": 0.2175,
+    "weightKilo": 5.75,
+
+    "spread": 0.625,
+    "firstShotSpread": 0.105,
+    "hipFireInaccuracy": 5.75,
+    "projToMinAccuracy": 2,
+    "msToAccuracyReset": 430,
+    "movementInaccuracy": 0.575
   },
   "projectile": {
     "item": "tac:bullet_308",
     "visible": false,
-    "damage": 13,
+    "damage": 14,
     "size": 0.2,
-    "speed": 29.5,
+    "speed": 31.5,
     "life": 12
   },
   "reloads": {
@@ -40,7 +45,7 @@
     "preReloadPauseTicks": 8
   },
   "sounds": {
-    "fire": "tac:item.fal_fire",
+    "fire": "tac:item.fnfal_fire",
     "reloadNormal": "tac:animation.fn_fal_reload_norm",
     "reloadEmpty": "tac:animation.fn_fal_reload_empty",
     "draw": "tac:animation.fn_fal_draw",
@@ -54,8 +59,8 @@
       "zOffset": -16.75,
       "size": 0.8
     },
-    "hipfireScale": 1.55,
-    "hipfireMoveScale": 0.71,
+    "hipfireScale": 3.05,
+    "hipfireMoveScale": 1.0,
     "hipfireRecoilScale": 0.95,
     "showDynamicHipfire": true,
     "weaponType": 0
@@ -63,7 +68,7 @@
   "modules": {
     "zoom": {
       "fovModifier": 0.7,
-      "yOffset": 11.185,
+      "yOffset": 11.125,
       "zOffset": -6.125
     },
     "attachments": {

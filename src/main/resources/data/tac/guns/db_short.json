@@ -1,21 +1,26 @@
 {
   "general": {
-    "rate": 7,
+    "rate": 500,
     "rateSelector": [
       1
     ],
     "gripType": "tac:one_handed_m1911",
-    "recoilAngle": 7.95,
-    "horizontalRecoilAngle": 1.075,
+    "recoilAngle": 14.95,
+    "horizontalRecoilAngle": 5.075,
     "recoilKick": 1.2625,
     "recoilAdsReduction": 0.225,
-    "cameraRecoilModifier": 0.515,
-    "weaponRecoilOffset": 0.975,
+    "cameraRecoilModifier": 1.015,
+    "weaponRecoilOffset": 0.915,
     "recoilDuration": 0.105,
-    "alwaysSpread": true,
-    "spread": 15.25,
     "projectileAmount": 11,
-    "weightKilo": 2.1
+    "weightKilo": 2.1,
+
+    "spread": 11.05,
+    "firstShotSpread": 11.05,
+    "hipFireInaccuracy": 1.2,
+    "projToMinAccuracy": 1,
+    "msToAccuracyReset": 430,
+    "movementInaccuracy": 0.25
   },
   "reloads": {
     "magFed": true,
@@ -35,11 +40,11 @@
     "damage": 24,
     "size": 1.0,
     "speed": 30.5,
-    "life": 1,
+    "life": 2,
     "ricochet": false
   },
   "sounds": {
-    "fire": "tac:item.fire_db",
+    "fire": "tac:item.db_fire",
     "reloadNormal": "tac:animation.db_shortgun_reload_norm",
     "reloadEmpty": "tac:animation.db_shortgun_reload_empty",
     "draw": "tac:animation.db_shortgun_draw",
@@ -53,16 +58,13 @@
       "yOffset": 11.97,
       "zOffset": -21.55
     },
-    "hipfireScale": 0.15,
-    "hipfireMoveScale": 0.55,
-    "hipfireRecoilScale": 0.5,
     "weaponType": 3
   },
   "modules": {
     "zoom": {
       "fovModifier": 0.9,
       "yOffset": 12.88,
-      "zOffset": -24.22
+      "zOffset": -7.5
     },
     "attachments": {
     }

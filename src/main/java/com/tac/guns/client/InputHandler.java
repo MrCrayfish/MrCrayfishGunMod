@@ -98,7 +98,11 @@ public final class InputHandler
 		M = new KeyBind( "key.tac.m", GLFW.GLFW_KEY_M ),
 		I = new KeyBind( "key.tac.i", GLFW.GLFW_KEY_I ),
 		J = new KeyBind( "key.tac.j", GLFW.GLFW_KEY_J ),
-		N = new KeyBind( "key.tac.n", GLFW.GLFW_KEY_N );
+		N = new KeyBind( "key.tac.n", GLFW.GLFW_KEY_N ),
+			UP = new KeyBind( "key.tac.i", GLFW.GLFW_KEY_UP ),
+			RIGHT = new KeyBind( "key.tac.i", GLFW.GLFW_KEY_RIGHT ),
+			LEFT = new KeyBind( "key.tac.j", GLFW.GLFW_KEY_LEFT ),
+			DOWN = new KeyBind( "key.tac.n", GLFW.GLFW_KEY_DOWN );
 	
 	private static final ArrayList< KeyBind > UNIVERSAL_KEYS = new ArrayList<>();
 	
@@ -158,7 +162,8 @@ public final class InputHandler
 				ALTYR,
 				SIZE_OPT,
 				
-				P, L, O, K, M, I, J, N
+				P, L, O, K, M, I, J, N,
+					UP, RIGHT, LEFT, DOWN
 			);
 		}
 	}
