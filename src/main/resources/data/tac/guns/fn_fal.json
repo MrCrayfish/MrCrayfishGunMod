@@ -29,8 +29,9 @@
     "visible": false,
     "damage": 14,
     "size": 0.2,
-    "speed": 31.5,
-    "life": 12
+    "speed": 26.5,
+    "life": 12,
+    "trailLengthMultiplier": 4.05
   },
   "reloads": {
     "magFed": true,

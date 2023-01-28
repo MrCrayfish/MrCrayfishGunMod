@@ -28,9 +28,10 @@
     "item": "tac:bullet_308",
     "visible": false,
     "damage": 15,
-    "size": 0.125,
-    "speed": 32.5,
-    "life": 8
+    "size": 0.2,
+    "speed": 27.5,
+    "life": 8,
+    "trailLengthMultiplier": 4.05
   },
   "reloads": {
     "magFed": true,

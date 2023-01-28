@@ -83,9 +83,9 @@ import java.util.*;
 
 public class GunRenderingHandler {
     private static GunRenderingHandler instance;
-    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.4f,0.7f, 2f, 0);
-    private final SecondOrderDynamics swayYawDynamics = new SecondOrderDynamics(0.4f,0.5f, 2.25f, 0);
-    private final SecondOrderDynamics swayPitchDynamics = new SecondOrderDynamics(0.3f,0.4f, 2f, 0);
+    private final SecondOrderDynamics recoilDynamics = new SecondOrderDynamics(0.4f,0.7f, 3f, 0);
+    private final SecondOrderDynamics swayYawDynamics = new SecondOrderDynamics(0.4f,0.5f, 3.25f, 0);
+    private final SecondOrderDynamics swayPitchDynamics = new SecondOrderDynamics(0.3f,0.4f, 3f, 0);
     private final SecondOrderDynamics aimingDynamics = new SecondOrderDynamics(0.45f,0.8f, 1.2f, 0);
     // Standard Sprint Dynamics
     private final SecondOrderDynamics sprintDynamics = new SecondOrderDynamics(0.22f,0.7f, 0.6f, 0);
@@ -1316,21 +1316,30 @@ public class GunRenderingHandler {
     public double displayX = 0;
     public double displayY = 0;
     public double displayZ = 0;
+    public MatrixStack muzzleFlashUsage = null;
     private void drawMuzzleFlash(ItemStack weapon, Gun modifiedGun, float random, boolean flip, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
+        muzzleFlashUsage = matrixStack;
         matrixStack.push();
 
         Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
         if (muzzleFlash == null)
             return;
 
-        displayX = muzzleFlash.getXOffset() * 0.0625;
-        displayY = muzzleFlash.getYOffset() * 0.0625;
-        displayZ = (muzzleFlash.getZOffset()+this.muzzleExtraOnEnch) * 0.0625;
+        displayX = muzzleFlash.getXOffset();
+        displayY = muzzleFlash.getYOffset();
+        displayZ = (muzzleFlash.getZOffset()+this.muzzleExtraOnEnch);
 
+        double displayXv = displayX * 0.0625;
+        double displayYv = displayY * 0.0625;
+        double displayZv = displayZ * 0.0625;
         if(GunRenderingHandler.get().muzzleExtraOnEnch != 0)
             this.muzzleExtraOnEnch = 0;
 
-        matrixStack.translate(displayX, displayY, displayZ);
+        displayX *= 0.0625;
+        displayY *= 0.0625;
+        displayZ *= 0.0625;
+
+        matrixStack.translate(displayXv, displayYv, displayZv);
         matrixStack.translate(0, -0.5, 0);
 
         ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);

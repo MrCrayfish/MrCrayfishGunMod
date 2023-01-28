@@ -1,10 +1,10 @@
 {
   "general": {
     "auto": true,
-    "rate": 3,
+    "rate": 600,
     "rateSelector": [0,2],
     "gripType":  "tac:two_handed_ak47",
-    "recoilAngle": 2.525,
+    "recoilAngle": 2.725,
     "horizontalRecoilAngle": 1.15,
     "recoilKick": 1.575,
     "recoilAdsReduction": 0.25,
@@ -13,15 +13,15 @@
     "recoilDuration": 0.205,
     "alwaysSpread": true,
     "spread": 3.75,
-    "weightKilo": 5.0
+    "weightKilo": 6.5
   },
   "projectile": {
     "item":  "tac:762x39",
     "visible": false,
-    "damage": 11,
+    "damage": 10,
     "size": 0.2,
     "speed": 26.5,
-    "life": 10
+    "life": 12
   },
   "reloads": {
     "magFed": true,
