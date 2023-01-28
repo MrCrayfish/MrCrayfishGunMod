@@ -1,7 +1,7 @@
 {
   "general": {
     "auto": true,
-    "rate": 1,
+    "rate": 1200,
     "rateSelector": [
       2
     ],
@@ -36,7 +36,10 @@
   },
   "sounds": {
     "fire": "tac:item.fire_glock",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.mac10_reload_norm",
+    "reloadEmpty": "tac:animation.mac10_reload_empty",
+    "draw": "tac:animation.mac10_draw",
+    "inspect": "tac:animation.mac10_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.fire_glocks"
   },

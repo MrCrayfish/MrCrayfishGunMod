@@ -15,14 +15,17 @@ import java.io.IOException;
 @OnlyIn(Dist.CLIENT)
 public class SPR15AnimationController extends GunAnimationController{
     public static int INDEX_BODY = 2;
-    public static int INDEX_LEFT_HAND = 8;
-    public static int INDEX_RIGHT_HAND = 0;
-    public static int INDEX_MAGAZINE = 4;
-    public static final AnimationMeta RELOAD_NORM = new AnimationMeta(new ResourceLocation("tac","animations/m4_reload_norm.gltf"));
-    public static final AnimationMeta RELOAD_EMPTY = new AnimationMeta(new ResourceLocation("tac","animations/m4_reload_empty.gltf"));
-    public static final AnimationMeta DRAW = new AnimationMeta(new ResourceLocation("tac","animations/m4_draw.gltf"));
-    public static final AnimationMeta INSPECT = new AnimationMeta(new ResourceLocation("tac","animations/m4_inspect.gltf"));
-    public static final AnimationMeta STATIC = new AnimationMeta(new ResourceLocation("tac","animations/m4_static.gltf"));
+    public static int INDEX_LEFT_HAND = 10;
+    public static int INDEX_RIGHT_HAND = 7;
+    public static int INDEX_MAGAZINE = 5;
+    public static int INDEX_EXTRA_MAGAZINE = 3;
+    public static int INDEX_HANDLE = 1;
+    public static int INDEX_BULLET = 4;
+    public static final AnimationMeta RELOAD_NORM = new AnimationMeta(new ResourceLocation("tac","animations/spr15_reload_norm.gltf"));
+    public static final AnimationMeta RELOAD_EMPTY = new AnimationMeta(new ResourceLocation("tac","animations/spr15_reload_empty.gltf"));
+    public static final AnimationMeta DRAW = new AnimationMeta(new ResourceLocation("tac","animations/spr15_draw.gltf"));
+    public static final AnimationMeta INSPECT = new AnimationMeta(new ResourceLocation("tac","animations/spr15_inspect.gltf"));
+    public static final AnimationMeta STATIC = new AnimationMeta(new ResourceLocation("tac","animations/spr15_static.gltf"));
     private static final SPR15AnimationController instance = new SPR15AnimationController();
 
     private SPR15AnimationController() {
@@ -36,7 +39,7 @@ public class SPR15AnimationController extends GunAnimationController{
             GunMod.LOGGER.fatal(e.getStackTrace());
         }
         enableStaticState();
-        GunAnimationController.setAnimationControllerMap(ModItems.M4.getId(),this);
+        GunAnimationController.setAnimationControllerMap(ModItems.SPR_15.getId(),this);
     }
 
     public static SPR15AnimationController getInstance(){
@@ -57,7 +60,7 @@ public class SPR15AnimationController extends GunAnimationController{
 
     @Override
     public AnimationSoundMeta getSoundFromLabel(AnimationLabel label){
-        return super.getSoundFromLabel(ModItems.M4.get(), label);
+        return super.getSoundFromLabel(ModItems.SPR_15.get(), label);
     }
 
     @Override

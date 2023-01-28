@@ -15,7 +15,6 @@
     "recoilDuration": 0.125,
     "projectileAmount": 10,
     "weightKilo": 4.8,
-    "movementInaccuracy": 0.0,
 
     "spread": 4.25,
     "firstShotSpread": 3.75,
@@ -46,6 +45,7 @@
     "reloadIntro": "tac:animation.m1014_reload_intro",
     "reloadLoop": "tac:animation.m1014_reload_loop",
     "reloadEnd": "tac:animation.m1014_reload_norm_end",
+    "reloadEndEmpty": "tac:animation.m1014_reload_empty_end",
     "draw": "tac:animation.m1014_draw",
     "inspect": "tac:animation.m1014_inspect",
     "cock": "tac:item.pistol.cock",

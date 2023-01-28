@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.client.SpecialModels;
 import com.tac.guns.client.handler.ShootingHandler;
 import com.tac.guns.client.render.animation.SPR15AnimationController;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
 import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
@@ -71,20 +72,21 @@ public class spr_15_animation implements IOverrideModel {
             RenderUtil.renderModel(SpecialModels.SPR_15_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
 
             matrices.push();
-            Gun gun = ((GunItem) stack.getItem()).getGun();
-        float cooldownOg = ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate()) < 0 ? 1 : ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate());
-        
+            {
+                Gun gun = ((GunItem) stack.getItem()).getGun();
+                float cooldownOg = ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate()) < 0 ? 1 : ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate());
 
-            if (Gun.hasAmmo(stack)) {
-                // Math provided by Bomb787 on GitHub and Curseforge!!!
-                matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-            } else if (!Gun.hasAmmo(stack)) {
-                {
-                    matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                if (Gun.hasAmmo(stack)) {
+                    // Math provided by Bomb787 on GitHub and Curseforge!!!
+                    matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                } else if (!Gun.hasAmmo(stack)) {
+                    {
+                        matrices.translate(0, 0, 0.185f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                    }
                 }
-            }
 
-            RenderUtil.renderModel(SpecialModels.SPR_15_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+                RenderUtil.renderModel(SpecialModels.SPR_15_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
             matrices.pop();
         }
         matrices.pop();
@@ -99,11 +101,29 @@ public class spr_15_animation implements IOverrideModel {
                 RenderUtil.renderModel(SpecialModels.SPR_15_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
         }
+        matrices.pop();
+
+        if(controller.isAnimationRunning(GunAnimationController.AnimationLabel.RELOAD_NORMAL)) {
+            matrices.push();
+            {
+                controller.applySpecialModelTransform(SpecialModels.SPR_15_BODY.getModel(), SPR15AnimationController.INDEX_EXTRA_MAGAZINE, transformType, matrices);
+
+                if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
+                    RenderUtil.renderModel(SpecialModels.SPR_15_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+                } else {
+                    RenderUtil.renderModel(SpecialModels.SPR_15_STANDARD_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+                }
+            }
+            matrices.pop();
+        }
+
         matrices.push();
         {
-            //matrices.translate(0, 0, 0.425);
-            PlayerHandAnimation.render(controller, transformType, matrices, renderBuffer, light);
+            controller.applySpecialModelTransform(SpecialModels.SPR_15_BODY.getModel(), SPR15AnimationController.INDEX_HANDLE, transformType, matrices);
+            RenderUtil.renderModel(SpecialModels.SPR_15_PULL_HANDLE.getModel(), stack, matrices, renderBuffer, light, overlay);
         }
         matrices.pop();
+
+        PlayerHandAnimation.render(controller, transformType, matrices, renderBuffer, light);
     }
 }

@@ -5,6 +5,8 @@ import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
 import com.tac.guns.client.handler.ShootingHandler;
 import com.tac.guns.client.render.animation.Ak47AnimationController;
+import com.tac.guns.client.render.animation.RPKAnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
@@ -45,13 +47,13 @@ public class rpk_animation implements IOverrideModel {
             matrices.pop();
             return;
         }
-        Ak47AnimationController controller = Ak47AnimationController.getInstance();
+        RPKAnimationController controller = RPKAnimationController.getInstance();
         Gun gun = ((GunItem) stack.getItem()).getGun();
         float cooldownOg = ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate()) < 0 ? 1 : ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate());
         
         matrices.push();
         {
-            //controller.applySpecialModelTransform(SpecialModels.AK47.getModel(),Ak47AnimationController.INDEX_BODY,transformType,matrices);
+            controller.applySpecialModelTransform(SpecialModels.RPK.getModel(),RPKAnimationController.INDEX_BODY,transformType,matrices);
             if (Gun.getScope(stack) != null) {
                 RenderUtil.renderModel(SpecialModels.RPK_MOUNT.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
@@ -84,8 +86,7 @@ public class rpk_animation implements IOverrideModel {
         //Always push
         matrices.push();
         {
-            //controller.applySpecialModelTransform(SpecialModels.AK47.getModel(), Ak47AnimationController.INDEX_BOLT, transformType, matrices);
-
+            controller.applySpecialModelTransform(SpecialModels.RPK.getModel(),RPKAnimationController.INDEX_BOLT,transformType,matrices);
             // Math provided by Bomb787 on GitHub and Curseforge!!!
             matrices.translate(0, 0, 0.025F);
             matrices.translate(0, 0, 0.190f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1));
@@ -96,7 +97,7 @@ public class rpk_animation implements IOverrideModel {
 
         matrices.push();
         {
-            //controller.applySpecialModelTransform(SpecialModels.AK47.getModel(), Ak47AnimationController.INDEX_MAGAZINE, transformType, matrices);
+            controller.applySpecialModelTransform(SpecialModels.RPK.getModel(),RPKAnimationController.INDEX_MAGAZINE,transformType,matrices);
             if(EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0)
             {
                 RenderUtil.renderModel(SpecialModels.RPK_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
@@ -107,9 +108,7 @@ public class rpk_animation implements IOverrideModel {
             }
         }
         matrices.pop();
+        PlayerHandAnimation.render(controller,transformType,matrices,renderBuffer,light);
     }
-
-     
-
     //TODO comments
 }

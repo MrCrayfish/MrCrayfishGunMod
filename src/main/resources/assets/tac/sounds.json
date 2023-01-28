@@ -1237,6 +1237,12 @@
          { "name": "tac:animation/m1014_reload_norm_end"}
       ]
    },
+   "animation.m1014_reload_empty_end": {
+      "subtitle": "animation.m1014_reload_empty_end",
+      "sounds": [
+         { "name": "tac:animation/m1014_reload_empty_end"}
+      ]
+   },
    "animation.m1014_draw": {
       "subtitle": "animation.m1014_draw",
       "sounds": [
@@ -1547,6 +1553,162 @@
       "subtitle": "animation.m16a4_reload_empty",
       "sounds": [
          { "name": "tac:animation/m16a4_reload_empty"}
+      ]
+   },
+
+   "animation.spr15_draw": {
+      "subtitle": "animation.spr15_draw",
+      "sounds": [
+         { "name": "tac:animation/spr15_draw"}
+      ]
+   },
+   "animation.spr15_reload_norm": {
+      "subtitle": "animation.spr15_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/spr15_reload_norm"}
+      ]
+   },
+   "animation.spr15_inspect": {
+      "subtitle": "animation.spr15_inspect",
+      "sounds": [
+         { "name": "tac:animation/spr15_inspect"}
+      ]
+   },
+   "animation.spr15_reload_empty": {
+      "subtitle": "animation.spr15_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/spr15_reload_empty"}
+      ]
+   },
+
+   "animation.m24_draw": {
+      "subtitle": "animation.m24_draw",
+      "sounds": [
+         { "name": "tac:animation/m24_draw"}
+      ]
+   },
+   "animation.m24_reload_norm": {
+      "subtitle": "animation.m24_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/m24_reload_norm"}
+      ]
+   },
+   "animation.m24_inspect": {
+      "subtitle": "animation.m24_inspect",
+      "sounds": [
+         { "name": "tac:animation/m24_inspect"}
+      ]
+   },
+   "animation.m24_reload_empty": {
+      "subtitle": "animation.m24_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/m24_reload_empty"}
+      ]
+   },
+   "animation.m24_bolt": {
+      "subtitle": "animation.m24_bolt",
+      "sounds": [
+         { "name": "tac:animation/m24_bolt"}
+      ]
+   },
+
+   "animation.rpk_draw": {
+      "subtitle": "animation.rpk_draw",
+      "sounds": [
+         { "name": "tac:animation/rpk_draw"}
+      ]
+   },
+   "animation.rpk_reload_norm": {
+      "subtitle": "animation.rpk_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/rpk_reload_norm"}
+      ]
+   },
+   "animation.rpk_inspect": {
+      "subtitle": "animation.rpk_inspect",
+      "sounds": [
+         { "name": "tac:animation/rpk_inspect"}
+      ]
+   },
+   "animation.rpk_reload_empty": {
+      "subtitle": "animation.rpk_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/rpk_reload_empty"}
+      ]
+   },
+
+   "animation.mac10_draw": {
+      "subtitle": "animation.mac10_draw",
+      "sounds": [
+         { "name": "tac:animation/mac10_draw"}
+      ]
+   },
+   "animation.mac10_reload_norm": {
+      "subtitle": "animation.mac10_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/mac10_reload_norm"}
+      ]
+   },
+   "animation.mac10_inspect": {
+      "subtitle": "animation.mac10_inspect",
+      "sounds": [
+         { "name": "tac:animation/mac10_inspect"}
+      ]
+   },
+   "animation.mac10_reload_empty": {
+      "subtitle": "animation.mac10_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/mac10_reload_empty"}
+      ]
+   },
+
+   "animation.type_95_draw": {
+      "subtitle": "animation.type_95_draw",
+      "sounds": [
+         { "name": "tac:animation/type_95_draw"}
+      ]
+   },
+   "animation.type_95_reload_norm": {
+      "subtitle": "animation.type_95_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/type_95_reload_norm"}
+      ]
+   },
+   "animation.type_95_inspect": {
+      "subtitle": "animation.type_95_inspect",
+      "sounds": [
+         { "name": "tac:animation/type_95_inspect"}
+      ]
+   },
+   "animation.type_95_reload_empty": {
+      "subtitle": "animation.type_95_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/type_95_reload_empty"}
+      ]
+   },
+
+   "animation.sks_tactical_draw": {
+      "subtitle": "animation.sks_tactical_draw",
+      "sounds": [
+         { "name": "tac:animation/sks_tactical_draw"}
+      ]
+   },
+   "animation.sks_tactical_reload_norm": {
+      "subtitle": "animation.sks_tactical_reload_norm",
+      "sounds": [
+         { "name": "tac:animation/sks_tactical_reload_norm"}
+      ]
+   },
+   "animation.sks_tactical_inspect": {
+      "subtitle": "animation.sks_tactical_inspect",
+      "sounds": [
+         { "name": "tac:animation/sks_tactical_inspect"}
+      ]
+   },
+   "animation.sks_tactical_reload_empty": {
+      "subtitle": "animation.sks_tactical_reload_empty",
+      "sounds": [
+         { "name": "tac:animation/sks_tactical_reload_empty"}
       ]
    }
 }

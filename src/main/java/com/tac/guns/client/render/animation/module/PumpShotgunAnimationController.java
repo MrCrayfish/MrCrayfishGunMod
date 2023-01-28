@@ -28,6 +28,8 @@ public abstract class PumpShotgunAnimationController extends GunAnimationControl
                     return new AnimationSoundMeta(sounds.getReloadLoop());
                 case RELOAD_NORMAL_END:
                     return new AnimationSoundMeta(sounds.getReloadEnd());
+                case RELOAD_EMPTY_END:
+                    return new AnimationSoundMeta(sounds.getReloadEndEmpty());
                 default:
                     return super.getSoundFromLabel(item, label);
             }
