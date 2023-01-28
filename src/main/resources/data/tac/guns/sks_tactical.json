@@ -22,8 +22,8 @@
     "magFed": true,
     "maxAmmo": 20,
     "preReloadPauseTicks": 0,
-    "reloadMagTimer": 62,
-    "additionalReloadEmptyMagTimer": 9,
+    "reloadMagTimer": 30,
+    "additionalReloadEmptyMagTimer": 15,
     "openBolt": false,
     "maxAdditionalAmmoPerOC": [
       3,
@@ -42,7 +42,10 @@
   },
   "sounds": {
     "fire": "tac:item.sks",
-    "reload": "tac:item.pistol.reload",
+    "reloadNormal": "tac:animation.sks_tactical_reload_norm",
+    "reloadEmpty": "tac:animation.sks_tactical_reload_empty",
+    "draw": "tac:animation.sks_tactical_draw",
+    "inspect": "tac:animation.sks_tactical_inspect",
     "cock": "tac:item.pistol.cock",
     "silencedFire": "tac:item.dmr_fire_s"
   },

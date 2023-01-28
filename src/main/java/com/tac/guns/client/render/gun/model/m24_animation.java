@@ -4,13 +4,20 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tac.guns.Config;
 import com.tac.guns.client.SpecialModels;
 import com.tac.guns.client.handler.ShootingHandler;
+import com.tac.guns.client.render.animation.M24AnimationController;
+import com.tac.guns.client.render.animation.SPR15AnimationController;
+import com.tac.guns.client.render.animation.module.AnimationMeta;
+import com.tac.guns.client.render.animation.module.GunAnimationController;
+import com.tac.guns.client.render.animation.module.PlayerHandAnimation;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.render.gun.ModelOverrides;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.common.Gun;
+import com.tac.guns.init.ModEnchantments;
 import com.tac.guns.item.GunItem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3f;
@@ -31,56 +38,61 @@ public class m24_animation implements IOverrideModel {
         If you are just starting out I don't recommend attempting to create an animated part of your weapon is as much as I can comfortably give at this point!
     */
     @Override
-    public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay)
-    {
-            if(ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GUI) && Config.CLIENT.quality.reducedGuiWeaponQuality.get())
-            {
-                matrices.push();
-                matrices.rotate(Vector3f.XP.rotationDegrees(-60.0F));
-                matrices.rotate(Vector3f.YP.rotationDegrees(225.0F));
-                matrices.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
-                matrices.translate(0.9,0,0);
-                matrices.scale(1.5F,1.5F,1.5F);
-                RenderUtil.renderModel(stack, stack, matrices, renderBuffer, light, overlay);
-                matrices.pop();
-                return;
-            }
-            if(Gun.getScope(stack) != null)
-            {
-                RenderUtil.renderModel(SpecialModels.M24_RAIL.getModel(), stack, matrices, renderBuffer, light, overlay);
-            }
-
-            RenderUtil.renderModel(SpecialModels.M24_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
+    public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay) {
+        if (ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GUI) && Config.CLIENT.quality.reducedGuiWeaponQuality.get()) {
             matrices.push();
-
-
-            Gun gun = ((GunItem) stack.getItem()).getGun();
-        float cooldownOg = ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate()) < 0 ? 1 : ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate());
-        
-            float cooldown = (float) easeInOutBack(cooldownOg);
-
-            if (cooldownOg != 0 && cooldownOg < 0.86)
-            {
-                matrices.translate(-0.108, -0.11, 0.00);
-                matrices.rotate(Vector3f.ZN.rotationDegrees(-90F));
-
-                // matrices.translate(0, 0, 0.318f * (-4.5 * Math.pow(cooldownOg +0.19 -0.5, 2) + 1));
-
-                if (cooldownOg < 0.74 && cooldownOg > 0.42)
-                {
-                    matrices.translate(0, 0, -0.03 * -cooldown);
-                    matrices.translate(0, 0, 0.318f * ((1.0 * -cooldown)+1));
-                }
-                if (cooldownOg < 0.42 && cooldownOg > 0.07)
-                {
-                    matrices.translate(0, 0, 0.798f * ((1.0 * cooldownOg-0.07)));
-                }
-
-            }
-
-            RenderUtil.renderModel(SpecialModels.M24_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+            matrices.rotate(Vector3f.XP.rotationDegrees(-60.0F));
+            matrices.rotate(Vector3f.YP.rotationDegrees(225.0F));
+            matrices.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
+            matrices.translate(0.9, 0, 0);
+            matrices.scale(1.5F, 1.5F, 1.5F);
+            RenderUtil.renderModel(stack, stack, matrices, renderBuffer, light, overlay);
             matrices.pop();
+            return;
+        }
+
+        M24AnimationController controller = M24AnimationController.getInstance();
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M24_BODY.getModel(), M24AnimationController.INDEX_BODY, transformType, matrices);
+            if (Gun.getScope(stack) == null) {
+                RenderUtil.renderModel(SpecialModels.M24_IRON_SIGHT.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+            RenderUtil.renderModel(SpecialModels.M24_BODY.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M24_BODY.getModel(), M24AnimationController.INDEX_BOLT, transformType, matrices);
+            RenderUtil.renderModel(SpecialModels.M24_BOLT.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M24_BODY.getModel(), M24AnimationController.INDEX_MAGAZINE, transformType, matrices);
+            if (EnchantmentHelper.getEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), stack) > 0) {
+                RenderUtil.renderModel(SpecialModels.M24_EXTENDED_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }else {
+                RenderUtil.renderModel(SpecialModels.M24_MAG.getModel(), stack, matrices, renderBuffer, light, overlay);
+            }
+        }
+        matrices.pop();
+
+        matrices.push();
+        {
+            controller.applySpecialModelTransform(SpecialModels.M24_BODY.getModel(), M24AnimationController.INDEX_BULLET, transformType, matrices);
+            RenderUtil.renderModel(SpecialModels.M24_BULLET_SHELL.getModel(), stack, matrices, renderBuffer, light, overlay);
+            AnimationMeta bolt = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.PULL_BOLT);
+            boolean onlyShell = bolt != null && bolt.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
+            if(!onlyShell) RenderUtil.renderModel(SpecialModels.M24_BULLET_HEAD.getModel(), stack, matrices, renderBuffer, light, overlay);
+        }
+        matrices.pop();
+
+        PlayerHandAnimation.render(controller, transformType, matrices, renderBuffer, light);
     }
+
     //Same method from GrenadeLauncherModel, to make a smooth rotation of the chamber.
     private double easeInOutBack(double x) {
         double c1 = 1.70158;

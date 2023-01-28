@@ -922,6 +922,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         @Optional
         @Nullable
         @TGExclude
+        private ResourceLocation reloadEndEmpty;
+        @Optional
+        @Nullable
+        @TGExclude
         private ResourceLocation draw;
         @Optional
         @Nullable
@@ -992,6 +996,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             {
                 tag.putString("PullBolt", this.pullBolt.toString());
             }
+            if(reloadEndEmpty != null)
+            {
+                tag.putString("ReloadEndEmpty", this.reloadEndEmpty.toString());
+            }
             return tag;
         }
 
@@ -1042,6 +1050,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             if(tag.contains("PullBolt", Constants.NBT.TAG_STRING)){
                 this.pullBolt = this.createSound(tag, "PullBolt");
             }
+            if(tag.contains("ReloadEndEmpty", Constants.NBT.TAG_STRING)){
+                this.reloadEndEmpty = this.createSound(tag, "ReloadEndEmpty");
+            }
         }
 
         public Sounds copy()
@@ -1060,6 +1071,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             sounds.reloadLoop = this.reloadLoop;
             sounds.reloadEnd = this.reloadEnd;
             sounds.pullBolt = this.pullBolt;
+            sounds.reloadEndEmpty = this.reloadEndEmpty;
             return sounds;
         }
 
@@ -1144,6 +1156,9 @@ public final class Gun implements INBTSerializable<CompoundNBT>
 
         @Nullable
         public ResourceLocation getPullBolt() { return this.pullBolt; }
+
+        @Nullable
+        public ResourceLocation getReloadEndEmpty() { return this.reloadEndEmpty; }
     }
 
     public static class Display implements INBTSerializable<CompoundNBT>
