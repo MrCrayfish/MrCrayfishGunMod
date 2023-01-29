@@ -10,16 +10,21 @@
       3
     ],
     "gripType": "tac:two_handed_ak47",
-    "recoilAngle": 2.05,
-    "recoilKick": 0.875,
-    "horizontalRecoilAngle": 0.995,
-    "recoilAdsReduction": 0.275,
-    "alwaysSpread": true,
-    "weaponRecoilOffset": 0.2825,
-    "cameraRecoilModifier": 1.0,
-    "recoilDuration": 0.225,
-    "spread": 1.865,
-    "weightKilo": 3.9
+    "recoilAngle": 1.65,
+    "recoilKick": 1.05,
+    "horizontalRecoilAngle": 0.525,
+    "recoilAdsReduction": 0.235,
+    "weaponRecoilOffset": 0.885,
+    "cameraRecoilModifier": 0.9,
+    "recoilDuration": 0.205,
+    "weightKilo": 3.9,
+
+    "spread": 1.425,
+    "firstShotSpread": 0.175,
+    "hipFireInaccuracy": 3.3,
+    "projToMinAccuracy": 3,
+    "msToAccuracyReset": 280,
+    "movementInaccuracy": 0.185
   },
   "reloads": {
     "magFed": true,
@@ -32,10 +37,10 @@
   "projectile": {
     "item": "tac:58x42",
     "visible": false,
-    "damage": 7.3,
+    "damage": 7.0,
     "size": 0.175,
-    "speed": 46.5,
-    "life": 8
+    "speed": 36.5,
+    "life": 12
   },
   "sounds": {
     "fire": "tac:item.mtar_fire",
@@ -48,7 +53,7 @@
   },
   "display": {
     "flash": {
-      "yOffset": 9.75,
+      "yOffset": 8.35,
       "zOffset": -19.55,
       "size": 1.10
     },
@@ -57,8 +62,8 @@
   "modules": {
     "zoom":{
       "fovModifier": 0.8,
-      "yOffset": 14.71,
-      "zOffset": -0.95
+      "yOffset": 13.1,
+      "zOffset": -3.65
     },"attachments": {
       "barrel": {
         "yOffset": -100829.84,
@@ -66,8 +71,8 @@
         "scale": 1.00
       },
       "scope": {
-        "yOffset": 14.35,
-        "zOffset": 2.4,
+        "yOffset": 12.39,
+        "zOffset": 3.9,
         "scale": 1.00
       }
     }

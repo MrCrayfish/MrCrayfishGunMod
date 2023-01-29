@@ -1,39 +1,43 @@
 {
   "general": {
     "boltAction": true,
-    "rate": 26,
+    "rate": 44,
     "gripType": "tac:two_handed_mosin",
-    "recoilAngle": 3.075,
-    "recoilKick": 1.95,
-    "horizontalRecoilAngle": 0.125,
-    "recoilAdsReduction": 0.40,
+    "recoilAngle": 3.675,
+    "recoilKick": 1.55,
+    "horizontalRecoilAngle": 0.825,
+    "recoilAdsReduction": 0.215,
     "weaponRecoilOffset": 0.85,
     "recoilDuration": 0.125,
     "cameraRecoilModifier": 2.0,
-    "alwaysSpread": true,
-    "spread": 0.55,
-    "weightKilo": 4.6
+    "weightKilo": 4.0,
+
+    "spread": 0.225,
+    "firstShotSpread": 0.015,
+    "hipFireInaccuracy": 8.75,
+    "projToMinAccuracy": 1,
+    "msToAccuracyReset": 1100,
+    "movementInaccuracy": 0.275
   },
   "reloads": {
     "magFed": true,
     "maxAmmo": 5,
-    "reloadMagTimer": 50,
-    "additionalReloadEmptyMagTimer": 12,
+    "reloadMagTimer": 40,
+    "additionalReloadEmptyMagTimer": 8,
     "maxAdditionalAmmoPerOC": [
       5,
       8,
       10
     ],
-    "preReloadPauseTicks": 10
+    "preReloadPauseTicks": 0
   },
   "projectile": {
     "item": "tac:win_30-30",
     "visible": false,
-    "gravity": true,
-    "damage": 24,
+    "damage": 26,
     "size": 0.2,
-    "speed": 110.0,
-    "life": 4
+    "speed": 60.0,
+    "life": 22
   },
   "sounds": {
     "fire": "tac:item.m24",
@@ -57,7 +61,7 @@
   "modules": {
     "zoom": {
       "fovModifier": 0.7,
-      "yOffset": 7.20,
+      "yOffset": 7.40,
       "zOffset": -6.4
     },
     "attachments": {

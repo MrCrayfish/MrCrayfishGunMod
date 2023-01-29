@@ -99,10 +99,10 @@ public final class InputHandler
 		I = new KeyBind( "key.tac.i", GLFW.GLFW_KEY_I ),
 		J = new KeyBind( "key.tac.j", GLFW.GLFW_KEY_J ),
 		N = new KeyBind( "key.tac.n", GLFW.GLFW_KEY_N ),
-			UP = new KeyBind( "key.tac.i", GLFW.GLFW_KEY_UP ),
-			RIGHT = new KeyBind( "key.tac.i", GLFW.GLFW_KEY_RIGHT ),
-			LEFT = new KeyBind( "key.tac.j", GLFW.GLFW_KEY_LEFT ),
-			DOWN = new KeyBind( "key.tac.n", GLFW.GLFW_KEY_DOWN );
+			UP = new KeyBind( "key.tac.bbb", GLFW.GLFW_KEY_UP ),
+			RIGHT = new KeyBind( "key.tac.vvv", GLFW.GLFW_KEY_RIGHT ),
+			LEFT = new KeyBind( "key.tac.ccc", GLFW.GLFW_KEY_LEFT ),
+			DOWN = new KeyBind( "key.tac.zzz", GLFW.GLFW_KEY_DOWN );
 	
 	private static final ArrayList< KeyBind > UNIVERSAL_KEYS = new ArrayList<>();
 	

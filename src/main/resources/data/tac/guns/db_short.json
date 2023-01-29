@@ -15,9 +15,9 @@
     "projectileAmount": 11,
     "weightKilo": 2.1,
 
-    "spread": 11.05,
-    "firstShotSpread": 11.05,
-    "hipFireInaccuracy": 1.2,
+    "spread": 12.5,
+    "firstShotSpread": 12.5,
+    "hipFireInaccuracy": 1,
     "projToMinAccuracy": 1,
     "msToAccuracyReset": 430,
     "movementInaccuracy": 0.25

@@ -11,9 +11,14 @@
     "weaponRecoilOffset": 0.9075,
     "cameraRecoilModifier": 1.35,
     "recoilDuration": 0.205,
-    "alwaysSpread": true,
-    "spread": 3.75,
-    "weightKilo": 6.5
+    "weightKilo": 6.5,
+
+    "spread": 1.175,
+    "firstShotSpread": 0.175,
+    "hipFireInaccuracy": 6.25,
+    "projToMinAccuracy": 9,
+    "msToAccuracyReset": 230,
+    "movementInaccuracy": 0.55
   },
   "projectile": {
     "item":  "tac:762x39",

@@ -575,12 +575,9 @@ public class GunEditor
         //boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
         //boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify
 
-        /*if(isShiftDown)
-            stepModifier*=10;*/
-        if(event.getKey() == GLFW.GLFW_KEY_LEFT_CONTROL)
-        {controlToggle = true;}
-        if(event.getKey() == GLFW.GLFW_KEY_LEFT_ALT)
-        {altToggle = true;}
+
+        controlToggle = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down;
+        altToggle = InputHandler.ALTY.down || InputHandler.ALTYR.down;
 
         if(controlToggle)
             stepModifier/=10;

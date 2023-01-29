@@ -18,7 +18,7 @@
 
     "spread": 1.0,
     "firstShotSpread": 0.002,
-    "hipFireInaccuracy": 16.45,
+    "hipFireInaccuracy": 11.45,
     "projToMinAccuracy": 2,
     "msToAccuracyReset": 100,
     "movementInaccuracy": 3.0
@@ -39,7 +39,7 @@
     "item": "tac:lapua338",
     "visible": false,
     "gravity": true,
-    "damage": 30,
+    "damage": 32,
     "size": 0.3,
     "speed": 72.5,
     "life": 7

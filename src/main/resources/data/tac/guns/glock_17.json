@@ -15,7 +15,7 @@
     "weightKilo": 0.0,
 
     "spread": 1.3,
-    "firstShotSpread": 0.185,
+    "firstShotSpread": 0.25,
     "hipFireInaccuracy": 2.35,
     "projToMinAccuracy": 3,
     "msToAccuracyReset": 620,
