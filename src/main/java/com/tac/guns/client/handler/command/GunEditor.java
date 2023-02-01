@@ -648,8 +648,8 @@ public class GunEditor
 
         if(isPeriodDown) {
             double stepModifier = 1;
-            boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
-            boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
+            boolean isUp = InputHandler.UP.down;
+            boolean isDown = InputHandler.DOWN.down;
             boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
 
             if (isShiftDown)
@@ -929,6 +929,7 @@ public class GunEditor
             GsonBuilder gsonB = new GsonBuilder().setLenient().addSerializationExclusionStrategy(Gun.strategy).setPrettyPrinting();//.setNumberToNumberStrategy(ToNumberPolicy.DOUBLE).setObjectToNumberStrategy(ToNumberPolicy.DOUBLE).serializeSpecialFloatingPointValues();;
 
             String jsonString = gsonB.create().toJson(gun);//gson.toJson(ch.getCatGlobal(1).get(this.previousWeaponTag));
+            jsonString += "\nTRAIL_ADJUST___"+gsonB.create().toJson(this.sizeMod);
             jsonString += "\nSCOPE"+gsonB.create().toJson(gun.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("Scope").toString());
             jsonString += "\nBARREL"+gsonB.create().toJson(gun.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("Barrel").toString());
             jsonString += "\nOLD_SCOPE"+gsonB.create().toJson(gun.serializeNBT().getCompound("Modules").getCompound("Attachments").getCompound("OldScope").toString());

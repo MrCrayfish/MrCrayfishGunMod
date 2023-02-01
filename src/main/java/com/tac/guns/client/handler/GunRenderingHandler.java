@@ -1316,9 +1316,10 @@ public class GunRenderingHandler {
     public double displayX = 0;
     public double displayY = 0;
     public double displayZ = 0;
-    public MatrixStack muzzleFlashUsage = null;
+    public double sizeZ = 0;
+
+    public double adjustedTrailZ = 0;
     private void drawMuzzleFlash(ItemStack weapon, Gun modifiedGun, float random, boolean flip, MatrixStack matrixStack, IRenderTypeBuffer buffer) {
-        muzzleFlashUsage = matrixStack;
         matrixStack.push();
 
         Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
@@ -1329,6 +1330,8 @@ public class GunRenderingHandler {
         displayY = muzzleFlash.getYOffset();
         displayZ = (muzzleFlash.getZOffset()+this.muzzleExtraOnEnch);
 
+        //GunRenderingHandler.get().adjustedTrailZ = muzzleFlash.get
+
         double displayXv = displayX * 0.0625;
         double displayYv = displayY * 0.0625;
         double displayZv = displayZ * 0.0625;
@@ -1338,6 +1341,8 @@ public class GunRenderingHandler {
         displayX *= 0.0625;
         displayY *= 0.0625;
         displayZ *= 0.0625;
+
+        adjustedTrailZ = modifiedGun.getDisplay().getFlash().getTrailAdjust();
 
         matrixStack.translate(displayXv, displayYv, displayZv);
         matrixStack.translate(0, -0.5, 0);
@@ -1359,6 +1364,11 @@ public class GunRenderingHandler {
         matrixStack.rotate(Vector3f.ZP.rotationDegrees(360F * random));
         matrixStack.rotate(Vector3f.XP.rotationDegrees(flip ? 180F : 0F));
         matrixStack.translate(-size / 2, -size / 2, 0);
+
+        float sizeForTrail = (float) (1 - partialSize + partialSize);
+        //sizeForTrail = (float) GunModifierHelper.getMuzzleFlashSize(weapon, sizeForTrail);
+
+        sizeZ = -sizeForTrail;
 
         Matrix4f matrix = matrixStack.getLast().getMatrix();
         IVertexBuilder builder = buffer.getBuffer(GunRenderType.getMuzzleFlash());

@@ -13,9 +13,14 @@
     "weaponRecoilOffset": 0.525,
     "recoilDuration": 0.1025,
     "cameraRecoilModifier": 1.325,
-    "alwaysSpread": true,
-    "spread": 7.05,
-    "weightKilo": 1.5
+    "weightKilo": 2.5,
+
+    "spread": 3.375,
+    "firstShotSpread": 0.425,
+    "hipFireInaccuracy": 1.05,
+    "projToMinAccuracy": 7,
+    "msToAccuracyReset": 350,
+    "movementInaccuracy": 0.125
   },
   "reloads": {
     "magFed": true,
@@ -23,16 +28,15 @@
     "reloadMagTimer": 26,
     "additionalReloadEmptyMagTimer": 11,
     "maxAdditionalAmmoPerOC": [0, 0, 0],
-    "preReloadPauseTicks": 16,
+    "preReloadPauseTicks": 0,
     "openBolt": true
   },
   "projectile": {
     "item": "tac:9mm_round",
     "visible": false,
-    "damage": 3.0,
-    "size": 0.2,
+    "damage": 4.0,
     "speed": 16.5,
-    "life": 3
+    "life": 8
   },
   "sounds": {
     "fire": "tac:item.fire_glock",

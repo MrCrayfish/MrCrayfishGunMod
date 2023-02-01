@@ -89,11 +89,13 @@ public class cz75_auto_animation implements IOverrideModel
 
             AnimationMeta reloadEmpty = controller.getAnimationFromLabel(GunAnimationController.AnimationLabel.RELOAD_EMPTY);
             boolean shouldOffset = reloadEmpty != null && reloadEmpty.equals(controller.getPreviousAnimation()) && controller.isAnimationRunning();
-            if (Gun.hasAmmo(stack) || shouldOffset) {
-                matrices.translate(0, 0, 0.2075f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
-            } else if (!Gun.hasAmmo(stack)) {
-                {
-                    matrices.translate(0, 0,  0.2075f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+            if(transformType.isFirstPerson()) {
+                if (Gun.hasAmmo(stack) || shouldOffset) {
+                    matrices.translate(0, 0, 0.2075f * (-4.5 * Math.pow(cooldownOg - 0.5, 2) + 1.0));
+                } else if (!Gun.hasAmmo(stack)) {
+                    {
+                        matrices.translate(0, 0, 0.2075f * (-4.5 * Math.pow(0.5 - 0.5, 2) + 1.0));
+                    }
                 }
             }
             matrices.translate(0.00, 0.0, 0.025F);

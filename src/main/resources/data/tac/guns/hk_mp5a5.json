@@ -42,7 +42,6 @@
     "item": "tac:9mm_round",
     "visible": false,
     "damage": 4.5,
-    "size": 0.1,
     "speed": 15.5,
     "life": 22,
     "ricochet": true

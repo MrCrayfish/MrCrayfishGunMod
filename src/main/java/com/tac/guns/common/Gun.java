@@ -642,8 +642,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
         private boolean visible = true;
         @Optional
         private float damage;
-        @Optional
-        private float size;
+        @Ignored
+        private float size = 0.2f;
         @Optional
         private double speed;
         @Optional
@@ -1218,12 +1218,15 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             private double size = 0.5;
             private double smokeSize = 2.0;
 
+            private double trailAdjust = 1.15;
+
             @Override
             public CompoundNBT serializeNBT()
             {
                 CompoundNBT tag = super.serializeNBT();
                 tag.putDouble("Scale", this.size);
                 tag.putDouble("SmokeSize", this.smokeSize);
+                tag.putDouble("TrailAdjust", this.trailAdjust);
                 return tag;
             }
 
@@ -1234,6 +1237,10 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 if(tag.contains("Scale", Constants.NBT.TAG_ANY_NUMERIC))
                 {
                     this.size = tag.getDouble("Scale");
+                }
+                if(tag.contains("TrailAdjust", Constants.NBT.TAG_ANY_NUMERIC))
+                {
+                    this.trailAdjust = tag.getDouble("TrailAdjust");
                 }
                 if(tag.contains("SmokeSize", Constants.NBT.TAG_ANY_NUMERIC))
                 {
@@ -1246,6 +1253,7 @@ public final class Gun implements INBTSerializable<CompoundNBT>
                 Flash flash = new Flash();
                 flash.size = this.size;
                 flash.smokeSize = this.smokeSize;
+                flash.trailAdjust = this.trailAdjust;
                 flash.xOffset = this.xOffset;
                 flash.yOffset = this.yOffset;
                 flash.zOffset = this.zOffset;
@@ -1255,13 +1263,15 @@ public final class Gun implements INBTSerializable<CompoundNBT>
             /**
              * @return The size/scale of the muzzle flash render
              */
-            public double getSize() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.size + GunEditor.get().getSizeMod() : this.size;}
+            public double getSize() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.size /*+ GunEditor.get().getSizeMod()*/ : this.size;}
             @Override
             public double getXOffset() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.xOffset + GunEditor.get().getxMod() : this.xOffset;}
             @Override
             public double getYOffset() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.yOffset + GunEditor.get().getyMod() : this.yOffset;}
             @Override
             public double getZOffset() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.zOffset + GunEditor.get().getzMod() : this.zOffset;}
+
+            public double getTrailAdjust() {return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.flash) ? this.trailAdjust + GunEditor.get().getSizeMod() : this.trailAdjust;}
 
             /**
              * @return The size/scale of the muzzle smoke render
