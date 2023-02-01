@@ -4,26 +4,26 @@
     "rate": 600,
     "rateSelector": [0,2],
     "gripType":  "tac:two_handed_ak47",
-    "recoilAngle": 2.725,
-    "horizontalRecoilAngle": 1.15,
+    "recoilAngle": 3.125,
+    "horizontalRecoilAngle": 1.65,
     "recoilKick": 1.575,
     "recoilAdsReduction": 0.25,
-    "weaponRecoilOffset": 0.9075,
+    "weaponRecoilOffset": 0.8575,
     "cameraRecoilModifier": 1.35,
     "recoilDuration": 0.205,
     "weightKilo": 6.5,
 
     "spread": 1.175,
     "firstShotSpread": 0.175,
-    "hipFireInaccuracy": 6.25,
+    "hipFireInaccuracy": 4.25,
     "projToMinAccuracy": 9,
-    "msToAccuracyReset": 230,
-    "movementInaccuracy": 0.55
+    "msToAccuracyReset": 280,
+    "movementInaccuracy": 0.25
   },
   "projectile": {
     "item":  "tac:762x39",
     "visible": false,
-    "damage": 10,
+    "damage": 1,
     "size": 0.2,
     "speed": 26.5,
     "life": 12
@@ -34,7 +34,7 @@
     "reloadMagTimer": 76,
     "additionalReloadEmptyMagTimer": 28,
     "maxAdditionalAmmoPerOC": [10, 15, 35],
-    "preReloadPauseTicks": 18
+    "preReloadPauseTicks": 0
   },
   "sounds": {
     "fire":  "tac:item.fire_ak47",
@@ -49,9 +49,10 @@
     "flash": {
       "yOffset": 11.3,
       "zOffset": -24.75,
+      "trailAdjust": 1.5625,
       "size": 0.8
     },
-    "hipfireScale": 0.575,
+    "hipfireScale": 0.775,
     "hipfireMoveScale": 0.41,
     "hipfireRecoilScale": 0.75,
     "showDynamicHipfire": true,
@@ -59,11 +60,11 @@
   },
   "modules": {
     "zoom":
-      {
-      "fovModifier": 0.8,
-      "yOffset": 13.775,
-      "zOffset": -7.75
-      },
+    {
+      "yOffset": 13.175,
+      "zOffset": -5.05,
+      "fovModifier": 0.8
+    },
     "attachments": {
       "stock": {
         "yOffset": 7.75,
@@ -71,8 +72,8 @@
         "scale": 0.00
       },
       "scope": {
-        "yOffset": 13.65,
-        "zOffset": 8.375,
+        "yOffset": 13.85,
+        "zOffset": 7.375,
         "scale": 1.0
       }
     }

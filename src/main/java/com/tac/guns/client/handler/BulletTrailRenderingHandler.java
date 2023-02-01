@@ -133,13 +133,9 @@ public class BulletTrailRenderingHandler
         /*if(!AimingHandler.get().isAiming() && bulletTrail.getAge() < 1)
             return;*/
         matrixStack.push();
-
         Vector3d view = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
-
         Vector3d position = bulletTrail.getPosition();
         Vector3d motion = bulletTrail.getMotion();
-        //position.mul(2, 2, 2);
-        //motion.mul(0.25, 1, 0.25);
 
         double bulletX = position.x + motion.x * partialTicks;
         double bulletY = position.y + motion.y * partialTicks;
@@ -147,23 +143,25 @@ public class BulletTrailRenderingHandler
         //TODO: Use muzzle flash location of entity render as the render position for muzzle flash start
         Vector3d motionVec = new Vector3d(motion.x, motion.y, motion.z);
         float length = (float) motionVec.length();
+        if(mc.player.getLookVec().y > 0.975) // max 1.0
+            length *=0.25;
+        if(mc.player.getLookVec().y > 0)
+            matrixStack.translate(0, -0.15f*mc.player.getLookVec().y, 0);
         if(ShootingHandler.get().isShooting() && Minecraft.getInstance().player.isEntityEqual(entity) && bulletTrail.getAge() < 1)
         {
-            // 0.1f
             matrixStack.translate(bulletX - (view.getX()), bulletY - view.getY() - 0.145f, (bulletZ - view.getZ()));
+            if(AimingHandler.get().isAiming())
+            {
+                matrixStack.translate(0, -0.685f,0);
+            }
         }
         else {
-            matrixStack.translate(bulletX - view.getX(), bulletY - view.getY() - 0.105f, bulletZ - view.getZ());
+            matrixStack.translate(bulletX - view.getX(), bulletY - view.getY() - 0.125f, bulletZ - view.getZ());
 
         }
-
-
-
         matrixStack.rotate(Vector3f.YP.rotationDegrees(bulletTrail.getYaw()));
-
         /*if(!AimingHandler.get().isAiming())
             matrixStack.rotate(Vector3f.ZP.rotationDegrees(mc.player.getYaw(partialTicks) - (mc.player.getYaw(partialTicks)+0.75f)));*/
-
         matrixStack.rotate(Vector3f.XP.rotationDegrees(-bulletTrail.getPitch() + 90.105f));
 
 
@@ -171,7 +169,7 @@ public class BulletTrailRenderingHandler
         float red = (float) (bulletTrail.getTrailColor() >> 16 & 255) / 255.0F;
         float green = (float) (bulletTrail.getTrailColor() >> 8 & 255) / 255.0F;
         float blue = (float) (bulletTrail.getTrailColor() & 255) / 255.0F;
-        float alpha = 0.275F;
+        float alpha = 0.315F;
 
         // Prevents the trail length from being longer than the distance to shooter
         Entity shooter = bulletTrail.getShooter();
@@ -202,9 +200,10 @@ public class BulletTrailRenderingHandler
             builder.pos(matrix4f, -0.5F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
             builder.pos(matrix4f, 0, 0, -0.5F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
 
+            matrixStack.scale(1.5F, 1.5F, 2.5F);
             if(!AimingHandler.get().isAiming()) {
-                matrixStack.scale(1.5F, 1.5F, 2.5F);
-                matrixStack.translate(GunRenderingHandler.get().sizeZ / 12.5f, -GunRenderingHandler.get().sizeZ / 2, 0);
+
+                matrixStack.translate(GunRenderingHandler.get().sizeZ / 11.0f, -GunRenderingHandler.get().sizeZ / 2, 0);
                 //matrixStack.translate(GunRenderingHandler.get().sizeZ / 2, GunRenderingHandler.get().sizeZ / 2, 0);
                 matrixStack.translate(GunRenderingHandler.get().displayX, GunRenderingHandler.get().displayY, GunRenderingHandler.get().displayZ);
                 // Make customizable?

@@ -36,22 +36,7 @@ import com.tac.guns.client.render.entity.MissileRenderer;
 import com.tac.guns.client.render.entity.ProjectileRenderer;
 import com.tac.guns.client.render.entity.ThrowableGrenadeRenderer;
 import com.tac.guns.client.render.gun.ModelOverrides;
-import com.tac.guns.client.render.gun.model.scope.ACOG_4x_ScopeModel;
-import com.tac.guns.client.render.gun.model.scope.AimpointT2SightModel;
-import com.tac.guns.client.render.gun.model.scope.CoyoteSightModel;
-import com.tac.guns.client.render.gun.model.scope.EotechNSightModel;
-import com.tac.guns.client.render.gun.model.scope.EotechShortSightModel;
-import com.tac.guns.client.render.gun.model.scope.LongRange8xScopeModel;
-import com.tac.guns.client.render.gun.model.scope.MicroHoloSightModel;
-import com.tac.guns.client.render.gun.model.scope.MiniDotSightModel;
-import com.tac.guns.client.render.gun.model.scope.OldLongRange4xScopeModel;
-import com.tac.guns.client.render.gun.model.scope.OldLongRange8xScopeModel;
-import com.tac.guns.client.render.gun.model.scope.Qmk152ScopeModel;
-import com.tac.guns.client.render.gun.model.scope.SLX_2X_ScopeModel;
-import com.tac.guns.client.render.gun.model.scope.SrsRedDotSightModel;
-import com.tac.guns.client.render.gun.model.scope.VortexLPVO_1_4xScopeModel;
-import com.tac.guns.client.render.gun.model.scope.VortexUh1SightModel;
-import com.tac.guns.client.render.gun.model.scope.elcan_14x_ScopeModel;
+import com.tac.guns.client.render.gun.model.scope.*;
 import com.tac.guns.client.screen.AmmoPackScreen;
 import com.tac.guns.client.screen.AttachmentScreen;
 import com.tac.guns.client.screen.InspectScreen;
@@ -211,6 +196,9 @@ public class ClientHandler
         ModelOverrides.register(ModItems.ACOG_4.get(), new ACOG_4x_ScopeModel());
         ModelOverrides.register(ModItems.ELCAN_DR_14X.get(), new elcan_14x_ScopeModel());
         ModelOverrides.register(ModItems.AIMPOINT_T2_SIGHT.get(), new AimpointT2SightModel());
+
+        ModelOverrides.register(ModItems.AIMPOINT_T1_SIGHT.get(), new AimpointT1SightModel());
+
         ModelOverrides.register(ModItems.EOTECH_N_SIGHT.get(), new EotechNSightModel());
         ModelOverrides.register(ModItems.VORTEX_UH_1.get(), new VortexUh1SightModel());
         ModelOverrides.register(ModItems.EOTECH_SHORT_SIGHT.get(), new EotechShortSightModel());
@@ -223,8 +211,7 @@ public class ClientHandler
         ModelOverrides.register(ModItems.MINI_DOT.get(), new MiniDotSightModel());
         ModelOverrides.register(ModItems.MICRO_HOLO_SIGHT.get(), new MicroHoloSightModel());
 
-        ModelOverrides.register(ModItems.MINI_DOT.get(), new MiniDotSightModel());
-        ModelOverrides.register(ModItems.MICRO_HOLO_SIGHT.get(), new MicroHoloSightModel());
+        ModelOverrides.register(ModItems.SRO_DOT.get(), new SroDotSightModel());
 
         // Armor registry, kept manual cause nice and simple, requires registry on client side only
         VestLayerRender.registerModel(ModItems.LIGHT_ARMOR.get(), new ModernArmor());

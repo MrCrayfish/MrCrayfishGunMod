@@ -85,10 +85,10 @@ public class ScopeEditor
     private void handleScopeMod(InputEvent.KeyInputEvent event, ScopeData data)
     {
         double stepModifier = 1;
-        boolean isLeft = event.getKey() == GLFW.GLFW_KEY_LEFT;
-        boolean isRight = event.getKey() == GLFW.GLFW_KEY_RIGHT;
-        boolean isUp = event.getKey() == GLFW.GLFW_KEY_UP;
-        boolean isDown = event.getKey() == GLFW.GLFW_KEY_DOWN;
+        boolean isLeft = InputHandler.LEFT.down;
+        boolean isRight = InputHandler.RIGHT.down;
+        boolean isUp = InputHandler.UP.down;
+        boolean isDown = InputHandler.DOWN.down;
         boolean isControlDown = InputHandler.CONTROLLY.down || InputHandler.CONTROLLYR.down; // Increase Module Size
         boolean isShiftDown = InputHandler.SHIFTY.down || InputHandler.SHIFTYR.down; // Increase Step Size
         boolean isAltDown = InputHandler.ALTY.down || InputHandler.ALTYR.down; // Swap X -> Z modify
