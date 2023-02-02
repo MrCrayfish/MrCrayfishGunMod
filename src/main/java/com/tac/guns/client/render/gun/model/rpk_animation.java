@@ -35,18 +35,6 @@ public class rpk_animation implements IOverrideModel {
     @Override
     public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay)
     {
-        if(ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GUI) && Config.CLIENT.quality.reducedGuiWeaponQuality.get())
-        {
-            matrices.push();
-            matrices.rotate(Vector3f.XP.rotationDegrees(-60.0F));
-            matrices.rotate(Vector3f.YP.rotationDegrees(225.0F));
-            matrices.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
-            matrices.translate(0.9,0,0);
-            matrices.scale(1.5F,1.5F,1.5F);
-            RenderUtil.renderModel(stack, stack, matrices, renderBuffer, light, overlay);
-            matrices.pop();
-            return;
-        }
         RPKAnimationController controller = RPKAnimationController.getInstance();
         Gun gun = ((GunItem) stack.getItem()).getGun();
         float cooldownOg = ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate()) < 0 ? 1 : ShootingHandler.get().getshootMsGap() / ShootingHandler.calcShootTickGap(gun.getGeneral().getRate());
@@ -64,7 +52,10 @@ public class rpk_animation implements IOverrideModel {
                 RenderUtil.renderModel(SpecialModels.RPK_BUTT_TACTICAL.getModel(), stack, matrices, renderBuffer, light, overlay);
             }
             if (Gun.getAttachment(IAttachment.Type.STOCK, stack).getItem() == ModItems.WEIGHTED_STOCK.orElse(ItemStack.EMPTY.getItem())) {
+                matrices.push();
+                matrices.translate(0, 0, 0.1835f);
                 RenderUtil.renderModel(SpecialModels.RPK_BUTT_HEAVY.getModel(), stack, matrices, renderBuffer, light, overlay);
+                matrices.pop();
             }
             /*if (Gun.getAttachment(IAttachment.Type.BARREL, stack).getItem() == ModItems.SILENCER.orElse(ItemStack.EMPTY.getItem()))
             {

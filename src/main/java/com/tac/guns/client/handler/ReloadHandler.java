@@ -219,8 +219,11 @@ public class ReloadHandler {
 			if( stack.getItem() instanceof GunItem )
 			{
 				PacketHandler.getPlayChannel().sendToServer( new MessageUpdateGunID() );
-				if( !SyncedPlayerData.instance().get( player, ModSyncedDataKeys.RELOADING ) )
-					this.setReloading( true );
+				if( !SyncedPlayerData.instance().get( player, ModSyncedDataKeys.RELOADING))
+                {
+                    ShootingHandler.get().burstTracker = 0;
+                    this.setReloading(true);
+                }
 				else if(
 					GunAnimationController.fromItem( stack.getItem() )
 						instanceof PumpShotgunAnimationController

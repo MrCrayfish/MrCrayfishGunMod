@@ -8,6 +8,8 @@ import com.tac.guns.client.GunRenderType;
 import com.tac.guns.client.handler.AimingHandler;
 import com.tac.guns.client.handler.GunRenderingHandler;
 import com.tac.guns.client.handler.HUDRenderingHandler;
+import com.tac.guns.client.handler.command.ScopeEditor;
+import com.tac.guns.client.handler.command.data.ScopeData;
 import com.tac.guns.client.render.gun.IOverrideModel;
 import com.tac.guns.client.util.RenderUtil;
 import com.tac.guns.item.attachment.IAttachment;
@@ -68,10 +70,10 @@ public class Qmk152ScopeModel implements IOverrideModel
             }
 
             float scopePrevSize = 0.965F;
-            float scopeSize = 1.285F;
+            float scopeSize = 1.385F;
             float size = scopeSize / 16.0F;
             float reticleSize = scopePrevSize / 16.0F;
-            float crop = 0.43F;
+            float crop = 0.375F;
             Minecraft mc = Minecraft.getInstance();
             MainWindow window = mc.getMainWindow();
 
@@ -83,8 +85,11 @@ public class Qmk152ScopeModel implements IOverrideModel
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 Matrix3f normal = matrixStack.getLast().getNormal();
 
+                ScopeData scopeData = ScopeEditor.get().getScopeData() == null || ScopeEditor.get().getScopeData().getTagName() != "qmk152" ? new ScopeData("") : ScopeEditor.get().getScopeData();
+
                 //matrixStack.translate(-size / 2, 0.0936175 , 3.915 * 0.0625);
-                matrixStack.translate(-size / 2, 0.11125 , Config.CLIENT.display.scopeDoubleRender.get() ? 2.315 * 0.0625 : 1.725 * 0.0625);
+                matrixStack.translate((-size / 2) + scopeData.getDrXZoomMod(), 0.11125 -0.01825 + scopeData.getDrYZoomMod(), Config.CLIENT.display.scopeDoubleRender.get() ? (2.315 + scopeData.getDrZZoomMod()) * 0.0625 :
+                        (1.725 + scopeData.getDrZZoomMod()) * 0.0625);
 
                 float color = (float) AimingHandler.get().getNormalisedAdsProgress() * 0.8F + 0.2F;
 
@@ -135,7 +140,7 @@ public class Qmk152ScopeModel implements IOverrideModel
                     aimed = true;
 
                 double invertZoomProgress = aimed ? 0.0575 : 0.468;//double invertZoomProgress = aimed ? 0.135 : 0.94;//aimed ? 1.0 - AimingHandler.get().getNormalisedRepairProgress() : ;
-                GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true, 0.085f);
+                GunRenderingHandler.get().applyBobbingTransforms(matrixStack,true, 0.035f);
                 GunRenderingHandler.get().applyNoiseMovementTransform(matrixStack, -0.11f);
                 GunRenderingHandler.get().applyJumpingTransforms(matrixStack, partialTicks,-0.11f);
 

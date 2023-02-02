@@ -196,6 +196,8 @@ public class GunRenderingHandler {
 
     @SubscribeEvent
     public void onFovModifying(EntityViewRenderEvent.FOVModifier event){
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null)
         if(!(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem) || Minecraft.getInstance().player.getHeldItemMainhand().getTag().isEmpty())
             return;
         if((Config.COMMON.gameplay.forceCameraShakeOnFire.get() || Config.CLIENT.display.cameraShakeOnFire.get()) && Minecraft.getInstance().player.getHeldItemMainhand().getTag().getInt("CurrentFireMode") != 0) {

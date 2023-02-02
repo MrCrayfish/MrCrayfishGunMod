@@ -14,7 +14,7 @@
     "weightKilo": 6.5,
 
     "spread": 1.175,
-    "firstShotSpread": 0.175,
+    "firstShotSpread": 0.215,
     "hipFireInaccuracy": 4.25,
     "projToMinAccuracy": 9,
     "msToAccuracyReset": 280,
@@ -23,17 +23,17 @@
   "projectile": {
     "item":  "tac:762x39",
     "visible": false,
-    "damage": 1,
+    "damage": 10,
     "size": 0.2,
     "speed": 26.5,
     "life": 12
   },
   "reloads": {
     "magFed": true,
-    "maxAmmo": 30,
+    "maxAmmo": 40,
     "reloadMagTimer": 76,
     "additionalReloadEmptyMagTimer": 28,
-    "maxAdditionalAmmoPerOC": [10, 15, 35],
+    "maxAdditionalAmmoPerOC": [15, 25, 35],
     "preReloadPauseTicks": 0
   },
   "sounds": {
@@ -49,7 +49,7 @@
     "flash": {
       "yOffset": 11.3,
       "zOffset": -24.75,
-      "trailAdjust": 1.5625,
+      "trailAdjust": 1.584,
       "size": 0.8
     },
     "hipfireScale": 0.775,
@@ -61,20 +61,15 @@
   "modules": {
     "zoom":
     {
-      "yOffset": 13.175,
+      "yOffset": 13.45,
       "zOffset": -5.05,
-      "fovModifier": 0.8
+      "fovModifier": 0.7
     },
     "attachments": {
       "stock": {
         "yOffset": 7.75,
         "zOffset": -22.05,
         "scale": 0.00
-      },
-      "scope": {
-        "yOffset": 13.85,
-        "zOffset": 7.375,
-        "scale": 1.0
       }
     }
   }

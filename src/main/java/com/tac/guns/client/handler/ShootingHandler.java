@@ -63,7 +63,7 @@ public class  ShootingHandler
 
     private boolean shootErr;
     private boolean clickUp = false;
-    private int burstTracker = 0;
+    public int burstTracker = 0;
     private int burstCooldown = 0;
     private ShootingHandler() {}
 
@@ -122,11 +122,6 @@ public class  ShootingHandler
                 }
                 else if(this.burstCooldown == 0)
                     fire(player, heldItem);
-
-                if(!(heldItem.getTag().getInt("AmmoCount") > 0)) {
-                    player.sendStatusMessage(new TranslationTextComponent("info.tac.out_of_ammo").mergeStyle(TextFormatting.UNDERLINE).mergeStyle(TextFormatting.BOLD).mergeStyle(TextFormatting.RED), true);
-                    PacketHandler.getPlayChannel().sendToServer(new MessageEmptyMag());
-                }
             }
         }
     }
@@ -296,7 +291,7 @@ public class  ShootingHandler
 
         if(!Gun.hasAmmo(heldItem) && !player.isCreative())
             return;
-        
+
         if(player.isSpectator())
             return;
 
