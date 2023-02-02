@@ -37,6 +37,8 @@ import java.awt.event.MouseMotionAdapter;
  */
 public class  ShootingHandler
 {
+
+    // TODO: Cleanup and document ShootingHandler fire code, what is important or able to be simplified.
     private static ShootingHandler instance;
 
     public static ShootingHandler get()

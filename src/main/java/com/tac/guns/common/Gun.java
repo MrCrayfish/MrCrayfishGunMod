@@ -816,7 +816,8 @@ public final class Gun implements INBTSerializable<CompoundNBT>
          */
         public int getLife()
         {
-            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.projectile) ? (int) (this.life + GunEditor.get().getLifeMod()) : this.life;
+            return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.projectile) ?
+                    (int) (this.life*1.5 + GunEditor.get().getLifeMod()) : (int)(this.life*1.5);
         }
 
         /**

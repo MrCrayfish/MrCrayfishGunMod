@@ -116,6 +116,8 @@ public class BulletTrailRenderingHandler
         this.bullets.clear();
     }
 
+    // TODO: Clean-up this entire method...
+
     /**
      * @param bulletTrail
      * @param matrixStack
@@ -143,10 +145,12 @@ public class BulletTrailRenderingHandler
         //TODO: Use muzzle flash location of entity render as the render position for muzzle flash start
         Vector3d motionVec = new Vector3d(motion.x, motion.y, motion.z);
         float length = (float) motionVec.length();
+
         if(mc.player.getLookVec().y > 0.975) // max 1.0
             length *=0.25;
         if(mc.player.getLookVec().y > 0)
             matrixStack.translate(0, -0.15f*mc.player.getLookVec().y, 0);
+
         if(ShootingHandler.get().isShooting() && Minecraft.getInstance().player.isEntityEqual(entity) && bulletTrail.getAge() < 1)
         {
             matrixStack.translate(bulletX - (view.getX()), bulletY - view.getY() - 0.145f, (bulletZ - view.getZ()));
@@ -183,7 +187,7 @@ public class BulletTrailRenderingHandler
 
         /*if(bulletTrail.isTrailVisible())
         {*/
-        if(bulletTrail.getAge() < 1)
+        if(bulletTrail.getAge() < 1 && Minecraft.getInstance().player.isEntityEqual(entity) && !AimingHandler.get().isAiming())
         {
             RenderType bulletType = GunRenderType.getBulletTrail();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
@@ -197,13 +201,13 @@ public class BulletTrailRenderingHandler
             // all 0.2f works
 
             builder.pos(matrix4f, 0, trailLength/1.325f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, -0.5F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, 0, -0.5F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, -0.6F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, 0, -0.6F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
 
             matrixStack.scale(1.5F, 1.5F, 2.5F);
             if(!AimingHandler.get().isAiming()) {
 
-                matrixStack.translate(GunRenderingHandler.get().sizeZ / 15.0f, -GunRenderingHandler.get().sizeZ / 2, 0);
+                matrixStack.translate(GunRenderingHandler.get().sizeZ / 16.5f, -GunRenderingHandler.get().sizeZ / 2, 0);
                 //matrixStack.translate(GunRenderingHandler.get().sizeZ / 2, GunRenderingHandler.get().sizeZ / 2, 0);
                 matrixStack.translate(GunRenderingHandler.get().displayX, GunRenderingHandler.get().displayY, GunRenderingHandler.get().displayZ);
                 // Make customizable?
@@ -211,8 +215,8 @@ public class BulletTrailRenderingHandler
             }
 
             builder.pos(matrix4f, 0, -trailLength/1.325f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0.5F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, 0, 0.5F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0.6F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, 0, 0.6F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
 
 
             //builder.pos(matrix4f, 0, trailLength, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
@@ -253,16 +257,16 @@ public class BulletTrailRenderingHandler
         else {
             RenderType bulletType = GunRenderType.getBulletTrail();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(bulletType);
-            builder.pos(matrix4f, 0, 0, 0.125F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, 0, -0.125F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, trailLength, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, 0, -0.125F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, 0, 0.125F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, -0.175F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0.175F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, trailLength, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
-            builder.pos(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, 0, 0.225F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, 0, -0.225F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, trailLength*1.15f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, -trailLength*1.15f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, 0, -0.225F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, 0, 0.225F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, -0.225F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0.225F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, trailLength*1.15f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, -trailLength*1.15f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
             Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().finish(bulletType);
         }
 
