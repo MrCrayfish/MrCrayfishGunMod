@@ -1171,8 +1171,11 @@ public class GunRenderingHandler {
     //TODO: Rebuild to support 2d rendering
     @SubscribeEvent
     public void onRenderEntityItem(RenderItemEvent.Gui.Pre event) {
-        Minecraft mc = Minecraft.getInstance();
-        event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
+        if (!Config.CLIENT.quality.reducedGuiWeaponQuality.get())
+        {
+            Minecraft mc = Minecraft.getInstance();
+            event.setCanceled(this.renderWeapon(mc.player, event.getItem(), event.getTransformType(), event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getPartialTicks()));
+        }
     }
 
     @SubscribeEvent
