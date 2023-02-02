@@ -175,7 +175,7 @@ public class BulletTrailRenderingHandler
         Entity shooter = bulletTrail.getShooter();
         if(shooter != null)
         {
-            trailLength = (float) Math.min(trailLength-1.15f, shooter.getEyePosition(partialTicks).distanceTo(new Vector3d(bulletX,bulletY, bulletZ)));
+            trailLength = (float) Math.min(trailLength+0.35f, shooter.getEyePosition(partialTicks).distanceTo(new Vector3d(bulletX,bulletY, bulletZ)));
         }
 
         Matrix4f matrix4f = matrixStack.getLast().getMatrix();
@@ -196,21 +196,21 @@ public class BulletTrailRenderingHandler
 
             // all 0.2f works
 
-            builder.pos(matrix4f, 0, trailLength/1.375f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, trailLength/1.325f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
             builder.pos(matrix4f, -0.5F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
             builder.pos(matrix4f, 0, 0, -0.5F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
 
             matrixStack.scale(1.5F, 1.5F, 2.5F);
             if(!AimingHandler.get().isAiming()) {
 
-                matrixStack.translate(GunRenderingHandler.get().sizeZ / 11.0f, -GunRenderingHandler.get().sizeZ / 2, 0);
+                matrixStack.translate(GunRenderingHandler.get().sizeZ / 15.0f, -GunRenderingHandler.get().sizeZ / 2, 0);
                 //matrixStack.translate(GunRenderingHandler.get().sizeZ / 2, GunRenderingHandler.get().sizeZ / 2, 0);
                 matrixStack.translate(GunRenderingHandler.get().displayX, GunRenderingHandler.get().displayY, GunRenderingHandler.get().displayZ);
                 // Make customizable?
                 matrixStack.translate(0, 0, GunRenderingHandler.get().adjustedTrailZ);//1.15f);
             }
 
-            builder.pos(matrix4f, 0, -trailLength/1.375f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
+            builder.pos(matrix4f, 0, -trailLength/1.325f, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
             builder.pos(matrix4f, 0.5F, 0, 0).color(red, green, blue, alpha).lightmap(15728880).endVertex();
             builder.pos(matrix4f, 0, 0, 0.5F).color(red, green, blue, alpha).lightmap(15728880).endVertex();
 

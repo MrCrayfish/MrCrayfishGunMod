@@ -197,10 +197,12 @@ public class GunRenderingHandler {
     @SubscribeEvent
     public void onFovModifying(EntityViewRenderEvent.FOVModifier event){
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null)
-        if(!(Minecraft.getInstance().player.getHeldItemMainhand().getItem() instanceof GunItem) || Minecraft.getInstance().player.getHeldItemMainhand().getTag().isEmpty())
+        if (mc.player == null || !mc.player.isAlive() || mc.player.isSpectator())
             return;
-        if((Config.COMMON.gameplay.forceCameraShakeOnFire.get() || Config.CLIENT.display.cameraShakeOnFire.get()) && Minecraft.getInstance().player.getHeldItemMainhand().getTag().getInt("CurrentFireMode") != 0) {
+        if(!(mc.player.getHeldItemMainhand().getItem() instanceof GunItem) || mc.player.getHeldItemMainhand().getTag().isEmpty())
+            return;
+
+        if((Config.COMMON.gameplay.forceCameraShakeOnFire.get() || Config.CLIENT.display.cameraShakeOnFire.get()) && mc.player.getHeldItemMainhand().getTag().getInt("CurrentFireMode") != 0) {
             float cameraShakeDuration = 0.06f * (AimingHandler.get().isAiming() ? 1.5f : 1f);
             long alphaTime = System.currentTimeMillis() - fireTime;
             float progress = (alphaTime < cameraShakeDuration * 1000 ? 1 - alphaTime / (cameraShakeDuration * 1000f) : 0);
