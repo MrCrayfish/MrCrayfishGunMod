@@ -1,8 +1,7 @@
 {
-	"credit": "Made with Blockbench",
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "tac:items/hotbar_icons/apple"
+		"layer0": "tac:items/hotbar_icons/ai_awp"
 	},
 
 	"display": {
