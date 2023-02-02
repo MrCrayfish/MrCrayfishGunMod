@@ -36,18 +36,7 @@ public class micro_uzi_animation implements IOverrideModel {
     @Override
     public void render(float v, ItemCameraTransforms.TransformType transformType, ItemStack stack, ItemStack parent, LivingEntity entity, MatrixStack matrices, IRenderTypeBuffer renderBuffer, int light, int overlay)
     {
-        if(ModelOverrides.hasModel(stack) && transformType.equals(ItemCameraTransforms.TransformType.GUI) && Config.CLIENT.quality.reducedGuiWeaponQuality.get())
-        {
-            matrices.push();
-            matrices.rotate(Vector3f.XP.rotationDegrees(-60.0F));
-            matrices.rotate(Vector3f.YP.rotationDegrees(225.0F));
-            matrices.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
-            matrices.translate(0.9,0,0);
-            matrices.scale(1.5F,1.5F,1.5F);
-            RenderUtil.renderModel(stack, stack, matrices, renderBuffer, light, overlay);
-            matrices.pop();
-            return;
-        }
+        
 
         MAC10AnimationController controller = MAC10AnimationController.getInstance();
         matrices.push();

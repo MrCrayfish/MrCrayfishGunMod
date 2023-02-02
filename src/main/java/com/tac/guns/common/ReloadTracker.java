@@ -133,7 +133,8 @@ public class ReloadTracker
                 amount = Math.min(amount, maxAmmo - tag.getInt("AmmoCount"));
                 tag.putInt("AmmoCount", tag.getInt("AmmoCount") + amount);
             }
-            ammo.shrink(amount);
+            //ammo.shrink(amount);
+            this.shrinkFromAmmoPool(new ItemStack[]{ammo}, player, amount);
         }
 
         ResourceLocation reloadSound = this.gun.getSounds().getReload();
