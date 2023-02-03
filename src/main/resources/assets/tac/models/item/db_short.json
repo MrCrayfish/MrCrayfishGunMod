@@ -3,7 +3,78 @@
   "textures": {
     "layer0": "tac:items/hotbar_icons/db_short"
   },
-  "display":{
-    "thirdperson_righthand":{"translation":[0,0.25,-3.25],"scale":[0.275,0.275,0.275]},"thirdperson_lefthand":{"translation":[0,0.25,-3.25],"scale":[0.275,0.275,0.275]},"firstperson_righthand":{"translation":[-6.5,3,-1.5],"scale":[0.5,0.5,0.5]},"firstperson_lefthand":{"translation":[-0.5,-0.5,-22.25]},"ground":{"translation":[0,5,0],"scale":[0.275,0.275,0.275]},"fixed":{"rotation":[0,90,0],"translation":[0.5,-1.25,-1.75],"scale":[0.55,0.55,0.55]}
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0,
+        0.25,
+        -3.25
+      ],
+      "scale": [
+        0.275,
+        0.275,
+        0.275
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        0,
+        0.25,
+        -3.25
+      ],
+      "scale": [
+        0.275,
+        0.275,
+        0.275
+      ]
+    },
+    "firstperson_righthand": {
+      "translation": [
+        -6.5,
+        3,
+        -1.5
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "translation": [
+        -0.5,
+        -0.5,
+        -22.25
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        5,
+        0
+      ],
+      "scale": [
+        0.275,
+        0.275,
+        0.275
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0.5,
+        -1.25,
+        -1.75
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ]
+    }
   }
 }

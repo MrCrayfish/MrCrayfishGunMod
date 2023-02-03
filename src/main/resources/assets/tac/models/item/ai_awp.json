@@ -1,33 +1,75 @@
 {
-	"parent": "item/generated",
-	"textures": {
-		"layer0": "tac:items/hotbar_icons/ai_awp"
-	},
-
-	"display": {
-		"thirdperson_righthand": {
-			"translation": [0, 2, -6],
-			"scale": [0.6, 0.6, 0.6]
-		},
-		"thirdperson_lefthand": {
-			"translation": [0, 2, -6],
-			"scale": [0.6, 0.6, 0.6]
-		},
-		"firstperson_righthand": {
-			"translation": [-6, 5.75, -6.75]
-		},
-		"firstperson_lefthand": {
-			"translation": [-4, 6, -4.5]
-		},
-		"ground": {
-			"translation": [0, 3, 0],
-			"scale": [0.6, 0.6, 0.6]
-		},
-
-		"fixed": {
-			"rotation": [0, 90, 0],
-			"translation": [0, 2, -2],
-			"scale": [1.2, 1.2, 1.2]
-		}
-	}
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "tac:items/hotbar_icons/ai_awp"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0,
+        2,
+        -6
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        0,
+        2,
+        -6
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "firstperson_righthand": {
+      "translation": [
+        -6,
+        5.75,
+        -6.75
+      ]
+    },
+    "firstperson_lefthand": {
+      "translation": [
+        -4,
+        6,
+        -4.5
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        -2
+      ],
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ]
+    }
+  }
 }
