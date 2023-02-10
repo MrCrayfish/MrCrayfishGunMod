@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.client.handler.ReloadHandler;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -107,9 +108,9 @@ public class TwoHandedPose extends WeaponPose
                 boolean right = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
                 poseStack.translate(0, 0, 0.05);
                 float invertRealProgress = 1.0F - aimProgress;
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees((25F * invertRealProgress) * (right ? 1F : -1F)));
-                poseStack.mulPose(Vector3f.YP.rotationDegrees((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees((25F * invertRealProgress) * (right ? 1F : -1F)));
+                poseStack.mulPose(Axis.YP.rotationDegrees((30F * invertRealProgress + aimProgress * -20F) * (right ? 1F : -1F)));
+                poseStack.mulPose(Axis.XP.rotationDegrees(25F * invertRealProgress + aimProgress * 5F));
             }
         }
         else
@@ -121,7 +122,7 @@ public class TwoHandedPose extends WeaponPose
     @Override
     public void renderFirstPersonArms(Player player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks)
     {
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
 
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
         float translateX = model.getTransforms().firstPersonRightHand.translation.x();
@@ -142,10 +143,10 @@ public class TwoHandedPose extends WeaponPose
             poseStack.translate((armWidth / 2.0) * 0.0625 * side, 0, 0);
             poseStack.translate(-0.3125 * side, -0.1, -0.4375);
 
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(80F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(15F * -side));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(15F * -side));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(-35F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(80F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(15F * -side));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(15F * -side));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-35F));
 
             RenderUtil.renderFirstPersonArm((LocalPlayer) player, hand.getOpposite(), poseStack, buffer, light);
         }
@@ -158,7 +159,7 @@ public class TwoHandedPose extends WeaponPose
             poseStack.scale(0.5F, 0.5F, 0.5F);
             poseStack.translate(-4.0 * 0.0625 * side, 0, 0);
             poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(80F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(80F));
 
             RenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
         }

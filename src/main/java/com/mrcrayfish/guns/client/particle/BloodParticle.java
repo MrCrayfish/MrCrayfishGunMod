@@ -1,8 +1,7 @@
 package com.mrcrayfish.guns.client.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -16,6 +15,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -63,7 +64,7 @@ public class BloodParticle extends TextureSheetParticle
             y += 0.01;
         }
 
-        Quaternion rotation = Direction.NORTH.getRotation();
+        Quaternionf rotation = Direction.NORTH.getRotation();
         if(this.roll == 0.0F)
         {
             if(!this.onGround)
@@ -73,9 +74,9 @@ public class BloodParticle extends TextureSheetParticle
         }
         else
         {
-            rotation = new Quaternion(renderInfo.rotation());
+            rotation = new Quaternionf(renderInfo.rotation());
             float angle = Mth.lerp(partialTicks, this.oRoll, this.roll);
-            rotation.mul(Vector3f.ZP.rotation(angle));
+            rotation.mul(Axis.ZP.rotation(angle));
         }
 
         Vector3f[] vertices = new Vector3f[] {
@@ -89,7 +90,7 @@ public class BloodParticle extends TextureSheetParticle
         for(int i = 0; i < 4; ++i)
         {
             Vector3f vertex = vertices[i];
-            vertex.transform(rotation);
+            vertex.rotate(rotation); //TODO test
             vertex.mul(scale);
             vertex.add(x, y, z);
         }

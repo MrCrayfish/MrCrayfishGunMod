@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.client.handler.AimingHandler;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
 import com.mrcrayfish.guns.common.Gun;
@@ -62,8 +62,8 @@ public class PlayerItemInHandLayerMixin
     {
         poseStack.pushPose();
         layer.getParentModel().translateToHand(arm, poseStack);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-90F));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-90F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
         poseStack.translate(((float) (arm == HumanoidArm.LEFT ? -1 : 1) / 16F), 0.125, -0.625);
         GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
         Gun gun = item.getModifiedGun(stack);

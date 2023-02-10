@@ -1,9 +1,9 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"textures": {
-		"1": "cgm:items/short_scope",
+		"1": "cgm:item/short_scope",
 		"2": "cgm:effect/red_dot_reticle",
-		"particle": "cgm:items/short_scope"
+		"particle": "cgm:item/short_scope"
 	},
 	"elements": [
 		{

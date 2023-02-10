@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.common;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import com.mrcrayfish.guns.client.render.pose.BazookaPose;
@@ -56,13 +56,13 @@ public class GripType
             return false;
         }
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
         if(player.isCrouching())
         {
             poseStack.translate(0 * 0.0625, -7 * 0.0625, -4 * 0.0625);
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(30F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(30F));
         }
         else
         {
@@ -74,7 +74,7 @@ public class GripType
             poseStack.translate(0, 0, -1 * 0.0625);
         }
 
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-45F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-45F));
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         return true;

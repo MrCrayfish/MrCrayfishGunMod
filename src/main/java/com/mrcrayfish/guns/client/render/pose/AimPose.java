@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.client.render.pose;
 
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 
 /**
  * Author: MrCrayfish

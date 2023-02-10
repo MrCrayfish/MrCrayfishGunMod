@@ -1,8 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"textures": {
-		"1": "cgm:items/specialised_grip",
-		"particle": "cgm:items/specialised_grip"
+		"1": "cgm:item/specialised_grip",
+		"particle": "cgm:item/specialised_grip"
 	},
 	"elements": [
 		{

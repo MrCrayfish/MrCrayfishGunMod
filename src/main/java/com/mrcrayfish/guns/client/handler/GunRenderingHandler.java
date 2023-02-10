@@ -4,8 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.GunModel;
@@ -58,6 +57,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -374,7 +374,7 @@ public class GunRenderingHandler
         /* Applies equip progress animation translations */
         float equipProgress = this.getEquipProgress(event.getPartialTick());
         //poseStack.translate(0, equipProgress * -0.6F, 0);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(equipProgress * -50F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(equipProgress * -50F));
 
         /* Renders the reload arm. Will only render if actually reloading. This is applied before
          * any recoil or reload rotations as the animations would be borked if applied after. */
@@ -420,8 +420,8 @@ public class GunRenderingHandler
             float bobbing = Mth.lerp(partialTicks, player.oBob, player.bob);
 
             /* Reverses the original bobbing rotations and translations so it can be controlled */
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(-(Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * bobbing) * 5.0F)));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(-(Mth.sin(distanceWalked * (float) Math.PI) * bobbing * 3.0F)));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-(Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * bobbing) * 5.0F)));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(-(Mth.sin(distanceWalked * (float) Math.PI) * bobbing * 3.0F)));
             poseStack.translate(-(Mth.sin(distanceWalked * (float) Math.PI) * bobbing * 0.5F), -(-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * bobbing)), 0.0D);
 
             /* Slows down the bob by half */
@@ -431,8 +431,8 @@ public class GunRenderingHandler
             /* The new controlled bobbing */
             double invertZoomProgress = 1.0 - AimingHandler.get().getNormalisedAdsProgress() * this.sprintIntensity;
             //poseStack.translate((double) (Mth.sin(distanceWalked * (float) Math.PI) * cameraYaw * 0.5F) * invertZoomProgress, (double) (-Math.abs(Mth.cos(distanceWalked * (float) Math.PI) * cameraYaw)) * invertZoomProgress, 0.0D);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees((Mth.sin(distanceWalked * (float) Math.PI) * bobbing * 3.0F) * (float) invertZoomProgress));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees((Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * bobbing) * 5.0F) * (float) invertZoomProgress));
+            poseStack.mulPose(Axis.ZP.rotationDegrees((Mth.sin(distanceWalked * (float) Math.PI) * bobbing * 3.0F) * (float) invertZoomProgress));
+            poseStack.mulPose(Axis.XP.rotationDegrees((Math.abs(Mth.cos(distanceWalked * (float) Math.PI - 0.2F) * bobbing) * 5.0F) * (float) invertZoomProgress));
         }
     }
 
@@ -444,9 +444,9 @@ public class GunRenderingHandler
             poseStack.translate(0, -0.25, 0.25);
             float aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
             aiming = PropertyHelper.getSightAnimations(heldItem, modifiedGun).getAimTransformCurve().apply(aiming);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(aiming * 10F * offset));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(aiming * 5F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(aiming * 5F * offset));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(aiming * 10F * offset));
+            poseStack.mulPose(Axis.XP.rotationDegrees(aiming * 5F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(aiming * 5F * offset));
             poseStack.translate(0, 0.25, -0.25);
             poseStack.translate(-x * offset, -y, -z);
         }
@@ -460,7 +460,7 @@ public class GunRenderingHandler
 
             double zOffset = modifiedGun.getGeneral().getGripType().getHeldAnimation().getFallSwayZOffset();
             poseStack.translate(0, -0.25, zOffset);
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, this.prevFallSway, this.fallSway)));
+            poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, this.prevFallSway, this.fallSway)));
             poseStack.translate(0, 0.25, -zOffset);
 
             float bobPitch = Mth.rotLerp(partialTicks, player.xBobO, player.xBob);
@@ -487,8 +487,8 @@ public class GunRenderingHandler
             float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
             transition = (float) Math.sin((transition * Math.PI) / 2);
             poseStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(45F * leftHanded * transition));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(-25F * transition));
+            poseStack.mulPose(Axis.YP.rotationDegrees(45F * leftHanded * transition));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-25F * transition));
         }
     }
 
@@ -497,7 +497,7 @@ public class GunRenderingHandler
         float reloadProgress = ReloadHandler.get().getReloadProgress(partialTicks);
         poseStack.translate(0, 0.35 * reloadProgress, 0);
         poseStack.translate(0, 0, -0.1 * reloadProgress);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(45F * reloadProgress));
+        poseStack.mulPose(Axis.XP.rotationDegrees(45F * reloadProgress));
     }
 
     private void applyRecoilTransforms(PoseStack poseStack, ItemStack item, Gun gun)
@@ -515,9 +515,9 @@ public class GunRenderingHandler
         float recoilSway = (float) ((RecoilHandler.get().getGunRecoilRandom() * recoilSwayAmount - recoilSwayAmount / 2F) * recoilNormal);
         poseStack.translate(0, 0, kick * kickReduction);
         poseStack.translate(0, 0, 0.15);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(recoilSway * recoilReduction));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(recoilSway * recoilReduction));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(recoilLift * recoilReduction));
+        poseStack.mulPose(Axis.YP.rotationDegrees(recoilSway * recoilReduction));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(recoilSway * recoilReduction));
+        poseStack.mulPose(Axis.XP.rotationDegrees(recoilLift * recoilReduction));
         poseStack.translate(0, 0, -0.15);
     }
 
@@ -527,7 +527,7 @@ public class GunRenderingHandler
         {
             double time = Mth.clamp((player.getTicksUsingItem() + partialTick), 0.0, 4.0) / 4.0;
             poseStack.translate(0, 0.35 * time, 0);
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(45F * (float) time));
+            poseStack.mulPose(Axis.XP.rotationDegrees(45F * (float) time));
         }
     }
 
@@ -769,8 +769,8 @@ public class GunRenderingHandler
             poseStack.translate(0, 0, -length * 0.0625 * scale.z);
         }
 
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(360F * random));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(flip ? 180F : 0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(360F * random));
+        poseStack.mulPose(Axis.XP.rotationDegrees(flip ? 180F : 0F));
 
         Vec3 flashScale = PropertyHelper.getMuzzleFlashScale(weapon, modifiedGun);
         float scaleX = ((float) flashScale.x / 2F) - ((float) flashScale.x / 2F) * (1.0F - partialTicks);
@@ -821,12 +821,12 @@ public class GunRenderingHandler
         percent = percent < 0.5 ? 2 * percent * percent : -1 + (4 - 2 * percent) * percent;
 
         poseStack.translate(3.5 * side * 0.0625, -0.5625, -0.5625);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
         poseStack.translate(0, -0.35 * (1.0 - percent), 0);
         poseStack.translate(side * 0.0625, 0, 0);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(90F));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(35F * -side));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-75F * percent));
+        poseStack.mulPose(Axis.XP.rotationDegrees(90F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(35F * -side));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-75F * percent));
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         RenderUtil.renderFirstPersonArm(mc.player, hand.getOpposite(), poseStack, buffer, light);
@@ -835,7 +835,7 @@ public class GunRenderingHandler
         {
             poseStack.pushPose();
             poseStack.translate(-side * 5 * 0.0625, 15 * 0.0625, -1 * 0.0625);
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(180F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(180F));
             poseStack.scale(0.75F, 0.75F, 0.75F);
             ItemStack ammo = new ItemStack(item, modifiedGun.getGeneral().getReloadAmount());
             BakedModel model = RenderUtil.getModel(ammo);

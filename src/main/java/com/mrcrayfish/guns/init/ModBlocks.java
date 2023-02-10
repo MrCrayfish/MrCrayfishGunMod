@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.init;
 
-import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.block.WorkbenchBlock;
 import net.minecraft.world.item.BlockItem;
@@ -26,7 +25,7 @@ public class ModBlocks
 
     private static <T extends Block> RegistryObject<T> register(String id, Supplier<T> blockSupplier)
     {
-        return register(id, blockSupplier, block1 -> new BlockItem(block1, new Item.Properties().tab(GunMod.GROUP)));
+        return register(id, blockSupplier, block1 -> new BlockItem(block1, new Item.Properties()));
     }
 
     private static <T extends Block> RegistryObject<T> register(String id, Supplier<T> blockSupplier, @Nullable Function<T, BlockItem> supplier)

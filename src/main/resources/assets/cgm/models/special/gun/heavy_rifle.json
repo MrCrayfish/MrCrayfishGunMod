@@ -2,8 +2,8 @@
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"particle": "cgm:items/heavy_rifle",
-		"1": "cgm:items/heavy_rifle"
+		"particle": "cgm:item/heavy_rifle",
+		"1": "cgm:item/heavy_rifle"
 	},
 	"elements": [
 		{

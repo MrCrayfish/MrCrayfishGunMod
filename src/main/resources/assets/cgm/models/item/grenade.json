@@ -1,8 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
 	"textures": {
-		"1": "cgm:items/grenade",
-		"particle": "cgm:items/grenade"
+		"1": "cgm:item/grenade",
+		"particle": "cgm:item/grenade"
 	},
 	"elements": [
 		{

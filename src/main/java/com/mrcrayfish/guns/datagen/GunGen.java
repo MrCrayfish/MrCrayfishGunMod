@@ -5,17 +5,20 @@ import com.mrcrayfish.guns.common.GripType;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.init.ModSounds;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: MrCrayfish
  */
 public class GunGen extends GunProvider
 {
-    public GunGen(DataGenerator generator)
+    public GunGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
     {
-        super(generator);
+        super(output, registries);
     }
 
     @Override

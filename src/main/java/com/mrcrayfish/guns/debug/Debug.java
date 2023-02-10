@@ -2,7 +2,6 @@ package com.mrcrayfish.guns.debug;
 
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.common.Gun;
-import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugToggle;
 import com.mrcrayfish.guns.item.GunItem;

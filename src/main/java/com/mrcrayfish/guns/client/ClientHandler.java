@@ -13,9 +13,11 @@ import com.mrcrayfish.guns.client.screen.WorkbenchScreen;
 import com.mrcrayfish.guns.client.util.PropertyHelper;
 import com.mrcrayfish.guns.debug.IEditorMenu;
 import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
+import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.init.ModBlocks;
 import com.mrcrayfish.guns.init.ModContainers;
 import com.mrcrayfish.guns.init.ModItems;
+import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IColored;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import com.mrcrayfish.guns.network.PacketHandler;
@@ -29,13 +31,21 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -84,8 +94,7 @@ public class ClientHandler
 
     private static void registerColors()
     {
-        ItemColor color = (stack, index) ->
-        {
+        ItemColor color = (stack, index) -> {
             if(!IColored.isDyeable(stack))
             {
                 return -1;
@@ -108,8 +117,7 @@ public class ClientHandler
             }
             return -1;
         };
-        ForgeRegistries.ITEMS.forEach(item ->
-        {
+        ForgeRegistries.ITEMS.forEach(item -> {
             if(item instanceof IColored)
             {
                 Minecraft.getInstance().getItemColors().register(color, item);
@@ -187,6 +195,46 @@ public class ClientHandler
     public static void onFrameworkClientRegister(FrameworkClientEvent.Register event)
     {
         event.registerDataLoader(MetaLoader.getInstance());
+    }
+
+    public static void registerAdditional(ModelEvent.RegisterAdditional event)
+    {
+        event.register(new ResourceLocation(Reference.MOD_ID, "special/test"));
+    }
+
+    public static void onRegisterCreativeTab(CreativeModeTabEvent.Register event)
+    {
+        event.registerCreativeModeTab(new ResourceLocation(Reference.MOD_ID, "creative_tab"), builder ->
+        {
+            builder.title(Component.translatable("itemGroup." + Reference.MOD_ID));
+            builder.icon(() -> {
+                ItemStack stack = new ItemStack(ModItems.PISTOL.get());
+                stack.getOrCreateTag().putBoolean("IgnoreAmmo", true);
+                return stack;
+            });
+            builder.displayItems((flags, output, permission) ->
+            {
+                ModItems.REGISTER.getEntries().forEach(registryObject ->
+                {
+                    if(registryObject.get() instanceof GunItem item)
+                    {
+                        ItemStack stack = new ItemStack(item);
+                        stack.getOrCreateTag().putInt("AmmoCount", item.getGun().getGeneral().getMaxAmmo());
+                        output.accept(stack);
+                        return;
+                    }
+                    output.accept(registryObject.get());
+                });
+                CustomGunManager.fill(output);
+                for(Enchantment enchantment : ForgeRegistries.ENCHANTMENTS)
+                {
+                    if(enchantment.category == EnchantmentTypes.GUN || enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN)
+                    {
+                        output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, enchantment.getMaxLevel())), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+                    }
+                }
+            });
+        });
     }
 
     public static Screen createEditorScreen(IEditorMenu menu)

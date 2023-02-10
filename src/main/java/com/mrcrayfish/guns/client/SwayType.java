@@ -1,30 +1,30 @@
 package com.mrcrayfish.guns.client;
 
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 /**
  * Author: MrCrayfish
  */
 public enum SwayType
 {
-    DIRECTIONAL(Vector3f.XN, Vector3f.YN),
-    DRAG(Vector3f.XP, Vector3f.YP);
+    DIRECTIONAL(Axis.XN, Axis.YN),
+    DRAG(Axis.XP, Axis.YP);
 
-    Vector3f pitchRotation;
-    Vector3f yawRotation;
+    final Axis pitchRotation;
+    final Axis yawRotation;
 
-    SwayType(Vector3f pitchRotation, Vector3f yawRotation)
+    SwayType(Axis pitchRotation, Axis yawRotation)
     {
         this.pitchRotation = pitchRotation;
         this.yawRotation = yawRotation;
     }
 
-    public Vector3f getPitchRotation()
+    public Axis getPitchRotation()
     {
         return this.pitchRotation;
     }
 
-    public Vector3f getYawRotation()
+    public Axis getYawRotation()
     {
         return this.yawRotation;
     }

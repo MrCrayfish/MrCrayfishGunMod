@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.gun.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.client.GunModel;
 import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.render.gun.IOverrideModel;
@@ -37,7 +37,7 @@ public class GrenadeLauncherModel implements IOverrideModel
 
         poseStack.pushPose();
         poseStack.translate(0, -5.8 * 0.0625, 0);
-        poseStack.mulPose(Vector3f.ZN.rotationDegrees(45F * cooldown));
+        poseStack.mulPose(Axis.ZN.rotationDegrees(45F * cooldown));
         poseStack.translate(0, 5.8 * 0.0625, 0);
         RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_CYLINDER.getModel(), transformType, null, stack, parent, poseStack, buffer, light, overlay);
         poseStack.popPose();

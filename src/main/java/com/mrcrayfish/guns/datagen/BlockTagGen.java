@@ -2,22 +2,26 @@ package com.mrcrayfish.guns.datagen;
 
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.ModTags;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 public class BlockTagGen extends BlockTagsProvider
 {
-    public BlockTagGen(DataGenerator generator, ExistingFileHelper existingFileHelper)
+    public BlockTagGen(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper)
     {
-        super(generator, Reference.MOD_ID, existingFileHelper);
+        super(output, lookupProvider, Reference.MOD_ID, existingFileHelper);
     }
 
     @Override
-    protected void addTags()
+    protected void addTags(HolderLookup.Provider provider)
     {
         this.tag(ModTags.Blocks.FRAGILE)
                 .addTag(Tags.Blocks.GLASS_PANES)

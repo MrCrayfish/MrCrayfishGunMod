@@ -2,7 +2,7 @@
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"1": "cgm:items/rifle"
+		"1": "cgm:item/rifle"
 	},
 	"elements": [
 		{

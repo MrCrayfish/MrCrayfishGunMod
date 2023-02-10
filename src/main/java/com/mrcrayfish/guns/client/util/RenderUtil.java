@@ -3,9 +3,8 @@ package com.mrcrayfish.guns.client.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
+import com.mojang.math.MatrixUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -31,8 +30,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -40,6 +40,9 @@ import java.util.List;
 
 public class RenderUtil
 {
+    private static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.vanilla("trident", "inventory");
+    private static final ModelResourceLocation SPYGLASS_MODEL = ModelResourceLocation.vanilla("spyglass", "inventory");
+
     public static void scissor(int x, int y, int width, int height)
     {
         Minecraft mc = Minecraft.getInstance();
@@ -60,7 +63,7 @@ public class RenderUtil
     public static void rotateZ(PoseStack poseStack, float xOffset, float yOffset, float rotation)
     {
         poseStack.translate(xOffset, yOffset, 0);
-        poseStack.mulPose(Vector3f.ZN.rotationDegrees(rotation));
+        poseStack.mulPose(Axis.ZN.rotationDegrees(rotation));
         poseStack.translate(-xOffset, -yOffset, 0);
     }
 
@@ -107,12 +110,19 @@ public class RenderUtil
         {
             poseStack.pushPose();
             boolean flag = transformType == ItemTransforms.TransformType.GUI || transformType == ItemTransforms.TransformType.GROUND || transformType == ItemTransforms.TransformType.FIXED;
-            if(stack.getItem() == Items.TRIDENT && flag)
+            if(flag)
             {
-                model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
+                if(stack.is(Items.TRIDENT))
+                {
+                    model = Minecraft.getInstance().getModelManager().getModel(TRIDENT_MODEL);
+                }
+                else if(stack.is(Items.SPYGLASS))
+                {
+                    model = Minecraft.getInstance().getModelManager().getModel(SPYGLASS_MODEL);
+                }
             }
 
-            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, false);
+            model = model.applyTransform(transformType, poseStack, false);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
             if(!model.isCustomRenderer() && (stack.getItem() != Items.TRIDENT || flag))
             {
@@ -131,11 +141,11 @@ public class RenderUtil
                     PoseStack.Pose entry = poseStack.last();
                     if(transformType == ItemTransforms.TransformType.GUI)
                     {
-                        entry.pose().multiply(0.5F);
+                        MatrixUtil.mulComponentWise(entry.pose(), 0.5F);
                     }
                     else if(transformType.firstPerson())
                     {
-                        entry.pose().multiply(0.75F);
+                        MatrixUtil.mulComponentWise(entry.pose(), 0.75F);
                     }
 
                     if(entity)
@@ -243,14 +253,17 @@ public class RenderUtil
     {
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity != null ? entity.level : null, entity, 0);
         boolean leftHanded = transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
-        ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, leftHanded);
+
+        //TODO test
+        model = model.applyTransform(transformType, poseStack, leftHanded);
 
         /* Flips the model and normals if left handed. */
         if(leftHanded)
         {
-            Matrix4f scale = Matrix4f.createScaleMatrix(-1, 1, 1);
+            //TODO test
+            Matrix4f scale = new Matrix4f().scale(-1, 1, 1);
             Matrix3f normal = new Matrix3f(scale);
-            poseStack.last().pose().multiply(scale);
+            poseStack.last().pose().mul(scale);
             poseStack.last().normal().mul(normal);
         }
     }

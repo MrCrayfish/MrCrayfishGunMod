@@ -3,7 +3,7 @@ package com.mrcrayfish.guns.client.screen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.GunRenderingHandler;
@@ -15,7 +15,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -80,13 +80,13 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             {
                 case LEFT -> {
                     int titleWidth = this.minecraft.font.width(this.title);
-                    button.x = this.leftPos + titleWidth + 8 + 3 + i * 13;
+                    button.setX(this.leftPos + titleWidth + 8 + 3 + i * 13);
                 }
                 case RIGHT -> {
-                    button.x = this.leftPos + this.imageWidth - 7 - 10 - (buttons.size() - 1 - i) * 13;
+                    button.setX(this.leftPos + this.imageWidth - 7 - 10 - (buttons.size() - 1 - i) * 13);
                 }
             }
-            button.y = this.topPos + 5;
+            button.setY(this.topPos + 5);
             this.addRenderableWidget(button);
         }
     }
@@ -96,11 +96,9 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         List<MiniButton> buttons = new ArrayList<>();
         if(!Config.CLIENT.hideConfigButton.get())
         {
-            buttons.add(new MiniButton(0, 0, 192, 0, GUI_TEXTURES, onPress -> {
-                this.openConfigScreen();
-            }, (button, matrixStack, mouseX, mouseY) -> {
-                this.renderTooltip(matrixStack, CONFIG_TOOLTIP, mouseX, mouseY);
-            }));
+            MiniButton configButton = new MiniButton(0, 0, 192, 0, GUI_TEXTURES, onPress -> this.openConfigScreen());
+            configButton.setTooltip(Tooltip.create(CONFIG_TOOLTIP));
+            buttons.add(configButton);
         }
         return buttons;
     }
@@ -147,14 +145,6 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
                 }
             }
         }
-
-        this.children().forEach(widget ->
-        {
-            if(widget instanceof Button button && button.isHoveredOrFocused())
-            {
-                button.renderToolTip(poseStack, mouseX, mouseY);
-            }
-        });
     }
 
     @Override
@@ -177,14 +167,14 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             stack.translate(96, 50, 100);
             stack.translate(this.windowX + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseX - this.mouseClickedX : 0), 0, 0);
             stack.translate(0, this.windowY + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseY - this.mouseClickedY : 0), 0);
-            stack.mulPose(Vector3f.XP.rotationDegrees(-30F));
-            stack.mulPose(Vector3f.XP.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
-            stack.mulPose(Vector3f.YP.rotationDegrees(this.windowRotationX + (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseX - this.mouseClickedX : 0)));
-            stack.mulPose(Vector3f.YP.rotationDegrees(150F));
+            stack.mulPose(Axis.XP.rotationDegrees(-30F));
+            stack.mulPose(Axis.XP.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
+            stack.mulPose(Axis.YP.rotationDegrees(this.windowRotationX + (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseX - this.mouseClickedX : 0)));
+            stack.mulPose(Axis.YP.rotationDegrees(150F));
             stack.scale(this.windowZoom / 10F, this.windowZoom / 10F, this.windowZoom / 10F);
             stack.scale(90F, -90F, 90F);
-            stack.mulPose(Vector3f.XP.rotationDegrees(5F));
-            stack.mulPose(Vector3f.YP.rotationDegrees(90F));
+            stack.mulPose(Axis.XP.rotationDegrees(5F));
+            stack.mulPose(Axis.YP.rotationDegrees(90F));
             RenderSystem.applyModelViewMatrix();
             MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
             GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemTransforms.TransformType.GROUND, new PoseStack(), buffer, 15728880, 0F);

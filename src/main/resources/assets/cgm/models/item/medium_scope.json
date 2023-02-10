@@ -1,7 +1,7 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"textures": {
-		"1": "cgm:items/medium_scope",
+		"1": "cgm:item/medium_scope",
 		"2": "cgm:effect/holo_reticle",
 		"particle": "cgm:effect/holo_reticle"
 	},

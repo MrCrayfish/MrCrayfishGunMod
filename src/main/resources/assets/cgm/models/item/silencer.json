@@ -1,8 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"textures": {
-		"1": "cgm:items/silencer",
-		"particle": "cgm:items/silencer"
+		"1": "cgm:item/silencer",
+		"particle": "cgm:item/silencer"
 	},
 	"elements": [
 		{

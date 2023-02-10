@@ -2,8 +2,7 @@ package com.mrcrayfish.guns.client.handler;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.client.BulletTrail;
 import com.mrcrayfish.guns.client.GunRenderType;
 import com.mrcrayfish.guns.client.util.RenderUtil;
@@ -21,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.joml.Matrix4f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -125,8 +125,8 @@ public class BulletTrailRenderingHandler
         double bulletZ = position.z + motion.z * deltaTicks;
         poseStack.translate(bulletX - view.x(), bulletY - view.y(), bulletZ - view.z());
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(trail.getYaw()));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-trail.getPitch() + 90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(trail.getYaw()));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-trail.getPitch() + 90));
 
         Vec3 motionVec = new Vec3(motion.x, motion.y, motion.z);
         float trailLength = (float) (motionVec.length() * trail.getTrailLengthMultiplier());
@@ -162,7 +162,7 @@ public class BulletTrailRenderingHandler
 
         if(!trail.getItem().isEmpty())
         {
-            poseStack.mulPose(Vector3f.YP.rotationDegrees((trail.getAge() + deltaTicks) * (float) 50));
+            poseStack.mulPose(Axis.YP.rotationDegrees((trail.getAge() + deltaTicks) * (float) 50));
             poseStack.scale(0.275F, 0.275F, 0.275F);
 
             int combinedLight = LevelRenderer.getLightColor(entity.level, new BlockPos(entity.position()));

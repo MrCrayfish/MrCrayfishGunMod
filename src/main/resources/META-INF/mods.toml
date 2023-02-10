@@ -15,13 +15,13 @@ description="MrCrayfish's Gun Mod adds in simple and straight forward weapons in
 [[dependencies.cgm]]
     modId="forge"
     mandatory=true
-    versionRange="[41.0.94,)"
+    versionRange="[44.1.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19,1.20)"
+    versionRange="[1.19.3,1.20)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cgm]]
@@ -40,6 +40,12 @@ description="MrCrayfish's Gun Mod adds in simple and straight forward weapons in
     modId="backpacked"
     mandatory=false
     versionRange="[2.1.9,)"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.cgm]]
+    modId="jei"
+    mandatory=false
+    versionRange="[12.1.1,)"
     ordering="AFTER"
     side="CLIENT"
 

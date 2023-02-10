@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.entity.MissileEntity;
@@ -38,9 +38,9 @@ public class MissileRenderer extends EntityRenderer<MissileEntity>
         }
 
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot() - 90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(entityYaw));
+        poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot() - 90));
         Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemTransforms.TransformType.NONE, 15728880, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
         poseStack.translate(0, -1, 0);
         RenderUtil.renderModel(SpecialModels.FLAME.getModel(), entity.getItem(), poseStack, renderTypeBuffer, 15728880, OverlayTexture.NO_OVERLAY);

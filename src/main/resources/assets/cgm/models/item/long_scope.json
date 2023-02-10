@@ -2,9 +2,9 @@
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"texture_size": [128, 128],
 	"textures": {
-		"1": "cgm:items/long_scope",
+		"1": "cgm:item/long_scope",
 		"2": "cgm:effect/long_scope_reticle",
-		"particle": "cgm:items/long_scope"
+		"particle": "cgm:item/long_scope"
 	},
 	"elements": [
 		{

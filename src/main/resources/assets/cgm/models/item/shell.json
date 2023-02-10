@@ -1,8 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"textures": {
-		"1": "cgm:items/shell",
-		"particle": "cgm:items/shell"
+		"1": "cgm:item/shell",
+		"particle": "cgm:item/shell"
 	},
 	"elements": [
 		{

@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -149,9 +149,9 @@ public abstract class WeaponPose implements IHeldAnimation
             float rotateX = this.getValue(targetPose.getIdle().getItemRotation().x(), targetPose.getAiming().getItemRotation().x(), this.forwardPose.getIdle().getItemRotation().x(), this.forwardPose.getAiming().getItemRotation().x(), 0F, angleAbs, zoom, 1F);
             float rotateY = this.getValue(targetPose.getIdle().getItemRotation().y(), targetPose.getAiming().getItemRotation().y(), this.forwardPose.getIdle().getItemRotation().y(), this.forwardPose.getAiming().getItemRotation().y(), 0F, angleAbs, zoom, 1F);
             float rotateZ = this.getValue(targetPose.getIdle().getItemRotation().z(), targetPose.getAiming().getItemRotation().z(), this.forwardPose.getIdle().getItemRotation().z(), this.forwardPose.getAiming().getItemRotation().z(), 0F, angleAbs, zoom, 1F);
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(rotateX));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(rotateY * leftHanded));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(rotateZ * leftHanded));
+            poseStack.mulPose(Axis.XP.rotationDegrees(rotateX));
+            poseStack.mulPose(Axis.YP.rotationDegrees(rotateY * leftHanded));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(rotateZ * leftHanded));
         }
     }
 }

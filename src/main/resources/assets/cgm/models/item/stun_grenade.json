@@ -2,8 +2,8 @@
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
 	"parent": "cgm:item/grenade",
 	"textures": {
-		"1": "cgm:items/stun_grenade",
-		"particle": "cgm:items/stun_grenade"
+		"1": "cgm:item/stun_grenade",
+		"particle": "cgm:item/stun_grenade"
 	},
 	"elements": [
 		{

@@ -32,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -680,7 +681,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    public Packet<?> getAddEntityPacket()
+    public Packet<ClientGamePacketListener> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
@@ -804,8 +805,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(world.isClientSide())
             return;
 
-        DamageSource source = entity instanceof ProjectileEntity projectile ? DamageSource.explosion(projectile.getShooter()) : null;
-        Explosion.BlockInteraction mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE;
+        DamageSource source = entity instanceof ProjectileEntity projectile ? DamageSource.explosion(entity, projectile.getShooter()) : null;
+        Explosion.BlockInteraction mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
         Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 
         if(net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
@@ -825,7 +826,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         });
 
         // Clears the affected blocks if mode is none
-        if(mode == Explosion.BlockInteraction.NONE)
+        if(!explosion.interactsWithBlocks())
         {
             explosion.clearToBlow();
         }

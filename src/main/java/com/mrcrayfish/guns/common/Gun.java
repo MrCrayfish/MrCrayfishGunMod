@@ -11,7 +11,6 @@ import com.mrcrayfish.guns.compat.BackpackHelper;
 import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.debug.IDebugWidget;
 import com.mrcrayfish.guns.debug.IEditorMenu;
-import com.mrcrayfish.guns.debug.client.screen.EditorScreen;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugButton;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugSlider;
 import com.mrcrayfish.guns.debug.client.screen.widget.DebugToggle;

@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.pose;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.client.render.IHeldAnimation;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -42,7 +42,7 @@ public class OneHandedPose implements IHeldAnimation
     @Override
     public void renderFirstPersonArms(Player player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks)
     {
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
 
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
         float translateX = model.getTransforms().firstPersonRightHand.translation.x();
@@ -58,7 +58,7 @@ public class OneHandedPose implements IHeldAnimation
         poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
 
         poseStack.translate(0, 0.15, -1.3125);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(75F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(75F));
 
         RenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
     }
@@ -66,8 +66,8 @@ public class OneHandedPose implements IHeldAnimation
     @Override
     public boolean applyOffhandTransforms(Player player, PlayerModel model, ItemStack stack, PoseStack poseStack, float partialTicks)
     {
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
         if(player.isCrouching())
         {
@@ -82,9 +82,9 @@ public class OneHandedPose implements IHeldAnimation
             poseStack.translate(-3.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
         }
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(90F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(75F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(model.rightLeg.xRot) / 10F)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(75F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees((float) (Math.toDegrees(model.rightLeg.xRot) / 10F)));
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         return true;

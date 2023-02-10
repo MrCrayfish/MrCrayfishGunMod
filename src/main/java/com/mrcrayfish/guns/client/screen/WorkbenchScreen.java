@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.common.NetworkGunManager;
@@ -163,7 +163,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         {
             this.topPos += 28;
         }
-        this.addRenderableWidget(new Button(this.leftPos + 9, this.topPos + 18, 15, 20, Component.literal("<"), button ->
+        this.addRenderableWidget(Button.builder(Component.literal("<"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             if(index - 1 < 0)
@@ -174,8 +174,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             {
                 this.loadItem(index - 1);
             }
-        }));
-        this.addRenderableWidget(new Button(this.leftPos + 153, this.topPos + 18, 15, 20, Component.literal(">"), button ->
+        }).pos(this.leftPos + 9, this.topPos + 18).size(15, 20).build());
+        this.addRenderableWidget(Button.builder(Component.literal(">"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             if(index + 1 >= this.currentTab.getRecipes().size())
@@ -186,14 +186,14 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             {
                 this.loadItem(index + 1);
             }
-        }));
-        this.btnCraft = this.addRenderableWidget(new Button(this.leftPos + 195, this.topPos + 16, 74, 20, Component.translatable("gui.cgm.workbench.assemble"), button ->
+        }).pos(this.leftPos + 153, this.topPos + 18).size(15, 20).build());
+        this.btnCraft = this.addRenderableWidget(Button.builder(Component.translatable("gui.cgm.workbench.assemble"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
             ResourceLocation registryName = recipe.getId();
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageCraft(registryName, this.workbench.getBlockPos()));
-        }));
+        }).pos(this.leftPos + 195, this.topPos + 16).size(74, 20).build());
         this.btnCraft.active = false;
         this.checkBoxMaterials = this.addRenderableWidget(new CheckBox(this.leftPos + 172, this.topPos + 51, Component.translatable("gui.cgm.workbench.show_remaining")));
         this.checkBoxMaterials.setToggled(WorkbenchScreen.showRemaining);
@@ -422,8 +422,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         {
             modelViewStack.translate(startX + 88, startY + 60, 100);
             modelViewStack.scale(50F, -50F, 50F);
-            modelViewStack.mulPose(Vector3f.XP.rotationDegrees(5F));
-            modelViewStack.mulPose(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
+            modelViewStack.mulPose(Axis.XP.rotationDegrees(5F));
+            modelViewStack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
             RenderSystem.applyModelViewMatrix();
             MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
             Minecraft.getInstance().getItemRenderer().render(currentItem, ItemTransforms.TransformType.FIXED, false, poseStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));

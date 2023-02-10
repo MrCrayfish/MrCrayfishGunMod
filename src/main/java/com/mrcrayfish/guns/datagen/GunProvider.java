@@ -1,36 +1,32 @@
 package com.mrcrayfish.guns.datagen;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.common.Gun;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: MrCrayfish
  */
 public abstract class GunProvider implements DataProvider
 {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
-
-    private final DataGenerator generator;
+    protected final PackOutput.PathProvider pathProvider;
+    private final CompletableFuture<HolderLookup.Provider> registries;
     private final Map<ResourceLocation, Gun> gunMap = new HashMap<>();
 
-    protected GunProvider(DataGenerator generator)
+    protected GunProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
     {
-        this.generator = generator;
+        this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "guns");
+        this.registries = registries;
     }
 
     protected abstract void registerGuns();
@@ -41,22 +37,19 @@ public abstract class GunProvider implements DataProvider
     }
 
     @Override
-    public void run(CachedOutput cache)
+    public CompletableFuture<?> run(CachedOutput cache)
     {
-        this.gunMap.clear();
-        this.registerGuns();
-        this.gunMap.forEach((id, gun) ->
+        return this.registries.thenCompose(provider ->
         {
-            Path path = this.generator.getOutputFolder().resolve("data/" + id.getNamespace() + "/guns/" + id.getPath() + ".json");
-            try
-            {
+            this.gunMap.clear();
+            this.registerGuns();
+            return CompletableFuture.allOf(this.gunMap.entrySet().stream().map(entry -> {
+                ResourceLocation key = entry.getKey();
+                Gun gun = entry.getValue();
+                Path path = this.pathProvider.json(key);
                 JsonObject object = gun.toJsonObject();
-                DataProvider.saveStable(cache, object, path);
-            }
-            catch(IOException e)
-            {
-                LOGGER.error("Couldn't save trades to {}", path, e);
-            }
+                return DataProvider.saveStable(cache, object, path);
+            }).toArray(CompletableFuture[]::new));
         });
     }
 

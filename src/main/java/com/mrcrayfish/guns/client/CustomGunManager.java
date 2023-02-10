@@ -6,11 +6,11 @@ import com.mrcrayfish.guns.common.CustomGun;
 import com.mrcrayfish.guns.common.CustomGunLoader;
 import com.mrcrayfish.guns.init.ModItems;
 import com.mrcrayfish.guns.network.message.S2CMessageUpdateGuns;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -40,7 +40,7 @@ public class CustomGunManager
         return true;
     }
 
-    public static void fill(NonNullList<ItemStack> items)
+    public static void fill(CreativeModeTab.Output output)
     {
         if(customGunMap != null)
         {
@@ -53,7 +53,7 @@ public class CustomGunManager
                 tag.put("Gun", gun.getGun().serializeNBT());
                 tag.putBoolean("Custom", true);
                 tag.putInt("AmmoCount", gun.getGun().getGeneral().getMaxAmmo());
-                items.add(stack);
+                output.accept(stack);
             });
         }
     }

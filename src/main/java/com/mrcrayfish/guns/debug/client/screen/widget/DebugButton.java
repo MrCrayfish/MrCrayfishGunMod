@@ -16,13 +16,13 @@ public class DebugButton extends Button implements IDebugWidget
 
     public DebugButton(Component label, OnPress onPress)
     {
-        super(0, 0, 0, 20, label, onPress);
+        super(0, 0, 0, 20, label, onPress, DEFAULT_NARRATION);
         this.enabled = () -> true;
     }
 
     public DebugButton(Component label, OnPress onPress, Supplier<Boolean> enabled)
     {
-        super(0, 0, 0, 20, label, onPress);
+        super(0, 0, 0, 20, label, onPress, DEFAULT_NARRATION);
         this.enabled = enabled;
     }
 

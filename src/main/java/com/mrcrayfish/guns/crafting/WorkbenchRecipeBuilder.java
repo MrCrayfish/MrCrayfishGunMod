@@ -8,17 +8,20 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -26,14 +29,17 @@ import java.util.function.Consumer;
  */
 public class WorkbenchRecipeBuilder
 {
+    @Nullable
+    private final RecipeCategory category;
     private final Item result;
     private final int count;
     private final List<WorkbenchIngredient> ingredients;
     private final Advancement.Builder advancementBuilder;
     private final List<ICondition> conditions = new ArrayList<>();
 
-    private WorkbenchRecipeBuilder(ItemLike item, int count)
+    private WorkbenchRecipeBuilder(@Nullable RecipeCategory category, ItemLike item, int count)
     {
+        this.category = category;
         this.result = item.asItem();
         this.count = count;
         this.ingredients = new ArrayList<>();
@@ -42,12 +48,22 @@ public class WorkbenchRecipeBuilder
 
     public static WorkbenchRecipeBuilder crafting(ItemLike item)
     {
-        return new WorkbenchRecipeBuilder(item, 1);
+        return new WorkbenchRecipeBuilder(null, item, 1);
     }
 
     public static WorkbenchRecipeBuilder crafting(ItemLike item, int count)
     {
-        return new WorkbenchRecipeBuilder(item, count);
+        return new WorkbenchRecipeBuilder(null, item, count);
+    }
+
+    public static WorkbenchRecipeBuilder crafting(@Nullable RecipeCategory category, ItemLike item)
+    {
+        return new WorkbenchRecipeBuilder(category, item, 1);
+    }
+
+    public static WorkbenchRecipeBuilder crafting(@Nullable RecipeCategory category, ItemLike item, int count)
+    {
+        return new WorkbenchRecipeBuilder(category, item, count);
     }
 
     public WorkbenchRecipeBuilder addIngredient(ItemLike item, int count)
@@ -76,7 +92,7 @@ public class WorkbenchRecipeBuilder
 
     public void build(Consumer<FinishedRecipe> consumer)
     {
-        ResourceLocation resourcelocation = Registry.ITEM.getKey(this.result);
+        ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result);
         this.build(consumer, resourcelocation);
     }
 
@@ -84,7 +100,7 @@ public class WorkbenchRecipeBuilder
     {
         this.validate(id);
         this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-        consumer.accept(new WorkbenchRecipeBuilder.Result(id, this.result, this.count, this.ingredients, this.conditions, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath())));
+        consumer.accept(new WorkbenchRecipeBuilder.Result(id, this.result, this.count, this.ingredients, this.conditions, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + (this.category != null ? this.category.getFolderName() : "") + "/" + id.getPath())));
     }
 
     /**
@@ -134,7 +150,7 @@ public class WorkbenchRecipeBuilder
             json.add("materials", materials);
 
             JsonObject resultObject = new JsonObject();
-            resultObject.addProperty("item", Registry.ITEM.getKey(this.item).toString());
+            resultObject.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(this.item)).toString());
             if(this.count > 1)
             {
                 resultObject.addProperty("count", this.count);

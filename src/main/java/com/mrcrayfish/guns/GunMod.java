@@ -1,9 +1,7 @@
 package com.mrcrayfish.guns;
 
 import com.mrcrayfish.guns.client.ClientHandler;
-import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.KeyBinds;
-import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.handler.CrosshairHandler;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
@@ -11,19 +9,16 @@ import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.datagen.BlockTagGen;
 import com.mrcrayfish.guns.datagen.GunGen;
 import com.mrcrayfish.guns.datagen.ItemTagGen;
-import com.mrcrayfish.guns.datagen.LanguageGen;
 import com.mrcrayfish.guns.datagen.LootTableGen;
 import com.mrcrayfish.guns.datagen.RecipeGen;
-import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
 import com.mrcrayfish.guns.network.PacketHandler;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -41,6 +36,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.CompletableFuture;
+
 @Mod(Reference.MOD_ID)
 public class GunMod
 {
@@ -49,23 +46,6 @@ public class GunMod
     public static boolean backpackedLoaded = false;
     public static boolean playerReviveLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    public static final CreativeModeTab GROUP = new CreativeModeTab(Reference.MOD_ID)
-    {
-        @Override
-        public ItemStack makeIcon()
-        {
-            ItemStack stack = new ItemStack(ModItems.PISTOL.get());
-            stack.getOrCreateTag().putInt("AmmoCount", ModItems.PISTOL.get().getGun().getGeneral().getMaxAmmo());
-            return stack;
-        }
-
-        @Override
-        public void fillItemList(NonNullList<ItemStack> items)
-        {
-            super.fillItemList(items);
-            CustomGunManager.fill(items);
-        }
-    }.setEnchantmentCategories(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
     public GunMod()
     {
@@ -94,6 +74,8 @@ public class GunMod
             bus.addListener(CrosshairHandler::onConfigReload);
             bus.addListener(ClientHandler::onRegisterReloadListener);
             bus.addListener(ClientHandler::onFrameworkClientRegister);
+            bus.addListener(ClientHandler::onRegisterCreativeTab);
+            bus.addListener(ClientHandler::registerAdditional);
         });
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
@@ -123,14 +105,15 @@ public class GunMod
     private void onGatherData(GatherDataEvent event)
     {
         DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        BlockTagGen blockTagGen = new BlockTagGen(generator, existingFileHelper);
-        generator.addProvider(event.includeServer(), new RecipeGen(generator));
-        generator.addProvider(event.includeServer(), new LootTableGen(generator));
+        BlockTagGen blockTagGen = new BlockTagGen(packOutput, lookupProvider, existingFileHelper);
+        generator.addProvider(event.includeServer(), new RecipeGen(packOutput));
+        generator.addProvider(event.includeServer(), new LootTableGen(packOutput));
         generator.addProvider(event.includeServer(), blockTagGen);
-        generator.addProvider(event.includeServer(), new ItemTagGen(generator, blockTagGen, existingFileHelper));
-        generator.addProvider(event.includeServer(), new LanguageGen(generator));
-        generator.addProvider(event.includeServer(), new GunGen(generator));
+        generator.addProvider(event.includeServer(), new ItemTagGen(packOutput, lookupProvider, blockTagGen, existingFileHelper));
+        generator.addProvider(event.includeServer(), new GunGen(packOutput, lookupProvider));
     }
 
     public static boolean isDebugging()

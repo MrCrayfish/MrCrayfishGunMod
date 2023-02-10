@@ -1,8 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"textures": {
-		"particle": "cgm:items/light_grip",
-		"1": "cgm:items/light_grip"
+		"particle": "cgm:item/light_grip",
+		"1": "cgm:item/light_grip"
 	},
 	"elements": [
 		{

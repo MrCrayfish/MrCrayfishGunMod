@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrcrayfish.guns.client.util.RenderUtil;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
 import net.minecraft.client.Minecraft;
@@ -38,14 +38,14 @@ public class ProjectileRenderer extends EntityRenderer<ProjectileEntity>
         if(!RenderUtil.getModel(entity.getItem()).isGui3d())
         {
             poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
             Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemTransforms.TransformType.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
         }
         else
         {
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot()));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(entityYaw));
+            poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
             Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
         }
 

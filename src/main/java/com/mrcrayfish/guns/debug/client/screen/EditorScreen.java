@@ -60,9 +60,9 @@ public class EditorScreen extends Screen
         this.windowLeft = 10;
         this.windowTop = (this.height - this.windowHeight) / 2;
 
-        this.addRenderableWidget(new Button(this.windowLeft + WIDTH - 12 - 4, this.windowTop + 4, 12, 12, Component.literal("<"), btn -> {
+        this.addRenderableWidget(Button.builder(Component.literal("<"), btn -> {
             Minecraft.getInstance().setScreen(this.parent);
-        }));
+        }).pos(this.windowLeft + WIDTH - 12 - 4, this.windowTop + 4).size(12, 12).build());
 
         this.list = new PropertyList();
         this.list.setRenderBackground(false);
@@ -195,8 +195,8 @@ public class EditorScreen extends Screen
         public void render(PoseStack poseStack, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTicks)
         {
             Screen.drawString(poseStack, EditorScreen.this.minecraft.font, this.label, left + 5, top, 0xFFFFFF);
-            this.widget.x = left;
-            this.widget.y = top + 10;
+            this.widget.setX(left);
+            this.widget.setY(top + 10);
             this.widget.setWidth(rowWidth);
             this.widget.render(poseStack, mouseX, mouseY, partialTicks);
         }

@@ -1,7 +1,7 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"textures": {
-		"1": "cgm:items/basic_stock"
+		"1": "cgm:item/basic_stock"
 	},
 	"elements": [
 		{
