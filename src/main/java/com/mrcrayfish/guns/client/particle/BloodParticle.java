@@ -90,7 +90,7 @@ public class BloodParticle extends TextureSheetParticle
         for(int i = 0; i < 4; ++i)
         {
             Vector3f vertex = vertices[i];
-            vertex.rotate(rotation); //TODO test
+            vertex.rotate(rotation);
             vertex.mul(scale);
             vertex.add(x, y, z);
         }
