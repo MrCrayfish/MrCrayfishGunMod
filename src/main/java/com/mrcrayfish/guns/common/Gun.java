@@ -122,6 +122,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         private boolean alwaysSpread;
         @Optional
         private float spread;
+        @Optional
+        private float spreadAdsReduction = 0.5F;
 
         @Override
         public CompoundTag serializeNBT()
@@ -139,6 +141,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             tag.putInt("ProjectileAmount", this.projectileAmount);
             tag.putBoolean("AlwaysSpread", this.alwaysSpread);
             tag.putFloat("Spread", this.spread);
+            tag.putFloat("SpreadAdsReduction", this.spreadAdsReduction);
             return tag;
         }
 
@@ -193,6 +196,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             {
                 this.spread = tag.getFloat("Spread");
             }
+            if(tag.contains("SpreadAdsReduction", Tag.TAG_ANY_NUMERIC))
+            {
+                this.spreadAdsReduction = tag.getFloat("SpreadAdsReduction");
+            }
         }
 
         public JsonObject toJsonObject()
@@ -206,6 +213,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
             Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
+            Preconditions.checkArgument(this.spreadAdsReduction >= 0.0F && this.spreadAdsReduction <= 1.0F, "Spread ads reduction must be between 0.0 and 1.0");
             JsonObject object = new JsonObject();
             if(this.auto) object.addProperty("auto", true);
             object.addProperty("rate", this.rate);
@@ -219,6 +227,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             if(this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
             if(this.alwaysSpread) object.addProperty("alwaysSpread", true);
             if(this.spread != 0.0F) object.addProperty("spread", this.spread);
+            if(this.spreadAdsReduction != 0.5F) object.addProperty("spreadAdsReduction", this.spreadAdsReduction);
             return object;
         }
 
@@ -240,6 +249,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             general.projectileAmount = this.projectileAmount;
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
+            general.spreadAdsReduction = this.spreadAdsReduction;
             return general;
         }
 
@@ -308,7 +318,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         }
 
         /**
-         * @return The amount of reduction applied when aiming down this weapon's sight
+         * @return The amount of recoil reduction applied when aiming down this weapon's sight
          */
         public float getRecoilAdsReduction()
         {
@@ -338,6 +348,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         public float getSpread()
         {
             return this.spread;
+        }
+
+        /**
+         * @return The amount of spread reduction allpied when aiming down this weapon's sight
+         */
+        public float getSpreadAdsReduction()
+        {
+            return this.spreadAdsReduction;
         }
     }
 
@@ -1659,6 +1677,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         public Builder setSpread(float spread)
         {
             this.gun.general.spread = spread;
+            return this;
+        }
+
+        public Builder setSpreadAdsReduction(float spreadAdsReduction)
+        {
+            this.gun.general.spreadAdsReduction = spreadAdsReduction;
             return this;
         }
 

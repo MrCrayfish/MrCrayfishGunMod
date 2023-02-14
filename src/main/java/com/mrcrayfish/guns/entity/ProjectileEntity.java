@@ -178,7 +178,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             if(ModSyncedDataKeys.AIMING.getValue((Player) shooter))
             {
-                gunSpread *= 0.5F;
+                gunSpread *= (1.0F - modifiedGun.getGeneral().getSpreadAdsReduction());
             }
         }
 
