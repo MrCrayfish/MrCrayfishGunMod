@@ -76,8 +76,11 @@ public class ShootingHandler
             {
                 event.setSwingHand(false);
                 event.setCanceled(true);
-                this.fire(player, heldItem);
                 Gun gun = gunItem.getModifiedGun(heldItem);
+                if(gun.getGeneral().getProjectileBurst() == 1)
+                {
+                    this.fire(player, heldItem);
+                }
                 if(!gun.getGeneral().isAuto())
                 {
                     mc.options.keyAttack.setDown(false);
