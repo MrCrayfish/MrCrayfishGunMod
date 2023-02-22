@@ -119,6 +119,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         @Optional
         private int projectileAmount = 1;
         @Optional
+        private int projectileBurst = 1;
+        @Optional
         private boolean alwaysSpread;
         @Optional
         private float spread;
@@ -139,6 +141,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             tag.putFloat("RecoilDurationOffset", this.recoilDurationOffset);
             tag.putFloat("RecoilAdsReduction", this.recoilAdsReduction);
             tag.putInt("ProjectileAmount", this.projectileAmount);
+            tag.putInt("ProjectileBurst", this.projectileBurst);
             tag.putBoolean("AlwaysSpread", this.alwaysSpread);
             tag.putFloat("Spread", this.spread);
             tag.putFloat("SpreadAdsReduction", this.spreadAdsReduction);
@@ -188,6 +191,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             {
                 this.projectileAmount = tag.getInt("ProjectileAmount");
             }
+            if(tag.contains("ProjectileBurst", Tag.TAG_ANY_NUMERIC))
+            {
+                this.projectileBurst = tag.getInt("ProjectileBurst");
+            }
             if(tag.contains("AlwaysSpread", Tag.TAG_ANY_NUMERIC))
             {
                 this.alwaysSpread = tag.getBoolean("AlwaysSpread");
@@ -212,6 +219,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             Preconditions.checkArgument(this.recoilDurationOffset >= 0.0F && this.recoilDurationOffset <= 1.0F, "Recoil duration offset must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
+            Preconditions.checkArgument(this.projectileBurst >= 1, "Projectile burst must be more than or equal to one");
             Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
             Preconditions.checkArgument(this.spreadAdsReduction >= 0.0F && this.spreadAdsReduction <= 1.0F, "Spread ads reduction must be between 0.0 and 1.0");
             JsonObject object = new JsonObject();
@@ -225,6 +233,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             if(this.recoilDurationOffset != 0.0F) object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
             if(this.recoilAdsReduction != 0.2F) object.addProperty("recoilAdsReduction", this.recoilAdsReduction);
             if(this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
+            if(this.projectileBurst != 1) object.addProperty("projectileBurst", this.projectileBurst);
             if(this.alwaysSpread) object.addProperty("alwaysSpread", true);
             if(this.spread != 0.0F) object.addProperty("spread", this.spread);
             if(this.spreadAdsReduction != 0.5F) object.addProperty("spreadAdsReduction", this.spreadAdsReduction);
@@ -247,6 +256,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             general.recoilDurationOffset = this.recoilDurationOffset;
             general.recoilAdsReduction = this.recoilAdsReduction;
             general.projectileAmount = this.projectileAmount;
+            general.projectileBurst = this.projectileBurst;
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
             general.spreadAdsReduction = this.spreadAdsReduction;
@@ -331,6 +341,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         public int getProjectileAmount()
         {
             return this.projectileAmount;
+        }
+
+        /**
+         * @return The count of projectiles this weapon fires at a strike
+         */
+        public int getProjectileBurst()
+        {
+            return this.projectileBurst;
         }
 
         /**
@@ -1665,6 +1683,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         public Builder setProjectileAmount(int projectileAmount)
         {
             this.gun.general.projectileAmount = projectileAmount;
+            return this;
+        }
+
+        public Builder setProjectileBurst(int projectileBurst)
+        {
+            this.gun.general.projectileBurst = projectileBurst;
             return this;
         }
 

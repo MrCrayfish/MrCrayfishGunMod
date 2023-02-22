@@ -179,7 +179,7 @@ public class ShootingHandler
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
             {
-                if(mc.options.keyAttack.isDown())
+                if(mc.options.keyAttack.isDown() || heldItem.getTag().getInt("burstCount") > 0)
                 {
                     Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
                     if(gun.getGeneral().isAuto())
