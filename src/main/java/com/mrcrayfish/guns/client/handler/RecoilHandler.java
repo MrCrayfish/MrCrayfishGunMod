@@ -38,6 +38,9 @@ public class RecoilHandler
     private float gunRecoilRandom;
     private float cameraRecoil;
     private float progressCameraRecoil;
+    private float duration;
+    private float xrecoil;
+    private float yrecoil;
 
     private RecoilHandler() {}
 
@@ -58,6 +61,11 @@ public class RecoilHandler
         this.cameraRecoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;
         this.progressCameraRecoil = 0F;
         this.gunRecoilRandom = random.nextFloat();
+        this.duration = modifiedGun.getGeneral().getRecoilDuration();
+        float offsetRadian = modifiedGun.getGeneral().getRecoilRadian();
+        if (offsetRadian > 0.0F) offsetRadian = this.random.nextFloat(-offsetRadian, offsetRadian);
+        xrecoil = this.cameraRecoil * (float)Math.cos(offsetRadian);
+        yrecoil = this.cameraRecoil * (float)Math.sin(offsetRadian);
     }
 
     @SubscribeEvent
@@ -73,18 +81,21 @@ public class RecoilHandler
         if(!Config.SERVER.enableCameraRecoil.get())
             return;
 
-        float recoilAmount = this.cameraRecoil * mc.getDeltaFrameTime() * 0.15F;
+        float recoilAmount = this.cameraRecoil * mc.getDeltaFrameTime() / this.duration;
         float startProgress = this.progressCameraRecoil / this.cameraRecoil;
         float endProgress = (this.progressCameraRecoil + recoilAmount) / this.cameraRecoil;
 
         float pitch = mc.player.getXRot();
+        float yaw = mc.player.getYRot();
         if(startProgress < 0.2F)
         {
-            mc.player.setXRot(pitch - ((endProgress - startProgress) / 0.2F) * this.cameraRecoil);
+            mc.player.setXRot(pitch - ((endProgress - startProgress) / 0.2F) * this.xrecoil);
+            mc.player.setYRot(yaw - ((endProgress - startProgress) / 0.2F) * this.yrecoil);
         }
         else
         {
-            mc.player.setXRot(pitch + ((endProgress - startProgress) / 0.8F) * this.cameraRecoil);
+            mc.player.setXRot(pitch + ((endProgress - startProgress) / 0.8F) * this.xrecoil);
+            mc.player.setYRot(yaw + ((endProgress - startProgress) / 0.8F) * this.yrecoil);
         }
 
         this.progressCameraRecoil += recoilAmount;

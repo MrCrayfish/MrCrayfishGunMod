@@ -16,7 +16,8 @@
     "recoilAngle": 4.0,
     "recoilKick": 0.25,
     "reloadAmount": 20,
-    "spread": 6.0
+    "spread": 1.0,
+    "recoilRadian": 0.5
   },
   "modules": {
     "attachments": {

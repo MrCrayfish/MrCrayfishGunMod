@@ -111,6 +111,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         @Optional
         private float recoilAngle;
         @Optional
+        private float recoilRadian = 0.0F;
+        @Optional
+        private float recoilDuration = 6.67F;
+        @Optional
         private float recoilKick;
         @Optional
         private float recoilDurationOffset;
@@ -119,9 +123,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         @Optional
         private int projectileAmount = 1;
         @Optional
+        private int projectileBurst = 1;
+        @Optional
         private boolean alwaysSpread;
         @Optional
         private float spread;
+        @Optional
+        private float spreadAdsReduction = 0.5F;
 
         @Override
         public CompoundTag serializeNBT()
@@ -133,12 +141,16 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             tag.putInt("MaxAmmo", this.maxAmmo);
             tag.putInt("ReloadSpeed", this.reloadAmount);
             tag.putFloat("RecoilAngle", this.recoilAngle);
+            tag.putFloat("RecoilRadian", this.recoilRadian);
+            tag.putFloat("RecoilDuration", this.recoilDuration);
             tag.putFloat("RecoilKick", this.recoilKick);
             tag.putFloat("RecoilDurationOffset", this.recoilDurationOffset);
             tag.putFloat("RecoilAdsReduction", this.recoilAdsReduction);
             tag.putInt("ProjectileAmount", this.projectileAmount);
+            tag.putInt("ProjectileBurst", this.projectileBurst);
             tag.putBoolean("AlwaysSpread", this.alwaysSpread);
             tag.putFloat("Spread", this.spread);
+            tag.putFloat("SpreadAdsReduction", this.spreadAdsReduction);
             return tag;
         }
 
@@ -169,6 +181,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             {
                 this.recoilAngle = tag.getFloat("RecoilAngle");
             }
+            if(tag.contains("RecoilRadian", Tag.TAG_ANY_NUMERIC))
+            {
+                this.recoilRadian = tag.getFloat("RecoilRadian");
+            }
+            if(tag.contains("RecoilDuration", Tag.TAG_ANY_NUMERIC))
+            {
+                this.recoilDuration = tag.getFloat("RecoilDuration");
+            }
             if(tag.contains("RecoilKick", Tag.TAG_ANY_NUMERIC))
             {
                 this.recoilKick = tag.getFloat("RecoilKick");
@@ -185,6 +205,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             {
                 this.projectileAmount = tag.getInt("ProjectileAmount");
             }
+            if(tag.contains("ProjectileBurst", Tag.TAG_ANY_NUMERIC))
+            {
+                this.projectileBurst = tag.getInt("ProjectileBurst");
+            }
             if(tag.contains("AlwaysSpread", Tag.TAG_ANY_NUMERIC))
             {
                 this.alwaysSpread = tag.getBoolean("AlwaysSpread");
@@ -192,6 +216,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             if(tag.contains("Spread", Tag.TAG_ANY_NUMERIC))
             {
                 this.spread = tag.getFloat("Spread");
+            }
+            if(tag.contains("SpreadAdsReduction", Tag.TAG_ANY_NUMERIC))
+            {
+                this.spreadAdsReduction = tag.getFloat("SpreadAdsReduction");
             }
         }
 
@@ -201,11 +229,15 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             Preconditions.checkArgument(this.maxAmmo > 0, "Max ammo must be more than zero");
             Preconditions.checkArgument(this.reloadAmount >= 1, "Reload angle must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilAngle >= 0.0F, "Recoil angle must be more than or equal to zero");
+            Preconditions.checkArgument(this.recoilRadian >= 0.0F, "Recoil radian must be more than or equal to zero");
+            Preconditions.checkArgument(this.recoilDuration > 0.0F, "Recoil duration must be more than zero");
             Preconditions.checkArgument(this.recoilKick >= 0.0F, "Recoil kick must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilDurationOffset >= 0.0F && this.recoilDurationOffset <= 1.0F, "Recoil duration offset must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
+            Preconditions.checkArgument(this.projectileBurst >= 1, "Projectile burst must be more than or equal to one");
             Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
+            Preconditions.checkArgument(this.spreadAdsReduction >= 0.0F && this.spreadAdsReduction <= 1.0F, "Spread ads reduction must be between 0.0 and 1.0");
             JsonObject object = new JsonObject();
             if(this.auto) object.addProperty("auto", true);
             object.addProperty("rate", this.rate);
@@ -213,12 +245,16 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             object.addProperty("maxAmmo", this.maxAmmo);
             if(this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
             if(this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
+            if(this.recoilRadian != 0.0F) object.addProperty("recoilRadian", this.recoilRadian);
+            if(this.recoilDuration != 6.67F) object.addProperty("recoilDuration", this.recoilDuration);
             if(this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
             if(this.recoilDurationOffset != 0.0F) object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
             if(this.recoilAdsReduction != 0.2F) object.addProperty("recoilAdsReduction", this.recoilAdsReduction);
             if(this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
+            if(this.projectileBurst != 1) object.addProperty("projectileBurst", this.projectileBurst);
             if(this.alwaysSpread) object.addProperty("alwaysSpread", true);
             if(this.spread != 0.0F) object.addProperty("spread", this.spread);
+            if(this.spreadAdsReduction != 0.5F) object.addProperty("spreadAdsReduction", this.spreadAdsReduction);
             return object;
         }
 
@@ -234,12 +270,16 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             general.maxAmmo = this.maxAmmo;
             general.reloadAmount = this.reloadAmount;
             general.recoilAngle = this.recoilAngle;
+            general.recoilRadian = this.recoilRadian;
+            general.recoilDuration = this.recoilDuration;
             general.recoilKick = this.recoilKick;
             general.recoilDurationOffset = this.recoilDurationOffset;
             general.recoilAdsReduction = this.recoilAdsReduction;
             general.projectileAmount = this.projectileAmount;
+            general.projectileBurst = this.projectileBurst;
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
+            general.spreadAdsReduction = this.spreadAdsReduction;
             return general;
         }
 
@@ -292,6 +332,22 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         }
 
         /**
+         * @return A radian that recoil may offset from vertical
+         */
+        public float getRecoilRadian()
+        {
+            return this.recoilRadian;
+        }
+
+        /**
+         * @return The amount of recoil ticks
+         */
+        public float getRecoilDuration()
+        {
+            return this.recoilDuration;
+        }
+
+        /**
          * @return The amount of kick this gun produces upon firing
          */
         public float getRecoilKick()
@@ -308,7 +364,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         }
 
         /**
-         * @return The amount of reduction applied when aiming down this weapon's sight
+         * @return The amount of recoil reduction applied when aiming down this weapon's sight
          */
         public float getRecoilAdsReduction()
         {
@@ -321,6 +377,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         public int getProjectileAmount()
         {
             return this.projectileAmount;
+        }
+
+        /**
+         * @return The count of projectiles this weapon fires at a strike
+         */
+        public int getProjectileBurst()
+        {
+            return this.projectileBurst;
         }
 
         /**
@@ -338,6 +402,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         public float getSpread()
         {
             return this.spread;
+        }
+
+        /**
+         * @return The amount of spread reduction allpied when aiming down this weapon's sight
+         */
+        public float getSpreadAdsReduction()
+        {
+            return this.spreadAdsReduction;
         }
     }
 
@@ -1626,6 +1698,18 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             return this;
         }
 
+        public Builder setRecoilRadian(float recoilRadian)
+        {
+            this.gun.general.recoilRadian = recoilRadian;
+            return this;
+        }
+
+        public Builder setRecoilDuration(float recoilDuration)
+        {
+            this.gun.general.recoilDuration = recoilDuration;
+            return this;
+        }
+
         public Builder setRecoilKick(float recoilKick)
         {
             this.gun.general.recoilKick = recoilKick;
@@ -1650,6 +1734,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
             return this;
         }
 
+        public Builder setProjectileBurst(int projectileBurst)
+        {
+            this.gun.general.projectileBurst = projectileBurst;
+            return this;
+        }
+
         public Builder setAlwaysSpread(boolean alwaysSpread)
         {
             this.gun.general.alwaysSpread = alwaysSpread;
@@ -1659,6 +1749,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         public Builder setSpread(float spread)
         {
             this.gun.general.spread = spread;
+            return this;
+        }
+
+        public Builder setSpreadAdsReduction(float spreadAdsReduction)
+        {
+            this.gun.general.spreadAdsReduction = spreadAdsReduction;
             return this;
         }
 

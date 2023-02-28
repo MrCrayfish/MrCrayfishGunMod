@@ -76,12 +76,6 @@ public class ShootingHandler
             {
                 event.setSwingHand(false);
                 event.setCanceled(true);
-                this.fire(player, heldItem);
-                Gun gun = gunItem.getModifiedGun(heldItem);
-                if(!gun.getGeneral().isAuto())
-                {
-                    mc.options.keyAttack.setDown(false);
-                }
             }
         }
         else if(event.isUseItem())
@@ -179,12 +173,13 @@ public class ShootingHandler
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
             {
-                if(mc.options.keyAttack.isDown())
+                if(mc.options.keyAttack.isDown() || heldItem.getTag().getInt("burstCount") > 0)
                 {
                     Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-                    if(gun.getGeneral().isAuto())
+                    this.fire(player, heldItem);
+                    if(!gun.getGeneral().isAuto())
                     {
-                        this.fire(player, heldItem);
+                        mc.options.keyAttack.setDown(false);
                     }
                 }
             }

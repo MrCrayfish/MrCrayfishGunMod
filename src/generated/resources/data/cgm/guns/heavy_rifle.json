@@ -15,7 +15,8 @@
     "recoilAngle": 10.0,
     "recoilDurationOffset": 0.5,
     "recoilKick": 1.0,
-    "spread": 1.0
+    "spread": 1.0,
+    "recoilDuration": 20.0
   },
   "modules": {
     "attachments": {

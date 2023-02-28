@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.particles.TrailData;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -50,6 +51,14 @@ public class GunEnchantmentHelper
         {
             float newRate = rate * (0.25F * level);
             rate -= Mth.clamp(newRate, 0, rate);
+        }
+        CompoundTag tag = weapon.getTag();
+        if (tag != null)
+        {
+            int burstCount = tag.getInt("burstCount") + 1;
+            if (burstCount < modifiedGun.getGeneral().getProjectileBurst()) rate = 1;
+            else burstCount = 0;
+            tag.putInt("burstCount", burstCount);
         }
         return rate;
     }
