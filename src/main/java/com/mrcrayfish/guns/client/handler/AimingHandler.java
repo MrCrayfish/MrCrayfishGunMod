@@ -1,6 +1,8 @@
 package com.mrcrayfish.guns.client.handler;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.util.PropertyHelper;
 import com.mrcrayfish.guns.common.GripType;
 import com.mrcrayfish.guns.common.Gun;
@@ -220,7 +222,7 @@ public class AimingHandler
         if(ModSyncedDataKeys.RELOADING.getValue(mc.player))
             return false;
 
-        boolean zooming = mc.options.keyUse.isDown();
+        boolean zooming = KeyBinds.getAimMapping().isDown();
         if(GunMod.controllableLoaded)
         {
             zooming |= ControllerHandler.isAiming();

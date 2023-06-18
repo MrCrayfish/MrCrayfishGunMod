@@ -130,12 +130,14 @@ public class Config
     public static class Controls
     {
         public final ForgeConfigSpec.DoubleValue aimDownSightSensitivity;
+        public final ForgeConfigSpec.BooleanValue flipControls;
 
         public Controls(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Properties relating to controls").push("controls");
             {
                 this.aimDownSightSensitivity = builder.comment("A value to multiple the mouse sensitivity by when aiming down weapon sights. Go to (Options > Controls > Mouse Settings > ADS Sensitivity) in game to change this!").defineInRange("aimDownSightSensitivity", 0.75, 0.0, 1.0);
+                this.flipControls = builder.comment("When enabled, switches the shoot and aim controls of weapons. Due to technical reasons, you won't be able to use offhand items if you enable this setting.").define("flipControls", false);
             }
             builder.pop();
         }

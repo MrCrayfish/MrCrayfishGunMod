@@ -1,6 +1,8 @@
 package com.mrcrayfish.guns.client.handler;
 
+import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
+import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.common.GripType;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.compat.PlayerReviveHelper;
@@ -69,7 +71,7 @@ public class ShootingHandler
         if(PlayerReviveHelper.isBleeding(player))
             return;
 
-        if(event.isAttack())
+        if(Config.CLIENT.controls.flipControls.get() ? event.isUseItem() : event.isAttack())
         {
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem gunItem)
@@ -80,11 +82,11 @@ public class ShootingHandler
                 Gun gun = gunItem.getModifiedGun(heldItem);
                 if(!gun.getGeneral().isAuto())
                 {
-                    mc.options.keyAttack.setDown(false);
+                    KeyBinds.getShootMapping().setDown(false);
                 }
             }
         }
-        else if(event.isUseItem())
+        else if(Config.CLIENT.controls.flipControls.get() ? event.isAttack() : event.isUseItem())
         {
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem gunItem)
@@ -104,7 +106,7 @@ public class ShootingHandler
                     event.setSwingHand(false);
                     return;
                 }
-                if(AimingHandler.get().isZooming() && AimingHandler.get().isLookingAtInteractableBlock())
+                if(Config.CLIENT.controls.flipControls.get() || AimingHandler.get().isZooming() && AimingHandler.get().isLookingAtInteractableBlock())
                 {
                     event.setCanceled(true);
                     event.setSwingHand(false);
@@ -129,7 +131,7 @@ public class ShootingHandler
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem && (Gun.hasAmmo(heldItem) || player.isCreative()) && !PlayerReviveHelper.isBleeding(player))
             {
-                boolean shooting = mc.options.keyAttack.isDown();
+                boolean shooting = KeyBinds.getShootMapping().isDown();
                 if(GunMod.controllableLoaded)
                 {
                     shooting |= ControllerHandler.isShooting();
@@ -179,7 +181,7 @@ public class ShootingHandler
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
             {
-                if(mc.options.keyAttack.isDown())
+                if(KeyBinds.getShootMapping().isDown())
                 {
                     Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
                     if(gun.getGeneral().isAuto())
