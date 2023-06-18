@@ -15,7 +15,7 @@
         "client.LevelRendererMixin",
         "client.MinecraftMixin",
         "client.MouseHandlerMixin",
-        "client.PlayerItemInHandLayerMixin",
+        "client.ItemInHandLayerMixin",
         "client.PlayerModelMixin"
     ],
     "injectors": {
