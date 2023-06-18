@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerModelMixin<T extends LivingEntity>
 {
     @SuppressWarnings({"unchecked", "ConstantConditions"})
-    @Inject(method = "setupAnim", at = @At(value = "TAIL"))
+    @Inject(method = "setupAnim*", at = @At(value = "TAIL"))
     private void setupAnimTail(T entity, float animationPos, float animationSpeed, float animationBob, float deltaHeadYaw, float headPitch, CallbackInfo ci)
     {
         if(!(entity instanceof Player player))
