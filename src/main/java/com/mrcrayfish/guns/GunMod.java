@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.datagen.BlockTagGen;
+import com.mrcrayfish.guns.datagen.DamageTypeGen;
 import com.mrcrayfish.guns.datagen.GunGen;
 import com.mrcrayfish.guns.datagen.ItemTagGen;
 import com.mrcrayfish.guns.datagen.LootTableGen;
@@ -105,15 +106,16 @@ public class GunMod
     private void onGatherData(GatherDataEvent event)
     {
         DataGenerator generator = event.getGenerator();
-        PackOutput packOutput = generator.getPackOutput();
+        PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        BlockTagGen blockTagGen = new BlockTagGen(packOutput, lookupProvider, existingFileHelper);
-        generator.addProvider(event.includeServer(), new RecipeGen(packOutput));
-        generator.addProvider(event.includeServer(), new LootTableGen(packOutput));
+        BlockTagGen blockTagGen = new BlockTagGen(output, lookupProvider, existingFileHelper);
+        generator.addProvider(event.includeServer(), new RecipeGen(output));
+        generator.addProvider(event.includeServer(), new LootTableGen(output));
         generator.addProvider(event.includeServer(), blockTagGen);
-        generator.addProvider(event.includeServer(), new ItemTagGen(packOutput, lookupProvider, blockTagGen, existingFileHelper));
-        generator.addProvider(event.includeServer(), new GunGen(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
+        generator.addProvider(event.includeServer(), new GunGen(output, lookupProvider));
+        //generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
     }
 
     public static boolean isDebugging()

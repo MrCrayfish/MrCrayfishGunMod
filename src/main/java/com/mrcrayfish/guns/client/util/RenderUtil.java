@@ -24,6 +24,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -69,47 +70,47 @@ public class RenderUtil
 
     public static void renderGun(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable LivingEntity entity)
     {
-        renderModel(stack, ItemTransforms.TransformType.NONE, poseStack, buffer, light, overlay, entity);
+        renderModel(stack, ItemDisplayContext.NONE, poseStack, buffer, light, overlay, entity);
     }
 
     public static void renderModel(ItemStack child, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(child);
-        renderModel(model, ItemTransforms.TransformType.NONE, null, child, parent, poseStack, buffer, light, overlay);
+        renderModel(model, ItemDisplayContext.NONE, null, child, parent, poseStack, buffer, light, overlay);
     }
 
-    public static void renderModel(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable LivingEntity entity)
+    public static void renderModel(ItemStack stack, ItemDisplayContext display, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable LivingEntity entity)
     {
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
         if(entity != null)
         {
             model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level, entity, 0);
         }
-        renderModel(model, transformType, stack, poseStack, buffer, light, overlay);
+        renderModel(model, display, stack, poseStack, buffer, light, overlay);
     }
 
-    public static void renderModel(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable Level world, @Nullable LivingEntity entity)
+    public static void renderModel(ItemStack stack, ItemDisplayContext display, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable Level world, @Nullable LivingEntity entity)
     {
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, world, entity, 0);
-        renderModel(model, transformType, stack, poseStack, buffer, light, overlay);
+        renderModel(model, display, stack, poseStack, buffer, light, overlay);
     }
 
     public static void renderModel(BakedModel model, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
-        renderModel(model, ItemTransforms.TransformType.NONE, stack, poseStack, buffer, light, overlay);
+        renderModel(model, ItemDisplayContext.NONE, stack, poseStack, buffer, light, overlay);
     }
 
-    public static void renderModel(BakedModel model, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
+    public static void renderModel(BakedModel model, ItemDisplayContext display, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
-        renderModel(model, transformType, null, stack, ItemStack.EMPTY, poseStack, buffer, light, overlay);
+        renderModel(model, display, null, stack, ItemStack.EMPTY, poseStack, buffer, light, overlay);
     }
 
-    public static void renderModel(BakedModel model, ItemTransforms.TransformType transformType, @Nullable Transform transform, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
+    public static void renderModel(BakedModel model, ItemDisplayContext display, @Nullable Runnable transform, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         if(!stack.isEmpty())
         {
             poseStack.pushPose();
-            boolean flag = transformType == ItemTransforms.TransformType.GUI || transformType == ItemTransforms.TransformType.GROUND || transformType == ItemTransforms.TransformType.FIXED;
+            boolean flag = display == ItemDisplayContext.GUI || display == ItemDisplayContext.GROUND || display == ItemDisplayContext.FIXED;
             if(flag)
             {
                 if(stack.is(Items.TRIDENT))
@@ -122,12 +123,12 @@ public class RenderUtil
                 }
             }
 
-            model = model.applyTransform(transformType, poseStack, false);
+            model = model.applyTransform(display, poseStack, false);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
             if(!model.isCustomRenderer() && (stack.getItem() != Items.TRIDENT || flag))
             {
                 boolean entity = true;
-                if(transformType != ItemTransforms.TransformType.GUI && !transformType.firstPerson() && stack.getItem() instanceof BlockItem)
+                if(display != ItemDisplayContext.GUI && !display.firstPerson() && stack.getItem() instanceof BlockItem)
                 {
                     Block block = ((BlockItem) stack.getItem()).getBlock();
                     entity = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
@@ -139,11 +140,11 @@ public class RenderUtil
                 {
                     poseStack.pushPose();
                     PoseStack.Pose entry = poseStack.last();
-                    if(transformType == ItemTransforms.TransformType.GUI)
+                    if(display == ItemDisplayContext.GUI)
                     {
                         MatrixUtil.mulComponentWise(entry.pose(), 0.5F);
                     }
-                    else if(transformType.firstPerson())
+                    else if(display.firstPerson())
                     {
                         MatrixUtil.mulComponentWise(entry.pose(), 0.75F);
                     }
@@ -172,18 +173,18 @@ public class RenderUtil
             }
             else
             {
-                IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, transformType, poseStack, buffer, light, overlay);
+                IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, display, poseStack, buffer, light, overlay);
             }
 
             poseStack.popPose();
         }
     }
 
-    public static void renderModelWithTransforms(ItemStack child, ItemStack parent, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
+    public static void renderModelWithTransforms(ItemStack child, ItemStack parent, ItemDisplayContext display, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         poseStack.pushPose();
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(child);
-        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, false);
+        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(poseStack, model, display, false);
         poseStack.translate(-0.5D, -0.5D, -0.5D);
         renderItemWithoutTransforms(model, child, parent, poseStack, buffer, light, overlay);
         poseStack.popPose();
@@ -196,18 +197,18 @@ public class RenderUtil
         renderModel(model, stack, parent, null, poseStack, builder, light, overlay);
     }
 
-    public static void renderItemWithoutTransforms(BakedModel model, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable Transform transform)
+    public static void renderItemWithoutTransforms(BakedModel model, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable Runnable transform)
     {
         RenderType renderType = getRenderType(stack, false);
         VertexConsumer builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
         renderModel(model, stack, parent, transform, poseStack, builder, light, overlay);
     }
 
-    public static void renderModel(BakedModel model, ItemStack stack, ItemStack parent, @Nullable Transform transform, PoseStack poseStack, VertexConsumer buffer, int light, int overlay)
+    public static void renderModel(BakedModel model, ItemStack stack, ItemStack parent, @Nullable Runnable transform, PoseStack poseStack, VertexConsumer buffer, int light, int overlay)
     {
         if(transform != null)
         {
-            transform.apply();
+            transform.run();
         }
         RandomSource random = RandomSource.create();
         for(Direction direction : Direction.values())
@@ -249,13 +250,13 @@ public class RenderUtil
         return color;
     }
 
-    public static void applyTransformType(ItemStack stack, PoseStack poseStack, ItemTransforms.TransformType transformType, @Nullable LivingEntity entity)
+    public static void applyTransformType(ItemStack stack, PoseStack poseStack, ItemDisplayContext display, @Nullable LivingEntity entity)
     {
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity != null ? entity.level : null, entity, 0);
-        boolean leftHanded = transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+        boolean leftHanded = display == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || display == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
 
         //TODO test
-        model = model.applyTransform(transformType, poseStack, leftHanded);
+        model = model.applyTransform(display, poseStack, leftHanded);
 
         /* Flips the model and normals if left handed. */
         if(leftHanded)
@@ -266,11 +267,6 @@ public class RenderUtil
             poseStack.last().pose().mul(scale);
             poseStack.last().normal().mul(normal);
         }
-    }
-
-    public interface Transform
-    {
-        void apply();
     }
 
     public static boolean isMouseWithin(int mouseX, int mouseY, int x, int y, int width, int height)

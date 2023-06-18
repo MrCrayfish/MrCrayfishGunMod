@@ -36,6 +36,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -367,19 +368,19 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 RenderSystem.setShaderTexture(0, GUI_BASE);
-                this.blit(poseStack, startX + 28 * i, startY - 28, 80, 184, 28, 32);
-                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(tab.getIcon(), startX + 28 * i + 6, startY - 28 + 8);
-                Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(this.font, tab.getIcon(), startX + 28 * i + 6, startY - 28 + 8, null);
+                blit(poseStack, startX + 28 * i, startY - 28, 80, 184, 28, 32);
+                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(poseStack, tab.getIcon(), startX + 28 * i + 6, startY - 28 + 8);
+                Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(poseStack, this.font, tab.getIcon(), startX + 28 * i + 6, startY - 28 + 8, null);
             }
         }
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, GUI_BASE);
-        this.blit(poseStack, startX, startY, 0, 0, 173, 184);
+        blit(poseStack, startX, startY, 0, 0, 173, 184);
         blit(poseStack, startX + 173, startY, 78, 184, 173, 0, 1, 184, 256, 256);
-        this.blit(poseStack, startX + 251, startY, 174, 0, 24, 184);
-        this.blit(poseStack, startX + 172, startY + 16, 198, 0, 20, 20);
+        blit(poseStack, startX + 251, startY, 174, 0, 24, 184);
+        blit(poseStack, startX + 172, startY + 16, 198, 0, 20, 20);
 
         /* Draw selected tab */
         if(this.currentTab != null)
@@ -389,9 +390,9 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, GUI_BASE);
-            this.blit(poseStack, startX + 28 * i, startY - 28, u, 214, 28, 32);
-            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(this.currentTab.getIcon(), startX + 28 * i + 6, startY - 28 + 8);
-            Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(this.font, this.currentTab.getIcon(), startX + 28 * i + 6, startY - 28 + 8, null);
+            blit(poseStack, startX + 28 * i, startY - 28, u, 214, 28, 32);
+            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(poseStack, this.currentTab.getIcon(), startX + 28 * i + 6, startY - 28 + 8);
+            Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(poseStack, this.font, this.currentTab.getIcon(), startX + 28 * i + 6, startY - 28 + 8, null);
         }
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -400,7 +401,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
         if(this.workbench.getItem(0).isEmpty())
         {
-            this.blit(poseStack, startX + 174, startY + 18, 165, 199, 16, 16);
+            blit(poseStack, startX + 174, startY + 18, 165, 199, 16, 16);
         }
 
         ItemStack currentItem = this.displayStack;
@@ -426,7 +427,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             modelViewStack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
             RenderSystem.applyModelViewMatrix();
             MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
-            Minecraft.getInstance().getItemRenderer().render(currentItem, ItemTransforms.TransformType.FIXED, false, poseStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
+            Minecraft.getInstance().getItemRenderer().render(currentItem, ItemDisplayContext.FIXED, false, poseStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
             buffer.endBatch();
         }
         modelViewStack.popPose();
@@ -461,7 +462,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 }
                 this.font.draw(poseStack, name, startX + 172 + 22, startY + i * 19 + 6 + 63, Color.WHITE.getRGB());
 
-                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, startX + 172 + 2, startY + i * 19 + 1 + 63);
+                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(poseStack, stack, startX + 172 + 2, startY + i * 19 + 1 + 63);
 
                 if(this.checkBoxMaterials.isToggled())
                 {
@@ -470,7 +471,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                     stack.setCount(stack.getCount() - count);
                 }
 
-                Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63, null);
+                Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(poseStack, this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63, null);
             }
         }
     }

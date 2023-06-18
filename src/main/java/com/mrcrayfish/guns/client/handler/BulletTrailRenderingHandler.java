@@ -10,10 +10,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -165,9 +165,9 @@ public class BulletTrailRenderingHandler
             poseStack.mulPose(Axis.YP.rotationDegrees((trail.getAge() + deltaTicks) * (float) 50));
             poseStack.scale(0.275F, 0.275F, 0.275F);
 
-            int combinedLight = LevelRenderer.getLightColor(entity.level, new BlockPos(entity.position()));
+            int combinedLight = LevelRenderer.getLightColor(entity.level, BlockPos.containing(entity.position()));
             ItemStack stack = trail.getItem();
-            RenderUtil.renderModel(stack, ItemTransforms.TransformType.NONE, poseStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
+            RenderUtil.renderModel(stack, ItemDisplayContext.NONE, poseStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
         }
 
         poseStack.popPose();

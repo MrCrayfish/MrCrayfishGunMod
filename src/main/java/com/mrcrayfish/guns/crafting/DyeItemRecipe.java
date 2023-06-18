@@ -3,6 +3,7 @@ package com.mrcrayfish.guns.crafting;
 import com.mrcrayfish.guns.init.ModRecipeSerializers;
 import com.mrcrayfish.guns.item.IColored;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeItem;
@@ -59,7 +60,7 @@ public class DyeItemRecipe extends CustomRecipe
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inventory)
+    public ItemStack assemble(CraftingContainer inventory, RegistryAccess access)
     {
         ItemStack item = ItemStack.EMPTY;
         List<DyeItem> dyes = new ArrayList<>();
@@ -98,7 +99,7 @@ public class DyeItemRecipe extends CustomRecipe
     }
 
     @Override
-    public ItemStack getResultItem()
+    public ItemStack getResultItem(RegistryAccess access)
     {
         return ItemStack.EMPTY;
     }

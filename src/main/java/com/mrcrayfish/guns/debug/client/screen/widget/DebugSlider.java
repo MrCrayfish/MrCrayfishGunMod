@@ -6,6 +6,7 @@ import com.mrcrayfish.guns.debug.IDebugWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -29,12 +30,12 @@ public class DebugSlider extends ForgeSlider implements IDebugWidget
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft mc, int mouseX, int mouseY)
+    public void renderWidget(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = (this.isHoveredOrFocused() ? 2 : 1) * 20;
-        this.blit(poseStack, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, 46 + i, 4, this.height);
-        this.blit(poseStack, this.getX() + (int) (this.value * (double) (this.width - 8)) + 4, this.getY(), 196, 46 + i, 4, this.height);
+        blit(poseStack, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, 46 + i, 4, this.height);
+        blit(poseStack, this.getX() + (int) (this.value * (double) (this.width - 8)) + 4, this.getY(), 196, 46 + i, 4, this.height);
     }
 }

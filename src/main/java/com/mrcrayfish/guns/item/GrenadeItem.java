@@ -41,7 +41,8 @@ public class GrenadeItem extends AmmoItem
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count)
     {
-        if(!this.canCook()) return;
+        if(!this.canCook())
+            return;
 
         int duration = this.getUseDuration(stack) - count;
         if(duration == 10)

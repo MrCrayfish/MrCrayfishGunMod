@@ -15,6 +15,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.attachment.IAttachment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -29,9 +30,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModList;
+import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -78,11 +81,13 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             MiniButton button = buttons.get(i);
             switch(Config.CLIENT.buttonAlignment.get())
             {
-                case LEFT -> {
+                case LEFT ->
+                {
                     int titleWidth = this.minecraft.font.width(this.title);
                     button.setX(this.leftPos + titleWidth + 8 + 3 + i * 13);
                 }
-                case RIGHT -> {
+                case RIGHT ->
+                {
                     button.setX(this.leftPos + this.imageWidth - 7 - 10 - (buttons.size() - 1 - i) * 13);
                 }
             }
@@ -151,39 +156,35 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
     {
         Minecraft minecraft = Minecraft.getInstance();
-        this.font.draw(poseStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-        this.font.draw(poseStack, this.playerInventory.getDisplayName(), (float)this.inventoryLabelX, (float)this.inventoryLabelY + 19, 4210752);
+        this.font.draw(poseStack, this.title, (float) this.titleLabelX, (float) this.titleLabelY, 4210752);
+        this.font.draw(poseStack, this.playerInventory.getDisplayName(), (float) this.inventoryLabelX, (float) this.inventoryLabelY + 19, 4210752);
 
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
         int left = (this.width - this.imageWidth) / 2;
         int top = (this.height - this.imageHeight) / 2;
-        RenderUtil.scissor(left + 26, top + 17, 142, 70);
-
-        PoseStack stack = RenderSystem.getModelViewStack();
-        stack.pushPose();
-        {
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            stack.translate(96, 50, 100);
-            stack.translate(this.windowX + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseX - this.mouseClickedX : 0), 0, 0);
-            stack.translate(0, this.windowY + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseY - this.mouseClickedY : 0), 0);
-            stack.mulPose(Axis.XP.rotationDegrees(-30F));
-            stack.mulPose(Axis.XP.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
-            stack.mulPose(Axis.YP.rotationDegrees(this.windowRotationX + (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseX - this.mouseClickedX : 0)));
-            stack.mulPose(Axis.YP.rotationDegrees(150F));
-            stack.scale(this.windowZoom / 10F, this.windowZoom / 10F, this.windowZoom / 10F);
-            stack.scale(90F, -90F, 90F);
-            stack.mulPose(Axis.XP.rotationDegrees(5F));
-            stack.mulPose(Axis.YP.rotationDegrees(90F));
-            RenderSystem.applyModelViewMatrix();
-            MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
-            GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemTransforms.TransformType.GROUND, new PoseStack(), buffer, 15728880, 0F);
-            buffer.endBatch();
-        }
-        stack.popPose();
+        GuiComponent.enableScissor(left + 26, top + 17, left + 26 + 142, top + 17 + 70);
+        poseStack.pushPose();
+        poseStack.translate(96, 50, 150);
+        poseStack.translate(this.windowX + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseX - this.mouseClickedX : 0), 0, 0);
+        poseStack.translate(0, this.windowY + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseY - this.mouseClickedY : 0), 0);
+        poseStack.mulPose(Axis.XP.rotationDegrees(-30F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(this.windowRotationX + (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseX - this.mouseClickedX : 0)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(150F));
+        poseStack.scale(this.windowZoom / 10F, this.windowZoom / 10F, this.windowZoom / 10F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(90F));
+        poseStack.mulPoseMatrix((new Matrix4f()).scaling(1.0F, -1.0F, 1.0F));
+        poseStack.scale(90.0F, 90.0F, 90.0F);
+        PoseStack modelStack = RenderSystem.getModelViewStack();
+        modelStack.pushPose();
+        modelStack.mulPoseMatrix(poseStack.last().pose());
         RenderSystem.applyModelViewMatrix();
-
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
+        GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemDisplayContext.GROUND, new PoseStack(), buffer, 15728880, 0F);
+        buffer.endBatch();
+        poseStack.popPose();
+        modelStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        GuiComponent.disableScissor();
 
         if(this.showHelp)
         {
@@ -220,40 +221,30 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
     private boolean canPlaceAttachmentInSlot(ItemStack stack, Slot slot)
     {
-        if(!slot.isActive())
-            return false;
+        if(!slot.isActive()) return false;
 
-        if(!slot.equals(this.getSlotUnderMouse()))
-            return true;
+        if(!slot.equals(this.getSlotUnderMouse())) return true;
 
-        if(!slot.getItem().isEmpty())
-            return true;
+        if(!slot.getItem().isEmpty()) return true;
 
-        if(!(slot instanceof AttachmentSlot s))
-            return true;
+        if(!(slot instanceof AttachmentSlot s)) return true;
 
-        if(!(stack.getItem() instanceof IAttachment<?> a))
-            return true;
+        if(!(stack.getItem() instanceof IAttachment<?> a)) return true;
 
-        if(!s.getType().equals(a.getType()))
-            return true;
+        if(!s.getType().equals(a.getType())) return true;
 
         return s.mayPlace(stack);
     }
 
     private boolean isCompatible(ItemStack stack, AttachmentSlot slot)
     {
-        if(stack.isEmpty())
-            return true;
+        if(stack.isEmpty()) return true;
 
-        if(!(stack.getItem() instanceof IAttachment<?> attachment))
-            return false;
+        if(!(stack.getItem() instanceof IAttachment<?> attachment)) return false;
 
-        if(!attachment.getType().equals(slot.getType()))
-            return true;
+        if(!attachment.getType().equals(slot.getType())) return true;
 
-        if(!attachment.canAttachTo(stack))
-            return false;
+        if(!attachment.canAttachTo(stack)) return false;
 
         return slot.mayPlace(stack);
     }
@@ -323,8 +314,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
     private void openConfigScreen()
     {
-        ModList.get().getModContainerById(Reference.MOD_ID).ifPresent(container ->
-        {
+        ModList.get().getModContainerById(Reference.MOD_ID).ifPresent(container -> {
             Screen screen = container.getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class).map(function -> function.screenFunction().apply(this.minecraft, null)).orElse(null);
             if(screen != null)
             {
@@ -333,11 +323,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             else if(this.minecraft != null && this.minecraft.player != null)
             {
                 MutableComponent modName = Component.literal("Configured");
-                modName.setStyle(modName.getStyle()
-                        .withColor(ChatFormatting.YELLOW)
-                        .withUnderlined(true)
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("cgm.chat.open_curseforge_page")))
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
+                modName.setStyle(modName.getStyle().withColor(ChatFormatting.YELLOW).withUnderlined(true).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("cgm.chat.open_curseforge_page"))).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
                 Component message = Component.translatable("cgm.chat.install_configured", modName);
                 this.minecraft.player.displayClientMessage(message, false);
             }

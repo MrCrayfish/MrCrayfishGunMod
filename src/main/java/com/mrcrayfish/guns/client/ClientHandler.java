@@ -212,7 +212,7 @@ public class ClientHandler
                 stack.getOrCreateTag().putBoolean("IgnoreAmmo", true);
                 return stack;
             });
-            builder.displayItems((flags, output, permission) ->
+            builder.displayItems((flags, output) ->
             {
                 ModItems.REGISTER.getEntries().forEach(registryObject ->
                 {

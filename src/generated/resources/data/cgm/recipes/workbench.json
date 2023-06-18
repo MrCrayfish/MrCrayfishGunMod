@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "cgm:workbench"
-  }
+  },
+  "show_notification": true
 }

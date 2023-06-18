@@ -32,6 +32,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -140,7 +141,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe>
             Lighting.setupFor3DItems();
 
             MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-            Minecraft.getInstance().getItemRenderer().render(output, ItemTransforms.TransformType.FIXED, false, new PoseStack(), buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
+            Minecraft.getInstance().getItemRenderer().render(output, ItemDisplayContext.FIXED, false, new PoseStack(), buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
             buffer.endBatch();
         }
         stack.popPose();

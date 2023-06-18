@@ -1,7 +1,7 @@
 package com.mrcrayfish.guns.mixin.common;
 
 import com.mrcrayfish.guns.Config;
-import com.mrcrayfish.guns.entity.DamageSourceProjectile;
+import com.mrcrayfish.guns.entity.ProjectileEntity;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,7 +27,7 @@ public class LivingEntityMixin
     @ModifyArg(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), index = 0)
     private double modifyApplyKnockbackArgs(double original)
     {
-        if(this.source instanceof DamageSourceProjectile)
+        if(this.source.getEntity() instanceof ProjectileEntity)
         {
             if(!Config.COMMON.gameplay.enableKnockback.get())
             {

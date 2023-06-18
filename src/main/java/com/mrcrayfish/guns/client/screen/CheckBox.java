@@ -36,14 +36,14 @@ public class CheckBox extends AbstractWidget
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
     {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, GUI);
-        this.blit(poseStack, this.getX(), this.getY(), 0, 0, 8, 8);
+        blit(poseStack, this.getX(), this.getY(), 0, 0, 8, 8);
         if(this.toggled)
         {
-            this.blit(poseStack, this.getX(), this.getY() - 1, 8, 0, 9, 8);
+            blit(poseStack, this.getX(), this.getY() - 1, 8, 0, 9, 8);
         }
         drawString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.getX() + 12, this.getY(), 0xFFFFFF);
     }

@@ -7,6 +7,7 @@ import com.mrcrayfish.guns.common.Gun.Projectile;
 import com.mrcrayfish.guns.common.ModTags;
 import com.mrcrayfish.guns.common.SpreadTracker;
 import com.mrcrayfish.guns.event.GunProjectileHitEvent;
+import com.mrcrayfish.guns.init.ModDamageTypes;
 import com.mrcrayfish.guns.init.ModEnchantments;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import com.mrcrayfish.guns.interfaces.IDamageable;
@@ -40,6 +41,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -534,7 +536,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
         }
 
-        DamageSource source = new DamageSourceProjectile("bullet", this, shooter, weapon).setProjectile();
+        DamageSource source = ModDamageTypes.Sources.projectile(this.level.registryAccess(), this, this.shooter);
         entity.hurt(source, damage);
 
         if(this.shooter instanceof Player)
@@ -712,7 +714,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return blockDistance <= fluidDistance ? blockResult : fluidResult;
         }, (rayTraceContext) -> {
             Vec3 Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
-            return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), new BlockPos(rayTraceContext.getTo()));
+            return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), BlockPos.containing(rayTraceContext.getTo()));
         });
     }
 
@@ -805,7 +807,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(world.isClientSide())
             return;
 
-        DamageSource source = entity instanceof ProjectileEntity projectile ? DamageSource.explosion(entity, projectile.getShooter()) : null;
+        DamageSource source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
         Explosion.BlockInteraction mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
         Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 

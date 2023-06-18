@@ -125,7 +125,7 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
                     double speed = this.getDeltaMovement().length();
                     if(speed > 0.1)
                     {
-                        entity.hurt(DamageSource.thrown(this, this.getOwner()), 1.0F);
+                        entity.hurt(entity.damageSources().thrown(this, this.getOwner()), 1.0F);
                     }
                     this.bounce(Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite());
                     this.setDeltaMovement(this.getDeltaMovement().multiply(0.25, 1.0, 0.25));

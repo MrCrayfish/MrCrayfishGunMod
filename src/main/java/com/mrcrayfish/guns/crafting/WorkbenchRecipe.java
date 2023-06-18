@@ -5,6 +5,7 @@ import com.mrcrayfish.guns.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.guns.init.ModRecipeSerializers;
 import com.mrcrayfish.guns.init.ModRecipeTypes;
 import com.mrcrayfish.guns.util.InventoryUtil;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +46,7 @@ public class WorkbenchRecipe implements Recipe<WorkbenchBlockEntity>
     }
 
     @Override
-    public ItemStack assemble(WorkbenchBlockEntity inv)
+    public ItemStack assemble(WorkbenchBlockEntity entity, RegistryAccess access)
     {
         return ItemStack.EMPTY;
     }
@@ -57,7 +58,7 @@ public class WorkbenchRecipe implements Recipe<WorkbenchBlockEntity>
     }
 
     @Override
-    public ItemStack getResultItem()
+    public ItemStack getResultItem(RegistryAccess access)
     {
         return this.item.copy();
     }

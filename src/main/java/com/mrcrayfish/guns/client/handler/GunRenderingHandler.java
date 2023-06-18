@@ -47,6 +47,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -394,10 +395,10 @@ public class GunRenderingHandler
         this.applyShieldTransforms(poseStack, player, modifiedGun, event.getPartialTick());
 
         /* Determines the lighting for the weapon. Weapon will appear bright from muzzle flash or light sources */
-        int blockLight = player.isOnFire() ? 15 : player.level.getBrightness(LightLayer.BLOCK, new BlockPos(player.getEyePosition(event.getPartialTick())));
+        int blockLight = player.isOnFire() ? 15 : player.level.getBrightness(LightLayer.BLOCK, BlockPos.containing(player.getEyePosition(event.getPartialTick())));
         blockLight += (this.entityIdForMuzzleFlash.contains(player.getId()) ? 3 : 0);
         blockLight = Math.min(blockLight, 15);
-        int packedLight = LightTexture.pack(blockLight, player.level.getBrightness(LightLayer.SKY, new BlockPos(player.getEyePosition(event.getPartialTick()))));
+        int packedLight = LightTexture.pack(blockLight, player.level.getBrightness(LightLayer.SKY, BlockPos.containing(player.getEyePosition(event.getPartialTick()))));
 
         /* Renders the first persons arms from the grip type of the weapon */
         poseStack.pushPose();
@@ -405,8 +406,8 @@ public class GunRenderingHandler
         poseStack.popPose();
 
         /* Renders the weapon */
-        ItemTransforms.TransformType transformType = right ? ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
-        this.renderWeapon(Minecraft.getInstance().player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), packedLight, event.getPartialTick());
+        ItemDisplayContext display = right ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND : ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+        this.renderWeapon(Minecraft.getInstance().player, heldItem, display, event.getPoseStack(), event.getMultiBufferSource(), packedLight, event.getPartialTick());
 
         poseStack.popPose();
     }
@@ -631,7 +632,7 @@ public class GunRenderingHandler
         }
     }
 
-    public boolean renderWeapon(@Nullable LivingEntity entity, ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
+    public boolean renderWeapon(@Nullable LivingEntity entity, ItemStack stack, ItemDisplayContext display, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {
         if(stack.getItem() instanceof GunItem)
         {
@@ -646,12 +647,12 @@ public class GunRenderingHandler
                 }
             }
 
-            RenderUtil.applyTransformType(stack, poseStack, transformType, entity);
+            RenderUtil.applyTransformType(stack, poseStack, display, entity);
 
             this.renderingWeapon = stack;
-            this.renderGun(entity, transformType, model.isEmpty() ? stack : model, poseStack, renderTypeBuffer, light, partialTicks);
-            this.renderAttachments(entity, transformType, stack, poseStack, renderTypeBuffer, light, partialTicks);
-            this.renderMuzzleFlash(entity, poseStack, renderTypeBuffer, stack, transformType, partialTicks);
+            this.renderGun(entity, display, model.isEmpty() ? stack : model, poseStack, renderTypeBuffer, light, partialTicks);
+            this.renderAttachments(entity, display, stack, poseStack, renderTypeBuffer, light, partialTicks);
+            this.renderMuzzleFlash(entity, poseStack, renderTypeBuffer, stack, display, partialTicks);
             this.renderingWeapon = null;
 
             poseStack.popPose();
@@ -660,25 +661,25 @@ public class GunRenderingHandler
         return false;
     }
 
-    private void renderGun(@Nullable LivingEntity entity, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
+    private void renderGun(@Nullable LivingEntity entity, ItemDisplayContext display, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {
         if(ModelOverrides.hasModel(stack))
         {
             IOverrideModel model = ModelOverrides.getModel(stack);
             if(model != null)
             {
-                model.render(partialTicks, transformType, stack, ItemStack.EMPTY, entity, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+                model.render(partialTicks, display, stack, ItemStack.EMPTY, entity, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
             }
         }
         else
         {
             Level level = entity != null ? entity.level : null;
             BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getModel(stack, level, entity, 0);
-            Minecraft.getInstance().getItemRenderer(). render(stack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, bakedModel);
+            Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, bakedModel);
         }
     }
 
-    private void renderAttachments(@Nullable LivingEntity entity, ItemTransforms.TransformType transformType, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
+    private void renderAttachments(@Nullable LivingEntity entity, ItemDisplayContext display, ItemStack stack, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks)
     {
         if(stack.getItem() instanceof GunItem)
         {
@@ -717,13 +718,13 @@ public class GunRenderingHandler
                         IOverrideModel model = ModelOverrides.getModel(attachmentStack);
                         if(model != null)
                         {
-                            model.render(partialTicks, transformType, attachmentStack, stack, entity, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
+                            model.render(partialTicks, display, attachmentStack, stack, entity, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY);
                         }
                         else
                         {
                             Level level = entity != null ? entity.level : null;
                             BakedModel bakedModel = Minecraft.getInstance().getItemRenderer().getModel(attachmentStack, level, entity, 0);
-                            Minecraft.getInstance().getItemRenderer().render(attachmentStack, ItemTransforms.TransformType.NONE, false, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, GunModel.wrap(bakedModel));
+                            Minecraft.getInstance().getItemRenderer().render(attachmentStack, ItemDisplayContext.NONE, false, poseStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, GunModel.wrap(bakedModel));
                         }
 
                         poseStack.popPose();
@@ -733,13 +734,13 @@ public class GunRenderingHandler
         }
     }
 
-    private void renderMuzzleFlash(@Nullable LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, ItemStack weapon, ItemTransforms.TransformType transformType, float partialTicks)
+    private void renderMuzzleFlash(@Nullable LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, ItemStack weapon, ItemDisplayContext display, float partialTicks)
     {
         Gun modifiedGun = ((GunItem) weapon.getItem()).getModifiedGun(weapon);
         if(modifiedGun.getDisplay().getFlash() == null)
             return;
 
-        if(transformType != ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND && transformType != ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND && transformType != ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND && transformType != ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
+        if(display != ItemDisplayContext.FIRST_PERSON_RIGHT_HAND && display != ItemDisplayContext.THIRD_PERSON_RIGHT_HAND && display != ItemDisplayContext.FIRST_PERSON_LEFT_HAND && display != ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
             return;
 
         if(entity == null || !this.entityIdForMuzzleFlash.contains(entity.getId()))
@@ -865,7 +866,7 @@ public class GunRenderingHandler
                     }
                 }
 
-                RenderUtil.renderModel(ammo, ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, poseStack, buffer, light, OverlayTexture.NO_OVERLAY, null);
+                RenderUtil.renderModel(ammo, ItemDisplayContext.THIRD_PERSON_LEFT_HAND, poseStack, buffer, light, OverlayTexture.NO_OVERLAY, null);
                 poseStack.popPose();
 
                 if(!isModel)

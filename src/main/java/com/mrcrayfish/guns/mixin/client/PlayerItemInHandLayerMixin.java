@@ -14,6 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +29,7 @@ public class PlayerItemInHandLayerMixin
 {
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"), cancellable = true)
-    private void renderArmWithItemHead(LivingEntity entity, ItemStack stack, ItemTransforms.TransformType transformType, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci)
+    private void renderArmWithItemHead(LivingEntity entity, ItemStack stack, ItemDisplayContext display, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci)
     {
         InteractionHand hand = Minecraft.getInstance().options.mainHand().get() == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         if(hand == InteractionHand.OFF_HAND)
@@ -54,11 +55,11 @@ public class PlayerItemInHandLayerMixin
         {
             ci.cancel();
             PlayerItemInHandLayer<?, ?> layer = (PlayerItemInHandLayer<?, ?>) (Object) this;
-            renderArmWithGun(layer, (Player) entity, stack, gunItem, transformType, hand, arm, poseStack, source, light, Minecraft.getInstance().getFrameTime());
+            renderArmWithGun(layer, (Player) entity, stack, gunItem, display, hand, arm, poseStack, source, light, Minecraft.getInstance().getFrameTime());
         }
     }
 
-    private static void renderArmWithGun(PlayerItemInHandLayer<?, ?> layer, Player player, ItemStack stack, GunItem item, ItemTransforms.TransformType transformType, InteractionHand hand, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, float deltaTicks)
+    private static void renderArmWithGun(PlayerItemInHandLayer<?, ?> layer, Player player, ItemStack stack, GunItem item, ItemDisplayContext display, InteractionHand hand, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, float deltaTicks)
     {
         poseStack.pushPose();
         layer.getParentModel().translateToHand(arm, poseStack);
@@ -68,7 +69,7 @@ public class PlayerItemInHandLayerMixin
         GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
         Gun gun = item.getModifiedGun(stack);
         gun.getGeneral().getGripType().getHeldAnimation().applyHeldItemTransforms(player, hand, AimingHandler.get().getAimProgress(player, deltaTicks), poseStack, source);
-        GunRenderingHandler.get().renderWeapon(player, stack, transformType, poseStack, source, light, deltaTicks);
+        GunRenderingHandler.get().renderWeapon(player, stack, display, poseStack, source, light, deltaTicks);
         poseStack.popPose();
     }
 }

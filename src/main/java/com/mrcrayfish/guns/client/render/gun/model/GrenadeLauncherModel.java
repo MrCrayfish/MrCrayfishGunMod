@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemCooldowns;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -22,10 +23,10 @@ import javax.annotation.Nullable;
 public class GrenadeLauncherModel implements IOverrideModel
 {
     @Override
-    public void render(float partialTicks, ItemTransforms.TransformType transformType, ItemStack stack, ItemStack parent, @Nullable LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
+    public void render(float partialTicks, ItemDisplayContext display, ItemStack stack, ItemStack parent, @Nullable LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay)
     {
         BakedModel bakedModel = SpecialModels.GRENADE_LAUNCHER_BASE.getModel();
-        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.NONE, false, poseStack, buffer, light, overlay, GunModel.wrap(bakedModel));
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, poseStack, buffer, light, overlay, GunModel.wrap(bakedModel));
 
         float cooldown = 0F;
         if(entity != null && entity.equals(Minecraft.getInstance().player))
@@ -39,7 +40,7 @@ public class GrenadeLauncherModel implements IOverrideModel
         poseStack.translate(0, -5.8 * 0.0625, 0);
         poseStack.mulPose(Axis.ZN.rotationDegrees(45F * cooldown));
         poseStack.translate(0, 5.8 * 0.0625, 0);
-        RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_CYLINDER.getModel(), transformType, null, stack, parent, poseStack, buffer, light, overlay);
+        RenderUtil.renderModel(SpecialModels.GRENADE_LAUNCHER_CYLINDER.getModel(), display, null, stack, parent, poseStack, buffer, light, overlay);
         poseStack.popPose();
     }
 

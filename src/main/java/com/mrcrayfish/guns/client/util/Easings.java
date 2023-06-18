@@ -2,6 +2,7 @@ package com.mrcrayfish.guns.client.util;
 
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
+import org.joml.Math;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -15,13 +16,13 @@ public enum Easings implements StringRepresentable
 {
     LINEAR("linear", t -> t),
     EASE_IN_QUAD("ease_in_quad", Mth::square),
-    EASE_IN_CUBIC("ease_in_cubic", Mth::cube),
+    EASE_IN_CUBIC("ease_in_cubic", t -> t * t * t),
     EASE_IN_CIRC("ease_in_circ", t -> 1.0F - Mth.sqrt(1.0F - Mth.square(t))),
     EASE_OUT_QUAD("ease_out_quad", t -> 1.0F - Mth.square(1.0F - t)),
-    EASE_OUT_CUBIC("ease_out_cubic", t -> 1.0F - Mth.cube(1.0F - t)),
+    EASE_OUT_CUBIC("ease_out_cubic", t -> 1.0F - (1.0F - t) * (1.0F - t) * (1.0F - t)),
     EASE_OUT_CIRC("ease_out_circ", t -> Mth.sqrt(1.0F - Mth.square(t - 1.0F))),
     EASE_IN_OUT_QUAD("ease_in_out_quad", t -> t < 0.5F ? 2.0F * Mth.square(t) : 1.0F - Mth.square(-2.0F * t + 2.0F) / 2.0F),
-    EASE_IN_OUT_CUBIC("ease_in_out_cubic", t -> t < 0.5F ? 4.0F * Mth.cube(t) : 1.0F - Mth.cube(-2.0F * t + 2.0F) / 2.0F),
+    EASE_IN_OUT_CUBIC("ease_in_out_cubic", t -> t < 0.5F ? 4.0F * (t * t * t) : 1.0F - ((-2.0F * t + 2.0F) * (-2.0F * t + 2.0F) * (-2.0F * t + 2.0F)) / 2.0F),
     EASE_IN_OUT_CIRC("ease_in_out_circ", t -> t < 0.5F ? (1.0F - Mth.sqrt(1.0F - Mth.square(2.0F * t))) / 2.0F : (Mth.sqrt(1.0F - Mth.square(-2.0F * t + 2.0F)) + 1.0F) / 2.0F),
     HALF_EASE_IN("half_ease_in", t -> t > 0.5F ? EASE_IN_QUAD.apply((t - 0.5F) / 0.5F) : 0.0F),
     ZERO("zero", t -> 0F);

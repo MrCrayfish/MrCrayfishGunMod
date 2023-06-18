@@ -75,7 +75,7 @@ public class ProjectileExplosion extends Explosion
 
                         for(; f > 0.0F; f -= 0.225F)
                         {
-                            BlockPos pos = new BlockPos(blockX, blockY, blockZ);
+                            BlockPos pos = BlockPos.containing(blockX, blockY, blockZ);
                             BlockState blockState = this.world.getBlockState(pos);
                             FluidState fluidState = this.world.getFluidState(pos);
                             Optional<Float> optional = this.context.getBlockExplosionResistance(this, this.world, pos, blockState, fluidState);

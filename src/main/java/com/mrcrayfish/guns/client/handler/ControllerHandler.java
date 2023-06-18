@@ -2,8 +2,8 @@ package com.mrcrayfish.guns.client.handler;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
-import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.controllable.client.gui.navigation.BasicNavigationPoint;
+import com.mrcrayfish.controllable.client.input.Controller;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.GatherActionsEvent;
 import com.mrcrayfish.controllable.event.GatherNavigationPointsEvent;
@@ -107,7 +107,8 @@ public class ControllerHandler
                 event.setPitchSpeed(7.5F * (float) adsSensitivity);
 
                 Scope scope = Gun.getScope(heldItem);
-                if(scope != null && scope.isStable() && Controllable.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton()))
+                Controller controller = Controllable.getController();
+                if(scope != null && scope.isStable() && controller != null && controller.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton()))
                 {
                     event.setYawSpeed(event.getYawSpeed() / 2.0F);
                     event.setPitchSpeed(event.getPitchSpeed() / 2.0F);
@@ -163,7 +164,7 @@ public class ControllerHandler
         if(player == null)
             return;
 
-        if(Controllable.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().screen == null)
+        if(controller.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().screen == null)
         {
             ItemStack heldItem = player.getMainHandItem();
             if(heldItem.getItem() instanceof GunItem)
@@ -178,7 +179,7 @@ public class ControllerHandler
 
         if(mc.screen == null && this.reloadCounter != -1)
         {
-            if(Controllable.isButtonPressed(GunButtonBindings.RELOAD.getButton()))
+            if(controller.isButtonPressed(GunButtonBindings.RELOAD.getButton()))
             {
                 this.reloadCounter++;
             }
@@ -190,7 +191,7 @@ public class ControllerHandler
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
             this.reloadCounter = -1;
         }
-        else if(this.reloadCounter > 0 && !Controllable.isButtonPressed(GunButtonBindings.RELOAD.getButton()))
+        else if(this.reloadCounter > 0 && !controller.isButtonPressed(GunButtonBindings.RELOAD.getButton()))
         {
             ReloadHandler.get().setReloading(!ModSyncedDataKeys.RELOADING.getValue(player));
             this.reloadCounter = -1;
@@ -200,13 +201,13 @@ public class ControllerHandler
     public static boolean isAiming()
     {
         Controller controller = Controllable.getController();
-        return controller != null && Controllable.isButtonPressed(GunButtonBindings.AIM.getButton());
+        return controller != null && controller.isButtonPressed(GunButtonBindings.AIM.getButton());
     }
 
     public static boolean isShooting()
     {
         Controller controller = Controllable.getController();
-        return controller != null && Controllable.isButtonPressed(GunButtonBindings.SHOOT.getButton());
+        return controller != null && controller.isButtonPressed(GunButtonBindings.SHOOT.getButton());
     }
 
     @SubscribeEvent
