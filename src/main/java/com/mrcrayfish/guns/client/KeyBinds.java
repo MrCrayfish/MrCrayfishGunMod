@@ -1,6 +1,8 @@
 package com.mrcrayfish.guns.client;
 
+import com.mrcrayfish.guns.Config;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import org.lwjgl.glfw.GLFW;
 
@@ -18,5 +20,17 @@ public class KeyBinds
         event.register(KEY_RELOAD);
         event.register(KEY_UNLOAD);
         event.register(KEY_ATTACHMENTS);
+    }
+
+    public static KeyMapping getAimMapping()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        return Config.CLIENT.controls.flipControls.get() ? mc.options.keyAttack : mc.options.keyUse;
+    }
+
+    public static KeyMapping getShootMapping()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        return Config.CLIENT.controls.flipControls.get() ? mc.options.keyUse : mc.options.keyAttack;
     }
 }
