@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.framework.api.client.resources.IDataLoader;
-import com.mrcrayfish.framework.api.client.resources.IResourceSupplier;
 import com.mrcrayfish.framework.api.serialize.DataObject;
+import com.mrcrayfish.framework.client.resources.IDataLoader;
+import com.mrcrayfish.framework.client.resources.IResourceSupplier;
 import com.mrcrayfish.guns.item.IMeta;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;

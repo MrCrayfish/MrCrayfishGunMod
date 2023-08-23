@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.event.GunReloadEvent;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import net.minecraft.network.FriendlyByteBuf;
@@ -38,11 +39,11 @@ public class C2SMessageReload extends PlayMessage<C2SMessageReload>
     }
 
     @Override
-    public void handle(C2SMessageReload message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(C2SMessageReload message, MessageContext context)
     {
-        supplier.get().enqueueWork(() ->
+        context.execute(() ->
         {
-            ServerPlayer player = supplier.get().getSender();
+            ServerPlayer player = context.getPlayer();
             if(player != null && !player.isSpectator())
             {
                 ModSyncedDataKeys.RELOADING.setValue(player, message.reload); // This has to be set in order to verify the packet is sent if the event is cancelled
@@ -58,6 +59,6 @@ public class C2SMessageReload extends PlayMessage<C2SMessageReload>
                 MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, gun));
             }
         });
-        supplier.get().setPacketHandled(true);
+        context.setHandled(true);
     }
 }

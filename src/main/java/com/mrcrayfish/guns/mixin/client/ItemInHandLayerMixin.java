@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemInHandLayer.class)
 public class ItemInHandLayerMixin
 {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions"})
     @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"), cancellable = true)
     private void renderArmWithItemHead(LivingEntity entity, ItemStack stack, ItemDisplayContext display, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci)
     {
@@ -57,12 +58,13 @@ public class ItemInHandLayerMixin
             {
                 ci.cancel();
                 PlayerItemInHandLayer<?, ?> layer = (PlayerItemInHandLayer<?, ?>) (Object) this;
-                renderArmWithGun(layer, (Player) entity, stack, gunItem, display, hand, arm, poseStack, source, light, Minecraft.getInstance().getFrameTime());
+                mrCrayfishGunMod$renderArmWithGun(layer, (Player) entity, stack, gunItem, display, hand, arm, poseStack, source, light, Minecraft.getInstance().getFrameTime());
             }
         }
     }
 
-    private static void renderArmWithGun(PlayerItemInHandLayer<?, ?> layer, Player player, ItemStack stack, GunItem item, ItemDisplayContext display, InteractionHand hand, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, float deltaTicks)
+    @Unique
+    private static void mrCrayfishGunMod$renderArmWithGun(PlayerItemInHandLayer<?, ?> layer, Player player, ItemStack stack, GunItem item, ItemDisplayContext display, InteractionHand hand, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, float deltaTicks)
     {
         poseStack.pushPose();
         layer.getParentModel().translateToHand(arm, poseStack);

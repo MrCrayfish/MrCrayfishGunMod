@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.framework.api.client.event.FrameworkClientEvent;
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.*;
@@ -64,6 +64,8 @@ public class ClientHandler
 
     public static void setup()
     {
+        FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
+
         MinecraftForge.EVENT_BUS.register(AimingHandler.get());
         MinecraftForge.EVENT_BUS.register(BulletTrailRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(CrosshairHandler.get());
@@ -190,11 +192,6 @@ public class ClientHandler
         event.registerReloadListener((ResourceManagerReloadListener) manager -> {
             PropertyHelper.resetCache();
         });
-    }
-
-    public static void onFrameworkClientRegister(FrameworkClientEvent.Register event)
-    {
-        event.registerDataLoader(MetaLoader.getInstance());
     }
 
     public static void registerAdditional(ModelEvent.RegisterAdditional event)

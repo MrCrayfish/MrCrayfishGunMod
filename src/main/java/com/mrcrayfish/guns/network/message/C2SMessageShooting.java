@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,16 +36,16 @@ public class C2SMessageShooting extends PlayMessage<C2SMessageShooting>
     }
 
     @Override
-    public void handle(C2SMessageShooting message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(C2SMessageShooting message, MessageContext context)
     {
-        supplier.get().enqueueWork(() ->
+        context.execute(() ->
         {
-            ServerPlayer player = supplier.get().getSender();
+            ServerPlayer player = context.getPlayer();
             if(player != null)
             {
                 ModSyncedDataKeys.SHOOTING.setValue(player, message.shooting);
             }
         });
-        supplier.get().setPacketHandled(true);
+        context.setHandled(true);
     }
 }

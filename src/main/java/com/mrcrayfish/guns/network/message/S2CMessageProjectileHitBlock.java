@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,10 +54,10 @@ public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjecti
     }
 
     @Override
-    public void handle(S2CMessageProjectileHitBlock message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageProjectileHitBlock message, MessageContext context)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHitBlock(message));
-        supplier.get().setPacketHandled(true);
+        context.execute(() -> ClientPlayHandler.handleProjectileHitBlock(message));
+        context.setHandled(true);
     }
 
     public double getX()

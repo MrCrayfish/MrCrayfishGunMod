@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.common;
 
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.init.ModSyncedDataKeys;
@@ -7,9 +8,11 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.S2CMessageGunSound;
 import com.mrcrayfish.guns.util.GunEnchantmentHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -105,8 +108,11 @@ public class ReloadTracker
         if(reloadSound != null)
         {
             double radius = Config.SERVER.reloadMaxDistance.get();
-            S2CMessageGunSound message = new S2CMessageGunSound(reloadSound, SoundSource.PLAYERS, (float) player.getX(), (float) player.getY() + 1.0F, (float) player.getZ(), 1.0F, 1.0F, player.getId(), false, true);
-            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getX(), (player.getY() + 1.0), player.getZ(), radius, player.level.dimension())), message);
+            double soundX = player.getX();
+            double soundY = player.getY() + 1.0;
+            double soundZ = player.getZ();
+            S2CMessageGunSound message = new S2CMessageGunSound(reloadSound, SoundSource.PLAYERS, (float) soundX, (float) soundY, (float) soundZ, 1.0F, 1.0F, player.getId(), false, true);
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level, soundX, soundY, soundZ, radius), message);
         }
     }
 
@@ -149,9 +155,12 @@ public class ReloadTracker
                             ResourceLocation cockSound = gun.getSounds().getCock();
                             if(cockSound != null && finalPlayer.isAlive())
                             {
+                                double soundX = finalPlayer.getX();
+                                double soundY = finalPlayer.getY() + 1.0;
+                                double soundZ = finalPlayer.getZ();
                                 double radius = Config.SERVER.reloadMaxDistance.get();
-                                S2CMessageGunSound messageSound = new S2CMessageGunSound(cockSound, SoundSource.PLAYERS, (float) finalPlayer.getX(), (float) (finalPlayer.getY() + 1.0), (float) finalPlayer.getZ(), 1.0F, 1.0F, finalPlayer.getId(), false, true);
-                                PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(finalPlayer.getX(), (finalPlayer.getY() + 1.0), finalPlayer.getZ(), radius, finalPlayer.level.dimension())), messageSound);
+                                S2CMessageGunSound messageSound = new S2CMessageGunSound(cockSound, SoundSource.PLAYERS, (float) soundX, (float) soundY, (float) soundZ, 1.0F, 1.0F, finalPlayer.getId(), false, true);
+                                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(finalPlayer.level, soundX, soundY, soundZ, radius), messageSound);
                             }
                         });
                     }

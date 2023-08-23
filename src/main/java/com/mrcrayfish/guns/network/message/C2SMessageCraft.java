@@ -1,14 +1,12 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.common.network.ServerPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
@@ -40,16 +38,16 @@ public class C2SMessageCraft extends PlayMessage<C2SMessageCraft>
     }
 
     @Override
-    public void handle(C2SMessageCraft message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(C2SMessageCraft message, MessageContext context)
     {
-        supplier.get().enqueueWork(() ->
+        context.execute(() ->
         {
-            ServerPlayer player = supplier.get().getSender();
+            ServerPlayer player = context.getPlayer();
             if(player != null)
             {
                 ServerPlayHandler.handleCraft(player, message.id, message.pos);
             }
         });
-        supplier.get().setPacketHandled(true);
+        context.setHandled(true);
     }
 }

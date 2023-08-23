@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.common.network;
 
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.blockentity.WorkbenchBlockEntity;
@@ -124,9 +125,13 @@ public class ServerPlayHandler
                 }
                 if(!projectileProps.isVisible())
                 {
+                    double spawnX = player.getX();
+                    double spawnY = player.getY() + 1.0;
+                    double spawnZ = player.getZ();
+                    double radius = Config.COMMON.network.projectileTrackingRange.get();
                     ParticleOptions data = GunEnchantmentHelper.getParticle(heldItem);
                     S2CMessageBulletTrail messageBulletTrail = new S2CMessageBulletTrail(spawnedProjectiles, projectileProps, player.getId(), data);
-                    PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(player.getX(), player.getY(), player.getZ(), Config.COMMON.network.projectileTrackingRange.get(), player.level.dimension())), messageBulletTrail);
+                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level, spawnX, spawnY, spawnZ, radius), messageBulletTrail);
                 }
 
                 MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(player, heldItem));
@@ -163,8 +168,7 @@ public class ServerPlayHandler
                     double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                     boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
                     S2CMessageGunSound messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getId(), muzzle, false);
-                    PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(posX, posY, posZ, radius, player.level.dimension());
-                    PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> targetPoint), messageSound);
+                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level, posX, posY, posZ, radius), messageSound);
                 }
 
                 if(!player.isCreative())

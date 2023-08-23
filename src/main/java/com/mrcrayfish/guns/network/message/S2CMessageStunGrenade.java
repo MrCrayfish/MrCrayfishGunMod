@@ -1,11 +1,9 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public class S2CMessageStunGrenade extends PlayMessage<S2CMessageStunGrenade>
 {
@@ -38,10 +36,10 @@ public class S2CMessageStunGrenade extends PlayMessage<S2CMessageStunGrenade>
     }
 
     @Override
-    public void handle(S2CMessageStunGrenade message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageStunGrenade message, MessageContext context)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleExplosionStunGrenade(message));
-        supplier.get().setPacketHandled(true);
+        context.execute(() -> ClientPlayHandler.handleExplosionStunGrenade(message));
+        context.setHandled(true);
     }
 
     public double getX()

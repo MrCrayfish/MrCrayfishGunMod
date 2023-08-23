@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,17 +48,17 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot>
     }
 
     @Override
-    public void handle(C2SMessageShoot message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(C2SMessageShoot message, MessageContext context)
     {
-        supplier.get().enqueueWork(() ->
+        context.execute(() ->
         {
-            ServerPlayer player = supplier.get().getSender();
+            ServerPlayer player = context.getPlayer();
             if(player != null)
             {
                 ServerPlayHandler.handleShoot(message, player);
             }
         });
-        supplier.get().setPacketHandled(true);
+        context.setHandled(true);
     }
 
     public float getRotationYaw()

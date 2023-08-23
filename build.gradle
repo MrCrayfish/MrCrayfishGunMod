@@ -1,13 +1,13 @@
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.+'
-    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
+archivesBaseName = "cgm"
 version = "1.3.5-1.19.4"
 group = "com.mrcrayfish"
-archivesBaseName = "gun-mod"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -15,6 +15,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 mixin {
     add sourceSets.main, "cgm.refmap.json"
+    config 'cgm.mixins.json'
 }
 
 minecraft {
@@ -27,7 +28,6 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            arg '-mixin.config=cgm.mixins.json'
             mods {
                 cgm {
                     source sourceSets.main
@@ -80,18 +80,14 @@ repositories {
         url "https://www.cursemaven.com"
     }
     maven {
-        name "Progwml6 maven"
-        url "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        name "ModMaven"
-        url "https://modmaven.k-4u.nl"
+        name = "ModMaven"
+        url = "https://modmaven.dev"
     }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.19.4-45.1.0'
-    implementation fg.deobf('curse.maven:framework-549225:4593075')
+    implementation fg.deobf('curse.maven:framework-549225:4718249')
     implementation fg.deobf('curse.maven:configured-457570:4462894')
     implementation fg.deobf('curse.maven:catalogue-459701:4496718')
     implementation fg.deobf('curse.maven:backpacked-352835:4510383')
@@ -99,7 +95,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-1.19.4-common-api:13.1.0.11")
     compileOnly fg.deobf("mezz.jei:jei-1.19.4-forge-api:13.1.0.11")
     runtimeOnly fg.deobf("mezz.jei:jei-1.19.4-forge:13.1.0.11")
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 }
 
 jar {

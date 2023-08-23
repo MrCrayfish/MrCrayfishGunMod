@@ -12,7 +12,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         try {
-            Class.forName("com.mrcrayfish.framework.Framework", false, this.getClass().getClassLoader());
+            Class.forName("com.mrcrayfish.framework.FrameworkForge", false, this.getClass().getClassLoader());
             isFrameworkInstalled = true;
         } catch (Exception e) {
             isFrameworkInstalled = false;

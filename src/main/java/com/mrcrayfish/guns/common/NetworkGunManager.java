@@ -244,7 +244,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
     {
         if(event.getPlayer() == null)
         {
-            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new S2CMessageUpdateGuns());
+            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateGuns());
         }
     }
 

@@ -1,12 +1,10 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
@@ -25,16 +23,16 @@ public class C2SMessageAttachments extends PlayMessage<C2SMessageAttachments>
     }
 
     @Override
-    public void handle(C2SMessageAttachments message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(C2SMessageAttachments message, MessageContext context)
     {
-        supplier.get().enqueueWork(() ->
+        context.execute(() ->
         {
-            ServerPlayer player = supplier.get().getSender();
+            ServerPlayer player = context.getPlayer();
             if(player != null)
             {
                 ServerPlayHandler.handleAttachments(player);
             }
         });
-        supplier.get().setPacketHandled(true);
+        context.setHandled(true);
     }
 }

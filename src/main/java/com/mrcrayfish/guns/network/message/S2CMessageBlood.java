@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -40,10 +41,10 @@ public class S2CMessageBlood extends PlayMessage<S2CMessageBlood>
     }
 
     @Override
-    public void handle(S2CMessageBlood message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageBlood message, MessageContext context)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBlood(message));
-        supplier.get().setPacketHandled(true);
+        context.execute(() -> ClientPlayHandler.handleMessageBlood(message));
+        context.setHandled(true);
     }
 
     public double getX()

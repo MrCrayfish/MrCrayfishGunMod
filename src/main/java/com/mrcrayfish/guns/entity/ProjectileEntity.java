@@ -1,5 +1,6 @@
 package com.mrcrayfish.guns.entity;
 
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.mrcrayfish.guns.Config;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.Gun;
@@ -542,16 +543,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(this.shooter instanceof Player)
         {
             int hitType = critical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
-            PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) this.shooter), new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
+            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) this.shooter, new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
         }
 
         /* Send blood particle to tracking clients. */
-        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
+        PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z)
     {
-        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunkAt(pos)), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+        PacketHandler.getPlayChannel().sendToTrackingChunk(() -> this.level.getChunkAt(pos), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
     }
 
     @Override
@@ -673,13 +674,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     {
         if(!this.level.isClientSide)
         {
-            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(this::getDeathTargetPoint), new S2CMessageRemoveProjectile(this.getId()));
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(this::getDeathTargetPoint, new S2CMessageRemoveProjectile(this.getId()));
         }
     }
 
-    private PacketDistributor.TargetPoint getDeathTargetPoint()
+    private LevelLocation getDeathTargetPoint()
     {
-        return new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 256, this.level.dimension());
+        return LevelLocation.create(this.level, this.getX(), this.getY(), this.getZ(), 256);
     }
 
     @Override
