@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -51,10 +52,10 @@ public class S2CMessageProjectileHitEntity extends PlayMessage<S2CMessageProject
     }
 
     @Override
-    public void handle(S2CMessageProjectileHitEntity message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageProjectileHitEntity message, MessageContext context)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHitEntity(message));
-        supplier.get().setPacketHandled(true);
+        context.execute(() -> ClientPlayHandler.handleProjectileHitEntity(message));
+        context.setHandled(true);
     }
 
     public double getX()

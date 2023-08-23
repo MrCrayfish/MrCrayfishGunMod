@@ -1,6 +1,6 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.framework.api.client.event.FrameworkClientEvent;
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.guns.GunMod;
 import com.mrcrayfish.guns.Reference;
 import com.mrcrayfish.guns.client.handler.*;
@@ -182,11 +182,6 @@ public class ClientHandler
         event.registerReloadListener((ResourceManagerReloadListener) manager -> {
             PropertyHelper.resetCache();
         });
-    }
-
-    public static void onFrameworkClientRegister(FrameworkClientEvent.Register event)
-    {
-        event.registerDataLoader(MetaLoader.getInstance());
     }
 
     public static Screen createEditorScreen(IEditorMenu menu)

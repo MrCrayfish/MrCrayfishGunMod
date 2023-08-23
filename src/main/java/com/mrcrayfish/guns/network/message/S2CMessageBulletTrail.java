@@ -1,6 +1,7 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import com.mrcrayfish.guns.common.Gun;
 import com.mrcrayfish.guns.entity.ProjectileEntity;
@@ -119,16 +120,16 @@ public class S2CMessageBulletTrail extends PlayMessage<S2CMessageBulletTrail>
         return new S2CMessageBulletTrail(entityIds, positions, motions, item, trailColor, trailLengthMultiplier, life, gravity,shooterId, enchanted, particleData);
     }
 
+    @Override
+    public void handle(S2CMessageBulletTrail message, MessageContext context)
+    {
+        context.execute(() -> ClientPlayHandler.handleMessageBulletTrail(message));
+        context.setHandled(true);
+    }
+
     private <T extends ParticleOptions> T readParticle(FriendlyByteBuf buffer, ParticleType<T> type)
     {
         return type.getDeserializer().fromNetwork(type, buffer);
-    }
-
-    @Override
-    public void handle(S2CMessageBulletTrail message, Supplier<NetworkEvent.Context> supplier)
-    {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBulletTrail(message));
-        supplier.get().setPacketHandled(true);
     }
 
     public int getCount()

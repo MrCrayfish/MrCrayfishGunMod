@@ -1,11 +1,9 @@
 package com.mrcrayfish.guns.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.guns.client.network.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
@@ -34,11 +32,12 @@ public class S2CMessageRemoveProjectile extends PlayMessage<S2CMessageRemoveProj
     }
 
     @Override
-    public void handle(S2CMessageRemoveProjectile message, Supplier<NetworkEvent.Context> supplier)
+    public void handle(S2CMessageRemoveProjectile message, MessageContext context)
     {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleRemoveProjectile(message));
-        supplier.get().setPacketHandled(true);
+        context.execute(() -> ClientPlayHandler.handleRemoveProjectile(message));
+        context.setHandled(true);
     }
+
 
     public int getEntityId()
     {

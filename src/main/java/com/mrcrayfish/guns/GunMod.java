@@ -1,11 +1,15 @@
 package com.mrcrayfish.guns;
 
+import com.mrcrayfish.framework.api.FrameworkAPI;
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.KeyBinds;
+import com.mrcrayfish.guns.client.MetaLoader;
 import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.handler.CrosshairHandler;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
+import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
 import com.mrcrayfish.guns.datagen.BlockTagGen;
@@ -87,13 +91,11 @@ public class GunMod
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
-        bus.addListener(PacketHandler::onFrameworkRegister);
-        bus.addListener(ModSyncedDataKeys::onFrameworkRegister);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
             bus.addListener(KeyBinds::registerKeyMappings);
             bus.addListener(CrosshairHandler::onConfigReload);
             bus.addListener(ClientHandler::onRegisterReloadListener);
-            bus.addListener(ClientHandler::onFrameworkClientRegister);
         });
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
@@ -105,6 +107,11 @@ public class GunMod
         event.enqueueWork(() ->
         {
             PacketHandler.init();
+            FrameworkAPI.registerSyncedDataKey(ModSyncedDataKeys.AIMING);
+            FrameworkAPI.registerSyncedDataKey(ModSyncedDataKeys.RELOADING);
+            FrameworkAPI.registerSyncedDataKey(ModSyncedDataKeys.SHOOTING);
+            FrameworkAPI.registerLoginData(new ResourceLocation(Reference.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
+            FrameworkAPI.registerLoginData(new ResourceLocation(Reference.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
             CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"), WorkbenchIngredient.Serializer.INSTANCE);
             ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
             ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));

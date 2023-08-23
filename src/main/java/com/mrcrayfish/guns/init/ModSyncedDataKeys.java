@@ -1,9 +1,9 @@
 package com.mrcrayfish.guns.init;
 
-import com.mrcrayfish.framework.api.data.sync.Serializers;
-import com.mrcrayfish.framework.api.data.sync.SyncedClassKey;
-import com.mrcrayfish.framework.api.data.sync.SyncedDataKey;
 import com.mrcrayfish.framework.api.event.FrameworkEvent;
+import com.mrcrayfish.framework.api.sync.Serializers;
+import com.mrcrayfish.framework.api.sync.SyncedClassKey;
+import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.mrcrayfish.guns.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -30,11 +30,4 @@ public class ModSyncedDataKeys
             .defaultValueSupplier(() -> false)
             .resetOnDeath()
             .build();
-
-    public static void onFrameworkRegister(FrameworkEvent.Register event)
-    {
-        event.registerSyncedDataKey(AIMING);
-        event.registerSyncedDataKey(SHOOTING);
-        event.registerSyncedDataKey(RELOADING);
-    }
 }
