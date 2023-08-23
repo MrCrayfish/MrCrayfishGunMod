@@ -6,7 +6,7 @@ plugins {
 }
 
 archivesBaseName = "cgm"
-version = "1.3.5-1.19.2"
+version = "1.3.7-1.19.2"
 group = "com.mrcrayfish"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
