@@ -142,5 +142,8 @@
     "cgm.action.aim": "Прицел",
     "cgm.action.shoot": "Выстрел",
     "cgm.action.reload": "Перезарядка",
-    "cgm.action.steady_aim": "Твёрдая рука"
+    "cgm.action.steady_aim": "Твёрдая рука",
+    "cgm.button.config.tooltip": "Параметры конфигурации",
+    "cgm.chat.open_curseforge_page": "Открыть страницу CurseForge",
+    "cgm.chat.install_configured": "Установите %s для доступа к параметрам конфигурации"
 }
