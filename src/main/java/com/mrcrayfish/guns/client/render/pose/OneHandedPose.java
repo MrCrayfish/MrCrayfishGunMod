@@ -44,7 +44,7 @@ public class OneHandedPose implements IHeldAnimation
     {
         poseStack.mulPose(Axis.YP.rotationDegrees(180F));
 
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level(), player, 0);
         float translateX = model.getTransforms().firstPersonRightHand.translation.x();
         float translateZ = model.getTransforms().firstPersonRightHand.translation.z();
         int side = hand.getOpposite() == HumanoidArm.RIGHT ? 1 : -1;

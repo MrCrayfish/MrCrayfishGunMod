@@ -102,12 +102,12 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
                 if(this.shouldBounce)
                 {
                     BlockPos resultPos = blockResult.getBlockPos();
-                    BlockState state = this.level.getBlockState(resultPos);
-                    SoundEvent event = state.getBlock().getSoundType(state, this.level, resultPos, this).getStepSound();
+                    BlockState state = this.level().getBlockState(resultPos);
+                    SoundEvent event = state.getBlock().getSoundType(state, this.level(), resultPos, this).getStepSound();
                     double speed = this.getDeltaMovement().length();
                     if(speed > 0.1)
                     {
-                        this.level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundSource.AMBIENT, 1.0F, 1.0F);
+                        this.level().playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundSource.AMBIENT, 1.0F, 1.0F);
                     }
                     this.bounce(blockResult.getDirection());
                 }

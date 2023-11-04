@@ -72,7 +72,7 @@ public class BulletTrail
         Entity shooter = this.getShooter();
         if(shooter instanceof Player && ((Player) shooter).isLocalPlayer())
         {
-            Level world = shooter.level;
+            Level world = shooter.level();
             world.addAlwaysVisibleParticle(this.particleData, true, this.position.x(), this.position.y(), this.position.z(), this.motion.x, this.motion.y, this.motion.z);
         }
 

@@ -84,7 +84,7 @@ public class RenderUtil
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
         if(entity != null)
         {
-            model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level, entity, 0);
+            model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level(), entity, 0);
         }
         renderModel(model, display, stack, poseStack, buffer, light, overlay);
     }
@@ -252,7 +252,7 @@ public class RenderUtil
 
     public static void applyTransformType(ItemStack stack, PoseStack poseStack, ItemDisplayContext display, @Nullable LivingEntity entity)
     {
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity != null ? entity.level : null, entity, 0);
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity != null ? entity.level() : null, entity, 0);
         boolean leftHanded = display == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || display == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
 
         //TODO test

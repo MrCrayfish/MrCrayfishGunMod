@@ -165,7 +165,7 @@ public class BulletTrailRenderingHandler
             poseStack.mulPose(Axis.YP.rotationDegrees((trail.getAge() + deltaTicks) * (float) 50));
             poseStack.scale(0.275F, 0.275F, 0.275F);
 
-            int combinedLight = LevelRenderer.getLightColor(entity.level, BlockPos.containing(entity.position()));
+            int combinedLight = LevelRenderer.getLightColor(entity.level(), BlockPos.containing(entity.position()));
             ItemStack stack = trail.getItem();
             RenderUtil.renderModel(stack, ItemDisplayContext.NONE, poseStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
         }

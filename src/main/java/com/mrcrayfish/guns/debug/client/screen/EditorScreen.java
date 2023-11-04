@@ -12,6 +12,7 @@ import com.mrcrayfish.guns.debug.IDebugWidget;
 import com.mrcrayfish.guns.debug.IEditorMenu;
 import com.mrcrayfish.guns.util.ScreenUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -78,13 +79,13 @@ public class EditorScreen extends Screen
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
         this.drawHeader(this.windowLeft, this.windowTop, this.windowWidth);
         this.drawBody(this.windowLeft + 4, this.windowTop + 20, this.windowWidth - 8, this.windowHeight - 20); // Remove header height
-        this.list.render(poseStack, mouseX, mouseY, partialTicks);
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-        Screen.drawString(poseStack, this.font, this.getTitle(), this.windowLeft + 5, this.windowTop + 6, 0xFFFFFF);
+        this.list.render(graphics, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        graphics.drawString(this.font, this.getTitle(), this.windowLeft + 5, this.windowTop + 6, 0xFFFFFF);
     }
 
     @Override
@@ -172,10 +173,10 @@ public class EditorScreen extends Screen
         }
 
         @Override
-        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
             ScreenUtil.startScissor(this.x0, this.y0, this.x1 - this.x0, this.y1 - this.y0);
-            super.render(poseStack, mouseX, mouseY, partialTick);
+            super.render(graphics, mouseX, mouseY, partialTick);
             ScreenUtil.endScissor();
         }
     }
@@ -192,13 +193,13 @@ public class EditorScreen extends Screen
         }
 
         @Override
-        public void render(PoseStack poseStack, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTicks)
+        public void render(GuiGraphics graphics, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTicks)
         {
-            Screen.drawString(poseStack, EditorScreen.this.minecraft.font, this.label, left + 5, top, 0xFFFFFF);
+            graphics.drawString(EditorScreen.this.getMinecraft().font, this.label, left + 5, top, 0xFFFFFF);
             this.widget.setX(left);
             this.widget.setY(top + 10);
             this.widget.setWidth(rowWidth);
-            this.widget.render(poseStack, mouseX, mouseY, partialTicks);
+            this.widget.render(graphics, mouseX, mouseY, partialTicks);
         }
 
         @Override
