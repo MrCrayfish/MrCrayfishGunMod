@@ -28,7 +28,7 @@
    "item.heavy_rifle.enchanted_fire":   { "subtitle": "subtitle.cgm.fire.enchanted", "sounds": [{ "name": "cgm:item/heavy_rifle/enchanted_fire" }]},
    "item.heavy_rifle.cock":             { "subtitle": "subtitle.cgm.cock",           "sounds": [{ "name": "cgm:item/heavy_rifle/cock" }]},
    "item.grenade.pin":                  { "subtitle": "subtitle.cgm.grenade.pin",    "sounds": [{ "name": "cgm:item/grenade/pin" }]},
-   "entity.stun_grenade.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/stun_grenade/explosion" }]},
+   "entity.stun_grenade.explosion":     { "subtitle": "subtitle.cgm.stun.explosion", "sounds": [{ "name": "cgm:entity/stun_grenade/explosion_mono" }]},
    "entity.stun_grenade.ring":          { "subtitle": "subtitle.cgm.stun.ring",      "sounds": [{ "name": "cgm:entity/stun_grenade/ring", "stream": true }]},
    "ui.weapon.attach":                  { "subtitle": "subtitle.cgm.attach",         "sounds": [{ "name": "cgm:ui/weapon/attach" }]}
 }
