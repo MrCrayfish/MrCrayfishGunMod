@@ -112,14 +112,14 @@ public class ReloadTracker
             double soundY = player.getY() + 1.0;
             double soundZ = player.getZ();
             S2CMessageGunSound message = new S2CMessageGunSound(reloadSound, SoundSource.PLAYERS, (float) soundX, (float) soundY, (float) soundZ, 1.0F, 1.0F, player.getId(), false, true);
-            PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level, soundX, soundY, soundZ, radius), message);
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level(), soundX, soundY, soundZ, radius), message);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.START && !event.player.level.isClientSide)
+        if(event.phase == TickEvent.Phase.START && !event.player.level().isClientSide)
         {
             Player player = event.player;
             if(ModSyncedDataKeys.RELOADING.getValue(player))
@@ -160,7 +160,7 @@ public class ReloadTracker
                                 double soundZ = finalPlayer.getZ();
                                 double radius = Config.SERVER.reloadMaxDistance.get();
                                 S2CMessageGunSound messageSound = new S2CMessageGunSound(cockSound, SoundSource.PLAYERS, (float) soundX, (float) soundY, (float) soundZ, 1.0F, 1.0F, finalPlayer.getId(), false, true);
-                                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(finalPlayer.level, soundX, soundY, soundZ, radius), messageSound);
+                                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(finalPlayer.level(), soundX, soundY, soundZ, radius), messageSound);
                             }
                         });
                     }
