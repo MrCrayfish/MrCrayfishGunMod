@@ -1,9 +1,8 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.controllable.client.IBindingContext;
+import com.mrcrayfish.controllable.client.binding.IBindingContext;
 import com.mrcrayfish.guns.item.GunItem;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 
 /**

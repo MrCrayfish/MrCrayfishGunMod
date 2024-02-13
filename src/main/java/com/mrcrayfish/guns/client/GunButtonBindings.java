@@ -1,8 +1,8 @@
 package com.mrcrayfish.guns.client;
 
-import com.mrcrayfish.controllable.client.BindingRegistry;
-import com.mrcrayfish.controllable.client.ButtonBinding;
-import com.mrcrayfish.controllable.client.Buttons;
+import com.mrcrayfish.controllable.client.binding.BindingRegistry;
+import com.mrcrayfish.controllable.client.binding.ButtonBinding;
+import com.mrcrayfish.controllable.client.input.Buttons;
 
 /**
  * Author: MrCrayfish

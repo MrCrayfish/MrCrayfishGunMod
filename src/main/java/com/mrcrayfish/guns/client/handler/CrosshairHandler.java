@@ -142,7 +142,7 @@ public class CrosshairHandler
         if(mc.player.getUseItem().getItem() == Items.SHIELD)
             return;
 
-        PoseStack stack = event.getPoseStack();
+        PoseStack stack = event.getGuiGraphics().pose();
         stack.pushPose();
         int scaledWidth = event.getWindow().getGuiScaledWidth();
         int scaledHeight = event.getWindow().getGuiScaledHeight();

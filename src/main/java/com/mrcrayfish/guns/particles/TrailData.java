@@ -15,24 +15,19 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class TrailData implements ParticleOptions
 {
-    public static final Codec<TrailData> CODEC = RecordCodecBuilder.create((builder) -> {
-        return builder.group(Codec.BOOL.fieldOf("enchanted").forGetter((data) -> {
-            return data.enchanted;
-        })).apply(builder, TrailData::new);
-    });
+    public static final Codec<TrailData> CODEC = RecordCodecBuilder.create((builder) -> builder
+            .group(Codec.BOOL.fieldOf("enchanted").forGetter((data) -> data.enchanted))
+            .apply(builder, TrailData::new));
 
-    public static final ParticleOptions.Deserializer<TrailData> DESERIALIZER = new ParticleOptions.Deserializer<TrailData>()
-    {
+    public static final ParticleOptions.Deserializer<TrailData> DESERIALIZER = new ParticleOptions.Deserializer<>() {
         @Override
-        public TrailData fromCommand(ParticleType<TrailData> particleType, StringReader reader) throws CommandSyntaxException
-        {
+        public TrailData fromCommand(ParticleType<TrailData> particleType, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             return new TrailData(reader.readBoolean());
         }
 
         @Override
-        public TrailData fromNetwork(ParticleType<TrailData> particleType, FriendlyByteBuf buffer)
-        {
+        public TrailData fromNetwork(ParticleType<TrailData> particleType, FriendlyByteBuf buffer) {
             return new TrailData(buffer.readBoolean());
         }
     };

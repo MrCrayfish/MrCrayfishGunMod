@@ -103,10 +103,9 @@ public class RecoilHandler
             return;
 
         ItemStack heldItem = event.getItemStack();
-        if(!(heldItem.getItem() instanceof GunItem))
+        if(!(heldItem.getItem() instanceof GunItem gunItem))
             return;
 
-        GunItem gunItem = (GunItem) heldItem.getItem();
         Gun modifiedGun = gunItem.getModifiedGun(heldItem);
         ItemCooldowns tracker = Minecraft.getInstance().player.getCooldowns();
         float cooldown = tracker.getCooldownPercent(gunItem, Minecraft.getInstance().getFrameTime());

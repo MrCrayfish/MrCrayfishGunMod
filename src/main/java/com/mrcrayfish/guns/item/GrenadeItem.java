@@ -37,16 +37,16 @@ public class GrenadeItem extends AmmoItem
     {
         return this.maxCookTime;
     }
-
+    
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count)
+    public void onUseTick(Level level, LivingEntity player, ItemStack stack, int count)
     {
         if(!this.canCook())
             return;
 
         int duration = this.getUseDuration(stack) - count;
         if(duration == 10)
-            player.level.playLocalSound(player.getX(), player.getY(), player.getZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundSource.PLAYERS, 1.0F, 1.0F, false);
+            player.level().playLocalSound(player.getX(), player.getY(), player.getZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundSource.PLAYERS, 1.0F, 1.0F, false);
     }
 
     @Override

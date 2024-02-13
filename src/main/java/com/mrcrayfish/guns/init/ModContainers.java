@@ -20,7 +20,7 @@ public class ModContainers
     public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Reference.MOD_ID);
 
     public static final RegistryObject<MenuType<WorkbenchContainer>> WORKBENCH = register("workbench", (IContainerFactory<WorkbenchContainer>) (windowId, playerInventory, data) -> {
-        WorkbenchBlockEntity workstation = (WorkbenchBlockEntity) playerInventory.player.level.getBlockEntity(data.readBlockPos());
+        WorkbenchBlockEntity workstation = (WorkbenchBlockEntity) playerInventory.player.level().getBlockEntity(data.readBlockPos());
         return new WorkbenchContainer(windowId, playerInventory, workstation);
     });
 

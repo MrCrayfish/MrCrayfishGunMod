@@ -3,12 +3,19 @@ package com.mrcrayfish.guns.common;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
-
 /**
  * Author: MrCrayfish
  */
-public record AmmoContext(ItemStack stack, @Nullable Container container)
+public record AmmoContext(ItemStack stack, Runnable onConsume)
 {
-    public static final AmmoContext NONE = new AmmoContext(ItemStack.EMPTY, null);
+    private static final Runnable NOOP = () -> {};
+    public static final AmmoContext NONE = new AmmoContext(ItemStack.EMPTY, NOOP);
+
+    public AmmoContext(ItemStack stack, Container container) {
+        this(stack, container::setChanged);
+    }
+
+    public AmmoContext(ItemStack stack) {
+        this(stack, NOOP);
+    }
 }

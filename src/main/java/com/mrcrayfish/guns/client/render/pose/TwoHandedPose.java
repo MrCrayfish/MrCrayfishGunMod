@@ -124,7 +124,7 @@ public class TwoHandedPose extends WeaponPose
     {
         poseStack.mulPose(Axis.YP.rotationDegrees(180F));
 
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level(), player, 0);
         float translateX = model.getTransforms().firstPersonRightHand.translation.x();
         int side = hand.getOpposite() == HumanoidArm.RIGHT ? 1 : -1;
         poseStack.translate(translateX * side, 0, 0);
