@@ -3,10 +3,11 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-archivesBaseName = "cgm"
-version = "1.3.7-1.19.4"
+archivesBaseName = archive_base_name
+version = "${mod_version}-${minecraft_version}"
 group = "com.mrcrayfish"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -14,12 +15,12 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 mixin {
-    add sourceSets.main, "cgm.refmap.json"
-    config 'cgm.mixins.json'
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.19.4'
+    mappings channel: mappings_channel, version: mappings_version
 
     runs {
         client {
@@ -41,7 +42,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            arg '-mixin.config=cgm.mixins.json'
+            arg "-mixin.config=${mod_id}.mixins.json"
             mods {
                 cgm {
                     source sourceSets.main
@@ -55,8 +56,8 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'cgm', '--all', '--output', file('src/generated/resources/')
-            arg '-mixin.config=cgm.mixins.json'
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/')
+            arg '-mixin.config=${mod_id}.mixins.json'
             mods {
                 cgm {
                     source sourceSets.main
@@ -65,14 +66,6 @@ minecraft {
         }
     }
 }
-
-//processResources {
-//    doLast {
-//        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
-//            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
-//        }
-//    }
-//}
 
 repositories {
     mavenLocal()
@@ -86,29 +79,32 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.4-45.1.0'
-    implementation fg.deobf('curse.maven:framework-549225:4718249')
-    implementation fg.deobf('curse.maven:configured-457570:4462894')
-    implementation fg.deobf('curse.maven:catalogue-459701:4496718')
-    implementation fg.deobf('curse.maven:backpacked-352835:4510383')
-    compileOnly fg.deobf('curse.maven:controllable-317269:4511169')
-    compileOnly fg.deobf("mezz.jei:jei-1.19.4-common-api:13.1.0.11")
-    compileOnly fg.deobf("mezz.jei:jei-1.19.4-forge-api:13.1.0.11")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.19.4-forge:13.1.0.11")
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation fg.deobf("curse.maven:framework-549225:${framework_file_id}")
+    compileOnly fg.deobf("curse.maven:configured-457570:${configured_file_id}") // Configured for 1.20 is not released
+    implementation fg.deobf("curse.maven:catalogue-459701:${catalogue_file_id}")
+    implementation fg.deobf("curse.maven:backpacked-352835:${backpacked_file_id}")
+    implementation fg.deobf("curse.maven:sophisticated-core-618298:${sop_core_file_id}")
+    implementation fg.deobf("curse.maven:sophisticated-backpacks-422301:${sop_backpacks_file_id}")
+    implementation fg.deobf("curse.maven:travelers-backpack-321117:${travelers_backpack_file_id}")
+    compileOnly fg.deobf("curse.maven:controllable-317269:${controllable_file_id}")
+    compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
     annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 }
 
 jar {
     manifest {
         attributes([
-            "Specification-Title": "Gun Mod",
-            "Specification-Vendor": "MrCrayfish",
-            "Specification-Version": "1",
-            "Implementation-Title": "Gun Mod",
-            "Implementation-Version": project.version,
-            "Implementation-Vendor" : "MrCrayfish",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConfigs": "cgm.mixins.json"
+                "Specification-Title": "Gun Mod",
+                "Specification-Vendor": "MrCrayfish",
+                "Specification-Version": "1",
+                "Implementation-Title": "Gun Mod",
+                "Implementation-Version": project.version,
+                "Implementation-Vendor" : "MrCrayfish",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "${mod_id}.mixins.json"
         ])
     }
 }

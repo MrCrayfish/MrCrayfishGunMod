@@ -1,24 +1,25 @@
 {
-    "required": true,
-    "package": "com.mrcrayfish.guns.mixin",
-    "compatibilityLevel": "JAVA_8",
-    "minVersion": "0.8",
-    "refmap": "cgm.refmap.json",
-    "plugin": "com.mrcrayfish.guns.mixin.MixinPlugin",
-    "mixins": [
-        "common.EndPortalBlockMixin",
-        "common.LivingEntityMixin",
-        "common.SittingPhaseMixin"
-    ],
-    "client": [
-        "client.GameRendererMixin",
-        "client.LevelRendererMixin",
-        "client.MinecraftMixin",
-        "client.MouseHandlerMixin",
-        "client.ItemInHandLayerMixin",
-        "client.PlayerModelMixin"
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    }
+  "required": true,
+  "package": "com.mrcrayfish.guns.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "cgm.refmap.json",
+  "plugin": "com.mrcrayfish.guns.mixin.MixinPlugin",
+  "mixins": [
+    "common.EndPortalBlockMixin",
+    "common.LayeredCauldronBlockMixin",
+    "common.LivingEntityMixin",
+    "common.SittingPhaseMixin"
+  ],
+  "client": [
+    "client.GameRendererMixin",
+    "client.ItemInHandLayerMixin",
+    "client.LevelRendererMixin",
+    "client.MinecraftMixin",
+    "client.MouseHandlerMixin",
+    "client.PlayerModelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

@@ -8,6 +8,8 @@ import com.mrcrayfish.guns.annotation.Ignored;
 import com.mrcrayfish.guns.annotation.Optional;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.compat.BackpackHelper;
+import com.mrcrayfish.guns.compat.SophisticatedHelper;
+import com.mrcrayfish.guns.compat.TravelersBackpackHelper;
 import com.mrcrayfish.guns.debug.Debug;
 import com.mrcrayfish.guns.debug.IDebugWidget;
 import com.mrcrayfish.guns.debug.IEditorMenu;
@@ -1524,7 +1526,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
         {
             Item item = ForgeRegistries.ITEMS.getValue(id);
             ItemStack ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
-            return new AmmoContext(ammo, null);
+            return new AmmoContext(ammo);
         }
         for(int i = 0; i < player.getInventory().getContainerSize(); ++i)
         {
@@ -1534,11 +1536,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
                 return new AmmoContext(stack, player.getInventory());
             }
         }
+        AmmoContext ctx = AmmoContext.NONE;
         if(GunMod.backpackedLoaded)
         {
-            return BackpackHelper.findAmmo(player, id);
+            ctx = BackpackHelper.findAmmo(player, id);
         }
-        return AmmoContext.NONE;
+        if(GunMod.sopLoaded && ctx.equals(AmmoContext.NONE))
+        {
+            ctx = SophisticatedHelper.findAmmo(player, id);
+        }
+        if(GunMod.travelersBackpackLoaded && ctx.equals(AmmoContext.NONE))
+        {
+            ctx = TravelersBackpackHelper.findAmmo(player, id);
+        }
+        return ctx;
     }
 
     public static boolean isAmmo(ItemStack stack, ResourceLocation id)
@@ -1564,7 +1575,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu
                 {
                     return Mth.clamp(scope.getFovModifier(), 0.01F, 1.0F);
                 }
-                modifier -= scope.getAdditionalZoom();
+                //modifier -= scope.getAdditionalZoom();
             }
         }
         Modules.Zoom zoom = modifiedGun.getModules().getZoom();

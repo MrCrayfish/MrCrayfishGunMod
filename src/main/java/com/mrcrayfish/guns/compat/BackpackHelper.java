@@ -1,6 +1,5 @@
 package com.mrcrayfish.guns.compat;
 
-import com.mrcrayfish.backpacked.Backpacked;
 import com.mrcrayfish.backpacked.core.ModEnchantments;
 import com.mrcrayfish.backpacked.inventory.BackpackInventory;
 import com.mrcrayfish.backpacked.inventory.BackpackedInventoryAccess;
@@ -18,16 +17,19 @@ public class BackpackHelper
 {
     public static AmmoContext findAmmo(Player player, ResourceLocation id)
     {
-        ItemStack backpack = Backpacked.getBackpackStack(player);
+        BackpackInventory inventory = ((BackpackedInventoryAccess) player).getBackpackedInventory();
+
+        if(inventory == null)
+            return AmmoContext.NONE;
+
+        ItemStack backpack = inventory.getBackpackStack();
+
         if(backpack.isEmpty())
             return AmmoContext.NONE;
 
-        if(EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.MARKSMAN.get(), backpack) <= 0)
+        if(EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.MARKSMAN.get(), backpack) <= 0)
             return AmmoContext.NONE;
 
-        BackpackInventory inventory = ((BackpackedInventoryAccess) player).getBackpackedInventory();
-        if(inventory == null)
-            return AmmoContext.NONE;
 
         for(int i = 0; i < inventory.getContainerSize(); i++)
         {

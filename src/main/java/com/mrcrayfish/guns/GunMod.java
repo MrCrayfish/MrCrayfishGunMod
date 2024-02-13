@@ -11,11 +11,7 @@ import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.NetworkGunManager;
 import com.mrcrayfish.guns.common.ProjectileManager;
 import com.mrcrayfish.guns.crafting.WorkbenchIngredient;
-import com.mrcrayfish.guns.datagen.BlockTagGen;
-import com.mrcrayfish.guns.datagen.GunGen;
-import com.mrcrayfish.guns.datagen.ItemTagGen;
-import com.mrcrayfish.guns.datagen.LootTableGen;
-import com.mrcrayfish.guns.datagen.RecipeGen;
+import com.mrcrayfish.guns.datagen.*;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
 import com.mrcrayfish.guns.init.*;
@@ -50,6 +46,8 @@ public class GunMod
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
     public static boolean playerReviveLoaded = false;
+    public static boolean sopLoaded = false;
+    public static boolean travelersBackpackLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
     public GunMod()
@@ -74,15 +72,17 @@ public class GunMod
         bus.addListener(this::onGatherData);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
+            ClientHandler.registerCreativeTab(bus);
             bus.addListener(KeyBinds::registerKeyMappings);
             bus.addListener(CrosshairHandler::onConfigReload);
             bus.addListener(ClientHandler::onRegisterReloadListener);
-            bus.addListener(ClientHandler::onRegisterCreativeTab);
             bus.addListener(ClientHandler::registerAdditional);
         });
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
+        sopLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
+        travelersBackpackLoaded = ModList.get().isLoaded("travelersbackpack");
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
