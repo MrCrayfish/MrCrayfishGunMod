@@ -44,6 +44,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -112,6 +113,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
         if(!weapons.isEmpty())
         {
+            this.sortRecipes(weapons);
             ItemStack icon = new ItemStack(ModItems.ASSAULT_RIFLE.get());
             icon.getOrCreateTag().putInt("AmmoCount", ModItems.ASSAULT_RIFLE.get().getGun().getGeneral().getMaxAmmo());
             this.tabs.add(new Tab(icon, "weapons", weapons));
@@ -119,16 +121,19 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
         if(!attachments.isEmpty())
         {
+            this.sortRecipes(attachments);
             this.tabs.add(new Tab(new ItemStack(ModItems.LONG_SCOPE.get()), "attachments", attachments));
         }
 
         if(!ammo.isEmpty())
         {
+            this.sortRecipes(ammo);
             this.tabs.add(new Tab(new ItemStack(ModItems.SHELL.get()), "ammo", ammo));
         }
 
         if(!misc.isEmpty())
         {
+            this.sortRecipes(misc);
             this.tabs.add(new Tab(new ItemStack(Items.BARRIER), "misc", misc));
         }
 
@@ -154,6 +159,15 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             }
         }
         return false;
+    }
+
+    private void sortRecipes(List<WorkbenchRecipe> recipes) {
+        Collections.sort(
+            recipes,
+            (recipe1, recipe2) ->
+                    recipe1.getItem().getDescriptionId().compareTo(
+                    recipe2.getItem().getDescriptionId())
+        );
     }
 
     @Override
