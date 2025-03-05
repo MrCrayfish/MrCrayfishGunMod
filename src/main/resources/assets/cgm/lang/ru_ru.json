@@ -1,6 +1,6 @@
 {
   "block.cgm.workbench": "Станок",
-  "button.categories.cgm": "Оружейный мод MrCrayfish",
+  "button.categories.cgm": "Оружейный Мод MrCrayfish",
   "cgm.action.aim": "Прицел",
   "cgm.action.reload": "Перезарядка",
   "cgm.action.shoot": "Выстрел",
@@ -41,7 +41,9 @@
   "death.attack.cgm.bullet.executed": "%1$s был казнён %2$s",
   "death.attack.cgm.bullet.killed": "%1$s был убит %2$s",
   "effect.cgm.blinded": "Ослепление",
+  "effect.cgm.blinded.description": "Засвечивает экран.",
   "effect.cgm.deafened": "Оглушение",
+  "effect.cgm.deafened.description": "Приглушает все звуки вокруг.",
   "enchantment.cgm.accelerator": "Дульный ускоритель",
   "enchantment.cgm.accelerator.desc": "Увеличивает скорость и урон боеприпасов",
   "enchantment.cgm.collateral": "Бронебойные",
@@ -79,7 +81,7 @@
   "item.cgm.bazooka": "Базука",
   "item.cgm.grenade": "Граната",
   "item.cgm.grenade_launcher": "Гранатомёт",
-  "item.cgm.heavy_rifle": "Тяжелая винтовка",
+  "item.cgm.heavy_rifle": "Тяжёлая винтовка",
   "item.cgm.light_grip": "Лёгкая рукоять",
   "item.cgm.light_stock": "Лёгкая ложа",
   "item.cgm.long_scope": "Длинный прицел",
@@ -89,7 +91,7 @@
   "item.cgm.missile": "Ракета",
   "item.cgm.pistol": "Пистолет",
   "item.cgm.rifle": "Винтовка",
-  "item.cgm.shell": "Патрон дробовика",
+  "item.cgm.shell": "Картечный патрон",
   "item.cgm.short_scope": "Короткий прицел",
   "item.cgm.shotgun": "Дробовик",
   "item.cgm.silencer": "Глушитель",
@@ -102,8 +104,8 @@
   "item.minecraft.lingering_potion.effect.deafening": "Туманное зелье оглушения",
   "item.minecraft.potion.effect.blinding": "Зелье ослепления",
   "item.minecraft.potion.effect.deafening": "Зелье оглушения",
-  "itemGroup.cgm": "Оружейный мод MrCrayfish",
-  "key.categories.cgm": "Оружейный мод MrCrayfish",
+  "itemGroup.cgm": "Оружейный Мод MrCrayfish",
+  "key.categories.cgm": "Оружейный Мод MrCrayfish",
   "key.cgm.attachments": "Изменить обвесы",
   "key.cgm.reload": "Перезарядить",
   "key.cgm.unload": "Разрядить",
@@ -147,4 +149,4 @@
   "subtitle.cgm.reload": "Перезарядка",
   "subtitle.cgm.stun.explosion": "Взрыв светошумовой гранаты",
   "subtitle.cgm.stun.ring": "Звон"
-}    
+}
