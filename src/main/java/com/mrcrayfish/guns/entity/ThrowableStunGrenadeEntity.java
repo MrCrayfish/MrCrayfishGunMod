@@ -31,53 +31,57 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber
-public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
-{
-    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world)
-    {
+public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity {
+    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world, LivingEntity player)
-    {
+    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, double x,
+            double y,
+            double z) {
+        super(entityType, world, x, y, z);
+        this.setItem(new ItemStack(ModItems.STUN_GRENADE.get()));
+    }
+
+    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world,
+            LivingEntity player) {
         super(entityType, world, player);
         this.setItem(new ItemStack(ModItems.STUN_GRENADE.get()));
     }
 
-    public ThrowableStunGrenadeEntity(Level world, LivingEntity player, int maxCookTime)
-    {
+    public ThrowableStunGrenadeEntity(Level world, LivingEntity player, int maxCookTime) {
         super(ModEntities.THROWABLE_STUN_GRENADE.get(), world, player);
         this.setItem(new ItemStack(ModItems.STUN_GRENADE.get()));
         this.setMaxLife(maxCookTime);
     }
 
     @SubscribeEvent
-    public static void blindMobs(LivingSetAttackTargetEvent event)
-    {
-        if(Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getTarget() != null && event.getEntity() instanceof Mob && event.getEntity().hasEffect(ModEffects.BLINDED.get()))
-        {
+    public static void blindMobs(LivingSetAttackTargetEvent event) {
+        if (Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getTarget() != null
+                && event.getEntity() instanceof Mob && event.getEntity().hasEffect(ModEffects.BLINDED.get())) {
             ((Mob) event.getEntity()).setTarget(null);
         }
     }
 
     @Override
-    public void onDeath()
-    {
+    public void onDeath() {
         double y = this.getY() + this.getType().getDimensions().height * 0.5;
-        this.level.playSound(null, this.getX(), y, this.getZ(), ModSounds.ENTITY_STUN_GRENADE_EXPLOSION.get(), SoundSource.BLOCKS, 4, (1 + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
-        if(this.level.isClientSide)
-        {
+        this.level.playSound(null, this.getX(), y, this.getZ(), ModSounds.ENTITY_STUN_GRENADE_EXPLOSION.get(),
+                SoundSource.BLOCKS, 4, (1 + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+        if (this.level.isClientSide) {
             return;
         }
-        PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(this.level, this.getX(), y, this.getZ(), 64), new S2CMessageStunGrenade(this.getX(), y, this.getZ()));
+        PacketHandler.getPlayChannel().sendToNearbyPlayers(
+                () -> LevelLocation.create(this.level, this.getX(), y, this.getZ(), 64),
+                new S2CMessageStunGrenade(this.getX(), y, this.getZ()));
 
         // Calculate bounds of area where potentially effected players my be
-        double diameter = Math.max(Config.COMMON.stunGrenades.deafen.criteria.radius.get(), Config.COMMON.stunGrenades.blind.criteria.radius.get()) * 2 + 1;
+        double diameter = Math.max(Config.COMMON.stunGrenades.deafen.criteria.radius.get(),
+                Config.COMMON.stunGrenades.blind.criteria.radius.get()) * 2 + 1;
         int minX = Mth.floor(this.getX() - diameter);
         int maxX = Mth.floor(this.getX() + diameter);
         int minY = Mth.floor(y - diameter);
@@ -89,9 +93,9 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
         Vec3 grenade = new Vec3(this.getX(), y, this.getZ());
         Vec3 eyes, directionGrenade;
         double distance;
-        for(LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, new AABB(minX, minY, minZ, maxX, maxY, maxZ)))
-        {
-            if(entity.ignoreExplosion())
+        for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class,
+                new AABB(minX, minY, minZ, maxX, maxY, maxZ))) {
+            if (entity.ignoreExplosion())
                 continue;
 
             eyes = entity.getEyePosition(1.0F);
@@ -102,27 +106,31 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
             double angle = Math.toDegrees(Math.acos(entity.getViewVector(1.0F).dot(directionGrenade.normalize())));
 
             // Apply effects as determined by their criteria
-            if(this.calculateAndApplyEffect(ModEffects.DEAFENED.get(), Config.COMMON.stunGrenades.deafen.criteria, entity, grenade, eyes, distance, angle) && Config.COMMON.stunGrenades.deafen.panicMobs.get())
-            {
+            if (this.calculateAndApplyEffect(ModEffects.DEAFENED.get(), Config.COMMON.stunGrenades.deafen.criteria,
+                    entity, grenade, eyes, distance, angle) && Config.COMMON.stunGrenades.deafen.panicMobs.get()) {
                 entity.setLastHurtByMob(entity);
             }
-            if(this.calculateAndApplyEffect(ModEffects.BLINDED.get(), Config.COMMON.stunGrenades.blind.criteria, entity, grenade, eyes, distance, angle) && Config.COMMON.stunGrenades.blind.blindMobs.get() && entity instanceof Mob)
-            {
+            if (this.calculateAndApplyEffect(ModEffects.BLINDED.get(), Config.COMMON.stunGrenades.blind.criteria,
+                    entity, grenade, eyes, distance, angle) && Config.COMMON.stunGrenades.blind.blindMobs.get()
+                    && entity instanceof Mob) {
                 ((Mob) entity).setTarget(null);
             }
         }
     }
 
-    private boolean calculateAndApplyEffect(MobEffect effect, EffectCriteria criteria, LivingEntity entity, Vec3 grenade, Vec3 eyes, double distance, double angle)
-    {
+    private boolean calculateAndApplyEffect(MobEffect effect, EffectCriteria criteria, LivingEntity entity,
+            Vec3 grenade, Vec3 eyes, double distance, double angle) {
         double angleMax = criteria.angleEffect.get() * 0.5;
-        if(distance <= criteria.radius.get() && angleMax > 0 && angle <= angleMax)
-        {
-            // Verify that light can pass through all blocks obstructing the entity's line of sight to the grenade
-            if(effect != ModEffects.BLINDED.get() || !Config.COMMON.stunGrenades.blind.criteria.raytraceOpaqueBlocks.get() || rayTraceOpaqueBlocks(this.level, eyes, grenade, false, false, false) == null)
-            {
+        if (distance <= criteria.radius.get() && angleMax > 0 && angle <= angleMax) {
+            // Verify that light can pass through all blocks obstructing the entity's line
+            // of sight to the grenade
+            if (effect != ModEffects.BLINDED.get()
+                    || !Config.COMMON.stunGrenades.blind.criteria.raytraceOpaqueBlocks.get()
+                    || rayTraceOpaqueBlocks(this.level, eyes, grenade, false, false, false) == null) {
                 // Duration attenuated by distance
-                int durationBlinded = (int) Math.round(criteria.durationMax.get() - (criteria.durationMax.get() - criteria.durationMin.get()) * (distance / criteria.radius.get()));
+                int durationBlinded = (int) Math
+                        .round(criteria.durationMax.get() - (criteria.durationMax.get() - criteria.durationMin.get())
+                                * (distance / criteria.radius.get()));
 
                 // Duration further attenuated by angle
                 durationBlinded *= 1 - (angle * (1 - criteria.angleAttenuationMax.get())) / angleMax;
@@ -136,12 +144,10 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
     }
 
     @Nullable
-    public HitResult rayTraceOpaqueBlocks(Level world, Vec3 start, Vec3 end, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
-    {
-        if(!Double.isNaN(start.x) && !Double.isNaN(start.y) && !Double.isNaN(start.z))
-        {
-            if(!Double.isNaN(end.x) && !Double.isNaN(end.y) && !Double.isNaN(end.z))
-            {
+    public HitResult rayTraceOpaqueBlocks(Level world, Vec3 start, Vec3 end, boolean stopOnLiquid,
+            boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+        if (!Double.isNaN(start.x) && !Double.isNaN(start.y) && !Double.isNaN(start.z)) {
+            if (!Double.isNaN(end.x) && !Double.isNaN(end.y) && !Double.isNaN(end.z)) {
                 int endX = Mth.floor(end.x);
                 int endY = Mth.floor(end.y);
                 int endZ = Mth.floor(end.z);
@@ -152,26 +158,23 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
                 BlockState stateInside = world.getBlockState(pos);
 
                 // Added light opacity check
-                if(stateInside.getLightBlock(world, pos) != 0 && (!ignoreBlockWithoutBoundingBox || stateInside.getCollisionShape(world, pos) != Shapes.empty()))
-                {
-                    HitResult raytraceresult = world.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
-                    if(raytraceresult != null)
-                    {
+                if (stateInside.getLightBlock(world, pos) != 0 && (!ignoreBlockWithoutBoundingBox
+                        || stateInside.getCollisionShape(world, pos) != Shapes.empty())) {
+                    HitResult raytraceresult = world.clip(
+                            new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    if (raytraceresult != null) {
                         return raytraceresult;
                     }
                 }
 
                 HitResult raytraceresult2 = null;
                 int limit = 200;
-                while(limit-- >= 0)
-                {
-                    if(Double.isNaN(start.x) || Double.isNaN(start.y) || Double.isNaN(start.z))
-                    {
+                while (limit-- >= 0) {
+                    if (Double.isNaN(start.x) || Double.isNaN(start.y) || Double.isNaN(start.z)) {
                         return null;
                     }
 
-                    if(startX == endX && startY == endY && startZ == endZ)
-                    {
+                    if (startX == endX && startY == endY && startZ == endZ) {
                         return returnLastUncollidableBlock ? raytraceresult2 : null;
                     }
 
@@ -182,42 +185,27 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
                     double d1 = 999;
                     double d2 = 999;
 
-                    if(endX > startX)
-                    {
+                    if (endX > startX) {
                         d0 = startX + 1;
-                    }
-                    else if(endX < startX)
-                    {
+                    } else if (endX < startX) {
                         d0 = startX;
-                    }
-                    else
-                    {
+                    } else {
                         completedX = false;
                     }
 
-                    if(endY > startY)
-                    {
+                    if (endY > startY) {
                         d1 = startY + 1;
-                    }
-                    else if(endY < startY)
-                    {
+                    } else if (endY < startY) {
                         d1 = startY;
-                    }
-                    else
-                    {
+                    } else {
                         completedY = false;
                     }
 
-                    if(endZ > startZ)
-                    {
+                    if (endZ > startZ) {
                         d2 = startZ + 1;
-                    }
-                    else if(endZ < startZ)
-                    {
+                    } else if (endZ < startZ) {
                         d2 = startZ;
-                    }
-                    else
-                    {
+                    } else {
                         completedZ = false;
                     }
 
@@ -228,32 +216,33 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
                     double d7 = end.y - start.y;
                     double d8 = end.z - start.z;
 
-                    if(completedX) d3 = (d0 - start.x) / d6;
+                    if (completedX)
+                        d3 = (d0 - start.x) / d6;
 
-                    if(completedY) d4 = (d1 - start.y) / d7;
+                    if (completedY)
+                        d4 = (d1 - start.y) / d7;
 
-                    if(completedZ) d5 = (d2 - start.z) / d8;
+                    if (completedZ)
+                        d5 = (d2 - start.z) / d8;
 
-                    if(d3 == -0) d3 = -1.0E-4D;
+                    if (d3 == -0)
+                        d3 = -1.0E-4D;
 
-                    if(d4 == -0) d4 = -1.0E-4D;
+                    if (d4 == -0)
+                        d4 = -1.0E-4D;
 
-                    if(d5 == -0) d5 = -1.0E-4D;
+                    if (d5 == -0)
+                        d5 = -1.0E-4D;
 
                     Direction direction;
 
-                    if(d3 < d4 && d3 < d5)
-                    {
+                    if (d3 < d4 && d3 < d5) {
                         direction = endX > startX ? Direction.WEST : Direction.EAST;
                         start = new Vec3(d0, start.y + d7 * d3, start.z + d8 * d3);
-                    }
-                    else if(d4 < d5)
-                    {
+                    } else if (d4 < d5) {
                         direction = endY > startY ? Direction.DOWN : Direction.UP;
                         start = new Vec3(start.x + d6 * d4, d1, start.z + d8 * d4);
-                    }
-                    else
-                    {
+                    } else {
                         direction = endZ > startZ ? Direction.NORTH : Direction.SOUTH;
                         start = new Vec3(start.x + d6 * d5, start.y + d7 * d5, d2);
                     }
@@ -265,9 +254,11 @@ public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity
                     BlockState state = world.getBlockState(pos);
 
                     // Added light opacity check
-                    if(state.getLightBlock(world, pos) != 0 && (!ignoreBlockWithoutBoundingBox || state.getMaterial() == Material.PORTAL || state.getCollisionShape(world, pos) != Shapes.empty()))
-                    {
-                        return world.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    if (state.getLightBlock(world, pos) != 0
+                            && (!ignoreBlockWithoutBoundingBox || state.getMaterial() == Material.PORTAL
+                                    || state.getCollisionShape(world, pos) != Shapes.empty())) {
+                        return world.clip(
+                                new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     }
                 }
                 return returnLastUncollidableBlock ? raytraceresult2 : null;
