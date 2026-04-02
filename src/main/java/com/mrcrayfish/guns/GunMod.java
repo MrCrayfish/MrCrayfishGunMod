@@ -1,12 +1,14 @@
 package com.mrcrayfish.guns;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.guns.client.ClientHandler;
 import com.mrcrayfish.guns.client.CustomGunManager;
 import com.mrcrayfish.guns.client.KeyBinds;
 import com.mrcrayfish.guns.client.MetaLoader;
-import com.mrcrayfish.guns.client.SpecialModels;
 import com.mrcrayfish.guns.client.handler.CrosshairHandler;
 import com.mrcrayfish.guns.common.BoundingBoxManager;
 import com.mrcrayfish.guns.common.NetworkGunManager;
@@ -21,13 +23,28 @@ import com.mrcrayfish.guns.datagen.RecipeGen;
 import com.mrcrayfish.guns.enchantment.EnchantmentTypes;
 import com.mrcrayfish.guns.entity.GrenadeEntity;
 import com.mrcrayfish.guns.entity.MissileEntity;
-import com.mrcrayfish.guns.init.*;
+import com.mrcrayfish.guns.init.ModBlocks;
+import com.mrcrayfish.guns.init.ModContainers;
+import com.mrcrayfish.guns.init.ModEffects;
+import com.mrcrayfish.guns.init.ModEnchantments;
+import com.mrcrayfish.guns.init.ModEntities;
+import com.mrcrayfish.guns.init.ModItems;
+import com.mrcrayfish.guns.init.ModParticleTypes;
+import com.mrcrayfish.guns.init.ModRecipeSerializers;
+import com.mrcrayfish.guns.init.ModRecipeTypes;
+import com.mrcrayfish.guns.init.ModSounds;
+import com.mrcrayfish.guns.init.ModSyncedDataKeys;
+import com.mrcrayfish.guns.init.ModTileEntities;
+import com.mrcrayfish.guns.item.GrenadeItem;
+import com.mrcrayfish.guns.item.StunGrenadeItem;
 import com.mrcrayfish.guns.network.PacketHandler;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -42,37 +59,30 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(Reference.MOD_ID)
-public class GunMod
-{
+public class GunMod {
     public static boolean debugging = false;
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
     public static boolean playerReviveLoaded = false;
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    public static final CreativeModeTab GROUP = new CreativeModeTab(Reference.MOD_ID)
-    {
+    public static final CreativeModeTab GROUP = new CreativeModeTab(Reference.MOD_ID) {
         @Override
-        public ItemStack makeIcon()
-        {
+        public ItemStack makeIcon() {
             ItemStack stack = new ItemStack(ModItems.PISTOL.get());
             stack.getOrCreateTag().putInt("AmmoCount", ModItems.PISTOL.get().getGun().getGeneral().getMaxAmmo());
             return stack;
         }
 
         @Override
-        public void fillItemList(NonNullList<ItemStack> items)
-        {
+        public void fillItemList(NonNullList<ItemStack> items) {
             super.fillItemList(items);
             CustomGunManager.fill(items);
         }
     }.setEnchantmentCategories(EnchantmentTypes.GUN, EnchantmentTypes.SEMI_AUTO_GUN);
 
-    public GunMod()
-    {
+    public GunMod() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
@@ -102,33 +112,41 @@ public class GunMod
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
     }
 
-    private void onCommonSetup(FMLCommonSetupEvent event)
-    {
-        event.enqueueWork(() ->
-        {
+    private void onCommonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
             PacketHandler.init();
             FrameworkAPI.registerSyncedDataKey(ModSyncedDataKeys.AIMING);
             FrameworkAPI.registerSyncedDataKey(ModSyncedDataKeys.RELOADING);
             FrameworkAPI.registerSyncedDataKey(ModSyncedDataKeys.SHOOTING);
-            FrameworkAPI.registerLoginData(new ResourceLocation(Reference.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
-            FrameworkAPI.registerLoginData(new ResourceLocation(Reference.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
-            CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"), WorkbenchIngredient.Serializer.INSTANCE);
-            ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
-            ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(), (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
-            if(Config.COMMON.gameplay.improvedHitboxes.get())
-            {
+            FrameworkAPI.registerLoginData(new ResourceLocation(Reference.MOD_ID, "network_gun_manager"),
+                    NetworkGunManager.LoginData::new);
+            FrameworkAPI.registerLoginData(new ResourceLocation(Reference.MOD_ID, "custom_gun_manager"),
+                    CustomGunManager.LoginData::new);
+            CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workbench_ingredient"),
+                    WorkbenchIngredient.Serializer.INSTANCE);
+            ProjectileManager.getInstance().registerFactory(ModItems.GRENADE.get(),
+                    (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(),
+                            worldIn, entity, weapon, item, modifiedGun));
+            ProjectileManager.getInstance().registerFactory(ModItems.MISSILE.get(),
+                    (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(),
+                            worldIn, entity, weapon, item, modifiedGun));
+            if (Config.COMMON.gameplay.improvedHitboxes.get()) {
                 MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
             }
+
+            DispenserBlock.registerBehavior(ModItems.GRENADE.get(),
+                    new GrenadeItem.GrenadeDispense());
+            DispenserBlock.registerBehavior(ModItems.STUN_GRENADE.get(),
+                    new StunGrenadeItem.StunGrenadeDispense());
         });
+
     }
 
-    private void onClientSetup(FMLClientSetupEvent event)
-    {
+    private void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(ClientHandler::setup);
     }
 
-    private void onGatherData(GatherDataEvent event)
-    {
+    private void onGatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         BlockTagGen blockTagGen = new BlockTagGen(generator, existingFileHelper);
@@ -140,8 +158,7 @@ public class GunMod
         generator.addProvider(event.includeServer(), new GunGen(generator));
     }
 
-    public static boolean isDebugging()
-    {
-        return false;//!FMLEnvironment.production;
+    public static boolean isDebugging() {
+        return false;// !FMLEnvironment.production;
     }
 }
